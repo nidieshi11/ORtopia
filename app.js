@@ -18,6 +18,16 @@ const paths={
 const ico=k=>'<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="'+(paths[k]||paths.book)+'"/></svg>', cats=['warehouse','factory','road','train','air','drone','energy','finance','health','rescue','chip','network'];
 const seriesList=[['trans','Transportation Research Parts'],['informs','INFORMS 系列'],['utd','UTD 24 系列']]; const seriesNames={trans:'Transportation Research',informs:'INFORMS',utd:'UTD 24'};
 const groupOf=p=>Array.isArray(p.series)?p.series.map(v=>s(v).toLowerCase()):[];
+const subdomains = window.ORTOPIA_SUBDOMAINS || {};
+const problemGroup = new Map();
+for(const [domainId,groups] of Object.entries(subdomains)){
+ for(const group of groups){
+  for(const id of group.ids){
+   if(byId.get(id)?.domainId===domainId)problemGroup.set(id,group);
+  }
+ }
+}
+const groupLink=(domainId,group)=>route('domain',domainId)+(group?'/'+encodeURIComponent(group.key):'');
 const replayIds = new Set(window.ORTOPIA_REPLAY_IDS || []);
 // Use the same release key for the scene preview and its full-size viewer.
 const assetVersion = new URL(document.currentScript.src).search;
@@ -26,15 +36,16 @@ const sceneUrl = p => {
  const revision = p.sceneVersion ? '?v='+encodeURIComponent(p.sceneVersion) : assetVersion;
  return p.scene + revision;
 };
+let domainSearch={id:null,query:''};
 let series='trans', currentProblem=null, zoom=1;
 function setNav(n){for(const k of ['domains','library'])E('nav-'+k).classList.toggle('active',k===n)}
 function crumb(items){return '<div class="crumb" aria-label="面包屑"><a href="#/">首页</a>'+items.map(([t,u])=>'<i>/</i>'+(u?'<a href="'+param(u)+'">'+esc(t)+'</a>':'<strong>'+esc(t)+'</strong>')).join('')+'</div>'}
-function has(q,p){const hay=[p.id,p.title,p.paperTitle,p.domain,p.journal,p.year,p.journalShort,...groupOf(p)].map(s).join(' ').toLowerCase(); return q.toLowerCase().trim().split(/\s+/).every(v=>hay.includes(v))}
+function has(q,p){const hay=[p.id,p.title,p.paperTitle,p.domain,problemGroup.get(p.id)?.label,p.journal,p.year,p.journalShort,...groupOf(p)].map(s).join(' ').toLowerCase(); return q.toLowerCase().trim().split(/\s+/).every(v=>hay.includes(v))}
 function listItem(p){return '<a class="result" href="'+param(detail(p))+'"><span class="serial">'+esc(p.id)+'</span><span class="result-body"><strong>'+esc(p.title)+'</strong><small>'+esc(p.paperTitle)+'</small><small>'+esc([p.domain,p.journalShort||p.journal,p.year].filter(Boolean).join(' · '))+'</small></span><span class="chev"></span></a>'}
 function home(){
  const spot=byId.get('P0012')||probs.find(p=>p.scene), jcount=new Set(probs.map(p=>p.journal).filter(Boolean)).size;
  const spotlight=spot?'<a class="spot" href="'+param(detail(spot))+'"><div class="spot-pic"><img src="'+param(sceneUrl(spot))+'" alt="" fetchpriority="high"></div><div class="spot-copy"><small>场景选读</small><b>'+esc(spot.title)+'</b><span class="sp-meta">'+esc(spot.domain)+' · '+esc(spot.id)+'</span></div></a>':'';
- main.innerHTML='<section class="hero"><div class="wrap hero-in"><div><div class="kicker">运筹优化研究资料库</div><h1>ORtopia</h1><p>按领域浏览优化问题，查看场景图、数学模型与原始论文。</p><div class="metrics"><span><b>'+domains.length+'</b>个领域</span><i></i><span><b>'+probs.length+'</b>道问题</span><i></i><span><b>'+jcount+'</b>种期刊</span></div></div>'+spotlight+'</div></section><div class="wrap"><section class="home-section" id="domain-index"><div class="headflex"><div><div class="eyebrow">SUBJECT INDEX</div><div class="section-title"><h2>领域目录</h2></div></div><span class="count-label">'+domains.length+' 个领域</span></div><div class="domains-grid">'+domains.map((d,i)=>'<a class="domain-card" href="'+param(route('domain',d.id))+'"><span class="dicon">'+ico(cats[i])+'</span><span class="domain-body"><span class="domain-name">'+esc(d.name)+'</span><span class="domain-meta">'+plural(d.count??byDomain(d.id).length)+' 道问题</span></span><span class="chev" aria-hidden="true"></span></a>').join('')+'</div></section><section class="library" id="library"><div class="headflex"><div><div class="eyebrow">PUBLICATION ARCHIVE</div><div class="section-title"><h2>论文集</h2></div><p class="section-sub">按系列和期刊查阅论文全文。同一期刊可归入多个系列。</p></div></div><div id="shelves"></div></section></div>';
+ main.innerHTML='<section class="hero"><div class="wrap hero-in"><div><div class="kicker">运筹优化研究资料库</div><h1>ORtopia</h1><p>按领域浏览优化问题，查看场景图、数学模型与原始论文。</p><div class="metrics"><span><b>'+domains.length+'</b>个领域</span><i></i><span><b>'+probs.length+'</b>道问题</span><i></i><span><b>'+jcount+'</b>种期刊</span></div></div>'+spotlight+'</div></section><div class="wrap"><section class="home-section" id="domain-index"><div class="headflex"><div><div class="eyebrow">SUBJECT INDEX</div><div class="section-title"><h2>领域目录</h2></div></div><span class="count-label">'+domains.length+' 个领域</span></div><div class="domains-grid">'+domains.map((d,i)=>'<a class="domain-card" href="'+param(route('domain',d.id))+'"><span class="dicon">'+ico(cats[i])+'</span><span class="domain-body"><span class="domain-name">'+esc(d.name)+'</span><span class="domain-meta">'+plural(d.count??byDomain(d.id).length)+' 道问题'+(subdomains[d.id]?' · '+subdomains[d.id].length+' 个子类':'')+'</span></span><span class="chev" aria-hidden="true"></span></a>').join('')+'</div></section><section class="library" id="library"><div class="headflex"><div><div class="eyebrow">PUBLICATION ARCHIVE</div><div class="section-title"><h2>论文集</h2></div><p class="section-sub">按系列和期刊查阅论文全文。同一期刊可归入多个系列。</p></div></div><div id="shelves"></div></section></div>';
  shelves();
 }
 function shelves(){
@@ -46,11 +57,49 @@ function shelves(){
  container.innerHTML='<div class="tabs" role="group" aria-label="论文系列">'+groups.map(([k,n])=>'<button type="button" data-series="'+k+'" aria-pressed="'+(series===k)+'" class="'+(series===k?'active':'')+'">'+esc(n)+' <em>'+selectBy(k).length+'</em></button>').join('')+'</div><div class="journals">'+[...journals.entries()].sort(([a],[b])=>sortZh(a,b)).map(([name,rows],i)=>'<details class="journal"'+(i===0?' open':'')+'><summary>'+ico('book')+'<span>'+esc(name)+'</span><span class="pill">'+rows.length+' 篇</span><span class="chev"></span></summary>'+rows.sort((a,b)=>Number(b.year)-Number(a.year)||sortZh(a.paperTitle,b.paperTitle)).map(p=>'<div class="paper-row"><div class="pdf-mark">PDF</div><div><a class="paper-title" target="_blank" rel="noopener" href="'+param(p.pdf)+'">'+esc(p.paperTitle)+'</a><div class="paper-info">'+esc([p.year,p.id,p.title].filter(Boolean).join(' · '))+'</div></div><div class="paper-actions"><a href="'+param(detail(p))+'">问题详情</a><a href="'+param(p.pdf)+'" download="'+esc(p.pdfName||s(p.paperTitle)+'.pdf')+'">下载 PDF</a></div></div>').join('')+'</details>').join('')+(journals.size?'':'<div class="empty">此系列暂无论文。</div>')+'</div>';
  container.querySelectorAll('[data-series]').forEach(b=>b.onclick=()=>{series=b.dataset.series;shelves();container.querySelector('[data-series="'+series+'"]').focus({preventScroll:true})});
 }
-function domainPage(id){
- const d=dom(id);if(!d)return miss();const rows=byDomain(id);
- main.innerHTML='<div class="wrap page">'+crumb([['领域目录','#/domains'],[d.name]])+'<div class="domain-head"><div class="eyebrow">SUBJECT COLLECTION</div><h1>'+esc(d.name)+'</h1><p class="muted">本领域收录 '+rows.length+' 道优化问题。</p></div><div class="tools"><label class="search-field"><span class="glass" aria-hidden="true"></span><input id="filter-domain" type="search" placeholder="在本领域中检索" aria-label="在本领域中检索"></label><span class="count-label" id="domain-count"></span></div><div class="result-list" id="domain-list"></div></div>';
- function filter(){const v=E('filter-domain').value;const rs=rows.filter(p=>has(v,p));E('domain-count').textContent='显示 '+rs.length+' 道问题';E('domain-list').innerHTML=rs.length?rs.map(listItem).join(''):'<div class="no-hits">没有找到匹配的问题。</div>'} E('filter-domain').addEventListener('input',filter);filter();
- document.title=d.name+' · ORtopia';
+function domainPage(id,groupKey){
+ const domain=dom(id);
+ if(!domain)return miss();
+ const rows=byDomain(id);
+ const groups=subdomains[id]||[];
+ const active=groups.find(group=>group.key===groupKey);
+ if(groupKey && !active)return miss();
+ const members=group=>rows.filter(p=>problemGroup.get(p.id)===group);
+ const tabs=groups.length?'<nav class="subdomain-nav" aria-label="二级分类">'+
+   [[undefined,'全部',rows.length],...groups.map(group=>[group,group.label,members(group).length])]
+   .map(([group,label,count])=>'<a href="'+param(groupLink(id,group))+'"'+(group===active?' aria-current="page"':'')+'>'+
+      esc(label)+' <span>'+count+'</span></a>').join('')+'</nav>':'';
+ const trail=[['领域目录','#/domains'],[domain.name,active?groupLink(id):undefined]];
+ if(active)trail.push([active.label]);
+ const inputLabel=active?'在此子类中检索':'在本领域中检索';
+ main.innerHTML='<div class="wrap page">'+crumb(trail)+'<div class="domain-head"><div class="eyebrow">SUBJECT COLLECTION</div>'+
+   '<h1>'+esc(domain.name)+'</h1><p class="muted">本领域收录 '+rows.length+' 道优化问题。</p></div>'+tabs+
+   '<div class="tools"><label class="search-field"><span class="glass" aria-hidden="true"></span>'+
+   '<input id="filter-domain" type="search" placeholder="'+inputLabel+'" aria-label="'+inputLabel+'"></label>'+
+   '<span class="count-label" id="domain-count" aria-live="polite"></span></div><div id="domain-list"></div></div>';
+ const input=E('filter-domain');
+ input.value=domainSearch.query;
+ function filter(){
+  domainSearch.query=input.value;
+  const results=(active?members(active):rows).filter(p=>has(input.value,p));
+  E('domain-count').textContent='显示 '+results.length+' 道问题';
+  const list=items=>'<div class="result-list">'+items.map(listItem).join('')+'</div>';
+  if(!results.length){
+   E('domain-list').innerHTML='<div class="no-hits">没有找到匹配的问题。</div>';
+  }else if(groups.length && !active){
+   const sections=groups.map(group=>{
+    const matches=results.filter(p=>problemGroup.get(p.id)===group);
+    return matches.length?'<section class="subdomain-section"><h2><a href="'+param(groupLink(id,group))+'">'+
+      esc(group.label)+'</a> <small>'+matches.length+' 题</small></h2>'+list(matches)+'</section>':'';
+   });
+   const unassigned=results.filter(p=>!problemGroup.has(p.id));
+   if(unassigned.length)sections.push(list(unassigned));
+   E('domain-list').innerHTML=sections.join('');
+  }else E('domain-list').innerHTML=list(results);
+ }
+ input.addEventListener('input',filter);
+ filter();
+ document.title=(active?active.label+' · ':'')+domain.name+' · ORtopia';
 }
 function para(md){
  let text=s(md).trim().replace(/^#[^\n]*\n+/,'');const math=[];
@@ -73,7 +122,10 @@ function detailPage(id){
  const p=byId.get(id);if(!p)return miss();currentProblem=p;document.title=p.title+' · ORtopia';const mp=mathList(p);
  const switcher='<div class="desc-switch" role="group" aria-label="问题描述版本"><button data-description="symbolic" aria-pressed="true">有符号</button><button data-description="plain" aria-pressed="false">纯文字</button></div>';
  const math=mp.length?mp.map((u,i)=>pdfFile(u)?'<object aria-label="数学模型 PDF" type="application/pdf" data="'+param(u)+'"><a class="route-link" href="'+param(u)+'" target="_blank" rel="noopener">打开数学模型 PDF</a></object>':'<button class="math-img" data-view="math" data-page="'+i+'" aria-label="放大数学模型第 '+(i+1)+' 页"><img src="'+param(u)+'" loading="lazy" alt="数学模型，第 '+(i+1)+' 页"></button>').join(''):'<div class="empty">暂未收录模型图片。'+(p.tex?'<a class="route-link" href="'+param(p.tex)+'" download>下载 LaTeX 源文件</a>':'')+'</div>';
- const headings=crumb([['领域目录','#/domains'],[p.domain,route('domain',p.domainId)],[p.id]]);
+ const group=problemGroup.get(p.id);
+ const trail=[['领域目录','#/domains'],[p.domain,route('domain',p.domainId)]];
+ if(group)trail.push([group.label,groupLink(p.domainId,group)]);
+ const headings=crumb([...trail,[p.id]]);
  const replay=replayIds.has(p.id)
    ? '<a class="primary replay-entry" href="replay.html#'+param(p.id)+'">进入实例仿真 <span aria-hidden="true">→</span></a>' : '';
  const paper=p.pdf
@@ -94,10 +146,11 @@ function detailPage(id){
 }
 function miss(){currentProblem=null;main.innerHTML='<div class="wrap page"><h1>未找到此条目</h1><a class="route-link" href="#/">返回资料库</a></div>'}
 function render(scroll=true){
- const [kind,id]=location.hash.replace(/^#\/?/,'').split('/').map(v=>{try{return decodeURIComponent(v)}catch{return v}});currentProblem=null;document.title='ORtopia';
+ const [kind,id,groupKey]=location.hash.replace(/^#\/?/,'').split('/').map(v=>{try{return decodeURIComponent(v)}catch{return v}});currentProblem=null;document.title='ORtopia';
  if(!probs.length){main.innerHTML='<div class="wrap page"><h1>目录暂未载入</h1><p>请确认网页与配套的数据目录保存在一起。</p></div>';return}
+ if(kind!=='domain'||domainSearch.id!==id)domainSearch={id:kind==='domain'?id:null,query:''};
  setNav(kind==='library'?'library':'domains');
- if(!kind||kind==='domains'||kind==='library')home();else if(kind==='domain')domainPage(id);else if(kind==='problem')detailPage(id);else miss();
+ if(!kind||kind==='domains'||kind==='library')home();else if(kind==='domain')domainPage(id,groupKey);else if(kind==='problem')detailPage(id);else miss();
  if(scroll)requestAnimationFrame(()=>{const dest=kind==='library'?E('library'):kind==='domains'?E('domain-index'):null;if(dest)dest.scrollIntoView({behavior:'instant',block:'start'});else window.scrollTo({top:0,behavior:'instant'})});
 }
 function search(){if(!E('search-modal').open)E('search-modal').showModal();E('lookup').focus();lookup()}
