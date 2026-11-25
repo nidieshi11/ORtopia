@@ -21,7 +21,11 @@ const groupOf=p=>Array.isArray(p.series)?p.series.map(v=>s(v).toLowerCase()):[];
 const replayIds = new Set(window.ORTOPIA_REPLAY_IDS || []);
 // Use the same release key for the scene preview and its full-size viewer.
 const assetVersion = new URL(document.currentScript.src).search;
-const sceneUrl = p => p.scene ? p.scene + assetVersion : '';
+const sceneUrl = p => {
+ if(!p.scene)return '';
+ const revision = p.sceneVersion ? '?v='+encodeURIComponent(p.sceneVersion) : assetVersion;
+ return p.scene + revision;
+};
 let series='trans', currentProblem=null, zoom=1;
 function setNav(n){for(const k of ['domains','library'])E('nav-'+k).classList.toggle('active',k===n)}
 function crumb(items){return '<div class="crumb" aria-label="面包屑"><a href="#/">首页</a>'+items.map(([t,u])=>'<i>/</i>'+(u?'<a href="'+param(u)+'">'+esc(t)+'</a>':'<strong>'+esc(t)+'</strong>')).join('')+'</div>'}
