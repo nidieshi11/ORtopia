@@ -5,17 +5,18 @@
 
 \geometry{a4paper, margin=1in}
 
-\title{Core Solvable Mathematical Model}
+\title{核心可解数学模型}
 \author{}
 \date{}
 
+\usepackage[UTF8]{ctex}
 \begin{document}
 
 \maketitle
 
-This file retains the directly solvable QC relaxation of ACOTS, denoted ACOTS-QC in the paper. The original nonconvex ACOTS MINLP and the branch-and-cut separation models for additional cycle cuts are omitted.
+此文件中保留了论文中直接可求解的 ACOTS-QC 松弛问题。原始的非凸 ACOTS MINLP 模型以及用于额外循环割线的分支与切割分离模型则被省略了。
 
-\section{ACOTS-QC Relaxation}
+\section{ACOTS-QC 松弛算法}
 
 \begin{equation}
 \begin{aligned}
@@ -178,41 +179,26 @@ s_{ij} = \sum_{k=1}^{8} \lambda_{ij,k}^s \gamma_3^k
 \end{equation}
 
 
-\section{Definitions completing the retained QC model (2026-10-23)}
-The source PDF pages 6, 8--10 and 12 provide the following definitions.
-Each physical line appears once in $\mathcal A$; $\mathcal A^R$ only supplies
-its reverse flow representation. The subset $\mathcal N^L$ consists of
-zero-load leaf buses, each with exactly one incident physical line, denoted
-$a(i)$. The set-indexed switching symbol in (11a) is $z_{a(i)}$.
-Complex generation bounds apply componentwise, and
+\section{定义用于补充已保留的 QC 模型（2026-10-23）。}
+源PDF文件中的第6、8-10页以及第12页提供了以下定义：  
+在$\mathcal A$中，每条物理线路都出现一次；而$\mathcal A^R$仅提供其反向流表示。子集$\mathcal N^L$由零负载的叶节点组成，每个叶节点恰好有一条物理线路，用$a(i)$表示。在(11a)中的集合索引符号为$z_{a(i)}$。复杂的生成限制是逐组件应用的。
 \[
  S_k^g=p_k^g+\mathrm{i}q_k^g,\qquad
  S_{ij}=p_{ij}+\mathrm{i}q_{ij},\qquad
  W_{ij}=w_{ij}^R+\mathrm{i}w_{ij}^I.
 \]
-Transformer real/imaginary components are $\boldsymbol t_{ij}^R,\boldsymbol t_{ij}^I$;
-charging-admittance components are $\boldsymbol g_{ij}^c,\boldsymbol b_{ij}^c$.
-The star denotes complex conjugation. Positive voltage lower bounds and
-nonzero transformer ratios are required. This retained expression uses
-nondegenerate angle intervals strictly inside $(-\pi/2,\pi/2)$.
-Writing $a=\underline\theta_{ij}<b=\overline\theta_{ij}$ for each line,
+变压器实/虚分量为$\boldsymbol t_{ij}^R,\boldsymbol t_{ij}^I$；  
+充电导纳分量则为$\boldsymbol g_{ij}^c,\boldsymbol b_{ij}^c$。  
+星号表示复数共轭。需要满足正电压下限条件，且变压器比率不能为零。此表达式使用严格位于$(-\pi/2,\pi/2)$内的非退化角度区间。  
+每行都写$a=\underline\theta_{ij}<b=\overline\theta_{ij}$。
 \[
  \theta_{ij}^u=\max(|a|,|b|)>0,\qquad
  \theta_{ij}^c=\frac{\cos b-\cos a}{b-a},\qquad
  \theta_{ij}^s=\frac{\sin b-\sin a}{b-a}.
 \]
-The sine bounds are $\sin a,\sin b$ and the cosine lower bound is
-$\min(\cos a,\cos b)$; the cosine upper bound is 1 when $a\le0\le b$
-and otherwise $\max(\cos a,\cos b)$. The input $\theta^M$ is a given
-valid finite off-state angle allowance, as in the retained inequalities.
-For each line, the eight $\xi$ points are the Cartesian product of the two
-endpoint voltage-bound pairs and the cosine-bound pair; the eight $\gamma$
-points use the sine-bound pair instead. The omitted line subscripts on
-$\xi,\gamma$ are implicit. Both lists use first voltage slowest and the
-trigonometric coordinate fastest: lower/lower/lower, lower/lower/upper,
-lower/upper/lower, lower/upper/upper, upper/lower/lower,
-upper/lower/upper, upper/upper/lower, upper/upper/upper.
-Finally,
+正弦的上下限分别为$\sin a,\sin b$和$\min(\cos a,\cos b)$；余弦的上下限为1，当$a\le0\le b$为真时，否则为$\max(\cos a,\cos b)$。输入值$\theta^M$是一个给定的、有效的有限关闭状态角度范围，与保留的不等式中的定义一致。
+
+对于每一行，八个$\xi$点表示两个端点电压限制与余弦限制的组合；而八个$\gamma$点则使用正弦限制来表示。在$\xi,\gamma$上省略了下标，这些下标是隐含的。两个列表都按照电压从慢到快的顺序排列，同时以三角函数坐标作为最快的顺序：lower/lower/lower，lower/lower/upper，lower/upper/lower，lower/upper/upper，upper/lower/lower，upper/lower/upper，upper/upper/lower，upper/upper/upper。
 \[
  \boldsymbol v_i^\sigma=\underline{\boldsymbol v}_i+\overline{\boldsymbol v}_i,
  \quad\boldsymbol\phi_{ij}=\frac{a+b}{2},
@@ -220,6 +206,6 @@ Finally,
  \quad\overline l_{ij}=\frac{|\boldsymbol T_{ij}|^2(\overline{\boldsymbol s}_{ij}^a)^2}
  {\underline{\boldsymbol v}_i^2}.
 \]
-The instances supply these values for the line parameters.
+这些实例为线参数提供了这些值。
 
 \end{document}

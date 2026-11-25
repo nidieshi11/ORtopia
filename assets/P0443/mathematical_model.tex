@@ -2,9 +2,10 @@
 \usepackage{amsmath,amssymb}
 \usepackage[margin=0.65in]{geometry}
 \allowdisplaybreaks
+\usepackage[UTF8]{ctex}
 \begin{document}
 
-\section*{Final deterministic CD-SNDP MILP}
+\section*{最终的确定性CD-SNDP MILP}
 \begin{equation}
 \begin{aligned}
 (\mathbf{MILP})\quad \max_{v,f,p,x,z}\quad
@@ -17,7 +18,7 @@ D_{ij}\lambda_{ij}+\sum_{h\in\mathcal H}U_{ij}^{h}z_{ij}^{h}
 -\sum_{(i,j)\in\mathcal A}\sum_{s\in\mathcal S}\sum_{k\in\mathcal K}c_{ijsk}^{\mathrm{VAR}}x_{ijsk}.
 \end{aligned}\tag{19}
 \end{equation}
-Subject to the inherited operator and demand constraints:
+在继承的运算符和需求约束的前提下：
 \begin{align}
 \sum_{s\in\mathcal S}v_{sk}&\leq V_k
 &&\forall k\in\mathcal K,\tag{2}\\
@@ -39,7 +40,7 @@ x_{ijsk}&\geq0
 z_{ij}^{h}&\geq0
 &&\forall(i,j)\in\mathcal A,\ \forall h\in\mathcal H.\tag{11}
 \end{align}
-The final formulation adds the following frequency expansion, product linearization, and KKT disjunction rows:
+最终的表述中增加了以下内容：频率扩展、乘积线性化，以及 KKT 析取行。
 \begin{align}
 f_{sk}&=\sum_{b=0}^{B_{sk}-1}2^b f_{skb}
 &&\forall s\in\mathcal S,\ \forall k\in\mathcal K,\tag{20}\\
@@ -71,7 +72,7 @@ z_{ij}^{h}&\leq M_{ij}^{\mathrm{II}h}y_{ij}^{\mathrm{II}h}
 y_{ij}^{\mathrm I h}+y_{ij}^{\mathrm{II}h}&\leq1
 &&\forall(i,j)\in\mathcal A,\ \forall h\in\mathcal H.\tag{31}
 \end{align}
-The additional printed variable domains are:
+另外打印出来的变量域包括：
 \begin{align}
 f_{skb}&\in\{0,1\}
 &&\forall s\in\mathcal S,\ \forall k\in\mathcal K,\ \forall b\in\mathcal B,\tag{32}\\
@@ -82,30 +83,30 @@ y_{ij}^{\mathrm I},y_{ij}^{\mathrm{II}},y_{ij}^{\mathrm I h},y_{ij}^{\mathrm{II}
 \lambda_{ij}&\geq0
 &&\forall(i,j)\in\mathcal A.\tag{35}
 \end{align}
-The selected CD-SNDP also includes the later frequency cap:
+所选的 CD-SNDP 还包含了后续的频率上限：
 \begin{equation}
 f_{sk}\leq35
 \qquad\forall s\in\mathcal S,\ \forall k\in\mathcal K.
 \tag{56}
 \end{equation}
 
-\section*{Operative definitions and variable roles}
-\paragraph{Network and indices.}
-The directed transport network is
+\section*{操作定义与变量角色}
+\paragraph{网络与索引。}
+有向运输网络是
 \[
 G=(\mathcal N,\mathcal A),\qquad
 \mathcal A=\{(i,j):i,j\in\mathcal N,\ i\ne j\}.
 \]
-Here \(\mathcal N\) is the set of terminals, \(\mathcal K\) the set of vehicle types, \(\mathcal S\) the set of potential transport services, and \(\mathcal H\) the set of competing alternatives. For each service \(s\), \(\mathcal L_s\) denotes its sequence of legs, indexed by \(l_s\). Each leg is an arc, and the service sequence starts and ends at the same node. Services may have intermediate stops.
+这里的\(\mathcal N\)表示终端集合，\(\mathcal K\)表示车辆类型集合，\(\mathcal S\)表示潜在的运输服务集合，而\(\mathcal H\)则代表竞争性的替代方案。对于每一项服务，\(s\)表示其路径序列，而\(\mathcal L_s\)则表示这些路径的索引，索引由\(l_s\)表示。每条路径都是一个弧线，且服务序列的起始点和终点都位于同一个节点上。服务过程中可能会有中途的停靠点。
 
-\paragraph{Fixed operational data.}
-For vehicle type \(k\), \(V_k\) is the number of available vehicles and \(Q_k\) is their capacity in TEUs. The parameter \(W_{sk}\) is the maximum number of cycles of service \(s\) that one vehicle of type \(k\) can perform during the planning horizon. The paper describes this as maximum operating time divided by cycle time, including travel and terminal time; its explicit computation on PDF page 20 is
+\paragraph{固定操作数据。}
+对于车辆类型\(k\)，\(V_k\)表示可用车辆的数量，而\(Q_k\)则表示这些车辆的集装箱处理能力，以TEU为单位。参数\(W_{sk}\)表示在规划时间范围内，一辆车辆类型\(k\)能够完成的最大服务周期数\(s\)。该论文将这一数值描述为最大运行时间除以周期时间，包括运输时间和在码头停留的时间；其具体计算过程见PDF第20页。
 \[
 W_{sk}=\frac{T^{\max}}{t_{sk}^{\mathrm{sail}}+t_{sk}^{\mathrm{port}}}.
 \]
-Here \(T^{\max}\) is maximum operating time, \(t_{sk}^{\mathrm{sail}}\) sailing time and \(t_{sk}^{\mathrm{port}}\) time spent in ports. No rounding of this expression is imposed.
+此处\(T^{\max}\)表示最大运营时间，\(t_{sk}^{\mathrm{sail}}\)表示航行时间，\(t_{sk}^{\mathrm{port}}\)表示在港口停留的时间。该表达式不进行四舍五入处理。
 
-The fixed cost of operating service \(s\) with type \(k\) is \(c_{sk}^{\mathrm{FIX}}\), in euros; the variable cost per container transported from \(i\) to \(j\) using that service and type is \(c_{ijsk}^{\mathrm{VAR}}\), in euros per TEU. The aggregated demand is \(D_{ij}\), in TEUs. The incidence parameters are defined by
+服务\(s\)的固定运营成本，其类型为\(k\)，为\(c_{sk}^{\mathrm{FIX}}\)欧元；使用该服务将货物从\(i\)运输到\(j\)时，每TEU的变动成本为\(c_{ijsk}^{\mathrm{VAR}}\)欧元。总需求为\(D_{ij}\)TEU。相关参数已定义。
 \[
 \delta_{ijl_s}=\begin{cases}
 1,&\text{if a container traveling from }i\text{ to }j\text{ uses leg }l_s,\\
@@ -121,46 +122,46 @@ The fixed cost of operating service \(s\) with type \(k\) is \(c_{sk}^{\mathrm{F
 \qquad (i,j)\in\mathcal A,\ s\in\mathcal S.
 \]
 
-\paragraph{Deterministic utility definition.}
-The selected generic utility specification is the one used to derive (19):
+\paragraph{确定性效用定义。}
+所选的通用实用工具规范，就是用于推导（19）的那个规范。
 \begin{equation}
 U_{ij}^{O}=\bar U_{ij}^{O}+\beta_c p_{ij}+\beta_f f_{ij}
 =\bar U_{ij}^{O}+\beta_c p_{ij}
 +\beta_f\sum_{s\in\mathcal S}\sum_{k\in\mathcal K}\phi_{ijs}f_{sk}.
 \tag{17}
 \end{equation}
-In particular,
+特别是，
 \[
 f_{ij}=\sum_{s\in\mathcal S}\sum_{k\in\mathcal K}\phi_{ijs}f_{sk}.
 \]
-These definitions apply to OD pairs \((i,j)\in\mathcal A\). The quantity \(\bar U_{ij}^{O}\) is the exogenous part of the operator's utility, not the full utility \(U_{ij}^{O}\). The coefficients \(\beta_c\) and \(\beta_f\) weight price and frequency, respectively. Competing utilities \(U_{ij}^{h}\), for \((i,j)\in\mathcal A\) and \(h\in\mathcal H\), are fixed data. They remain abstract in this generic deterministic formulation, as does \(\bar U_{ij}^{O}\); no random errors, sampled coefficients, or realization indices are introduced. Competition is fixed and exogenous and does not react to the operator's decisions.
+这些定义适用于OD对\((i,j)\in\mathcal A\)。量\(\bar U_{ij}^{O}\)是操作符效用的外生部分，而非全部效用\(U_{ij}^{O}\)。系数\(\beta_c\)和\(\beta_f\)分别用于权衡价格和频率。竞争性效用\(U_{ij}^{h}\)对于\((i,j)\in\mathcal A\)和\(h\in\mathcal H\)是固定数据。在这种通用的确定性表述中，它们仍然保持抽象状态，\(\bar U_{ij}^{O}\)也是如此；没有引入随机误差、抽样系数或实现指标。竞争是固定的且外生的，不会因操作符的决策而发生变化。
 
-\paragraph{Frequency representation.}
-The number of binary digits is defined in the prose immediately preceding (19):
+\paragraph{频率表示方式。}
+二进制位数的数量在紧接着（19）之后的文字中有所说明：
 \[
 B_{sk}=\left\lceil\log_2(W_{sk}V_k+1)\right\rceil.
 \]
-The sums in (19) and (20) run from \(b=0\) to \(B_{sk}-1\). The variables \(f_{skb}\) are the binary digits of \(f_{sk}\). The auxiliary variable \(a_{ijskb}\) represents the product of the binary digit \(f_{skb}\) and the cargo variable \(x_{ijsk}\), using the printed linearization (21)--(23) and domain (33), rather than an additional nonlinear equality.
+在(19)和(20)中，求和的结果是从\(b=0\)到\(B_{sk}-1\)。变量\(f_{skb}\)是\(f_{sk}\)的二进制数字。辅助变量\(a_{ijskb}\)表示二进制数字\(f_{skb}\)与货物变量\(x_{ijsk}\)的乘积，这是通过打印的线性化公式(21)--(23)和域(33)来确定的，而不是通过额外的非线性等式来表示的。
 
-\paragraph{Decision variables.}
-The operator chooses \(v_{sk}\), the number of type-\(k\) vehicles assigned to service \(s\); \(f_{sk}\), its frequency with that vehicle type; and \(p_{ij}\), the price per container from \(i\) to \(j\). The variables \(x_{ijsk}\) are cargo volumes assigned to the operator's services and \(z_{ij}^{h}\) are cargo volumes assigned to competing alternatives. The original notation table gives cargo volumes in TEUs and prices in euros per TEU.
+\paragraph{决策变量。}
+操作员选择了\(v_{sk}\)，即分配给服务\(s\)的、类型为\(k\)的车辆数量；\(f_{sk}\)表示使用这种类型车辆的频率；而\(p_{ij}\)则表示从\(i\)到\(j\)的每集装箱的价格。变量\(x_{ijsk}\)表示分配给该操作员服务的货物量，而\(z_{ij}^{h}\)则表示分配给竞争对手的替代方案中的货物量。原始表格中，货物量以TEU为单位表示，价格则以欧元/TEU为单位表示。
 
-The variables \(\lambda_{ij}\) are introduced as dual variables associated with the demand equalities (9). The binary pairs \((y_{ij}^{\mathrm I},y_{ij}^{\mathrm{II}})\) and \((y_{ij}^{\mathrm I h},y_{ij}^{\mathrm{II}h})\) implement the operator and competitor complementarity disjunctions, respectively. The symbols \(M_{ij}^{\mathrm I}\), \(M_{ij}^{\mathrm{II}}\), \(M_{ij}^{\mathrm I h}\), and \(M_{ij}^{\mathrm{II}h}\) are fixed big-\(M\) coefficients; the paper supplies no formulas or numerical bounds for them in this formulation. They are retained abstractly. Although the printed maximization subscript in (19) lists only \(v,f,p,x,z\), the frequency digits, product variables, dual variables, and disjunction variables are also variables of the final formulation.
+变量\(\lambda_{ij}\)被引入为与需求等式（9）相关的对偶变量。二元对\((y_{ij}^{\mathrm I},y_{ij}^{\mathrm{II}})\)和\((y_{ij}^{\mathrm I h},y_{ij}^{\mathrm{II}h})\)分别实现了操作符和竞争者互补性之间的分离。符号\(M_{ij}^{\mathrm I}\)、\(M_{ij}^{\mathrm{II}}\)、\(M_{ij}^{\mathrm I h}\)和\(M_{ij}^{\mathrm{II}h}\)是固定的大\(M\)系数；本文在此公式中未提供它们的公式或数值界限，仅以抽象形式保留它们。尽管在（19）中的打印最大化下标中仅列出了\(v,f,p,x,z\)，但频率数字、乘积变量、对偶变量和分离变量也是最终公式中的变量。
 
-\paragraph{Scope of the added cap.}
-Equation (56) is introduced because the data used to estimate the mode-choice coefficients contain IWT frequencies no greater than 35 services per week. Its printed scope is each service--vehicle-type frequency \(f_{sk}\), not the aggregate OD frequency \(f_{ij}\). Apart from this explicitly selected cap, numerical fleet, network, utility-coefficient, and operating-time values from the case study are not imposed.
+\paragraph{新增限制的范围。}
+方程（56）被引入是因为，用于估算模式选择系数的数据中，每周不超过35项服务的IWT频率被包含在内。其打印范围是指每项服务的频率\(f_{sk}\)，而不是总出行频率\(f_{ij}\)。除了这个明确设定的上限外，案例研究中提到的车队数量、网络状况、效用系数以及运营时间等数值并未被强制执行。
 
-\section*{Source qualifications retained without repair}
+\section*{来源资格保持不变，不进行修改。}
 \begin{itemize}
-\item The final block on PDF page 16 explicitly inherits (2)--(7) and (9)--(11). Its disjunctions replace the preceding nonlinear complementarity rows; neither those superseded rows nor a separate lower-level optimization problem are imposed here.
-\item The source defines the scalar digit count \(B_{sk}\) but uses the distinct set symbol \(\mathcal B\) in (21)--(23), (32), and (33) without defining that set or relating it explicitly to the service-dependent digit ranges. Both the printed sums and the printed quantifiers have been retained; no definition of \(\mathcal B\) has been supplied.
-\item Equation (34) contains competitor-indexed variables but prints only the quantifier \(\forall(i,j)\in\mathcal A\), with no \(h\)-quantifier. This omission is preserved. The symbol \(\mathbb N\) in (7) and (33) is also retained without adding a convention about zero.
-\item Equation (33) makes the product variable integer, although the preceding prose describes a binary--continuous product and (10) imposes only nonnegativity on cargo. Equation (35) makes the demand-equality dual variable nonnegative, although an equality multiplier is not generally sign-restricted. These printed restrictions are retained, not relaxed.
-\item The frequency term in (19) follows the printed same-service product in the revenue transformation on PDF page 15. In contrast, (17) uses the total OD frequency in the utility of every operator shipment. Expanding that total-frequency utility against all operator cargo would also produce cross-service products, which are absent from (19). The printed objective and utility definition are retained without adding such terms.
-\item The generic formulation divides by \(\beta_c\) but does not state an admissible range or a zero-coefficient exception. No additional sign or nonzero constraint has been inserted. The prose following (17) calls the exogenous part \(\bar U_{ij}\), omitting the superscript \(O\) that appears in the formulas; the operative notation follows the formulas.
+\item PDF页面16上的最后一个块，明确继承了(2)--(7)和(9)--(11)。其中的“或”关系取代了之前的非线性互补行；这里既没有替换掉的那些行，也没有单独的低级优化问题。
+\item 源代码中定义了标量数字的数量\(B_{sk}\)，但在(21)--(23)、(32)和(33)中使用了不同的集合符号\(\mathcal B\)，但没有明确定义该集合，也没有将其与服务相关的数字范围联系起来。打印出的总和以及相关的量词都得到了保留；而\(\mathcal B\)的定义则没有给出。
+\item 方程（34）中包含了对竞标者进行索引的变量，但只打印了量词\(\forall(i,j)\in\mathcal A\)，而没有打印\(h\)量词。这种省略现象被保留了下来。在(7)和(33)中出现的符号\(\mathbb N\)也被保留下来，同时也没有添加关于零的任何约定。
+\item 方程（33）使得乘积变量为整数，尽管前面的描述描述的是一种二进制连续乘积；而方程（10）仅对货物的非负性提出了要求。方程（35）则使得需求等式中的对偶变量为非负数，尽管等式乘数通常不受符号限制。这些打印出来的限制条件被保留下来，不会被放宽。
+\item 在(19)中，频率项按照PDF页面15上印刷的相同服务产品顺序进行排列。相比之下，(17)则使用了每个运营商运输中的总OD频率。将这一总频率效用扩展到所有运营商的货物运输中，也会产生跨服务产品，而这些产品在(19)中并未出现。印刷版中的目标和效用定义保持不变，没有添加任何此类术语。
+\item 通用公式将\(\beta_c\)作为除数进行除法运算，但并未规定其允许的范围或零系数的例外情况。也没有插入任何额外的符号或非零约束条件。在(17)之后的文字中，外部因素被标记为\(\bar U_{ij}\)，而公式中的上标\(O\)则被省略了；操作符号则遵循公式的排列顺序。
 \end{itemize}
 
-\paragraph{Source.}
-Adrien Nicolet and Bilge Atasoy, \emph{A Choice-Driven Service Network Design and Pricing Including Heterogeneous Behaviors}, arXiv:2311.15907v1, physical PDF pages 12--16 and 20. The supplied page images establish the printed forms of the selected rows. The paper's external reference to Tawfik and Limbourg (2019) for transformation details is unverified here; no constraints or conventions have been imported from that reference.
+\paragraph{来源。}
+Adrien Nicolet和Bilge Atasoy的论文《\emph{基于选择驱动的服务网络设计与定价，包括异质行为}》，arXiv:2311.15907v1，物理PDF页码为12–16和20。提供的页面图片展示了所选行在打印时的形式。该论文引用了Tawfik和Limbourg（2019）的论文作为参考资料，但其中关于转换细节的内容并未得到验证；也没有从该参考文献中引入任何约束或约定。
 
 \end{document}

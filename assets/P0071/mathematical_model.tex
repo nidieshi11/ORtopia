@@ -1,45 +1,31 @@
 \documentclass[11pt]{article}
 \usepackage{amsmath,amssymb,geometry}
 \geometry{margin=25mm}
+\usepackage[UTF8]{ctex}
 \begin{document}
-\section*{Core model: air traffic flow management with enroute capacities (TFMP)}
-Source: Bertsimas and Stock Patterson, Section 1.1, PDF pp.3--5
-(printed pp.408--410), equations (2)--(8) and the TFMP objective.
+\section*{核心模型：具有途中容量管理的空中交通流量管理（TFMP）}
+来源：Bertsimas和Stock Patterson，第1.1节，PDF第3-5页，（印刷版第408-410页），方程（2）-（8）以及TFMP目标。
 
-\paragraph{Data.}
-Let $F,K,J$ be flights, airports and enroute sectors, and let
-$\mathcal T=\{1,\ldots,H\}$ be the finite time grid. Flight $f$ has the
-fixed ordered path $P_f=(P(f,1),\ldots,P(f,N_f))$, with departure airport
-$o_f=P(f,1)$ and destination airport $d_f^{loc}=P(f,N_f)$.
-Each intermediate path element belongs to $J$. Let $\mathcal C$ contain
-pairs $(f',f)$ flown consecutively by the same aircraft; their connecting
-airport is $d_{f'}^{loc}=o_f$.
-The scheduled departure/arrival are $d_f,r_f$, ground/air delay rates are
-$c_f^g,c_f^a$, and $s_{f'}$ is the turnaround after $f'$.
-The positive integer $l_{fj}$ is minimum traversal time from path element
-$j$ to its successor. Capacities are $D_k(t)$ for departures, $A_k(t)$ for
-arrivals, and $S_j(t)$ for simultaneous sector occupancy.
-For each flight/path element, $T_f^j=\{\underline T_f^j,\ldots,\overline T_f^j\}$
-is the supplied feasible arrival-time window.
-\paragraph{Variables and boundary convention.}
-$w_{ft}^j\in\{0,1\}$ indicates arrival at element $j$ by time $t$.
-Use the source's window boundary values
+\paragraph{数据。}
+设$F,K,J$为航班、机场和途经区域，设$\mathcal T=\{1,\ldots,H\}$为有限时间网格。航班$f$具有固定有序路径$P_f=(P(f,1),\ldots,P(f,N_f))$，起飞机场为$o_f=P(f,1)$，目的地机场为$d_f^{loc}=P(f,N_f)$。每个中间路径元素属于$J$。设$\mathcal C$包含由同一架飞机连续飞行的$(f',f)$对；它们的连接机场为$d_{f'}^{loc}=o_f$。预定的起飞/到达时间为$d_f,r_f$，地面/空中延误率为$c_f^g,c_f^a$，$s_{f'}$为$f'$之后的周转时间。正整数$l_{fj}$是从路径元素$j$到其后续元素的最小穿越时间。容量分别为$D_k(t)$用于起飞、$A_k(t)$用于到达，以及$S_j(t)$用于同时占用区域。对于每架航班/路径元素，$T_f^j=\{\underline T_f^j,\ldots,\overline T_f^j\}$为提供的可行到达时间窗口。
+\paragraph{变量和边界约定。}
+$w_{ft}^j\in\{0,1\}$表示在时间$t$时到达元素$j$的位置。  
+使用源代码的窗口边界值。
 \[
 w_{ft}^j=0\quad(t<\underline T_f^j),\qquad
 w_{ft}^j=1\quad(t\ge\overline T_f^j).
 \]
-Thus the last feasible time is fixed to one, ensuring every flight traverses
-every element. Define the expressions
+因此，最后一个可行的时间被固定为 1，这样就能确保每趟航班都能经过每一个元素。定义这些表达式。
 \[
 D_f=\sum_{t\in T_f^{o_f}}t(w_{ft}^{o_f}-w_{f,t-1}^{o_f}),\quad
 R_f=\sum_{t\in T_f^{d_f^{loc}}}t(w_{ft}^{d_f^{loc}}-w_{f,t-1}^{d_f^{loc}}),
 \quad g_f=D_f-d_f,\quad a_f=R_f-r_f-g_f.
 \]
-\paragraph{One complete optimization model.}
+\paragraph{一个完整的优化模型。}
 \[
 \min_w\ \sum_{f\in F}(c_f^g g_f+c_f^a a_f).
 \]
-Subject to
+在以下条件下：
 \begin{align}
 \sum_{f:o_f=k}(w_{ft}^k-w_{f,t-1}^k)&\le D_k(t)
  &&k\in K,t\in\mathcal T,\tag{2}\\
@@ -57,6 +43,5 @@ w_{ft}^{j}&\ge w_{f,t-1}^{j}
 w_{ft}^{j}&\in\{0,1\}
  &&f\in F,j\in P_f,t\in T_f^j.\tag{8}
 \end{align}
-All shifted indices use the boundary convention above. The objective is
-algebraically the printed TFMP objective, including its schedule constants.
+所有偏移的索引都采用上述边界约定。目标在代数上等同于打印出的TFMP目标，包括其时间表常数。
 \end{document}

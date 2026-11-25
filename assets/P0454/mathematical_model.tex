@@ -2,9 +2,10 @@
 \usepackage{amsmath,amssymb,mathtools}
 \usepackage[margin=1in]{geometry}
 \allowdisplaybreaks
+\usepackage[UTF8]{ctex}
 \begin{document}
 
-\section*{ADP-2: segment-level ad delivery planning}
+\section*{ADP-2：段级广告投放计划}
 \begin{align}
 \text{[ADP-2]}\qquad \max\quad &-\Gamma x+\sum_{w\in\mathcal W}h_w \tag{10}\\
 \text{s.t.}\qquad &x\geq\sum_{w\in\mathcal W_v}m_{vw}, &&\forall v\in\mathcal V, \tag{11}\\
@@ -22,36 +23,36 @@
 &h^d_j\geq0,\quad h^r_j\geq0, &&\forall j\in\mathcal J. \tag{23}
 \end{align}
 
-\paragraph{Decision variables and scope.}
-The delivery plan is
+\paragraph{决策变量及其范围。}
+交付计划是
 \[
 \boldsymbol p=\{p_{vj}\mid v\in\mathcal V,\ j\in\mathcal J_v;\ p_{vw}\mid v\in\mathcal V,\ w\in\mathcal W_v\}.
 \]
-Here $p_{vj}$ and $p_{vw}$ are the proportions of segment $v$'s impressions allocated to guaranteed campaign $j$ and non-guaranteed campaign $w$, respectively. The auxiliary variables in this linear program are $x$, $h_w$, $m_{vw}$, $h^d_j$, $m^d_{vj}$, $h^r_j$, and $m^r_{vj}$, with the campaign and segment indices appearing in (11)--(23). The printed formulation imposes the sign and interval restrictions in (21)--(23); it does not impose additional sign restrictions on $h_w$ or $m^r_{vj}$, or a separate sign restriction on $x$. No such restrictions are added here. In particular, the auxiliary variables are not fixed inputs, and no integrality restriction is imposed on the decisions.
+这里的$p_{vj}$和$p_{vw}$分别代表了段$v$的印象中分配给有保证的宣传活动$j$和无保证的宣传活动$w$的比例。这个线性规划中的辅助变量包括$x$、$h_w$、$m_{vw}$、$h^d_j$、$m^d_{vj}$、$h^r_j$和$m^r_{vj}$，而宣传活动和段的索引则出现在(11)--(23)中。所给出的公式式遵循了(21)--(23)中的符号和区间限制；不过，对于$h_w$和$m^r_{vj}$并没有额外的符号限制，对于$x$也没有单独的符号限制。这里没有添加任何这样的限制。特别是，这些辅助变量并不是固定的输入值，而且决策过程中也没有积分限制。
 
-\section*{Fixed inputs, indexing, and assumptions}
-The planning horizon is a single period. The sets and data below are those of Table~1 and Sections~3.1--3.3 (physical PDF pages 9--13).
+\section*{固定的输入、索引和假设}
+规划期限为一个单一时期。以下所列的集合和数据均来自表~1以及章节~3.1–3.3的内容（物理PDF页面9–13）。
 \begin{description}
-\item[$\mathcal V$] Set of viewer segments. Each viewer belongs to a unique, finest viewer segment.
-\item[$\mathcal J$, $\mathcal W$] Sets of guaranteed and non-guaranteed ad campaigns, respectively.
-\item[$\mathcal V_j$, $\mathcal V_w$] Sets of viewer segments targeted by guaranteed campaign $j$ and non-guaranteed campaign $w$, respectively.
-\item[$\mathcal J_v$, $\mathcal W_v$] Sets of guaranteed and non-guaranteed campaigns targeting viewer segment $v$, respectively.
-\item[$D_j$, $R_j$] Impression demand and minimum expected reach of guaranteed campaign $j\in\mathcal J$. A targeted reach is specified for each guaranteed contract.
-\item[$B_w$] Budget of non-guaranteed campaign $w\in\mathcal W$.
-\item[$N_v$] Population size of viewer segment $v\in\mathcal V$.
-\item[$\varphi$] Number of available ad slots on a web page, with the printed restriction $\varphi\geq1$.
-\item[$e_{vw}$] Average revenue per impression from non-guaranteed campaign $w$ on segment $v$, for $w\in\mathcal W$, $v\in\mathcal V_w$. It is the bid price when the bid is unchanged during the period; otherwise it may be estimated from the campaign's effective cost per mille or that of similar campaigns.
-\item[$\mu_v$, $\hat s_v$] Mean supply and half-width of the supply interval for segment $v$.
-\item[$\varepsilon$, $\varepsilon^d_j$, $\varepsilon^r_j$] Exogenously given revenue, delivery, and reach risk levels. Experimental risk choices in Section~6.3 are not fixed inputs of the general formulation.
+\item$\mathcal V$是一组观众片段。每个观众都属于一个独特的、最精细的观众片段。
+\item$\mathcal J$、$\mathcal W$分别表示有保证的广告活动与无保证的广告活动。
+\item$\mathcal V_j$、$\mathcal V_w$分别指通过保证型活动$j$和非保证型活动$w$所针对的观众群体。
+\item$\mathcal J_v$, $\mathcal W_v$分别是指定针对观众群体$v$的、有保证的与无保证的活动集合。
+\item[$D_j$, $R_j$] 印象需求以及保证活动的最低预期覆盖范围$j\in\mathcal J$。每个保证合同都指定了具体的目标覆盖范围。
+\item$B_w$非保证活动的预算$w\in\mathcal W$。
+\item$N_v$观众群体的规模为$v\in\mathcal V$。
+\item$\varphi$ 网页上可用的广告位数量，同时附有打印出来的限制条件$\varphi\geq1$。
+\item[$e_{vw}$] 在$v$细分市场中，非保证广告活动$w$的每次展示平均收入，针对$w\in\mathcal W$和$v\in\mathcal V_w$。这是在该期间出价保持不变时的投标价格；否则，可以依据该活动每千次的成本或类似活动的成本来估算。
+\item$\mu_v$, $\hat s_v$ 分别表示段$v$的供应平均值以及供应区间的半宽度。
+\item[$\varepsilon$, $\varepsilon^d_j$, $\varepsilon^r_j$] 外源给定的收入、交付量和覆盖风险水平。第~6.3节中的实验性风险选择并非一般公式的固定输入。
 \end{description}
 
-\paragraph{Supply assumptions.}
-Individuals within a viewer segment are homogeneous: an impression from the segment is equally likely to be supplied by any individual in that segment. The random supplies $\{\tilde s_v\mid v\in\mathcal V\}$ are mutually independent, and, for every $v\in\mathcal V$, $\tilde s_v$ is symmetrically distributed in
+\paragraph{请提供假设条件。}
+在观众片段中的个体都是相同的：该片段中的任何个体都可能有相同的表现。随机提供的$\{\tilde s_v\mid v\in\mathcal V\}$是互不相关的，而且对于每个$v\in\mathcal V$来说，$\tilde s_v$都是对称分布的。
 \[
 [\mu_v-\hat s_v,\ \mu_v+\hat s_v],\qquad
 \mathbb E[\tilde s_v]=\mu_v.
 \]
-Tildes denote random variables; the corresponding symbols without tildes denote realizations. The source defines
+波浪号表示随机变量；而对应的、没有波浪号的符号则表示实际值。来源定义如下：
 \[
 \tilde{\boldsymbol s}=\{\tilde s_v\mid v\in\mathcal V\},\qquad
 \boldsymbol\mu=\{\mu_v\mid v\in\mathcal V\},
@@ -68,19 +69,19 @@ Tildes denote random variables; the corresponding symbols without tildes denote 
 \int_{\Xi_{\tilde{\boldsymbol s}}}\tilde{\boldsymbol s}\,d\mathbb P_{\tilde{\boldsymbol s}}=\boldsymbol\mu
 \right\}.
 \]
-Here $\mathcal M(\Xi_{\tilde{\boldsymbol s}})$ is the set of all symmetric probability distributions on the support satisfying mutual independence of the supplies. These are the distributional premises underlying the calibration, not additional decision constraints of ADP-2.
+这里的$\mathcal M(\Xi_{\tilde{\boldsymbol s}})$表示所有在支持集上满足相互独立的对称概率分布的集合。这些分布是校准的基础，而不是ADP-2的额外决策约束条件。
 
-\paragraph{Printed supply terminology.}
-Table~1 calls $\tilde s_v$ the supply ``(impressions)'', whereas the objective discussion on page~12 calls $\varphi\tilde s_v$ the number of impressions. The latter scaling is used in (12), (13), (15), and (16), exactly as printed; neither the factor $\varphi$ nor the exponent in the reach definition below is changed to resolve this terminology conflict.
+\paragraph{印刷供应术语。}
+表~1中使用了$\tilde s_v$来表示“展示次数”，而页面~12中的目标讨论中则使用了$\varphi\tilde s_v$来表示展示数量。后一种计量方式在(12)、(13)、(15)和(16)中得到了准确的应用；为了协调这些术语的冲突，既没有修改因子$\varphi$，也没有修改下面关于覆盖范围的定义中的指数。
 
-\section*{Uncertainty-budget calibration}
-The fixed budgets used in (10), (15), and (17) are defined in Propositions~2--3 and the revenue-approximation paragraph (pages 14--16):
+\section*{不确定性预算校准}
+在 (10)、(15) 和 (17) 中使用的固定预算，其定义见于命题~2--3以及关于收入近似值的段落（第14--16页）。
 \[
 \Gamma=g^{-1}(|\mathcal V|,\varepsilon),\qquad
 \Gamma^d_j=g^{-1}(|\mathcal V_j|,\varepsilon^d_j),\qquad
 \Gamma^r_j=g^{-1}(|\mathcal V_j|,\varepsilon^r_j),\quad\forall j\in\mathcal J.
 \]
-The function used for this calibration is printed as
+用于此次校准的函数被打印出来如下：
 \[
 g(n,\Gamma)=\frac{1}{2^n}\left[
 \left(1-\frac{\Gamma+n}{2}+\left\lfloor\frac{\Gamma+n}{2}\right\rfloor\right)
@@ -96,21 +97,21 @@ g^{-1}(n,\varepsilon)=
 n,&\text{if }\varepsilon<1/2^n.
 \end{cases}
 \]
-Theorem~1 uses a set $\{\tilde\xi_k\mid k\in\mathcal K\}$ of $n$ independent random variables, each symmetric in $[-1,1]$, coefficients $\lambda_k\in[0,1]$ for $k\in\mathcal K$, and a scalar $\Gamma\in[1,n]$. Its bound is
+定理~1使用了一组由$n$个独立随机变量组成的集合$\{\tilde\xi_k\mid k\in\mathcal K\}$，这些随机变量在$[-1,1]$上都是对称的；此外，还存在系数$\lambda_k\in[0,1]$用于$k\in\mathcal K$，以及一个标量$\Gamma\in[1,n]$。该定理的界限为
 \[
 \mathbb P_{\tilde{\boldsymbol\xi}}\left\{\sum_{k\in\mathcal K}\lambda_k\tilde\xi_k\geq\Gamma\right\}\leq g(n,\Gamma).
 \]
-Here $n$ is a positive integer, as specified in Lemma~1. The calibration retains the printed exceptional branch $\varepsilon<1/2^n$; it does not replace that branch by an inverse outside $[1,n]$.
+这里的$n$是一个正整数，正如引理~1中所规定的。校准过程中，打印出的异常分支$\varepsilon<1/2^n$被保留了下来；该分支不会被替换为$[1,n]$之外的逆运算结果。
 
-\paragraph{Printed endpoint assertion.}
-Lemma~1 states that $g(n,\Gamma)$ is strictly decreasing on $[1,n]$ and that
+\paragraph{打印端点断言。}
+引理~1指出，$g(n,\Gamma)$在$[1,n]$上严格递减，并且……
 \[
 g(n,1)=\tfrac12,\qquad g(n,n)=\tfrac{1}{2^n}.
 \]
-The first endpoint assertion agrees with the displayed expression for $g$, by binomial symmetry. The operative calibration above retains the displayed expression and the printed definition of $g^{-1}$, without altering either to enforce that assertion.
+第一个端点断言与$g$的显示表达式一致，这是基于二项式对称性。上述操作性的校准保留了$g^{-1}$的显示表达式和打印定义，同时不对其进行任何修改，以强化这一断言。
 
-\paragraph{Underlying uncertainty sets.}
-The budget definitions refer to the following sets (pages 14 and 16):
+\paragraph{基础不确定性集合。}
+预算定义参考了以下集合（第14页和第16页）：
 \[
 \mathcal F_{\phi}(\Gamma)=
 \left\{\phi_v,\ v\in\mathcal V\ \middle|\
@@ -135,94 +136,94 @@ The budget definitions refer to the following sets (pages 14 and 16):
 -1\leq\eta_{vj}\leq0,\quad\forall v\in\mathcal V_j
 \end{array}\right\},\qquad\forall j\in\mathcal J.
 \]
-The symbols $\phi_v$, $\theta_{vj}$, and $\eta_{vj}$ describe uncertainty in the predecessor robust construction. They are not additional decisions or constraints to be appended to (10)--(23).
+符号$\phi_v$、$\theta_{vj}$和$\eta_{vj}$表示在先前稳健构建中存在的不确定性。它们并非需要附加到(10)--(23)中的额外决策或约束条件。
 
-\section*{Reach functions and coefficient construction}
-The affine functions used in (18)--(19) are the page~16 definitions, for each $j\in\mathcal J$:
+\section*{达到函数与系数构造}
+在(18)--(19)中使用的仿射函数，其定义见于页面~的第16页。对于每个$j\in\mathcal J$：
 \begin{align*}
 a^l_v(p_{vj})&=\hat s_v\alpha^l_vp_{vj}+\hat s_v\beta^l_v,
 &&\forall v\in\mathcal V_j,\ l\in\mathcal L,\\
 b^l_v(p_{vj})&=(\mu_v\alpha^l_v+\gamma^l_v)p_{vj}+\mu_v\beta^l_v+\delta^l_v,
 &&\forall v\in\mathcal V_j,\ l\in\mathcal L.
 \end{align*}
-Lemma~2 (page~15) defines a fixed index set and fixed breakpoints:
+引理~2（位于页面~第15页）定义了一个固定的索引集合和固定的断点：
 \[
 \mathcal L=\{1,\ldots,L-1\},\qquad L\geq2,\qquad
 0=\hat p^1_v<\cdots<\hat p^L_v=1.
 \]
-For each segment occurring in a targeted pair $v\in\mathcal V_j$, $j\in\mathcal J$, and each $l\in\mathcal L$, the coefficients are
+对于出现在目标对$v\in\mathcal V_j$、$j\in\mathcal J$以及每个$l\in\mathcal L$中的每一段文字，其对应的系数分别是：
 \begin{align*}
 \alpha^l_v&=\frac{f^1_v(\hat p^{l+1}_v)-f^1_v(\hat p^l_v)}{\hat p^{l+1}_v-\hat p^l_v},&
 \beta^l_v&=\frac{\hat p^{l+1}_vf^1_v(\hat p^l_v)-\hat p^l_vf^1_v(\hat p^{l+1}_v)}{\hat p^{l+1}_v-\hat p^l_v},\\
 \gamma^l_v&=\frac{f^2_v(\hat p^{l+1}_v)-f^2_v(\hat p^l_v)}{\hat p^{l+1}_v-\hat p^l_v},&
 \delta^l_v&=\frac{\hat p^{l+1}_vf^2_v(\hat p^l_v)-\hat p^l_vf^2_v(\hat p^{l+1}_v)}{\hat p^{l+1}_v-\hat p^l_v},
 \end{align*}
-where
+其中
 \begin{align*}
 f^1_v(p)&=\frac{f_v(\mu_v+\hat s_v,p)-f_v(\mu_v-\hat s_v,p)}{2\hat s_v},\\
 f^2_v(p)&=\frac{(\mu_v+\hat s_v)f_v(\mu_v-\hat s_v,p)-(\mu_v-\hat s_v)f_v(\mu_v+\hat s_v,p)}{2\hat s_v},\\
 f_v(s,p)&=N_v-N_v\left[1-\frac1{N_v}+\frac{(1-p)^\varphi}{N_v}\right]^s.
 \end{align*}
-These definitions are retained with their printed denominators; no zero-half-width limiting rule is added.
+这些定义保留了其印刷后的分母；没有添加零半宽限制规则。
 
-\paragraph{Reach quantity being approximated.}
-The random variable $\tilde r_{vj}$ is the number of unique individuals in segment $v$ reached by campaign $j$. Proposition~1 gives
+\paragraph{需要近似得到的数值。}
+随机变量$\tilde r_{vj}$表示通过活动$j$在段落$v$中接触到的独特个体的数量。命题~1指出：
 \[
 \mathbb E[\tilde r_{vj}\mid(\tilde s_v,p_{vj})]
 =N_v-N_v\left[1-\frac1{N_v}+\frac{(1-p_{vj})^\varphi}{N_v}\right]^{\tilde s_v},
 \qquad\forall j\in\mathcal J,\ v\in\mathcal V_j,
 \]
-and the campaign's total conditional expected reach is
+该活动的整体条件性预期覆盖范围是
 \[
 \sum_{v\in\mathcal V_j}\mathbb E[\tilde r_{vj}\mid(\tilde s_v,p_{vj})],\qquad\forall j\in\mathcal J.
 \]
-Lemma~2 states that the segment-level expected reach has the lower bound
+引理~2指出，段级预期到达量具有下限值。
 \[
 \min_{l\in\mathcal L}\{\alpha^l_v\tilde s_vp_{vj}+\beta^l_v\tilde s_v+\gamma^l_vp_{vj}+\delta^l_v\},
 \qquad\forall v\in\mathcal V_j,\ j\in\mathcal J.
 \]
-This lower-bound expression defines the coefficient construction; it is not an additional reach constraint imposed alongside (17)--(19).
+这个下限表达式定义了系数构造的规则；它并不是在(17)--(19)之外额外施加的一个约束条件。
 
-\paragraph{Breakpoint selection in Remark~1.}
-The paper first takes the secant of the expected-reach function in $\tilde s_v$ on $[\mu_v-\hat s_v,\mu_v+\hat s_v]$, denoted by $F(\tilde s_v,p_{vj})$, and then takes its piecewise-linear interpolation in $p_{vj}\in[0,1]$. For the breakpoint selection, the supply is fixed at its mean $\mu_v$. Along with $\hat p^1_v=0$ and $\hat p^L_v=1$, the stated selection equation is
+\paragraph{在备注~1中的断点选择部分，保持原有的顺序不变。所有数字符号都需原样保留。}
+该论文首先计算了函数$\tilde s_v$在$[\mu_v-\hat s_v,\mu_v+\hat s_v]$上的割线，其结果表示为$F(\tilde s_v,p_{vj})$。接着，它又计算了函数$p_{vj}\in[0,1]$中的分段线性插值结果。对于断点选择，供应值被固定在其平均值$\mu_v$上。结合$\hat p^1_v=0$和$\hat p^L_v=1$，上述选择方程可以表示为：
 \[
 \int_0^{\hat p^l_v}\left|\frac{d^2F(\mu_v,p)}{dp^2}\right|^{1/2}\,dp
 =\frac{l-1}{L-1}\int_0^1\left|\frac{d^2F(\mu_v,p)}{dp^2}\right|^{1/2}\,dp,
 \qquad l=2,\ldots,L-1.
 \]
-Here $F$ is the secant function specified by the authors, distinct from $f_v$, $f^1_v$, and $f^2_v$. The breakpoint equations define fixed approximation data, not optimization variables in ADP-2.
+这里的$F$是作者所定义的割线函数，它与$f_v$、$f^1_v$和$f^2_v$是不同的。断点方程定义了固定的近似数据，而不是ADP-2中的优化变量。
 
-\section*{Transformation scope and qualifications}
-Sections~4.1--4.2 obtain (10)--(14) by linearizing and relaxing the revenue construction and then using its dual. Proposition~4 states that this yields a lower bound on the robust revenue objective, rather than an exact transformation in general. Proposition~5 gives an exact delivery transformation, resulting in (15)--(16) and their nonnegativity conditions. Theorem~3 and Proposition~6 give the exact transformation of the robust piecewise reach construction, resulting in (17)--(19) and $h^r_j\geq0$. The paper states this reach exactness for general uncertainty budgets, not only integer budgets. The underlying reach function has already been lower-bounded as above. Remark~2 identifies the preceding chance-constraint approximation as using deterministic lower bounds. Superseded robust or chance constraints are not imposed in addition to (11)--(23).
+\section*{转换范围与资格要求}
+第~节4.1--4.2节通过线性化并放宽收益构造，然后使用其对偶，得到（10）--（14）。命题~4指出，这给出了鲁棒收益目标的下界，而一般的变换并不一定能得到精确变换。命题~5给出了精确的传递变换，得到（15）--（16）及其非负条件。定理~3和命题~6给出了鲁棒分段到达构造的精确变换，得到（17）--（19）和$h^r_j\geq0$。本文指出，这种到达精确性适用于一般不确定性预算，而不仅仅是整数预算。上述到达函数已经如上所述得到了下界限制。备注~2指出，前面的机会约束近似是使用确定性下界的。在（11）--（23）之外，不另外施加鲁棒或机会约束。
 
-\paragraph{Performance qualification, not additional constraints.}
-Writing $Z^{\mathrm{ADP}-1}$ and $Z^{\mathrm{ADP}-2}$ for the optimal objective values of the predecessor robust model and the selected linear program, Section~4.3 defines
+\paragraph{性能鉴定，而非额外的限制条件。}
+将$Z^{\mathrm{ADP}-1}$和$Z^{\mathrm{ADP}-2}$分别写入，以表示前驱鲁棒模型和所选线性程序的最优目标值。第~节4.3部分对此进行了定义。
 \[
 \Omega=Z^{\mathrm{ADP}-1}-Z^{\mathrm{ADP}-2},\qquad
 Z^{\mathrm{ADP}-2}\leq Z^{\mathrm{ADP}-1},\qquad\Omega\geq0.
 \]
-Proposition~7 supplies a sufficient zero-gap condition: if $\boldsymbol p^*$ is optimal for the predecessor robust model and, for every $w\in\mathcal W$, either
+命题~7提供了一个充分的零间隙条件：如果$\boldsymbol p^*$是前向鲁棒模型的最优解，那么对于每一个$w\in\mathcal W$，要么……
 \[
 B_w\leq\sum_{v\in\mathcal V_w}\varphi e_{vw}(\mu_v-\hat s_v)p^*_{vw}
 \quad\text{or}\quad
 B_w\geq\sum_{v\in\mathcal V_w}\varphi e_{vw}\mu_vp^*_{vw},
 \]
-then $\Omega=0$. These are not assumptions required to use ADP-2. Proposition~8 gives
+然后就是$\Omega=0$。这些并不是使用 ADP-2 所必需的假设。命题~8 给出了
 \[
 \Omega\leq\sum_{v\in\mathcal V_\Gamma}\varphi\hat s_v\bar e_v,
 \qquad
 \bar e_v=\max_{w\in\mathcal W_v}e_{vw},
 \]
-where
+其中
 \[
 \mathcal V_\Gamma\subseteq\mathcal V,\qquad
 |\mathcal V_\Gamma|=\lceil\Gamma\rceil,\qquad
 \min_{v\in\mathcal V_\Gamma}\hat s_v\bar e_v
 \geq\max_{v\in\mathcal V\setminus\mathcal V_\Gamma}\hat s_v\bar e_v.
 \]
-No empty-set convention is added to these printed expressions. Remark~5 warns that this bound can perform badly when guaranteed demand is high and campaigns compete intensely for the same resources, or when supplies are concentrated in few segments.
+这些印刷表达中没有添加空集约定。备注~5指出，当保证需求较高且促销活动激烈竞争相同资源时，或者当供应集中在少数几个部分时，这种约束可能会导致性能不佳。
 
-\paragraph{Source scope.}
-The operative formulation is (10)--(23) on physical PDF page~21 of Shen, Li, Chen, and Pan, \emph{Integrated Ad Delivery Planning for Targeted Display Advertising}. Its definitions above follow physical pages 9--16 and its transformation qualifications follow pages 18--23. The supplied page images verify pages 9, 10, 16, and 21; the remaining cited main-paper passages are supplied as text. The official e-companion, including the dual derivation cited as Section~EC.5 and the proofs referenced by the main paper, was not supplied and remains unverified. No clustered model, revenue-certification SDP, or substitute algorithmic subproblem is included.
+\paragraph{来源范围。}
+操作公式如下：(10)--(23)，位于物理页面~21的Shen、Li、Chen和Pan的论文中，标题为\emph{——针对目标显示的广告投放规划}。上述定义来自物理页面9–16，而其转换条件则来自页面18–23。提供的页面图片验证了页面9、10、16和21的内容；其余引用的正文段落则以文本形式提供。官方电子配套材料，包括作为Section~EC.5引用的双重推导过程，以及主论文中引用的证明，并未提供，因此尚未经过验证。文中未包含任何聚类模型、收入认证SDP或替代算法子问题。
 
 \end{document}

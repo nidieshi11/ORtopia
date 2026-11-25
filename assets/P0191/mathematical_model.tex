@@ -1,42 +1,26 @@
 \documentclass[11pt]{article}
 \usepackage{amsmath,amssymb,geometry}
 \geometry{margin=22mm}
+\usepackage[UTF8]{ctex}
 \begin{document}
 
-\section*{P191: complete stop-indexed collaborative truck/drone MILP}
-Input node set $\mathcal V$ contains depot $0$, every original customer
-$\mathcal C$, all finite candidate flexible stops, and a distinct terminal
-$v_{\rm end}=i_{N+F+1}$. The terminal shares depot coordinates but remains
-a distinct label. Customers partition into truck-only $\mathcal C_T$ and
-drone-eligible $\mathcal C_U$.
-Drone set $\mathcal U$ and consecutive stop positions
-$\mathcal S=\{0,\ldots,S_{\max}\}$ retain original fleet/scale.
-The final position denoted $s_{\hat S+1}$ below is $S_{\max}$;
-$s_{\hat S}=S_{\max}-1$ and $s_0=0$.
+\section*{P191：完整的、以停靠点为索引的协作式卡车/无人机模型}
+输入节点集$\mathcal V$包含仓库$0$、所有原始客户$\mathcal C$、所有有限的灵活停靠点，以及一个独立的终点站$v_{\rm end}=i_{N+F+1}$。该终点站与仓库的坐标相同，但标签仍然独立。客户被划分为仅使用卡车的$\mathcal C_T$和适合使用无人机的$\mathcal C_U$两类。无人机集合$\mathcal U$以及连续的停靠点$\mathcal S=\{0,\ldots,S_{\max}\}$保持原有的车队/规模不变。最后的位置标记为$s_{\hat S+1}$，实际上就是$S_{\max}$；$s_{\hat S}=S_{\max}-1$和$s_0=0$也是如此。
 
-Finite input arrays are truck road times $R^T_{ij}$, complete drone trip
-times $R^U_{ijku}$, endurance limits $E_{ijku}$,
-truck/drone customer service times $V^T_i,V^U_i$,
-launch/recovery durations $H_j,G_j$ and valid big-$M$.
-The code's functions $H(s),G(s)$ are respectively
-$\sum_j H_jy_{js}$ and $\sum_jG_jy_{js}$.
-Let $X_{is}=\sum_u x_{ius}$ and define $X_{i,-1}=0$ only where needed
-to describe the initial boundary.
+有限的输入数组包括：卡车行驶时间$R^T_{ij}$、无人机飞行时间$R^U_{ijku}$、耐久性限制$E_{ijku}$、卡车/无人机客户服务时间$V^T_i,V^U_i$、发射/回收时间$H_j,G_j$，以及有效的大$M$。代码中的函数$H(s),G(s)$分别对应于$\sum_j H_jy_{js}$和$\sum_jG_jy_{js}$。在描述初始边界时，只需在必要时使用$X_{is}=\sum_u x_{ius}$和定义$X_{i,-1}=0$即可。
 
-Binary $y_{is}$ assigns a truck location to a stop;
-binary $x_{ius}$ assigns a customer's drone service to the interval
-from stop $s$ to $s+1$. Binary $w_{ijs}$ orders active tasks at stop $s$.
-Their implemented domains are $y:\mathcal V\times\mathcal S$,
-$x:\mathcal C\times\mathcal U\times\mathcal S$,
-$w:\mathcal C\times\mathcal C\times\mathcal S$.
-All time variables and completion $\hat t$ are nonnegative.
-$b_i,e_i$ mean the start/end of truck service at customer $i$;
-the extracted table's superscripted $b_i^U,e_i^U$ is a naming inconsistency,
-using the same variable family.
-\subsection*{Objective Function}
+二进制代码$y_{is}$用于指定卡车的位置；
+二进制代码$x_{ius}$用于将客户的服务项目分配到从位置$s$到$s+1$的区间内。二进制代码$w_{ijs}$则用于安排位置$s$处的活跃任务。
+它们所涉及的领域分别是$y:\mathcal V\times\mathcal S$、
+$x:\mathcal C\times\mathcal U\times\mathcal S$、
+$w:\mathcal C\times\mathcal C\times\mathcal S$。
+所有的时间变量以及完成状态$\hat t$都是非负的。
+$b_i,e_i$表示卡车服务在客户$i$处的开始/结束时间；
+提取出的表格中的上标$b_i^U,e_i^U$表示变量命名的一致性问题，使用的是相同的变量家族。
+\subsection*{目标函数}
 \[\min\ \hat t\]
 
-\subsection*{Constraints}
+\subsection*{约束条件：}
 \[\begin{aligned}
 &\text{1. 完工时间定义:} \\
 &\hat{t} \ge a^T_s \quad \forall s \in \{s_{\hat{S}+1}\} \subseteq \mathcal{S} \\
@@ -92,27 +76,13 @@ using the same variable family.
 \end{aligned}\]
 
 
-\paragraph{Explicit boundary/domain completion.}
-Set $a^T_0=0$, $x_{iu,S_{\max}}=0$ for every customer/drone and
-$x_{ius}=0$ for every truck-only customer.
-The initial ordering row is
-$w_{ij0}+w_{ji0}\ge X_{i0}+X_{j0}-1$, as in source Eq.(29).
-Launches require a defined predecessor position.
-The terminal is absorbing, and completion includes final drone recovery.
-Every node/customer and finite input coefficient is retained.
-The preceding equations together with these boundaries are the full implemented
-MILP.
+\paragraph{明确指定边界/域范围。}
+为每位客户/无人机设置$a^T_0=0$、$x_{iu,S_{\max}}=0$，为每位仅使用卡车的客户设置$x_{ius}=0$。初始排序行为$w_{ij0}+w_{ji0}\ge X_{i0}+X_{j0}-1$，如源方程(29)所示。发射需要定义前置位置。终端处于吸收状态，完成过程包括最终回收无人机。每个节点/客户和有限输入系数均被保留。上述方程以及这些边界条件构成了完整实现的MILP模型。
 
-\paragraph{Verification and interpretation.}
-The unchanged08 solver instantiates all source constraint families, with
-explicit customer and terminal domains above. Its all-truck construction is
-only a warm start; drone and flexible-stop decisions remain free.
+\paragraph{验证与解释。}
+未改变的08求解器会实例化所有源约束族，同时明确指定客户和终端域。其全卡车构建方式仅作为热身阶段；无人机和灵活停止决策则仍然可以自由选择。
 
-Generic execution evidence checks every row, domain and objective.
-An additional replay reconstructed launch intervals
-$[d_i^U-H(s),d_i^U]$, recovery intervals $[a_i^U,a_i^U+G(s)]$
-and truck-service intervals $[b_i,e_i]$ at every selected stop,
-confirming no overlap and containment in $[a_s^T,d_s^T]$ in all nineteen
-incumbents. The result records the solver termination status.
+通用执行证据检查了每一行、每个领域和每个目标。  
+额外的重放重建了发射间隔、$[d_i^U-H(s),d_i^U]$、恢复间隔$[a_i^U,a_i^U+G(s)]$以及每个选定站点的卡车服务间隔$[b_i,e_i]$，确认在全部十九个实施案例中不存在重叠和包含关系，并在$[a_s^T,d_s^T]$中进行了确认。结果记录了求解器的终止状态。
 
 \end{document}

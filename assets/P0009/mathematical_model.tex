@@ -6,35 +6,28 @@
 \usepackage{geometry}
 \geometry{a4paper, margin=1in}
 
-\title{Core Solvable Mathematical Model}
+\title{核心可解数学模型}
 \author{Paper 9}
 \date{\today}
 
+\usepackage[UTF8]{ctex}
 \begin{document}
 
 \maketitle
 
-\section*{Retained Core Model}
-According to the \texttt{tex} formulas and the PDF, the retained core mathematical model is the
-original hurricane disaster relief multi-stage stochastic mixed-integer linear program (HDR) on
-Pages 22--23. The Page 4 generic MSILP, the Page 6 partially extended formulation, and the later
-aggregated/decision-rule/decomposition formulations are omitted because they are reformulations or
-solution methods built on top of the original core problem.
+\section*{保留的核心模型}
+根据\texttt{【tex}公式以及PDF文件，所保留的核心数学模型就是原始的海啸灾难救援多阶段随机混合整数线性规划模型，该模型位于第22-23页。第4页的通用MSILP模型、第6页的部分扩展公式，以及后续的汇总/决策规则/分解公式则被省略了，因为它们都是基于原始核心问题而构建的重新表述或解决方法。
 
-\paragraph{Decision variables.}
-At each scenario-tree node $n$, $x_{nj}^{\mathrm I}$ is the inventory at DC $j$,
-$x_{nj}^{\mathrm c}$ is the capacity at DC $j$, $v_j$ is production at DC $j$,
-$y_{ij}$ is the shipped relief quantity from DC $j$ to shelter $i$,
-$w_i$ is unmet demand at shelter $i$, and $z_{n\ell}\in\{0,1\}$ indicates activation of
-contingency modality $\ell$.
+\paragraph{决策变量。}
+在每个情景树节点$n$、$x_{nj}^{\mathrm I}$分别表示数据中心$j$的库存情况，
+$x_{nj}^{\mathrm c}$表示数据中心$j$的产能，$v_j$表示数据中心$j$的生产情况，
+$y_{ij}$表示从数据中心$j$到避难所$i$的运输数量，
+$w_i$表示避难所$i$的未满足需求，$z_{n\ell}\in\{0,1\}$表示应急模式的激活状态$\ell$。
 
-\paragraph{Sets and parameters.}
-$\mathcal I$ is the shelter set, $\mathcal J$ the distribution-center set, and $\mathcal L$ the
-set of contingency modalities. Costs are given by $g_j$, $q_{nj}$, $f_{nij}$, and $b_i$.
-$d_{ni}$ is demand at shelter $i$. Capacity additions are $K_{j\ell}$.
-The scenario tree transition probabilities are $\bar p_{nn'}$.
+\paragraph{集合与参数。}
+$\mathcal I$是避难所集合，$\mathcal J$是配送中心集合，$\mathcal L$是突发事件模式集合。成本由$g_j$、$q_{nj}$、$f_{nij}$和$b_i$给出。$d_{ni}$是避难所$i$的需求量。容量增加量为$K_{j\ell}$。情景树转换概率为$\bar p_{nn'}$。
 
-\section*{Root-Node Problem}
+\section*{根节点问题}
 \begin{equation}
 \min
 \sum_{j \in \mathcal J}
@@ -85,7 +78,7 @@ z_{r\ell} \in \{0,1\}
 \tag{9f}
 \end{equation}
 
-\section*{Recourse Problem at Node $n$}
+\section*{节点$n$处的求助问题}
 \begin{equation}
 Q_n(x_{a(n)}, z_{a(n)}) =
 \min

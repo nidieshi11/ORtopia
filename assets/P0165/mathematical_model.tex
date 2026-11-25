@@ -1,63 +1,60 @@
 \documentclass[11pt]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath,amssymb}
-\title{Finite Scenario Investment and Operation Model}
+\title{有限情景下的投资与运营模型}
 \author{}
 \date{}
+\usepackage[UTF8]{ctex}
 \begin{document}
 \maketitle
 
-\section{Sets and indexing}
-Let $\mathcal S$ be the finite set of damage scenarios. The distribution grid is $(N,E)$ and the communication network is $(\widetilde N,\widetilde E)$, including its dummy node $\widetilde i_d$. Write $\mathcal E=E\cup\widetilde E$ for the integrated edge set. Each edge has ordered endpoints $(e_h,e_t)$; $\delta(e)=\{e_h,e_t\}$, and $\delta(i)$ denotes incident distribution edges when $i\in N$. In expressions indexed by $e=(i,j)$, $i=e_h$ and $j=e_t$. Communication incidence sums range over $\widetilde E$.
+\section{集合与索引}
+让$\mathcal S$表示有限的损害场景集合。配电网络为$(N,E)$，通信网络为$(\widetilde N,\widetilde E)$，其中包括虚拟节点$\widetilde i_d$。用$\mathcal E=E\cup\widetilde E$表示集成边缘集。每条边的端点顺序分别为$(e_h,e_t)$、$\delta(e)=\{e_h,e_t\}$，而$\delta(i)$则表示在$i\in N$时发生的通信事件。在由$e=(i,j)$、$i=e_h$和$j=e_t$索引的表达式中，通信事件的总和范围为$\widetilde E$。
 
-The existing and candidate edge sets are $E_x^0$ and $E_x^n$, with $E_x^0\cup E_x^n=\mathcal E$. The switch sets are $E_t^0,E_t^n\subseteq E$, and $E_t=E_t^0\cup E_t^n$. The hardening-eligible set is $E_h\subseteq\mathcal E$. Existing and candidate generators form $U=U^0\cup U^n$. These existing/candidate partitions are disjoint. Each generator $l$ is located at bus $i(l)$, and $U_i=\{l\in U:i(l)=i\}$. Candidate distribution lines have existing switch availability, as specified by $E_x^n\cap E\subseteq E_t^0$.
+现有的和候选的边缘集合分别是$E_x^0$和$E_x^n$，还有$E_x^0\cup E_x^n=\mathcal E$。切换集合则包括$E_t^0,E_t^n\subseteq E$和$E_t=E_t^0\cup E_t^n$。符合加固条件的集合是$E_h\subseteq\mathcal E$。现有的和候选的生成器组合起来就是$U=U^0\cup U^n$。这些现有/候选的分区是不相交的。每个生成器$l$都位于总线$i(l)$和$U_i=\{l\in U:i(l)=i\}$上。候选的分配线路具有现有的切换可用性，具体信息由$E_x^n\cap E\subseteq E_t^0$所指定。
 
-Let $E_V\subseteq E$ be the transformer set, $L\subseteq N$ the critical-load buses, and $D_s\subseteq\mathcal E$ the damaged edges in scenario $s$. Let $\mathcal C$ be the supplied finite collection of distribution cycles and $E_{\mathcal C}=\bigcup_{C\in\mathcal C}C$. Endpoint matches in the topology constraints include parallel edges.
+让$E_V\subseteq E$表示变压器集合，$L\subseteq N$表示关键负载总线，而$D_s\subseteq\mathcal E$则表示在场景$s$中受损的边。让$\mathcal C$表示所提供的有限数量的分配周期集合，而$E_{\mathcal C}=\bigcup_{C\in\mathcal C}C$则表示其他元素。拓扑约束中的端点匹配包括并行边。
 
-Let $P=\{a,b,c\}$, with bus, edge, and generator phase sets $P_i,P_e,P_l\subseteq P$. Transformer phase sets are nonempty. Quantities on absent phases are extended by zero whenever used in a phase-indexed expression. All phase projections and extensions use this convention.
+设$P=\{a,b,c\}$，其包含总线、边和生成器阶段集合$P_i,P_e,P_l\subseteq P$。变压器阶段集合是非空的。在阶段索引表达式中，缺失的阶段用零来替代。所有阶段的投影和扩展都遵循这一约定。
 
-The communication control-point set is $\widetilde N_c\subseteq\widetilde N$, with mappings $\widetilde i(l)\in\widetilde N_c$ for $l\in U$ and $\widetilde i(e)\in\widetilde N_c$ for $e\in E_t$.
+通信控制点集为$\widetilde N_c\subseteq\widetilde N$，其中$\widetilde i(l)\in\widetilde N_c$对应$l\in U$，而$\widetilde i(e)\in\widetilde N_c$对应$e\in E_t$。
 
-\section{Parameters}
-The investment costs are $c_e^x$ for $e\in E_x^n$, $c_e^t$ for $e\in E_t^n$, $c_e^h$ for $e\in E_h$, and $c_l^u$ for $l\in U^n$. Real and reactive generator capacities are $\bar g_{l,p}^k,\bar g_{l,q}^k$ for $l\in U$, $k\in P_l$. Demands are $D_{i,p}^k,D_{i,q}^k$ for $i\in N$, $k\in P_i$. Critical and total service fractions are $\eta_c,\eta_t$.
+\section{参数}
+投资成本分别为：$c_e^x$用于$e\in E_x^n$，$c_e^t$用于$e\in E_t^n$，$c_e^h$用于$e\in E_h$，$c_l^u$用于$l\in U^n$。实际和反应性发电机的产能分别为：$\bar g_{l,p}^k,\bar g_{l,q}^k$用于$l\in U$，$k\in P_l$。需求分别为：$D_{i,p}^k,D_{i,q}^k$用于$i\in N$，$k\in P_i$。关键和服务的总比例分别为：$\eta_c,\eta_t$。
 
-For $e\in E$ and $k\in P_e$, $T_e^k$ is the thermal-limit parameter (also denoted $T_{e,k}$ in the source). Transformer sharing coefficients are $\underline\beta_e,\overline\beta_e$ for $e\in E_V$. Voltage-magnitude bounds are $\underline V_i^k,\overline V_i^k$ for $i\in N$, $k\in P_i$. Each impedance matrix is $Z_e=R_e+\mathrm i X_e$, where $R_e,X_e\in\mathbb R^{P_e\times P_e}$ and $\mathrm i^2=-1$.
+对于$e\in E$和$k\in P_e$，$T_e^k$是热极限参数（在源代码中也表示为$T_{e,k}$）。变压器共享系数为$\underline\beta_e,\overline\beta_e$，适用于$e\in E_V$。电压幅值范围分别为$\underline V_i^k,\overline V_i^k$，适用于$i\in N$和$k\in P_i$。每个阻抗矩阵都表示为$Z_e=R_e+\mathrm i X_e$，其中$R_e,X_e\in\mathbb R^{P_e\times P_e}$和$\mathrm i^2=-1$是其中的具体数值。
 
-Use balanced phase phasors $u_a=1$, $u_b=\alpha$,
-$u_c=\alpha^2$, where $\alpha=\exp(-2\pi\mathrm i/3)$, and define
+使用平衡的相位向量$u_a=1$、$u_b=\alpha$、$u_c=\alpha^2$，其中$\alpha=\exp(-2\pi\mathrm i/3)$，并对其进行定义。
 \[
  \Gamma_{kk'}=u_k/u_{k'},\quad
  C_{e,kk'}=2\Gamma_{kk'}\overline{(Z_e)_{kk'}}.
 \]
-The physical real squared-voltage drop is
-$\Delta_e^{s,k}=\sum_{k'\in P_e}
+物理上的实际平方电压降为$\Delta_e^{s,k}=\sum_{k'\in P_e}
 [\operatorname{Re}(C_{e,kk'})p_{e,i}^{s,k'}
--\operatorname{Im}(C_{e,kk'})q_{e,i}^{s,k'}]$.
-It is the real diagonal of $S_{e,i}Z_e^H+Z_eS_{e,i}^H$ under the
-balanced-voltage, zero-loss approximation (source pp.13--14, equations (7)--(10)).
+-\operatorname{Im}(C_{e,kk'})q_{e,i}^{s,k'}]$。这是$S_{e,i}Z_e^H+Z_eS_{e,i}^H$在平衡电压、零损耗近似条件下的对角线值（参见第13-14页，方程(7)-(10)）。
 
-Let $K$ be the fixed positive integer polygon parameter, supplied with the instance (the reported implementation uses $K=28$). Precompute
+让$K$成为一个固定的正整数多边形参数，该参数会与实例一起提供（所报告的实现方式使用的是$K=28$）。请预先计算好这个值。
 \[
 a_n=\sin\frac{2n\pi}{K}-\sin\frac{2(n-1)\pi}{K},\qquad
 b_n=\cos\frac{2n\pi}{K}-\cos\frac{2(n-1)\pi}{K},\qquad
 r_K=\sin\frac{2\pi}{K},\quad n=1,\ldots,K.
 \]
-Use the source's finite bounds
+使用源代码的有限限制条件。
 \[
 M_{\rm comm}=|\widetilde N_c|,\qquad
 M_{\rm flow}^k=\sum_{i\in N}D_{i,p}^k\quad(k\in P).
 \]
-All sets and parameter arrays are finite input data.
+所有集合和参数数组都是有限输入数据。
 
-\section{Variables and domains}
-The first-stage binary investment vector and matching cost vector are
+\section{变量和域}
+第一阶段二进制投资向量和匹配成本向量是
 \[
 w=(x_{E_x^n},t_{E_t^n},h_{E_h},u_{U^n})\in\{0,1\}^m,
 \qquad c=(c^x_{E_x^n},c^t_{E_t^n},c^h_{E_h},c^u_{U^n}),
 \]
-where $m=|E_x^n|+|E_t^n|+|E_h|+|U^n|$, using a fixed common ordering.
+其中$m=|E_x^n|+|E_t^n|+|E_h|+|U^n|$，采用固定的共同排序方式。
 
-For every $s\in\mathcal S$, the scenario binary variables are
+对于每一个$s\in\mathcal S$，场景中的二进制变量为：
 \[
 x_e^s,t_e^s,h_e^s\in\{0,1\}\ (e\in\mathcal E),\qquad
 u_l^s\in\{0,1\}\ (l\in U),
@@ -66,11 +63,11 @@ u_l^s\in\{0,1\}\ (l\in U),
 z_e^s,b_e^s,b_e^{0,s}\in\{0,1\}\ (e\in E),\qquad
 y_e^s\in\{0,1\}\ (e\in E_{\mathcal C}).
 \]
-Here $x^s$ denotes edge availability, $t^s$ switch use, $h^s$ hardening, $u^s$ generator availability, $z^s$ edge activity, $b^s,b^{0,s}$ flow-direction indicators, and $y^s$ the cycle indicators. Define the vector abbreviation
+这里$x^s$表示边可用性，$t^s$表示开关使用情况，$h^s$表示加固措施，$u^s$表示发电机的可用性，$z^s$表示边活动情况，$b^s,b^{0,s}$表示流向指示符，而$y^s$则表示循环指示符。定义向量缩写。
 \[
 w^s=(x^s_{E_x^n},t^s_{E_t^n},h^s_{E_h},u^s_{U^n}).
 \]
-The real continuous variables, separately for each scenario, are
+真正的连续变量，每个情景下都是分开的。
 \begin{align*}
 &p_{e,i}^{s,k},q_{e,i}^{s,k} &&(e\in E,\ i\in\delta(e),\ k\in P_e),\\
 &g_{l,p}^{s,k},g_{l,q}^{s,k} &&(l\in U,\ k\in P_l),\\
@@ -78,20 +75,20 @@ The real continuous variables, separately for each scenario, are
 &f_e^s &&(e\in\widetilde E),\\
 &\gamma_i^s &&(i\in\widetilde N_c).
 \end{align*}
-They represent endpoint real/reactive flow, generation, delivered load, squared voltage magnitude, artificial communication flow, and control-point connectivity. Continuous variables are real-valued with the lower and upper bounds specified in the constraints below.
+它们代表了端点实值/反应性流、生成、传递的负载、平方后的电压幅度、人工通信流以及控制点的连通性。连续变量为实值，其上下限在下面的约束条件中有所规定。
 
-\section{Objective and constraints}
-The model minimizes
+\section{目标与约束条件}
+该模型能够最小化
 \[
 \min\ c^\top w.
 \]
-The investment links are
+投资链接是：
 \[
 w\geq w^s\qquad(s\in\mathcal S).
 \]
-Every constraint in the remainder of this section is imposed for every $s\in\mathcal S$.
+本节剩余部分中的每个约束都是针对每一个$s\in\mathcal S$而设定的。
 
-\subsection{Equipment fixings}
+\subsection{设备固定装置}
 \begin{align*}
 x_e^s&=1 &&(e\in E_x^0\setminus D_s),\\
 t_e^s&=0 &&(e\in\mathcal E\setminus E_t),\\
@@ -99,38 +96,35 @@ h_e^s&=0 &&(e\in\mathcal E\setminus E_h),\\
 u_l^s&=1 &&(l\in U^0).
 \end{align*}
 
-\subsection{Power balance and directional bounds}
-For $i\in N$ and $k\in P_i$,
+\subsection{功率平衡与方向限制}
+对于$i\in N$和$k\in P_i$，
 \begin{align*}
 \sum_{l\in U_i}g_{l,p}^{s,k}-d_{i,p}^{s,k}
  &=\sum_{e\in\delta(i)}p_{e,i}^{s,k},\\
 \sum_{l\in U_i}g_{l,q}^{s,k}-d_{i,q}^{s,k}
  &=\sum_{e\in\delta(i)}q_{e,i}^{s,k}.
 \end{align*}
-For each ordered edge $e=(i,j)\in E$ and $k\in P_e$,
+对于每一条有序的边$e=(i,j)\in E$和$k\in P_e$，
 \begin{align*}
 -T_e^k b_e^s&\leq p_{e,i}^{s,k}\leq T_e^k(1-b_e^s),\\
 -T_e^k b_e^{0,s}&\leq q_{e,i}^{s,k}\leq T_e^k(1-b_e^{0,s}).
 \end{align*}
 
-\subsection{Lossless endpoint conservation}
-Endpoint flows are positive out of their own bus. Hence for every scenario,
-physical line $e=(i,j)$ and phase $k\in P_e$,
+\subsection{无损端点保留}
+端点流是从它们自己的总线上以正数值流出。因此，对于每一种情况来说，物理线路$e=(i,j)$和相位$k\in P_e$都是如此。
 \[
  p_{e,i}^{s,k}+p_{e,j}^{s,k}=0,\qquad
  q_{e,i}^{s,k}+q_{e,j}^{s,k}=0.
 \]
-Distribution self-loops are invalid. Summing the nodal real-power balances now
-proves total generation equals total delivered demand; independent endpoint
-variables cannot create power.
+分布式自环是无效的。现在对节点实功率平衡进行求和，可证明总发电量等于总需求；独立的端点变量无法产生电力。
 
-\subsection{Phase sharing}
-For an ordered transformer $e=(i,j)\in E_V$, use the expression abbreviations
+\subsection{相位共享}
+对于有序的变换器$e=(i,j)\in E_V$，请使用以下缩写形式表示：
 \[
 H_{e,p}^s=\sum_{r\in P_e}p_{e,i}^{s,r},\qquad
 H_{e,q}^s=\sum_{r\in P_e}q_{e,i}^{s,r},\qquad d_e=|P_e|.
 \]
-For every $k\in P_e$, impose the expanded quadratic inequalities
+对于每一个$k\in P_e$，都施加扩展的二次不等式。
 \begin{align*}
 \underline\beta_e H_{e,p}^s+
  (\overline\beta_e-\underline\beta_e)b_e^sH_{e,p}^s
@@ -146,7 +140,7 @@ d_e q_{e,i}^{s,k}
  (\underline\beta_e-\overline\beta_e)b_e^{0,s}H_{e,q}^s.
 \end{align*}
 
-\subsection{Generation, load, and service}
+\subsection{生成、加载和服务}
 \begin{align*}
 0\leq g_{l,p}^{s,k}&\leq\bar g_{l,p}^k u_l^s,&
 g_{l,q}^{s,k}&\leq\bar g_{l,q}^k u_l^s
@@ -155,14 +149,14 @@ g_{l,q}^{s,k}&\leq\bar g_{l,q}^k u_l^s
 0\leq d_{i,q}^{s,k}&\leq D_{i,q}^k
 && (i\in N,\ k\in P_i).
 \end{align*}
-For each $k\in P$ and $a\in\{p,q\}$,
+对于每一个$k\in P$和$a\in\{p,q\}$，
 \[
 \sum_{i\in L}d_{i,a}^{s,k}\geq\eta_c\sum_{i\in L}D_{i,a}^k,
 \qquad
 \sum_{i\in N}d_{i,a}^{s,k}\geq\eta_t\sum_{i\in N}D_{i,a}^k.
 \]
 
-\subsection{Communication}
+\subsection{通信}
 \begin{align*}
 \sum_{e\in\widetilde E:e_t=i}f_e^s-
 \sum_{e\in\widetilde E:e_h=i}f_e^s
@@ -182,7 +176,7 @@ t_e^s&\leq\gamma_{\widetilde i(e)}^s &&(e\in E_t),\\
 0\leq\gamma_i^s&\leq1 &&(i\in\widetilde N_c).
 \end{align*}
 
-\subsection{Availability and topology}
+\subsection{可用性与拓扑结构}
 \begin{align*}
 x_e^s&\geq t_e^s &&(e\in\mathcal E),\\
 z_e^s&=x_e^s-t_e^s &&(e\in E),\\
@@ -192,13 +186,13 @@ z_{\hat e}^s&\leq y_e^s
  &&(C\in\mathcal C,\ e\in C,\ \hat e\in E:\delta(\hat e)=\delta(e)).
 \end{align*}
 
-\subsection{Voltage on active lines}
-For every $e=(i,j)\in E$, $k\in P_e$, define
+\subsection{活动线路上的电压}
+对于每一个$e=(i,j)\in E$、$k\in P_e$，进行定义。
 \[
  M_{e,k}^{v}=\max\{(\bar V_i^k)^2-(\underline V_j^k)^2,
                     (\bar V_j^k)^2-(\underline V_i^k)^2\}.
 \]
-Impose
+强制实施/执行
 \[
 -M_{e,k}^{v}(1-z_e^s)
 \le v_i^{s,k}-v_j^{s,k}-\Delta_e^{s,k}
@@ -206,14 +200,10 @@ Impose
 \qquad
 (\underline V_i^k)^2\le v_i^{s,k}\le(\bar V_i^k)^2.
 \]
-Inactive-line endpoint power is already zero by the activity bounds, so this
-$M^v$ permits every allowed pair of endpoint voltages when the line is open.
-The former unconditional equality and extraneous imaginary-part equality are
-removed. The source explicitly applies Ohm's law only on available lines
-(p.10, (2a); p.14 following (10)).
+在活动边界条件下，无效线路端点的功率已经为零，因此$M^v$允许在线路断开时存在任何允许的端点电压组合。之前的无条件等式以及多余的虚部等式都被移除了。源代码中明确说明，欧姆定律仅适用于可用的线路（见第10页，(2a)；第14页，紧随(10)之后）。
 
-\subsection{Polygonal capacity and activity bounds}
-For $e\in E$, $i\in\delta(e)$, and $k\in P_e$,
+\subsection{多边形容量和活动限制}
+对于$e\in E$、$i\in\delta(e)$和$k\in P_e$，
 \begin{align*}
 a_n p_{e,i}^{s,k}-b_n q_{e,i}^{s,k}
  &\leq r_K T_e^k &&(n=1,\ldots,K),\\
@@ -223,10 +213,6 @@ a_n p_{e,i}^{s,k}-b_n q_{e,i}^{s,k}
  &\leq M_{\rm flow}^k z_e^s.
 \end{align*}
 
-\paragraph{Explicit repaired physical interpretation.}
-This is a balanced-voltage, lossless three-phase approximation with the source's
-finite damage scenarios, investment links, control network, radial topology,
-load-service fractions and inner polygon thermal bounds. Binary--continuous
-phase-sharing products are retained exactly with global MIQCP handling.
-Endpoint flows use the outward-flow sign convention. The real voltage-drop relation follows from (7)--(8).
+\paragraph{明确的物理解释。}
+这是一个平衡电压、无损耗的三相近似模型，其中包含了源头的有限损伤情景、投资链接、控制网络、辐射拓扑结构、负载服务比例以及内部多边形的热边界条件。二进制连续相位共享产品被完全保留下来，同时采用了全局MIQCP处理方式。端点流量采用外向流符号约定。实际电压降的关系可以通过(7)--(8)式得出。
 \end{document}

@@ -3,29 +3,29 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 
-\title{Core Mathematical Model}
+\title{核心数学模型}
 \date{}
 
+\usepackage[UTF8]{ctex}
 \begin{document}
 
 \maketitle
 
-\section*{Integrated Stochastic Self-Scheduling in Two-Settlement Markets}
+\section*{在双结算市场中，集成随机自调度机制}
 
 
-The current model uses a scenario tree with a given pre-dispatch state at node 0.
-Write $\Delta>0$ for period length in hours. Power variables are in MW, storage in MWh,
-energy prices/costs in monetary units per MWh, and ramp limits in MW per hour.
-$\mathcal V(i)$ is the set of descendants of $i$, including $i$, and
+当前模型采用一种场景树结构，在节点0处有一个给定的预分配状态。请将$\Delta>0$中的数值按原顺序保留下来，并保留所有的数字。
+
+当前模型中的时间周期以小时为单位。功率变量以兆瓦为单位，储能量以兆瓦时为单位，能源价格/成本则以每兆瓦时的货币单位来表示，而功率提升限制则以每小时兆瓦为单位。
+
+$\mathcal V(i)$是$i$的所有后代节点，其中包括$i$。
 \[
 \mathcal H_r(i)=\{k\in\mathcal V(i):0\le t(k)-t(i)\le r-1\}.
 \]
-Thus minimum-up/down time is enforced forward along every scenario branch.
-This definition follows the paper, PDF page 9. 
-The piecewise-linear cost ordinates $\phi_m$ already include $\Delta$ times the
-hourly input values. Capacity bounds and optional terminal storage are supplied in each instance.
-Initial thermal state is given and $s_0=0$. Startup/shutdown logic now also applies at the root;
-this explicit correction prevents a fictitious shutdown credit when a previously-off unit starts.
+因此，每个场景分支中都会强制执行最小上升/下降时间。  
+这个定义遵循了论文中的描述，PDF第9页。  
+分段线性成本坐标$\phi_m$已经包含了$\Delta$倍的每小时输入值。每个实例中都会提供容量限制和可选的终端存储选项。  
+初始热状态由$s_0=0$给出。启动/关闭逻辑现在也适用于根节点；这种明确的修正可以防止在之前处于关闭状态的设备重新启动时出现虚假的关闭信用情况。
 
 
 \begin{equation}

@@ -2,17 +2,18 @@
 \usepackage{amsmath,amssymb,mathtools}
 \usepackage[margin=1in]{geometry}
 \allowdisplaybreaks
+\usepackage[UTF8]{ctex}
 \begin{document}
 
-\section*{Algorithm 1: privacy-aware dynamic personalized pricing}
+\section*{算法1：注重隐私的动态个性化定价}
 
-\subsection*{Revenue objective and price-selection rule}
-The retailer seeks to maximize
+\subsection*{收入目标与定价规则}
+零售商旨在实现最大化
 \[
 \mathbb E\!\left[\sum_{t=1}^{T}p_ty_t\right],
 \qquad p_t\in[0,1],\quad t=1,\ldots,T.
 \]
-The selected policy is Algorithm 1, not a claim that its prices exactly maximize this cumulative objective. Its price-selection row is
+所选的策略是算法1，但这并不意味着其价格能够精确实现这一累积目标的最大化。其价格选择的行是：
 \[
 p_n=\arg\max_{p\in[0,1]}\min\left\{1,
  p f\!\left(\phi_n^{\top}\widehat\theta^{p}\right)
@@ -20,25 +21,25 @@ p_n=\arg\max_{p\in[0,1]}\min\left\{1,
 \qquad \phi_n=\phi(x_n,p_n),
 \quad n=T_0+1,\ldots,T.
 \]
-The states and releases in this row are defined below. The setting is a single product with unlimited inventories (pp.~2--3).
+这一行中列出的状态与释放情况如下所述。该设置为一个单一的产品，拥有无限的物品库存（pp.~2--3）。
 
-\paragraph{Printed price notation.}
-Algorithm 1, line 10, defines $\phi_n$ using $p_n$, not the optimization variable $p$. This printed dependence is retained; it is not replaced by $\phi(x_n,p)$.
+\paragraph{印刷版价格标注。}
+算法1的第10行中，$\phi_n$被定义为使用$p_n$，而不是优化变量$p$。这种打印出的依赖关系被保留下来，不会被$\phi(x_n,p)$所替代。
 
-\subsection*{Demand, information, and fixed model assumptions}
-We retain the abstract exponential-family model of Section 3 (pp.~9--10), without specializing to either of its illustrative likelihood examples. At periods $t=1,\ldots,T$, $x_t$ is the arriving customer's personal information, $p_t$ is the offered price, and $y_t\in\mathbb R$ is realized demand. The known feature map and unknown fixed model satisfy
+\subsection*{需求、信息以及固定模型假设}
+我们保留了第3节中的抽象指数族模型（pp.~9--10），而不对其中的示例性可能性进行专门化处理。在$t=1,\ldots,T$、$x_t$这些时期，分别代表到达的客户的个人信息、$p_t$代表提供的价格，而$y_t\in\mathbb R$则代表实际的需求。已知的特征映射和未知的固定模型则保持不变。
 \[
 \phi_t=\phi(x_t,p_t)\in\mathbb R^d,
 \qquad \theta^*\in\mathbb R^d.
 \]
-No particular dimension or coordinate domain for $x_t$ is specified in this abstract formulation. The distribution-family components $\zeta,m(\cdot),h(\cdot)$ remain abstract. The printed demand model is
+在这篇摘要中，并未明确指定$x_t$的特定维度或坐标域。分布家族组件$\zeta,m(\cdot),h(\cdot)$仍然保持抽象状态。印刷需求模型是
 \begin{equation}
 \Pr[y_t=y\mid p_t,x_t,\theta^*]
 =\exp\!\left\{\zeta\left(y\phi_t^{\top}\theta^*
 -m(\phi_t^{\top}\theta^*)\right)+h(y)\right\}.
 \tag{1}
 \end{equation}
-Its conditional mean and noise representation are
+其条件均值和噪声表示分别为：
 \[
 f(\phi_t^{\top}\theta^*):=m'(\phi_t^{\top}\theta^*)
 =\mathbb E[y_t\mid p_t,x_t,\theta^*],
@@ -47,19 +48,19 @@ f(\phi_t^{\top}\theta^*):=m'(\phi_t^{\top}\theta^*)
 y_t=f(\phi_t^{\top}\theta^*)+\xi_t.
 \tag{2}
 \end{equation}
-The paragraph following (2) states that $\phi_t=\phi(x_t,p_t)$ and $\xi_t$ are independent random variables satisfying
+第 (2) 段指出，$\phi_t=\phi(x_t,p_t)$和$\xi_t$是独立的随机变量，它们满足……
 \[
 \mathbb E[\xi_t\mid p_t,x_t]=0.
 \]
-The history and subsequent conditional centering are
+历史以及后续的条件性居中操作如下：
 \[
 \mathcal F_t=\{(x_\tau,y_\tau,p_\tau)\}_{\tau=1}^{t},
 \qquad
 \mathbb E[\xi_t\mid x_t,p_t,\mathcal F_{t-1}]=0.
 \]
-In the general setting used here, $x_1,\ldots,x_T$ are arbitrarily chosen before pricing starts (the oblivious-adversary setting). The policy chooses $p_t$ conditioned on $\mathcal F_{t-1}$ and $x_t$, after which demand is realized according to (2).
+在本文中使用的通用设置中，$x_1,\ldots,x_T$是在定价开始之前任意选择的（即在“ oblivious-adversary”设置下）。该策略基于$\mathcal F_{t-1}$和$x_t$来选择$p_t$，之后，需求将按照公式(2)来得到满足。
 
-The source imposes the following model assumptions throughout the paper. They concern fixed inputs and the demand process, not additional optimization constraints on the estimator:
+在整篇论文中，来源方提出了以下模型假设。这些假设涉及固定输入和需求过程，而不是对估计器的额外优化约束。
 \begin{align*}
 & B_Y<\infty,\qquad |y_t|\le B_Y
 &&\text{for every period }t\text{ in every database }D;\\
@@ -76,23 +77,23 @@ The source imposes the following model assumptions throughout the paper. They co
 &&\text{for all }|z|\le2;\\
 &1\le G<\infty,\qquad G^{-1}\le\zeta\le G.
 \end{align*}
-Here $B_Y,s,K,G$ are model parameters. In the likelihood notation used by Algorithm 3, the family in (1), evaluated at the candidate parameter $\theta$, is
+这里的$B_Y,s,K,G$是模型参数。在算法3所使用的似然表示法中，公式(1)中的函数，在候选参数$\theta$处的值，就是……
 \[
 p(y_t\mid\phi_t,\theta)
 =\exp\!\left\{\zeta\left(y_t\phi_t^{\top}\theta
 -m(\phi_t^{\top}\theta)\right)+h(y_t)\right\}.
 \]
-The likelihood symbol $p(\,\cdot\mid\cdot\,)$ is distinct from the scalar price $p$. This uses the Section 3 family, rather than the differently written recap on p.~25.
+似然符号$p(\,\cdot\mid\cdot\,)$与标量价格$p$是不同的。这里使用的是第3节的内容，而不是p.~25上所写的另一种表述方式。
 
-\subsection*{Algorithm 1 inputs, initialization, and sequential updates}
-The fixed algorithmic inputs on p.~20 are
+\subsection*{算法1的输入、初始化以及顺序更新}
+在 p.~20 上的固定算法输入是：
 \[
 \varepsilon_1,\delta_1,\varepsilon_2,\delta_2>0,
 \qquad \rho\ge1,\qquad \gamma>0,
 \]
-together with the number of pure-exploration periods $T_0$ and the maximum number of \textsc{PrivateMLE} calls $D_\infty$. The output is $p_1,p_2,\ldots,p_T$. The quantities $\widehat\theta^p$, $\Lambda^p$, and $D_{\mathrm{MLE}}$ are maintained algorithmic states, not fixed inputs; the superscript $p$ marks privatized quantities.
+结合纯探索周期的数量$T_0$和最大调用次数\textsc{PrivateMLE}调用$D_\infty$。输出结果为$p_1,p_2,\ldots,p_T$。量$\widehat\theta^p$、$\Lambda^p$和$D_{\mathrm{MLE}}$是算法维护的状态，而非固定输入；上标$p$表示私有化量。
 
-Initialize, exactly as in line 3,
+初始化，与第3行中的操作完全相同。
 \[
 \delta'_2=\frac{\delta_2}{2D_\infty},
 \qquad
@@ -103,38 +104,38 @@ Initialize, exactly as in line 3,
 \qquad \widehat\theta^p=0,
 \qquad D_{\mathrm{MLE}}=0.
 \]
-For the first $T_0$ periods, offer prices uniformly at random:
+对于前$T_0$个周期，以均匀随机的方式提供价格：
 \[
 p_t\sim U[0,1],\qquad t=1,\ldots,T_0.
 \]
-For each $n=T_0+1,\ldots,T$, first obtain
+对于每一个$n=T_0+1,\ldots,T$，首先获取
 \[
 \Sigma^p_{\mathrm{used},n}\leftarrow R_{n-1},\quad R_j:=\text{the output of iteration }j\text{ of the single horizon-}T\text{ covariance tree},
 \qquad \Lambda_n^p=\Sigma^p_{\mathrm{used},n}+\rho I_d.
 \]
-If
+如果
 \[
 \det(\Lambda_n^p)>2\det(\Lambda^p)
 \quad\text{and}\quad D_{\mathrm{MLE}}<D_\infty,
 \]
-perform the assignments
+执行这些任务/操作。
 \[
 \widehat\theta^p\leftarrow
 \textsc{PrivateMLE}(n,\rho,\varepsilon'_2,\delta'_2),
 \qquad \Lambda^p\leftarrow\Lambda_n^p,
 \qquad D_{\mathrm{MLE}}\leftarrow D_{\mathrm{MLE}}+1.
 \]
-Otherwise retain these states. Then offer the price given by the price-selection row above. Here $I_d$ is the $d$-dimensional identity matrix, and the covariance-related matrices have dimension $d\times d$.
+否则，请保留这些状态不变。然后，按照上述价格选择行所给出的价格来报价。在这里，$I_d$是$d$维的单位矩阵，而与协方差相关的矩阵的维数为$d\times d$。
 
-Remark 4 (pp.~20--21) permits omitting forced exploration, with $T_0=0$. No theorem-specific tuning or stochastic-context assumption is imposed on the parameterized Algorithm 1 reproduced here.
+注意 4（pp.~20–21）允许省略强制探索步骤，使用$T_0=0$来表示。对于此处复现的参数化算法1而言，没有针对特定定理的调整或随机上下文假设。
 
-\subsection*{Algorithm 2: \textsc{PrivateCov}}
-Algorithm 2 (p.~21) has the signature
+\subsection*{算法 2: \textsc{PrivateCov}}
+算法 2（p.~21）的签名为：
 \[
 \textsc{PrivateCov}(T,\varepsilon,\delta)
 \quad\text{returns}\quad\Sigma_1^p,\ldots,\Sigma_{T-1}^p.
 \]
-Its local parameters and initial states are
+其局部参数和初始状态为：
 \begin{align*}
 \delta'&\leftarrow\frac{\delta}{2\lceil\log_2T\rceil},
 &\varepsilon'&\leftarrow
@@ -145,15 +146,15 @@ Its local parameters and initial states are
 \Sigma(\ell)&=\widehat\Sigma(\ell)=0,
 &&\ell=0,\ldots,m-1.
 \end{align*}
-Here the local integer $m$ is the binary-tree depth, distinct from the distribution-family function $m(\cdot)$.
+这里的局部整数$m$表示二叉树的深度，它与分布族函数$m(\cdot)$是不同的。
 
-For $n=1,2,\ldots,T-1$, express $n$ in binary and identify its least significant nonzero bit:
+对于$n=1,2,\ldots,T-1$，将$n$表示为二进制形式，并确定其最低有效非零位：
 \[
 n=\sum_{\ell=0}^{m-1}b_n(\ell)2^\ell,
 \qquad b_n(\ell)\in\{0,1\},
 \qquad \ell_n\leftarrow\min\{\ell:b_n(\ell)=1\}.
 \]
-Update and reset in the printed order:
+以打印时的顺序来更新和重置：
 \[
 \Sigma(\ell_n)\leftarrow
 \phi_n\phi_n^{\top}+\sum_{\ell<\ell_n}\Sigma(\ell),
@@ -161,7 +162,7 @@ Update and reset in the printed order:
 \Sigma(\ell)\leftarrow\widehat\Sigma(\ell)\leftarrow0
 \quad\text{for all }\ell<\ell_n.
 \]
-Calibrate noise and release:
+校准噪声并释放：
 \[
 \widehat\Sigma(\ell_n)\leftarrow\Sigma(\ell_n)+W^n,
 \qquad
@@ -171,23 +172,22 @@ W^n_{ij}=W^n_{ji}\overset{\mathrm{i.i.d.}}{\sim}
 \[
 \Sigma_n^p=\sum_{\ell=0}^{m-1}b_n(\ell)\widehat\Sigma(\ell).
 \]
-The source describes $W^n$ as a symmetric random Gaussian matrix; its displayed symmetry and i.i.d. notation are retained without adding a sampling convention. Section 6.1 (p.~22) defines the corresponding unperturbed sample covariance by
+来源中将$W^n$描述为一个对称的高斯矩阵；其显示的对称性和独立同分布的特性被保留下来，没有添加任何采样规则。第6.1节（p.~22）定义了相应的未受扰动样本协方差。
 \[
 \Sigma_n=\sum_{t=1}^{n}\phi_t\phi_t^{\top},
 \qquad n=1,\ldots,T-1.
 \]
 
-\paragraph{Printed release-time conflict.}
-Section 6.1 on p.~21 states that
-$\textsc{PrivateCov}(n,\varepsilon,\delta)$ is the $\Sigma_n^p$ matrix released at the end of iteration $n-1$. Algorithm 2 instead labels its release at iteration $n$ by $\Sigma_n^p$ and incorporates $\phi_n\phi_n^{\top}$ in that iteration. Algorithm 1 calls $\textsc{PrivateCov}(n,\varepsilon_1,\delta_1)$ before selecting $p_n$, whereas Section 5.1 requires releasers used at time $n$ to access only earlier observations. The printed conflict is preserved here as provenance. The selected version uses the Section 6.1 sentence: the covariance available for decision $n$ is the one released at the end of iteration $n-1$. The tree retains its printed iteration indices and uses every historical row once. In particular, Algorithm 2 does not specify an iteration-zero release for the permitted $T_0=0$ case.
+\paragraph{印刷发布时间冲突。}
+第6.1节中，位于~21处的内容指出：$\textsc{PrivateCov}(n,\varepsilon,\delta)$是迭代$n-1$结束时释放的$\Sigma_n^p$矩阵。而算法2则将其在迭代$n$时的释放过程标记为$\Sigma_n^p$，并在该迭代中引入$\phi_n\phi_n^{\top}$。算法1在选择$p_n$之前会调用$\textsc{PrivateCov}(n,\varepsilon_1,\delta_1)$，而第5.1节则要求，在时间$n$使用的释放函数只能访问更早的观测结果。这里保留了打印出来的冲突信息，作为来源记录。所选版本使用了第6.1节中的句子：用于决策的协方差$n$，就是迭代$n-1$结束时释放的那个协方差。该树结构保留了打印出来的迭代索引，并且每个历史行都被使用了一遍。特别地，算法2并没有为允许的$T_0=0$情况指定一个零迭代时的释放过程。
 
-\subsection*{Algorithm 3: \textsc{PrivateMLE}}
-At a requested call,
+\subsection*{算法 3: \textsc{PrivateMLE}}
+在请求的通话中，
 \[
 \textsc{PrivateMLE}(n,\rho,\varepsilon,\delta)
 \quad\text{returns}\quad\widehat\theta_n^p.
 \]
-Algorithm 1 supplies $(\varepsilon,\delta)=(\varepsilon'_2,\delta'_2)$. Algorithm 3 (p.~24) first makes the assignments
+算法1提供$(\varepsilon,\delta)=(\varepsilon'_2,\delta'_2)$。算法3（p.~24）首先进行赋值操作。
 \[
 B_1\leftarrow(B_Y+1)G,
 \qquad B_2\leftarrow KG,
@@ -199,57 +199,46 @@ B_1\leftarrow(B_Y+1)G,
 \qquad
 w\sim\mathcal N(0,\nu_{\varepsilon,\delta}^{2}I_d).
 \]
-It then returns
+然后返回
 \[
 \widehat\theta_n^p
 =\arg\min_{\|\theta\|_2\le2}
 \left\{\left(\sum_{t<n}-\ln p(y_t\mid\phi_t,\theta)\right)
 +\frac{\rho}{2}\|\theta\|_2^2+w^{\top}\theta\right\}.
 \]
-Here $\theta\in\mathbb R^d$ is the estimation variable, $w\in\mathbb R^d$ is the sampled perturbation, and $t<n$ ranges over the observed periods preceding the call. The radius-two estimation constraint is distinct from the fixed-model assumption $\|\theta^*\|_2\le1$. The reassignment of $\rho$ is reproduced within Algorithm 3; no additional reassignment of Algorithm 1's covariance states is inserted.
+这里，$\theta\in\mathbb R^d$是估计变量，$w\in\mathbb R^d$是采样扰动，而$t<n$则涵盖了呼叫之前的观测周期。半径二估计约束与固定模型假设$\|\theta^*\|_2\le1$是不同的。$\rho$的重新分配在算法3中得到了体现；算法1中的协方差状态没有进行额外的重新分配。
 
-\paragraph{Printed privacy-allocation discrepancy.}
-Algorithm 1's allocation above retains the factor $2$ outside the square root in the denominator of $\varepsilon'_2$. Corollary 3 on p.~23 omits that factor in its stated allocation. Its alternate allocation is not substituted into Algorithm 1.
+\paragraph{打印版隐私分配差异。}
+算法1中的分配方式将因子$2$保留在$\varepsilon'_2$的分母中，且位于平方根之外。而附录3中关于p.~23的分配方式则省略了该因子。其替代分配方式并未被纳入算法1中。
 
-\subsection*{Privacy definition attached to the policy}
-For the privacy definition (pp.~12--14), write
+\subsection*{政策附带的隐私定义}
+对于隐私定义（pp.~12--14），请写入
 \[
 D=\{o_t\}_{t=1}^{T},\qquad o_t=(x_t,y_t),
 \qquad D'=\{o'_t\}_{t=1}^{T}.
 \]
-Neighboring databases differing at time $t$ satisfy
+在时间$t$时，存在差异的邻近数据库能够满足以下条件：
 \[
 o_t\ne o'_t,\qquad o_\tau=o'_\tau\quad\text{for all }\tau\ne t.
 \]
-For $\varepsilon,\delta>0$, anticipating $(\varepsilon,\delta)$-differential privacy requires, for every such pair and every measurable set $\mathcal P_{>t}$,
+对于$\varepsilon,\delta>0$，要实现与$(\varepsilon,\delta)$不同的差分隐私，就需要针对每一对这样的元素，以及每一个可测量的集合$\mathcal P_{>t}$，采取相应的措施。
 \begin{equation}
 \Pr[p_{t+1},\ldots,p_T\in\mathcal P_{>t}\mid\pi,D]
 \le e^{\varepsilon}
 \Pr[p_{t+1},\ldots,p_T\in\mathcal P_{>t}\mid\pi,D']+\delta.
 \tag{3}
 \end{equation}
-The private releasers use historical data only, and the price optimizer uses their outputs and the current $x_t$, not historical sensitive data directly (pp.~17--18). The claimed composite privacy levels are
+这些私有释放器仅使用历史数据，而价格优化器则使用它们的输出结果以及当前的$x_t$，而不是直接使用历史敏感数据（参见~17–18页）。所声称的复合隐私级别为：
 \[
 \varepsilon=\varepsilon_1+\varepsilon_2,
 \qquad \delta=\delta_1+\delta_2.
 \]
-This privacy definition is model-free; the demand assumptions above are used for utility analysis, not to define privacy. Corollary 4 on p.~23 calls the resulting price sequence ``differentially private'' without the word ``anticipating,'' although its cited Proposition 2 concludes anticipating differential privacy. The definition retained here is (3), not the stronger full-price-sequence requirement.
+此隐私定义是无需模型的；上述需求假设用于效用分析，而非用于定义隐私。第~23页的推论4将所得价格序列称为“差分隐私的”，但没有使用“预期”一词，尽管其引用的命题2实际上是在讨论预期对差分隐私的影响。此处保留的定义是（3），而不是更强的全价格序列要求。
 
-\paragraph{Source scope.}
-The operative formulation is the parameterized Algorithm 1 and its Algorithms 2--3 dependencies, with the Section 3 demand family. Gaussian and logistic examples, theorem-specific parameter choices, regret-analysis inequalities, and simulation settings are not additional operative constraints. The paper refers proofs to an online supplement; the published electronic companion, EC.2, uses the history of summaries through period $t-1$ in the price at $t$. EC.3.1 uses a single horizon-based tree depth. The supplied page images for pp.~3, 20, 21, and 24 support the objective and algorithm rows reproduced above.
+\paragraph{来源范围。}
+操作性的表述是参数化的算法1及其与算法2-3的依赖关系，同时还包括第3节中的需求族。高斯分布和逻辑斯蒂分布的相关示例、特定定理的参数选择、后悔分析不等式以及仿真设置等，均不属于额外的操作性约束。本文将证明内容附在在线补充材料中；已发布的电子配套文件EC.2则使用了从时期$t-1$开始的历史总结数据，其价格为$t$。EC.3.1则采用了基于单一视界的树深度方法。为pp.~3、20、21和24提供的页面图片，支持了上述目标和算法描述的内容。
 
 
-\paragraph{Selection on the archived benchmark inputs.}
-For the ten supplied scalar inputs, \(T_0\geq2\) and a release exists before every
-adaptive decision including the last. The implementation chooses the largest
-maximizer in the printed price selector. Each case has price-independent
-\(\phi(x,p)=(1+x)/2\) and the logistic mean. At initialization the scalar
-accepted matrix is positive; the strict doubling gate preserves positivity.
-Consequently the capped optimistic score is nondecreasing in the offered
-price on each realized history, and price one is a maximizing choice.
-Uniform exploratory offers remain mandatory. These instance facts do not
-specify price-dependent or multidimensional cases. Only future public offers
-enter the anticipating-privacy statement. The archived seeded diagnostic
-paths, noisy releases, purchases and estimates support reproduction and are
-not a public release with an asserted privacy guarantee.
+\paragraph{对存档的基准输入进行选择。}
+对于所提供的十个标量输入，\(T_0\geq2\)在每次适应性决策之前都会出现一次，包括最后一个决策。实现方式选择打印价格选择器中的最大化值。每个案例都有与价格无关的\(\phi(x,p)=(1+x)/2\)和逻辑均值。在初始化时，标量接受矩阵为正数；严格的加倍门限确保了正性。因此，在每个实现的历史中，上限乐观得分随着提供价格的上升而递增，而价格为一时则是一个最大化选择。统一的探索性报价仍然是必需的。这些实例事实并未指定与价格相关的或多维情况。只有未来的公开报价才会被纳入预期隐私声明中。存档的播种诊断路径、噪声发布、购买和估计值都支持复制，但这些内容并非带有隐私保证的公开发布。
 \end{document}

@@ -2,20 +2,20 @@
 \usepackage{amsmath,amssymb,longtable}
 \begin{document}
 \section*{P152: 当前完整数学模型（2026-10-20）}
-\section*{修订依据与边界}当前主标准选择原建模式1：每车每次发车收一次lambda1；将线性化式48的多余仓库求和移除，成为真正等价重构。历史两分支及差异保留，当前只引用original_objective_1已算结果，不混合目标。
+\section*{修订依据与边界}当前主标准选择原建模式1：每车每次发车收一次lambda1；将线性化式48的多余仓库求和移除，成为真正等价重构。历史两分支及差异保留，当前只引用original\_objective\_1已算结果，不混合目标。
 
 
 
 
 % --- Page 5 ---
-\section*{Page 5}
+\section*{第5页}
 
-\subsection*{Objective Functions}
+\subsection*{目标函数}
 \begin{equation}
     \text{ID 1: } min \sum_{k \in K} \lambda_0 \bullet V_k + \sum_{k \in K} \sum_{i \in I} \lambda_1 \bullet U_{k,i} + \sum_{k \in K} \sum_{i \in I} \sum_{p \in P} \lambda_2 \bullet s_p \bullet \left| A_{p}^{k,i} - b_p \bullet Z_{p}^{k,i} \right| + \sum_{k \in K} \sum_{i \in I} \sum_{n \in N} \sum_{n' \in N} \lambda_3 \bullet t_{n,n'} \bullet X_{n,n'}^{k,i} + \sum_{k \in K} \sum_{i \in I} \lambda_4 \bullet C_{k,i} \tag{1}
 \end{equation}
 
-\subsection*{Constraints}
+\subsection*{约束条件：}
 \begin{align}
     \text{ID 2: } & Y_{d}^{k,0} = \sigma_{k,d}, \forall k \in K, d \in D \tag{2} \\
     \text{ID 3: } & C_{k,0} = 0, \forall k \in K \tag{3} \\
@@ -30,9 +30,9 @@
 \end{align}
 
 % --- Page 6 ---
-\section*{Page 6}
+\section*{第6页}
 
-\subsection*{Constraints}
+\subsection*{约束条件：}
 \begin{align}
     \text{ID 12: } & \sum_{d \in D} Y_{d}^{k,i} \bullet d + M \bullet (1 - Z_{p}^{k,i}) \geq u_p, \forall p \in P, i \in I_k, k \in K, i \neq 0 \tag{12} \\
     \text{ID 13: } & \sum_{d \in D} Y_{d}^{k,i} \bullet d \leq u_p + M \bullet (1 - Z_{p}^{k,i}), \forall p \in P, i \in I_k, k \in K, i \neq 0 \tag{13} \\
@@ -51,9 +51,9 @@
 \end{align}
 
 % --- Page 7 ---
-\section*{Page 7}
+\section*{第7页}
 
-\subsection*{Constraints}
+\subsection*{约束条件：}
 \begin{align}
     \text{ID 26: } & X_{n,p}^{k,i} \leq Z_{p}^{k,i}, \forall p \in P, n \in N, i \in I_k, k \in K, i \neq 0 \tag{26} \\
     \text{ID 27: } & X_{p,n}^{k,i} \leq Z_{p}^{k,i}, \forall p \in P, n \in N, i \in I_k, k \in K, i \neq 0 \tag{27} \\
@@ -76,9 +76,9 @@
 \end{align}
 
 % --- Page 8 ---
-\section*{Page 8}
+\section*{第8页}
 
-\subsection*{Constraints}
+\subsection*{约束条件：}
 \begin{align}
     \text{ID 44: } & \sum_{p \in N} L_{p,q}^{k,i} + s_q \bullet \sum_{p \in N} X_{p,q}^{k,i} = \sum_{p' \in N} L_{q,p'}^{k,i}, \forall q \in P, i \in I_k, k \in K \tag{44} \\
     \text{ID 45: } & e_{k,i} = \sum_{d \in D} \sum_{p \in P} (\alpha \bullet \omega' + \beta) \bullet X_{d,p}^{k,i} \bullet t_{d,p} + \sum_{p \in P} \sum_{n \in N} [\alpha (\omega \bullet L_{p,n}^{k,i} + \omega' \bullet X_{p,n}^{k,i}) + \beta \bullet X_{p,n}^{k,i}] \bullet t_{p,n}, \forall i \in I_k, k \in K \tag{45} \\

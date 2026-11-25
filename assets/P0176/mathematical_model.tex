@@ -1,21 +1,22 @@
 \documentclass{article}
 \usepackage{amsmath,amssymb}
+\usepackage[UTF8]{ctex}
 \begin{document}
-\section*{Rectangular-coordinate AC optimal power flow}
+\section*{矩形坐标 AC 最优功率流}
 
-Let $B$ be a finite set of buses, $U\subseteq B$ the generator buses, and $L$ a finite set of endpoint-directed branch indices. Each $a\in L$ has endpoints $k_a,\ell_a\in B$; distinct indices may identify parallel branches. Define $\delta(k)=\{a\in L:k_a=k\}$. All data below are fixed real scalars: demands $p_k^d,q_k^d$ and shunt coefficients $g_{kk},h_{kk}$ for $k\in B$; branch coefficients $G_a,B_a$ and thermal limits $d_a^+$ for $a\in L$; generation bounds $(p_k^g)^\pm,(q_k^g)^\pm$ and cost coefficients $C_{k,1},C_{k,2},C_{k,3}$ for $k\in U$, with $C_{k,1}\geq0$; and voltage-magnitude bounds $|V_k|^\pm$ for $k\in B$. For each $a\in L$, the fixed angle-bound coefficients $\alpha_a^-=\tan\theta_a^-$ and $\alpha_a^+=\tan\theta_a^+$ are finite.
+设$B$为一组有限的母线，$U\subseteq B$为生成母线，$L$为一组有限的端点指向的分支指标。每个$a\in L$都有端点$k_a,\ell_a\in B$；不同的指标可以标识不同的并行分支。定义$\delta(k)=\{a\in L:k_a=k\}$。以下所有数据均为固定的实数标量：对于$k\in B$，有需求$p_k^d,q_k^d$和并联系数$g_{kk},h_{kk}$；对于$a\in L$，有分支系数$G_a,B_a$和热极限$d_a^+$；对于$k\in U$，有发电限制$(p_k^g)^\pm,(q_k^g)^\pm$和成本系数$C_{k,1},C_{k,2},C_{k,3}$，还有$C_{k,1}\geq0$；对于$k\in B$，有电压幅值限制$|V_k|^\pm$。对于每一个$a\in L$，固定的角度限制系数$\alpha_a^-=\tan\theta_a^-$和$\alpha_a^+=\tan\theta_a^+$都是有限的。
 
-The decision variables are $p^g,q^g\in\mathbb R^{|U|}$, $e,f\in\mathbb R^{|B|}$, and the real branch-flow auxiliaries $p,q\in\mathbb R^{|L|}$. For nodal balances, define $P_k^g=p_k^g$ and $Q_k^g=q_k^g$ when $k\in U$, and $P_k^g=Q_k^g=0$ otherwise. Define the following expressions.
+决策变量为$p^g,q^g\in\mathbb R^{|U|}$、$e,f\in\mathbb R^{|B|}$，以及实数分支流辅助变量$p,q\in\mathbb R^{|L|}$。对于节点平衡，当$k\in U$为真时，定义$P_k^g=p_k^g$和$Q_k^g=q_k^g$；否则，定义$P_k^g=Q_k^g=0$。同时，定义以下表达式。
 \[
 W_k=e_k^2+f_k^2\quad(k\in B),\qquad
 D_a=e_{k_a}e_{\ell_a}+f_{k_a}f_{\ell_a},\qquad
 N_a=e_{\ell_a}f_{k_a}-e_{k_a}f_{\ell_a}\quad(a\in L).
 \]
-The model is
+该模型是
 \[
 \min_{p^g,q^g,e,f,p,q}\ \sum_{k\in U}\bigl(C_{k,1}(p_k^g)^2+C_{k,2}p_k^g+C_{k,3}\bigr)
 \]
-subject to
+受…的约束
 \begin{align*}
 P_k^g-p_k^d &= g_{kk}W_k+\sum_{a\in\delta(k)}p_a &&(k\in B),\\
 Q_k^g-q_k^d &= -h_{kk}W_k+\sum_{a\in\delta(k)}q_a &&(k\in B),\\

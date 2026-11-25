@@ -2,17 +2,18 @@
 \usepackage{amsmath,amssymb,mathrsfs}
 \usepackage[margin=1in]{geometry}
 \allowdisplaybreaks
+\usepackage[UTF8]{ctex}
 \begin{document}
 
-\section*{CSS-based distributed TMPC: local problem $\mathscr P_i(t)$}
-For each following CAV $i=1,\ldots,N$, the local predictive-control problem is
+\section*{基于 CSS 的分布式 TMPC：局部问题 $\mathscr P_i(t)$}
+对于每一个后续的 CAV $i=1,\ldots,N$，当地的预测控制问题就是
 \begin{equation}
 \min_{\bar u_i^p(k\mid t),\,k\in\mathbb K_{0:N_p-1}}
 J_i\bigl(\bar x_i^p,\bar u_i^p,S_i^p,\bar x_i^a;\mathbb K_{0:N_p-1}\mid t\bigr)
 =\sum_{k=0}^{N_p-1}l_i\bigl(\bar x_i^p,\bar u_i^p,S_i^p,\bar x_i^a;k\mid t\bigr).
 \tag{14a}
 \end{equation}
-Subject to
+在以下条件下：
 \begin{align}
 \bar x_i^p(0\mid t)&=\bar x_i(t),\tag{14b}\\
 \bar x_i^p(k+1\mid t)&=A_d\bar x_i^p(k\mid t)+B_d\bar u_i^p(k\mid t),\tag{14c}\\
@@ -27,9 +28,9 @@ S_i^p(k\mid t)&=\beta^{i-f}s_f^a(k\mid t)-s_i^p(k\mid t),\tag{14f}\\
 \bar x_i^p(k\mid t)&\in\overline{\mathbb X}_i,\tag{14h}\\
 S_i^p(N_p\mid t)&=0.\tag{14i}
 \end{align}
-The source prints these rows without separate row-wise quantifiers; its trajectory domains below give $k\in\mathbb K_{0:N_p-1}$ for inputs and the dynamics transitions, and $k\in\mathbb K_{0:N_p}$ for states, errors, and sliding variables.
+源数据未以单独的列量化符形式打印这些行；其轨迹域下方为$k\in\mathbb K_{0:N_p-1}$表示输入值，动态转换用$k\in\mathbb K_{0:N_p}$表示状态、误差和滑动变量。
 
-\subsection*{Stage cost, notation, and trajectory roles (physical pages 3 and 7)}
+\subsection*{阶段成本、表示方式以及轨迹角色（物理页面3和7）}
 \begin{equation}
 \begin{split}
 l_i\bigl(\bar x_i^p,\bar u_i^p,S_i^p,\bar x_i^a;k\mid t\bigr)
@@ -38,22 +39,22 @@ l_i\bigl(\bar x_i^p,\bar u_i^p,S_i^p,\bar x_i^a;k\mid t\bigr)
 &+\|\bar x_i^p(k\mid t)-\bar x_i^a(k\mid t)\|_{F_i}.
 \end{split}\tag{15}
 \end{equation}
-Here $Q_i,R_i,F_i$ are positive weight matrices. The notation section defines
+这里的$Q_i,R_i,F_i$是正权重矩阵。符号部分进行了定义。
 \[
 \|x\|_Q\triangleq\sqrt{x^{\mathsf T}Qx},
 \qquad x\in\mathbb R^n,\quad Q\in\mathbb R^{n\times n}
 \text{ positive definite}.
 \]
-Thus (15) contains weighted norms, not squared weighted norms. Also,
+因此，(15) 中包含的是加权范数，而不是平方后的加权范数。此外，
 \[
 C=\begin{bmatrix}1&0\end{bmatrix},\qquad
 D=\begin{bmatrix}0&1\end{bmatrix}.
 \]
-For arbitrary integers $N_1<N_2$, the source defines
+对于任意整数$N_1<N_2$，源代码如下：
 \[
 \mathbb K_{N_1:N_2}=\{N_1,N_1+1,\ldots,N_2-1,N_2\}.
 \]
-The notation $x(k\mid t)$ denotes the value of $x(t+k)$ predicted at time $t$. The predictive horizon is $N_p$; within $[t,t+N_p]$ the source distinguishes
+符号$x(k\mid t)$表示在时间$t$时预测的$x(t+k)$的值。预测的时间范围为$N_p$；在$[t,t+N_p]$期间，来源会进行区分。
 \[
 \begin{array}{lll}
 \text{predicted:}&
@@ -70,44 +71,44 @@ The notation $x(k\mid t)$ denotes the value of $x(t+k)$ predicted at time $t$. T
 &\bar u_i^a(k\mid t),&k\in\mathbb K_{0:N_p-1}.
 \end{array}
 \]
-The predicted quantities parameterize the optimization; the starred quantities are its solution. The assumed trajectories are generated from optimal trajectories and communicated to out-neighbors. In a local solve, the current nominal state, error history in (14e), assumed trajectories, topology, and controller parameters are data; the minimized-over variables are the predicted nominal inputs. Predicted states, errors, and sliding variables are linked to those inputs by (14b)--(14f).
+预测的量化参数用于优化过程；带有星号的量化值是该问题的解。假设的轨迹是从最优轨迹生成的，并传递给邻近节点。在局部求解过程中，当前的名义状态、误差历史（如(14e)所示）、假设的轨迹、拓扑结构以及控制器参数都是数据；而经过最小化的变量则是对应的预测名义输入值。预测的状态、误差以及滑动变量都通过(14b)--(14f)与这些输入值相关联。
 
-\subsection*{Topology and physical inputs (physical pages 3--4)}
-There are $N$ following CAVs and a virtual leader $0$, on a flat, straight road. Communication delays, packet losses, and failures are neglected. The following-vehicle graph and augmented graph are
+\subsection*{拓扑学与物理输入（物理页面 3–4）}
+在一条平坦、笔直的道路上，有$N$辆车辆跟随在CAV之后，还有一个虚拟领导者$0$。通信延迟、数据包丢失以及故障等问题都被忽略了。以下车辆图以及扩展图如下所示：
 \[
 \mathscr G=(\mathscr V,\mathscr E),\qquad
 \mathscr V=\{1,\ldots,N\},\qquad
 \overline{\mathscr G}=(\overline{\mathscr V},\overline{\mathscr E}).
 \]
-The augmented graph includes the virtual leader. The set $\mathbb I_i$ consists of all neighbors from which CAV $i$ can receive information, and $\mathbb O_i$ consists of all neighbors to which it can send information. The symbol $|\mathbb I_i|$ is the cardinality of the in-neighbor set.
+该扩展图包含了虚拟领导者。集合$\mathbb I_i$包含了所有能够向CAV$i$提供信息的邻居节点，而$\mathbb O_i$则包含了所有可以向其发送信息的邻居节点。符号$|\mathbb I_i|$表示内部邻居节点的数量。
 
-\paragraph{Assumption 1.}
-The augmented graph is a directed acyclic graph (a finite directed graph without directed cycles) and contains a directed spanning tree rooted at node $0$. The source's accompanying ``i.e.'' clause is retained as printed:
+\paragraph{假设 1.}
+该扩展图是一个有向无环图（即一个没有有向环的有限有向图），并且包含一个以节点$0$为根的有向生成树。源代码的“即”这一短语被原样保留了下来。所有数字都保持不变。
 \[
 n_0=0,n_1,\ldots,n_N=i
 \quad\text{is a sequence of all the nodes such that}\quad
 (n_i,n_{i+1})\in\overline{\mathscr E},
 \quad\forall i\in\{0,1,2,\ldots,N-1\}.
 \]
-\emph{Printed scope issue:} the clause reuses $i$ as endpoint and running index, and a sequence through all nodes is not generally equivalent to existence of a rooted spanning tree. Neither the clause nor the stated DAG/rooted-tree premise is replaced here.
+\emph{打印的范围问题：}该条款再次使用$i$作为终点和运行索引，而遍历所有节点的序列通常并不等同于存在一棵有根生成树。无论是该条款还是所陈述的DAG/有根树前提，都未被替换。
 
-For $i=0,1,2,\ldots,N$, the actual vehicle dynamics are
+对于$i=0,1,2,\ldots,N$，实际的车辆动力学情况为：
 \begin{equation}
 \dot p_i(t)=v_i(t),\qquad
 \dot v_i(t)=u_i(t)+d_i(t).
 \tag{1}
 \end{equation}
-Here $p_i,v_i,u_i,d_i$ are position, velocity, desired acceleration, and lumped unknown disturbance, respectively. The disturbance is unknown but bounded within a compact interval:
+这里的$p_i,v_i,u_i,d_i$分别代表位置、速度、期望的加速度以及混杂的未知扰动。虽然这些扰动是未知的，但它们被限制在一个有限的区间内。
 \[
 d_i(t)\in\mathbb W_i,\qquad \mathbb W_i\text{ is a compact interval}.
 \]
-Without disturbance, the nominal quantities satisfy
+没有干扰的情况下，名义上的数量满足以下条件：
 \begin{equation}
 \dot{\bar p}_i(t)=\bar v_i(t),\qquad
 \dot{\bar v}_i(t)=\bar u_i(t).
 \tag{2}
 \end{equation}
-The actual and nominal state vectors and their deviation are
+实际状态向量与名义状态向量及其偏差如下：
 \[
 x_i(t)=\begin{bmatrix}p_i(t)&v_i(t)\end{bmatrix}^{\mathsf T},\qquad
 \bar x_i(t)=\begin{bmatrix}\bar p_i(t)&\bar v_i(t)\end{bmatrix}^{\mathsf T},\qquad
@@ -119,7 +120,7 @@ A=\begin{bmatrix}0&1\\0&0\end{bmatrix},\quad
 B=\begin{bmatrix}0\\1\end{bmatrix}.
 \tag{3}
 \end{equation}
-Euler discretization with sampling time $\Delta t$ gives
+使用采样时间$\Delta t$进行欧拉离散化后，可以得到…
 \begin{equation}
 \bar x_i(k+1)=A_d\bar x_i(k)+B_d\bar u_i(k),\qquad
 A_d=\begin{bmatrix}1&\Delta t\\0&1\end{bmatrix},\quad
@@ -127,39 +128,39 @@ B_d=\begin{bmatrix}0\\\Delta t\end{bmatrix}.
 \tag{13}
 \end{equation}
 
-\subsection*{Spacing errors and coupled sliding surface (physical pages 4 and 6)}
-The fixed spacing-policy parameters $l$ and $h_i$ are the predefined constant distance and time headway, respectively. The actual and nominal average spacing errors are
+\subsection*{间距错误以及耦合滑动表面（物理页面4和6）}
+固定的间距策略参数$l$和$h_i$，分别指的是预先定义的恒定距离和时间间隔。实际的平均间距误差与名义上的平均间距误差是……
 \begin{align}
 e_i(t)&=\frac{1}{|\mathbb I_i|}\sum_{j\in\mathbb I_i}
 \left(p_i(t)-p_j(t)+(i-j)(l+h_iv_i(t))\right),\tag{4}\\
 \bar e_i(t)&=\frac{1}{|\mathbb I_i|}\sum_{j\in\mathbb I_i}
 \left(\bar p_i(t)-\bar p_j(t)+(i-j)(l+h_i\bar v_i(t))\right).\tag{5}
 \end{align}
-The accompanying velocity errors are
+附带的速度误差如下：
 \[
 e_{vi}(t)=v_i(t)-v_0(t),\qquad
 \bar e_{vi}(t)=\bar v_i(t)-\bar v_0(t).
 \]
-The sliding variables are defined by
+滑动变量是通过以下方式定义的：
 \begin{align}
 s_i(t)&=\bar e_i(t)+\int_0^t k_i\bar e_i(\tau)\,d\tau,
 \qquad k_i>0,\tag{8}\\
 S_i(t)&=\beta^{i-f}s_f(t)-s_i(t),\qquad 0<\beta<1.\tag{9}
 \end{align}
-Specifically,
+具体来说，
 \[
 s_0(t)=0.
 \]
-The parameter $\beta$ is constant, and $f$ is the index of the nearest in-neighbor CAV. On the string-stable CSS, the source states
+参数$\beta$是常量，而$f$则是最近邻CAV的索引。在字符串稳定的CSS中，源状态为
 \[
 S_i(t)=0,\qquad s_i(t)=0,
 \]
-and obtains
+并且获得
 \begin{equation}
 \dot{\bar e}_i(t)=-k_i\bar e_i(t).
 \tag{10}
 \end{equation}
-The corresponding equivalent control input is
+相应的等效控制输入是：
 \begin{equation}
 u_{si}(t)=
 \frac{\displaystyle\sum_{j\in\mathbb I_i}
@@ -167,18 +168,18 @@ u_{si}(t)=
 {\displaystyle h_i\sum_{j\in\mathbb I_i}(i-j)}.
 \tag{11}
 \end{equation}
-These continuous-time relations define the CSS used in the terminal construction; they are not additional stage constraints requiring the predicted trajectory to lie on the CSS before the terminal point.
+这些连续时间关系定义了终端构造中使用的CSS；它们并不是额外的阶段约束条件，要求预测的轨迹在到达终点之前必须位于CSS上。
 
-\subsection*{Feedback and tube-tightened domains (physical pages 6--7)}
-The integrated actual control input is
+\subsection*{反馈和管道紧缩的域（物理页面 6–7）}
+集成实际控制输入是
 \begin{equation}
 u_i(t)=\bar u_i(t)+k_{xi}\widetilde x_i(t),
 \qquad k_{xi}\in\mathbb R^{1\times2}.
 \tag{12}
 \end{equation}
-The nominal input $\bar u_i(t)$ is the feedforward term produced by the nominal DMPC. The feedback gain must be selected to guarantee stability of $\widetilde x_i(t)$. The feedback term is intended to keep the actual state within a robustly positively invariant tube, denoted by $\mathbb Z_{xi}$ and centered at the nominal state. The source does not supply a defining invariance equation or a numerical construction for this set.
+名义输入$\bar u_i(t)$是由名义DMPC产生的前馈项。反馈增益的选取必须确保$\widetilde x_i(t)$的稳定性。反馈项的作用是将实际状态保持在由$\mathbb Z_{xi}$表示的、以名义状态为中心的稳健正不变区间内。该来源并未提供关于这一集合的定义不变性方程或数值构造方法。
 
-The tightened domains printed below (14) are
+下面列出的严格限制范围（14）是：
 \[
 \boxed{\quad
 \overline{\mathbb U}_i
@@ -187,18 +188,18 @@ The tightened domains printed below (14) are
 \overline{\mathbb X}_i=\mathbb X_i\ominus\mathbb Z_{xi}.
 \quad}
 \]
-Here $\mathbb U_i$ and $\mathbb X_i$ are the actual control-input and state constraint sets. They remain abstract. The operation $\ominus$ denotes Pontryagin difference; $\oplus$ denotes Minkowski sum.
+这里，$\mathbb U_i$和$\mathbb X_i$是实际的控制输入和状态约束集。它们仍然保持抽象状态。操作$\ominus$表示Pontryagin差；$\oplus$表示Minkowski和。
 
-\emph{Printed omission:} the extra coefficient $k_{di}$ in the input tightening has no definition in the supplied paper, and (12) contains no corresponding disturbance-feedback term. The printed tightening is retained without deleting $k_{di}\mathbb W_i$, assigning a value to $k_{di}$, or modifying (12). The page-7 image reads $k_{xi}$ in the first subtraction, consistently with (12), rather than the $k_{ci}$ given in the auxiliary image transcription.
+\emph{打印省略内容：}多余的系数$k_{di}$在输入过程中没有在提供的文档中定义，而(12)则不包含相应的干扰-反馈项。 打印出的紧缩内容保持不变，不删除$k_{di}\mathbb W_i$，为$k_{di}$赋值，也不修改（12）。 第7页的图像中，第一次减法运算的结果显示为$k_{xi}$，这与(12)一致，而不是辅助图像转录中显示的$k_{ci}$。所有数字都保持不变。
 
-\subsection*{Assumed trajectories and terminal extension (physical pages 7--9)}
-The selected terminal-state extension is the displayed equation (16):
+\subsection*{假设轨迹和终端延伸（物理页面 7–9）}
+所选的终端状态扩展就是所显示的方程式（16）：
 \begin{equation}
 \bar x_i^a(N_p\mid t+1)
 =A_d\bar x_i^a(N_p\mid t)+B_d\bar u_i^*(N_p\mid t).
 \tag{16}
 \end{equation}
-Its terminal virtual input, defined from (11), is
+其终端虚拟输入，根据公式(11)定义，为
 \begin{equation}
 \bar u_i^*(N_p\mid t)=
 \frac{1}{\displaystyle h_i\sum_{j\in\mathbb I_i}(i-j)}
@@ -209,19 +210,19 @@ Its terminal virtual input, defined from (11), is
 \right).
 \tag{17}
 \end{equation}
-This is a virtual input characterizing the terminal assumed state, not an additional optimization variable at $k=N_p$. The terminal assumed spacing error is defined on physical page 9 by
+这是表征终端假定状态的虚拟输入，并非$k=N_p$处的额外优化变量。终端假定的间距误差在物理页面9上有所定义。
 \[
 \bar e_i^a(N_p\mid t)=\frac{1}{|\mathbb I_i|}\sum_{j\in\mathbb I_i}
 \left(C\bar x_i^a(N_p\mid t)-C\bar x_j^a(N_p\mid t)
  +(i-j)\left(l+h_iD\bar x_i^a(N_p\mid t)\right)\right).
 \]
-The accompanying terminal sliding-variable extension is
+附带的终端滑动变量扩展部分如下：
 \[
 s_i^a(N_p\mid t+1)=0.
 \]
-The source attributes this extension to the flatness property of the sliding surface, together with (14i) and (17).
+该扩展特性归因于滑动表面的平坦性，以及(14i)和(17)因素的共同作用。
 
-Algorithm 1 gives the nonterminal shifts and assumed-input update, for all $i=1,\ldots,N$:
+算法 1 给出了所有 $i=1,\ldots,N$ 的非终端移位和假设输入更新过程：
 \[
 \bar u_i^a(k\mid t+1)=
 \begin{cases}
@@ -243,10 +244,10 @@ s_i^*(k+1\mid t),&k\in\mathbb K_{0:N_p-1},\\
 0,&k=N_p.
 \end{cases}
 \]
-Equation (16), rather than the alternative terminal-state row in Algorithm 1, supplies the terminal state for this selected version.
+方程（16）提供了该选定版本的终止状态，而不是算法1中的另一种终止状态行。所有数字都保持不变。
 
-\paragraph{Initialization and application (Algorithm 1, physical page 8).}
-For each $i=1,\ldots,N$, initialize
+\paragraph{初始化与应用（算法1，物理页面8）。}
+对于每个$i=1,\ldots,N$，进行初始化操作。
 \[
 \bar u_i^a(k\mid0)=0,\qquad k\in\mathbb K_{0:N_p-1},
 \]
@@ -260,7 +261,7 @@ A_d\bar x_i^a(k-1\mid0)+B_d\bar u_i^a(k-1\mid0),
 \qquad
 \widehat v_i(0)=v_i(0).
 \]
-At time $t\geq0$, assumed states and sliding variables for $k\in\mathbb K_{0:N_p}$ are transmitted to $j\in\mathbb O_i$ and received from in-neighbors. Each CAV solves $\mathscr P_i(t)$, prepares the shifted assumed trajectories above, and uses
+在时间$t\geq0$时，$k\in\mathbb K_{0:N_p}$的假设状态与滑动变量会被传输到$j\in\mathbb O_i$，并从邻近节点接收回来。每个CAV都会解决$\mathscr P_i(t)$问题，准备上述偏移后的假设轨迹，并对其进行处理。
 \[
 \bar x_i(t+1)=A_d\bar x_i(t)+B_d\bar u_i^*(0\mid t),
 \qquad
@@ -270,17 +271,17 @@ At time $t\geq0$, assumed states and sliding variables for $k\in\mathbb K_{0:N_p
 u_i(t)=\bar u_i^*(0\mid t)+k_{xi}\widetilde x_i(t).
 \]
 
-\paragraph{Source discrepancies and verification limits.}
-Algorithm 1 instead prints the following terminal branch for its assumed-state update:
+\paragraph{来源差异和验证限制。}
+算法 1 则打印出以下终端分支，用于其假设状态的更新：
 \[
 \bar x_i^a(k\mid t+1)
 =A_d\bar x_i^a(N_p-1\mid t+1)
  +B_d\bar u_i^*(N_p-1\mid t+1),\qquad k=N_p.
 \]
-It uses a next-time optimal input rather than the virtual input of (16)--(17). This conflicting branch is recorded here only as a source note and is not imposed in the selected equation-(16) version. The initialization retains the printed actual state $x_i(t)$ and its time argument; no equality between actual and nominal initial states is supplied. Algorithm 1 initializes $\widehat v_i$ without defining its subsequent role and does not give an explicit initial assumed-sliding-trajectory row. No initialization repair is supplied. Its receive instruction also prints ``from CAVs $i\in\mathbb I_i$'' while displaying the received trajectories with index $j$; the in-neighbor definition supplies the communication role stated above.
+它使用的是“下一次最优输入”，而不是(16)--(17)的虚拟输入。这个冲突的分支仅作为注释记录在这里，并未被应用到选定的方程-(16)版本中。初始化时，保留了实际打印出的状态$x_i(t)$及其时间参数；实际上，并没有提供实际状态与名义初始状态之间的相等关系。算法1在初始化时只定义了$\widehat v_i$的作用，但没有明确给出初始滑动轨迹的行数。也没有提供任何初始化修复措施。其接收指令也打印出“来自CAVs的$i\in\mathbb I_i$”，同时显示带有索引$j$的接收轨迹；邻域定义则提供了上述所述的通信角色。
 
-The paper supplies neither general numerical bounds for $\mathbb U_i,\mathbb X_i,\mathbb W_i$ nor a special case for a zero denominator in (11) or (17). Its index-set definition is stated only for $N_1<N_2$, although the algorithm uses shortened horizon ranges. No extra bounds, denominator restrictions, or empty-range conventions have been added. The history term $\bar e_i(0\mid\tau)$ in (14e) is retained with its printed lack of a trajectory superscript.
+该论文并未为$\mathbb U_i,\mathbb X_i,\mathbb W_i$提供一般的数值界限，也未对(11)或(17)中零分母的情况给出特殊情况下的界限。其索引集定义仅针对$N_1<N_2$进行了说明，尽管该算法使用了较短的时间范围。文中未添加额外的界限、分母限制或空范围约定。在(14e)中的历史术语$\bar e_i(0\mid\tau)$仍保留其印刷形式的轨迹上标缺失状态。
 
-The external detailed neighborhood definitions in Bian et al. (2020a), the feedback/RPI construction references Chen et al. (2022) and Feng et al. (2020), and the cited sliding-surface flatness reference Hansen et al. (2017) are unverified beyond what this paper states. No official supplementary material was supplied. Simulation-specific weights, time steps, horizons, spacings, and acceleration limits are not part of this abstract local formulation.
+Bian等人（2020a）中提出的外部详细邻域定义，Chen等人（2022）和Feng等人（2020）关于反馈/RPI构建的参考文献，以及Hansen等人（2017）关于滑动表面平坦度的参考文献，这些内容在本文中已充分说明，无需进一步验证。此外，没有提供任何官方补充材料。模拟相关的权重、时间步长、时间范围以及加速度限制等参数并不属于本摘要局部公式化的内容。
 
 \end{document}

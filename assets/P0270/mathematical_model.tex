@@ -1,37 +1,37 @@
 \documentclass{article}
 \usepackage{amsmath,amssymb}
+\usepackage[UTF8]{ctex}
 \begin{document}
-\section*{Shuttle assignment, trips and station times}
-The requested pickup$e_p$,actual origin arrival$b_p$,and destination arrival$c_p$
-are distinct. This restores source Table2/3 and(1a); the original extracted
-The objective is the total cost expression (1a).
-Let$B=B_L\dot\cup B_D\dot\cup B_T$denote idle,dwelling,travelling vehicles,
-$P=P_N\dot\cup P_U$new and onboard groups,trip$k=1,\ldots,K$,stop$i=1,\ldots,I$.
-All groups have one origin and one strictly later destination; their indicator
-data are$\beta_{pi},\gamma_{pi}$and group size$z_p>0$.
-Input includes current time$t_0$,current/next stop$\tilde i_b$,historical stop
-arrival$h_{bi}$,remaining distance$r_b$,segment distance$d_i$,speed bounds,
-capacity$C_b$,cost$f_b$,boarding/alighting seconds$a,e$,turnaround$\tau_I$,
-maximum dwell$\tau_{\max}$,departure window$T_W$,and finite$M$.
-Onboard group$p$has fixed$(\hat b_p,\hat k_p)$and historic pickup$h_p$.
-Variables$\alpha_{bk},x_{bkp}\in\{0,1\}$,station arrival$A_{bki}$,
-departure$D_{bki}$,load$Y_{bki}$,dwell$\delta_{bki}$,and$b_p,c_p,\Psi$
-are nonnegative continuous except the binaries.
-Define
+\section*{穿梭运输任务、行程以及车站停留时间}
+请求的接载点$e_p$，实际出发点$b_p$，以及目的地到达点$c_p$是不同的。这恢复了源表2/3和(1a)；原始提取的内容
+
+目标是总成本表达式(1a)。
+让$B=B_L\dot\cup B_D\dot\cup B_T$表示闲置、居住、行驶车辆，
+$P=P_N\dot\cup P_U$表示新的和搭载的群体，旅程$k=1,\ldots,K$，停靠点$i=1,\ldots,I$。
+所有群体都有一个出发点和一个严格晚于出发点的目的地；它们的指示数据分别是$\beta_{pi},\gamma_{pi}$和群体规模$z_p>0$。
+输入包括当前时间$t_0$，当前/下一个停靠点$\tilde i_b$，历史停靠点到达信息$h_{bi}$，剩余距离$r_b$，路段距离$d_i$，速度限制，容量$C_b$，成本$f_b$，上下车时间$a,e$，周转时间$\tau_I$，最大停留时间$\tau_{\max}$，出发窗口$T_W$，以及有限性$M$。
+搭载群体$p$具有固定的$(\hat b_p,\hat k_p)$和历史接载点$h_p$。
+变量$\alpha_{bk},x_{bkp}\in\{0,1\}$表示车站到达时间，
+$A_{bki}$表示出发时间，
+$D_{bki}$表示负载，
+$Y_{bki}$表示停留时间，
+$\delta_{bki}$表示停留时间，
+以及$b_p,c_p,\Psi$表示其他变量
+是非负的连续值，除了二进制值。
 \[
 Q^+_{bki}=\sum_{p\in P}z_p\beta_{pi}x_{bkp},\quad
 Q^N_{bki}=\sum_{p\in P_N}z_p\beta_{pi}x_{bkp},\quad
 Q^-_{bki}=\sum_{p\in P}z_p\gamma_{pi}x_{bkp}.
 \]
-For$(b,k)$let$s_{bk}=\tilde i_b$if$k=1,b\in B_D\cup B_T$,otherwise1;
-let$J_{bk}=\{s_{bk},\ldots,I\}$and
-$Dwell_{bk}=\{s_{bk}+1,\ldots,I\}$if$k=1,b\in B_D$,otherwise$J_{bk}$.
-Minimize
+对于$(b,k)$，如果$k=1,b\in B_D\cup B_T$成立，则设为$s_{bk}=\tilde i_b$；否则设为1；
+设为$J_{bk}=\{s_{bk},\ldots,I\}$，并且
+如果$k=1,b\in B_D$成立，则设为$Dwell_{bk}=\{s_{bk}+1,\ldots,I\}$；否则设为$J_{bk}$。
+最小化
 \[
 w_1\sum_{p\in P_N}z_p(b_p-e_p)+w_2\sum_{p\in P}z_p(c_p-b_p)
 +w_3\sum_{b,k}f_b\alpha_{bk}.
 \]
-The complete constraints implemented by the current code are
+当前代码所实现的完整约束条件包括：
 \begin{align*}
 b_p-e_p&\le\Psi,\quad b_p\ge e_p&&p\in P_N,\\
 b_p&=h_p,\quad c_p\ge t_0&&p\in P_U,\\
@@ -66,11 +66,6 @@ d_i/v_b^{\max}&\le A_{bk,i+1}-D_{bki}\le d_i/v_b^{\min}
 -M(2-\gamma_{pi}-x_{bkp})&\le c_p-A_{bki}\le M(2-\gamma_{pi}-x_{bkp})
 &&p\in P,i\in J_{bk}.
 \end{align*}
-Origin/destination times link to station arrivals, as specified in the
-source equations. In this(1a)variant
-$\Psi$ is an unpenalized upper bound on waiting time.
-Replacing the maximum in(2c)/(2d)by both lower bounds is exact.
-Historic pickup and current dwelling arrival are fixed input state.
-Four supplied concrete instances have5,10,15,20new groups respectively.
+起源/目的地时间与车站到达时间相关联，如源方程中所述。在这种(1a)变体中，$\Psi$是等待时间的一个不受惩罚的上限。用两个下限替换(2c)/(2d)中的最大值是正确的做法。历史上的 pickup 和当前居住地的到达时间是固定的输入状态。提供的四个具体实例分别有5、10、15、20个新小组。
 
 \end{document}

@@ -7,13 +7,15 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 
+\usepackage[UTF8]{ctex}
 \begin{document}
 
-\section*{Problem: Optimization Problem}
+\section*{问题：优化问题}
 
-\textbf{Model Source}: Directly Extracted
+\textbf{模型来源}：直接提取的
 
-\subsection*{Decision Variables}
+\subsection*{决策变量}
+\[
 \begin{aligned}
 & p_{hkr} && \text{路径选择比例，对于出发时间 } h \in \mathcal{H}, \text{ OD对 } k \in \mathcal{K}, \text{ 路径 } r \in R_k \\
 & \boldsymbol{u}_1, \boldsymbol{u}_2 && \text{对偶变量，对应于OD需求上下界约束} \\
@@ -21,14 +23,17 @@
 & u_3 && \text{对偶变量，对应于总需求比例约束} \\
 & \boldsymbol{y}_i && \text{辅助变量，用于分解鲁棒不确定集， } i = 1, \dots, 6
 \end{aligned}
+\]
 
-\subsection*{Objective Function}
+\subsection*{目标函数}
 \begin{equation}\tag{31a}
 \min_{\boldsymbol{p}, \boldsymbol{u}, \boldsymbol{v}, \boldsymbol{y}} \quad \hat{Z}(\boldsymbol{p}, \boldsymbol{u}, \boldsymbol{v}, \boldsymbol{y})_{\text{RC}} = \sum_{(h,k,r)\in \mathcal{P}} \beta_{hkr}(\tilde{\boldsymbol{f}}) \cdot (\bar{d}_{hk} \cdot p_{hkr} - \tilde{f}_{hkr}) + \rho_{1-\varepsilon} \|\boldsymbol{y}_1\|_2 + (\boldsymbol{d}^U - \bar{\boldsymbol{d}})^T \boldsymbol{u}_1 + (\bar{\boldsymbol{d}} - \boldsymbol{d}^L)^T \boldsymbol{u}_2 + (\boldsymbol{d}^U_{\mathcal{H}} - \boldsymbol{S}\bar{\boldsymbol{d}})^T \boldsymbol{v}_1 + (\boldsymbol{S}\bar{\boldsymbol{d}} - \boldsymbol{d}^L_{\mathcal{H}})^T \boldsymbol{v}_2 + (\Gamma - 1) \cdot (\boldsymbol{1}^T \bar{\boldsymbol{d}}) \cdot u_3 + Z(\tilde{\boldsymbol{f}})
 \end{equation}
 
-\subsection*{Constraints}
-\text{（鲁棒对等转换的辅助约束）} \\
+\subsection*{约束条件：}
+\text{（鲁棒对等转换的辅助约束）}
+\[
+\begin{gathered}
 \boldsymbol{D}^T \boldsymbol{u}_1 = \boldsymbol{y}_2
 \\
 -\boldsymbol{D}^T \boldsymbol{u}_2 = \boldsymbol{y}_3
@@ -38,25 +43,24 @@
 -(\boldsymbol{S}\boldsymbol{D})^T \boldsymbol{v}_2 = \boldsymbol{y}_5
 \\
 (\boldsymbol{1}^T \boldsymbol{D})^T u_3 = \boldsymbol{y}_6
-\\
+\end{gathered}
+\]
 \begin{equation}\tag{28g}
 \sum_{i=1}^{6} \boldsymbol{y}_i = (\boldsymbol{A}\boldsymbol{D})^T \boldsymbol{p}
 \end{equation}
-\\
 \begin{equation}\tag{28h}
 \boldsymbol{u}_1, \boldsymbol{u}_2, \boldsymbol{v}_1, \boldsymbol{v}_2, u_3 \geq \boldsymbol{0}
 \end{equation}
-\\
-\text{（路径比例约束）} \\
+\text{（路径比例约束）}
 \begin{equation}\tag{31c}
 \sum_{r \in R_k} p_{hkr} = 1 \quad \forall h \in \mathcal{H}, k \in \mathcal{K}
 \end{equation}
-\\
 \begin{equation}\tag{31d}
 0 \leq p_{hkr} \leq 1 \quad \forall (h, k, r) \in \mathcal{P}
 \end{equation}
 
-\subsection*{Complete Mathematical Model}
+\subsection*{完整的数学模型}
+\[
 \begin{aligned}
 \min_{\boldsymbol{p}, \boldsymbol{u}, \boldsymbol{v}, \boldsymbol{y}} \quad & \hat{Z}(\boldsymbol{p}, \boldsymbol{u}, \boldsymbol{v}, \boldsymbol{y})_{\text{RC}} = \sum_{(h,k,r)\in \mathcal{P}} \beta_{hkr}(\tilde{\boldsymbol{f}}) \cdot (\bar{d}_{hk} \cdot p_{hkr} - \tilde{f}_{hkr}) + \rho_{1-\varepsilon} \|\boldsymbol{y}_1\|_2 + (\boldsymbol{d}^U - \bar{\boldsymbol{d}})^T \boldsymbol{u}_1 + (\bar{\boldsymbol{d}} - \boldsymbol{d}^L)^T \boldsymbol{u}_2 + (\boldsymbol{d}^U_{\mathcal{H}} - \boldsymbol{S}\bar{\boldsymbol{d}})^T \boldsymbol{v}_1 + (\boldsymbol{S}\bar{\boldsymbol{d}} - \boldsymbol{d}^L_{\mathcal{H}})^T \boldsymbol{v}_2 + (\Gamma - 1) \cdot (\boldsymbol{1}^T \bar{\boldsymbol{d}}) \cdot u_3 + Z(\tilde{\boldsymbol{f}}) \\
 \text{s.t.} \quad & \boldsymbol{D}^T \boldsymbol{u}_1 = \boldsymbol{y}_2 \\
@@ -69,5 +73,6 @@
 & \sum_{r \in R_k} p_{hkr} = 1 \quad \forall h \in \mathcal{H}, k \in \mathcal{K} \\
 & 0 \leq p_{hkr} \leq 1 \quad \forall (h, k, r) \in \mathcal{P}
 \end{aligned}
+\]
 
 \end{document}

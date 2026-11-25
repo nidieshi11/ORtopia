@@ -1,30 +1,20 @@
 \documentclass[11pt]{article}
 \usepackage{amsmath,amssymb,geometry}
 \geometry{margin=22mm}
+\usepackage[UTF8]{ctex}
 \begin{document}
 
-\section*{P28: discrete-frequency service design and pricing}
-This is the explicitly repaired source interpretation implemented by the current
-solver. 
-Source: paper pp.5,8--12, equations (1),(2),(9)--(15),(19)--(34),(55).
+\section*{P28：离散频率服务设计与定价}
+这是当前求解器所实现的、经过明确修复的源代码解释。  
+来源：论文第5、8-12页，方程(1)、(2)、(9)-(15)、(19)-(34)、(55)。
 
-\subsection*{Sets and input}
-$A$ is the entire supplied transport-arc set. For each $a$, its positive integer
-frequency grid $\Theta_a$, monthly capacity per departure $J_a$, fixed cost $F_a$
-and transport mode are supplied. $T=720$ hours; all times and deadlines use hours.
-Every shipment $k\in K$ belongs to exactly one shipper class with time value $v_k$
-and reliability value $r_k$, and demand $q_k>0$. $L_k$ contains all simple supplied-network
-paths, with transfers included in path time $t_{kl}$ and variable cost $c_{kl}$.
-$u_{kl}$ is the sum of unreliable arc travel times. $D_k$ is the delivery deadline.
-$U_k>0$ is the outside-option generalized cost. $K_C\subseteq K$ has a competing
-service with generalized cost $C_k>0$. $W$ is the carrier's waiting cost and $\Psi$
-the unused-capacity penalty. Prices and outside costs have consistent currency units.
+\subsection*{集合与输入}
+$A$是所提供的全部运输弧集。对于每个$a$，其正整数频率网格$\Theta_a$，每月每个出发点的容量$J_a$，固定成本$F_a$以及运输方式均已提供。$T=720$小时；所有时间和截止日期均以小时为单位。每批货物$k\in K$恰好属于一个发货类别，该类别具有时间价值$v_k$和可靠性价值$r_k$，以及需求$q_k>0$。$L_k$包含了所有简单提供的网络路径，路径中的转运时间$t_{kl}$和可变成本$c_{kl}$均已包含在内。$u_{kl}$是不可靠弧线旅行时间的总和。$D_k$是交货截止日期。$U_k>0$是外部选项的总成本。$K_C\subseteq K$提供了一种具有总成本$C_k>0$的竞争服务。$W$是承运人的等待成本，而$\Psi$则是未使用容量的惩罚。价格和外部成本具有统一的货币单位。
 
-\subsection*{Variables and definitions}
-$B_{ai},f_{kl},b_k^o,b_k^c$ are binary; $b^c$ exists only on $K_C$.
-$0\le z_{kl},z_k^o,z_k^c\le q_k$; $z^c$ exists only on $K_C$.
-$0\le p_{kl},\lambda_k\le U_k$. Auxiliary $0\le g_{klai}\le q_k$
-exists for every non-truck arc $a$ of path $l$ and $i\in\Theta_a$.
+\subsection*{变量与定义}
+$B_{ai},f_{kl},b_k^o,b_k^c$是二进制的；$b^c$仅存在于$K_C$上。
+$0\le z_{kl},z_k^o,z_k^c\le q_k$；$z^c$仅存在于$K_C$上。
+$0\le p_{kl},\lambda_k\le U_k$。辅助$0\le g_{klai}\le q_k$存在于路径$l$和$i\in\Theta_a$中每一个非卡车弧$a$上。
 \[
  \sum_{i\in\Theta_a} B_{ai}=1,\quad
  y_a=\sum_i i B_{ai},\qquad
@@ -36,12 +26,9 @@ exists for every non-truck arc $a$ of path $l$ and $i\in\Theta_a$.
  G_{kl}=v_k(t_{kl}+w_{kl})+r_k u_{kl},\quad
  \ell_a=\sum_{k,l:a\in l}z_{kl}.
 \]
-The path price upper bound is without loss for positive-flow paths because
-their price plus nonnegative generalized time cost cannot exceed $U_k$.
-Unused paths can be priced at $U_k$. The finite positive frequency grid is an
-explicit finite frequency choice supplied by the instance.
+正流路径的路径价格上限为无损失，因为它们的价格加上非负广义时间成本不会超过$U_k$。未使用的路径可以定价为$U_k$。有限正频率网格是由实例提供的明确有限频率选择。
 
-\subsection*{Full feasible region}
+\subsection*{完整的可行区域}
 \begin{align}
  \sum_{l\in L_k}z_{kl}+z_k^o+\mathbf1_{\{k\in K_C\}}z_k^c&=q_k,\\
  \ell_a&\le J_a y_a,\\
@@ -52,17 +39,14 @@ explicit finite frequency choice supplied by the instance.
  0\le p_{kl}+G_{kl}-\lambda_k&\le M_{kl}(1-f_{kl}),\\
  t_{kl}+w_{kl}&\le D_k+(t_{kl}+\bar w_{kl})(1-f_{kl}).
 \end{align}
-Here $\bar w_{kl}=\sum_{a\in l}\max_{i\in\Theta_a}w_{ai}$ and
-$M_{kl}=U_k+v_k(t_{kl}+\bar w_{kl})+r_k u_{kl}$, so both constants follow from
-the actual supplied finite bounds. The products needed in the objective have
-the exact binary-continuous linearization
+这里$\bar w_{kl}=\sum_{a\in l}\max_{i\in\Theta_a}w_{ai}$和$M_{kl}=U_k+v_k(t_{kl}+\bar w_{kl})+r_k u_{kl}$都是常数，它们都来源于实际提供的有限边界。目标函数中所需的乘积，其二进制连续线性化形式与原始形式完全一致。
 \[
  g_{klai}\le z_{kl},\quad g_{klai}\le q_k B_{ai},\quad
  g_{klai}\ge z_{kl}-q_k(1-B_{ai}),\quad g_{klai}\ge0.
 \]
-Each shipment constraint is indexed by the classes belonging to shipment $k$.
+每批货物的约束条件都与其所属的类别相关联，这些类别属于货物$k$。
 
-\subsection*{Objective}
+\subsection*{目标}
 \begin{align}
 \max\quad&
 \sum_k(q_k\lambda_k-U_kz_k^o)
@@ -72,12 +56,7 @@ Each shipment constraint is indexed by the classes belonging to shipment $k$.
  \sum_{i\in\Theta_a}(v_k+W)\frac{T}{2i}g_{klai}\\
 &-\sum_a\left[F_a y_a+\Psi(J_a y_a-\ell_a)\right].
 \end{align}
-Complementarity and demand conservation imply
-$q_k\lambda_k-U_kz_k^o-C_kz_k^c-\sum_lG_{kl}z_{kl}
-=\sum_lp_{kl}z_{kl}$, with the competitor term omitted outside $K_C$.
-Thus this objective is actual revenue less operating, waiting and idle-capacity
-cost. Idle capacity is charged once per arc. The original extraction omitted
-the outside, competitor and generalized-cost deductions and misbound several
-indices; the current model makes those repairs explicit.
+互补性和需求守恒意味着$q_k\lambda_k-U_kz_k^o-C_kz_k^c-\sum_lG_{kl}z_{kl}
+=\sum_lp_{kl}z_{kl}$，而竞争对手的相关项则被省略在$K_C$之外。因此，这一目标实际上就是实际收入减去运营、等待以及闲置产能的成本。闲置产能的成本是每弧一次。原始模型忽略了外部因素、竞争对手的影响以及广义成本的计算，同时也出现了一些指标的错误绑定问题；当前模型则对这些错误进行了修正。
 
 \end{document}

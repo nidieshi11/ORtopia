@@ -3,39 +3,21 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 
-\title{Core Mathematical Model}
+\title{核心数学模型}
 \date{}
 
+\usepackage[UTF8]{ctex}
 \begin{document}
 
 \maketitle
 
-\section*{Multiresource Flexible Job-Shop Scheduling}
+\section*{多资源灵活作业车间调度}
 
-\paragraph{Source and data definitions.}
-The selected application is the simultaneous-occupation multi-resource flexible
-job-shop problem, PDF pp.2--3 (printed pp.2323--2324), Sections 2 and 3.1,
-source equations (1)--(11). Let $J$ be jobs, $\Omega=\bigcup_{u\in J}O_u$
-be their operations, and $R$ be actual unary resources. Operation $i$ has
-requirement groups $G_i$; group $j$ must receive one resource from
-$R_{i,j}\subseteq R$. The same actual resource cannot serve two groups of
-the same operation. $p_{i,k}\ge0$ are fixed processing times. $PJ_i$ are
-immediate predecessors in a given acyclic precedence graph. All assigned
-resources are occupied simultaneously for the common operation duration.
-$\mathcal M$ is a valid disjunctive constant for the finite scheduling horizon;
-a feasible serial schedule supplies a makespan upper bound when needed.
-The independent variables are nonnegative starts $\tau_i$, durations $p_i$,
-makespan $C_{\max}\ge0$, assignments $Y$, resource-use indicators $U$ and
-pairwise order indicators $X$, with the binary domains below.
-The source completion variable is $t_i=\tau_i+p_i$; this changes notation,
-defined by its assignment meaning. The source's printed equation (3)
-has a double sum inconsistent with its explanation: we use its explicitly
-stated per-resource rule, also confirmed by CP constraint (14). The duration
-epigraph is retained as in source (4); at an optimum durations may be reduced
-to the largest selected resource processing time without worsening makespan.
+\paragraph{来源与数据定义。}
+所选的应用案例为同时占用多资源灵活作业车间问题，参见PDF第2-3页（印刷版第2323-2324页），第2节和第3.1节，源方程(1)-(11)。设$J$为作业，$\Omega=\bigcup_{u\in J}O_u$为其操作，$R$为实际一元资源。操作$i$有需求组$G_i$；组$j$必须从$R_{i,j}\subseteq R$获取一个资源。同一实际资源不能同时为同一操作的两个组服务。$p_{i,k}\ge0$为固定处理时间。$PJ_i$在给定无环优先图中为直接前置任务。所有分配的资源在共同操作持续时间内同时被占用。$\mathcal M$是有限调度时间范围内的有效不兼容性常数；在需要时，可行的串行调度可提供完工时间的上限。独立变量为非负开始时间$\tau_i$、持续时间$p_i$、完工时间$C_{\max}\ge0$、分配情况$Y$、资源使用指标$U$以及成对顺序指标$X$，其值域如下。源完成变量为$t_i=\tau_i+p_i$；其表示方式有所变化，由其分配含义决定。源方程的印刷版本(3)中存在双和项与其解释不一致的情况：我们采用其明确规定的每资源规则，该规则也由CP约束(14)所确认。持续时间图表保留源中的形式(4)；在最优情况下，持续时间可以减少到最大选定的资源处理时间，而不会增加完工时间。
 
 
-For practical Gurobi implementation, we use start-time variables $\tau_i$, duration variables $p_i$, and auxiliary binary variables $U_{i,k}$ indicating whether operation $i$ uses resource $k$. Let $R_i = \bigcup_{j \in G_i} R_{i,j}$ and let $\mathcal{P} = \{(i,i') \in \Omega \times \Omega : i < i'\}$. This is equivalent to the paper's MILP but avoids ambiguous time notation.
+在实际的 Gurobi 实现中，我们使用起始时间变量$\tau_i$，持续时间变量$p_i$，以及辅助二进制变量$U_{i,k}$，后者用于指示操作$i$是否使用了资源$k$。另外，还有$R_i = \bigcup_{j \in G_i} R_{i,j}$和$\mathcal{P} = \{(i,i') \in \Omega \times \Omega : i < i'\}$这些变量。这与论文中的 MILP 模型类似，但避免了时间表示上的歧义。
 
 \begin{equation}
 \min C_{\max}

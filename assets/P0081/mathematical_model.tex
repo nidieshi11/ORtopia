@@ -1,41 +1,21 @@
 \documentclass[11pt]{article}
 \usepackage{amsmath,amssymb,geometry}
 \geometry{margin=25mm}
+\usepackage[UTF8]{ctex}
 \begin{document}
-\section*{Core model: first-mile ridesharing with service-quality preferences}
-Source: Sections 3.1--3.3, PDF pp.4--7, Table 2 and (1)--(19).
-Only the complete original arc-based MILP is retained.
-\paragraph{Data.}
-$K$ is the heterogeneous vehicle set. Requests $R=R_G\mathbin{\dot\cup}R_D$
-are general and high-priority groups. Vehicle $k$ starts at ready location
-$g_k$ and all passengers go to station $0$. Define
+\section*{核心模型：以服务质量为偏好，进行首公里拼车服务}
+来源：第3.1节至3.3节，PDF第4-7页，表2以及(1)-(19)。  
+仅保留完整的基于弧的MILP模型。
+\paragraph{数据。}
+$K$是异构车辆集合。请求$R=R_G\mathbin{\dot\cup}R_D$属于一般且高优先级群体。车辆$k$从准备就绪的位置$g_k$出发，所有乘客前往车站$0$。定义
 \[
  A_k=\{(g_k,j):j\in R\}\cup
  \{(i,j):i\in R,j\in R\cup\{0\},i\ne j\}.
 \]
-All other arcs, including self-loops, outgoing station arcs and arcs to
-ready locations, are absent. Vehicle capacity, ready time and latest
-station arrival are $q_k,r_k,L_k$. For request $i$, $p_i$ is its number
-of riders, $s_i$ boarding/service time, $e_i$ earliest pickup,
-$a_i$ latest station arrival, $\varpi_i$ acceptable number of co-riders
-excluding its own party, and $u_i$ acceptable ride time.
-$d_{ij}$ is distance, $v>0$ speed (time units must agree), $c\ge0$
-distance cost, and $f\ge0$ vehicle fixed cost.
-$\alpha_g,\alpha_d$ penalize excess ride time and
-$\varsigma_g,\varsigma_d$ excess co-riders; high-priority coefficients
-are larger. The source uses $T=\max_i a_i$ and $P=\sum_i p_i$ in the
-following deactivation terms. Its intended time horizon and distances
-must make these constants valid.
-\paragraph{Variables and derived assignment.}
-$x^k_{ij},y^k\in\{0,1\}$ select arcs and vehicles. Let
-$b_i^k:=\sum_{j\in R\cup\{0\}\setminus\{i\}}x^k_{ij}$ (an expression,
-fixed expression). $dt^k\ge0$ is departure time,
-$t_i^k\ge0$ pickup time ($i\in R$), and $t_0^k\ge0$ station arrival.
-$\varrho^k\in\mathbb Z_+$ is total carried riders;
-$\zeta_i\in\mathbb Z_+$ excess co-riders;
-$\xi_i,z_i\ge0$ ride-time epigraph and excess ride-time penalty quantity.
-Here $\mathbb Z_+$ includes zero.
-\paragraph{One complete model.}
+所有其他路径，包括自环、前往其他车站的路径以及前往“准备就绪位置”的路径，均不存在。车辆容量、准备时间以及最晚到达车站的时间均为$q_k,r_k,L_k$。对于请求$i$，$p_i$表示乘客数量，$s_i$表示上下车/服务时间，$e_i$表示最早出发时间，$a_i$表示最晚到达车站时间，$\varpi_i$表示可接受的同乘人数（不包括驾驶员本人），而$u_i$则表示可接受的乘车时间。$d_{ij}$表示距离，$v>0$表示速度（时间单位必须一致），$c\ge0$表示距离成本，而$f\ge0$则表示车辆固定成本。$\alpha_g,\alpha_d$表示对超时的惩罚，而$\varsigma_g,\varsigma_d$表示对超人的惩罚；高优先级的系数更大。来源在以下停用条款中使用了$T=\max_i a_i$和$P=\sum_i p_i$。其预期的时间范围及距离必须使得这些常数具有有效性。
+\paragraph{变量与派生赋值。}
+$x^k_{ij},y^k\in\{0,1\}$选择弧线和车辆。让$b_i^k:=\sum_{j\in R\cup\{0\}\setminus\{i\}}x^k_{ij}$（一个固定表达式）。$dt^k\ge0$是出发时间，$t_i^k\ge0$是接载时间（$i\in R$），而$t_0^k\ge0$则是到达车站的时间。$\varrho^k\in\mathbb Z_+$是总共运送的乘客数量；$\zeta_i\in\mathbb Z_+$是额外的共同乘车人数；$\xi_i,z_i\ge0$是乘车时间以及额外的乘车时间惩罚量。这里的$\mathbb Z_+$包含零。
+\paragraph{一个完整的模型。}
 \begin{align}
 \min\quad &\sum_{k\in K}\sum_{(i,j)\in A_k}cd_{ij}x^k_{ij}
  +\sum_{k\in K}fy^k
@@ -62,9 +42,5 @@ Here $\mathbb Z_+$ includes zero.
 &x^k_{ij},y^k\in\{0,1\},\quad dt^k,t_i^k,t_0^k,z_i,\xi_i\ge0,
  \quad\zeta_i,\varrho^k\in\mathbb Z_+ .\tag{15--19}
 \end{align}
-The hard seat capacity is never softened. Co-rider and ride-time
-preferences are soft, but the latest station arrival remains hard for
-\emph{every} assigned request. With nonnegative penalty coefficients the
-epigraph variables attain their relevant positive-part quantities at an
-optimal solution. 
+硬座座位的数量永远不会减少。乘客的换乘偏好和乘车时间偏好是可以调整的，但对于\emph{以及所有被分配的}来说，到达最近车站的时间仍然是固定的。在非负惩罚系数的情况下，上述变量在最优解时也会达到相应的正值。 
 \end{document}

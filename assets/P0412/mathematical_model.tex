@@ -1,30 +1,14 @@
 \documentclass{article}
 \usepackage{amsmath,amssymb}
+\usepackage[UTF8]{ctex}
 \begin{document}
-\section*{Common train timetable with scenario-dependent integer passenger flows}
-The original extraction is retained separately. This complete event-indexed
-form specifies its timetable, transfer and passenger constraints and both
-objective terms. Source text on printed page 73 explicitly rounds alighting
-up and transfers down; the old extraction omitted that convention.
+\section*{根据场景不同的整数乘客流量，常见的火车时刻表}
+保留了原始提取内容。此完整的事件索引形式指定了其时间表、换乘和乘客约束以及两个目标条款。第73页的印刷版原文明确说明了上下车人数需要四舍五入，而原始提取内容则忽略了这一惯例。
 
-Lines are $l\in L$, directional station visits $i=1,\ldots,I_l$ and demand
-scenarios $s\in S$, of probability $\pi_s$ with $\sum_s\pi_s=1$.
-The time step is $\tau$ minutes and the normalized horizon is $t=1,\ldots,T$.
-Input station offsets $e_{li}$, dwell times $d_{li}$, headways
-$h_l^{\min},h_l^{\max}$ and transfer walks $f_{li,l'j}$ are in time-step
-units. Each line has capacity $C_l$, service count bounds
-$K_l^{\min},K_l^{\max}$ and service cost $c_l$.
-$p_{slit}$ is external arrival count, $\alpha_{sli}\in[0,1]$ the
-alighting fraction and $\rho_{li,l'j}\in[0,1]$ the transfer fraction,
-with outgoing transfer fractions summing to at most one.
-Time-constant fractions are a property of the supplied instances.
-The last visit has $\alpha=1$ and zero external arrivals.
+行$l\in L$表示方向性站点访问次数，行$i=1,\ldots,I_l$表示需求场景，行$s\in S$表示概率，而行$\pi_s$与$\sum_s\pi_s=1$一起表示概率值。时间步长为$\tau$分钟，标准化时间范围为$t=1,\ldots,T$。输入站点偏移量$e_{li}$，停留时间$d_{li}$，车头时距$h_l^{\min},h_l^{\max}$以及换乘步行距离$f_{li,l'j}$均以时间步长单位表示。每行表示的能力为$C_l$，服务次数上限为$K_l^{\min},K_l^{\max}$，服务成本则为$c_l$。$p_{slit}$表示外部到达次数，$\alpha_{sli}\in[0,1]$表示下车比例，而$\rho_{li,l'j}\in[0,1]$表示换乘比例，其中出站的换乘比例总和最多为1。时间常数比例属于所提供实例的固有属性。最后一次访问中，外部到达次数为$\alpha=1$，而外部到达数为零。
 
-\subsection*{Timetable and transfer events}
-Choose common integer service count $K_l$ and departure indices
-$t_{lk}\in\{1,\ldots,T\}$ for $k=1,\ldots,K_l$, in increasing order.
-Equivalently $x_{lkt}=1$ exactly when $t=t_{lk}$; inactive service indices
-have all-zero $x$.
+\subsection*{时间表和转学事件}
+选择常见的整数服务计数$K_l$和出发索引$t_{lk}\in\{1,\ldots,T\}$用于$k=1,\ldots,K_l$，按递增顺序排列。等价地，当$t=t_{lk}$时，$x_{lkt}=1$恰好为0；不活跃的服务索引全部为$x$。
 \begin{align}
 K_l^{\min}\le K_l&\le K_l^{\max},\\
 h_l^{\min}\le t_{l1}&\le h_l^{\max},\\
@@ -32,28 +16,14 @@ h_l^{\min}\le t_{lk}-t_{l,k-1}&\le h_l^{\max}\quad(k>1),\\
 \sum_kx_{lkt}\le1,\quad \sum_tx_{lkt}\le1,\quad
 \sum_tx_{lkt}&\le\sum_tx_{l,k-1,t}\quad(k>1).
 \end{align}
-The first-time convention is $T_0=1$, so the source first-time bounds
-$T_0+h-1$ become $h$. Boarding at visit $i$ occurs at absolute time
-$t_{lk}+e_{li}$; alighting occurs at $t_{lk}+e_{li}-d_{li}$.
-For every permitted transfer pair $(li,l'j)$, its event for train $k$ is
-at absolute time $t_{lk}+e_{li}-d_{li}+f_{li,l'j}$, or receiving-station
-normalized time
+首次运行的约定是$T_0=1$，因此源地的首次运行界限$T_0+h-1$变为$h$。在访问$i$时，列车到达的绝对时间为$t_{lk}+e_{li}$；离开则在$t_{lk}+e_{li}-d_{li}$发生。对于每一对允许的换乘对$(li,l'j)$，其对应的列车$k$的事件发生在绝对时间$t_{lk}+e_{li}-d_{li}+f_{li,l'j}$，或接收站的标准化时间。
 \[
 t'=t_{lk}+e_{li}-d_{li}+f_{li,l'j}-e_{l'j}.
 \]
-Define $y_{li,l'j,k,t'}=1$ exactly at that event, and zero otherwise.
-Thus each active train has one event per permitted pair and none for
-unconnected pairs; $\sum_k y_{li,l'j,k,t'}\le1$ follows from the positive
-headway and a fixed transfer offset. All scenario decisions use these
-same $x,y$.
+在該事件時，$y_{li,l'j,k,t'}=1$會被精確設定，其他情況下則為零。因此，每列運行中的列車每對允許的對應事件都會有一個，而對應雙方未連接的情況則不會有事件發生；$\sum_k y_{li,l'j,k,t'}\le1$則是由正向車頭距離和固定的轉移偏移所決定的。所有情景決策都使用相同的$x,y$。
 
-\subsection*{Complete passenger constraints}
-The model includes all external-arrival, alighting, transfer-arrival,
-boarding and sampling events. Queues initially equal zero.
-At equal absolute time the order is alight, external arrival, transfer
-arrival, board, then sample. Each train has initial load $u_{slk0}=0$.
-Let $u^-_{slki}=u_{slk,i-1}$, alighting count $a_{slki}$, boarding count
-$b_{slki}$ and load after departure $u_{slki}$. For every active train:
+\subsection*{完整的乘客限制条件}
+该模型包含了所有外部到达、下车、换乘到达、上车以及采样事件。初始时，各个队列中的人数均为零。在相同的绝对时间点上，事件的顺序为：下车、外部到达、换乘到达、上车，最后是采样。每列火车的初始载量为$u_{slk0}=0$。设$u^-_{slki}=u_{slk,i-1}$表示下车次数、$a_{slki}$表示下车的人数、$b_{slki}$表示上车的人数，而$u_{slki}$则表示出发后列车上的载量。对于每列处于活动状态的列车来说：
 \begin{align}
 a_{slki}&=\lceil\alpha_{sli}u^-_{slki}\rceil,\qquad
 0\le a_{slki}\le u^-_{slki},\\
@@ -62,30 +32,10 @@ u_{slki}&=u^-_{slki}-a_{slki}+b_{slki},\qquad0\le u_{slki}\le C_l,\\
 0\le b_{slki}&\le Q^-_{sli,\ t_{lk}+e_{li}},\\
 Q^+_{sli,\ t_{lk}+e_{li}}&=Q^-_{sli,\ t_{lk}+e_{li}}-b_{slki}.
 \end{align}
-At each external event $Q^+=Q^-+p_{slit}$; at each transfer-arrival
-event $Q^+=Q^-+v_{s,li,l'j,k}$ at its receiving queue.
-Queues remain unchanged at other events and always nonnegative.
-All queue, load, boarding, alighting and transfer counts are integers.
-Inactive services have zero boarding/load/transfer variables.
-Alighting passengers not assigned a transfer leave the system; transfers
-remain in transit until their specified receiving event. Passengers present at the horizon are carried into the terminal state. Capacity holds before and after every
-boarding, so $b\le C_l$ and $v\le C_l y$ follow as well.
-For any event, the total external arrivals so far equal exited passengers
-plus all waiting queues, onboard loads and passengers still transferring.
-The terminal alighting rule and zero terminal arrivals make final onboard
-loads zero.
+在每个外部事件$Q^+=Q^-+p_{slit}$中；在每个转运到达事件$Q^+=Q^-+v_{s,li,l'j,k}$中，其接收队列保持不变。其他事件中的队列也保持不变，且始终为非负数值。所有队列、负载、登机、下机以及转运次数均为整数。不活跃的服务项对应的登机/负载/转运变量值为零。未被分配转运的乘客会离开系统；转运中的乘客则继续在途中，直到到达指定的接收点。当前在视野范围内的乘客会被带入终端状态。每次登机前后，容量都会保持不变，因此$b\le C_l$和$v\le C_l y$也保持不变。对于任何事件，迄今为止的总外部到达人数等于已离开的乘客数加上所有等待的队列、在机上的负载以及仍在转运中的乘客数。终端下机规则使得最终在机上的负载为零。
 
-\subsection*{Objective and unequal normalized horizons}
-Let $w_{slit}$ be the queue sampled after service at absolute time
-$t+e_{li}$. The original objective counts external arrivals with a
-half-step waiting approximation and waiting queues at normalized samples.
-Some transfer events can fall beyond the receiving visit's last sample.
-Define $W_s^{\rm end}=\sum_{li}w_{sliT}$ and
-$W_s^{\rm late}=\sum_{li}Q_{sli}^{\rm eventual}-W_s^{\rm end}\ge0$,
-where eventual queues are after every scheduled train and transfer event.
-No train boards after its own visit's final sample; hence this difference
-contains exactly the additional late transfers. They receive the same
-terminal waiting penalty.
+\subsection*{目标与不等的标准化时间轴}
+设$w_{slit}$为在绝对时间$t+e_{li}$后采样的队列。原始目标是对外部到达进行半步等待近似处理，并对标准化样本下的等待队列进行统计。某些转移事件可能超出接收访客的最后样本范围。定义$W_s^{\rm end}=\sum_{li}w_{sliT}$和$W_s^{\rm late}=\sum_{li}Q_{sli}^{\rm eventual}-W_s^{\rm end}\ge0$，其中最终队列出现在每个预定的列车和转移事件之后。没有列车在其自身访客的最后样本之后登车；因此，这种差异恰好包含了额外的延迟转移。它们受到相同的终端等待惩罚。
 \begin{align}
 Z_{\rm TSC}&=\sum_l c_lK_l,\\
 PWT_s&=\frac{\tau}{2}\sum_{li,t}p_{slit}
@@ -93,17 +43,8 @@ PWT_s&=\frac{\tau}{2}\sum_{li,t}p_{slit}
 +\epsilon(W_s^{\rm end}+W_s^{\rm late}),\\
 \min Z&=Z_{\rm TSC}+\mu\sum_s\pi_sPWT_s .
 \end{align}
-The late-transfer term is an explicit boundary completion of the
-extracted model, using the explicit transfer and terminal-state definitions above.
+晚期转移项是对提取模型的明确边界补充，采用上述关于明确转移和终端状态的定义来定义。
 
-\subsection*{Algorithm and input scope}
-The code searches service counts and departure-time neighborhoods, and
-constructs feasible passenger flows by boarding as many as available
-capacity allows. Greedy boarding and the search neighborhoods are algorithm
-choices for candidate construction. The full supplied
-scenario set is evaluated for every candidate. This is a verified feasible
-heuristic with full scenario evaluation. The two delivered
-instances retain respectively one line/five demand scenarios and two
-lines/one scenario with 44 physical stations in total. Their time horizons
-are the supplied input horizons, specified separately for each instance.
+\subsection*{算法与输入范围}
+该代码会搜索服务数量以及出发时间的临近情况，并根据可用的容量来构建可行的乘客流动方案。贪婪的登机方式以及搜索邻域是构建可行方案的算法选择。所提供的所有场景都被逐一评估。这是一个经过验证的、可行的启发式方法，同时也会对全部场景进行评估。这两个实例分别包含了一个线路/五个需求场景，以及两个线路/一个场景，总共包含44个物理车站。它们的时间范围与所提供的输入时间范围一致，这些时间范围是为每个实例单独指定的。
 \end{document}

@@ -3,48 +3,31 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 
-\title{Core Mathematical Model}
+\title{核心数学模型}
 \date{}
 
+\usepackage[UTF8]{ctex}
 \begin{document}
 
 \maketitle
 
-\section*{Cloud Server Deployment Under Demand Uncertainty}
+\section*{在需求不确定的情况下，云服务器部署策略}
 
-Source: Section 3.2, PDF pp.10--14, (1)--(18), and Section 5.2, PDF p.23.
-This is one finite-scenario, CVaR version of the complete two-stage cloud
-server deployment model. It retains both stages as one coupled problem.
+来源：第3.2节，PDF第10-14页，(1)-(18节)；第5.2节，PDF第23页。
+这是一个有限情景下的CVaR版本，属于完整的双阶段云服务器部署模型。 它将这两个阶段视为一个整体问题来处理。
 
-\paragraph{Sets and data.}
-$\mathcal L$ denotes data centers, $\mathcal S$ suppliers,
-$\mathcal D^1$ known cluster requests, and $\mathcal D^2_\omega$ the newly
-revealed requests in scenario $\omega\in\Omega$. The scenarios are equally
-weighted, as in the source's sampled formulation and the retained input.
-$\mathcal T=\{0,\ldots,T\}$, $\mathcal T_1=\{0,\ldots,T_1\}$ and
-$\mathcal T_2=\{T_1+1,\ldots,T\}$. A row ordered now becomes available only
-in $\mathcal T_2$. $\mathcal L(d),\mathcal S(d)$ and their scenario-indexed
-versions are compatible data centers and suppliers. $\mathcal H$ contains
-pairs $(p,t)$, where $p\subseteq\mathcal L$ is a possibly overlapping
-hierarchical throughput group. $c_{d,t},u_d,h_{d,s}$ are nonnegative
-early/late docking, unfulfilled-demand and shipping costs; superscript
-$\omega$ denotes the scenario data. $b_\ell$ is the row-building cost,
-$\zeta_\ell$ total row capacity, and $\rho_{\ell,1},\sigma_{s,1},
-\delta_{p,t,1}$ are initial free rows, supplier inventory and throughput.
-The capacity data are nonnegative integers. Incompatible variables are
-absent and count as zero in sums.
+\paragraph{集合与数据。}
+$\mathcal L$表示数据中心，$\mathcal S$表示供应商，
+$\mathcal D^1$表示已知的集群请求，而$\mathcal D^2_\omega$则代表在场景$\omega\in\Omega$中新出现的请求。这些场景具有相同的权重，与源代码的抽样公式和保留的输入数据一致。
+$\mathcal T=\{0,\ldots,T\}$、$\mathcal T_1=\{0,\ldots,T_1\}$和$\mathcal T_2=\{T_1+1,\ldots,T\}$。现在，只有$\mathcal T_2$中的行是可用。$\mathcal L(d),\mathcal S(d)$及其以场景索引表示的版本是兼容的数据中心和供应商。$\mathcal H$包含对$(p,t)$的配对，其中$p\subseteq\mathcal L$是一个可能重叠的层次化吞吐量组。$c_{d,t},u_d,h_{d,s}$表示非负的早期/晚期对接、未满足的需求和运输成本；上标$\omega$表示场景数据。$b_\ell$是行构建成本，$\zeta_\ell$是总行容量，而$\rho_{\ell,1},\sigma_{s,1},
+\delta_{p,t,1}$则是初始空闲行、供应商库存和吞吐量。容量数据是非负整数。不兼容的变量在求和时被视为零。
 
-\paragraph{Variables.}
-$x_\ell$ is the number of new rows. Binary
-$z_{d,\ell,t}$ docks a cluster request and $w_{d,s}$ selects its supplier.
-The second-stage counterparts carry superscript $\omega$. Residual
-resources $\rho_2,\sigma_2,\delta_2$ are shared by all scenarios and cannot
-anticipate their realizations. $q_\omega$ is the full nonnegative scenario
-cost. $\eta\in\mathbb R$, $e_\omega\ge0$, and $\theta\in\mathbb R$ define
-CVaR at confidence level $\alpha\in[0,1)$. The paper's tail-mass notation
-is $1-\alpha$.
+\paragraph{变量。}
+$x_\ell$表示新增的行数。二进制表示法。  
+$z_{d,\ell,t}$用于记录集群请求，而$w_{d,s}$则用于选择其供应商。  
+第二阶段的相关数值以$\omega$表示。剩余资源$\rho_2,\sigma_2,\delta_2$由所有场景共享，无法预测其具体数值。$q_\omega$表示完整的非负场景成本。$\eta\in\mathbb R$、$e_\omega\ge0$和$\theta\in\mathbb R$则分别定义了在置信水平$\alpha\in[0,1)$下的CVaR值。论文中的尾部质量表示方式为$1-\alpha$。
 
-\paragraph{Single deterministic equivalent.}
+\paragraph{单一确定性等价。}
 \begin{equation}
 \min
 \sum_{d\in \mathcal{D}^1}
@@ -201,7 +184,5 @@ z^\omega_{d,\ell,t},\ w^\omega_{d,s} \in \{0,1\},
 e_\omega&\ge q_\omega-\eta,\quad e_\omega\ge0 &&\omega\in\Omega,\tag{20}\\
 \eta,\theta&\in\mathbb R.\tag{21}
 \end{align}
-The first-stage objective (1) is minimized once, jointly over all these
-variables and constraints.  The full
-missed-demand constants are retained in every scenario cost.
+第一阶段的目标（1）需要被最小化一次，这一过程需要同时考虑所有变量和约束条件。在每个情景中，所有缺失的常数都会被保留下来。
 \end{document}

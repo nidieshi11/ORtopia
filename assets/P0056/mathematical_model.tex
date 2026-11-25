@@ -1,20 +1,17 @@
 \documentclass[11pt]{article}
 \usepackage{amsmath,amssymb,geometry}
 \geometry{margin=22mm}
+\usepackage[UTF8]{ctex}
 \begin{document}
-\section*{P56: selected Euler continuous relaxation, with defined CVaR}
-This model retains the original selected M1--M5 and M8, including its explicit
-first-order Euler state transition and continuous control domain. Risk is represented by the finite-scenario CVaR epigraph in the source paper's equation (6).
+\section*{P56：选择了 Euler 连续松弛算法，并定义了 CVaR 值。}
+该模型保留了最初选定的 M1–M5 和 M8 参数，包括其明确的一阶欧拉状态转移以及连续控制域。风险则通过源论文中的方程（6）中的有限情景 CVaR 来表示。
 
-\subsection*{Data and variables}
-There are $J$ control channels, $T$ time steps and $S$ scenarios; $\Delta t>0$,
-$p_s\ge0$, $\sum_s p_s=1$, $\eta\in(0,1]$, $\alpha\in[0,1]$, and $\theta\ge0$.
-Drift/control matrices $H^{(0)},H^{(j)}\in\mathbb C^{d\times d}$, initial matrix
-$X_{\rm init}$, target $X_{\rm targ}$ and real perturbations $\xi_{jk}^s$ are data.
-Choose $u_{jk}\in[0,1]$, complex states $X_k^s$, real threshold $\zeta$, and
-nonnegative $r_s$. All matrix dimensions and scenario/time indices are retained.
+\subsection*{数据和变量}
+有$J$个控制通道、$T$个时间步长，以及$S$种情景；还有$\Delta t>0$、$p_s\ge0$、$\sum_s p_s=1$、$\eta\in(0,1]$、$\alpha\in[0,1]$和$\theta\ge0$。  
+漂移/控制矩阵为$H^{(0)},H^{(j)}\in\mathbb C^{d\times d}$，初始矩阵为$X_{\rm init}$，目标值为$X_{\rm targ}$，而实际扰动则表示为$\xi_{jk}^s$。  
+选择$u_{jk}\in[0,1]$、复态$X_k^s$、实数阈值$\zeta$，以及非负数值$r_s$。所有矩阵维度和情景/时间索引均被保留下来。
 
-\subsection*{Complete program}
+\subsection*{完整的程序如下：}
 \begin{align}
 F_L(u)&=\sum_{k=1}^T\left(\sum_{j=1}^J u_{jk}-1\right)^2, \tag{M1}\\
 H_k^s&=(1+\xi_{0k}^s)H^{(0)}
@@ -27,27 +24,21 @@ F_s&=1-\frac{|\operatorname{tr}(X_{\rm targ}^H X_T^s)|}{d}
 r_s&\ge F_s-\zeta,\qquad r_s\ge0 &&(s=1,\ldots,S), \tag{M6R}\\
 F_C&=\zeta+\eta^{-1}\sum_s p_sr_s. \tag{M7R}
 \end{align}
-Minimize
+最小化
 \[
  \alpha\sum_s p_sF_s+(1-\alpha)F_C+\theta F_L(u)
  \quad\text{subject to M1--M6R and }u\in[0,1]^{J\times T},\
  \zeta\in\mathbb R. \tag{M8}
 \]
-The trace expression completes the previously symbolic $F_X$ using source
-equation (3). For any fixed $u$, the optimal CVaR value equals
+该轨迹表达式用源方程（3）完成了之前符号化的$F_X$。对于任何一个固定的$u$，最优的CVaR值等于……
 \[
  \min_{z\in\{F_1,\ldots,F_S\}}
  \left(z+\eta^{-1}\sum_s p_s\max\{F_s-z,0\}\right).
 \]
-The solver eliminates the states by M3 and the CVaR variables by this breakpoint
-minimum; neither elimination modifies the stated repaired program.
+求解器通过 M3 消除了这些状态，同时通过此断点减少了 CVaR 变量的值。不过，这两种消除方式都没有对修复后的程序产生任何影响。
 
-\subsection*{Approximation and solver limits}
-The model approximates quantum evolution by the first-order Euler recurrence with continuous controls. The trace-based loss is real-valued and may be negative. Channel-sum deviations contribute a squared penalty. State feasibility is determined by the recurrence and the displayed variable domains.
+\subsection*{近似值和求解器限制}
+该模型通过一阶欧拉递推公式来近似描述量子演化过程，同时采用连续控制方式。基于迹的损耗值为实数，且可能为负数。通道和偏差会引入平方形式的惩罚项。状态的可行性则由递推公式以及所显示的变量域来决定。
 
-Six reproducible bounded local-search starts return the best feasible point
-within a monotonic 3600-second budget; convergence may end the computation
-earlier. The solver reports the best feasible local-search point. A separate
-real/imaginary recurrence independently checks all states, control bounds,
-losses, CVaR epigraph/value, penalty, and objective. Unitarity deviation is recorded as a diagnostic.
+六次可重复进行的有限域局部搜索，能够在 3600 秒的预算时间内返回最佳可行点；收敛过程可能会提前结束。求解器会报告最佳可行的局部搜索点。另外，一个独立的实/虚递归过程会独立检查所有状态、控制边界、损失、CVaR 图/值、惩罚以及目标函数。单位偏差会被记录为诊断信息。
 \end{document}

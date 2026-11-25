@@ -6,48 +6,40 @@
 \usepackage{geometry}
 \geometry{a4paper, margin=1in}
 
-\title{Core Solvable Mathematical Model}
+\title{核心可解数学模型}
 \author{Paper 10}
 \date{\today}
 
+\usepackage[UTF8]{ctex}
 \begin{document}
 
 \maketitle
 
-\section*{Retained Core Model}
-According to the \texttt{tex} formulas and the PDF, the underlying application model is the
-dynamic facility-location and treatment-budget allocation MIP on Page 13, but the paper states
-that this non-convex bilinear MIP is only practically solvable for small instances. Therefore, the
-retained \emph{practically solvable} core model is the McCormick-envelope-based relaxation built
-from the Appendix/Page 27--29 formulas rather than the original non-convex main-text model. The
-retained model preserves the full dynamic epidemic constraints and all operational constraints,
-while replacing bilinear terms by standard exact/relaxed linear reformulations.
+\section*{保留的核心模型}
+根据\texttt{}公式以及PDF文件中的描述，底层应用模型是第13页上的动态设施定位与处理预算分配模型。不过，论文指出，这种非凸双线性模型仅适用于小型实例，实际上难以求解。因此，所采用的\emph{模型实际上是可以求解的}核心模型。该模型基于附录/第27-29页的公式构建，而非原始的非凸模型。该模型保留了所有动态流行病约束和运营约束，并将双线性项替换为标准的精确/放宽线性重构形式。
 
-\paragraph{Decision variables.}
-$x_i \in \mathbb Z_+$ is the number of treatment facilities in county $i$,
-$d_{ik}\ge 0$ is the treatment budget assigned to county $i$ at time $k$,
-$h \ge 0$ is the over-budget epigraph variable,
-$z_i$ is the reciprocal surrogate for $1/x_i$ used in the linearized formulation,
-$p_{ij},o_{ij},r_{ik}$ are auxiliary variables for unary expansion and McCormick relaxations, and
-$\mathbf z_k=(S_k,P_k,I_k,A_k,R_k,D_k)$ is the epidemic state vector.
+\paragraph{决策变量。}
+$x_i \in \mathbb Z_+$表示县$i$内的治疗设施数量，  
+$d_{ik}\ge 0$表示在时间$k$时分配给县$i$的治疗预算，  
+$h \ge 0$是超出预算的变量，  
+$z_i$是$1/x_i$的换算系数，用于线性化公式中，  
+$p_{ij},o_{ij},r_{ik}$是一元展开和McCormick松弛方法的辅助变量，  
+$\mathbf z_k=(S_k,P_k,I_k,A_k,R_k,D_k)$是流行病状态向量。
 
-\paragraph{Sets and parameters.}
-$\mathcal C$ is the county set and $\mathcal K=\{0,\dots,K\}$ is the time-period set.
-The weights $\lambda_D,\lambda_A,\lambda_{\mathrm{pr}},\lambda_{\mathrm{SVI}},
-\lambda_{\mathrm{Pop}},\lambda_{\mathrm{inf}}$ define the objective trade-off.
-$N$ is the facility cap, $n_i$ is the initial number of facilities, $d_k$ is the state treatment
-budget at time $k$, $d_{\min}$ is the minimum budget per facility, $\theta$ is the maximum
-allowed inter-period budget reduction, $d$ is the quarterly per-patient MAT cost, and
-$lb_{ik},ub_{ik}$ are budget bounds.
+\paragraph{集合与参数。}
+$\mathcal C$是县级设置，而$\mathcal K=\{0,\dots,K\}$是时间段设置。  
+权重$\lambda_D,\lambda_A,\lambda_{\mathrm{pr}},\lambda_{\mathrm{SVI}},
+\lambda_{\mathrm{Pop}},\lambda_{\mathrm{inf}}$定义了目标之间的权衡关系。  
+$N$是设施上限，$n_i$是初始设施数量，$d_k$是时间$k$时的状态处理预算，$d_{\min}$是每个设施的最低预算，$\theta$是允许的最大跨时期预算减少幅度，$d$是每患者的季度MAT成本，而$lb_{ik},ub_{ik}$则是预算的界限。
 
-\paragraph{Initial conditions.}
-The six nonnegative initial compartment values are supplied data. They specify the initial population state.
+\paragraph{初始条件。}
+这六个非负初始 compartments 的值都是给定的数据。它们代表了初始的种群状态。
 \[
 (S_0,P_0,I_0,A_0,R_0,D_0)
  = (S^{\mathrm{init}},P^{\mathrm{init}},I^{\mathrm{init}},
 A^{\mathrm{init}},R^{\mathrm{init}},D^{\mathrm{init}}).
 \]
-\section*{Retained Practical Formulation}
+\section*{保留以下实际计算公式：}
 \begin{equation}
 \min \quad
 \lambda_D D_K
@@ -149,7 +141,7 @@ x_i \in \mathbb Z,\qquad x_i \in [1,N]
 \tag{28n}
 \end{equation}
 
-\section*{Unary Expansion and McCormick Constraints}
+\section*{一元展开与McCormick约束}
 \begin{equation}
 x_i = \sum_{j=1}^{N} j\,p_{ij},\qquad
 \sum_{j=1}^{N} p_{ij} \le 1,\qquad
@@ -214,11 +206,6 @@ p_{ij}\in\{0,1\},\qquad
 \tag{29j}
 \end{equation}
 
-\section*{Interpretation of the retained relaxation}
-The four inequalities (29f)--(29i) form the McCormick relaxation of
-$r_{ik}=\bar d_{ik}z_i$. They define the product relaxation.
-The treatment term used in (28j)--(28k) is the declared relaxed expression
-$d^{-1}\sum_i(\bar d_{ik}-n_i r_{ik})$.
-Solutions and optimum values refer to this relaxation with fixed initial
-conditions for the stated MILP relaxation.
+\section*{对保留的松弛度进行解释：}
+这四个不等式（29f）～（29i）构成了$r_{ik}=\bar d_{ik}z_i$的McCormick松弛形式。它们定义了乘积松弛。在（28j）～（28k）中使用的处理项，就是所声明的松弛表达式$d^{-1}\sum_i(\bar d_{ik}-n_i r_{ik})$。解和最优值指的是在固定的初始条件下，针对该MILP松弛形式所得到的解和最优值。
 \end{document}

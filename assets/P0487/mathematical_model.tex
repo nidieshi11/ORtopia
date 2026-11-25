@@ -2,16 +2,17 @@
 \usepackage{amsmath,amssymb}
 \usepackage[margin=1in]{geometry}
 \allowdisplaybreaks
+\usepackage[UTF8]{ctex}
 \begin{document}
 
-\section*{General dynamic pricing under terminal debt}
+\section*{在债务缠身的情况下，普遍采用动态定价策略}
 
 \[
 \mathbf p^{\dagger}\in
 \underset{\mathbf p\in\mathcal Q}{\arg\max}\,
 \mathbb E\bigl[(\mathcal R(\mathbf p)-B)^+\bigr].
 \]
-The admissibility conditions defining the policy set in this objective are
+符合该政策设定的可接受性条件如下：
 \[
 \begin{aligned}
 \mathbf p&=(p_1,\ldots,p_T),\\
@@ -21,57 +22,57 @@ p_t&\text{ is }\mathcal F_t\text{-measurable}, &&t=1,\ldots,T,\\
 &&t=1,\ldots,T.
 \end{aligned}
 \]
-Here \(\mathcal Q\) consists of all such nonanticipating pricing policies. The price is selected at the beginning of the period, before that period's customer willingness to pay is realized.
+这里的\(\mathcal Q\)就包含了所有这种非预期定价政策。价格是在该时期开始时确定的，此时尚未考虑到该时期客户的支付意愿。
 
-\subsection*{Fixed inputs, demand, and revenue}
+\subsection*{固定的输入、需求和收入}
 
-There are \(T\) discrete selling periods and a given initial inventory \(Y\in\mathbb N\) of a single product. The terminal debt repayment \(B\) is fixed, rather than a decision variable. The feasible price interval is
+有\(T\)个独立的销售周期，并且某种产品的初始库存为\(Y\in\mathbb N\)。终端债务偿还金额\(B\)是固定的，而不是一个决策变量。可行的价格区间为：
 \[
 \mathcal P=[\underline p,\bar p]\subseteq\mathbb R.
 \]
-A single customer arrives in each period \(t\in\{1,\ldots,T\}\). The willingness-to-pay random variables \(\mathcal W_1,\ldots,\mathcal W_T\) are independent and identically distributed. Their demand function satisfies
+在每个时间段\(t\in\{1,\ldots,T\}\)，会有单一客户到来。支付意愿随机变量\(\mathcal W_1,\ldots,\mathcal W_T\)是独立且同分布的。它们的需求函数满足……
 \[
 \lambda:\mathcal P\longrightarrow[0,1],
 \qquad
 \lambda(p_t)=\mathbb P(\mathcal W_t\ge p_t).
 \]
-Endnote 5 imposes the additional assumption
+尾注5提出了额外的假设。
 \[
 \lambda(p)>0\qquad\forall p\in\operatorname{int}(\mathcal P).
 \]
-That endnote also allows unbounded support: if \(\bar p=\infty\), the price interval is instead
+那个尾注还允许无限制的支持：如果\(\bar p=\infty\)，那么价格区间则改为
 \[
 \mathcal P=[\underline p,\infty).
 \]
-No linear-demand, differentiability, or log-concavity assumption is imposed in the general formulation (2)--(3).
+在一般公式(2)--(3)中，没有施加任何线性需求、可微性或对数凹性的假设。
 
-The number of units remaining at the start of period \(t\) is the random state \(\mathcal Y_t\). Its printed dynamics are
+在时期\(t\)开始时剩余的单元数量，就是随机状态\(\mathcal Y_t\)。其打印出的动态信息如下：
 \[
 \mathcal Y_1=Y,\qquad
 \mathcal Y_{t+1}
 =\bigl(\mathcal Y_t-\mathbf 1\{\mathcal W_t\ge p_t\}\bigr)^+,
 \qquad t=1,\ldots,T-1.
 \]
-Unmet demand is lost without penalty. Unsold units are discarded at the end of the horizon without salvage value. Total revenue is defined by
+未满足的需求将不会被追究责任。未售出的产品将在保质期结束时被丢弃，不会获得任何价值补偿。总收入由以下因素决定：
 \[
 \mathcal R(\mathbf p):=
 \sum_{t=1}^{T}p_t(\mathcal Y_t-\mathcal Y_{t+1}).
 \]
-\emph{Printed endpoint omission (p.~5).} The inventory transition is printed only for \(t=1,\ldots,T-1\), whereas the revenue sum uses \(\mathcal Y_{T+1}\). The displayed inventory definition therefore does not specify that final term. Both printed scopes are retained here, without extending the transition.
+\emph{打印端点省略（参见~5）。}库存转换仅适用于\(t=1,\ldots,T-1\)，而收入总额则使用\(\mathcal Y_{T+1}\)。因此，显示的库存定义并未指定最终项。这里保留了两个打印范围，并未扩展转换范围。
 
-Revenue first services the terminal debt. Limited liability gives the decision maker the terminal payoff
+收入首先用于偿还终端债务。有限责任使得决策者能够直接获得终端收益。
 \[
 (\mathcal R(\mathbf p)-B)^+.
 \]
-The debt is paid off, or covered, on the event
+债务已经还清或得到偿还。
 \[
 \mathcal R(\mathbf p)\ge B.
 \]
-The decision maker receives zero when revenue is insufficient to cover the debt, and incurs no additional loss or penalty. Thus the objective is expected equity value, not expected total revenue. There is no discounting; equivalently, the risk-free interest rate is zero. The superscript \({}^+\) denotes the positive part and \(\mathbf 1\{\cdot\}\) denotes an event indicator.
+当收入不足以支付债务时，决策者将获得零收益，同时也不会产生额外的损失或处罚。因此，目标应该是预期的权益价值，而不是预期的总收入。这里没有折扣因素；换句话说，无风险利率为零。上标\({}^+\)表示正数部分，而\(\mathbf 1\{\cdot\}\)则表示事件指标。
 
-\subsection*{Outstanding debt and the Bellman formulation}
+\subsection*{未偿还债务与贝尔曼公式}
 
-The authors restrict attention to Markov policies without loss of generality. A sufficient state at the start of period \(t\) is the remaining inventory \(\mathcal Y_t\) together with the outstanding debt \(\mathcal B_t\). Outstanding debt is the initial debt less the revenue generated in periods \(1,\ldots,t-1\), and its printed transition is
+作者们仅关注没有损失普遍性的马尔可夫策略。在周期\(t\)开始时，一个充分的状态就是剩余的库存\(\mathcal Y_t\)，以及未偿还的债务\(\mathcal B_t\)。未偿还的债务是指初始债务减去在周期\(1,\ldots,t-1\)中产生的收入后的余额。其打印出的转换结果如下：
 \[
 \begin{aligned}
 \mathcal B_1&=B,\\
@@ -80,9 +81,9 @@ The authors restrict attention to Markov policies without loss of generality. A 
 \qquad t=1,\ldots,T-1.
 \end{aligned}
 \]
-Positive \(\mathcal B_t\) is the additional revenue needed in periods \(t,\ldots,T\) to cover the debt. Negative \(\mathcal B_t\) means that the debt has already been covered and that \(-\mathcal B_t\) is a payoff already secured. In particular, the debt state is not truncated at zero.
+正数\(\mathcal B_t\)表示在\(t,\ldots,T\)期间所需的额外收入，以偿还债务。负数\(\mathcal B_t\)则表示债务已经得到偿还，而\(-\mathcal B_t\)则代表已经确保了还款。具体来说，债务状态不会降为零。
 
-Let \(V_t(b,y)\) denote the decision maker's optimal expected payoff at the start of period \(t\), with outstanding debt \(b\) and \(y\) remaining inventory units. Here \(b\) is a signed real debt state and \(y\) is an inventory count, including zero. The Bellman recursion is
+让\(V_t(b,y)\)表示决策者在周期\(t\)开始时的最优期望收益，此时还有未偿还债务\(b\)和\(y\)，以及剩余的库存单位。这里，\(b\)是一个带有符号的实值债务状态，而\(y\)则是包括零在内的库存数量。贝尔曼递归公式为：
 \begin{equation}
 \begin{aligned}
 V_t(b,y)
@@ -93,7 +94,7 @@ V_t(b,y)
 \end{aligned}
 \tag{2}
 \end{equation}
-Its boundary conditions are
+其边界条件为：
 \begin{equation}
 \begin{aligned}
 V_t(b,0)&=(-b)^+,
@@ -102,15 +103,15 @@ V_{T+1}(b,y)&=(-b)^+.
 \end{aligned}
 \tag{3}
 \end{equation}
-The initial state is \((B,Y)\); hence the initial optimal expected payoff represented by this formulation is
+初始状态为 \((B,Y)\)；因此，由该公式所表示的最初最优预期收益为
 \[
 V_1(B,Y)=\max_{\mathbf p\in\mathcal Q}
 \mathbb E\bigl[(\mathcal R(\mathbf p)-B)^+\bigr].
 \]
 
-\subsection*{Policy recovery and debt-state conventions}
+\subsection*{政策恢复与债务状态约定}
 
-For a selling period \(t\), the decision maker's price is recovered as
+在\(t\)的销售期间，决策者的定价被恢复为…
 \[
 p_t^{\dagger}(b,y)\in
 \underset{p\in\mathcal P}{\arg\max}
@@ -118,26 +119,26 @@ p_t^{\dagger}(b,y)\in
 [V_{t+1}(b-p,y-1)-V_{t+1}(b,y)]\bigr\},
 \qquad y\ge1.
 \]
-For nonpositive outstanding debt, the authors identify this price with the revenue-maximizing price \(p_t^{\star}(y)\):
+对于非正值的未偿债务，作者将这一价格认定为能够实现收益最大化的价格\(p_t^{\star}(y)\)：
 \[
 p_t^{\dagger}(b,y)=p_t^{\star}(y)
 \qquad\text{for }b\le0.
 \]
-Here \(p_t^{\star}(y)\) denotes the price for a seller with no remaining debt claim on future revenue. The case \(B=0\) of (2)--(3) is the classical expected-revenue-maximizing case; no separate benchmark optimization is imposed on the debt-facing policy.
+这里\(p_t^{\star}(y)\)表示一个卖方在将来没有剩余债务索赔的情况下所追求的价格。情况\(B=0\)对应于(2)--(3)中的经典预期收益最大化情形；对于债务相关的政策，没有单独的基准优化要求。
 
-The authors also state that, if for some \(t\)
+作者还指出，对于某些\(t\)来说，
 \[
 b\ge\min\{y,T-t+1\}\bar p,
 \qquad
 \bar p=\sup_{p\in\mathcal P}p,
 \]
-the decision maker's payoff is zero almost surely, and they take, without loss of generality,
+决策者的收益几乎总是为零，因此他们可以毫无损失地接受这一结果。
 \[
 p_t^{\dagger}(b)=\bar p.
 \]
-\emph{Printed notation (p.~7).} This last convention is printed with the argument \(b\) alone, although the general policy and its threshold depend on \(y\). The printed expression is retained rather than silently supplying the missing inventory argument.
+\emph{印刷表示法（p.~7）。}最后这种约定仅以\(b\)参数进行打印，尽管总体政策和其阈值取决于\(y\)。保留印刷表达形式，而不是默默地补充缺失的库存参数。
 
-\paragraph{Source scope.}
-Besbes, Iancu, and Trichakis, \emph{Dynamic Pricing Under Debt: Spiraling Distortions and Efficiency Losses}, Sections 2--3, physical PDF pp.~5--7, and endnote 5 on p.~17. The endnote is available in the supplied original text and supplies both the strict interior positivity assumption and the unbounded-price exception. The online appendix is not supplied and is unverified; no appendix-dependent extension is included in this general terminal-debt formulation.
+\paragraph{来源范围。}
+Besbes、Iancu和Trichakis，\emph{债务下的动态定价：螺旋式扭曲与效率损失}，第2-3节，纸质PDF版，页码~5-7页，以及附录5，位于页码~17页。附录内容可参见提供的原始文本，其中既包含了严格的内部正性假设，也包含了无限制价格例外情况。在线附录并未提供，且未经验证；本通用债务终止公式中并未包含任何基于附录的扩展内容。
 
 \end{document}

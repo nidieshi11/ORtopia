@@ -1,54 +1,55 @@
 \documentclass[11pt]{article}
 \usepackage{amsmath,amssymb}
 \usepackage[margin=1in]{geometry}
-\title{Full Extreme-Point Reformulation of Affine-Policy Robust Unit Commitment}
+\title{完全极点重构的仿射策略鲁棒单元承诺}
 \author{}
 \date{}
 
+\usepackage[UTF8]{ctex}
 \begin{document}
 \maketitle
 
-\section{Sets and Parameters}
+\section{集合与参数}
 
-Let $\mathcal N_g$, $\mathcal N_d$, $\mathcal M$, and $\mathcal N_l$ be finite sets of generators, demand nodes, buses, and transmission lines, respectively, with cardinalities $n_g$, $n_d$, $n_b$, and $n_l$. Let $T$ be the number of periods and $\mathcal T=\{1,\ldots,T\}$ the ordered planning horizon.
+设$\mathcal N_g$、$\mathcal N_d$、$\mathcal M$和$\mathcal N_l$分别为生成器集、需求节点集、总线集和传输线路集，它们的基数分别为$n_g$、$n_d$、$n_b$和$n_l$。设$T$为周期数，而$\mathcal T=\{1,\ldots,T\}$为有序规划范围。
 
-The uncertainty data are the complete finite vertex list
+不确定性数据是指完整的有限顶点列表。
 \[
 \{d^r:r\in\mathcal R\}=\operatorname{ext}(\mathcal D),
 \qquad \mathcal R=\{1,\ldots,R\},
 \qquad d^r=(d_j^{r,t})_{j\in\mathcal N_d,\,t\in\mathcal T}
 \in\mathbb R^{n_d\times T},
 \]
-where $\mathcal D$ is the intended nonempty bounded polyhedral uncertainty set and
+其中，$\mathcal D$指的是所期望的非空有界多面体不确定性集合。
 \[
 \mathcal D=\operatorname{conv}\{d^r:r\in\mathcal R\}.
 \]
-The complete vertex array has dimension $R\times n_d\times T$ and defines the uncertainty polytope, including lower-dimensional polytopes.
+完整的顶点数组具有$R\times n_d\times T$维，它定义了不确定性多面体，包括低维多面体。
 
-For each $i\in\mathcal N_g$, the supplied scalar parameters are:
+对于每个$i\in\mathcal N_g$，所提供的标量参数如下：
 \begin{itemize}
-\item $G_i$, $S_i$, and $C_i$: commitment, startup, and generation cost coefficients;
-\item $p_i^{\min}$ and $p_i^{\max}$: generation limits;
-\item $RD_i$, $SD_i$, $RU_i$, and $SU_i$: ramp-down, shutdown-ramp, ramp-up, and startup-ramp coefficients;
-\item $UT_i$ and $DT_i$: positive integer minimum up- and down-times, with $1\le UT_i,DT_i\le T$ so that the displayed time indices are defined;
-\item $x_i^0\in\{0,1\}$ and $p_i^0\in\mathbb R$: fixed initial commitment and dispatch.
+\item $G_i$、$S_i$和$C_i$：承诺、启动以及发电成本系数；
+\item $p_i^{\min}$和$p_i^{\max}$：生成限制；
+\item $RD_i$、$SD_i$、$RU_i$和$SU_i$：逐步减少、关闭后逐步恢复、逐步增加以及启动后的逐步恢复系数；
+\item $UT_i$和$DT_i$：分别表示向上和向下运行的最小正整数时间；而$1\le UT_i,DT_i\le T$则用于定义所显示的时间指标。
+\item $x_i^0\in\{0,1\}$和$p_i^0\in\mathbb R$：固定的初始承诺和派遣数量。
 \end{itemize}
-The network data are
+网络数据如下：
 \[
 \alpha=(\alpha_{lm})\in\mathbb R^{n_l\times n_b},
 \qquad B^p=(B^p_{mi})\in\mathbb R^{n_b\times n_g},
 \qquad B^d=(B^d_{mj})\in\mathbb R^{n_b\times n_d},
 \]
-and the scalar transmission limits $f_l^{\max}$ for $l\in\mathcal N_l$. All costs, limits, ramp coefficients, network entries, vertex coordinates, and initial conditions are fixed data.
+以及标量传输限制$f_l^{\max}$对$l\in\mathcal N_l$的影响。所有成本、限制条件、坡度系数、网络节点、顶点坐标和初始条件都是固定数据。
 
-\section{Variables and Affine Expressions}
+\section{变量和仿射表达式}
 
-For $i\in\mathcal N_g$ and $t\in\mathcal T$, the variables $x_i^t$, $u_i^t$, and $v_i^t$ denote commitment, startup, and shutdown indicators. The variables $w_i^t$ and $W_{itjs}$ are the intercepts and coefficients of the full history-dependent affine dispatch policy. Its coefficient index set is
+对于$i\in\mathcal N_g$和$t\in\mathcal T$，变量$x_i^t$、$u_i^t$和$v_i^t$分别表示承诺、启动和关闭指标。变量$w_i^t$和$W_{itjs}$则是完全依赖历史数据的仿射调度政策的截距和系数。其系数索引集为：
 \[
 \mathcal I_W=\{(i,t,j,s):i\in\mathcal N_g,\ j\in\mathcal N_d,
 \ 1\le s\le t\le T\}.
 \]
-The scalar $z$ is the generation-cost epigraph variable. The domains are
+标量$z$是生成成本相关的变量。其对应的领域是：
 \begin{align}
  x_i^t,u_i^t,v_i^t&\in\{0,1\}
  &&\forall i\in\mathcal N_g,\ t\in\mathcal T,\label{eq:binary}\\
@@ -58,9 +59,9 @@ The scalar $z$ is the generation-cost epigraph variable. The domains are
  &&\forall(i,t,j,s)\in\mathcal I_W,\\
  z&\in\mathbb R.
 \end{align}
-Affine coefficients and epigraph variables are real-valued and satisfy the displayed constraints.
+仿射系数和图变量都是实数值，并且满足所显示的约束条件。
 
-For each vertex, define the following expressions.
+对于每一个顶点，定义以下表达式。
 \begin{align}
  P_{i,t}^r&:=w_i^t+
  \sum_{j\in\mathcal N_d}\sum_{s=1}^{t}W_{itjs}d_j^{r,s}
@@ -68,9 +69,9 @@ For each vertex, define the following expressions.
  P_{i,0}^r&:=p_i^0=w_i^0
  &&\forall r\in\mathcal R,\ i\in\mathcal N_g.\label{eq:initial}
 \end{align}
-Here $w_i^0$ is fixed initial data. The empty-history sum at time zero is zero. The same $w$ and $W$ are used at every vertex; only coefficients with $s\le t$ exist.
+这里的$w_i^0$是固定的初始数据。在时间零点时，空历史状态的值为零。每个顶点都使用相同的$w$和$W$；只有带有$s\le t$的系数才存在。
 
-For $r\in\mathcal R$, $l\in\mathcal N_l$, and $t\in\mathcal T$, also define
+对于$r\in\mathcal R$、$l\in\mathcal N_l$和$t\in\mathcal T$，也进行定义。
 \begin{equation}
  F_{l,t}^r:=
  \sum_{m\in\mathcal M}\sum_{i\in\mathcal N_g}
@@ -82,18 +83,18 @@ For $r\in\mathcal R$, $l\in\mathcal N_l$, and $t\in\mathcal T$, also define
  \label{eq:flow}
 \end{equation}
 
-\section{Objective and Constraints}
+\section{目标与约束条件}
 
-The selected full extreme-point formulation is
+所选的完全极端点公式如下：
 \begin{equation}
  \min_{x,u,v,w,W,z}\quad
  \sum_{t\in\mathcal T}\sum_{i\in\mathcal N_g}
  \bigl(G_ix_i^t+S_iu_i^t\bigr)+z,
  \label{eq:objective}
 \end{equation}
-subject to the variable domains above and all constraints below.
+受上述变量领域和以下所有约束的限制。
 
-\subsection{Commitment Feasibility}
+\subsection{可行性承诺}
 
 \begin{align}
  x_i^t-x_i^{t-1}&=u_i^t-v_i^t
@@ -107,9 +108,9 @@ subject to the variable domains above and all constraints below.
  (T-t+1)-\sum_{\tau=t}^{T}x_i^\tau-(T-t+1)v_i^t&\ge0
  &&\forall i\in\mathcal N_g,\ t\in\{T-DT_i+1,\ldots,T\}.\label{eq:terminal-down}
 \end{align}
-The overlapping boundary periods in these index ranges are retained exactly.
+这些索引范围内的重叠边界周期被完全保留。
 
-\subsection{Generation-Cost Epigraph}
+\subsection{生成成本铭文}
 
 \begin{equation}
  \sum_{t\in\mathcal T}\sum_{i\in\mathcal N_g}
@@ -119,7 +120,7 @@ The overlapping boundary periods in these index ranges are retained exactly.
  \label{eq:cost}
 \end{equation}
 
-\subsection{Generation Limits}
+\subsection{生成限制}
 
 \begin{align}
  P_{i,t}^r&\ge p_i^{\min}x_i^t
@@ -128,7 +129,7 @@ The overlapping boundary periods in these index ranges are retained exactly.
  &&\forall r\in\mathcal R,\ i\in\mathcal N_g,\ t\in\mathcal T.\label{eq:gen-upper}
 \end{align}
 
-\subsection{Ramping}
+\subsection{线性增长/扩展}
 
 \begin{align}
  P_{i,t}^r-P_{i,t-1}^r&\ge -RD_i x_i^t-SD_i v_i^t
@@ -136,9 +137,9 @@ The overlapping boundary periods in these index ranges are retained exactly.
  P_{i,t}^r-P_{i,t-1}^r&\le RU_i x_i^{t-1}+SU_i u_i^t
  &&\forall r\in\mathcal R,\ i\in\mathcal N_g,\ t\in\mathcal T.\label{eq:ramp-up}
 \end{align}
-At $t=1$, these expressions use the supplied constants $P_{i,0}^r=p_i^0$ and $x_i^0$.
+在$t=1$处，这些表达式使用了提供的常量$P_{i,0}^r=p_i^0$和$x_i^0$。
 
-\subsection{Transmission Limits}
+\subsection{传输限制}
 
 \begin{align}
  F_{l,t}^r&\le f_l^{\max}
@@ -147,7 +148,7 @@ At $t=1$, these expressions use the supplied constants $P_{i,0}^r=p_i^0$ and $x_
  &&\forall r\in\mathcal R,\ l\in\mathcal N_l,\ t\in\mathcal T.\label{eq:flow-lower}
 \end{align}
 
-\subsection{Energy Balance}
+\subsection{能量平衡}
 
 \begin{equation}
  \sum_{i\in\mathcal N_g}

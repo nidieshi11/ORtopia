@@ -1,43 +1,44 @@
 \documentclass{article}
 \usepackage{amsmath,amssymb}
 \usepackage[margin=1in]{geometry}
-\title{Deterministic Node-Level Power-Network Operating Model}
+\title{确定性节点级电力网络运行模型}
 \author{}
 \date{}
+\usepackage[UTF8]{ctex}
 \begin{document}
 \maketitle
 
-\section*{Scope and index sets}
-The model is solved at a fixed node $n$, with line availability and parent-node generation supplied as inputs. It is the selected directly solvable node-level formulation (12).
+\section*{范围与索引集合}
+该模型在固定节点$n$处得到解决，其中线路可用性和父节点生成信息作为输入参数。这是直接可解决的节点级模型（12）。
 
-Let $\mathcal N$ be the finite set of buses, $\mathcal L$ the finite set of transmission lines, and $\mathcal G$ the finite set of generators. The supplied set $\mathcal G_n\subseteq\mathcal G$ indexes generation costs in the objective as a supplied subset of $\mathcal G$. For each line $l\in\mathcal L$, let $s(l),t(l)\in\mathcal N$ be its supplied from and to buses. Define
+设$\mathcal N$为有限的母线集合，$\mathcal L$为有限的传输线集合，$\mathcal G$为有限的发电机集合。提供的集合$\mathcal G_n\subseteq\mathcal G$作为目标函数中的发电成本索引，它是$\mathcal G$的一个子集。对于每条传输线$l\in\mathcal L$，设$s(l),t(l)\in\mathcal N$为其从母线出发和返回的路径。定义…
 \[
  l(b,\cdot)=\{l\in\mathcal L:s(l)=b\},\qquad
  l(\cdot,b)=\{l\in\mathcal L:t(l)=b\}.
 \]
-For each bus $b\in\mathcal N$, the supplied set $g(b)\subseteq\mathcal G$ contains its generators. The notation $p(n)$ denotes the parent of the fixed node $n$.
+对于每一个总线$b\in\mathcal N$，所提供的集合$g(b)\subseteq\mathcal G$中包含了其生成器。符号$p(n)$表示固定节点$n$的父节点。
 
-\section*{Parameters}
-All parameters below are fixed numerical data for the node solve. Every indexed entry is a scalar.
+\section*{参数}
+以下参数均为求解该节点时给定的数值数据。每个带索引的条目均为标量。
 \begin{itemize}
-\item $C_g$ for $g\in\mathcal G_n$: unit generation cost; $C^l$: the scalar unit load-shedding cost appearing in the objective, with a superscript labeling load shedding.
-\item $d_{bn}$ for $b\in\mathcal N$: demand.
-\item $\overline\theta^{\min},\overline\theta^{\max}$: lower and upper voltage-angle bounds.
-\item $B_l$ for $l\in\mathcal L$: line susceptance; $a_{ln}\in\{0,1\}$: fixed line availability.
-\item $\overline F_l^{\min},\overline F_l^{\max}$ for $l\in\mathcal L$: line-flow bounds used in the switching-capacity constraints.
-\item $\overline F_{ln}^{\max},\overline F_{ln}^{\mathrm{nom}}$ for $l\in\mathcal L$: node-indexed maximum and nominal ratings used in the overload restrictions. The instance supplies the node-indexed ratings and the line-only ratings as separate parameter arrays.
-\item $P_g^{\min},P_g^{\max}$ for $g\in\mathcal G$: generation bounds; $R_g^+,R_g^-$: upward and downward ramp limits; $p_{g p(n)}$: fixed parent-node generation.
+\item $C_g$ 替换成 $g\in\mathcal G_n$：单位生成成本；$C^l$：目标中出现的标量单位负荷削减成本，其中上标表示负荷削减的程度。
+\item $d_{bn}$代替$b\in\mathcal N$: 需求。
+\item $\overline\theta^{\min},\overline\theta^{\max}$：上下电压角的范围。
+\item $B_l$对于$l\in\mathcal L$: 线路电纳; $a_{ln}\in\{0,1\}$: 线路可用性。
+\item $\overline F_l^{\min},\overline F_l^{\max}$代替$l\in\mathcal L$: 用于切换容量约束中的线流量界限。
+\item $\overline F_{ln}^{\max},\overline F_{ln}^{\mathrm{nom}}$ 对应 $l\in\mathcal L$：用于过载限制中的节点索引最大值和名义评分。该实例将节点索引评分和仅线路评分作为独立的参数数组提供。
+\item $P_g^{\min},P_g^{\max}$对于$g\in\mathcal G$: 生成界限；$R_g^+,R_g^-$: 上下坡限制；$p_{g p(n)}$: 固定的父节点生成量。
 \end{itemize}
-The switching constants are defined by
+切换常数是根据以下方式定义的：
 \[
 M_l:=\left|B_l\bigl(\overline\theta^{\max}-\overline\theta^{\min}\bigr)\right|,
 \qquad l\in\mathcal L.
 \]
 
-\section*{Decision variables}
-For each $b\in\mathcal N$, $\theta_{bn}$ is a continuous voltage angle and $\Delta_{bn}$ is continuous load shedding. For each $g\in\mathcal G$, $p_{gn}$ is continuous generation. For each $l\in\mathcal L$, $f_{ln}$ is continuous line flow, $z_{ln}$ is a binary line-closed indicator, and $o_{ln}$ is a binary overload indicator. Angles and line flows are signed real variables with the domains below.
+\section*{决策变量}
+对于每一个$b\in\mathcal N$，$\theta_{bn}$表示连续的电压角度，而$\Delta_{bn}$表示连续的负荷削减。对于每一个$g\in\mathcal G$，$p_{gn}$表示连续的发电量。对于每一个$l\in\mathcal L$，$f_{ln}$表示连续的线路流量，$z_{ln}$是一个二进制线路闭合指示符，而$o_{ln}$是一个二进制过载指示符。这些角度和线路流量都是带符号的实变量，其定义域如下。
 
-\section*{Optimization model}
+\section*{优化模型}
 \begin{align}
 \min_{\theta,f,p,\Delta,z,o}\quad
  &\sum_{g\in\mathcal G_n}C_g p_{gn}

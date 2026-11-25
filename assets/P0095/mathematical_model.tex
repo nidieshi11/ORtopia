@@ -3,24 +3,17 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 
-\title{Core Mathematical Model}
+\title{核心数学模型}
 \date{}
 
+\usepackage[UTF8]{ctex}
 \begin{document}
 
 \maketitle
 
-\section*{Constrained Assortment Optimization under CNL}
+\section*{在 CNL 条件下，受限混合优化问题}
 
-Assume the feasible assortment set admits a linear description
-$\mathcal{X} = \{x \in \{0,1\}^m : Fx \le g\}$. To obtain a model that can be
-solved directly by Gurobi, we apply the Charnes-Cooper transformation and
-Glover linearization to the linear-fractional approximation. Let
-$w = 1/(c + \sum_{n,k} d_{nk} z_{nk})$, define
-$\tilde{x}_i = w x_i$, $\tilde{y}_{nk} = w y_{nk}$,
-$\tilde{z}_{nk} = w z_{nk}$, and $\tilde{s}_{ink} = w s_{ink}$, and let
-$L_w = 1/(c + \sum_{n,k} d_{nk})$, $U_w = 1/c$.
-The solver in this folder implements the following Assort-MILP directly,
+假设可行的组合集可以用线性描述来表示，即$\mathcal{X} = \{x \in \{0,1\}^m : Fx \le g\}$。为了得到一个可以直接用 Gurobi 求解的模型，我们对线性分数近似方法应用了 Charnes-Cooper 变换和 Glover 线性化技术。定义$w = 1/(c + \sum_{n,k} d_{nk} z_{nk})$、$\tilde{x}_i = w x_i$、$\tilde{y}_{nk} = w y_{nk}$、$\tilde{z}_{nk} = w z_{nk}$和$\tilde{s}_{ink} = w s_{ink}$，同时定义$L_w = 1/(c + \sum_{n,k} d_{nk})$和$U_w = 1/c$。该求解器直接实现了以下 Assort-MILP 模型。
 
 
 \begin{equation}
@@ -75,10 +68,7 @@ F \tilde{x} \le g\,w
 \tag{11}
 \end{equation}
 
-Constraint \textnormal{(11)} is the transformed representation of the original
-assortment feasibility system. The solver in this folder enforces the equivalent
-original linear constraints $Fx \le g$ on $x$ directly, together with
-\textnormal{(12)}, representing $F\tilde{x} \le g\,w$.
+约束\textnormal{(11)}是原始分类可行性系统的转换表示。该文件夹中的求解器直接强制执行原始线性约束$Fx \le g$对$x$的约束，同时还包括\textnormal{(12)}，它们代表$F\tilde{x} \le g\,w$。
 
 \begin{equation}
 w - U_w(1-x_i) \le \tilde{x}_i \le w,

@@ -2,18 +2,19 @@
 \usepackage{amsmath,amssymb}
 \usepackage[margin=1in]{geometry}
 \allowdisplaybreaks
+\usepackage[UTF8]{ctex}
 \begin{document}
 
-\section*{Single-vehicle-type ADP fleet-management policy}
+\section*{单车辆类型的ADP车队管理政策}
 
-For each time period $t\in\mathcal T$, given the current state $r_t$, the observed load realization $d_t$, and the supplied policy $\pi$, solve
+对于每一个时间段$t\in\mathcal T$，在当前的状态$r_t$、观测到的负载情况$d_t$，以及提供的策略$\pi$下，求解相应的问题。
 \begin{equation}
 \min_{(x_t,r_{t+1},z_{t+1})}\;
 \sum_{i,j\in\mathcal I}\sum_{l\in\mathcal L}c_{ijlt}x_{ijlt}
 +\sum_{j\in\mathcal I}\sum_{q=1}^{R}\tilde v^\pi_{j,t+1}(q)z_{j,t+1}(q).
 \tag{11}
 \end{equation}
-Subject to
+在以下条件下：
 \begin{align}
 \sum_{j\in\mathcal I}\sum_{l\in\mathcal L}x_{ijlt}
 &=r_{it} &&\text{for all }i\in\mathcal I,\tag{12}\\
@@ -28,20 +29,20 @@ x_{ijlt},\ r_{j,t+1},\ z_{j,t+1}(q)&\in\mathbb Z_+
 \tag{17}
 \end{align}
 
-\section*{Scope, data, and variable roles}
+\section*{范围、数据以及变量角色}
 
-The planning horizon, locations, vehicle types, and movement modes are respectively
+规划范围、位置、车辆类型以及移动模式分别如下：
 \[
 \mathcal T=\{1,\ldots,T\},\qquad
 \mathcal I,\qquad
 \mathcal K\ \text{with }|\mathcal K|=1,\qquad
 \mathcal L=\{0,\ldots,L\}.
 \]
-As in Section 2 of the paper, the vehicle-type superscript is dropped throughout this formulation. $R$ is the total number of available vehicles; it is distinct from the state-transition function $R^\pi_{t+1}$ below. Movement mode $0$ denotes empty repositioning; the remaining modes denote carrying different types of loads.
+如论文第2节所述，此公式中的车辆类型上标部分被省略了。$R$表示可用的车辆总数；它与下面的状态转移函数$R^\pi_{t+1}$是不同的。移动模式$0$表示空置状态的重新定位；其余的模式则表示承载不同类型的货物。
 
-The decision $x_{ijlt}$ is the number of vehicles dispatched from location $i$ to location $j$ at time $t$ using movement mode $l$. The fixed coefficient $c_{ijlt}$ is the cost of dispatching one such vehicle. The state component $r_{it}$ is the number of vehicles available at location $i$ at time $t$. Thus $r_t$ is given in the period-$t$ problem, whereas $r_{t+1}$ is determined by that problem. The variables $z_{j,t+1}(q)$ embed the supplied piecewise-linear continuation functions; they are not additional vehicle types or load types.
+决策$x_{ijlt}$指的是在时间$t$，使用移动模式$l$，从位置$i$派遣到位置$j$的车辆数量。固定系数$c_{ijlt}$表示派遣一辆这样的车辆所需的成本。状态组件$r_{it}$则表示在时间$t$，位置$i$处可用的车辆数量。因此，在周期$t$问题中，$r_t$是已知的，而$r_{t+1}$则由该问题决定。变量$z_{j,t+1}(q)$包含了所提供的分段线性连续函数；它们并不是额外的车辆类型或负载类型。
 
-$D_{ijlt}$ is the random number of loads requiring transport from $i$ to $j$ at time $t$ in movement mode $l$, and $d_{ijlt}$ denotes a particular realization. Suppressing indices denotes the vector of components ranging over those indices; in particular,
+$D_{ijlt}$表示在时间$t$，以移动模式$l$下，需要从$i$运输到$j$的随机数量的负载。而$d_{ijlt}$则代表一个特定的实现情况。省略索引表示该向量包含的是这些索引所代表的各个组成部分；具体来说，
 \[
 \begin{aligned}
 r_t&=\{r_{it}:i\in\mathcal I\},\\
@@ -50,60 +51,60 @@ d&=\{d_{ijlt}:i,j\in\mathcal I,\ l\in\mathcal L,\ t\in\mathcal T\}
   =\{d_t:t\in\mathcal T\}.
 \end{aligned}
 \]
-Empty repositioning movements are unbounded in load availability:
+空置的重新定位动作在负载可用性的方面是没有限制的：
 \[
 D_{ij0t}=\infty
 \qquad\text{for all }i,j\in\mathcal I,\ t\in\mathcal T.
 \]
-If carrying load type $l$ with the sole vehicle type is infeasible, the paper encodes this by
+如果仅使用该车辆类型来运输负载类型$l$，则无法实现该运输任务。因此，本文通过以下方式对此进行了处理：
 \[
 c_{ijlt}=\infty
 \qquad\text{for all }i,j\in\mathcal I,\ t\in\mathcal T
 \quad\text{for that load type }l.
 \]
-The paper says that usually $c_{ijlt}<0$ for $l\in\mathcal L\setminus\{0\}$; this is not imposed as a universal input restriction.
+论文中提到，通常情况下，$c_{ijlt}<0$代表$l\in\mathcal L\setminus\{0\}$；但这并不是一种普遍适用的输入限制。
 
-Travel between any pair of locations takes one time period. There is no advance information about future loads. Loads not covered in the current period are served by an emergency subcontractor and immediately leave the system. The model uses cost minimization to express the intended maximization of expected profit over the finite horizon. The stochastic assumption stated in Section 1 is that, given $r_t$, $D_t$ is independent of $\{D_{t'}:t'=1,\ldots,t-1\}$. The paper also assumes throughout that $c_t$ is perturbed by small random amounts to obtain a single optimal solution and properly defined decision and transition functions; it specifies no perturbation magnitude or distribution.
+在任何两个地点之间旅行都需要一个时间周期。关于未来负载的信息是未知的。在当前周期中未涵盖的负载将由紧急分包商来处理，然后立即离开系统。该模型采用成本最小化方法来实现预期利润的最大化，这一方法适用于有限的时间范围。第1节中提出的随机假设是：给定$r_t$，$D_t$与$\{D_{t'}:t'=1,\ldots,t-1\}$是独立的。论文还假设$c_t$会受到微小的随机扰动，从而得到一个最优解，并且决策和转换函数被正确定义；不过，论文并未具体说明扰动的大小或分布情况。
 
-\section*{Supplied continuation functions and their embedding}
+\section*{请提供后续的函数及其嵌入方式。}
 
-The policy $\pi$ is fixed and supplied, not optimized over in (11). Its continuation approximations are separable. With the single vehicle type, the specialization of (9), stated on page 7, is
+政策$\pi$是固定不变的，并未在(11)中经过优化处理。其后续近似解是可以分离的。对于单一车辆类型而言，第7页中所述的(9)的特化情况，是可以实现的。
 \begin{equation}
 \tilde V^\pi_t(r_t)=\sum_{i\in\mathcal I}\tilde V^\pi_{it}(r_{it}).
 \tag{9, single type}
 \end{equation}
-Each component is a one-dimensional piecewise-linear convex function whose points of nondifferentiability are a subset of the positive integers. The stated relevant domain of $\tilde V^\pi_{it}(\cdot)$ is
+每个组成部分都是一个一维的、分段线性凸函数，其不可微点集是正整数的一个子集。$\tilde V^\pi_{it}(\cdot)$的相关定义域为
 \[
 \{0,1,\ldots,R\}.
 \]
-The selected representation uses the paper's normalization and slope differences:
+所选的表示方式采用了纸张的标准化处理和坡度差异处理：
 \[
 \tilde V^\pi_{it}(0)=0,\qquad
 \tilde v^\pi_{it}(q)=\tilde V^\pi_{it}(q)-\tilde V^\pi_{it}(q-1),
 \qquad q=1,\ldots,R.
 \]
-Here $\tilde v^\pi_{it}(q)$ is the slope over the open interval $(q-1,q)$. These numbers are supplied coefficients, not stage decisions. For the continuation components appearing in (11), convexity gives
+这里的$\tilde v^\pi_{it}(q)$表示的是开区间$(q-1,q)$上的斜率。这些数字都是给定的系数，而不是阶段决策的结果。对于(11)中出现的连续分量来说，凸性起到了重要作用。
 \[
 \tilde v^\pi_{j,t+1}(1)\leq\tilde v^\pi_{j,t+1}(2)
 \leq\cdots\leq\tilde v^\pi_{j,t+1}(R),
 \qquad j\in\mathcal I.
 \]
-As stated on page 8, in an optimal solution of (11)--(17),
+如第8页所述，在(11)--(17)的最优解中，
 \[
 \sum_{q=1}^{R}\tilde v^\pi_{j,t+1}(q)z_{j,t+1}(q)
 =\sum_{q=1}^{r_{j,t+1}}\tilde v^\pi_{j,t+1}(q)
 =\tilde V^\pi_{j,t+1}(r_{j,t+1}),
 \qquad j\in\mathcal I.
 \]
-Consequently the second term of (11) computes
+因此，(11)中的第二项的计算结果为：
 \[
 \sum_{j\in\mathcal I}\tilde V^\pi_{j,t+1}(r_{j,t+1}).
 \]
-These are the source's optimal-solution identities explaining the embedding, not additional ordering constraints on $z$. Constraints (13) and (14) are retained separately, as in the selected printed formulation.
+这些就是来源中的最优解恒等式，它们解释了嵌入过程。对于$z$来说，并没有额外的排序约束。约束条件（13）和（14）则分别保留下来，就像在选定的打印版本中那样。
 
-\section*{Inherited feasible set and policy definition}
+\section*{继承的可行集合与策略定义}
 
-The feasible set used to define the policy consists of the dispatch decisions and the next-period state they generate. Specializing the defining rows (1)--(4) to $|\mathcal K|=1$ and dropping the type superscript gives
+用于定义策略的可行集合，包括调度决策以及它们所产生的下一期状态。将定义行（1）至（4）替换为$|\mathcal K|=1$，并去掉类型上标后，即可得到完整的结果。
 \begin{equation}
 \mathcal Y(r_t,d_t)=
 \left\{(x_t,r_{t+1}):
@@ -120,20 +121,20 @@ The feasible set used to define the policy consists of the dispatch decisions an
 \right\}.
 \tag{1--4, single type}
 \end{equation}
-These are the inherited physical constraints already represented in (12), (13), (15), and (17), rather than an additional formulation to be solved.
+这些就是那些已经体现在(12)、(13)、(15)和(17)中的物理约束条件，而不是需要额外解决的新的公式。
 
-A Markovian deterministic policy has decision functions $X_t^\pi(\cdot,\cdot)$ mapping $(r_t,d_t)$ to $x_t$, and transition functions $R_{t+1}^\pi(\cdot,\cdot)$ mapping $(r_t,d_t)$ to $r_{t+1}$, for $t\in\mathcal T$. For the supplied approximations, the defining equation is
+马尔可夫确定性策略的决策函数为$X_t^\pi(\cdot,\cdot)$，它将$(r_t,d_t)$映射到$x_t$；而转移函数则为$R_{t+1}^\pi(\cdot,\cdot)$，它将$(r_t,d_t)$映射到$r_{t+1}$，对于$t\in\mathcal T$则如此。对于所提供的近似值，其定义方程为：
 \begin{equation}
 \bigl(X_t^\pi(r_t,d_t),R_{t+1}^\pi(r_t,d_t)\bigr)
 =\operatorname*{argmin}_{(x_t,r_{t+1})\in\mathcal Y(r_t,d_t)}
 \left\{c_t\cdot x_t+\tilde V^\pi_{t+1}(r_{t+1})\right\}.
 \tag{10}
 \end{equation}
-Equation (11) with (12)--(17) is the paper's explicit embedding of this same policy definition. The exact optimal-value-function equations (7)--(8) are replaced by the supplied approximation in (10); they are not imposed on $\pi$.
+方程(11)以及(12)--(17)都是该论文中明确表述的相同政策定义。精确的最优值函数方程(7)--(8)被(10)中的近似值所替代；这些近似值并不适用于$\pi$。
 
-\section*{Operation over the horizon and cumulative cost}
+\section*{在视野范围内进行的操作，以及累积成本}
 
-Given the initial state $r_1$ and a load trajectory $d$, the state and decision trajectories generated by the policy satisfy
+给定初始状态$r_1$和加载轨迹$d$，该策略生成的状态和决策轨迹满足以下条件：
 \begin{equation}
 x_t^{\pi d}=X_t^\pi(r_t^{\pi d},d_t),\qquad
 r_{t+1}^{\pi d}=R_{t+1}^\pi(r_t^{\pi d},d_t),\qquad
@@ -141,7 +142,7 @@ r_1^{\pi d}=r_1,
 \quad t\in\mathcal T.
 \tag{18}
 \end{equation}
-The actual cumulative cost under the policy is defined recursively by
+该政策下的实际累计成本是通过递归方式定义的。
 \begin{equation}
 \begin{aligned}
 F_t^\pi(r_t,d_t,d_{t+1},\ldots,d_T)
@@ -151,11 +152,11 @@ F_t^\pi(r_t,d_t,d_{t+1},\ldots,d_T)
 \qquad t\in\mathcal T,
 \tag{5}
 \end{equation}
-with the printed boundary condition
+带有打印出的边界条件的
 \[
 F_{T+1}^\pi(\cdot)=0.
 \]
-Repeated application gives the printed horizon expansion
+重复应用后，会得到打印出的地平线扩展效果。
 \begin{equation}
 \begin{aligned}
 F_1^\pi(r_1,d_1,\ldots,d_T)
@@ -165,18 +166,18 @@ F_1^\pi(r_1,d_1,\ldots,d_T)
 \end{aligned}
 \tag{6}
 \end{equation}
-The corresponding expected total cost is
+相应的预期总成本为
 \[
 \mathbb E\bigl\{F_1^\pi(r_1,D_1,\ldots,D_T)\mid r_1\bigr\}.
 \]
-The cumulative cost $F_t^\pi(\cdot,d_t,\ldots,d_T)$ need not be separable. In particular, the paper does not assert the identity
+累积成本$F_t^\pi(\cdot,d_t,\ldots,d_T)$并不具有可分离性。特别是，该论文并未提出这种身份关系。
 \[
 \tilde V_t^\pi(r_t)
 =\mathbb E\bigl\{F_t^\pi(r_t,D_t,\ldots,D_T)\mid r_t\bigr\}
 \]
-for this approximate policy; the displayed equality is not an operative constraint.
+对于这种近似策略而言，所显示的等式并不构成操作上的约束条件。
 
-\paragraph{Source scope and terminal omission.}
-The formulation above uses the supplied original paper, physical pages 4--8, including the supplied page-6 text and the page images for pages 5, 7, and 8. The paper describes the approximation family as $\{\tilde V_t^\pi(\cdot):t\in\mathcal T\}$, but (10)--(11) use the continuation at $t+1$, including $T+1$ when $t=T$. The supplied paper does not state a terminal value for $\tilde V_{T+1}^\pi$ or its slopes. The printed boundary condition for $F_{T+1}^\pi$ is retained only for $F^\pi$; no zero terminal approximation or other repair is added. The sampling-based construction cited to Godfrey and Powell (2002a) is not supplied and is unverified here; it is not part of the selected fixed-policy formulation.
+\paragraph{源范围与终端遗漏。}
+上述表述采用了所提供的原始论文，即第4页至第8页的内容，其中包括第6页的文字以及第5页、第7页和第8页的图片。该论文将近似函数描述为$\{\tilde V_t^\pi(\cdot):t\in\mathcal T\}$，但(10)--(11)部分则使用了$t+1$的后续内容，而$T+1$则包含在$t=T$中。所提供的论文并未给出$\tilde V_{T+1}^\pi$或其斜率的终止值。对于$F_{T+1}^\pi$的打印边界条件，仅保留了$F^\pi$的情况；没有添加任何零终止近似或其他修正措施。所引用的基于抽样的构建方法来自Godfrey和Powell (2002a)，但并未提供相关文献，因此此处不予验证；该方法并非所选固定策略表述的一部分。
 
 \end{document}

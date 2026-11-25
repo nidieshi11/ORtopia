@@ -1,18 +1,19 @@
 \documentclass{article}
 \usepackage{amsmath,amssymb}
+\usepackage[UTF8]{ctex}
 \begin{document}
-\section*{Selection-and-routing model}
+\section*{选择与路由模型}
 
-Let $\mathcal M$, $\Pi$, $\mathcal L$, and $\mathcal Q$ be finite sets of mines, ports, granularities, and attributes. The planning periods are $1,\ldots,T$. Mine $m$ has $N_m$ fixed candidate schedules $\vec s_{m,j}$, indexed by $j=1,\ldots,N_m$; $N_{\pi,l}$ is the set of products of granularity $l$ at port $\pi$. The given integer-valued routing-window endpoints satisfy $1\leq f(t)\leq t$ and $t'\leq g(t')\leq T$.
+设$\mathcal M$、$\Pi$、$\mathcal L$和$\mathcal Q$分别为地雷、港口、粒度属性和属性的有限集合。规划周期为$1,\ldots,T$。地雷$m$具有$N_m$个固定的候选调度计划$\vec s_{m,j}$，这些计划由$j=1,\ldots,N_m$索引；$N_{\pi,l}$是港口$\pi$处粒度属性$l$的产品集合。给定的整数值路由窗口端点满足$1\leq f(t)\leq t$和$t'\leq g(t')\leq T$条件。
 
-The scalar parameters are $\beta_1,\beta_2,T_R$, the candidate values $P_j^m$, port capacities $C_\pi^t$, product quality bounds $L_{\pi,l,n,q}^{t}$ and $U_{\pi,l,n,q}^{t}$, and attribute-deviation coefficients $\lambda_q^{+}$. For each fixed candidate schedule, $\tau_l^m(\vec s_{m,j},t')$ is its production and $v_{l,q}^{m,t'}(\vec s_{m,j})$ is its composition value. 
+标量参数包括$\beta_1,\beta_2,T_R$，候选值$P_j^m$，端口容量$C_\pi^t$，产品质量上限$L_{\pi,l,n,q}^{t}$和$U_{\pi,l,n,q}^{t}$，以及属性偏差系数$\lambda_q^{+}$。对于每个固定的候选调度方案，$\tau_l^m(\vec s_{m,j},t')$表示其生产量，而$v_{l,q}^{m,t'}(\vec s_{m,j})$则表示其组成值。 
 
-Define the routing index set
+定义路由索引集合
 \[
 \mathcal W=\{(t,t'):1\leq t'\leq t\leq T,\ f(t)\leq t'\}
 \cup\{(t,t'):1\leq t'\leq t\leq T,\ t\leq g(t')\}.
 \]
-The variables are binary schedule selections $s_{m,j}$, nonnegative routing quantities $r_{\pi,n,t}^{m,l,j,t'}$ for $(t,t')\in\mathcal W$, unrestricted affine-expression variables $z_{\pi,l,n,q}^{+,t},z_{\pi,l,n,q}^{-,t}$, and nonnegative positive-part variables $d_{\pi,l,n,q}^{+,t},d_{\pi,l,n,q}^{-,t}$. The $z$ and $d$ variables are indexed by $\pi\in\Pi$, $l\in\mathcal L$, $n\in N_{\pi,l}$, $q\in\mathcal Q$, and $t=1,\ldots,T$.
+变量包括二进制调度选择$s_{m,j}$、非负路由量$r_{\pi,n,t}^{m,l,j,t'}$（用于$(t,t')\in\mathcal W$）、不受限制的仿射表达式变量$z_{\pi,l,n,q}^{+,t},z_{\pi,l,n,q}^{-,t}$，以及非负正部分变量$d_{\pi,l,n,q}^{+,t},d_{\pi,l,n,q}^{-,t}$。变量$z$和$d$的索引分别由$\pi\in\Pi$、$l\in\mathcal L$、$n\in N_{\pi,l}$、$q\in\mathcal Q$和$t=1,\ldots,T$确定。
 
 \begin{align}
 \min\quad &\sum_{t=1}^{T}\left[
@@ -54,5 +55,5 @@ L_{\pi,l,n,q}^{t}
  d_{\pi,l,n,q}^{+,t},d_{\pi,l,n,q}^{-,t}\geq0
 &&\forall\pi,l,n,q,t.
 \end{align}
-Here and above, $\forall\pi,l,n,q,t$ abbreviates $\pi\in\Pi$, $l\in\mathcal L$, $n\in N_{\pi,l}$, $q\in\mathcal Q$, and $t=1,\ldots,T$.
+在此处及上方，$\forall\pi,l,n,q,t$分别简称为$\pi\in\Pi$、$l\in\mathcal L$、$n\in N_{\pi,l}$、$q\in\mathcal Q$和$t=1,\ldots,T$。所有数字保持不变。
 \end{document}

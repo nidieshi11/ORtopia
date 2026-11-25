@@ -6,32 +6,24 @@
 
 \geometry{a4paper, margin=1in}
 
-\title{Core Solvable Mathematical Model}
+\title{核心可解数学模型}
 \author{}
 \date{}
 
+\usepackage[UTF8]{ctex}
 \begin{document}
 
 \maketitle
 
-This file retains a single-duration mixed-integer linear variant for the Robust Appointment Scheduling Problem with Waiting Time Guarantees and \(k\) show-ups. The single-duration structure is given in Appendix B. The max-recursion from the PDF is written here in an equivalent big-\(M\) linearized form so that the retained model is directly solvable as an MILP, with \(M\) understood as a valid upper bound large enough to preserve equivalence without being unnecessarily loose.
+请将数学符号如\(k\)按原顺序原样保留下来。所有数字也保持不变。
+
+该文件保留了针对具有等待时间保证的鲁棒预约调度问题的单周期混合整数线性变体模型。单周期结构详见附录B。PDF中的最大递归关系被转换为等效的大\(M\)线性形式，这样保留的模型可以直接作为MILP问题进行求解。其中\(M\)被视为足够大的有效上限，从而保持模型的等价性，同时不会过于宽松。
 
 
-\section*{Index and input conventions (reconciled 2026-10-23)}
-For an integer $r$, $[r]=\{1,\ldots,r\}$, with $[0]=\varnothing$;
-all reversed summation ranges are empty. Inputs satisfy $n\ge1$, $0\le k\le n$,
-$L\ge0$, $M>0$, $c_i,c_o,\bar p_j,W_j\ge0$.
-The retained finite-$M$ model uses the single supplied service-duration vector
-$\bar p$ in all its expressions; the duration input is the supplied vector $\bar p$.
-The finite threshold $1/M$ in the breakpoint constraints is retained explicitly.
-For early labels, zero attendance applies to positions before the label. This corrects the inconsistent range printed in Appendix
-B (66), using its explanation on PDF page 47.
-Breakpoint variables are defined for real planned positions $i\in[n]$ and
-breakpoints $l\in[n+1]$. The extraneous reference to $i=n+1$ is removed;
-it has no other links and can equivalently be extended by zero.
-All other comparison inequalities and their signs are retained as written.
+\section*{索引和输入约定（于 2026-10-23 调整）}
+对于整数$r$、$[r]=\{1,\ldots,r\}$以及$[0]=\varnothing$，所有反向的求和范围均为空。输入满足$n\ge1$、$0\le k\le n$、$L\ge0$、$M>0$、$c_i,c_o,\bar p_j,W_j\ge0$的条件。所保留的有限模型$M$在其所有表达式中都使用了提供的单一服务持续时间向量$\bar p$；持续时间输入即为提供的向量$\bar p$。断点约束中的有限阈值$1/M$被明确保留下来。对于早期标签，零出席率适用于该标签之前的职位。这修正了附录B中打印出的不一致范围（第66页），并参考了PDF第47页的说明。断点变量被定义为实际计划中的位置$i\in[n]$以及断点$l\in[n+1]$。对$i=n+1$的额外引用被移除；因为它没有其他链接，可以等效地用零来替代。所有其他比较不等式及其符号都按原样保留下来。
 
-\section{General RASWTG MILP}
+\section{一般 RASWTG MILP}
 
 \begin{equation}
 \min \quad U

@@ -2,27 +2,28 @@
 \usepackage{amsmath,amssymb}
 \usepackage[margin=1in]{geometry}
 \allowdisplaybreaks
-\title{Integrated Fleet Assignment, Cruise Speed, and Aircraft Swaps}
+\title{综合舰队分配、巡航速度以及飞机交换}
 \date{}
+\usepackage[UTF8]{ctex}
 \begin{document}
 \maketitle
 
-\section{Sets and parameters}
-Let $L$, $F$, and $P$ be finite sets of flights, aircraft types, and original flight paths, respectively. Let $L_d\subseteq L$ be the flights with prescribed delays, $S(l)\subseteq L$ the possible swap partners of flight $l$, and $L(p)\subseteq L$ the flights on path $p$. Define
+\section{集合与参数}
+设$L$、$F$和$P$分别表示航班集合、飞机类型集合以及原始飞行路径集合。设$L_d\subseteq L$表示具有预定延误时间的航班集合，$S(l)\subseteq L$表示航班$l$可能的替换伙伴，而$L(p)\subseteq L$表示路径$p$上的航班集合。
 \[
  E=\{(l,j):l\in L,\ j\in S(l)\}.
 \]
-All referenced indices must be covered by the instance: in particular, $(j,l)\in E$ whenever $(l,j)\in E$. The mappings $n(l)\in L$, $f_l\in F$, and $l_o(p)\in L(p)$ specify the immediate successor of flight $l$, its original aircraft type, and the first flight of path $p$ considered in rescheduling.
+所有引用的索引都必须被该实例涵盖：特别是，当$(l,j)\in E$出现时，应使用$(j,l)\in E$。映射$n(l)\in L$、$f_l\in F$和$l_o(p)\in L(p)$分别指定了航班$l$的直接继任者、其原始飞机类型，以及在重新调度时需要考虑的路径$p$的首个航班。
 
-All parameters below are scalar arrays over the indicated indices:
+以下所有参数都是按照指定索引的标量数组：
 \begin{itemize}
-\item For $l\in L$: scheduled departure $d_l$, scheduled arrival $r_l$, turnaround time $a_l$, cruise distance $d_l^{\mathrm{cr}}$, departure-delay bound $\ell_l^u$, arrival-delay cost coefficient $w_l$, passenger count $psg_l$, and coefficient $sp_l$ for $s_l$.
-\item For $l\in L_d$: prescribed delay $\bar\ell_l$.
-\item For $(l,f)\in L\times F$: noncruise time $t_{lf}^{\mathrm{nc}}$, original speed $v_{lf}^{o}$, upper speed bound $v_{lf}^{u}$, and fuel coefficients $c_{i,lf}$ for $i=1,2,3,4$. These coefficients denote the applicable coefficients of the supplied fuel function; shared coefficients are represented by equal entries.
-\item For $(l,j)\in E$: swap cost $h_{lj}$. For $f\in F$: seat capacity $b_f$.
-\item Fuel price $p_{\mathrm{fuel}}$, carbon price $p_{\mathrm{CO}_2}$, fuel-to-emissions conversion factor $\kappa$, and incremental emissions limit $C_{\max}$.
+\item 对于$l\in L$：预定出发时间$d_l$，预定到达时间$r_l$，周转时间$a_l$，巡航距离$d_l^{\mathrm{cr}}$，出发延迟边界$\ell_l^u$，到达延迟成本系数$w_l$，乘客数量$psg_l$，以及$s_l$的系数$sp_l$。
+\item 对于$l\in L_d$：规定的延迟时间$\bar\ell_l$。
+\item 对于$(l,f)\in L\times F$，包括非巡航时间$t_{lf}^{\mathrm{nc}}$、原始速度$v_{lf}^{o}$、最高速度限制$v_{lf}^{u}$，以及$i=1,2,3,4$的燃油系数$c_{i,lf}$。这些系数表示所提供燃油函数的适用系数；共享系数则通过相同的条目来表示。
+\item 对于$(l,j)\in E$，请将成本$h_{lj}$互换位置。对于$f\in F$，请将座位容量$b_f$保持不变。
+\item 燃料价格$p_{\mathrm{fuel}}$，碳价格$p_{\mathrm{CO}_2}$，燃料与排放量的转换系数$\kappa$，以及增量排放限制$C_{\max}$。
 \end{itemize}
-The original assigned speeds have defined positive-speed baseline fuel evaluations. Define the constant
+原始指定的速度已经定义了正速度的燃料消耗基准值。请定义这个常数。
 \[
  B_0=\sum_{l\in L}d_l^{\mathrm{cr}}\left(
  c_{1,l f_l}(v_{l f_l}^{o})^2+c_{2,l f_l}v_{l f_l}^{o}
@@ -30,10 +31,10 @@ The original assigned speeds have defined positive-speed baseline fuel evaluatio
  +\frac{c_{4,l f_l}}{(v_{l f_l}^{o})^3}\right).
 \]
 
-\section{Variables and domains}
-For every $(l,f)\in L\times F$, $z_{lf}$ denotes aircraft-type assignment, $\ell_{lf}$ departure delay, $v_{lf}$ cruise speed, and $t_{lf}$ cruise time. For $(l,j)\in E$, $x_{lj}$ denotes a swap. For $l\in L$, $s_l$ is the passenger-related variable in the stated capacity inequality. The scalar $\ell_l$ for $l\in L_d$ is distinct from the fleet-indexed variables $\ell_{lf}$ and is governed by its stated constraints.
+\section{变量和域}
+对于每一个$(l,f)\in L\times F$，$z_{lf}$表示飞机的类型分配；$\ell_{lf}$表示出发延误时间；$v_{lf}$表示巡航速度；$t_{lf}$表示巡航时间。对于$(l,j)\in E$和$x_{lj}$，它们分别表示交换情况。对于$l\in L$，$s_l$是与乘客相关的变量，用于描述容量不等式。标量$\ell_l$对于$l\in L_d$来说，与舰队索引变量$\ell_{lf}$是不同的，并且受到其规定的约束条件的限制。
 
-The variables $A_l,D_l$ represent the arrival-delay argument and its nonnegative part. The variables $q_{lf},U_{lf},R_{lf},H_{lf},B_{lf}$ give the exact fuel graph. Their domains, together with those of the original variables, are
+变量$A_l,D_l$表示到达延迟参数及其非负部分。变量$q_{lf},U_{lf},R_{lf},H_{lf},B_{lf}$则表示精确的燃料消耗曲线。这些变量的定义域，与原始变量的定义域相同。
 \begin{align}
  z_{lf}&\in\{0,1\}, & &l\in L,\ f\in F,\\
  x_{lj}&\in\{0,1\}, & &(l,j)\in E,\\
@@ -43,10 +44,10 @@ The variables $A_l,D_l$ represent the arrival-delay argument and its nonnegative
  s_l,D_l&\geq0,\qquad A_l\in\mathbb R, &&l\in L,\\
  \ell_l&\in\mathbb R, &&l\in L_d.
 \end{align}
-All variables except $x$ and $z$ are continuous.
+除$x$和$z$之外的所有变量都是连续的。
 
-\section{Objective and constraints}
-Minimize
+\section{目标与约束条件}
+最小化
 \begin{equation}
  \sum_{l\in L}w_lD_l
  +(p_{\mathrm{fuel}}+p_{\mathrm{CO}_2}\kappa)
@@ -54,17 +55,17 @@ Minimize
  +\sum_{l\in L}\sum_{j\in S(l)}h_{lj}x_{lj}
  +\sum_{l\in L}sp_ls_l.
 \end{equation}
-The directed swap-cost summation is retained as displayed.
+有向交换成本的求和项沿用原式。
 
-The exact arrival-delay graph is
+确切的到达延迟图如下：
 \begin{align}
  A_l&=d_l-r_l+\sum_{f\in F}
  (\ell_{lf}+t_{lf}+t_{lf}^{\mathrm{nc}}z_{lf}), &&l\in L,\\
  D_l&=\max\{A_l,0\}, &&l\in L.
 \end{align}
-The latter equality is an exact MAX general constraint.
+后一个等式是一个精确的 MAX 通用约束条件。
 
-The exact fuel graph is
+确切的燃料图表如下：
 \begin{align}
  v_{lf}q_{lf}&=z_{lf}, &&l\in L,\ f\in F,\\
  U_{lf}&=v_{lf}^2, &&l\in L,\ f\in F,\\
@@ -75,9 +76,9 @@ The exact fuel graph is
                  +c_{3,lf}R_{lf}+c_{4,lf}H_{lf}\bigr),
  &&l\in L,\ f\in F.
 \end{align}
-The implication is a linear indicator constraint.
+这里的“ implication”指的是线性指示符约束。
 
-Cruise-distance, delay, speed, and emissions constraints are
+巡航距离、延迟、速度和排放限制是
 \begin{align}
  v_{lf}t_{lf}&=d_l^{\mathrm{cr}}z_{lf}, &&l\in L,\ f\in F,\\
  \ell_{lf}&\leq\ell_l^u z_{lf}, &&l\in L,\ f\in F,\\
@@ -85,9 +86,9 @@ Cruise-distance, delay, speed, and emissions constraints are
  v_{lf}^{o}z_{lf}&\leq v_{lf}\leq v_{lf}^{u}z_{lf}, &&l\in L,\ f\in F,\\
  \kappa\sum_{l\in L}\sum_{f\in F}B_{lf}-\kappa B_0&\leq C_{\max}.
 \end{align}
-Flight--type cruise times satisfy the displayed bounds and linking constraints for every pair.
+飞行类型与巡航时间满足所显示的所有边界条件以及每对数据之间的关联约束。
 
-Turnaround feasibility requires
+周转的可行性需要…
 \begin{align}
  &d_{n(l)}z_{n(l),f_k}+\ell_{n(l),f_k}
  +(r_k+\ell_k^u+a_k)(1-z_{n(l),f_k})\notag\\
@@ -100,7 +101,7 @@ Turnaround feasibility requires
  &&l\in L,\ f\in F\setminus\{f_l\}.
 \end{align}
 
-Swap limits, symmetry, and the stated passenger-capacity inequality are
+请交换极限值、对称性以及所声明的乘客容量不等式的顺序。同时，保持所有数字的顺序不变。
 \begin{align}
  \sum_{l\in L(p)}\sum_{j\in S(l)}x_{lj}&\leq1, &&p\in P,\\
  \sum_{j\in S(l)}x_{lj}&\leq1, &&l\in L,\\
@@ -108,7 +109,7 @@ Swap limits, symmetry, and the stated passenger-capacity inequality are
  psg_l-\sum_{f\in F}b_fz_{lf}&\geq s_l, &&l\in L.
 \end{align}
 
-Fleet assignment and swap consistency require
+舰队分配和交换的协调性需要…
 \begin{align}
  \sum_{f\in F}z_{lf}&=1, &&l\in L,\\
  z_{l_o(p),f_{l_o(p)}}&=1, &&p\in P,\\
@@ -118,6 +119,6 @@ Fleet assignment and swap consistency require
  z_{n(l),f_j}&\geq x_{lj}, &&(l,j)\in E.
 \end{align}
 
-\paragraph{Formulation retained.}
-This is the selected model (20)--(40) with exact graph and linear rewrites.  Its quadratic equalities are retained for solution with Gurobi's nonconvex quadratic capability (\texttt{NonConvex=2}), together with the MAX and indicator general constraints.
+\paragraph{保留公式表述。}
+这是选定的模型（20–40），其图形和线性重写方式都是精确的。该模型的二次等式被保留下来，以便使用 Gurobi 的非凸二次求解功能进行求解（\texttt{NonConvex=2}），同时还包括 MAX 和指示性约束条件。
 \end{document}

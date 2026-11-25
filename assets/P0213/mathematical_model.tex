@@ -1,24 +1,25 @@
 \documentclass[11pt]{article}
 \usepackage{amsmath,amssymb}
 \usepackage[margin=1in]{geometry}
-\title{Hydraulic Flow--Pressure Optimization Core}
+\title{液压流动——压力优化核心}
 \author{}
 \date{}
+\usepackage[UTF8]{ctex}
 \begin{document}
 \maketitle
 
-\section{Sets and supplied data}
-Let $V$ be a finite node set, partitioned into entry nodes $V_+$, exit nodes $V_-$, and internal nodes $V_0$. Write $S:=V_+\cup V_-$. Let $A$ be a finite directed arc set with specified tail and head for each arc, denoted $a=(u,v)$. Define
+\section{集合与提供的数据}
+设$V$为一个有限的节点集，该节点集被划分为入口节点$V_+$、出口节点$V_-$以及内部节点$V_0$。记$S:=V_+\cup V_-$为某个特定的节点。设$A$为一个有限的有向边集，每条边都有指定的起点和终点，记为$a=(u,v)$。定义…
 \[
 \delta^{\mathrm{out}}(u):=\{a\in A:\operatorname{tail}(a)=u\},
 \qquad
 \delta^{\mathrm{in}}(u):=\{a\in A:\operatorname{head}(a)=u\}.
 \]
-The supplied subsets $A_{\mathrm{pi}}\subseteq A$ and $A_{\mathrm{rs\text{-}nl}}\subseteq A$ index pipes and nonlinear resistors, respectively. Set
+提供的子集$A_{\mathrm{pi}}\subseteq A$和$A_{\mathrm{rs\text{-}nl}}\subseteq A$分别索引了管道和非线性电阻器。设置
 \[
 B:=A_{\mathrm{pi}}\cup A_{\mathrm{rs\text{-}nl}}.
 \]
-The numerical data consist of pipe coefficients $c_{1,a},c_{2,a}\in\mathbb R$ for $a\in A_{\mathrm{pi}}$, resistor coefficients $c_a\in\mathbb R$ for $a\in A_{\mathrm{rs\text{-}nl}}$, and the supplied lower and upper bounds
+数值数据包括管道系数$c_{1,a},c_{2,a}\in\mathbb R$对应$a\in A_{\mathrm{pi}}$，电阻器系数$c_a\in\mathbb R$对应$a\in A_{\mathrm{rs\text{-}nl}}$，以及给定的上下限范围。
 \[
 (p_u^-,p_u^+)\quad(u\in V),\qquad
 (q_u^-,q_u^+)\quad(u\in S),\qquad
@@ -26,17 +27,17 @@ The numerical data consist of pipe coefficients $c_{1,a},c_{2,a}\in\mathbb R$ fo
 \]
 
 
-The five scalar objective components $f_1,\ldots,f_5$ are supplied finite-dimensional Gurobi-compatible expressions for the selected core. Their expression definitions and numerical coefficients are supplied by the instance. With
+这五个标量目标组成部分$f_1,\ldots,f_5$，都提供了与 Gurobi 兼容的有限维表达式。这些表达式的定义以及数值系数由实例提供。
 \[
 z:=\bigl((p_u)_{u\in V},(q_u)_{u\in S},(q_a)_{a\in A}\bigr)
 \in\mathbb R^{|V|+|S|+|A|},
 \]
-write these expressions as $f_i(z)$. 
+请将这些表达式原封不动地写成$f_i(z)$的形式。同时，保留所有的数字。 
 
-\section{Decision variables}
-The continuous physical variables are pressure $p_u\in\mathbb R$ for $u\in V$, nodal supply or demand $q_u\in\mathbb R$ for $u\in S$, and arc flow $q_a\in\mathbb R$ for $a\in A$. Arc flow is positive along the specified arc direction; nodal supply is positive and demand is negative under the balance convention below.
+\section{决策变量}
+连续的物理变量包括：压力$p_u\in\mathbb R$对应$u\in V$；节点供应或需求$q_u\in\mathbb R$对应$u\in S$；弧线流量$q_a\in\mathbb R$对应$a\in A$。弧线流量在指定的方向上为正值；节点供应为正值，而需求则为负值，这是遵循的均衡原则。
 
-Introduce continuous auxiliary variables
+引入连续的辅助变量
 \[
 t_a\in\mathbb R_{\geq0},\quad r_a\in\mathbb R
 \qquad(a\in B),
@@ -45,9 +46,9 @@ t_a\in\mathbb R_{\geq0},\quad r_a\in\mathbb R
 d_a\in\mathbb R,\quad w_a\in\mathbb R_{\geq0},\quad h_a\in\mathbb R
 \qquad(a\in A_{\mathrm{rs\text{-}nl}}).
 \]
-Here $\operatorname{ABS}(x)$ denotes the exact absolute-value general constraint: an equality $y=\operatorname{ABS}(x)$ requires $y=|x|$.
+这里$\operatorname{ABS}(x)$表示精确的绝对值通用约束：等式$y=\operatorname{ABS}(x)$要求$y=|x|$成立。
 
-\section{Optimization formulation}
+\section{优化公式}
 \begin{align}
 \min_{p,q,t,r,d,w,h}\quad
 &\sum_{i=1}^{5} f_i(z)
@@ -92,9 +93,9 @@ q_u,&u\in S,\\
 &&a\in A.
 \label{eq:arcbounds}
 \end{align}
-All variables have the continuous domains stated above; in particular, $r_a,d_a,h_a$ are unrestricted in sign.
+所有变量的连续域如上所述；特别是，$r_a,d_a,h_a$在符号上不受限制。
 
-\paragraph{Exact solver representation and selection.}
-This is the selected hydraulic core, consisting only of the stated objective, nodal balances, pipe and nonlinear-resistor physics, and pressure and flow bounds.  Equations~\eqref{eq:flowabs} and~\eqref{eq:pressureabs} are exact absolute-value general constraints. Equations~\eqref{eq:flowproduct}, \eqref{eq:pipe}, \eqref{eq:pressureproduct}, and~\eqref{eq:resistor} are nonconvex quadratic equalities; Gurobi must be configured to accept nonconvex quadratic constraints. 
+\paragraph{精确求解器表示与选择。}
+这是选定的液压核心，其组成部分仅包括目标设定、节点平衡、管道及非线性电阻器物理特性，以及压力和流量限制。方程~\eqref{eq:flowabs}和~\eqref{eq:pressureabs}是精确的绝对值通用约束条件。方程~\eqref{eq:flowproduct}、\eqref{eq:pipe}、\eqref{eq:pressureproduct}以及~\eqref{eq:resistor}则是非凸二次等式；因此，Gurobi必须被配置为能够接受非凸二次约束条件。 
 
 \end{document}

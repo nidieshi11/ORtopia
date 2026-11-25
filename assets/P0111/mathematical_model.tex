@@ -1,46 +1,36 @@
 \documentclass[11pt]{article}
 \usepackage{amsmath,amssymb,geometry}
 \geometry{margin=25mm}
+\usepackage[UTF8]{ctex}
 \begin{document}
-\section*{Core model: bounded dispatch-menu assortment with driver decline}
-Source: Sections 2 and 3.1, PDF pp.4--6, utility (1), choice (2)--(3),
-objective (4)--(5), limits (6)--(7), and independent-choice probability
-(12). One complete general application model is retained. Instance
-parameters $a,b$ fix the menu-exposure policy.
-\paragraph{Inputs and meaning.}
-$D$ and $O$ are the finite sets of idle drivers and unmatched orders
-in one batching window. $a\in\{1,\ldots,|D|\}$ is the maximum number
-of menus containing an order; $b\in\{1,\ldots,|O|\}$ is maximum menu
-size. Larger supplied bounds are equivalent to these finite maxima.
-Input $u_{do}\ge0$ is the attractiveness of order $o$ to driver $d$,
-and $u_d^c>0$ is the decline attractiveness. They may be supplied directly
-or evaluated using the paper's estimated behavioral coefficients:
+\section*{核心模型：具有驾驶员递减特性的有限调度菜单组合}
+第2节和第3.1节，PDF第4-6页，效用（1），选择（2-3），目标（4-5），限制（6-7），以及独立选择概率（12）。保留了一个完整的一般应用模型。实例参数$a,b$决定了菜单暴露策略。
+\paragraph{输入和含义。}
+$D$和$O$分别表示一个批次窗口中空闲的驱动程序和未匹配的任务的有限集合。$a\in\{1,\ldots,|D|\}$表示包含一项任务的菜单的最大数量；$b\in\{1,\ldots,|O|\}$则表示菜单的最大尺寸。如果提供的范围大于这些有限的最大值，那么这些较大的范围实际上等同于这些有限的最大值。
+
+$u_{do}\ge0$表示任务$o$对驱动程序$d$的吸引力；$u_d^c>0$则表示吸引力的下降程度。这些数值可以直接提供，或者通过使用论文中估计的行为系数来计算得出。
 \[
  u_{do}=\beta_{0d}+\beta_{1d}I_o+\beta_{2d}f_o
  -\beta_{3d}\tau(l_d,l_o^{\rm org})
  +\beta_{4d}V(l_o^{\rm dest}).\tag{1}
 \]
-Here $I_o$ is order type, $f_o$ fare, $l_d$ driver location,
-$l_o^{\rm org},l_o^{\rm dest}$ the order endpoints, $\tau$ pickup time,
-and $V$ future spatial destination value.
-The proportional probability rule uses fixed nonnegative calibrated utilities.
-\paragraph{Single binary decision domain.}
-$x_{do}\in\{0,1\}$ means that order $o$ appears in driver $d$'s menu.
-The subsequent acceptance and assignment events follow the probability expressions below.
-Define deterministic expressions
+这里$I_o$表示订单类型，$f_o$表示费用，$l_d$表示司机位置，
+$l_o^{\rm org},l_o^{\rm dest}$表示订单终点，$\tau$表示取货时间，
+而$V$表示未来的空间目的地价值。
+比例概率规则使用固定的非负校准效用值。
+\paragraph{单个二进制决策域。}
+$x_{do}\in\{0,1\}$表示顺序$o$出现在驱动程序$d$的菜单中。  
+后续的接受和分配事件遵循以下概率表达式。  
+定义确定性表达式。
 \begin{align*}
  Z_d(x)&=u_d^c+\sum_{o\in O}u_{do}x_{do}>0,\\
  p_{do}(x)&=\frac{u_{do}x_{do}}{Z_d(x)},\qquad
  p_{dc}(x)=\frac{u_d^c}{Z_d(x)},\\
  P_o(x)&=1-\prod_{d\in D}(1-p_{do}(x)).
 \end{align*}
-Each driver selects at most one displayed order or declines, independently
-of other drivers. Thus $P_o$ counts an order selected by at least one
-driver exactly once, even when several select it. A tie is resolved in
-favor of the nearest selecting driver as in Section 2.
-An unlisted order has $p_{do}=0$, and an empty menu has decline probability
-one, defining the empty-set case.
-\paragraph{Complete optimization model.}
+每位驾驶员最多只能选择一种显示的顺序，或者选择拒绝其他顺序。这一选择是独立于其他驾驶员的行为而进行的。 因此，$P_o$将至少有一个驱动因素选择的顺序计为一次，即使有多个驱动因素选择了该顺序。平局时，会以最接近的选择驱动因素为准，如第2节所述。
+一个未列出的订单有$p_{do}=0$，而一个空菜单的拒绝概率为一，这定义了空集情况。
+\paragraph{请完整填写优化模型。}
 \begin{align}
 \max_{x}\quad &\sum_{o\in O}\left[
 1-\prod_{d\in D}\left(1-
@@ -49,9 +39,5 @@ one, defining the empty-set case.
 &\sum_{o\in O}x_{do}\le b &&d\in D,\tag{7}\\
 &x_{do}\in\{0,1\} &&d\in D,o\in O.\tag{D}
 \end{align}
-The objective is expected \emph{distinct successful matches}. Capacity here concerns
-the displayed menu size.
-Behavioral normalization and collision probability remain part of this
-single model; homogeneous-case analyses, independent disjoint objective,
-unlimited joint-menu specialization and bundled-order extension are omitted.
+目标预期是实现\emph{两种不同的成功匹配方式}。这里的容量指的是所显示菜单的大小。行为标准化和碰撞概率仍然是该单一模型的一部分；均匀案例分析、独立且不相交的目标、无限联合菜单专业化以及捆绑订单的扩展则被省略了。
 \end{document}

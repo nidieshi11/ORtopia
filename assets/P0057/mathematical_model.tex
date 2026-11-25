@@ -2,16 +2,17 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 
-\title{Core Mathematical Model}
+\title{核心数学模型}
 \date{}
 
+\usepackage[UTF8]{ctex}
 \begin{document}
 
 \maketitle
 
-\section*{Fuel-Constrained Unit Commitment}
+\section*{受燃料限制的单位承诺}
 
-To make the model directly implementable in Gurobi, we use explicit initial conditions $(y_0,x_0)$ and the exact period-specific piecewise-linear production-cost curve supplied in the instance data. In particular, for each period $t$, the solver reads ordered breakpoint-value pairs $(\chi_{tm},\phi_{tm})_{m\in\mathcal{M}_t}$ from \texttt{f\_t.breakpoints\_MW} and \texttt{f\_t.values}, and enforces the resulting polyline with Gurobi's \texttt{addGenConstrPWL}. When these data define a convex curve, this is equivalent to a supporting-line epigraph; otherwise the implemented model follows the nonconvex polyline itself. The repository implementation also exposes a period-length parameter $\Delta t = \texttt{period\_length}$; in the current solver, $\Delta t$ scales only the production-cost term, while the revenue term $\xi_t x_t$ and the fuel budget $Q$ remain unscaled.
+为了使该模型能够直接在 Gurobi 中实施，我们使用了明确的初始条件$(y_0,x_0)$，以及实例数据中提供的、与特定时期相对应的分段线性生产成本曲线。所有数字都保持不变。 具体而言，对每个时段 $t$，求解器从 \texttt{f\_t.breakpoints\_MW} 和 \texttt{f\_t.values} 读取按顺序排列的断点和值的配对 $(\chi_{tm},\phi_{tm})_{m\in\mathcal{M}_t}$，然后通过 Gurobi 的 \texttt{addGenConstrPWL} 施加相应的分段线性约束。 当这些数据定义了一个凸曲线时，这就相当于一条支撑线上的曲线；否则，所实现的模型就会遵循非凸多段线本身的特征。 存储库的实现还提供了一个表示周期长度的参数$\Delta t = \texttt{period\_length}$；在当前的求解器中，$\Delta t$仅用于缩放生产成本项，而收入项$\xi_t x_t$和燃料预算$Q$则保持未缩放状态。
 
 \begin{equation}
 \min

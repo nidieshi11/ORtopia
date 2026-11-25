@@ -5,32 +5,23 @@
 \usepackage{geometry}
 \geometry{a4paper, margin=1in}
 
-\title{Core Solvable Mathematical Model}
+\title{核心可解数学模型}
 \author{Paper 8}
 \date{\today}
 
+\usepackage[UTF8]{ctex}
 \begin{document}
 
 \maketitle
 
-\section*{Retained Core Model}
-According to the \texttt{tex} formulas and the PDF, the retained directly solvable core model is
-the compact MILP reformulation $R$-MILP for the case $M=2$, given by Theorem 3 (Pages 14 and
-18). The earlier formulations B-IFP and R-BFP are omitted because they are fractional/nonlinear
-intermediate models, while the later outer-approximation algorithms are solution methods rather
-than the core model itself.
+\section*{保留的核心模型}
+根据\texttt{【tex}公式以及PDF文件，可以直接求解的核心模型是紧凑型MILP重构形式$R$-MILP，适用于情况$M=2$，具体如定理3（第14页和第18页）所述。早期的B-IFP和R-BFP公式被省略了，因为它们属于分数/非线性中间模型；而后期的外部近似算法则属于求解方法，而非核心模型本身。
 
-\paragraph{Decision variables.}
-$x_j \in \{0,1\}$ opens drone base $j$, $y_{ij}\in\{0,1\}$ assigns overdose request location $i$
-to base $j$, and $\gamma_j^{(m)}\in\{0,1\}$ indicates whether exactly $m$ drones are positioned
-at base $j$ for $m=1,2$. The remaining variables
-$U_j^{(1)},U_j^{(2)},z_{jlt},\mu_{lj}^{(m)},\tau_{jlt},\omega_{ij}^{(m)}$
-are standard auxiliary variables introduced by the exact linearization.
-Let $\bar U_j^{(m)}$ be a valid upper bound on $U_j^{(m)}$, and let
-$\bar\mu_{ij}^{(1)}$ be a valid upper bound on $\mu_{ij}^{(1)}$.
+\paragraph{决策变量。}
+$x_j \in \{0,1\}$开启无人机基地$j$，$y_{ij}\in\{0,1\}$将过量请求位置$i$分配给基地$j$，而$\gamma_j^{(m)}\in\{0,1\}$表示是否恰好有$m$架无人机位于基地$j$，用于$m=1,2$。其余变量$U_j^{(1)},U_j^{(2)},z_{jlt},\mu_{lj}^{(m)},\tau_{jlt},\omega_{ij}^{(m)}$是由精确线性化引入的标准辅助变量。设$\bar U_j^{(m)}$是$U_j^{(m)}$的有效上界，且$\bar\mu_{ij}^{(1)}$是$\mu_{ij}^{(1)}$的有效上界。
 
-\paragraph{Base feasible set.}
-The binary feasible set $\mathcal B$ is defined by the assignment and resource constraints
+\paragraph{基础可行集合。}
+二进制可行集$\mathcal B$是由分配约束和资源限制所定义的。
 \begin{align}
 \sum_{i \in I_j} \lambda_i y_{ij}\mathbb{E}[S_{ij}] &\le \sum_{m=1}^{2} m\gamma_j^{(m)} - \epsilon
 && \forall j \in J \tag{9b}\\
@@ -48,7 +39,7 @@ x_j,\ y_{ij},\ \gamma_j^{(m)} &\in \{0,1\}
 && \forall i \in I,\ \forall j \in J_i,\ \forall j \in J,\ m=1,2 \tag{8h/9f}
 \end{align}
 
-\section*{Compact MILP Reformulation ($M=2$)}
+\section*{紧凑化的 MILP 重新表述形式：$M=2$}
 \begin{equation}
 \min
 \sum_{i \in I} \sum_{j \in J_i} \frac{y_{ij} d_{ij} \lambda_i}{v \sum_{l \in I} \lambda_l}
@@ -116,7 +107,7 @@ U_j^{(1)} =
 \tag{13i}
 \end{equation}
 
-\section*{Expanded Linearization Sets}
+\section*{扩展的线性化集合}
 \begin{equation}
 z_{jlt} \ge 0,\qquad
 z_{jlt} \ge y_{lj} + y_{tj} - 1,\qquad
@@ -153,7 +144,7 @@ z_{jlt} \le y_{tj}
 \tag{Lin-omega}
 \end{equation}
 
-\section*{Strengthening Cuts Retained with the Model}
+\section*{通过模型强化，保留的削减措施得到了加强。}
 \begin{equation}
 \gamma_j^{(1)} + \gamma_j^{(2)} \ge U_j^{(m)} / \bar U_j^{(m)}
 \quad \forall j \in J,\ m=1,2

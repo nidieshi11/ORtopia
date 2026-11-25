@@ -6,35 +6,28 @@
 \usepackage{geometry}
 \geometry{a4paper, margin=1in}
 
-\title{Core Solvable Mathematical Model}
+\title{核心可解数学模型}
 \author{Paper 1}
 \date{\today}
 
+\usepackage[UTF8]{ctex}
 \begin{document}
 
 \maketitle
 
-\section*{Retained Core Model}
-According to the \texttt{tex} formulas and the PDF, the directly solvable core model is the
-single-level MILP on Page 6 for learning a DNF classifier. The subproblem $(SP)^u$ and
-master problems $(MP)^u$ and $(MP)$ are part of the IRELAND heuristic framework and are
-therefore omitted here.
+\section*{保留的核心模型}
+根据\texttt{}公式以及PDF文件，可以直接求解的核心模型是第6页上的单层MILP模型，用于学习DNF分类器。子问题$(SP)^u$以及主问题$(MP)^u$和$(MP)$属于IRELAND启发式框架的一部分，因此在此处省略了它们。
 
-\paragraph{Sets and parameters.}
-Let $\mathcal{N}_1$ be the set of positive samples, $\mathcal{N}_0$ the set of negative
-samples, $\mathcal{N}=\mathcal{N}_0 \cup \mathcal{N}_1$, $\mathcal{J}$ the feature set, and
-$\mathcal{K}$ the set of AND clauses. Let $K = |\mathcal{K}|$. The parameter $X_{nj}\in\{0,1\}$
-indicates whether feature $j$ is active in sample $n$, $w_n \ge 0$ is the sample weight, and
-$M$ is the maximum number of features allowed in one AND clause.
+\paragraph{集合与参数。}
+设$\mathcal{N}_1$为正样本集合，$\mathcal{N}_0$为负样本集合，$\mathcal{N}=\mathcal{N}_0 \cup \mathcal{N}_1$和$\mathcal{J}$为特征集合，$\mathcal{K}$为AND子句集合。设$K = |\mathcal{K}|$为参数，$X_{nj}\in\{0,1\}$表示特征$j$在样本$n$中是否活跃，$w_n \ge 0$为样本权重，$M$为单个AND子句中允许的最大特征数量。
 
-\paragraph{Decision variables.}
-$\hat{y}_n \in \{0,1\}$ indicates the predicted label of sample $n$,
-$t_{nk} \in \{0,1\}$ indicates whether sample $n$ satisfies clause $k$, and
-$s_{kj} \in \{0,1\}$ indicates whether feature $j$ is included in clause $k$.
+\paragraph{决策变量。}
+$\hat{y}_n \in \{0,1\}$表示样本$n$的预测标签；  
+$t_{nk} \in \{0,1\}$表示样本$n$是否满足条件$k$；  
+$s_{kj} \in \{0,1\}$表示特征$j$是否包含在条件$k$中。
 
-\section*{MILP Formulation}
-Constraint \textup{(BP4-f)} is retained as a strengthening constraint used in the solver-side
-formulation. It enforces the binary DNF semantics used by the solver formulation.
+\section*{MILP 公式化}
+约束条件\textup{(BP4-f)}被保留下来，作为求解器侧公式化中使用的加强约束。该约束强制遵循求解器公式化所使用的二元否定式语义。
 
 \begin{equation}
 \max \sum_{n \in \mathcal{N}_1} w_n \hat{y}_n

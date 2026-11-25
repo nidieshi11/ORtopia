@@ -1,21 +1,14 @@
 \documentclass[11pt]{article}
 \usepackage{amsmath,amssymb,geometry}
 \geometry{margin=22mm}
+\usepackage[UTF8]{ctex}
 \begin{document}
 
-\section*{P360: complete nonlinear metro regulation repair}
-Stations $s=0,\ldots,9$ enumerate the ten directional service locations
-of five physical stations, trains $j=0,\ldots,5$ retain all six original trains.
-Each directional service location has the finite storage state used below.
-All time is seconds, mass tonnes, energy kWh and auxiliary power kW.
-Input contains full arrays $r^{pla},l^{pla},d^{pla},w^{run},w^{dwe},
-\lambda,\beta$, first arrivals $a_{0j}$ and preceding departures $d_{s,-1}$.
-Capacity is $C=1200$, storage capacity $E^{max}=500$ and initial energy
-$E^0=250$ at each modeled service location; these are explicit completed
-scenario values supplied by the instance.
+\section*{P360：完成非线性的地铁运营维护工作}
+站点$s=0,\ldots,9$列举了五个物理站点的十个方向服务位置。列车$j=0,\ldots,J-1$共享同一运营线路。原始时刻表使用$J=6$来表示，而较大的层级则将时刻表扩展到了输入列车数量的范围。每个方向服务位置都有有限的存储状态。所有时间单位均为秒，质量单位为吨，能量单位为千瓦时，辅助功率单位为千瓦。输入数据包含完整的数组$r^{pla},l^{pla},d^{pla},w^{run},w^{dwe},
+\lambda,\beta$，首次到达的列车$a_{0j}$，以及之前出发的列车$d_{s,-1}$。每个建模的服务位置的容量、存储容量以及初始能量分别为$C=1200$、$E^{max}=500$和$E^0=250$；这些是实例提供的明确完成后的场景值。
 
-Choose controls $x_{sj}\in[-30,30]$ for $s<9$ and
-$g_{sj}\in[-15,15]$. Define
+请选择控制项$x_{sj}\in[-30,30]$用于$s<9$和$g_{sj}\in[-15,15]$。定义如下：
 \begin{align}
 r_{sj}&=r^{pla}_{sj}+x_{sj}+w^{run}_{sj},&
 l_{sj}&=l^{pla}_{sj}+g_{sj}+w^{dwe}_{sj},\\
@@ -23,14 +16,11 @@ d_{sj}&=a_{sj}+l_{sj},&
 a_{sj}&=d_{s-1,j}+r_{s-1,j}\quad(s>0),\\
 h_{sj}&=d_{sj}-d_{s,j-1}.&&
 \end{align}
-Require $h_{sj}\ge270$ for $j>0$, $h_{s0}\ge0$, $l_{sj}\ge20$,
-$300\le r_{4j}\le600$, and the passenger dwell condition below.
-The turnaround interval is the zero-distance transition between the two
-directional service sequences. Controls may be negative, correcting the
-original extracted blanket nonnegative domain.
+要求$h_{sj}\ge270$满足$j>0$、$h_{s0}\ge0$、$l_{sj}\ge20$、$300\le r_{4j}\le600$以及下方的乘客居住条件。  
+周转间隔是指两个方向性服务序列之间的零距离过渡时间。控制参数可以是负数，以修正原始提取出的非负域。
 
-\paragraph{Complete passenger dynamics.}
-Put $n_{-1,j}=0$ and $m_{s,-1}=0$. Then
+\paragraph{请完整填写乘客的动态信息。}
+放置$n_{-1,j}=0$和$m_{s,-1}=0$。然后
 \[
  q_{sj}=\beta_{sj}n_{s-1,j},\quad
  p_{sj}=\lambda_{sj}h_{sj}+m_{s,j-1},\quad
@@ -41,50 +31,38 @@ Put $n_{-1,j}=0$ and $m_{s,-1}=0$. Then
  m_{sj}=p_{sj}-b_{sj},\quad
  l_{sj}\ge3+0.03(b_{sj}+q_{sj}).
 \]
-All counts here are continuous passenger-flow approximations;
-$0\le n\le C$ and $b,q,p,m\ge0$. Left-behind passengers persist in the queue.
-Passengers still in the network at the horizon remain in the terminal state.
+所有计数均为连续乘客流量的近似值；$0\le n\le C$和$b,q,p,m\ge0$。留在队列中的乘客仍然持续等待。仍在网络中的乘客则仍处于终端状态。
 
-\paragraph{Running level and energy tables.}
-For each segment, input table breakpoints $\ell_{s\eta}$ increase strictly;
-choose $\eta(s,j)=\max\{\eta:r_{sj}\ge\ell_{s\eta}\}$.
-The last interval extends to the largest feasible running time;
-the input lower breakpoint covers all feasible controls.
-Let $M_{sj}=200+0.075n_{sj}$.
-With the table's traction/braking coefficients $c^{tra}_{s\eta},
-c^{brk}_{s\eta}$ and acceleration/deceleration durations
-$A_{s\eta},B_{s\eta}$, define for $s<9$
+\paragraph{运行等级和能量表。}
+对于每个段落，输入表格的断点$\ell_{s\eta}$，这些断点必须严格递增；选择$\eta(s,j)=\max\{\eta:r_{sj}\ge\ell_{s\eta}\}$。最后一个区间延伸到最大的可行运行时间；输入的下限断点涵盖所有可行的控制方式。设定$M_{sj}=200+0.075n_{sj}$。利用表格的牵引/制动系数$c^{tra}_{s\eta},
+c^{brk}_{s\eta}$以及加速/减速持续时间$A_{s\eta},B_{s\eta}$，为$s<9$定义相应的参数。
 \[
  E^{tra}_{sj}=M_{sj}c^{tra}_{s,\eta(s,j)},\quad
  E^{brk}_{s+1,j}=M_{sj}c^{brk}_{s,\eta(s,j)},\quad
  t^{acc}_{sj}=A_{s,\eta(s,j)},\quad
  t^{dec}_{s+1,j}=B_{s,\eta(s,j)}.
 \]
-Set first-station braking/deceleration and last-station
-traction/acceleration to zero.
+将首站制动/减速以及末站牵引/加速的数值都设置为零。
 
-\paragraph{Immediate regenerative flow.}
-The opposite service location is $\sigma(s)=9-s$.
-For each braking train $j$ and traction train $k$ define the actual overlap
+\paragraph{直接的再生流。}
+相反的服務位置是$\sigma(s)=9-s$。  
+对于每列制动列车$j$，以及牵引列车$k$，都需要确定实际的重叠範圍。
 \[
  O_{sjk}=\max\{0,\min(a_{sj},d_{\sigma(s),k}+t^{acc}_{\sigma(s),k})
  -\max(a_{sj}-t^{dec}_{sj},d_{\sigma(s),k})\}.
 \]
-Nonnegative delivered flow $z_{sjk}$ satisfies
+非负交付流量$z_{sjk}$满足要求。
 \[
  z_{sjk}\le \rho_2 O_{sjk},\qquad
  U_{sj}:=\sum_kz_{sjk}\le\rho_1E^{brk}_{sj},\qquad
  V_{tk}:=\sum_{j}z_{\sigma(t),j,k}\le E^{tra}_{tk}.
 \]
-Input values are $\rho_1=0.7$ and $\rho_2=500/3600$ kWh/s.
-Immediate-flow imports equal exports. The code chooses one feasible allocation
-in lexicographic $(s,j,k)$ order, each time taking the minimum residual
-braking supply, overlap bound and traction demand. This deterministic choice
-is an energy-allocation heuristic.
+输入值为$\rho_1=0.7$和$\rho_2=500/3600$千瓦时/秒。
+即时流量进口等于出口。代码每次选择一个在字典序为$(s,j,k)$的可行分配方案，同时考虑最小剩余制动供应、重叠限制和牵引需求。这种确定性选择是一种能量分配启发式方法。
 
-\paragraph{Storage and auxiliary energy.}
-Let $\eta_c=\eta_d=0.9$.
-At every modeled service location, sequentially for all trains,
+\paragraph{存储和辅助能量。}
+让$\eta_c=\eta_d=0.9$。  
+在每个建模的服务地点，依次针对所有列车，
 \begin{align}
 E^{st1}_{s0}&=E^0,&
 E^{st1}_{sj}&=E^{after}_{s,j-1}\quad(j>0),\\
@@ -94,15 +72,12 @@ E^{st2}_{sj}&=E^{st1}_{sj}+E^{sav}_{sj},\\
 E^{tak}_{sj}&=\min\{\eta_d E^{st2}_{sj},\max(0,E^{tra}_{sj}-V_{sj})\},\\
 E^{after}_{sj}&=E^{st2}_{sj}-E^{tak}_{sj}/\eta_d.
 \end{align}
-All energy amounts are nonnegative; storage stays within $[0,E^{max}]$.
-The saved-energy formula removes braking energy already supplied immediately,
-and delivered discharge is divided by efficiency in the state balance.
-For $s>0$,
-$E^{aux}_{sj}=(50+0.11n_{s-1,j})(a_{sj}-a_{s-1,j})/3600$;
-$E^{aux}_{0j}=0$.
+所有能量数值都是非负的；储存的能量始终保持在$[0,E^{max}]$的范围内。  
+所储存的能量计算公式会立即扣除已经提供的制动力产生的能量，而放电量则按照状态平衡中的效率进行分配。  
+对于$s>0$、$E^{aux}_{sj}=(50+0.11n_{s-1,j})(a_{sj}-a_{s-1,j})/3600$、$E^{aux}_{0j}=0$……
 
-\paragraph{Full objective.}
-With input weights $(\xi_1,\ldots,\xi_6)=(0.8,1,1,1.5,10,0.5)$ minimize
+\paragraph{完整的目标。}
+以输入权重$(\xi_1,\ldots,\xi_6)=(0.8,1,1,1.5,10,0.5)$来最小化
 \begin{align}
 F_1&=\xi_1\sum_{sj}(d_{sj}-d^{pla}_{sj})^2
        +\xi_2\sum_{s,j>0}(h_{sj}-300)^2,\\
@@ -112,15 +87,10 @@ F_3&=\xi_5\sum_{sj}(E^{tra}_{sj}+E^{aux}_{sj}-V_{sj}-E^{tak}_{sj}),\\
 F_4&=\xi_6\{\sum_{s<9,j}x_{sj}^2+\sum_{sj}g_{sj}^2\},\qquad
 F=F_1+F_2+F_3+F_4.
 \end{align}
-Source pp.6--11,18 supplies train/passenger/energy/control structure.
-The original02 omitted the four objectives and level/overlap definitions,
-misstated boarding capacity and omitted storage initialization/discharge loss.
-The above is the explicit separate completed physical interpretation,
-using the completed passenger-flow definitions above.
+第6-11页，第18页提供了列车/乘客/能源/控制结构的信息。  
+原始版本02省略了四个目标以及层次/重叠的定义，错误描述了载客量，并遗漏了存储初始化和排放损失。  
+上述内容是明确的、独立的物理解释，基于上述完成的乘客流定义。
 
-The unchanged solver uses bounded coordinate search and the feasible
-immediate-flow allocation described above. All ten service locations,
-six trains and finite capacities are retained; the output is a feasible MINLP solution. Independent complete replay of the saved output verifies all
-listed equations/domains and the four objective components.
+保持不变的求解器采用有界坐标搜索方法，以及上述的可行直接流分配策略。所有十个服务地点、六列火车以及有限的容量都保持不变；最终得到的解决方案是一个可行的最小化线性规划问题解。对保存的输出的独立完整重新计算，可以验证所有列出的方程/域以及四个目标组成部分是否都得到满足。
 
 \end{document}

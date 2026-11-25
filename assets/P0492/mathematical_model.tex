@@ -2,17 +2,18 @@
 \usepackage{amsmath,amssymb}
 \usepackage[margin=1in]{geometry}
 \allowdisplaybreaks
+\usepackage[UTF8]{ctex}
 \begin{document}
 
-\section*{Nonparametric individual-customer MDP approximation}
+\section*{非参数化的个体-客户MDP近似方法}
 
-For every current state $x\in\mathcal X$, select the policy by
+对于每一个当前状态$x\in\mathcal X$，请选择相应的策略。
 \begin{equation}
 \hat\pi(x)\in\operatorname*{arg\,max}_{a\in\mathcal A(x)}
 \left\{g(x,a)+\alpha\int_{\mathcal X}\hat V(y)\,Q[dy\mid x,a]\right\}.
 \tag{6}
 \end{equation}
-The continuation value is the optimal value of the nonlinear knapsack problem
+续接的值是非线性背包问题的最优解。
 \begin{equation}
 \begin{aligned}
 \hat V(x)&\equiv\max_{k_n}\sum_{n=1}^{N}V_n^*(x_n,k_n)\\
@@ -20,46 +21,46 @@ The continuation value is the optimal value of the nonlinear knapsack problem
 \end{aligned}
 \tag{5}
 \end{equation}
-Here $k_n$ is the number of vehicle trips made available to customer $n$, hence a nonnegative integer count. The printed block (5) contains no separate domain row or individual upper bound for $k_n$. The fixed quantity $t_n$ is the time required for a vehicle route from the supplier to customer $n$ and back; $M$ is the number of vehicles; and $T$ is the maximum work time per vehicle per time period. The knapsack constructs a value, not the feasible action set in (6): the paper explicitly qualifies the resulting assignment as a possible policy only ``if feasible for the IRPDD.''
+这里$k_n$表示可供客户$n$使用的车辆行程数量，因此是一个非负整数。打印块(5)中没有为$k_n$单独设置领域行或上限值。固定数量$t_n$表示从供应商到客户$n$再返回所需的时间；$M$表示车辆数量；$T$表示每辆车每个时间段的最大工作时间。背包算法构建的是一种价值，而不是(6)中描述的可行行动集：论文明确指出，只有当这种分配对于IRPDD来说是可行的，它才被视为一种可能的政策。
 
-\section*{Inherited inputs, states, and feasible itineraries}
+\section*{继承的输入、状态和可行的路线}
 
-There is one product, one supplier's plant, and $N$ customers indexed by $n=1,\ldots,N$. The fleet has $M$ homogeneous vehicles of known capacity $C_V$. Customer $n$ has known storage capacity $C_n$. Time is discrete, $t=0,1,\ldots$, and a period is called a day. The inventory state is
+有一个产品，一个供应商的工厂，以及由$n=1,\ldots,N$索引的$N$个客户。车队拥有$M$辆具有已知容量$C_V$的同类车辆。客户$n$的存储能力为$C_n$。时间是以离散单位计算的，$t=0,1,\ldots$，而一个周期被称为一天。库存状态为：
 \[
 \mathcal X=[0,C_1]\times[0,C_2]\times\cdots\times[0,C_N],\qquad
 X_{nt}\in[0,C_n],\qquad
 X_t=(X_{1t},\ldots,X_{Nt})\in\mathcal X.
 \]
-For the decomposition in Section 6.1 the paper assumes that the demand distribution and thus the state space $\mathcal X$ are discrete. It does not specify a general discretization grid here.
+在第6.1节中的分解部分，论文假设需求分布以及状态空间$\mathcal X$是离散的。不过，这里并没有明确说明具体的离散化网格结构。
 
-The fixed joint distribution $F$ of customer demand is known to the supplier and does not change with time. Demand vectors on different days are independent; independence between customers on the same day is not assumed. Write $U_{nt}$ for customer $n$'s demand on day $t$, $F_n$ for the marginal distribution of $U_n$, and $f_n(u_n)$ for the probability that customer $n$'s demand is $u_n$ in the discrete version. The discount factor is
+供应商已知客户需求的固定联合分布$F$，且该分布不会随时间发生变化。不同日期上的需求向量是相互独立的；同一天内不同客户之间的需求也不具有独立性。用$U_{nt}$表示客户$n$在日期$t$的需求，用$F_n$表示$U_n$的边际分布，用$f_n(u_n)$表示客户$n$的需求为$u_n$的概率（以离散形式表示）。折扣因子为：
 \[
 \alpha\in[0,1).
 \]
-The supplier can measure the customers' inventory levels at any time. An itinerary has duration less than one day, so all vehicles and drivers are available at the beginning of each day. A vehicle may perform more than one route per day.
+供应商可以在任何时间测量客户的库存水平。该行程的持续时间少于一天，因此每天开始时，所有的车辆和司机都处于可用状态。一辆车每天可以执行多条路线。
 
-For the direct-delivery specialization, $\mathcal A(x)$ is the set of itineraries whose routes each visit only one customer and that satisfy the inherited workload, travel-time and driver-work-hour restrictions, customer delivery time windows, vehicle capacities, customer storage capacities after delivery, and other application-specific itinerary restrictions. These restrictions are specified as part of the itinerary set in the paper, not as a separate algebraic routing formulation.
+对于直接配送专享服务，$\mathcal A(x)$指的是那些每条路线只服务一个客户的行程安排。这些行程安排需要满足继承下来的工作量、行驶时间、司机工作时间限制、客户交付时间窗口、车辆容量、客户交付后的存储能力以及其他特定于应用的行程限制。这些限制是在行程安排中明确规定的，而不是作为单独的代数式来表述的。
 
-An itinerary $a$ consists of individual-customer itineraries $a_n$, $n=1,\ldots,N$. Each $a_n$ specifies the number of visits to customer $n$ by each vehicle and the amount delivered by each vehicle. The quantity $d_n(a)$, or $d_n(a_n)$ in the direct-delivery notation, is the total amount delivered to customer $n$; $k_n(a_n)$ is the number of times that customer is visited by a vehicle. The function $k_n(a_n)$ counts actual visits, whereas the state/knapsack variable $k_n$ is the number of trips made available.
+一个行程$a$由各个客户的行程$a_n$和$n=1,\ldots,N$组成。每个$a_n$都规定了每辆车对客户$n$的访问次数，以及每辆车所交付的数量。数量$d_n(a)$，或者直接用直接交付的表示法表示为$d_n(a_n)$，是指交付给客户$n$的总量；$k_n(a_n)$则表示车辆访问该客户的次数。函数$k_n(a_n)$用于计算实际的访问次数，而状态/背包变量$k_n$则表示可提供的行程次数。
 
-The inherited feasibility requirements include
+继承下来的可行性要求包括：
 \[
 A_t\in\mathcal A(X_t)\quad(t=0,1,\ldots),
 \qquad
 X_{nt}+d_n(A_t)\leq C_n
 \quad(n=1,\ldots,N,\ t=0,1,\ldots).
 \]
-The latter is the version actually used by the authors, assuming that no product is used between the inventory measurement and delivery. Vehicle capacities must not be exceeded on any route. The aggregate workload inequality in (5) does not replace these itinerary restrictions.
+后者是作者实际使用的版本，假设在库存测量和交付之间没有使用任何产品。任何路线上都不能超过车辆容量。方程(5)中的总工作量不平衡并不替代这些路线限制。
 
-Every action $A_t$ must depend only on the history
+每个动作$A_t$必须仅依赖于历史信息。
 \[
 (X_0,A_0,X_1,\ldots,X_t),
 \]
-not on future information. A stationary deterministic policy $\pi\in\Pi$ chooses $\pi(x)\in\mathcal A(x)$ using only the current state $x$. Its customer-$n$ itinerary is denoted by $\pi_n(x)$.
+不要使用未来的信息。一个静态的确定性策略$\pi\in\Pi$仅根据当前状态$x$来选择$\pi(x)\in\mathcal A(x)$。其客户$n$的行程则由$\pi_n(x)$表示。
 
-\section*{Inventory dynamics and system reward}
+\section*{库存动态与系统奖励}
 
-Demand not satisfied is lost, not backlogged. For every customer and day the amount used, shortage, and next inventory are, respectively,
+未满足的需求将被视为已丢失，不会积压。对于每个客户和每一天，所使用的数量、短缺量以及下一批库存的数量都将被记录下来。
 \[
 \min\{X_{nt}+d_n(A_t),U_{nt}\},
 \]
@@ -68,7 +69,7 @@ S_{nt}=\max\{U_{nt}-(X_{nt}+d_n(A_t)),0\},
 \qquad
 X_{n,t+1}=\max\{X_{nt}+d_n(A_t)-U_{nt},0\}.
 \]
-For $x\in\mathcal X$, $a\in\mathcal A(x)$, and a measurable $B\subseteq\mathcal X$, the paper defines
+对于$x\in\mathcal X$、$a\in\mathcal A(x)$以及可测量的$B\subseteq\mathcal X$，该论文进行了定义。
 \[
 \mathcal U(x,a,B)\equiv
 \left\{U\in\mathbb R_+^N:
@@ -78,9 +79,9 @@ For $x\in\mathcal X$, $a\in\mathcal A(x)$, and a measurable $B\subseteq\mathcal 
 P[X_{t+1}\in B\mid X_t=x,A_t=a]
 =Q[B\mid x,a]\equiv F[\mathcal U(x,a,B)].
 \]
-The defining display for $\mathcal U$ is retained in its printed component notation, although $B$ is a subset of the vector state space.
+$\mathcal U$的定义显示保留在其印刷形式的符号表示中，尽管$B$是向量状态空间的一个子集。
 
-The fixed functions $r_n(d_n)$, $h_n(\cdot)$, and $p_n(s_n)$ are, respectively, the reward for a delivery, the inventory holding cost, and the penalty for unsatisfied demand. They remain abstract functions. The fixed $c_n$ is the transportation cost for making a delivery at customer $n$. The direct-delivery expected single-stage system reward used in (6) is
+固定的函数$r_n(d_n)$、$h_n(\cdot)$和$p_n(s_n)$分别对应于交付的奖励、库存持有成本以及未满足需求的惩罚。它们仍然只是抽象的函数而已。固定的$c_n$则是向客户$n$进行交付所需的运输成本。在(6)中使用的直接交付预期的单阶段系统奖励就是……
 \begin{equation}
 \begin{aligned}
 g(x,a)\equiv\sum_{n=1}^{N}\Bigl\{
@@ -90,11 +91,11 @@ g(x,a)\equiv\sum_{n=1}^{N}\Bigl\{
 \end{aligned}
 \tag{3}
 \end{equation}
-Here $E^{F_n}$ denotes expectation with respect to the marginal demand distribution $F_n$.
+这里的$E^{F_n}$表示相对于边际需求分布$F_n$的期望值。所有数字都应保持不变。
 
-\section*{Individual-customer transition construction}
+\section*{单个客户之间的转换构造}
 
-Fix a policy $\pi\in\Pi$ and assume the existence of unique stationary probabilities $\nu^\pi(x)$ under that policy. The conditional probability that the next inventory at customer $n$ is $y_n$ and that the next policy itinerary visits that customer $k_n$ times, given present inventory $x_n$ and delivery $d_n$, is
+固定策略$\pi\in\Pi$，并假设在该策略下存在唯一的静态概率$\nu^\pi(x)$。在当前的库存状况$x_n$和交付情况$d_n$下，下一个库存到达客户$n$的概率$y_n$，以及下一个策略行程会访问该客户$k_n$次的概率，就是这样的。
 \begin{equation}
 q_n(y_n,k_n\mid x_n,d_n)=
 \frac{
@@ -108,16 +109,16 @@ Q[z\mid s,\pi(s)]
 }.
 \tag{4}
 \end{equation}
-This expression applies if the denominator is positive. The printed exceptional case is
+此表达式适用于分母为正的情况。打印出的特殊情况为：
 \[
 q_n(y_n,k_n\mid x_n,d_n)=0
 \quad\text{if the denominator in (4) is zero}.
 \]
-No alternative probability distribution is supplied for that case.
+对于这种情况，没有提供任何替代的概率分布。
 
-For each $n=1,\ldots,N$, the customer MDP has state $(x_n,k_n)$: $x_n$ is the customer's inventory and up to $k_n$ vehicle visits are available. Inventory coordinates $x_n,y_n$ belong to the corresponding discrete inventory state space within $[0,C_n]$; $k_n,l_n$ are visit counts. The admissible set $\mathcal A(x_n,k_n)$ consists of dispatching up to $k_n$ vehicle trips to customer $n$, with delivered amounts constrained by vehicle capacity $C_V$ and customer storage capacity $C_n$.
+对于每一个$n=1,\ldots,N$，客户MDP的状态为$(x_n,k_n)$：$x_n$是客户的库存，而$k_n$是可供使用的车辆次数。库存坐标$x_n,y_n$属于$[0,C_n]$范围内的相应离散库存状态空间；$k_n,l_n$则表示访问次数。可接受的方案$\mathcal A(x_n,k_n)$包括向客户$n$派遣最多$k_n$次车辆，而交付量则受到车辆容量$C_V$和客户存储容量$C_n$的限制。
 
-Its printed transition relation is
+其打印出的转换关系为：
 \[
 \begin{aligned}
 &P[(X_{n,t+1},K_{n,t+1})=(y_n,l_n)
@@ -125,14 +126,14 @@ Its printed transition relation is
 &\hspace{35mm}=q_n(y_n,l_n\mid x_n,d_n(a_n)).
 \end{aligned}
 \]
-The single-stage reward specified in Section 6.1 is
+第6.1节中规定的单阶段奖励是
 \[
 \begin{aligned}
 g_n(x_n,a_n)\equiv{}&r_n(d_n(a_n))-c_nk_n(a_n)-h_n(x_n)\\
 &-E^{F_n}\!\left[p_n\!\left(\max\{U_n-(x_n+d_n(a_n)),0\}\right)\right].
 \end{aligned}
 \]
-Its optimal discounted value is
+其最优的折现价值是
 \[
 V_n^*(x_n,k_n)\equiv
 \sup_{\{A_{nt}\}_{t=0}^{\infty}}
@@ -141,25 +142,25 @@ E\!\left[
 \right|(X_{n0},K_{n0})=(x_n,k_n)
 \right],
 \]
-subject to
+受…的约束
 \[
 A_{nt}\in\mathcal A(X_{nt},K_{nt}),
 \qquad n=1,\ldots,N,\quad t=0,1,\ldots,
 \]
-and the requirement that the actions are nonanticipatory: they use only the customer process history available at the decision time. These are the individual-customer values used in (5).
+并且，这些操作必须是非预期的：它们仅使用在决策时可用的客户流程历史数据。这些就是(5)中使用的个体客户值。
 
-\paragraph{Printed reward contradiction.}
-Section 6.1, physical page 11, asserts
+\paragraph{打印奖励矛盾。}
+第6.1节，物理页面11上指出：
 \[
 g(x,a)=\sum_{n=1}^{N}g_n(x_n,a_n).
 \]
-However, its definition of $g_n$ contains $-h_n(x_n)$, whereas (3) contains $-h_n(x_n+d_n(a_n))$. The equality is therefore not generally consistent with the two printed definitions. Above, (3) is retained for the system reward in (6), and the printed Section 6.1 definition is retained for the customer values. The asserted equality is recorded here as a source contradiction, not imposed as an additional identity or used to change either holding-cost argument.
+不过，$g_n$的定义中包含了$-h_n(x_n)$，而(3)中则包含了$-h_n(x_n+d_n(a_n))$。因此，这种等价关系并不符合这两个印刷定义的一致性。在上述情况下，由于(6)中的系统奖励采用了(3)中的定义，而第6.1节中的印刷定义则被用于客户价值的计算。因此，这种等价关系被记录为源矛盾，而不是被当作额外的身份或用来改变任何假设条件。
 
-\section*{Selected nonparametric estimation and policy update}
+\section*{选定的非参数估计与策略更新}
 
-The selected version is Algorithm 1, using the reduced conditional probabilities of physical page 14. This uses the following construction in place of the direct five-dimensional empirical update (7); the two estimators are not simultaneously imposed.
+所选版本为算法1，使用的是物理页面14中简化的条件概率。这里采用了以下方法来代替直接的五维经验更新（7）；两个估计量并不是同时施加的。
 
-Under the fixed simulation policy $\pi$, define the probability that customer $n$ is visited by $k_n$ vehicles conditional on inventory $y_n$ by
+在固定的模拟策略$\pi$下，定义客户$n$被车辆$k_n$访问的概率，这一概率取决于库存状况$y_n$。
 \[
 p_n(k_n\mid y_n)=
 \frac{
@@ -169,13 +170,13 @@ p_n(k_n\mid y_n)=
 }
 \quad\text{if the denominator is positive}.
 \]
-The zero-denominator sentence is printed with a different customer index:
+以不同的客户索引来打印零分母句子：
 \[
 p_i(k_i\mid y_i)=0\quad\text{if the denominator is zero}.
 \]
-This is retained as the printed exceptional-case notation. The conditional probability $p_n(k_n\mid y_n)$ is distinct from the shortage-penalty function $p_n(s_n)$; the paper uses the same letter for both, distinguished by their arguments.
+这部分内容保留了印刷版的特殊情况表示法。条件概率$p_n(k_n\mid y_n)$与短缺惩罚函数$p_n(s_n)$是不同的；论文中使用了相同的字母来表示两者，只是通过它们的参数来区分。
 
-Let $\hat p_{nt}(k_n\mid y_n)$ estimate $p_n(k_n\mid y_n)$ after $t$ transitions of the simulation, and let $N_{nt}(y_n)$ be the number of times customer $n$ has been in inventory state $y_n$ by transition $t$. The initial-estimate weight is denoted by $N_{n0}(k_n\mid y_n)$, analogously to the initial observation weight in (7). The printed update is
+让$\hat p_{nt}(k_n\mid y_n)$在模拟经过$t$次转换后估计出$p_n(k_n\mid y_n)$的值；同时，让$N_{nt}(y_n)$表示客户$n$在通过转换$t$后处于库存状态$y_n$的次数。初始估计值用$N_{n0}(k_n\mid y_n)$表示，这与式(7)中的初始观测值类似。打印出来的更新结果如下：
 \[
 \hat p_{n,t+1}(k_n\mid y_n)=
 \begin{cases}
@@ -196,7 +197,7 @@ k_n(\pi_n(X_t))\ne k_n,
 \hat p_{nt}(k_n\mid y_n),&\text{if }X_{nt}\ne y_n.
 \end{cases}
 \]
-The resulting estimate of the customer transition probability is
+客户转换概率的估计结果为：
 \[
 \hat q_{nt}(y_n,k_n\mid x_n,d_n)=
 \begin{cases}
@@ -204,21 +205,21 @@ f_n(x_n+d_n-y_n)\hat p_{nt}(k_n\mid y_n),&\text{if }y_n>0,\\[1mm]
 \displaystyle\sum_{u_n=x_n+d_n}^{\infty}f_n(u_n)\hat p_{nt}(k_n\mid y_n),&\text{if }y_n=0.
 \end{cases}
 \]
-The lower endpoint $u_n=x_n+d_n$ and the separate boundary case $y_n=0$ are as printed. The paper notes that these estimates generally differ from those obtained using (7). Equation (4) defines the conditional probabilities being approximated; it is not an extra requirement that the reduced estimates equal that stationary-probability ratio. In the updated customer MDPs, the estimated transition probabilities replace the exact $q_n$ in the transition relation above.
+下方的端点$u_n=x_n+d_n$以及单独的边界情况$y_n=0$保持不变。论文指出，这些估计值通常与使用公式(7)得到的数值有所不同。方程(4)定义了被近似的条件概率；并不是说，经过简化的估计值必须等于那个静态概率比率。在更新的客户MDP中，估计的转移概率取代了上述转移关系中的确切数值$q_n$。
 
-The paper states that the $\hat p$ estimates have convergence results similar to the direct empirical estimates: for states occurring infinitely often, the estimates converge with probability one under the fixed simulation policy. No numerical initial weights, estimates, or stopping tolerances are prescribed for this construction.
+论文指出，$\hat p$的估计结果具有与直接经验性估计相似的收敛性：对于频繁出现的状态，在固定的模拟策略下，这些估计结果以概率一收敛。该构造中并未规定具体的数值初始权重、估计值或停止容忍度。
 
-\paragraph{Algorithm 1: policy-update construction.}
+\paragraph{算法1：策略更新构建方法。}
 \begin{enumerate}
-\item Start with an initial policy $\hat\pi_0$ and set $i=0$.
-\item Repeat the following simulation, solution, policy update, and increment for a chosen number of iterations or until a convergence test is satisfied.
-\item Simulate the IRPDD under $\hat\pi_i$ to estimate $p_n(k_n\mid y_n)$ using the selected updates above.
-\item With the updated estimates, formulate and solve the updated individual-customer MDPs, obtaining $V_n^*(x_n,k_n)$.
-\item Define $\hat\pi_{i+1}$ by (6), with $\hat V$ given by (5) using those updated customer values.
-\item Increment $i\leftarrow i+1$.
+\item 以初始策略$\hat\pi_0$为起点，然后设置$i=0$。
+\item 重复以下模拟、解决方案、策略更新和增量操作，进行选定的迭代次数，或直到满足收敛测试条件为止。
+\item 在 $\hat\pi_i$ 条件下模拟 IRPDD 的运行，以使用上述选定的更新来估算 $p_n(k_n\mid y_n)$ 的值。
+\item 根据更新后的估算结果，重新构建并解决更新后的个体客户MDP，从而得到$V_n^*(x_n,k_n)$。
+\item 通过(6)定义$\hat\pi_{i+1}$，并使用那些更新的客户值，通过(5)定义$\hat V$。
+\item 增加$i\leftarrow i+1$的值。
 \end{enumerate}
 
-\paragraph{Source scope.}
-The formulation uses Sections 2, 5, 6.1 and 6.2 of Kleywegt, Nori and Savelsbergh, \emph{The Stochastic Inventory Routing Problem with Direct Deliveries}, June 1999, physical pages 4--6 and 10--15. The parametric approximation, sampling-based action-comparison procedure, greedy action subproblem, and Appendix A's CBW formulation are not part of this selected form. No additional official supplement was supplied; any additional supplementary material is unverified.
+\paragraph{来源范围。}
+本模型采用 Kleywegt、Nori 和 Savelsbergh 的《\emph{直接配送下的随机库存路径问题}》（1999 年 6 月）第 2、5、6.1 和 6.2 节，见 PDF 实际第 4 至 6 页和第 10 至 15 页。 参数近似、基于采样的动作比较程序、贪婪动作子问题以及附录A中的CBW公式均不属于本选段内容。 没有提供额外的官方补充材料；任何额外的补充资料均未经过验证。
 
 \end{document}

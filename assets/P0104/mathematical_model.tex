@@ -3,22 +3,17 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 
-\title{Core Mathematical Model}
+\title{核心数学模型}
 \date{}
 
+\usepackage[UTF8]{ctex}
 \begin{document}
 
 \maketitle
 
-\section*{Security-Constrained AC Optimal Power Flow}
+\section*{安全约束下的最优功率流}
 
-Let $\bar{\mathcal{K}} = \{\text{base}\} \cup \mathcal{K}$ denote the base state
-and all contingency states. The model below keeps the AC power-flow equations and
-the contingency coupling from the PDF, while expressing the convex piecewise-linear
-costs through epigraph variables and the reactive power response disjunction through
-binary variables so that the formulation remains solver-ready. The implementation
-also fixes the voltage angle at the designated reference bus to zero in every state
-to remove the rotational degree of freedom of the AC equations.
+让$\bar{\mathcal{K}} = \{\text{base}\} \cup \mathcal{K}$表示基础状态以及所有应急状态。下面的模型保留了交流功率流方程和来自PDF的应急耦合关系，同时通过上图变量来表示凸形分段线性成本，并通过二进制变量来表示无功功率响应，从而使模型格式适合求解器使用。实现过程中，还将每个状态下的电压角度固定在指定的参考母线上，以消除交流方程的旋转自由度。
 
 \begin{equation}
 \min \quad
@@ -267,9 +262,6 @@ p_{gk} = 0, \qquad q_{gk} = 0,
 \tag{2.1r}
 \end{equation}
 
-Here, $C_g$, $C_{ik}^{p}$, $C_{ik}^{q}$, $C_{ek}^{S}$, and $C_{fk}^{S}$ are convex
-piecewise-linear penalty functions, and the binary variables
-$\delta_{gk}^{0}, \delta_{gk}^{U}, \delta_{gk}^{L}$ implement the three branches of
-the reactive power and voltage response in the PDF.
+在这里，$C_g$、$C_{ik}^{p}$、$C_{ik}^{q}$、$C_{ek}^{S}$和$C_{fk}^{S}$都是凸的分段线性惩罚函数。而二进制变量$\delta_{gk}^{0}, \delta_{gk}^{U}, \delta_{gk}^{L}$则用于实现PDF中无功功率和电压响应的三种情况。
 
 \end{document}

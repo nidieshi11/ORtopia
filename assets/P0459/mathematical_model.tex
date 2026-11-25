@@ -2,20 +2,21 @@
 \usepackage{amsmath,amssymb}
 \usepackage[margin=1in]{geometry}
 \allowdisplaybreaks
+\usepackage[UTF8]{ctex}
 \begin{document}
 
-\section*{Full VRPSSR Markov decision process}
+\section*{完整的 VRPSSR 马尔可夫决策过程}
 
 \[
 \max_{\pi\in\Pi}\;
 \mathbb{E}\left[\left.\sum_{k=0}^{K}
 R\bigl(s_k,X_k^{\pi}(s_k)\bigr)\,\right|\,s_0\right]
 \]
-subject to each decision rule selecting a feasible decision at every state to which it applies:
+受每个决策规则的约束，该规则决定了在适用的每个状态下应做出何种可行的决策：
 \[
 X_k^{\pi}(s_k)\in\mathcal{X}(s_k),\qquad k=0,\ldots,K.
 \]
-The feasible-decision set is the following printed block:
+可行的决策集如下所打印的块：
 \begin{align}
 \mathcal{X}(s_k)=\bigl\{(a,c):\quad & \nonumber\\[-1.5ex]
 &a\in\{0,1\}^{|\tilde{\mathcal{C}}_k|}, \tag{1}\\
@@ -27,124 +28,124 @@ The feasible-decision set is the following printed block:
 &\text{feasible routing}\ \bigr\}. \tag{4}
 \end{align}
 
-\paragraph{Assignment and routing meanings.}
-A decision is the pair
+\paragraph{赋值和路由的含义。}
+决策就是这样的一个配对。
 \[
 x=(a,c),
 \]
-where the binary vector $a$ has $|\tilde{\mathcal{C}}_k|$ components. Each component permanently assigns its request to the vehicle when equal to one and rejects it when equal to zero. Rejected requests are not reconsidered. The location component $c$ directs the vehicle to a location in the service region $\mathcal{C}$. The newly assigned customer set is
+其中二进制向量$a$有$|\tilde{\mathcal{C}}_k|$个分量。每个分量在等于一时会将请求分配给车辆，在等于零时则拒绝该请求。被拒绝的请求不会重新考虑。位置分量$c$指示车辆前往服务区域$\mathcal{C}$内的某个位置。新分配的客户集合是
 \[
 \tilde{\mathcal{C}}'_k
 =\left\{c\in\tilde{\mathcal{C}}_k:
  a_{\tilde{\mathcal{C}}_k^{-1}(c)}=1\right\},
 \]
-where $\tilde{\mathcal{C}}_k^{-1}(c)$ returns the index of element $c$ in $\tilde{\mathcal{C}}_k$.
+其中，$\tilde{\mathcal{C}}_k^{-1}(c)$返回的是元素$c$在数组$\tilde{\mathcal{C}}_k$中的索引。
 
-Setting $c=c_k$ is the decision to wait at the current location for a base unit of time $\bar t$. Condition (3) is described in the source as disallowing travel to the depot when assigned customers in $\bar{\mathcal{C}}_k$ and $\tilde{\mathcal{C}}'_k$ have yet to be serviced. Condition (4) requires that a route exist from the current location, through all assigned customers, and back to the depot, with duration less than or equal to the remaining time $T-t_k$ less any time spent waiting at the current location. This is a route-existence requirement, not a cheapest-insertion test. The source leaves the requirement as ``feasible routing'' rather than supplying an arc-based routing formulation.
+设定$c=c_k$是指当前位置等待基础时间单位$\bar t$。条件（3）在源代码中描述为：当$\bar{\mathcal{C}}_k$和$\tilde{\mathcal{C}}'_k$中的客户尚未得到服务时，不允许前往仓库。条件（4）要求从当前位置出发，经过所有分配的客户，再返回仓库，且所需时间小于或等于剩余时间$T-t_k$减去在当前位置等待的时间。这是一个路线存在性的要求，而不是最便宜插入测试。源代码中将这一要求表述为“可行的路线规划”，而没有提供基于弧线的路线规划公式。
 
-\paragraph{Printed scope of (3).}
-The expression in (3) is retained without adding parentheses around the union before the set difference. The accompanying prose gives the interpretation above; the printed expression does not explicitly delimit the scope of the subtraction by $\{c_k\}$.
+\paragraph{印刷范围（3）。}
+(3)中的表达式保持不变，没有在集合差之前的并集周围加括号。附带的文字解释了上述含义；印刷表达并没有明确界定$\{c_k\}$所代表的减法范围。
 
-\section*{Fixed inputs, states, and boundary conditions}
+\section*{固定的输入、状态以及边界条件}
 
-There is one vehicle, a working day of duration $T$, a service region $\mathcal{C}$, and a depot. Service calls arrive randomly over the working day and within $\mathcal{C}$. The early-request customers are known before the working day:
+有一辆车辆，其工作时间为$T$天，服务区域为$\mathcal{C}$，还有一处维修站。服务请求在工作日内的任意时间出现，且出现时间在$\mathcal{C}$以内。那些提前提出请求的客户，在工作日开始之前就已经被知晓了。
 \[
 \mathcal{C}_{\mathrm{early}}\subseteq\mathcal{C}.
 \]
-The vehicle must serve these customers and begin and end at the depot. The objective is to maximize the expected number of serviced late-request customers, who submit requests throughout the working day.
+该车辆必须服务于这些客户，并且必须在仓库处开始和结束服务。目标是最大化服务那些在一天中随时提交请求的客户的预期数量。
 
-The fixed function $d(\cdot,\cdot)$ gives known travel times between two locations in $\mathcal{C}$. The fixed quantity $\bar t$ is the base waiting-time unit. No instance-specific travel-time formula, waiting-time value, request distribution, or numerical duration is imposed here.
+固定函数$d(\cdot,\cdot)$可以计算出$\mathcal{C}$中两个位置之间的已知旅行时间。固定数值$\bar t$是基础等待时间单位。这里没有针对特定实例的旅行时间公式、等待时间值、请求分配或数值持续时间。
 
-At decision epoch $k$, the state is
+在决策时刻$k$时，状态为
 \[
 s_k=(c_k,t_k,\bar{\mathcal{C}}_k,\tilde{\mathcal{C}}_k),
 \qquad k=0,\ldots,K,
 \]
-with
+与…一起
 \[
 c_k\in\mathcal{C},\qquad
  t_k\in[0,T],\qquad
  \bar{\mathcal{C}}_k\subseteq\mathcal{C},\qquad
  \tilde{\mathcal{C}}_k\subseteq\mathcal{C}.
 \]
-Here $c_k$ is the vehicle's position, representing a customer location or the depot; $t_k$ is the time at which the vehicle arrives at $c_k$ and marks the beginning of decision epoch $k$; and $\bar{\mathcal{C}}_k$ is the set of assigned customers not yet serviced. For epochs after the initial epoch, $\tilde{\mathcal{C}}_k$ is the possibly empty set of service requests made at or before $t_k$ but after $t_{k-1}$, that is, during
+这里$c_k$是车辆的位置，代表客户地点或仓库；$t_k$是车辆到达$c_k$的时间，标志着决策时期$k$的开始；而$\bar{\mathcal{C}}_k$是尚未服务的分配客户集合。对于初始时期之后的时期，$\tilde{\mathcal{C}}_k$是在或早于$t_k$但晚于$t_{k-1}$时提出的、可能为空的服务请求集合，即在
 \[
 (t_{k-1},t_k],\qquad k=1,\ldots,K,
 \]
-subject to the final-request assumption below.
+受以下最终请求假设的约束。
 
-The initial state is
+初始状态是
 \[
 s_0=(\text{depot},0,\mathcal{C}_{\mathrm{early}},\emptyset).
 \]
-As an input-feasibility assumption, there exists a route from the depot, through each customer in $\mathcal{C}_{\mathrm{early}}$, and back to the depot with duration less than or equal to $T$.
+作为输入的可行性假设，存在一条从仓库出发，经过$\mathcal{C}_{\mathrm{early}}$中的每个客户，再回到仓库的路线，且该路线的耗时小于或等于$T$。
 
-The final decision epoch $K$ may be a random variable. At this epoch the process occupies a terminal state in
+最终决策时刻$K$可能是一个随机变量。在这个时刻，该过程会处于一个终端状态。
 \[
 s_K\in
 \left\{(\text{depot},t_K,\emptyset,\emptyset):t_K\in[0,T]\right\}.
 \]
-Thus the vehicle has returned to the depot by time $T$ and has serviced all early-request customers. The source explicitly assumes the final set of requests is empty:
+因此，该车辆在时间$T$时已返回仓库，并且已经为所有提前预约的客户提供了服务。来源方明确假设，最后的预约请求列表为空。
 \[
 \tilde{\mathcal{C}}_K=\emptyset.
 \]
 
-\section*{Reward and defining dynamics}
+\section*{奖励与动态定义}
 
-When decision $x$ is taken in state $s_k$, the reward equals the number of assigned late-request customers:
+当决策$x$在状态$s_k$下被做出时，奖励金额等于被分配到的迟交订单客户的数量。
 \[
 R(s_k,x)=\bigl|\tilde{\mathcal{C}}'_k(s_k,x)\bigr|.
 \]
-Here $\tilde{\mathcal{C}}'_k(s_k,x)$ denotes the set $\tilde{\mathcal{C}}'_k$ specified by $s_k$ and by $a$, the assignment component of $x$.
+这里，$\tilde{\mathcal{C}}'_k(s_k,x)$表示由$s_k$和$a$定义的集合$\tilde{\mathcal{C}}'_k$，以及$x$的赋值组件。
 
-Choosing $x$ in $s_k$ transitions the process to the post-decision state
+在$s_k$中选择$x$会将该过程推进到决策后的状态。
 \[
 s_k^x=(c_k,t_k,\bar{\mathcal{C}}_k^x),
 \qquad
 \bar{\mathcal{C}}_k^x
 =\bar{\mathcal{C}}_k\cup\tilde{\mathcal{C}}'_k.
 \]
-The assigned-customer set is thereby updated to include newly assigned requests. The subsequent pre-decision state is
+被分配给客户的请求集因此被更新，以包含新分配的请求。接下来的决策前状态是……
 \[
 s_{k+1}=(c_{k+1},t_{k+1},\bar{\mathcal{C}}_{k+1},
 \tilde{\mathcal{C}}_{k+1}).
 \]
-For transitions to a subsequent epoch, $k=0,\ldots,K-1$, the source distinguishes movement from waiting.
+对于过渡到下一个时代的情况，$k=0,\ldots,K-1$能够区分移动和等待。
 
-\paragraph{Movement: $c\neq c_k$.}
-Decision epoch $k+1$ begins upon arrival at position $c$, with
+\paragraph{移动：$c\neq c_k$。}
+决策时刻$k+1$在到达位置$c$时开始。
 \[
 c_{k+1}=c,\qquad
  t_{k+1}=t_k+d(c_k,c_{k+1}),\qquad
  \bar{\mathcal{C}}_{k+1}
  =\bar{\mathcal{C}}_k^x\setminus\{c_k\}.
 \]
-The last relation reflects service at the vehicle's previous location $c_k$, not at its arrival location.
+最后一个关系反映了车辆在之前的位置$c_k$的服务情况，而不是到达目的地后的服务情况。
 
-\paragraph{Waiting: $c=c_k$.}
-The vehicle waits at its current location, and decision epoch $k+1$ begins after $\bar t$. The source prints
+\paragraph{等待中：$c=c_k$。}
+该车辆停留在当前位置，决策时刻$k+1$在$\bar t$之后开始。源程序如下：
 \[
 t_{k+1}=t_k+\bar t,\qquad
 \bar{\mathcal{C}}_k=\bar{\mathcal{C}}_k^x.
 \]
-\emph{Printed inconsistency.} The waiting paragraph says that the assigned-customer set is unchanged, but prints $\bar{\mathcal{C}}_k=\bar{\mathcal{C}}_k^x$, with subscript $k$ on both sides, rather than an update for $\bar{\mathcal{C}}_{k+1}$. Together with the post-decision definition this equality conflicts with adding genuinely new assignments while waiting. The printed equality is retained here without replacing its left-hand subscript or supplying a missing assigned-set update.
+\emph{打印出的不一致性。}等待段落中提到，分配给客户的集合保持不变，但实际上打印出来的却是$\bar{\mathcal{C}}_k=\bar{\mathcal{C}}_k^x$，并且两边都有下标$k$，而不是对$\bar{\mathcal{C}}_{k+1}$的更新。与决策后的定义相比，这种等式与在等待过程中添加真正新的分配情况相矛盾。因此，这里的等式被保留下来，而不需要替换其左侧的下标，也不需要提供缺失的分配集合更新信息。
 
-At epoch $k+1$, a new, possibly empty set $\tilde{\mathcal{C}}_{k+1}$ of late-request customers may be observed. Its requests are those made during $(t_k,t_{k+1}]$, with the explicit terminal exception $\tilde{\mathcal{C}}_K=\emptyset$. The general formulation leaves the stochastic request law abstract; the particular distributions used in the computational experiments are not conditions of this full model.
+在$k+1$这一时刻，可能会观察到一个新的、可能为空的客户集合$\tilde{\mathcal{C}}_{k+1}$，这些客户是在$(t_k,t_{k+1}]$期间提出的请求，其中$\tilde{\mathcal{C}}_K=\emptyset$是明确的例外情况。总体上的随机请求规律仍然保持抽象；在计算实验中使用的具体分布并不是这个完整模型的条件。
 
-\section*{Policy class and scope}
+\section*{策略类别与范围}
 
-A policy is a sequence of decision rules
+政策是一系列决策规则的集合。
 \[
 \pi=(X_0^{\pi},X_1^{\pi},\ldots,X_K^{\pi}).
 \]
-The source describes each rule by
+该来源通过以下方式描述每条规则：
 \[
 X_k^{\pi}(s_k):s_k\mapsto\mathcal{X}(s_k),
 \qquad k=0,\ldots,K,
 \]
-meaning that the current state is mapped to a feasible decision. The optimization variable $\pi$ ranges over $\Pi$, the set of all Markovian deterministic policies. The expectation in the objective is conditional on $s_0$ and accounts for the stochastic requests and the possibly random final epoch $K$.
+这意味着当前的状态被映射到一个可行的决策上。优化变量$\pi$的取值范围包括$\Pi$，即所有马尔可夫确定性策略的集合。目标中的期望值是以$s_0$为条件的，它考虑了随机请求以及可能随机出现的最终时刻$K$。
 
-\paragraph{Source and selected scope.}
-The objective and policy class are from physical PDF pages 8--9 of Ulmer, Goodson, Mattfeld, and Hennig, \emph{Offline-Online Approximate Dynamic Programming for Dynamic Vehicle Routing with Stochastic Requests}, April 4, 2017. The input, state, and boundary definitions are on pages 6--7; the feasible-decision block, reward, and transitions are on page 8. The Appendix on pages 39--40 describes a reduction of the decision space for the heuristics, using no waiting, ordered assigned customers, and cheapest insertion. That reduction is not part of the selected full MDP and does not replace condition (4) here.
+\paragraph{来源与选定范围。}
+目标函数和策略类见 Ulmer、Goodson、Mattfeld 与 Hennig 的论文 \emph{随机请求下动态车辆路径问题的离线—在线近似动态规划}，日期为 2017 年 4 月 4 日，PDF 实际第 8 至 9 页。 输入、状态和边界定义在第6-7页；可行决策块、奖励和转移过程在第8页。 第 39 至 40 页的附录中描述了一种减少决策空间的算法，该算法不使用等待时间，而是采用有序的顾客分配方式，并且以最便宜的方式插入顾客。 该简化过程并不属于所选的完整MDP的一部分，因此不会替代条件(4)。
 
 \end{document}

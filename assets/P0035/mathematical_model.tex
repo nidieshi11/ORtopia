@@ -7,37 +7,21 @@
 
 
 
-\section*{Retained Core Model}
-According to the \texttt{tex} formulas and the PDF, the directly solvable core model is the
-linear programming reformulation on Page 20, denoted by $(R''_{\mathcal K})$. The original
-continuous-time robust problem $(R)$ on Page 13 and the intermediate robust counterpart
-$(R'_{\mathcal K})$ on Page 19 are omitted because they are intermediate non-convex or
-semi-infinite formulations. The paper proves that the original robust V2G problem is exactly
-equivalent to the linear program retained below.
+\section*{保留的核心模型}
+根据\texttt{}公式以及PDF文件，可以直接求解的核心模型是第20页上的线性规划重构形式，用$(R''_{\mathcal K})$表示。第13页上的原始连续时间鲁棒问题$(R)$，以及第19页上的中间鲁棒对应问题$(R'_{\mathcal K})$，由于它们属于非凸或半无限形式，因此被省略了。论文证明，原始的鲁棒V2G问题与下面所保留的线性规划问题是完全等价的。
 
-\paragraph{Decision variables.}
-For each period $k \in \mathcal{K}$, $x_k^b$ is the baseline charging power, $x_k^r$ is the
-regulation bid, $m_k$ is an auxiliary epigraph variable, and $z$ is the epigraph variable for
-the terminal piecewise-affine penalty. The additional variables
-$\lambda_k^+,\lambda_k^-,\theta_k^+,\theta_k^-,\Lambda_{k,l}^+,\Lambda_{k,l}^-,
-\Theta_{k,l}^+,\Theta_{k,l}^-$ are dual variables introduced by robust optimization.
+\paragraph{决策变量。}
+对于每一个周期$k \in \mathcal{K}$，$x_k^b$表示基准充电功率，$x_k^r$是规定价格，$m_k$是一个辅助变量，而$z$则是终端分段仿射惩罚的变量。另外的变量$\lambda_k^+,\lambda_k^-,\theta_k^+,\theta_k^-,\Lambda_{k,l}^+,\Lambda_{k,l}^-,
+\Theta_{k,l}^+,\Theta_{k,l}^-$是由鲁棒优化方法引入的对偶变量。
 
-\paragraph{Parameters and index sets.}
-The feasible charging set is $\mathcal{X}_{\mathcal K}$. The bounds
-$\bar y_k^+,\bar y_k^-,\bar y,\underline y,\bar y_0,\underline y_0,
-\hat{\bar y}_0,\hat{\underline y}_0$ are battery and initial-state limits.
-The parameters $\eta^+,\eta^-,\Delta t,\gamma,\hat{\gamma},d_k,r_n,q_n$ are as in the paper,
-with $\Delta\eta = \frac{1}{\eta^-} - \eta^+ > 0$.
-The terminal penalty is represented by breakpoint sets
-$\mathcal{N}_+,\mathcal{N}_-,\mathcal{N}_0$.
-The horizon indices are
-$I(k,l)=\min\{k,\ l+\Gamma/\Delta t-1\}$ and
-$\hat I(K,k)=\min\{K,\ k+\hat{\Gamma}/\Delta t-1\}$.
+\paragraph{参数和索引集。}
+可行的充电集合为$\mathcal{X}_{\mathcal K}$。边界条件为$\bar y_k^+,\bar y_k^-,\bar y,\underline y,\bar y_0,\underline y_0,
+\hat{\bar y}_0,\hat{\underline y}_0$，即电池容量和初始状态的限制。参数$\eta^+,\eta^-,\Delta t,\gamma,\hat{\gamma},d_k,r_n,q_n$与论文中的设置相同，而$\Delta\eta = \frac{1}{\eta^-} - \eta^+ > 0$则有所不同。终端惩罚由$\mathcal{N}_+,\mathcal{N}_-,\mathcal{N}_0$表示的断点集合来表示。时间范围指标为$I(k,l)=\min\{k,\ l+\Gamma/\Delta t-1\}$和$\hat I(K,k)=\min\{K,\ k+\hat{\Gamma}/\Delta t-1\}$。
 
-\section*{Linear Programming Reformulation}
+\section*{线性规划的重述}
 \begin{equation}
 \min \quad c_{\mathcal K}(\boldsymbol{x}^b,\boldsymbol{x}^r) + z
-\tag{R''_{\mathcal K}-Obj}
+\tag{\ensuremath{R''_{\mathcal K}}-Obj}
 \end{equation}
 
 \begin{equation}

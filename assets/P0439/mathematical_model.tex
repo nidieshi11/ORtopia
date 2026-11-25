@@ -2,9 +2,10 @@
 \usepackage{amsmath,amssymb,mathtools,longtable}
 \usepackage[margin=0.75in]{geometry}
 \allowdisplaybreaks
+\usepackage[UTF8]{ctex}
 \begin{document}
 
-\section*{Full security-constrained AC-OPF: formulation (2.8)}
+\section*{完全受安全限制的 AC-OPF：公式化表达（2.8）}
 \begin{equation}\tag{2.8}
 \begin{aligned}
 \min_{\substack{(u_0,y_0,\varsigma_0,\varsigma_0^+,\varsigma_0^-)\\
@@ -29,18 +30,18 @@
 \end{aligned}
 \end{equation}
 
-\paragraph{Scope and sources.}
-The selected model is the paper's full formulation, not its fixed-base-case contingency subproblem or an active-set subproblem. The defining families below follow the paper, physical pp.~3--6, and its reference to the official \emph{SCOPF Problem Formulation: Challenge 1}, updated April 9, 2019 (82 PDF pages). The single-component-outage version specified by that official document is used for the detailed contingency sets. The paper also discusses datasets containing multiple-component outages; those are not imposed on this selected single-outage version. The paper's squared rating construction and complementarity disjunctions are retained. The official document is not treated as a corrected edition of the paper.
+\paragraph{范围与来源。}
+所选模型即为论文中的完整表述，而非固定基础情况下的应急子问题或活跃集子问题。下面的定义式族依据论文 PDF 实际第 ~3 至 6 页，以及论文引用的官方文档 \emph{SCOPF 问题表述：挑战 1}。官方文档更新于 2019 年 4 月 9 日，PDF 共 82 页。 该官方文件规定的单组分故障版本用于详细的应急方案。 该论文还讨论了包含多组件故障的数据集；这些数据集并不适用于这个仅涉及单一故障的版本。 论文中的平方评级结构和互补性析取关系保持不变。 该官方文档并非论文的勘误版本。
 
-\paragraph{Variable roles and abstract functions.}
-The continuous base-case controls $u_0$ are generator active and reactive powers and controllable shunt susceptances. The only contingency controls $u_k$ are controllable shunt susceptances. All other variables are states, except the penalized slacks. Thus $p_g,q_g,b_i^{CS}$ are base-case controls; $b_{ik}^{CS}$ are contingency controls; voltage magnitudes, voltage angles, branch flows, contingency generator powers, and the contingency response scale $\Delta_k$ are state variables. Cost interpolation coefficients and cost variables are auxiliary variables. No binary response or discrete shunt variables are introduced.
+\paragraph{变量角色与抽象函数。}
+连续的基态控制项$u_0$包括发电机的有功功率和无功功率，以及可控制的并联感抗。唯一的应急控制项$u_k$则是可控制的并联感抗。其他所有变量都是状态变量，除了被惩罚的松弛量。因此，$p_g,q_g,b_i^{CS}$是基态控制项；$b_{ik}^{CS}$是应急控制项；电压幅值、电压角度、支路流量、应急发电机功率以及应急响应比例$\Delta_k$都是状态变量。成本插值系数和成本变量则是辅助变量。没有引入二进制响应或离散并联变量。
 
-The functions $a_0,a_k$ capture the flow definitions below; $a_0$ also fixes one base-case phase angle to zero. The functions $b_0,b_k$ capture the bus balances, $c_0,c_k$ the rating families, and $\tau_k^L,\tau_k^R$ the response complementarity families. The paper does not give explicit vector assembly formulas for these functions. Its bounds remain written as contingency-dependent in (2.8). The detailed bounds below are the referenced competition version. The model uses a balanced single-phase equivalent representation, fixed transformer taps and phase shifts, and continuously variable controllable shunts.
+函数$a_0,a_k$捕获了以下流程定义；函数$a_0$则将其中一个基础情况下的相位角设定为零。函数$b_0,b_k$负责处理总线平衡问题，函数$c_0,c_k$处理评级家族，而函数$\tau_k^L,\tau_k^R$则处理响应互补性家族。该论文并未给出这些函数的具体向量组装公式。其边界条件仍以(2.8)中的应急依赖形式表示。下面的详细边界条件参考了竞赛版本。该模型采用平衡的单相等效表示方式，固定了变压器抽头和相位偏移，并且具有连续可变的可控分流器。
 
-\section*{Indices, sets, fixed data, and units}
-The primitive sets are $\mathcal A$ (areas), $\mathcal E$ (lines), $\mathcal F$ (two-winding transformers), $\mathcal G$ (generators), $\mathcal H$ (cost sample points), $\mathcal I$ (buses), $\mathcal K$ (contingencies), and $\mathcal N$ (penalty segments). Their respective indices are $a,e,f,g,h,i,k,n$. The active base-case sets are $E\subset\mathcal E$, $F\subset\mathcal F$, and $G\subset\mathcal G$; $E_k,F_k,G_k$ are the corresponding active contingency sets. These are sets, whereas $|\mathcal K|$ is a cardinality. The official subset notation is used below to distinguish active subsets from primitive sets; it corresponds to the component sets in the paper's displayed physical equations.
+\section*{索引、集合、固定数据以及单位}
+原始集合包括：$\mathcal A$（区域）、$\mathcal E$（线路）、$\mathcal F$（双绕线变压器）、$\mathcal G$（发电机）、$\mathcal H$（成本样本点）、$\mathcal I$（母线）、$\mathcal K$（应急情况）以及$\mathcal N$（罚款段）。它们各自的索引为：$a,e,f,g,h,i,k,n$。活跃的基础情况集合为：$E\subset\mathcal E$、$F\subset\mathcal F$和$G\subset\mathcal G$；$E_k,F_k,G_k$则是相应的活跃应急情况集合。这些都是集合，而$|\mathcal K|$则是一个基数。下面使用的官方子集表示法用于区分活跃子集和原始集合；这与论文中展示的物理方程中的组件集合相对应。
 
-The origin and destination buses of a line are $i_e^o,i_e^d\in\mathcal I$, those of a transformer are $i_f^o,i_f^d\in\mathcal I$, and the bus of a generator is $i_g\in\mathcal I$. The area of bus $i$ is $a_i\in\mathcal A$. The fixed incidence subsets are
+一条线路的起点和终点都是$i_e^o,i_e^d\in\mathcal I$；变压器的起点和终点都是$i_f^o,i_f^d\in\mathcal I$；发电机的起点是$i_g\in\mathcal I$。总线$i$的占地面积则是$a_i\in\mathcal A$。固定的关联子集为：
 \begin{align*}
 E_i^o&=\{e\in E:i_e^o=i\},&E_i^d&=\{e\in E:i_e^d=i\},&&i\in\mathcal I,\\
 F_i^o&=\{f\in F:i_f^o=i\},&F_i^d&=\{f\in F:i_f^d=i\},&&i\in\mathcal I,\\
@@ -50,32 +51,32 @@ E_{ik}^o&=E_i^o\cap E_k,&E_{ik}^d&=E_i^d\cap E_k,&&i\in\mathcal I,\ k\in\mathcal
 F_{ik}^o&=F_i^o\cap F_k,&F_{ik}^d&=F_i^d\cap F_k,&&i\in\mathcal I,\ k\in\mathcal K,\\
 G_{ik}&=G_i\cap G_k,&&&&i\in\mathcal I,\ k\in\mathcal K.
 \end{align*}
-For each $g$, $H_g\subset\mathcal H$ is its set of cost sample points.
+对于每个$g$，$H_g\subset\mathcal H$就是其成本样本点集。
 
-The paper's $G_e,B_e,B_e^{CH},G_f,B_f,G_f^M,B_f^M,G_i^{FS},B_i^{FS}$ are fixed electrical parameters, not generator sets or decision variables. They correspond, respectively, to the official document's $g_e,b_e,b_e^{CH},g_f,b_f,g_f^M,b_f^M,g_i^{FS},b_i^{FS}$. Upper-case electrical parameters are used throughout the physical rows below. In contrast, $b_i^{CS},b_{ik}^{CS}$ are decision variables. The fixed data also include loads $p_i^L,q_i^L$, generator bounds $\underline p_g,\overline p_g,\underline q_g,\overline q_g$, voltage bounds $\underline v_i,\overline v_i,\underline v_i^K,\overline v_i^K$, shunt bounds $\underline b_i^{CS},\overline b_i^{CS}$, ratings $\overline R_e,\overline R_e^K,\overline s_f,\overline s_f^K$, tap ratio $\tau_f$, phase shift $\theta_f$, participation factor $\alpha_g$, and cost data $p_{gh},c_{gh}$.
+论文中的$G_e,B_e,B_e^{CH},G_f,B_f,G_f^M,B_f^M,G_i^{FS},B_i^{FS}$是固定的电气参数，而不是发电机组或决策变量。它们分别对应于官方文件中的$g_e,b_e,b_e^{CH},g_f,b_f,g_f^M,b_f^M,g_i^{FS},b_i^{FS}$。在下面的物理行中，使用了大写字母来表示电气参数。而$b_i^{CS},b_{ik}^{CS}$则是决策变量。这些固定数据还包括负载$p_i^L,q_i^L$、发电机的界限$\underline p_g,\overline p_g,\underline q_g,\overline q_g$、电压界限$\underline v_i,\overline v_i,\underline v_i^K,\overline v_i^K$、并联设备的界限$\underline b_i^{CS},\overline b_i^{CS}$、额定值$\overline R_e,\overline R_e^K,\overline s_f,\overline s_f^K$、分接比$\tau_f$、相位偏移$\theta_f$、参与因子$\alpha_g$，以及成本数据$p_{gh},c_{gh}$。
 
-Power, conductance, susceptance, and voltage magnitude in the model use the per-unit convention; angles use radians. The system power base is $\widetilde s$ in MVA and the bus voltage base is $\widetilde v_i$ in kV. Costs are in USD/h. Branch powers $p^o,q^o,p^d,q^d$ are flows from the indicated bus into the branch. $\Delta_k$ is a decision scale factor, in per unit, on the fixed dimensionless participation factors; it is not itself a participation factor. No normalization of the $\alpha_g$ is specified.
+在模型中，功率、电导、电纳和电压幅值均采用单位制；角度则采用弧度制。系统功率的基准单位是$\widetilde s$，单位为MVA；母线电压的基准单位是$\widetilde v_i$，单位为kV。成本以美元/小时为单位。支路功率$p^o,q^o,p^d,q^d$表示从指定母线流入支路的电流。$\Delta_k$是一个决策比例因子，以单位制表示，用于固定无量纲参与因子；它本身并不是一个参与因子。对于$\alpha_g$则没有指定任何归一化方式。
 
-\section*{Generation cost and penalty definitions}
-The paper identifies $f_0$ as convex piecewise linear generation cost and refers to the official statement for its auxiliary-variable definition. With the official weighting absorbed into the paper's penalty functions, the correspondence is
+\section*{生成成本与惩罚的定义}
+该论文将$f_0$定义为凸分段线性生成成本，并参考了官方声明中对辅助变量定义的描述。随着官方权重被纳入论文中的惩罚函数中，两者之间的对应关系就确定了。
 \[
 f_0(u_0,y_0)=\sum_{g\in G}c_g,\qquad
 \psi_0=\delta c^\sigma,\qquad
 \psi_k=(1-\delta)c_k^\sigma\quad(k\in\mathcal K),\qquad
 \delta=\frac12.
 \]
-Here the arguments of $\psi_0,\psi_k$ are the slacks displayed in (2.8). This correspondence retains the coefficient $1/|\mathcal K|$ in (2.8); the averaging is not also included in $\psi_k$.
+在这里，$\psi_0,\psi_k$的参数就是(2.8)中显示的那些数值。这种对应关系保留了(2.8)中的系数$1/|\mathcal K|$；而$\psi_k$则没有包含平均化处理的结果。
 
-The defining interpolation rows, official equations (2)--(5), are
+定义性插值行，即官方方程式（2）至（5），保持不变。所有数字都应保留原样。
 \begin{align*}
 c_g&=\sum_{h\in H_g}c_{gh}t_{gh} &&\forall g\in G,\\
 \sum_{h\in H_g}p_{gh}t_{gh}&=p_g &&\forall g\in G,\\
 0&\leq t_{gh} &&\forall g\in G,\ h\in H_g,\\
 \sum_{h\in H_g}t_{gh}&=1 &&\forall g\in G.
 \end{align*}
-The sample points describe convex piecewise linear cost functions. The interpolation formulation is retained; no secant extrapolation from the later evaluation code is substituted.
+样本点描述了凸形的分段线性成本函数。插值公式保持不变；没有用后续评估代码中的割线外推方法来替代。
 
-The unweighted penalty definitions are
+未加权的惩罚定义如下：
 \begin{align*}
 c^\sigma={}&\sum_{n\in\mathcal N}\left[
 \lambda_n^P\sum_{i\in\mathcal I}(\sigma_{in}^{P+}+\sigma_{in}^{P-})
@@ -89,7 +90,7 @@ c_k^\sigma={}&\sum_{n\in\mathcal N}\left[
 +\lambda_n^S\sum_{f\in F_k}\sigma_{fkn}^S\right]
 \quad\forall k\in\mathcal K.
 \end{align*}
-The aggregate violation variables are defined by
+聚合违规变量是通过以下方式定义的：
 \begin{align*}
 \sigma_i^{P+}&=\sum_{n\in\mathcal N}\sigma_{in}^{P+},&
 \sigma_{ik}^{P+}&=\sum_{n\in\mathcal N}\sigma_{ikn}^{P+},\\
@@ -109,9 +110,9 @@ The aggregate violation variables are defined by
 \sigma_{fk}^S&=\sum_{n\in\mathcal N}\sigma_{fkn}^S
 &&\forall f\in F,\ k\in\mathcal K.
 \end{align*}
-In the first four lines, the base-case equalities apply to every $i\in\mathcal I$, independently of $k$. The all-$E$ and all-$F$ scopes of the contingency aggregation rows are those printed in official equations (17) and (19), rather than $E_k,F_k$.
+在前四行中，基础情况的等式适用于每一个$i\in\mathcal I$，而不受$k$的影响。所有$E$和$F$的应急聚合范围，都是根据官方方程式（17）和（19）中给出的范围来确定的，而不是$E_k,F_k$所指定的范围。
 
-The official segment bounds (20)--(27) are
+官方段落的边界为（20）到（27）。
 \begin{align*}
 0\leq\sigma_{in}^{P+}&\leq\overline\sigma_{in}^{P+},&
 0\leq\sigma_{ikn}^{P+}&\leq\overline\sigma_{in}^{P+},\\
@@ -123,7 +124,7 @@ The official segment bounds (20)--(27) are
 0\leq\sigma_{ikn}^{Q-}&\leq\overline\sigma_{in}^{Q-}
 &&\forall i\in\mathcal I,\ n\in\mathcal N,\ k\in\mathcal K.
 \end{align*}
-Again the base-case columns do not depend on $k$. Each branch penalty segment in the executable model uses the single branch slack of the penalty and aggregation equations and the segment cap from Appendix D.1 of the cited Challenge 1 specification:
+同样，基础情况的列并不依赖于$k$。在可执行模型中，每个分支的惩罚段都使用了惩罚和聚合方程中的单一分支松弛量，以及《挑战1》规范附录D.1中的段上限值。
 \begin{align*}
 0\leq\sigma_{en}^{S}&\leq\overline\sigma_{en}^{S}
 &&\forall e\in E,\ n\in\mathcal N,\\
@@ -134,9 +135,9 @@ Again the base-case columns do not depend on $k$. Each branch penalty segment in
 0\leq\sigma_{fkn}^{S}&\leq\overline\sigma_{fn}^{S}
 &&\forall f\in F,\ n\in\mathcal N,\ k\in\mathcal K.
 \end{align*}
-The official PDF p. 21 prints the superscript $S+$ on both sides of (28)--(31). Its explanation on p. 20 bounds each segment slack, the penalty and aggregation equations on pp. 19--20 use $S$, and Appendix D.1 on p. 70 specifies branch segment caps under $S$. This version uses those caps on the penalty segment variables directly and introduces no second family of branch slacks. The printed notation is recorded here for comparison.
+官方PDF版本中，第21页在(28)--(31)的两侧都印有上标$S+$。第20页的解释中，每个分支的松弛量都有界定；第19--20页的惩罚和聚合方程则使用$S$来表示。第70页的附录D.1中，在$S$下指定了分支段的限制。这个版本直接在这些惩罚变量上使用这些限制，没有引入第二套分支松弛量。这里的印刷符号记录是为了对比而保留的。
 
-The fixed penalty data, not instance-specific examples, are
+固定的处罚数据，而非特定实例的示例数据。
 \[
 \mathcal N=\{1,2,3\},\qquad
 \begin{array}{c|rrr}
@@ -166,10 +167,10 @@ The fixed penalty data, not instance-specific examples, are
 \overline\sigma_{ikn}^{Q+}&=\mathrm{QViolMax}_n/\widetilde s,&
 \overline\sigma_{ikn}^{Q-}&=\mathrm{QViolMax}_n/\widetilde s.
 \end{align*}
-These definitions apply for all indicated buses, branches, contingencies, and $n\in\mathcal N$ in their respective segment families. The second segment has width $50/\widetilde s$, not $(50-2)/\widetilde s$.
+这些定义适用于所有所指出的总线、分支、应急情况以及$n\in\mathcal N$，它们分别属于各自的段族。第二个段的宽度是$50/\widetilde s$，而不是$(50-2)/\widetilde s$。
 
-\section*{Primary variable bounds and inactive generators}
-The detailed bounds from official equations (32)--(37) and (58)--(63) are
+\section*{主要变量的边界值以及不活跃的生成器}
+官方方程式中的详细界限如下：(32)–(37)和(58)–(63)。
 \begin{align*}
 \underline v_i\leq v_i&\leq\overline v_i &&\forall i\in\mathcal I,\\
 \underline p_g\leq p_g&\leq\overline p_g &&\forall g\in G,\\
@@ -184,14 +185,14 @@ p_{gk}&=0 &&\forall k\in\mathcal K,\ g\in\mathcal G\setminus G_k,\\
 q_{gk}&=0 &&\forall k\in\mathcal K,\ g\in\mathcal G\setminus G_k,\\
 \underline b_i^{CS}\leq b_{ik}^{CS}&\leq\overline b_i^{CS} &&\forall k\in\mathcal K,\ i\in\mathcal I.
 \end{align*}
-The additional base-case reference-angle relation specified on paper p.~5 is
+在纸张~5上指定的附加基础情况参考角度关系如下：
 \[
 \theta_i=0\qquad\text{at the single base-case reference bus.}
 \]
-The paper does not identify that bus. No additional contingency reference-angle equation or angle bound is introduced here.
+该论文中并未提及那辆公交车的具体信息。这里也没有引入任何额外的应急参考方程或角度约束条件。
 
-\section*{Flow definitions: the $a$ families}
-For every $e\in E$, the paper's origin-end equations are
+\section*{流程定义：$a$系列}
+对于每一个$e\in E$，论文的起始和结束方程分别是：
 \begin{equation}\tag{2.1}
 \begin{aligned}
 p_e^o&=G_ev_{i_e^o}^2-\bigl(G_e\cos(\theta_{i_e^o}-\theta_{i_e^d})+B_e\sin(\theta_{i_e^o}-\theta_{i_e^d})\bigr)v_{i_e^o}v_{i_e^d},\\
@@ -199,13 +200,13 @@ q_e^o&=-(B_e+B_e^{CH}/2)v_{i_e^o}^2
 +\bigl(B_e\cos(\theta_{i_e^o}-\theta_{i_e^d})-G_e\sin(\theta_{i_e^o}-\theta_{i_e^d})\bigr)v_{i_e^o}v_{i_e^d}.
 \end{aligned}
 \end{equation}
-The linked destination-end definitions, available in official equations (40)--(41), are
+在官方方程式（40–41）中提供的链接到的终点定义，应保持不变。所有数字都应原封不动地保留下来。
 \begin{align*}
 p_e^d&=G_ev_{i_e^d}^2+\bigl(-G_e\cos(\theta_{i_e^d}-\theta_{i_e^o})-B_e\sin(\theta_{i_e^d}-\theta_{i_e^o})\bigr)v_{i_e^o}v_{i_e^d},\\
 q_e^d&=-(B_e+B_e^{CH}/2)v_{i_e^d}^2+\bigl(B_e\cos(\theta_{i_e^d}-\theta_{i_e^o})-G_e\sin(\theta_{i_e^d}-\theta_{i_e^o})\bigr)v_{i_e^o}v_{i_e^d}
 \quad\forall e\in E.
 \end{align*}
-For every $f\in F$, the paper prints
+对于每一个$f\in F$，论文中都会将其原样打印出来。所有数字都保持不变。
 \begin{equation}\tag{2.2}
 \begin{aligned}
 p_f^o={}&(G_f/\tau_f^2+G_f^M)v_{i_f^o}^2\\
@@ -216,7 +217,7 @@ q_f^o={}&-(B_f/\tau_f^2+B_f^M)v_{i_f^o}^2\\
  -(G_f/\tau_f)\sin(\theta_{i_f^o}-\theta_{i_f^d}-\theta_f)\bigr)v_{i_f^o}v_{i_f^d}.
 \end{aligned}
 \end{equation}
-The linked destination-end definitions, official equations (44)--(45), are
+链接到的终点定义、官方方程式（44–45）保持不变。所有数字也都应保留原样。
 \begin{align*}
 p_f^d={}&G_fv_{i_f^d}^2+
 \bigl(-(G_f/\tau_f)\cos(\theta_{i_f^d}-\theta_{i_f^o}+\theta_f)
@@ -227,7 +228,7 @@ q_f^d={}&-B_fv_{i_f^d}^2+
 \qquad\forall f\in F.
 \end{align*}
 
-The contingency definitions, official equations (64)--(71), are
+应急定义、官方方程式（64–71）如下：
 \begin{align*}
 p_{ek}^o={}&G_ev_{i_e^o k}^2+
 \bigl(-G_e\cos(\theta_{i_e^o k}-\theta_{i_e^d k})-B_e\sin(\theta_{i_e^o k}-\theta_{i_e^d k})\bigr)v_{i_e^o k}v_{i_e^d k},\\
@@ -254,10 +255,10 @@ q_{fk}^d={}&-B_fv_{i_f^d k}^2\\
  -(G_f/\tau_f)\sin(\theta_{i_f^d k}-\theta_{i_f^o k}+\theta_f)\bigr)v_{i_f^o k}v_{i_f^d k}
 \quad\forall k\in\mathcal K,\ f\in F_k.
 \end{align*}
-These destination-end and contingency definitions are available in the supplied official reference; their absence from the paper's short restatement does not leave them unverified.
+这些目的地端和应急的定义可以在提供的官方参考书中找到；尽管这些定义没有出现在论文的简短陈述中，但它们仍然经过了验证。
 
-\section*{Bus balances: the $b$ families}
-For all $i\in\mathcal I$,
+\section*{公交车上的平衡：$b$这些家庭}
+对于所有$i\in\mathcal I$，
 \begin{equation}\tag{2.3}
 \begin{aligned}
 \sum_{g\in G_i}p_g-p_i^L-G_i^{FS}v_i^2
@@ -270,7 +271,7 @@ For all $i\in\mathcal I$,
 &=\sigma_i^{Q+}-\sigma_i^{Q-}.
 \end{aligned}
 \end{equation}
-For all $k\in\mathcal K$ and $i\in\mathcal I$,
+对于所有$k\in\mathcal K$和$i\in\mathcal I$，
 \begin{align*}
 \sum_{g\in G_{ik}}p_{gk}-p_i^L-G_i^{FS}v_{ik}^2
 -\sum_{e\in E_{ik}^o}p_{ek}^o-\sum_{e\in E_{ik}^d}p_{ek}^d
@@ -281,14 +282,14 @@ For all $k\in\mathcal K$ and $i\in\mathcal I$,
 -\sum_{f\in F_{ik}^o}q_{fk}^o-\sum_{f\in F_{ik}^d}q_{fk}^d
 &=\sigma_{ik}^{Q+}-\sigma_{ik}^{Q-}.
 \end{align*}
-The aggregate slack domains are
+聚合松弛域是
 \begin{align*}
 \sigma_i^{P+},\sigma_i^{P-},\sigma_i^{Q+},\sigma_i^{Q-}&\geq0 &&\forall i\in\mathcal I,\\
 \sigma_{ik}^{P+},\sigma_{ik}^{P-},\sigma_{ik}^{Q+},\sigma_{ik}^{Q-}&\geq0 &&\forall k\in\mathcal K,\ i\in\mathcal I.
 \end{align*}
 
-\section*{Squared ratings: the $c$ families}
-The paper explicitly replaces the official norm inequalities with squared inequalities. The selected base-case line rows are
+\section*{平方后的评分：$c$家族}
+该论文明确用平方不等式替换了官方的标准不等式。所选的基础情况行如下所示：
 \begin{equation}\tag{2.4}
 \begin{aligned}
 (p_e^o)^2+(q_e^o)^2&\leq(\overline R_ev_{i_e^o}+\sigma_e^S)^2,\\
@@ -296,7 +297,7 @@ The paper explicitly replaces the official norm inequalities with squared inequa
 \qquad\forall e\in E.
 \end{aligned}
 \end{equation}
-The operative base-case transformer ratings use the origin endpoint in (55) and the destination endpoint in (57) of the cited Challenge 1 specification (physical PDF p. 24). Equation (56) requires the shared violation slack to be nonnegative. The following uses the squared form selected by the paper:
+操作基础情况下的变压器额定值采用了文献中挑战1规范中的起点终点（55号）和终点点（57号）（物理PDF第24页）。方程（56）要求共享的违规松弛量必须为非负值。以下使用的是论文中选择的平方形式：
 \begin{equation}\tag{2.5, implemented}
 \begin{aligned}
 (p_f^o)^2+(q_f^o)^2&\leq(\overline s_f+\sigma_f^S)^2,\\
@@ -304,9 +305,9 @@ The operative base-case transformer ratings use the origin endpoint in (55) and 
 \qquad\forall f\in F.
 \end{aligned}
 \end{equation}
-The rating and its violation slack are nonnegative; squaring preserves the official norm inequalities. The main paper, physical PDF p. 3, prints $(p_e^d)^2+(q_e^d)^2\leq(\overline s_f+\sigma_f^S)^2$ as the second row of (2.5), with a line index $e$ and a transformer index $f$ and no association between them. This transcription documents the discrepancy. The operative destination row above uses the single transformer $f$ of official (57). Each transformer has exactly one destination rating; line ratings remain in (2.4).
+评分及其违规松弛值是非负的；平方运算保留了官方范数不等式。主要论文的物理PDF第3页将$(p_e^d)^2+(q_e^d)^2\leq(\overline s_f+\sigma_f^S)^2$作为(2.5)的第二行显示，其行索引为$e$，变压器索引为$f$，两者之间没有关联。此转录记录了这一差异。上述操作目标行使用了单一的变压器$f$，即官方中的(57)。每个变压器恰好有一个目标评分；行评分则保留在(2.4)中。
 
-For contingencies, the source-defined indexed families are official equations (78)--(83). Applying the paper's stated squared construction to those rows gives
+对于意外情况，源代码中定义的索引族即为正式的方程式（78–83）。将论文中所述的平方构造方法应用于这些行，即可得到结果。
 \begin{align*}
 (p_{ek}^o)^2+(q_{ek}^o)^2&\leq(\overline R_e^K v_{i_e^o k}+\sigma_{ek}^S)^2
 &&\forall k\in\mathcal K,\ e\in E_k,\\
@@ -317,21 +318,21 @@ For contingencies, the source-defined indexed families are official equations (7
 (p_{fk}^d)^2+(q_{fk}^d)^2&\leq(\overline s_f^K+\sigma_{fk}^S)^2
 &&\forall k\in\mathcal K,\ f\in F_k.
 \end{align*}
-The contingency destination-transformer row retains the $f$ index and scope of the available official contingency definition. The paper does not separately print a contingency-indexed version of (2.5); its mixed-index base-case expression is not propagated into a new, unsupported contingency row.
+应急转换行的$f$索引和可用官方应急定义的范围保持不变。论文中没有单独打印出(2.5)的应急索引版本；其混合索引的基础情况表达并未被应用到新的、不受支持的应急行中。
 \begin{align*}
 \sigma_e^S&\geq0 &&\forall e\in E,&
 \sigma_f^S&\geq0 &&\forall f\in F,\\
 \sigma_{ek}^S&\geq0 &&\forall k\in\mathcal K,\ e\in E_k,&
 \sigma_{fk}^S&\geq0 &&\forall k\in\mathcal K,\ f\in F_k.
 \end{align*}
-The official unsquared rating inequalities are superseded, not additionally enforced. The paper does not specify a componentwise transformation from its schematic $c(u,y)\leq\varsigma$ to the displayed squared rows containing physical slacks inside squares; no such transformation or rescaling of the penalty argument is invented here.
+官方的非平方评分不等式已被取代，但并未被额外强制执行。该论文并未说明从示意图$c(u,y)\leq\varsigma$到实际显示的平方行之间的转换过程；也没有提出任何关于惩罚参数的重新缩放或转换方法。
 
-\section*{Cross-case response: the $\tau$ families}
-For a generator active but not participating in real-power response, the common condition from official equation (84) is
+\section*{交叉案例的回应：$\tau$系列}
+对于处于活动状态但不参与实功率响应的发电机来说，官方方程（84）中的共同条件为：
 \[
 p_{gk}=p_g\qquad\forall k\in\mathcal K,\ g\in G_k\setminus G_k^P.
 \]
-For participating generators, the selected paper disjunction is
+对于参与生成的论文来说，所选的论文分离条件为：
 \begin{equation}\tag{2.6}
 \begin{aligned}
 &0\leq(p_{gk}-\underline p_g)\perp(p_g+\alpha_g\Delta_k-p_{gk})\leq0\\
@@ -340,7 +341,7 @@ For participating generators, the selected paper disjunction is
 \qquad k\in\mathcal K,\ g\in G_k^P.
 \end{aligned}
 \end{equation}
-For reactive-power response, the selected paper disjunction is
+对于无功功率响应，所选的论文中的分离条件为：
 \begin{equation}\tag{2.7}
 \begin{aligned}
 &0\leq(q_{gk}-\underline q_g)\perp(v_{i_g}-v_{i_g k})\leq0\\
@@ -349,44 +350,44 @@ For reactive-power response, the selected paper disjunction is
 \qquad k\in\mathcal K,\ g\in G_k.
 \end{aligned}
 \end{equation}
-The lower-bound underlines in the first factors are visible on the supplied original page images: they are $\underline p_g,\underline q_g$, not the base-case decision variables $p_g,q_g$. The response domains are supplied by official Sections 3.14--3.15. The bound constraints on $p_{gk},q_{gk}$ remain in force. The symbol $\perp$ denotes complementarity of the two factors. Neither the projection nor the mixed-integer response formulation is additionally imposed.
+在第一个因素中，下划线标注的边界值在提供的原始页面图片中是可见的：它们就是$\underline p_g,\underline q_g$，而不是基础情况下的决策变量$p_g,q_g$。响应域的内容来自官方的第3.14节至第3.15节。对$p_{gk},q_{gk}$的边界限制仍然有效。符号$\perp$表示两个因素的互补性。既没有额外的投影约束，也没有混合整数响应形式的约束。
 
-\section*{Fixed input construction and restrictions}
-The following are data definitions, not constraints giving the optimizer freedom to choose equipment parameters. They follow official Appendices A, C, and D. Field names in upright type denote the corresponding input record; the same field name in different record types need not have the same meaning.
+\section*{固定的输入结构和限制条件}
+以下是数据定义，而非约束条件，这些定义为优化器提供了选择设备参数的自由度。它们遵循官方附录A、C和D的内容。竖型字段名称表示相应的输入记录；不同记录类型中的相同字段名称可能具有相同的含义。
 
-\paragraph{Network and service status.}
-Primitive equipment sets contain the records read from the input. Generator keys are $(\mathrm I,\mathrm{ID})$; line and transformer keys are $(\mathrm I,\mathrm J,\mathrm{CKT})$. For each record, the origin and destination buses are $\mathrm I,\mathrm J$, or the generator bus is $\mathrm I$. Base-case active sets contain precisely records with the corresponding service flag equal to $1$; flags are binary. Bus numbers are integers from $1$ through $999997$, and area numbers are positive integers. A line's destination bus differs from its origin bus. Parallel branch circuit identifiers distinguish branches in either direction, including transformers. All transformers represented here are two-winding; three-winding equipment is represented by configurations of two-winding transformers.
+\paragraph{网络和服务状态。}
+原始设备集合中包含从输入中读取的记录。生成器的键是$(\mathrm I,\mathrm{ID})$；线路和变压器的键是$(\mathrm I,\mathrm J,\mathrm{CKT})$。对于每条记录，起点和终点总线都是$\mathrm I,\mathrm J$，或者生成器总线是$\mathrm I$。基础情况下的活动集合包含那些服务标志等于$1$的记录；标志是二进制形式的。总线编号是从$1$到$999997$的整数，而区域编号则是正整数。一条线路的目的地总线与其起点总线不同。并行分支电路的标识符可以区分任何方向的分支，包括变压器。这里所表示的都是双绕组变压器；三绕组设备则通过双绕组变压器的配置来表示。
 
-\paragraph{Base, voltage, loads, and fixed shunts.}
+\paragraph{基准电压、负载以及固定分流器。}
 \begin{align*}
 \widetilde s&=\mathrm{SBASE},\\
 \overline v_i&=\mathrm{NVHI},&\underline v_i&=\mathrm{NVLO},&
 \overline v_i^K&=\mathrm{EVHI},&\underline v_i^K&=\mathrm{EVLO}.
 \end{align*}
-The voltage limits are per-unit data. For each bus, initialize $p_i^L=q_i^L=G_i^{FS}=B_i^{FS}=0$. For each in-service load record at $i$, update
+电压限制是每单位数据的数值。对于每一个总线，先初始化$p_i^L=q_i^L=G_i^{FS}=B_i^{FS}=0$的值。对于位于$i$处的每个在役负载记录，进行更新操作。
 \[
 p_i^L:=p_i^L+\mathrm{PL}/\widetilde s,\qquad
 q_i^L:=q_i^L+\mathrm{QL}/\widetilde s.
 \]
-For each in-service fixed-shunt record at $i$, update
+对于位于$i$的每个在役固定分流记录，进行更新。
 \[
 G_i^{FS}:=G_i^{FS}+\mathrm{GL}/\widetilde s,\qquad
 B_i^{FS}:=B_i^{FS}+\mathrm{BL}/\widetilde s.
 \]
-Only records with $\mathrm{STATUS}=1$ contribute. The fixed loads are constant-power loads.
+仅有包含$\mathrm{STATUS}=1$的记录有效。固定负载为恒功率负载。
 
-\paragraph{Generator data.}
-For each generator record,
+\paragraph{生成器数据。}
+对于每一条生成器记录，
 \[
 \overline q_g=\mathrm{QT}/\widetilde s,\quad
 \underline q_g=\mathrm{QB}/\widetilde s,\quad
 \overline p_g=\mathrm{PT}/\widetilde s,\quad
 \underline p_g=\mathrm{PB}/\widetilde s.
 \]
-The active subset uses $\mathrm{STAT}=1$. Unit commitment and fast-start post-contingency entry are excluded: only initially online units may respond.
+活跃的子集使用$\mathrm{STAT}=1$。单位承诺和快速启动后的应急进入被排除在外：只有最初投入运行的单元才能做出响应。
 
-\paragraph{Line data.}
-For each line record,
+\paragraph{线性数据。}
+对于每一行记录，
 \begin{align*}
 G_e&=\frac{\mathrm R}{\mathrm R^2+\mathrm X^2},&
 B_e&=-\frac{\mathrm X}{\mathrm R^2+\mathrm X^2},&
@@ -394,14 +395,14 @@ B_e^{CH}&=\mathrm B,\\
 \overline R_e&=\mathrm{RATEA}/\widetilde s,&
 \overline R_e^K&=\mathrm{RATEC}/\widetilde s.
 \end{align*}
-The record restriction is $\mathrm X\in\mathbb R\setminus\{0\}$. The origin and destination buses of a non-transformer branch must have equal voltage bases:
+记录限制为$\mathrm X\in\mathbb R\setminus\{0\}$。非变压器分支的出发地和目的地线路必须具有相同的电压基准：
 \[
 \widetilde v_{i_e^o}=\widetilde v_{i_e^d}\qquad\text{for every non-transformer branch }e.
 \]
-The rating fields express current as MVA at this bus base voltage, not transformer apparent-power ratings. The active subset uses $\mathrm{ST}=1$.
+评分字段表示在此母线基础电压下的MVA值，而非变压器的视在功率额定值。活动子集使用$\mathrm{ST}=1$。
 
-\paragraph{Transformer data.}
-For each transformer record,
+\paragraph{转换数据。}
+对于每条变压器记录，
 \begin{align*}
 G_f^M&=\mathrm{MAG1},&B_f^M&=\mathrm{MAG2},\\
 G_f&=\frac{\mathrm{R12}}{(\mathrm{R12})^2+(\mathrm{X12})^2},&
@@ -411,14 +412,14 @@ B_f&=-\frac{\mathrm{X12}}{(\mathrm{R12})^2+(\mathrm{X12})^2},\\
 \overline s_f&=\mathrm{RATA1}/\widetilde s,&
 \overline s_f^K&=\mathrm{RATC1}/\widetilde s.
 \end{align*}
-Magnetizing admittances are in per unit on the system MVA base; winding ratios are on their respective bus voltage bases. The phase-shift input obeys $\mathrm{ANG1}\in(-180,180]$ degrees, hence $\theta_f\in(-\pi,\pi]$. The active subset uses $\mathrm{STAT}=1$. The supplied text extraction of official (154) has an unmatched parenthesis; its fraction above follows the denominator corroborated by the supplied official evaluation code, without adding a parameter-domain restriction. The typography of that official equation has not been independently verified against a supplied page image.
+磁化导纳以系统MVA基准单位表示；绕组比则基于各自的母线电压基准。相位偏移输入遵循$\mathrm{ANG1}\in(-180,180]$度，因此也遵循$\theta_f\in(-\pi,\pi]$。活动子集使用$\mathrm{STAT}=1$。官方文件（154）中的文本提取结果存在不匹配的括号；其上面的分数遵循了分母的规定，这一点得到了官方评估代码的确认，同时也没有添加参数域限制。该官方公式的排版方式并未通过与提供的页面图像进行独立验证。
 
-\paragraph{Controllable shunt bounds, including the zero-block case.}
-Initialize
+\paragraph{可控制的分流范围，包括零块情况。}
+初始化
 \[
 \overline b_i^{CS}=0,\qquad\underline b_i^{CS}=0\qquad\forall i\in\mathcal I.
 \]
-For an in-service switched-shunt record at $i$, the eight block counts $\mathrm N_l$ are nonnegative integers and $\mathrm B_l$ are step susceptances in MVar at unit voltage. The official construction is
+对于位于$i$的开关并联记录，八个块计数$\mathrm N_l$都是非负整数，而$\mathrm B_l$则是单位电压下的MVar阶跃电纳。其官方构造为：
 \begin{align*}
 \mathrm{BL}_l&=\mathrm N_l\mathrm B_l/\widetilde s,
 \qquad l=1,\ldots,8,\\
@@ -430,27 +431,27 @@ For an in-service switched-shunt record at $i$, the eight block counts $\mathrm 
 \overline b_i^{CS}&=\sum_{l:1\leq l\leq\mathrm{NBL}}\max\{0,\mathrm{BL}_l\},\\
 \underline b_i^{CS}&=\sum_{l:1\leq l\leq\mathrm{NBL}}\min\{0,\mathrm{BL}_l\}.
 \end{align*}
-These assignments are made only for $\mathrm{STAT}=1$. Buses without an active switched shunt retain both bounds equal to zero. The model does not constrain the shunt decision to integer multiples of the steps.
+这些赋值仅针对$\mathrm{STAT}=1$进行。那些没有激活切换分流器的总线，其两个边界值都保持为零。该模型并不限制分流器的选择只能是步长的整数倍。
 
-\paragraph{Cost samples.}
-For each generator dispatch record, its dispatch-table link and cost-table link identify the sample-point record. If $N=\mathrm{NPAIRS}$, a positive integer, then
+\paragraph{成本样本。}
+对于每一个生成器调度记录，其调度表链接和成本表链接会标识出相应的样本点记录。如果$N=\mathrm{NPAIRS}$是一个正整数，那么……
 \[
 H_g=\{1,\ldots,N\},\qquad
 p_{gh}=\mathrm X_h/\widetilde s,\qquad
 c_{gh}=\mathrm Y_h\quad(h\in H_g),\qquad
 \mathcal H=\bigcup_gH_g.
 \]
-Here $\mathrm X_h$ is output in MW, not reactance, and $\mathrm Y_h$ is cost in USD/h, not admittance. A zero $\mathrm X_h$ is allowed. The cost convexity premise is retained; no additional sample spacing, extrapolation rule, or mandatory lower bound of two on $N$ is imported from evaluation-code preprocessing.
+此处$\mathrm X_h$以MW表示，而非 reactance；$\mathrm Y_h$以美元/小时表示成本，而非 admittance。允许使用零值$\mathrm X_h$。保留了成本凸性假设；没有引入额外的样本间隔、外推规则，也没有从评估代码预处理中导入对$N$的强制性下限限制。
 
-\paragraph{Participation factors.}
-For a generator's INL record,
+\paragraph{参与因子。}
+对于生成器的 INL 记录，
 \[
 \alpha_g=\mathrm R,\qquad \mathrm R\in\mathbb R_{\geq0}.
 \]
-This INL field is used directly as a dimensionless participation factor, despite its industry-format name ``governor permanent droop.'' It is not line resistance, a reciprocal droop, or a decision variable.
+这个 INL 字段被直接用作一个无量纲的参与因子，尽管它的行业名称是“governor permanent droop”。它并不是线路电阻、倒数droop，也不是决策变量。
 
-\paragraph{Contingency sets and responding areas.}
-The selected official version has exactly one generator, line, or transformer outage per contingency. Starting from $(E,F,G)$, its active sets are
+\paragraph{应急集合与响应区域。}
+所选的官方版本中，每种突发事件下都恰好有一个生成器、线路或变压器故障。从$(E,F,G)$开始，其活动集合为：
 \[
 (E_k,F_k,G_k)=
 \begin{cases}
@@ -459,7 +460,7 @@ The selected official version has exactly one generator, line, or transformer ou
 (E,F,G\setminus\{g\}),&\text{generator }g\text{ is outaged}.
 \end{cases}
 \]
-For a branch outage key, the official input assumption is membership in either the line set or the transformer set, but not both. The contingent areas and participation sets are the fixed sets
+对于分支停电的关键参数，官方的输入假设是仅属于线路集合或变压器集合中的某一个，而不是同时属于两者。而相关的区域和参与集合则属于固定的集合。
 \begin{align*}
 A_k&=
 \begin{cases}
@@ -471,9 +472,9 @@ A_k&=
 G_k^P&=\{g\in G_k:a_{i_g}\in A_k\}
 &&\forall k\in\mathcal K.
 \end{align*}
-Thus participation is not imposed on every online generator in the system, and the common nonparticipant equality remains necessary.
+因此，并非系统中的所有在线生成器都必须参与此活动，而普通的非参与者仍然享有平等的权利。
 
-\paragraph{Limits of the reconstruction.}
-The original images establish the lower bounds in (2.6)--(2.7) and the mixed $e,f$ subscripts in (2.5). The source discrepancy is retained in the note on (2.5); the numerical formulation uses the transformer destination endpoint of official (57). The high-level functions and their vector dimensions are not further specified by the paper. The supplied official equations provide the detailed cost, slack, bound, incidence, and flow dependencies; their $S+$ notation discrepancy is identified above. The empty-contingency denominator in (2.8) is retained without a convention replacing $|\mathcal K|$ by $\max\{1,|\mathcal K|\}$. Evaluation-code tolerances, extrapolated costs, scoring caps, starting points, preprocessing aggregations, and active-set replacements are not constraints of this selected model.
+\paragraph{重建的界限。}
+原始图像在(2.6)--(2.7)中确定了下限，而混合的$e,f$下标则出现在(2.5)中。源数据中的差异被保留在(2.5)的注释中；数值公式则采用了官方规定的57作为变压器的最终终点。高级功能及其向量维度在论文中并未进一步说明。提供的官方方程式提供了详细的成本、松弛度、界限、关联性和流量依赖性信息；它们的$S+$表示法差异已在上述部分指出。在(2.8)中，空-偶然性的分母被保留下来，没有采用$|\mathcal K|$来替代$\max\{1,|\mathcal K|\}$的惯例。评估代码的容忍度、外推成本、评分上限、起点、预处理聚合以及活动集替换都不是该选定模型的约束条件。
 
 \end{document}

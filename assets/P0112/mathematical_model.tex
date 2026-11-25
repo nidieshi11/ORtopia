@@ -7,15 +7,17 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 
+\usepackage[UTF8]{ctex}
 \begin{document}
 
 \section*{Problem: **问题类型**：带同步途中换乘的接送问题（Pickup and Delivery Problem with Synchronized En-route Transfers, PDPSET），属于车辆路径问题（VRP）的扩展变体。  
 **数学模型**：混合整数线性规划（MILP），在无向图上建模，包含二元决策变量（路径、分配、换乘）和连续变量（时间、停留时间）。  
 **复杂度**：NP-hard，因涉及路径规划、换乘点动态选择与时间同步，问题规模随节点、车辆、请求数量增长而急剧增加。}
 
-\textbf{Model Source}: Directly Extracted
+\textbf{模型来源}：直接提取的
 
-\subsection*{Decision Variables}
+\subsection*{决策变量}
+\[
 \begin{aligned}
 & X_{ijk} \in \{0, 1\}, && \forall (i, j) \in A, \forall k \in K \\
 & Y_{ijkr} \in \{0, 1\}, && \forall (i, j) \in A, \forall k \in K, \forall r \in R \\
@@ -28,11 +30,15 @@
 & V_{kr} \in \{0, 1\}, && \forall k \in K, \forall r \in R \\
 & W_{kr} \geq 0, && \forall k \in K, \forall r \in R
 \end{aligned}
+\]
 
-\subsection*{Objective Function}
+\subsection*{目标函数}
+\[
 \text{Min : } \alpha \sum_{k \in K} \sum_{(i,j) \in A} c_{ij} X_{ijk} + \beta \sum_{r \in R} q_r TP_{p(r)r} + \theta \sum_{k \in K} \sum_{r \in R} \sum_{(i,j) \in A} c_{ij} q_r Y_{ijkr} + \delta \sum_{k \in K} \sum_{i \in N} U_{ik}
+\]
 
-\subsection*{Constraints}
+\subsection*{约束条件：}
+\[
 \begin{aligned}
 &\text{Subject to:} \\
 & \sum_{(i,j) \in A_{d_i}} X_{ijk} = 1, && \forall k \in K, i = O(k) \\
@@ -80,8 +86,10 @@
 & TV_{ik} - (TV_{il} + U_{il}) \leq (1 - F_{rikl}) M, && \forall i \in N, \forall k, l \in K, k \neq l, \forall r \in R \\
 & TV_{il} - (TV_{ik} + U_{ik}) \leq (1 - F_{rikl}) M, && \forall i \in N, \forall k, l \in K, k \neq l, \forall r \in R
 \end{aligned}
+\]
 
-\subsection*{Complete Mathematical Model}
+\subsection*{完整的数学模型}
+\[
 \begin{aligned}
 &\text{Min : } \alpha \sum_{k \in K} \sum_{(i,j) \in A} c_{ij} X_{ijk} + \beta \sum_{r \in R} q_r TP_{p(r)r} + \theta \sum_{k \in K} \sum_{r \in R} \sum_{(i,j) \in A} c_{ij} q_r Y_{ijkr} + \delta \sum_{k \in K} \sum_{i \in N} U_{ik} \\
 &\text{Subject to:} \\
@@ -130,5 +138,6 @@
 & TV_{ik} - (TV_{il} + U_{il}) \leq (1 - F_{rikl}) M, && \forall i \in N, \forall k, l \in K, k \neq l, \forall r \in R \\
 & TV_{il} - (TV_{ik} + U_{ik}) \leq (1 - F_{rikl}) M, && \forall i \in N, \forall k, l \in K, k \neq l, \forall r \in R
 \end{aligned}
+\]
 
 \end{document}

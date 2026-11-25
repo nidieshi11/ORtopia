@@ -2,62 +2,63 @@
 \usepackage{amsmath,amssymb,mathtools}
 \usepackage[margin=1in]{geometry}
 \allowdisplaybreaks
+\usepackage[UTF8]{ctex}
 \begin{document}
 
-\section*{Robust dynamic assortment optimization with a known contamination upper bound}
+\section*{具有已知污染上限的稳健动态组合优化}
 
-\subsection*{Objective and admissibility}
-The selected performance objective is to minimize the Typically-Optimal-Typically-Evaluated (TOTE) regret by an admissible sequential assortment policy:
+\subsection*{目标与可接纳性}
+所选的绩效目标是：通过一种可接受的序贯组合策略，将“典型最优典型评估”（TOTE）的遗憾程度降至最低。
 \begin{equation}
 \operatorname{Regret}^{\mathrm{TOTE}}(T)
 :=\mathbb{E}\left[\sum_{t=1}^{T} R(S^*;\{v\})-R(S_t;\{v\})\right].
 \tag{2}
 \end{equation}
-The subject-to conditions on the retailer's decisions are
+零售商在做出决策时所面临的约束条件包括：
 \[
 S_t\subseteq[N],\qquad |S_t|\le K,\qquad
 S_t=\mathfrak{P}_t\bigl(\{S_\tau,i_\tau\}_{\tau\le t-1}\bigr),
 \qquad t=1,2,\ldots,T,
 \]
-where the $T$ random functions $\mathfrak{P}_1,\ldots,\mathfrak{P}_T$ constitute an admissible policy as specified below. The benchmark is
+在$T$随机函数$\mathfrak{P}_1,\ldots,\mathfrak{P}_T$构成的策略中，符合以下规定的可接受策略。基准是
 \[
 S^*=\arg\max_{S\subseteq[N],\,|S|\le K}R(S;\{v\}).
 \]
-TOTE evaluates both assortments using the typical-customer model even at times when the arriving customer is an outlier. This is the performance criterion selected by the paper for its upper-bound analysis, rather than the alternative best-in-hindsight criterion.
+TOTE会使用典型的客户模型来评估这两种情况，即使到达的客户属于异常情况也是如此。这是该论文所选择的性能评估标准，用于进行上限分析，而不是另一种事后最佳标准。
 
-\subsection*{Inputs, choice model, and information protocol}
-There are $N$ items and $T$ customer-arrival periods. The capacity parameter is $K$. The item parameters satisfy
+\subsection*{输入、选择模型以及信息协议}
+共有$N$个物品，以及$T$个顾客到达时间段。容量参数为$K$。各个物品的参数均满足要求。
 \[
 r_i\in[0,1]\quad\text{(known revenue)},\qquad
 v_i\in[0,1]\quad\text{(unknown utility)},\qquad i\in[N].
 \]
-The true contamination parameter and the known upper bound have distinct roles:
+真正的污染参数和已知的上限有着不同的作用：
 \[
 \varepsilon\in[0,1),\qquad \overline{\varepsilon}\ge\varepsilon,
 \]
-with $\overline{\varepsilon}$ supplied to Algorithm 1. The selected utility normalization is $v_i\in[0,1]$, not the optional larger-upper-bound variant discussed on page 7.
+在算法1中使用了$\overline{\varepsilon}$。所选的效用规范化方法是$v_i\in[0,1]$，而不是第7页中讨论的更大型的上界变体。
 
-At time $t$, the observed purchase satisfies
+在时间$t$时，所观察到的购买行为满足以下条件：
 \[
 i_t\in S_t\cup\{0\},\qquad t=1,\ldots,T.
 \]
-A purchase of item $i_t\in S_t$ produces revenue $r_{i_t}$; $i_t=0$ denotes no purchase and produces no revenue. For a typical customer,
+购买商品$i_t\in S_t$会产生收入$r_{i_t}$；而$i_t=0$则表示没有购买任何商品，因此不会产生任何收入。对于普通客户来说，
 \begin{equation}
 \Pr[i_t=i\mid S_t]
 =\frac{v_i}{v_0+\sum_{j\in S_t}v_j},\qquad v_0=1,
 \tag{1}
 \end{equation}
-for purchase outcomes $i\in S_t\cup\{0\}$. Thus no purchase is a most probable outcome for a typical customer. An outlier instead purchases according to an arbitrary unknown distribution $Q_t$, marginalized on $S_t\cup\{0\}$; $Q_t$ may change with $t$.
+对于购买结果$i\in S_t\cup\{0\}$，因此对于普通客户来说，没有购买是最有可能的结果。而异常值则根据一个未知的任意分布$Q_t$进行购买，该分布在$S_t\cup\{0\}$处边缘化；$Q_t$可能会随着$t$发生变化。
 
-The source's assumptions (A1)--(A2) and Definition 1 specify the adversary and the information available to the retailer. Let
+源代码的假设（A1–（A2）以及定义1）明确指出了对手的情况以及零售商所掌握的信息。
 \[
 \phi_t\in\{0,1\},\qquad t=1,2,\ldots,T,
 \]
-where $\phi_t=1$ means an outlier and $\phi_t=0$ means a typical customer. Bounded contamination means
+其中，$\phi_t=1$表示异常值，而$\phi_t=0$表示典型客户。有限污染指的是……
 \[
 \sum_{t=1}^{T}\phi_t\le\varepsilon T. \tag{A1}
 \]
-The adaptive adversary consists of $T$ arbitrary measurable functions $\mathfrak{A}_1,\ldots,\mathfrak{A}_T$ with
+自适应对手由$T$个任意可测量的函数$\mathfrak{A}_1,\ldots,\mathfrak{A}_T$组成。
 \[
 \begin{aligned}
 \mathcal{F}_{t-1}&=\{\phi_\tau,Q_\tau,S_\tau,i_\tau\}_{\tau\le t-1},\\
@@ -66,7 +67,7 @@ The adaptive adversary consists of $T$ arbitrary measurable functions $\mathfrak
 \end{aligned}
 \tag{A2 / Definition 1}
 \]
-Thus outlier arrivals and choice models can depend on previous customers, offered assortments, and past purchasing activity. The retailer's policy has the smaller information history
+因此，异常顾客的到来以及选择模型可以依赖于之前的顾客、提供的商品种类，以及过去的购买行为。零售商的政策中，关于这些信息的历史记录较少。
 \[
 \begin{aligned}
 \mathcal{G}_{t-1}&=\{S_\tau,i_\tau\}_{\tau\le t-1},\\
@@ -75,32 +76,32 @@ Thus outlier arrivals and choice models can depend on previous customers, offere
 \qquad t=1,\ldots,T.
 \end{aligned}
 \]
-If $\phi_t=0$, $i_t$ is realized according to (1), conditioned on $S_t$; if $\phi_t=1$, it is realized according to $Q_t$. The retailer is not given the outlier indicators or the outlier distributions.
+如果$\phi_t=0$和$i_t$是根据(1)式实现的，且以$S_t$为条件；那么如果$\phi_t=1$，则它是根据$Q_t$来实现的。零售商不会得到异常值指标或异常值分布信息。
 
-The plain symbol $P_t$ denotes the customer's choice model, not the policy function $\mathfrak{P}_t$:
+符号$P_t$表示客户选择的模型，而非政策函数$\mathfrak{P}_t$：
 \[
 P_t=\begin{cases}
 \{v\},&\phi_t=0,\\
 Q_t,&\phi_t=1.
 \end{cases}
 \]
-The function $R(S;P)$ denotes the expected revenue from offering $S$ under choice model $P$. For the typical model and for estimated utilities, respectively,
+函数$R(S;P)$表示在选择模型$P$下，提供$S$所能获得的预期收益。分别针对典型模型和估算的效用值进行计算。
 \[
 R(S;\{v\})=R(S;v)=\frac{\sum_{i\in S}r_iv_i}{1+\sum_{i\in S}v_i},
 \qquad
 R(S;\widehat v)=\frac{\sum_{i\in S}r_i\widehat v_i}{1+\sum_{i\in S}\widehat v_i}.
 \]
-The second expression is the defining remark in Algorithm 1; the true-utility expression also appears in the supplementary proof of Lemma 2 (physical page 31).
+第二个表达式是算法1中的定义性陈述；真正的效用表达式也出现在引理2的补充证明中（物理页面31）。
 
-\subsection*{Known-upper-bound construction: Algorithm 1}
-The inputs are $T$, $\overline\varepsilon$, $\{r_i\}$, and $K$; the output is the sequence $\{S_t\}_{t=1}^{T}$. Initialize
+\subsection*{已知的上下界构造方法：算法1}
+输入为 $T$、$\overline\varepsilon$、$\{r_i\}$ 和 $K$；输出为序列 $\{S_t\}_{t=1}^{T}$。初始化时，保持原有的顺序，并保留所有的数字。
 \[
 \widehat v^{(0)}\equiv1,\qquad
 \widehat\Delta_{\overline\varepsilon}(0)=1,\qquad
 \mathcal A^{(0)}=[N],\qquad
 T_0=128(K+1)^2N\ln T.
 \]
-For epochs $\tau=0,1,2,\ldots$, perform the following rows in their stated order:
+对于时间节点$\tau=0,1,2,\ldots$，按照指定的顺序执行以下步骤：
 \[
 \begin{aligned}
 S_\tau^{(i)}
@@ -118,24 +119,24 @@ n_i&=0,\qquad n_0(i)=0,
 T_\tau&=2^\tau T_0.
 \end{aligned}
 \]
-For the next $T_\tau$ time periods, sample $i\in\mathcal A^{(\tau+1)}$ uniformly at random, provide $S_\tau^{(i)}$ to the arriving customer, observe $i_t$, and update the counters for that sampled item:
+在接下来的$T_\tau$个时间周期中，随机选取$i\in\mathcal A^{(\tau+1)}$个样本，向到达的顾客提供$S_\tau^{(i)}$，观察$i_t$的情况，并更新该样本物品的计数器数值。
 \[
 S_t=S_\tau^{(i)},\qquad
 n_i\leftarrow n_i+\mathbf1\{i_t=i\},\qquad
 n_0(i)\leftarrow n_0(i)+\mathbf1\{i_t=0\}.
 \]
-Purchases of another item $\ell\in S_\tau^{(i)}$, $\ell\ne i$, do not contribute to these counters. At the end of the epoch the printed estimate update is
+购买的其他商品$\ell\in S_\tau^{(i)}$、$\ell\ne i$，不会计入这些计数器。在这一时期的末尾，打印出的估算值将会是……
 \[
 \widehat v_i^{(\tau+1)}
 =\max\{1,n_i/n_0(i)\},\qquad i\in\mathcal A^{(\tau+1)}.
 \]
-Define the epoch contamination upper bound and active-set cardinality by
+通过以下方式定义时代污染的上限和活跃集的基数：
 \[
 \overline\varepsilon_\tau
 =\min\{1,\overline\varepsilon T/T_\tau\},\qquad
 N_\tau=|\mathcal A^{(\tau+1)}|.
 \]
-The error upper bound used by Algorithm 1 is
+算法1所使用的误差上限为
 \[
 \widehat\Delta_{\overline\varepsilon}(\tau+1)
 =\begin{cases}
@@ -148,26 +149,26 @@ The error upper bound used by Algorithm 1 is
 +16\sqrt{\dfrac{KN_\tau\ln T}{T_\tau}},&\text{otherwise}.
 \end{cases}
 \]
-The accompanying notation describes $\mathcal A^{(\tau+1)}\subseteq[N]$ as the active items explored in epoch $\tau$, $S_\tau^{(i)}\subseteq[N]$ as an assortment containing $i$, and the counters as $n_i,n_0(i)\in\mathbb N$. It also states
+附带的注释将$\mathcal A^{(\tau+1)}\subseteq[N]$描述为在时代$\tau$中被探索的活跃项目；$S_\tau^{(i)}\subseteq[N]$则被描述为包含$i$的各种物品的集合；而计数器则被描述为$n_i,n_0(i)\in\mathbb N$。此外，注释还说明了其他内容。
 \[
 \widehat v^{(\tau)}\in[0,1]^N,\qquad
 \gamma^{(\tau)}\in[0,1],\qquad
 \widehat\Delta_{\overline\varepsilon}(\tau+1)\in[0,1].
 \]
-These are the source's descriptions, with the inconsistencies below retained rather than repaired.
+这些是来源的描述，以下的不一致之处被保留下来，而不是被修复。
 
-\paragraph{Printed inconsistencies in this construction.}
-Algorithm 1, line 14, prints $\max\{1,n_i/n_0(i)\}$. This conflicts with the stated range $\widehat v^{(\tau)}\in[0,1]^N$ and with the supplementary proof of Lemma 1 (physical page 30), which treats $\widehat v_i=n_i/n_0$ when that ratio is at most one and sets $\widehat v_i=1$ when it exceeds one. The operative update above retains Algorithm 1's printed maximum, not the supplementary reading. No zero-denominator convention is supplied. Likewise, the error-bound expression is not capped at one, despite its stated $[0,1]$ range. The explanatory bullets on pages 9--10 say that $\gamma^{(\tau)}$ and $S_\tau^{(i)}$ are computed using $\mathcal A^{(\tau+1)}$; the actual lines 5--6, retained above, use $\mathcal A^{(\tau)}$. The pseudocode gives geometric epoch lengths and an unbounded epoch loop, without a rounding rule for $T_\tau$ or an explicit terminal partial-epoch rule; none is added here.
+\paragraph{此构造中存在印刷不一致的问题。}
+算法1的第14行打印出了$\max\{1,n_i/n_0(i)\}$。这与所指定的范围$\widehat v^{(\tau)}\in[0,1]^N$以及引理1的补充证明（物理页面30）相矛盾。在补充证明中，当该比率不超过1时，使用$\widehat v_i=n_i/n_0$；当该比率超过1时，则使用$\widehat v_i=1$。上述更新保留了算法1中打印的最大值，而不是补充阅读中的数值。没有使用零分母的约定。同样，错误界限表达式也没有被限制在1以内，尽管其指定的范围是$[0,1]$。第9-10页的说明中提到，$\gamma^{(\tau)}$和$S_\tau^{(i)}$是通过$\mathcal A^{(\tau+1)}$计算得出的；而实际的第5-6行则使用了$\mathcal A^{(\tau)}$。伪代码给出了几何时代的长度以及一个无限制的时代循环，但没有对$T_\tau$进行四舍五入处理，也没有明确的终端部分时代规则；这里也没有添加任何相关内容。
 
-\subsection*{Linked assortment computation: Section 4.1 and Algorithm 2}
-This is the computation invoked by Algorithm 1, not a replacement objective for the sequential problem. At an invocation, the candidate items are the current $\mathcal A^{(\tau)}$, the utilities are the current $\widehat v^{(\tau)}$, and the required item is $i\in\mathcal A^{(\tau)}$. Section 4.1 writes the generic computation for a specific $i\in[N]$ as
+\subsection*{链接式组合计算：第4.1节和算法2}
+这是算法1所调用的计算过程，并非对顺序问题的替代目标。在调用时，候选项就是当前的$\mathcal A^{(\tau)}$，效用值就是当前的$\widehat v^{(\tau)}$，而所需的项则是$i\in\mathcal A^{(\tau)}$。第4.1节详细描述了针对特定$i\in[N]$的通用计算方法。
 \begin{equation}
 \max_{|S|\le K,\,i\in S}R(S;\widehat v)
 =\max_{|S|\le K,\,i\in S}
 \frac{\sum_{j\in S}r_j\widehat v_j}{1+\sum_{j\in S}\widehat v_j}.
 \tag{4}
 \end{equation}
-For any $\alpha\in(0,1]$, the feasibility check asks whether there exists $S\subseteq[N]$, $|S|\le K$, $i\in S$ such that
+对于任何一个$\alpha\in(0,1]$，可行性检查会判断是否存在$S\subseteq[N]$、$|S|\le K$、$i\in S$，使得…
 \[
 R(S;\widehat v)\ge\alpha
 \quad\Longleftrightarrow\quad
@@ -176,39 +177,39 @@ R(S;\widehat v)\ge\alpha
 \quad\Longleftrightarrow\quad
 \sum_{j\in S}(r_j-\alpha)\widehat v_j\ge\alpha.
 \]
-Because $i$ must be included, the check is equivalently whether there exists
+因为必须包含$i$，所以这个检查实际上就是在判断是否存在这样的元素。
 \[
 S'\subseteq[N]\setminus\{i\},\qquad |S'|\le K-1
 \]
-satisfying
+令人满意
 \begin{equation}
 (r_i-\alpha)\widehat v_i
 +\sum_{j\in S'}(r_j-\alpha)\widehat v_j\ge\alpha.
 \tag{5}
 \end{equation}
-The nearby prose instructs including in $S'$ the items with the largest $(K-1)$ positive values of $(r_j-\alpha)\widehat v_j$, and checking (5). A successful check means that revenue level $\alpha$ is attainable; otherwise it is not. These are threshold tests within the computation, not constraints imposed on every offered assortment for every $\alpha$.
+附近的文本指示在$S'$中列出$(r_j-\alpha)\widehat v_j$正值最大的$(K-1)$项，并进行检查（5）。如果检查成功，则收入水平$\alpha$是可实现的；否则则不可实现。这些是计算过程中的阈值测试，而不是对每个$\alpha$提供的每种选择都施加的约束条件。
 
-Algorithm 2 supplies the following binary-search rows. Its inputs are $\{r_j\}_{j=1}^{n}$, $\{\widehat v_j\}_{j=1}^{n}$, a must-have item $i$, $K$, and stopping accuracy $\delta$. Its stated output is an assortment $\widehat S$ with
+算法2提供了以下二进制搜索结果。其输入参数为$\{r_j\}_{j=1}^{n}$、$\{\widehat v_j\}_{j=1}^{n}$、必选物品$i$、$K$，以及停止精度$\delta$。其输出结果为一组$\widehat S$。
 \[
 |\widehat S|\le K,\qquad i\in\widehat S,
 \]
-that maximizes $R(\widehat S;\widehat v)$. Initialize
+最大化$R(\widehat S;\widehat v)$的值。进行初始化操作。
 \[
 \alpha_\ell=0,\qquad \alpha_u=1,\qquad \widehat S=\varnothing.
 \]
-While $\alpha_u-\alpha_\ell\ge\delta$, set
+当$\alpha_u-\alpha_\ell\ge\delta$时，设置为
 \[
 \alpha_{\mathrm{mid}}\leftarrow(\alpha_\ell+\alpha_u)/2.
 \]
-For each $j\ne i$, sort
+对于每个$j\ne i$，对其进行排序。
 \[
 \psi_j:=(r_j-\alpha_{\mathrm{mid}})\widehat v_j
 \]
-in descending order and form
+按降序排列，然后组合成…
 \[
 \Psi:=\{j\ne i:\psi_j\ge0\}.
 \]
-The remaining printed rows are
+其余的打印行是：
 \[
 \begin{aligned}
 t&:=\psi_i+\text{the $(K-1)$ $\psi_j$ in $\Psi$ with the largest values};\\
@@ -219,12 +220,12 @@ t&:=\psi_i+\text{the $(K-1)$ $\psi_j$ in $\Psi$ with the largest values};\\
 \text{else}:\quad \alpha_u&\leftarrow\alpha_{\mathrm{mid}}.
 \end{aligned}
 \]
-Here $t$ is the scalar used inside Algorithm 2, rather than a customer-arrival index. The loop then repeats its width test.
+这里$t$是算法2中使用的标量，而不是客户到达的索引。然后循环会重复其宽度测试。
 
-\paragraph{Printed omissions in Algorithm 2.}
-Line 6 defines $\psi_j$ only for $j\ne i$, while line 7 uses $\psi_i$; the missing definition is not inserted above. Lines 7--8 request $(K-1)$ items from $\Psi$ without specifying what happens when fewer are available. The prose uses positive values, whereas the pseudocode explicitly uses $\psi_j\ge0$; the pseudocode's nonnegative test is retained. The only printed accuracy specification is the stopping test $\alpha_u-\alpha_\ell\ge\delta$: no value of $\delta$ for the Algorithm 1 invocation, or exact-optimality guarantee at that finite stopping accuracy, is supplied. The output is nevertheless described as a maximizer, and its initialization is the empty set. No tie-breaking, shortage, or initialization repair is added.
+\paragraph{算法2中的打印遗漏。}
+第6行将$\psi_j$仅定义为与$j\ne i$相关的内容，而第7行则使用$\psi_i$；缺失的定义并未在上方插入。第7至8行要求从$\Psi$中获取$(K-1)$项，但没有说明当可用数量不足时会发生什么情况。文中使用了正值，而伪代码中则明确使用了$\psi_j\ge0$；伪代码中的非负测试也被保留了下来。唯一明确规定的精度要求是停止测试$\alpha_u-\alpha_\ell\ge\delta$：在调用算法1时，如果没有提供$\delta$的值，或者在该有限的停止精度下无法保证精确最优性，那么就会停止计算。不过，输出结果被描述为最大化器，其初始化为空集。没有进行任何平局处理、短缺情况的处理，也没有进行任何初始化修复。
 
-\paragraph{Source scope.}
-The formulation and protocol are from Section 3, physical pages 6--8; the known-upper-bound construction and its computation are from Sections 4--4.1, physical pages 9--11. The cited supplementary passages are included in the supplied original e-companion. The adaptive unknown-contamination policy, gap-dependent assumptions, numerical instances, and proof-only inequalities are not additional constraints of this selected model.
+\paragraph{来源范围。}
+该运筹学教材的片段来自第3节，物理页面6-8页；已知上界构造及其计算则来自第4节至4.1节，物理页面9-11页。引用的补充内容包含在提供的原始电子配套资料中。自适应未知污染策略、基于间隙的假设、数值实例以及仅用于证明的不等式，并非该选定模型的额外约束条件。
 
 \end{document}

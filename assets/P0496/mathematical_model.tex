@@ -2,6 +2,7 @@
 \usepackage{amsmath,amssymb}
 \usepackage[margin=1in]{geometry}
 \allowdisplaybreaks
+\usepackage[UTF8]{ctex}
 \begin{document}
 
 \[
@@ -9,111 +10,111 @@
 \quad \text{sum of expected profits in both periods},
 \qquad i=1,2,\quad j\ne i.
 \]
-The objective is the verbal objective in the unnumbered Perfect Bayesian Equilibrium definition of Garcia, Janssen, and Shopova, \emph{Dynamic Pricing with Uncertain Capacities}, January 26, 2022 (physical PDF pp.~7--9). Each firm's first-period strategy is optimal conditional on its capacity type, given the rival's strategies $(p_{j1}^{c},p_{j1}^{u})$ and the equilibrium continuation reactions. Strategies may be mixed.
+目标取自 Garcia、Janssen 和 Shopova 的论文 \emph{容量不确定下的动态定价}（2022 年 1 月 26 日）中未编号的完美贝叶斯均衡定义的文字部分，见 PDF 实际第 ~7 至 9 页。 每家公司在第一阶段的策略，在其产能类型给定的情况下是最优的，前提是考虑到竞争对手的策略$(p_{j1}^{c},p_{j1}^{u})$以及均衡状态下的后续反应。 策略可以混合使用。
 
-Subject to the following equilibrium requirements:
+遵循以下平衡要求：
 \begin{enumerate}
-\item At the beginning of period 2, the non-selling firm $i$ updates its belief $\theta(p_{j1})$ about the rival being constrained using Bayes' Rule whenever possible.
-\item For every first-period price pair $(p_{11},p_{21})$, each firm $i$ with unsold capacity chooses $p_{i2}$ to maximize second-period profit, given the rival's second-period price $p_{j2}$ and the updated belief $\theta(p_{j1})$.
-\item Each firm $i$ chooses $(p_{i1}^{c},p_{i1}^{u})$ to maximize expected profit over both periods, given $(p_{j1}^{c},p_{j1}^{u})$ and the equilibrium reactions
+\item 第 2 期开始时，未售出商品的企业 $i$ 在可能的情况下用贝叶斯法则更新其关于竞争对手容量受限的信念 $\theta(p_{j1})$。
+\item 对于每一对第一时期的定价$(p_{11},p_{21})$，每个拥有未售出产能的厂商$i$都会选择$p_{i2}$来最大化第二时期的利润，这一决策是考虑到竞争对手在第二时期的定价$p_{j2}$，以及更新后的信念$\theta(p_{j1})$而做出的。
+\item 每家公司$i$都选择$(p_{i1}^{c},p_{i1}^{u})$，以在给定$(p_{j1}^{c},p_{j1}^{u})$和均衡反应的情况下，最大化两个时期的预期利润。
 \[
 p_{i2}(p_{i1},p_{j1}),\qquad i=1,2,\quad j\ne i.
 \]
 \end{enumerate}
-The source's strategy and belief objects are
+源代码的策略与信念对象为：
 \[
 \bigl(p_{i1}^{c},p_{i1}^{u},p_{i2}(p_{i1},p_{j1})\bigr),
 \qquad i=1,2,\quad j\ne i,
 \qquad \theta(p_{j1}).
 \]
-Here $c$ and $u$ denote constrained and unconstrained capacity types. The belief $\theta(p_{j1})$ is held by the non-selling firm $i$ about firm $j$ being constrained after observing $j$'s first-period price. Conditional on having capacity left, a firm's second-period pricing does not depend on whether its original type was constrained or unconstrained (footnote 14).
+这里，$c$和$u$分别表示受限产能类型与非受限产能类型。非销售方$i$对公司$j$在观察到$j$第一期的价格后属于受限产能类型这一情况持有这样的信念$\theta(p_{j1})$。在仍有产能的情况下，公司的第二期定价并不取决于其初始产能是受限还是非受限（脚注14）。
 
-The fixed baseline inputs and timing are as follows. There are two firms and two selling periods,
+固定的基线输入和时序如下。共有两家公司，并且有两个销售周期。
 \[
 i\in\{1,2\},\qquad t\in\{1,2\}.
 \]
-A constrained firm can sell one unit; an unconstrained firm can serve demand in both periods. Initial capacities are privately known. The fixed prior satisfies
+一个受限制的公司只能销售一个单位的产品；而一个不受限制的公司则可以在两个时期都满足需求。初始产能是私有的信息。固定的先决条件得到满足。
 \[
 \Pr(\text{firm }i\text{ is constrained})=\alpha,
 \qquad
 \Pr(\text{firm }i\text{ is unconstrained})=1-\alpha,
 \qquad i=1,2,
 \]
-and capacity types are independent across firms. Production cost is normalized to zero. Consumers are myopic and have unit demand; market size in each period and willingness to pay are both normalized to $1$. A consumer arrives in each period, observes current prices, and buys from the lowest-priced available firm if that price is no greater than $1$. Otherwise the consumer leaves and does not return. If both firms charge the same price, all demand goes to one firm, with each firm selling with probability $1/2$.
+各公司的产能类型是相互独立的。生产成本被标准化为零。消费者具有短期行为，且需求是单位化的；每个时期的市场规模以及支付意愿都被标准化为$1$。每个时期都会有一个消费者出现，他们会观察当前的价格，然后从价格最低的商家购买商品，前提是该价格不超过$1$。否则，消费者就会离开，不再回来。如果两家商家都收取相同的价格，那么所有的需求都会流向同一家商家，而每家商家销售商品的概率都是$1/2$。
 
-Nature draws capacities before period 1 and each firm learns its own type. Firms then choose $p_{i1}$. After the first purchase, firms observe both first-period prices and know which firm sold, if either did. They update beliefs; only firms with unsold capacity choose $p_{i2}$.
+在周期1之前，各企业会先评估自身的产能。之后，各企业会选择$p_{i1}$。在首次采购之后，各企业会关注第一周期的价格，并了解哪家企业进行了销售，如果有的话。他们会更新自己的信念；只有那些没有出售出产的企业的才会选择$p_{i2}$。
 
-\emph{Printed purchasing-threshold conflict.} The operative setup on physical p.~8 says that purchase occurs when the lowest price is ``not larger than 1.'' Figure 1 on that page instead prints
+\emph{打印采购门槛冲突。}物理设备上的操作设置。~8表示当最低价格“不大于1”时，就会发生采购。而该页面上的图1则显示
 \[
 p_1<1,\qquad p_2<1.
 \]
-The weak purchasing threshold is retained here, consistently with the paper's subsequent sales and price atoms at $1$; the figure's strict thresholds are not imposed simultaneously. The baseline definition does not state a global price action interval. In particular, the paper explicitly considers first-period deviations $p_1>1$, so equilibrium supports below are not global bounds on feasible prices.
+这里的弱购买阈值保持不变，这与论文后续提到的销售价格和价格区间$1$是一致的；不会同时施加严格的阈值限制。基准定义并未规定全球性的价格区间。特别是，论文明确考虑了第一阶段的偏差$p_1>1$，因此，低于均衡支撑水平的价格并不是可行的价格范围。
 
-The following continuation formulas are common to the baseline equilibrium constructions (physical pp.~12--13). Let $S$ denote the firm that sold in period 1 and $N$ the firm that did not. Let $F^{S}$ and $F^{N}$ be their second-period price CDFs, with $F^{S}$ describing the selling firm's pricing conditional on still having capacity. For
+以下连续公式适用于基线均衡构建（物理部分~12--13）。用$S$表示在第1期进行销售的厂商，用$N$表示未进行销售的厂商。用$F^{S}$和$F^{N}$分别表示它们在第二期的价格分布函数，其中$F^{S}$描述了在仍具有生产能力的情况下销售厂商的定价策略。
 \[
 \theta\in(0,1),
 \]
-firm $N$ is commonly known to have capacity, while firm $S$ is sold out with probability $\theta$. Thus $N$ is a monopolist with probability $\theta$ and faces competition with probability $1-\theta$. Its printed expected-profit expression is
+公司$N$通常被认为具有生产能力，而公司$S$的库存可能已经售罄，概率为$\theta$。因此，公司$N$是一个垄断者，概率为$\theta$，同时也会面临竞争，概率为$1-\theta$。其预期利润表达式如下：
 \[
 \pi_2^{N}(p_2)
  =\theta p_2+(1-\theta)\bigl(1-F^{S}(p_2)\bigr)p_2,
 \qquad p_2\leq 1,
 \]
-with $\pi_2^{N}(1)=\theta$. The continuation distributions are
+带有$\pi_2^{N}(1)=\theta$的数学符号，其顺序保持不变。所有数字都需保留原样。
 \begin{equation}
 F^{S}(p_2)=1-\frac{\theta(1-p_2)}{(1-\theta)p_2},
 \qquad p_2\in[\theta,1).
 \tag{1}
 \end{equation}
-The unconstrained selling firm's expected second-period profit at a price in this interval is
+在该价格区间内，不受限制的销售公司预计在第二阶段的利润为
 \[
 \bigl(1-F^{N}(p_2)\bigr)p_2.
 \]
-Its indifference requires
+它的冷漠需要……
 \begin{equation}
 F^{N}(p_2)=1-\frac{\theta}{p_2},
 \qquad p_2\in[\theta,1),
 \tag{2}
 \end{equation}
-with a mass point of size $\theta$ at $p_2=1$ for firm $N$. Both firms, conditional on still having capacity, earn expected second-period profit $\theta$. In subsequent uses, $\theta$ can depend on the selling firm's first-period price and is written $\theta(p)$.
+在$p_2=1$位置有一个大小为$\theta$的质量点，该质量点属于$N$公司。只要两家公司仍有能力运作，它们都能获得预期的第二时期利润$\theta$。在后续的计算中，$\theta$可以取决于销售公司在第一时期的价格，此时将其写作$\theta(p)$。
 
-The restriction $0<\theta<1$ belongs to these mixed-continuation formulas. They are not evaluated at $\theta=0$ or $\theta=1$. The paper separately describes fully revealing histories as producing second-period prices of $0$ or $1$: competition when the selling firm is known to retain capacity, and monopoly when it is known to be sold out.
+限制条件$0<\theta<1$属于这些混合延续公式。这些公式在$\theta=0$或$\theta=1$处不会被计算。论文中详细描述了完全揭示历史数据如何产生$0$或$1$这样的第二时期价格：当销售公司已知会保留产能时，就会出现竞争；而当销售公司已知会售罄时，则会出现垄断现象。
 
-The baseline has no separating equilibrium (Proposition 2). The pooling and semi-separating characterizations below are alternative outcomes of the same PBE model, not simultaneous restrictions on one strategy profile. The symmetric pooling version and the original all-or-nothing tie rule are retained.
+基线状态下不存在分离均衡（命题2）。以下关于汇集和半分离的特性，是同一PBE模型的替代结果，并非对一个策略组合的同时限制。保留了对称汇集版本和原有的全有或全无平局规则。
 
-For the symmetric pooling equilibrium (Proposition 3, physical pp.~13--14),
+对于对称池化均衡（命题3，物理部分~13–14），
 \[
 p_{i1}^{c}=p_{i1}^{u}=p_1^{*}=\alpha,
 \qquad i=1,2,
 \qquad \theta(\alpha)=\alpha.
 \]
-Substitution into (1)--(2) gives
+将(1)--(2)代入后得到
 \[
 F^{S}(p_2)=1-\frac{\alpha(1-p_2)}{(1-\alpha)p_2},
 \qquad
 F^{N}(p_2)=1-\frac{\alpha}{p_2},
 \qquad p_2\in[\alpha,1),
 \]
-with an atom of size $\alpha$ at $1$ in $F^{N}$. These expressions inherit the interior-posterior premise $\theta=\alpha\in(0,1)$. The total expected profits conditional on type are
+在$F^{N}$中的$1$位置有一个大小为$\alpha$的原子。这些表达式继承了内部-后部前提$\theta=\alpha\in(0,1)$。在给定类型的情况下，预期的总利润为
 \[
 \text{constrained firm's profit}=\alpha,
 \qquad
 \text{unconstrained firm's profit}=\frac{3\alpha}{2}.
 \]
-The ex-ante expected profit per firm is
+每家公司的预期事前利润是
 \[
 \alpha\left[\alpha+\frac{3}{2}(1-\alpha)\right]
  =\alpha\frac{3-\alpha}{2}.
 \]
-For an unconstrained firm undercutting to $p_1<\alpha$, let $\theta'$ be the induced off-equilibrium belief. The paper gives
+对于在$p_1<\alpha$下进行无约束的低价竞争的情况，让$\theta'$成为由此产生的非均衡信念。论文中给出了…
 \[
 \text{deviation payoff}=p_1+\theta',
 \qquad
 \theta'\leq\frac{\alpha}{2}
 \]
-as a sufficient belief restriction for deterring such deviations. It is not stated as a necessary restriction. Bayesian updating at the rival's on-path price continues to give $\alpha$ following an upward deviation. Other histories remain subject to the common sequential-optimality and belief requirements above.
+将其视为一种有效的约束条件，以阻止此类偏差的发生。不过，这并非一种必然的约束条件。在对手的报价路径上进行的贝叶斯更新仍然会得出$\alpha$的结果，即使出现向上的偏差。其他历史数据则仍然遵循上述共同的顺序最优性和信念要求。
 
-For semi-separating equilibria (physical pp.~14--16), $\theta(p)$ is the posterior probability that a firm charging first-period price $p$ is constrained, and $Q(p)$ is the probability that it sells in period 1. The main text prints the type-dependent expected profits as
+对于半分离均衡的情况（物理部分：~14–16），$\theta(p)$表示以第一期价格$p$收费的企业的后验概率，而$Q(p)$则表示该企业在第1期销售产品的概率。正文部分则直接引用了与类型相关的预期利润。
 \begin{equation}
 \Pi^{c}(p)=Q(p)p+
 \int_{\underline p}^{p}\theta(p')\,d\bigl(1-Q(p')\bigr),
@@ -124,33 +125,33 @@ For semi-separating equilibria (physical pp.~14--16), $\theta(p)$ is the posteri
 \int_{\underline p}^{p}\theta(p')\,d\bigl(1-Q(p')\bigr).
 \tag{4}
 \end{equation}
-The main-text paragraph immediately following (3) calls $\underline p$ the lowest price in the interval of prices charged in the \emph{second} period. This printed description is retained as such. Appendix A instead uses the lower endpoint of the \emph{first}-period support and establishes that it equals $\alpha$. The two descriptions are not identified here. The explicit interior construction below uses the appendix's printed payoff rows with lower limit $\alpha$.
+紧接着第(3)段之后的正文段落中，将$\underline p$称为\emph{第二个}周期内的最低价格。这一描述被原样保留了下来。而附录A则使用了\emph{第一个}周期的支持区间的下限，并将其确定为$\alpha$。这两种描述在这里并未被明确区分。下面的具体描述则采用了附录中给出的下限为$\alpha$的支付行。
 
-For all prices in the common support, each type's equilibrium profit must be constant. The linked payoff relation is
+对于共同支持中的所有价格而言，每种类型的均衡利润必须保持恒定。相关的收益关系如下：
 \[
 \Pi^{u}(p)=\Pi^{c}(p)+Q(p)\theta(p).
 \]
-Consequently, $Q(p)\theta(p)$ is constant and positive over the support; the posterior increases with the price, and an unconstrained firm uses only prices having positive first-period sale probability. The upper endpoint has a mass point.
+因此，$Q(p)\theta(p)$在支持范围内是恒定的且为正值；后验概率会随着价格的增加而上升。一个不受约束的 firm 只会使用那些在第一阶段有正销售概率的价格。上端点有一个质量点。
 
-Proposition 4 indexes the semi-separating family by
+命题 4 通过以下方式对半分离家族进行索引：
 \[
 \bar p\in(\alpha,1].
 \]
-Both types randomize their first-period prices in
+这两种类型都会随机化它们在第一阶段的价格。
 \[
 [\alpha,\bar p),
 \]
-with a mass point at $\bar p$, while the stated range of second-period prices is
+在 $\bar p$ 位置有一个质量点，而第二周期的价格范围则如下所述：
 \[
 [\theta(\alpha),1].
 \]
-Here $\bar p$ is an equilibrium index, not an additional exogenous price-action bound. The constrained type's equilibrium profit is $\alpha$.
+这里的$\bar p$是一个均衡指数，而不是额外的外部价格-行为约束。具有约束条件的类型的均衡利润是$\alpha$。
 
-The appendix's selected interior construction (physical pp.~38--40) applies for every $p\in[\alpha,\bar p)$. With $\tilde p$ denoting the rival's first-period price, it uses
+附录中选择的内部结构（物理页面~38–40）适用于每一个$p\in[\alpha,\bar p)$。其中，$\tilde p$表示对手方第一阶段的报价。
 \[
 Q(p)=\Pr(\tilde p>p),\qquad p\in[\alpha,\bar p),
 \]
-which agrees with the main-text sale probability away from the upper atom, and writes
+这与正文中的销售概率相符，且远离了上面的原子。
 \[
 \Pi^{c}(p)=Q(p)p+
 \int_{\alpha}^{p}-Q'(\tilde p)\theta(\tilde p)\,d\tilde p,
@@ -165,7 +166,7 @@ which agrees with the main-text sale probability away from the upper atom, and w
 \qquad p\in[\alpha,\bar p).
 \end{aligned}
 \]
-The defining indifference and boundary relations include
+定义性的冷漠和边界关系包括：
 \[
 \Pi^{c}(p)=\alpha,
 \qquad
@@ -184,35 +185,35 @@ Q(p)\theta(p)=\theta(\alpha),
 \lim_{p\uparrow\bar p}\theta(p)
  =\frac{1}{2}\theta(\bar p)=\frac{\bar p}{2}.
 \]
-The resulting posterior is
+最终得到的后验值为：
 \[
 \theta(p)=
 \frac{p}{-W_{-1}\!\left(-\dfrac{2p}{e^{2}\bar p}\right)},
 \qquad p\in[\alpha,\bar p),
 \]
-and in particular
+并且，特别是
 \[
 \theta(\alpha)=
 \frac{-\alpha}{W_{-1}\!\left(-\dfrac{2\alpha}{e^{2}\bar p}\right)}.
 \]
-The source calls $W_{-1}$ the negative branch of the Lambert-$W$ function and recalls the identity
+源代码中将$W_{-1}$称为Lambert-$W$函数的负分支，并引用了相关恒等式。
 \[
 W(xe^{x})=x.
 \]
-The appendix assigns the off-path beliefs
+附录中列出了那些偏离路径的信念。
 \[
 \theta(p)=0\quad\text{for }p<\alpha,
 \qquad
 \theta(p)=1\quad\text{for }p>\bar p.
 \]
-For prices in $[\alpha,\bar p]$, beliefs are obtained from the equilibrium strategies by Bayesian updating. The total unconstrained profit is retained through the source's identity
+对于$[\alpha,\bar p]$中的价格，信念是通过贝叶斯更新从均衡策略中获得的。总不受限制的利润则通过来源的身份来保留。
 \[
 \Pi^{u}(\alpha)=\alpha+Q(\alpha)\theta(\alpha),
 \qquad Q(\alpha)=1,
 \]
-together with the printed posterior formula above. The first-period type-dependent mixed strategies remain subject to Bayes' Rule and the common PBE optimality conditions; no additional type-specific density formulas are introduced.
+与上述印刷后的公式一起。第一时期类型依赖的混合策略仍然遵循贝叶斯规则以及常见的PBE最优性条件；没有引入额外的类型特定密度公式。
 
-\emph{Printed profit conflicts.} Proposition 4 on physical p.~15 prints the unconstrained type's profit as
+\emph{打印利润冲突。}关于物理p的命题4。~15种无约束类型的利润打印结果如下：
 \[
 \alpha\left(
 1-\left[
@@ -220,15 +221,15 @@ W_{-1}\!\left(\frac{2\alpha}{e^{2}\bar p}\right)
 \right]^{-1}
 \right).
 \]
-The positive argument is visible in the supplied original page image. For positive $\alpha$ and $\bar p$, it is incompatible with the stated negative real branch and with the negative argument in the posterior formula on the same page. Appendix A, physical p.~40, separately prints
+正参数在提供的原始页面图像中可见。对于正$\alpha$和$\bar p$，它与所述的负实数分支以及同一页面后文中的负参数不兼容。附录A中，物理p.~40单独列出。
 \[
 \Pi^{u}(\alpha)
  =\alpha+Q(\alpha)\theta(\alpha)
  =\alpha+\frac{\alpha}{W\!\left(-\dfrac{2\alpha}{e^{2}\bar p}\right)}.
 \]
-Its last expression also conflicts with the preceding identity and the appendix's negative-branch posterior. These two literal closed forms are recorded as printed conflicts, not imposed as additional payoff equalities. Neither sign nor branch is silently repaired.
+其最后的表达式也与前面的恒等式以及附录中的负分支后项相矛盾。这两种字面意义上的闭式形式被记录为打印冲突，而不是作为额外的支付等式来施加。无论是符号还是分支都没有被自动修复。
 
-\emph{Printed upper-atom notation.} Appendix A uses $Q(\bar p)$ in its mass-point calculations as follows:
+\emph{印刷的上原子表示法。}附录A在质量点计算中使用了$Q(\bar p)$，具体方法如下：
 \[
 \begin{aligned}
 &\lim_{p\uparrow\bar p}Q(p)p
@@ -244,9 +245,9 @@ Its last expression also conflicts with the preceding identity and the appendix'
 \qquad
 Q(\bar p)=\frac{2\theta(\alpha)}{\bar p}.
 \]
-These are literal appendix endpoint calculations. Their $Q(\bar p)$ acts as the full rival-price atom: the factors $1/2$ then apply the tie rule. This differs from the main-text sale probability at $\bar p$, which includes winning a tie, and from the strict-tail expression $\Pr(\tilde p>\bar p)$, which is zero at an upper support endpoint. The incompatible endpoint meanings are not imposed simultaneously on the main-text $Q$. The interior definition and the posterior boundary relations above are retained without replacing an endpoint value by a limit.
+这些是附录中的端点计算。其中的$Q(\bar p)$作为完整的竞争价格原子：然后，$1/2$因素会应用平局规则。这与主文本中的销售概率$\bar p$不同，后者包括赢得平局的情况，也与严格尾部表达式$\Pr(\tilde p>\bar p)$不同，后者在支持端点处为零。这些不兼容的端点含义不会同时应用于主文本的$Q$。上述内部定义和后期边界关系被保留，不会用极限值替换端点值。
 
-The same endpoint usage appears in the appendix's Bayesian normalization calculation (physical p.~41):
+在附录中的贝叶斯归一化计算中，也出现了相同的端点用法（物理 p.~41）：
 \begin{equation}
 \int_{\alpha}^{\bar p}-Q'(p)\theta(p)\,dp
  +Q(\bar p)\bar p
@@ -255,16 +256,16 @@ The same endpoint usage appears in the appendix's Bayesian normalization calcula
  =\alpha.
 \tag{11}
 \end{equation}
-This is the printed expected-posterior calculation with the appendix's full-atom usage of $Q(\bar p)$; it does not define the main-text sale probability at the atom. The preceding physical page instead prints, as its proposed prior-consistency condition,
+这是打印出来的预期后验计算结果，其中附录中使用了$Q(\bar p)$来表示完整原子的情况；它并没有在原子级别定义主要文本的销售概率。相反，前面的物理页面则将其作为提出的先验一致性条件来打印出来。
 \[
 \int_{\alpha}^{\bar p}-Q'(p)p\,dp
  +Q(\bar p)\bar p=\alpha.
 \]
-The integrand here contains $p$, whereas (11) contains $\theta(p)$. These are distinct printed expressions. The latter preceding-page expression is not enforced in addition to Bayesian consistency; the selected chain follows the posterior-weighted expression (11), with its endpoint-notation limitation explicitly retained.
+这里的被积函数中包含$p$，而(11)则包含$\theta(p)$。这些都是不同的打印表达式。后一页中的表达式并不强制遵循贝叶斯一致性原则；所选择的链遵循后验加权表达式(11)，同时明确保留了端点表示法的限制。
 
-\emph{Allowed endpoint.} The source includes $\bar p=1$ and requires $\theta(\bar p)=\bar p$. If its statement that both types have a mass point is read as requiring a strictly positive atom for each type, this conflicts at $\bar p=1$ with Bayesian updating whenever both types have positive prior probability. The printed parameter range and atom statement are retained; no replacement atom specification or restriction $\bar p<1$ is added. Likewise, formulas (1)--(2) remain restricted to $0<\theta<1$ at this endpoint.
+\emph{允许端点。}源包括$\bar p=1$，并需要$\theta(\bar p)=\bar p$。如果其声明两种类型都有质量点，而被理解为每种类型都需要严格正的原子，那么当两种类型的先验概率均为正时，就会在$\bar p=1$处与贝叶斯更新产生冲突。打印出的参数范围和原子声明保持不变；没有添加替代原子规范或限制$\bar p<1$。同样，公式(1)--(2)在此端点仍被限制为$0<\theta<1$。
 
 \medskip
-\noindent\emph{Source scope.} This article uses the supplied main-paper setup and PBE definition, the baseline continuation and equilibrium characterizations, and the relevant defining passages of Appendix A. Physical PDF pages are distinguished from the paper's printed page numbers. The comparative-static proofs, complete-information benchmark, and extensions are not additional conditions of this formulation. Referenced online supplements and Appendices C--D were not supplied and remain unverified; no rows from them are used.
+\noindent\emph{来源范围。}本文采用了所提供的主论文设置和PBE定义、基线延续性及均衡特性描述，以及附录A中的相关定义段落。物理PDF页面与论文中的印刷页码是分开的。比较静态证明、完整信息基准测试以及扩展内容并非本公式的附加条件。引用的在线补充材料和附录C-D并未提供，因此未被验证；其中没有任何行被使用。
 
 \end{document}

@@ -5,54 +5,31 @@
 \usepackage[margin=15mm]{geometry}
 \allowdisplaybreaks
 
-\title{P0020: Integrated Car Resequencing with Painted Body Storage}
+\title{P0020：集成式汽车重新排序功能与彩绘车身储物系统}
 \date{}
 
+\usepackage[UTF8]{ctex}
 \begin{document}
 
 \maketitle
 
-\section*{Selected core model and source}
-The single selected model is the complete formulation (CF) for the joint
-upstream sequence, downstream sequence, and painted-body-storage assignment.
-It is the application problem in Section 3 of Guo et al.,
-\emph{A Logic-Based Benders Decomposition for the Car Resequencing Problem
-with a Painted Body Storage}, CIRRELT-2025-04.
-The local PDF gives the complete formulation in Supplement 1,
-PDF pages 25--27 (printed pages 23--25), equations (1)--(23).
-The expressions below retain that feasible set and use the exact binary
-product linearization already used in the local integrated solver.
+\section*{选定的核心模型与源数据}
+所选的单一模型即为联合上游序列、下游序列以及涂漆车身存储分配的完整表述。这是郭等人在第3节中讨论的应用问题。\emph{基于逻辑的分治法在汽车重新排序问题中的应用，包含涂漆车身存储}，CIRRELT-2025-04。局部PDF文件提供了补充资料1中的完整表述，具体位于第25-27页（打印版为第23-25页），方程式为(1)-(23)。以下表达式保留了可行集，并使用了在局部集成求解器中已使用的精确二进制乘积线性化方法。
 
 
-\section*{Sets and fixed data}
-$B,M,J,L,W$ are finite sets of bodies, colours, configurations, FIFO storage
-lanes, and assembly options. Demand $d_{bmj}$ is a nonnegative integer.
-Set $d=\sum_{b,m,j}d_{bmj}>0$ and $V=P=\{1,\ldots,d\}$.
-The positive integers $\bar c,\bar q$ are the maximum colour-run length
-and each lane's capacity. A sum over an empty index set is zero.
-For $\bar c\ge d$, the colour-window family (4) is empty.
-Option requirements $r_j^w\ge0$ and positive cost weights
-$\alpha,\beta,\gamma$ are fixed. The paper's ideal option rate is
+\section*{集合与固定数据}
+$B,M,J,L,W$是各种实体、颜色、配置、FIFO存储通道以及组装选项的集合。需求$d_{bmj}$是一个非负整数。设定$d=\sum_{b,m,j}d_{bmj}>0$和$V=P=\{1,\ldots,d\}$的值。正整数$\bar c,\bar q$分别表示最大颜色运行长度以及每条通道的承载能力。对于空索引集，其求和结果为零。对于$\bar c\ge d$，颜色窗口家族(4)为空。选项需求$r_j^w\ge0$和正成本权重$\alpha,\beta,\gamma$是固定的。本文的理想选项率为
 \[
  \sigma_w=\frac{1}{d}\sum_{j\in J}r_j^w
                   \sum_{b\in B,m\in M}d_{bmj}.
 \]
-The rate is computed from demand. The input to the local
-solver must supply this value if the paper's rate definition is required.
+该费率是根据需求来计算的。如果需要定义该文件的费率，那么本地求解器必须提供这一数值。
 
-\section*{Decision variables}
-$x_{bmj}^i$ selects the body, colour and configuration at upstream position
-$i$; $h_l^i$ selects its storage lane; $y_p^i$ selects its downstream
-position. Binary $z_{vl}^i$ means that car $v$ leaves lane $l$ when car $i$
-enters the storage, with $v\le i$. Variables $f_{i,i+1},g_{i,i+1}$
-represent changes in consecutive body and colour, and $u_{pw}$ represents
-the absolute option-consumption deviation through downstream position $p$.
-The auxiliary variables $\chi_{ij}$ and $s_{ipj}$ give the configuration
-indicator and its product with $y_p^i$. Since exactly one specification is
-selected per car, (20a)--(20d) enforce this product exactly.
-All domains are stated in (22)--(25).
+\section*{决策变量}
+$x_{bmj}^i$选择上游位置的车身、颜色和配置。  
+$i$；$h_l^i$选择其存储通道；$y_p^i$选择其下游位置。二进制值$z_{vl}^i$表示当车辆$i$进入存储区时，车辆$v$会离开通道$l$，而$v\le i$则用于表示其他情况。变量$f_{i,i+1},g_{i,i+1}$表示连续车身和颜色的变化，而$u_{pw}$则表示通过下游位置实现的绝对选项消耗偏差，具体由$p$表示。辅助变量$\chi_{ij}$和$s_{ipj}$分别表示配置指示符及其与$y_p^i$的乘积。由于每辆车只选择一个规格，因此(20a)--(20d)强制要求这个乘积必须精确匹配。所有领域都在(22)--(25)中有所说明。
 
-\section*{Objective and complete constraints}
+\section*{目标与约束条件}
 
 \begin{equation}
 \min
@@ -270,13 +247,12 @@ f_{i,i+1},\ g_{i,i+1},\ u_{pw} \ge 0,
 \tag{25}
 \end{equation}
 
-\paragraph{Reading the constraint groups.}
-(2)--(6) specify demand, colour batching and upstream change costs.
-(7)--(19) couple the upstream/downstream permutations, FIFO lanes,
-simultaneous entrance/exit events and capacity.
-(20a)--(20d) are one exact linearization within the same application model;
-(21a)--(21b) give the paper's absolute option deviation.
-The defining inequalities and assignment equalities imply nonnegative lower bounds for $f,g,u$.
+\paragraph{读取约束条件组。}
+(2)--(6) 分别指定了需求、颜色批量处理以及上游变更成本。  
+(7)--(19) 描述了上游/下游的排列组合、FIFO通道、同时发生的进入/退出事件以及容量问题。  
+(20a)--(20d) 是同一应用模型内的一种线性化处理；  
+(21a)--(21b) 则给出了论文中绝对选项偏差的数值。  
+定义出的不等式和赋值等式意味着$f,g,u$具有非负的下限边界。
 
 
 \end{document}

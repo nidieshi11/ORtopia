@@ -1,34 +1,35 @@
 \documentclass[11pt,a4paper]{article}
 \usepackage{amsmath,amssymb}
 \usepackage[margin=2.5cm]{geometry}
-\title{Finite-Sample Stochastic Scheduling Deterministic Equivalent}
+\title{有限样本随机调度确定性等价问题}
 \author{}
 \date{}
+\usepackage[UTF8]{ctex}
 \begin{document}
 \maketitle
 
-\section*{Sets and parameters}
-Let $I$, $A$, and $R$ be finite sets of surgeries, anesthesiologists, and operating rooms, respectively. Let $N_s\in\mathbb{Z}_{>0}$ and $\mathcal{N}=\{1,\ldots,N_s\}$ be the sample count and sample index set. Write $I^2_{\ne}=\{(i,j)\in I^2:i\ne j\}$ and $I^3_{\ne}=\{(i,j,h)\in I^3:i,j,h\text{ pairwise distinct}\}$. Sequencing uses these distinct indices; diagonal sequencing variables, if stored, are fixed to zero. This follows the preceding-surgery interpretation and the explicit $j\in I\setminus\{i\}$ dual indices on source PDF page 7.
+\section*{集合与参数}
+让$I$、$A$和$R$分别表示手术、麻醉师和手术室这些有限集合。让$N_s\in\mathbb{Z}_{>0}$和$\mathcal{N}=\{1,\ldots,N_s\}$分别表示样本计数和样本索引集。将$I^2_{\ne}=\{(i,j)\in I^2:i\ne j\}$和$I^3_{\ne}=\{(i,j,h)\in I^3:i,j,h\text{ pairwise distinct}\}$分别赋值。序列化的过程中使用这些不同的索引；如果存储了对角序列变量，则将其设置为零。这是根据之前的手术解释以及源PDF第7页上的明确$j\in I\setminus\{i\}$双重索引进行的。
 
-The input parameters are:
+输入参数如下：
 \begin{itemize}
-\item $d_i^n\geq 0$: sampled duration of surgery $i$, for $(i,n)\in I\times\mathcal{N}$.
-\item $c_r$ for $r\in R$ and $c_a$ for $a\in A$: the objective coefficients appearing in the room-opening cost and the anesthesiologist activation cost, respectively.
-\item $c_{oa}$ for $a\in A$ and $c_{or}$ for $r\in R$: anesthesiologist and room overtime cost coefficients, respectively.
-\item $g_a,w_a\in\{0,1\}$ for $a\in A$: regular-duty and on-call availability indicators.
-\item $\kappa^A_{ia}\in\{0,1\}$ for $(i,a)\in I\times A$ and $\kappa^R_{ir}\in\{0,1\}$ for $(i,r)\in I\times R$: assignment compatibility indicators.
-\item $t_a^{\mathrm{start}},t_a^{\mathrm{end}}$ for $a\in A$: anesthesiologist shift start and end times; $T^{\mathrm{end}}$: room regular end time.
-\item $M,M_{\mathrm{seq}},M_{\mathrm{anesth}},M_{\mathrm{room}}$: fixed finite big-$M$ coefficients supplied with the instance.
+\item $d_i^n\geq 0$：手术的采样持续时间，为$i$，用于$(i,n)\in I\times\mathcal{N}$。
+\item $c_r$代表$r\in R$，$c_a$代表$a\in A$：分别出现在手术室开启成本和麻醉师激活成本中的目标系数。
+\item $c_{oa}$代表$a\in A$，$c_{or}$代表$r\in R$：分别为麻醉师和病房加班成本系数。
+\item $g_a,w_a\in\{0,1\}$对于$a\in A$：常规值班和待命可用性指标。
+\item $\kappa^A_{ia}\in\{0,1\}$代替$(i,a)\in I\times A$，$\kappa^R_{ir}\in\{0,1\}$代替$(i,r)\in I\times R$：分配兼容性指标。
+\item $t_a^{\mathrm{start}},t_a^{\mathrm{end}}$对于$a\in A$：麻醉师班次开始和结束时间；$T^{\mathrm{end}}$：房间常规结束时间。
+\item $M,M_{\mathrm{seq}},M_{\mathrm{anesth}},M_{\mathrm{room}}$: 固定有限的大$M$系数，随实例提供。
 \end{itemize}
-All numerical coefficients and set memberships are supplied as instance data.
+所有数值系数和集合成员都作为实例数据提供。
 
-\section*{Decision variables}
-The shared first-stage binary variables are $x_{ia}$ (anesthesiologist assignment), $y_a$ (on-call activation), $z_{ir}$ (room assignment), $v_r$ (room activation), $u_{ij}$ (precedence), and the resource-specific sequence variables $\alpha_{ija}$ and $\beta_{ijr}$. The continuous variable $s_i$ is the scheduled start time.
+\section*{决策变量}
+共享的第一阶段二进制变量包括：$x_{ia}$（麻醉师分配）、$y_a$（待命激活）、$z_{ir}$（房间分配）、$v_r$（房间激活）、$u_{ij}$（优先级），以及资源特定的序列变量$\alpha_{ija}$和$\beta_{ijr}$。连续变量$s_i$表示预定的开始时间。
 
-For each sample $n\in\mathcal{N}$, $S_i^n$ is the actual start time. Write $O_a^{A,n}$ and $O_r^{R,n}$ for the source variables $\mathrm{Over}_a^n$ and $\mathrm{Over}_r^n$, respectively. These are distinct anesthesiologist and room overtime variable families, regardless of whether the underlying resource labels overlap.
+对于每一个样本$n\in\mathcal{N}$，$S_i^n$表示实际的开始时间。分别用$O_a^{A,n}$和$O_r^{R,n}$表示源变量$\mathrm{Over}_a^n$和$\mathrm{Over}_r^n$的对应值。这些变量分别属于麻醉师和手术室加班时间两个不同的类别，无论这些变量所代表的资源标签是否重叠。
 
-\section*{Deterministic equivalent}
-The selected formulation is the finite-sample model with each sample recourse minimum exposed as a separate continuous variable block. All first-stage variables are shared across samples. Minimize over all declared variables:
+\section*{确定性等价}
+所选的模型为有限样本模型，其中每个样本的最小暴露值被作为一个独立的连续变量块来对待。所有第一阶段变量在样本之间是共享的。需要对所有声明的变量进行最小化处理。
 \begin{equation}
 \min\quad
 \sum_{r\in R}c_r v_r+\sum_{a\in A}c_a y_a
@@ -36,9 +37,9 @@ The selected formulation is the finite-sample model with each sample recourse mi
 \left(\sum_{a\in A}c_{oa}O_a^{A,n}
 +\sum_{r\in R}c_{or}O_r^{R,n}\right).
 \end{equation}
-The term $\sum_{r\in R}c_rv_r$ charges only opened rooms, restoring source equation (1).
+术语$\sum_{r\in R}c_rv_r$仅用于表示已打开的房间，从而恢复源方程（1）。
 
-\subsection*{First-stage constraints}
+\subsection*{第一阶段约束条件}
 \begin{align}
 \sum_{a\in A}x_{ia}&=1 &&\forall i\in I,\\
 \sum_{r\in R}z_{ir}&=1 &&\forall i\in I,\\
@@ -68,7 +69,7 @@ u_{ih}&\geq u_{ij}+u_{jh}-1 &&\forall (i,j,h)\in I^3_{\ne},\\
 &&\forall (i,j,r,a)\in I^2_{\ne}\times R\times A.
 \end{align}
 
-\subsection*{Sample recourse constraints}
+\subsection*{示例性约束条件}
 \begin{align}
 S_j^n&\geq S_i^n+d_i^n-M_{\mathrm{seq}}(1-u_{ij})
 &&\forall (i,j,n)\in I^2_{\ne}\times\mathcal{N},\\
@@ -82,7 +83,7 @@ O_r^{R,n}&\geq S_i^n+d_i^n-T^{\mathrm{end}}
 &&\forall (i,r,n)\in I\times R\times\mathcal{N}.
 \end{align}
 
-\subsection*{Variable domains}
+\subsection*{变量域}
 \begin{align}
 x_{ia}&\in\{0,1\} &&\forall (i,a)\in I\times A,\\
 y_a&\in\{0,1\} &&\forall a\in A,\\

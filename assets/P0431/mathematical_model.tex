@@ -2,38 +2,39 @@
 \usepackage{amsmath,amssymb}
 \usepackage[margin=2.54cm]{geometry}
 
-\title{Explicit Auxiliary-Variable Reformulation}
+\title{明确重新表述辅助变量}
 \author{}
 \date{}
 
+\usepackage[UTF8]{ctex}
 \begin{document}
 \maketitle
 
-\section*{Notation and Data}
-Let $I,J,N\in\mathbb{Z}_{>0}$ denote, respectively, the number of appointments, patient types, and observed scenarios. Define
+\section*{符号与数据}
+让$I,J,N\in\mathbb{Z}_{>0}$分别表示预约次数、患者类型以及观察到的场景数量。定义如下：
 \[
 [K]:=\{1,\ldots,K\},
 \qquad
 [a;b]:=\{a,a+1,\ldots,b\}.
 \]
-For each patient type $j\in[J]$, let $I_j\in\mathbb{Z}_{>0}$ satisfy
+对于每种患者类型$j\in[J]$，让$I_j\in\mathbb{Z}_{>0}$能够满足……
 \[
 \sum_{j\in[J]} I_j=I.
 \]
-Let $T\in\mathbb{Z}_{>0}$ be the planning horizon, let $\beta\in(0,1]$ be the CVaR parameter, let $\varphi\ge 0$ be the Wasserstein-radius parameter, and let $p\ge 1$. Let
+设$T\in\mathbb{Z}_{>0}$为规划范围，设$\beta\in(0,1]$为CVaR参数，设$\varphi\ge 0$为Wasserstein半径参数，设$p\ge 1$为其他参数。
 \[
 \boldsymbol{\tau}=(\tau_1,\ldots,\tau_J)^\top\in\mathbb{R}^J
 \]
-be the vector of type-specific delay tolerances. For every $l\in[I]$ and $n\in[N]$, let
+这些应该是特定类型延迟容忍度的向量。对于每一个$l\in[I]$和$n\in[N]$，让…
 \[
 \boldsymbol{z}_l^n=(z_{l1}^n,\ldots,z_{lJ}^n)^\top\in\mathbb{R}^J
 \]
-be the observed scenario data. For every $i\in[I]$, write
+作为观测到的场景数据。对于每个$i\in[I]$，进行记录
 \[
 \boldsymbol{x}_i=(x_{i1},\ldots,x_{iJ})^\top.
 \]
 
-The sequencing-feasible set is
+可排序的集合是
 \[
 \mathcal{X}:=\left\{
 \boldsymbol{x}\in\{0,1\}^{I\times J}:\;
@@ -41,7 +42,7 @@ The sequencing-feasible set is
 \sum_{i\in[I]}x_{ij}=I_j\ \forall j\in[J]
 \right\},
 \]
-and the appointment-time-feasible set is
+而预约时间可行的集合就是
 \[
 \mathcal{Y}:=\left\{
 \boldsymbol{y}\in\mathbb{Z}^I:
@@ -49,8 +50,8 @@ and the appointment-time-feasible set is
 \right\}.
 \]
 
-\section*{Decision Variables}
-The decision variables are $\boldsymbol{x}$, $\boldsymbol{y}$, and the continuous auxiliary variables
+\section*{决策变量}
+决策变量为$\boldsymbol{x}$、$\boldsymbol{y}$，以及连续的辅助变量。
 \[
 \eta_i\in\mathbb{R}
 \qquad \forall i\in\{0\}\cup[2;I],
@@ -60,13 +61,13 @@ The decision variables are $\boldsymbol{x}$, $\boldsymbol{y}$, and the continuou
 \qquad \forall n\in[N],\ i\in\{0\}\cup[2;I].
 \]
 
-\section*{Auxiliary-Variable Reformulation}
-For each $i\in[2;I]$, the empirical delay-CVaR expression in the decision-dependent empirical model is represented by the auxiliary variables $\eta_i$ and $\gamma_i^n$ through
+\section*{辅助变量的重新表述}
+对于每一个$i\in[2;I]$，决策依赖型经验模型中所述的经验延迟-CVaR表达式，可以通过辅助变量$\eta_i$和$\gamma_i^n$来表示。
 \[
 \left(1-\frac{1}{\beta}\right)\eta_i-y_i
 +\frac{1}{N\beta}\sum_{n\in[N]}\gamma_i^n,
 \]
-subject to
+受…的约束
 \[
 \gamma_i^n\ge y_t+
 \sum_{l=t}^{i-1}\boldsymbol{x}_l^\top\boldsymbol{z}_l^n,
@@ -76,17 +77,17 @@ subject to
 \gamma_i^n\ge y_i,
 \qquad \forall n\in[N],\ i\in[2;I],
 \]
-and
+以及
 \[
 \gamma_i^n\ge\eta_i,
 \qquad \forall n\in[N],\ i\in[2;I].
 \]
-The empirical overtime-CVaR objective is represented by
+经验性 overtime-CVaR目标如下所示：
 \[
 \left(1-\frac{1}{\beta}\right)\eta_0-T
 +\frac{1}{N\beta}\sum_{n\in[N]}\gamma_0^n,
 \]
-subject to
+受…的约束
 \[
 \gamma_0^n\ge T,
 \qquad \forall n\in[N],
@@ -96,14 +97,14 @@ subject to
 \sum_{l=t}^{I}\boldsymbol{x}_l^\top\boldsymbol{z}_l^n,
 \qquad \forall n\in[N],\ t\in[I],
 \]
-and
+以及
 \[
 \gamma_0^n\ge\eta_0,
 \qquad \forall n\in[N].
 \]
 
-\section*{Optimization Model}
-The deterministic finite-dimensional reformulation is
+\section*{优化模型}
+确定性有限维重构方法
 \begin{alignat}{2}
 \min_{\boldsymbol{x},\boldsymbol{y},\boldsymbol{\eta},\boldsymbol{\gamma}}\quad
 &\left(1-\frac{1}{\beta}\right)\eta_0-T
@@ -137,6 +138,6 @@ The deterministic finite-dimensional reformulation is
 \label{eq:domains}
 \end{alignat}
 
-All products involving $\boldsymbol{x}$ and the scenario vectors $\boldsymbol{z}_l^n$, as well as $\boldsymbol{\tau}^{\top}\boldsymbol{x}_i$, are affine after expansion because the scenario data and tolerance vector are fixed. The auxiliary variables $\eta,\gamma\in\mathbb R$ satisfy the displayed constraints.
+所有涉及$\boldsymbol{x}$以及场景向量$\boldsymbol{z}_l^n$和$\boldsymbol{\tau}^{\top}\boldsymbol{x}_i$的产品，在展开后都是仿射的，因为场景数据和容忍向量是固定的。辅助变量$\eta,\gamma\in\mathbb R$满足所显示的约束条件。
 
 \end{document}

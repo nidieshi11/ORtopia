@@ -7,30 +7,16 @@
 
 
 
-\section*{Retained Core Model}
-The World Food Programme food-basket model on page 21 embeds a learned nutritional constraint in a mixed-integer optimization problem. It is directly solvable \emph{after} the
-predictive function $\hat h(\boldsymbol{x})$ is instantiated by any trained MIO-representable
-learner supported by the paper (e.g., linear model, tree, forest, or ReLU network).
+\section*{保留的核心模型}
+第21页上的世界粮食计划署食物篮模型，将一种营养约束条件融入到混合整数优化问题中。 \emph{在}之后可以直接求解。预测函数$\hat h(\boldsymbol{x})$可以通过任何经过训练的、能够表示MIO的学习者来实现，这些学习者可以由本文所支持的模型来提供支持（例如，线性模型、树状模型、森林模型或ReLU网络）。
 
-\paragraph{Decision variables.}
-$x_k$ denotes the quantity of food item $k$, $F_{ijk}$ is the commodity flow variable on the
-supply/transportation network, and $y$ is the predicted palatability score (or predicted learned
-constraint output) produced by the embedded model $\hat h(\boldsymbol{x})$.
+\paragraph{决策变量。}
+$x_k$表示食物物品$k$的数量；$F_{ijk}$是供应/运输网络上的商品流动变量；而$y$则是由嵌入式模型$\hat h(\boldsymbol{x})$生成的预测适口性评分（或预测的约束输出）。
 
-\paragraph{Sets and parameters.}
-$\mathcal N_{\mathcal S}$, $\mathcal N_{\mathcal T}$, and $\mathcal N_{\mathcal D}$ are source,
-transshipment, and demand-node sets. $\mathcal K$ is the commodity set and $\mathcal L$ is the
-nutrient set. The costs $p_{ik}^P$ and $p_{ijk}^T$ are procurement and transportation costs,
-$\gamma$ is a conversion factor, $d_i$ is daily demand, $days$ is the number of planning days,
-$Nutval_{kl}$ is the nutrient content of food $k$ for nutrient $l$, $Nutreq_l$ is the required
-amount of nutrient $l$, and $t$ is the minimum acceptable learned-score threshold. To make the
-retained model fully solvable, we instantiate the learned mapping $\hat h(\boldsymbol{x})$ with a
-trained ReLU network, which is one of the MIO-representable learners explicitly supported by the
-paper. Let $\mathcal R_\ell$ be the neuron
-set of hidden layer $\ell=1,\dots,H$, with trained weights $W_{rq}^{(\ell)}$, biases
-$b_r^{(\ell)}$, and valid pre-activation bounds $L_r^{(\ell)} \le s_r^{(\ell)} \le U_r^{(\ell)}$.
+\paragraph{集合与参数。}
+$\mathcal N_{\mathcal S}$、$\mathcal N_{\mathcal T}$和$\mathcal N_{\mathcal D}$分别是来源节点、转运节点和需求节点集合。$\mathcal K$是商品集合，而$\mathcal L$是营养元素集合。成本$p_{ik}^P$和$p_{ijk}^T$分别代表了采购成本和运输成本，$\gamma$是一个转换因子，$d_i$代表每日需求量，$days$表示规划的天数，$Nutval_{kl}$表示食物$k$中营养元素$l$的含量，$Nutreq_l$表示所需的营养元素$l$的数量，而$t$则是最低可接受的学习分数阈值。为了使保留模型完全可解，我们采用了一个经过训练的ReLU网络来实现学习映射$\hat h(\boldsymbol{x})$，该网络是本文明确支持的MIO可表示学习器之一。让$\mathcal R_\ell$代表隐藏层$\ell=1,\dots,H$的神经元集合，其权重为$W_{rq}^{(\ell)}$，偏置为$b_r^{(\ell)}$，并且具有有效的预激活界限$L_r^{(\ell)} \le s_r^{(\ell)} \le U_r^{(\ell)}$。
 
-\section*{Application-Level Core Formulation}
+\section*{应用层核心公式化}
 \begin{equation}
 \min_{\boldsymbol{x},\, y,\, \boldsymbol{F}}
 \sum_{i \in \mathcal{N}_{\mathcal S}}
@@ -90,7 +76,7 @@ F_{ijk},\, x_k \ge 0
 \tag{6i}
 \end{equation}
 
-\section*{Explicit MIO Embedding of $\hat h(\boldsymbol{x})$}
+\section*{$\hat h(\boldsymbol{x})$ 的显式混合整数优化嵌入}
 \begin{equation}
 a_k^{(0)} = x_k
 \quad \forall k \in \mathcal K
@@ -140,11 +126,8 @@ y =
 \tag{Emb-h}
 \end{equation}
 
-\section*{Interpretation}
-The application-level model on Page 21 becomes a complete standalone MIO once constraint
-(6h) is replaced by the explicit predictor embedding above. The paper supports other
-MIO-representable learners as well, but the trained ReLU network is a fully specified retained
-instantiation and therefore closes the previously missing learned-constraint block.
+\section*{解释}
+在第21页上的应用级模型，一旦约束条件(6h)被上述显式预测器嵌入所替代，就会成为一个完整的独立MIO模型。该论文还支持其他可表示为MIO的学习器，但经过训练的ReLU网络是一个完全指定的保留实例，因此之前缺失的学习约束块也得到了填补。
 
 
 

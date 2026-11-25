@@ -1,38 +1,39 @@
 \documentclass{article}
 \usepackage{amsmath,amssymb,mathtools}
 \usepackage[margin=1in]{geometry}
+\usepackage[UTF8]{ctex}
 \begin{document}
 
-\section*{MAR minimax inventory control: Problem (2.4)}
+\section*{MAR最小最大库存控制：问题（2.4）}
 \begin{equation}
 \inf_{\pi\in\Pi}\ \sup_{Q\in\mathbf{MAR}}
 \mathbb{E}_{Q}\left[\sum_{t=1}^{T}C_t^\pi\right].
 \tag{2.4}
 \end{equation}
-The policy and distribution are subject to the definitions and restrictions below. The outer decision is the admissible inventory policy \(\pi\); the inner choice is the joint demand probability measure \(Q\). Here \(\mathbf{MAR}=\mathbf{MAR}_T\), with the horizon suppressed in the notation.
+该政策与分配遵循以下定义和限制。外部决策是允许的库存政策\(\pi\)；内部选择是联合需求概率度量\(Q\)。这里\(\mathbf{MAR}=\mathbf{MAR}_T\)在符号中省略了时间范围。
 
-\subsection*{Fixed data and notation}
-The model has backlogging, a finite discrete-time horizon \(T\geq1\), strictly positive rational support bound \(U\) and backorder cost \(b\), fixed initial inventory \(x_0\), and fixed marginal mean demand \(\mu\):
+\subsection*{固定数据与符号表示方式}
+该模型具有回退功能，具有有限的离散时间范围\(T\geq1\)，严格正的理性支持边界\(U\)，以及固定的回退成本\(b\)。此外，还有固定的初始库存\(x_0\)，以及固定的边际平均需求\(\mu\)：
 \[
 U,b\in\mathbb{Q}^{+},\qquad U>0,\quad b>0,\qquad
 x_0,\mu\in[0,U]_{\mathbb{Q}},
 \qquad [0,U]_{\mathbb{Q}}\triangleq[0,U]\cap\mathbb{Q}.
 \]
-The per-unit holding cost is \(1\), as normalized in Subsection 2.1 by a scaling argument. The primitives \(x_0,\mu,U,b\) are rational; demand distributions have rational support and policies order rational quantities. The endpoints \(x_0=0,U\) and \(\mu=0,U\) are included.
+单位持有成本为\(1\)，该数值已在第2.1小节中通过缩放参数进行了标准化处理。原始数据\(x_0,\mu,U,b\)属于有理数；需求分布具有有理数支持，且政策也要求以有理数作为计量单位。端点值\(x_0=0,U\)和\(\mu=0,U\)也被包含在内。
 
-For a vector \(\mathbf{x}\), the source's history notation is
+对于向量\(\mathbf{x}\)，源代码的歷史記錄表示方式為：
 \[
 \mathbf{x}_{[s]}=(x_1,\ldots,x_s),\qquad
 \mathbf{x}_{[t_1,t_2]}=(x_{t_1},\ldots,x_{t_2}).
 \]
-Period indices in \([1,T]\) range over the discrete periods \(1,\ldots,T\). The random variable \(D_t\) is demand in period \(t\). The inventory level \(x_t\) is measured after ordering at the start of period \(t\), before \(D_t\) is known.
+在\([1,T]\)中，周期索引表示的是离散的周期\(1,\ldots,T\)。随机变量\(D_t\)是在周期\(t\)中的需求。库存水平\(x_t\)是在周期\(t\)开始时订购之后测量的，此时\(D_t\)还不知道。
 
-\subsection*{Admissible policies and inventory feasibility}
-The inherited admissible family \(\hat\Pi\) consists of the \(T\)-dimensional vectors of functions
+\subsection*{可行的政策与库存可行性}
+继承下来的、可接受的\(\hat\Pi\)家族，由\(T\)维的函数向量组成。
 \[
 \pi=\{x_t^\pi,t\in[1,T]\}
 \]
-satisfying
+令人满意
 \begin{align*}
 x_1^\pi&\text{ is a constant},&
 x_1^\pi&\geq x_0^\pi\triangleq y_1^\pi\triangleq x_0,\\
@@ -43,9 +44,9 @@ x_{t+1}^\pi(\mathbf d)&\geq y_{t+1}^\pi(\mathbf d)
 &&t\in[1,T-1],\quad
 \mathbf d=(d_1,\ldots,d_t)\in[0,U]_{\mathbb{Q}}^t.
 \end{align*}
-As required in Subsection 2.1, actions are measurable functions of the demand history. The inequality means that a nonnegative amount of inventory is ordered in each period. The notation \(x_1^\pi(\mathbf d_{[0]})\), or \(x_1^\pi(q)\) for \(q\in[0,U]_{\mathbb{Q}}\), denotes the same constant \(x_1^\pi\).
+根据2.1小节的要求，行动是需求历史的可测量函数。不等式意味着每个时期都有一定数量的非负库存。符号\(x_1^\pi(\mathbf d_{[0]})\)，或\(x_1^\pi(q)\)对应\(q\in[0,U]_{\mathbb{Q}}\)，表示相同的常数\(x_1^\pi\)。
 
-The operative policy family in (2.4) is precisely
+在 (2.4) 中，操作策略家族的内容与原文完全一致，无需进行任何修改。请保持所有数字符号的原样。
 \[
 \Pi=\left\{\pi\in\hat\Pi:
  x_t^\pi(\mathbf d_{[t-1]})\in[0,U]
@@ -53,15 +54,15 @@ The operative policy family in (2.4) is precisely
  \mathbf d\in[0,U]_{\mathbb{Q}}^T
  \right\},\qquad x_0\in[0,U]_{\mathbb{Q}}.
 \]
-Thus the bounded post-order inventory requirement belongs to \(\Pi\), not to the definition of \(\hat\Pi\); the history domains remain rational.
+因此，这个受限制的后序库存需求属于\(\Pi\)，而不是\(\hat\Pi\)的定义；历史领域则仍然保持理性。
 
-\subsection*{Period costs}
-The positive and negative parts are defined in the source by
+\subsection*{期间成本}
+正数和负数部分在源代码中是有明确定义的。
 \[
 z_+\triangleq\max(z,0),\qquad
 z_-\triangleq\max(-z,0),\qquad z\in\mathbb{R}.
 \]
-The inherited cost relations are
+继承下来的成本关系为：
 \begin{align*}
 C_t&\triangleq b[D_t-x_t]_+ +[x_t-D_t]_+,
 &&t\in[1,T],\\
@@ -69,12 +70,12 @@ C(x,d)&\triangleq b(d-x)_+ +(x-d)_+,\\
 C_t^\pi(D_{[t]})&=C\bigl(x_t^\pi(D_{[t-1]}),D_t\bigr),
 &&t\in[1,T].
 \end{align*}
-The notation \(C_t^\pi\) in (2.4) suppresses its dependence on \(D_{[t]}\).
+在(2.4)中，符号\(C_t^\pi\)消除了对\(D_{[t]}\)的依赖性。
 
-\subsection*{Demand measures and martingale restrictions}
-A probability measure is rationally supported if it assigns probability \(1\) to rational vectors of its finite dimension. For such a measure \(Q\), \(\operatorname{supp}(Q)\) denotes the possibly infinite set of rational vectors assigned strictly positive probability, rather than a topological closure. The random variable or vector \(D^Q\) is distributed according to \(Q\).
+\subsection*{需求测量和鞅限制}
+如果一个概率测度能够将其有限维度的有理向量赋予概率\(1\)，那么这样的概率测度就是有理支持的。对于这样的测度\(Q\)、\(\operatorname{supp}(Q)\)表示那些被赋予严格正概率的有理向量集合，而不是拓扑闭包。随机变量或向量\(D^Q\)则按照\(Q\)的分布规律进行分布。
 
-For \(\mu\in[0,U]_{\mathbb{Q}}\), the inherited one-period ambiguity set is
+对于\(\mu\in[0,U]_{\mathbb{Q}}\)，继承来的单周期歧义集是
 \[
 \mathfrak M(\mu)=
 \left\{Q:\begin{array}{l}
@@ -83,7 +84,7 @@ Q\text{ is a rationally supported probability measure},\\
 \mathbb{E}[D^Q]=\mu
 \end{array}\right\}.
 \]
-The set \(\mathbf{MAR}_T\) consists of all rationally supported probability measures of discrete-time martingale sequences \((D_1,\ldots,D_T)\) such that the marginal distribution of \(D_t\) belongs to \(\mathfrak M(\mu)\) for every \(t\in[1,T]\). Written explicitly, its support, marginal-mean, and martingale restrictions are
+集合\(\mathbf{MAR}_T\)包含所有由理性方法支持的、离散时间鞅序列\((D_1,\ldots,D_T)\)的概率测度。对于每一个\(t\in[1,T]\)，\(D_t\)的边际分布都属于\(\mathfrak M(\mu)\)。具体来说，它的支撑集、边际均值以及鞅限制条件都已经被明确给出。
 \begin{align*}
 \operatorname{supp}(Q)&\subseteq[0,U]_{\mathbb{Q}}^T,\\
 \mathbb{E}_Q[D_t]&=\mu,
@@ -91,21 +92,21 @@ The set \(\mathbf{MAR}_T\) consists of all rationally supported probability meas
 \mathbb{E}_Q[D_t\mid D_{[t-1]}]&=D_{t-1},
 &&t\in[2,T].
 \end{align*}
-The conditional expectation equality is the martingale property under \(Q\). In the source's conditional-distribution statement, this also gives
+条件期望的等式，在\(Q\)下就是鞅性质。在源代码的条件分布声明中，这也得到了体现。
 \[
 \text{the conditional distribution of }D_t\text{ given }D_{[t-1]}
 \text{ belongs to }\mathfrak M(D_{t-1}),\qquad t\in[2,T].
 \]
-No independence or product-measure restriction is imposed.
+不施加任何独立性或乘积测度的限制。
 
-\subsection*{Basis for the selected bounded-policy formulation}
-Lemma 1 (physical PDF page 7), whose proof appears in Technical Appendix 6.1 (pages 33--34), supplies the reduction used immediately before (2.4):
+\subsection*{所选有限策略表述的基础}
+引理 1（物理PDF第7页），其证明见技术附录6.1（第33-34页）。该引理提供了在(2.4)之前使用的简化形式。
 \[
 \forall\hat\pi\in\hat\Pi\quad\exists\pi\in\Pi\quad
 \forall\mathbf d=(d_1,\ldots,d_T)\in[0,U]_{\mathbb{Q}}^T\quad
 \forall t\in[1,T],\qquad
 C_t^\pi(\mathbf d_{[t]})\leq C_t^{\hat\pi}(\mathbf d_{[t]}).
 \]
-Its premises here are the bounded nonnegative demand support and \(x_0\in[0,U]_{\mathbb{Q}}\), with the inherited costs and rational-policy restrictions above. This statement justifies selecting \(\Pi\) in (2.4); it is not an additional decision constraint. The separate dynamic-programming formulations and the independent-demand model are not part of this selected formulation.
+其前提条件包括有限的非负需求支持以及\(x_0\in[0,U]_{\mathbb{Q}}\)，再加上上述继承的成本和理性策略限制。这一陈述证明了在(2.4)中选择\(\Pi\)是合理的；它并非额外的决策约束条件。单独的动态规划公式和独立需求模型并不属于这个选定的公式体系的一部分。
 
 \end{document}

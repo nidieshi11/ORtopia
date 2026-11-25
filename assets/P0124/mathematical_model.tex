@@ -9,7 +9,7 @@
 当前保留带充电设施选址、有限整数插头和逐小时占用的确定性多车场公交调度扩展。时间、能耗和费用由实例给定，组成确定性调度模型。
 按论文第6页表1，车场编号集合$C'\subseteq C$，车场$c$与充电站$c$使用相同编号，$s_c,f_c$为对应出发和返回节点。本问题集现有实例采用$C'=C$，每个站点同时是车场。返场充电要求在该共同编号下解释为$Y_{ic}\ge X^k_{if_c}$。$T$为全部服务行程集合，式(21)的占用求和对$T$进行。不参与本模型的遗留变量$H$已从声明中删除。
 
-\subsection*{Decision Variables}
+\subsection*{决策变量}
 \begin{align*}
 & X^k_{ij} \in \{0, 1\}, && \forall i \in T_s, j \in T_f, k \in K \\
 & Y_{ic} \in \{0, 1\}, && \forall i \in T, c \in C \\
@@ -23,12 +23,12 @@
 & A_c \ge 0 \text{ (integer)}, && \forall c \in C
 \end{align*}
 
-\subsection*{Objective Function}
+\subsection*{目标函数}
 \begin{equation}
 \min \sum_{j \in T} \sum_{k \in K} \sum_{c \in C'} l_k X^k_{s_c j} + \sum_{i \in T} \sum_{c \in C} \Omega Y_{ic} + \sum_{i \in T} \sum_{c \in C} \sum_{n \in N} p_{nc} G_{inc} + \sum_{i \in T} \sum_{k \in K} \sum_{n \in N} h_{kn} \left( \sum_{j \in T_i} T_{ijk} + \sum_{j \in T^f_i} d_i X^k_{ij} + \sum_{c \in C'} t_{s_i c} X^k_{s_c i} + \sum_{c \in C'} t_{e_i c} X^k_{i f_c} \right) \tag{1}
 \end{equation}
 
-\subsection*{Constraints}
+\subsection*{约束条件：}
 \paragraph{网络流约束}
 \begin{equation}
 \sum_{i \in T'_j} \sum_{k \in K_j} X^k_{ij} = 1 \quad \forall j \in T \tag{2}

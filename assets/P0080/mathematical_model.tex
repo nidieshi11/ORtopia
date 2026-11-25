@@ -1,46 +1,25 @@
 \documentclass[11pt]{article}
 \usepackage{amsmath,amssymb,geometry}
 \geometry{margin=25mm}
+\usepackage[UTF8]{ctex}
 \begin{document}
-\section*{Core model: two-stage aircraft recovery with precancellation}
-Source: Section 3.1, PDF pp.4--5, Table 3 and (1)--(9).
-The complete route-based BM is retained; the nonanticipative first-stage
-precancellation and all scenario recovery decisions form one model.
-\paragraph{Data and feasible routes.}
-$L,A,S,B$ are flights, aircraft, disruption scenarios and required end bases.
-$p_s>0$, $\sum_s p_s=1$. Costs $c_l$ and $d_l^s>c_l$ are advance and
-real-time cancellation costs. $c_b\ge0$ penalizes base imbalance and
-$n_b$ is the required number at base $b$. $O_s$ indexes airport/interval
-slot restrictions with integer capacity $u_o^s$.
-For aircraft $a$ and scenario $s$, $R_a^s$ is the \emph{complete} set of
-physically feasible routes on its finite time-space network, with every route satisfying the network requirements below. Each route
-starts at the aircraft's actual available airport/time, uses compatible
-flight copies (scheduled time plus an allowed nonnegative delay), and
-connects successive flights only when airports agree and the previous
-arrival plus required turn time does not exceed the next departure.
-It respects aircraft availability/disruption restrictions, terminates
-within the recovery horizon, and contains at most one copy of each flight.
-Ground waiting arcs connect consecutive events at the same airport.
-An idle route can represent an aircraft staying at its starting base.
-These rules define $R_a^s$ from the supplied flight times, delay-copy grid,
-aircraft availability, compatibility and turn-time data.
+\section*{核心模型：两阶段飞机回收，包含预取消操作}
+第3.1节，PDF第4-5页，表3以及(1)--(9)。保留了基于路线的完整BM模型；非预期的第一阶段预取消操作以及所有情景恢复决策构成一个模型。
+\paragraph{数据与可行的路线。}
+$L,A,S,B$包括航班、飞机、中断情景以及所需的终点基地。  
+$p_s>0$、$\sum_s p_s=1$。成本$c_l$和$d_l^s>c_l$分别指提前成本和实时取消成本。$c_b\ge0$用于惩罚基地不平衡问题，而$n_b$则指基地$b$所需的确切数量。$O_s$用于索引机场/间隔时段的限制条件，其整数容量为$u_o^s$。  
+对于飞机$a$和情景$s$，$R_a^s$表示在其有限时空网络上的\emph{完整}条物理上可行的航线，每条航线均满足以下网络要求。每条航线从飞机实际可用的机场/时间开始，使用兼容的航班副本（计划时间加上允许的非负延迟），并且只有在机场同意且前一个到达时间加上所需转乘时间不超过下一个出发时间时，才会连接连续的航班。该规则遵循飞机可用性/中断限制，在恢复范围内终止，并且每条航班最多包含一份副本。地面等待弧线连接同一机场上的连续事件。闲置航线可以表示飞机停留在起始基地的情况。这些规则根据提供的航班时间、延迟副本网格、飞机可用性、兼容性和转乘时间数据来定义$R_a^s$。
 
-For each route, $\delta_{lr}$ indicates inclusion of flight $l$,
-$\theta_{or}$ counts its departures/arrivals in slot $o$, and
-$\gamma_{br}$ indicates its end base. Its cost is
+对于每条航线，$\delta_{lr}$表示包含航班$l$；$\theta_{or}$则统计其在时间段$o$内的出发/到达次数；而$\gamma_{br}$则表示其终点基地。其成本为：
 \[
  q_{ar}=\sum_{l\in L}\delta_{lr}(k_{al}+\varphi_{lr}),
 \]
-where $k_{al}$ is aircraft swapping cost and $\varphi_{lr}$ the delay
-cost of the selected copy. These are route coefficients.
-\paragraph{Variables.}
-$x_l\in\{0,1\}$ is advance cancellation and is common to every scenario;
-$y_l^s\in\{0,1\}$ is real-time cancellation;
-$z_{ar}^s\in\{0,1\}$ selects a route; $v_b^s\in\mathbb Z_+$ is the
-nonnegative base-shortage slack. The source prints $\mathbb Z$ in (9),
-but defines $v$ as a penalized slack for missing aircraft. This document
-makes that physical nonnegative domain explicit.
-\paragraph{Single complete model.}
+其中，$k_{al}$表示飞机交换的成本，而$\varphi_{lr}$则表示所选副本的延迟成本。这些都是路线系数。
+\paragraph{变量。}
+$x_l\in\{0,1\}$是提前取消操作，适用于所有场景；  
+$y_l^s\in\{0,1\}$是实时取消操作；  
+$z_{ar}^s\in\{0,1\}$用于选择航线；$v_b^s\in\mathbb Z_+$是非负基础短缺松弛量。系统会在(9)中打印$\mathbb Z$，但将$v$定义为因飞机缺失而产生的惩罚性松弛量。本文档明确指出了这一物理非负领域的定义。
+\paragraph{单个完整的模型。}
 \begin{align}
 \min\quad &\sum_{l\in L}c_lx_l+
  \sum_{s\in S}p_s\left(\sum_{l\in L}d_l^s y_l^s+

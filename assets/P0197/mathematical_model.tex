@@ -2,35 +2,36 @@
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage[margin=1in]{geometry}
 
-\title{Piecewise McCormick Reformulation of a Bounded QCQP}
+\title{分段式 McCormick 重构方法在有界 QCQP 问题中的应用}
 \author{}
 \date{}
 
+\usepackage[UTF8]{ctex}
 \begin{document}
 \maketitle
 
-\section*{Notation and Data}
-Let $[s]:=\{1,\ldots,s\}$, and let $n,m,d\in\mathbb{Z}_{+}$ with $d\geq 1$. Let
+\section*{符号与数据}
+让$[s]:=\{1,\ldots,s\}$保持不变，同时让$n,m,d\in\mathbb{Z}_{+}$和$d\geq 1$也保持不变。
 \[
 \mathcal{B}\subseteq\{(i,j)\in[n]^2:i<j\},
 \qquad
 \mathcal{Q}\subseteq[n]
 \]
-be, respectively, the sets of bilinear and univariate quadratic terms. Define
+分别定义双线性项和单变量二次项的集合。
 \[
 \mathcal{NC}:=
 \bigl\{i\in[n]:\exists j\in[n]\text{ such that }(i,j)\in\mathcal{B}\text{ or }(j,i)\in\mathcal{B}\bigr\}\cup\mathcal{Q}.
 \]
-For each $i\in\mathcal{NC}$, let the fixed breakpoint vector be
+对于每一个$i\in\mathcal{NC}$，让固定的断点向量为
 \[
 \mathbf{P}_i=(P_{i1},\ldots,P_{i,d+2}),
 \qquad
 0=P_{i1}\leq P_{i2}\leq\cdots\leq P_{i,d+1}\leq P_{i,d+2}=1.
 \]
-Let $Q^0,Q^i\in\mathbb{S}^n$ and $r^0,r^i\in\mathbb{R}^n$ for $i\in[m]$, and let $b_i\in\mathbb{R}$ for $i\in[m]$.
+设$Q^0,Q^i\in\mathbb{S}^n$和$r^0,r^i\in\mathbb{R}^n$代表$i\in[m]$，设$b_i\in\mathbb{R}$代表$i\in[m]$。
 
-\section*{Decision Variables}
-The decision variables are
+\section*{决策变量}
+决策变量是：
 \[
 x_i\in\mathbb{R}\quad(i\in[n]),
 \qquad
@@ -46,9 +47,9 @@ Y_{i\ell}\in\{0,1\}\quad(i\in\mathcal{NC},\ \ell\in[d+1]),
 \Lambda^k_\ell\geq 0
 \quad(k\in\mathcal{Q},\ \ell\in[d+2]).
 \]
-For notational purposes, set $W_{ji}:=W_{ij}$ whenever $j<i$.
+出于标记目的，每当出现$j<i$时，就设定$W_{ji}:=W_{ij}$。
 
-\section*{Piecewise McCormick Reformulation}
+\section*{分段式麦科米克重构方法}
 \begin{align}
 \min\quad
 &\sum_{i=1}^{n}r^0_i x_i
@@ -56,7 +57,7 @@ For notational purposes, set $W_{ji}:=W_{ij}$ whenever $j<i$.
  +2\sum_{1\leq i<j\leq n}Q^0_{ij}W_{ij}
 \label{eq:objective}
 \end{align}
-subject to
+受…的约束
 \begin{align}
 &0\leq x_i\leq 1,
 && i\in[n],
@@ -69,7 +70,7 @@ subject to
 \label{eq:baseconstraints}
 \end{align}
 
-For every $(i,j)\in\mathcal{B}$, impose
+对于每一个$(i,j)\in\mathcal{B}$，施加…
 \begin{align}
 &x_i=\sum_{k=1}^{d+2}\sum_{\ell=1}^{d+2}\Lambda^{ij}_{k\ell}P_{i\ell},
 \label{eq:pairx1}\\
@@ -95,7 +96,7 @@ For every $(i,j)\in\mathcal{B}$, impose
 \label{eq:pairjinterior}
 \end{align}
 
-For every $k\in\mathcal{Q}$, impose
+对于每一个$k\in\mathcal{Q}$，施加…
 \begin{align}
 &x_k=\sum_{\ell=1}^{d+2}\Lambda^k_\ell P_{k\ell},
 \label{eq:diagx}\\
@@ -120,7 +121,7 @@ For every $k\in\mathcal{Q}$, impose
 \label{eq:diaginterior}
 \end{align}
 
-The shared partition-selection variables satisfy
+共享的划分-选择变量满足以下条件：
 \begin{align}
 &\sum_{\ell=1}^{d+1}Y_{i\ell}=1,
 && i\in\mathcal{NC},
@@ -130,7 +131,7 @@ The shared partition-selection variables satisfy
 \label{eq:binary}
 \end{align}
 
-The auxiliary variables satisfy
+辅助变量满足以下条件：
 \begin{align}
 &\Lambda^{ij}_{k\ell}\geq 0,
 && (i,j)\in\mathcal{B},\ k,\ell\in[d+2],

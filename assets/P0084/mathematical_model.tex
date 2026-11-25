@@ -4,16 +4,17 @@
 \usepackage{amsmath,amssymb}
 \usepackage[a4paper,margin=1in]{geometry}
 
-\title{Scaled Deterministic Positive-Part Surrogate Routing Model}
+\title{缩放确定性正部分替代路由模型}
 \author{}
 \date{}
 
+\usepackage[UTF8]{ctex}
 \begin{document}
 \maketitle
 
-\section{Sets and network}
+\section{集合与网络}
 
-Let $I,L\in\mathbb{Z}_{+}$ be the numbers of customers and available homogeneous vehicles, respectively. Define
+设$I,L\in\mathbb{Z}_{+}$分别表示客户数量和可用同质车辆的数量。
 \[
 \mathcal{N}_c:=\{1,\ldots,I\},
 \qquad
@@ -21,11 +22,11 @@ Let $I,L\in\mathbb{Z}_{+}$ be the numbers of customers and available homogeneous
 \qquad
 \mathcal{N}:=\{0\}\cup\mathcal{N}_c\cup\mathcal{N}_d,
 \]
-where node $0$ is the depot, $\mathcal{N}_c$ is the customer set, and $\mathcal{N}_d$ is the set of dummy destination nodes. The directed arc set is
+其中，节点$0$是仓库，$\mathcal{N}_c$是客户集合，而$\mathcal{N}_d$则是虚拟目的节点集合。有向弧的集合为：
 \[
 \mathcal{A}:=\mathcal{A}_o\cup\mathcal{A}_c\cup\mathcal{A}_d,
 \]
-with
+与…一起
 \[
 \mathcal{A}_o:=\{(0,j):j\in\mathcal{N}_c\},
 \qquad
@@ -34,7 +35,7 @@ with
 \[
 \mathcal{A}_d:=\{(i,\ell):i\in\mathcal{N}_c,\ \ell\in\mathcal{N}_d\}.
 \]
-For every $\mathcal{H}\subseteq\mathcal{N}$, define the outgoing and incoming cut sets
+对于每个$\mathcal{H}\subseteq\mathcal{N}$，定义其输出和输入切割集。
 \[
 E^+(\mathcal{H})
 :=\{(i,j)\in\mathcal{A}:i\in\mathcal{H},\ j\in\mathcal{N}\setminus\mathcal{H}\},
@@ -43,19 +44,19 @@ E^+(\mathcal{H})
 E^-(\mathcal{H})
 :=\{(j,i)\in\mathcal{A}:i\in\mathcal{H},\ j\in\mathcal{N}\setminus\mathcal{H}\}.
 \]
-For a singleton node $i\in\mathcal{N}$, write $E^+(i):=E^+(\{i\})$ and $E^-(i):=E^-(\{i\})$.
+对于单节点$i\in\mathcal{N}$，分别写入$E^+(i):=E^+(\{i\})$和$E^-(i):=E^-(\{i\})$。
 
-\section{Parameters}
+\section{参数}
 
-For each customer $i\in\mathcal{N}_c$, let $d_i$ denote its demand, and let $Q>0$ be the homogeneous vehicle capacity. Let $\tau\in\mathbb{R}$ be the common threshold. Let
+对于每一位客户$i\in\mathcal{N}_c$，让$d_i$表示其需求，让$Q>0$表示同质车辆的容量。让$\tau\in\mathbb{R}$表示共同阈值。
 \[
 T\in\mathbb{Z}_{+},
 \qquad
 \rho\in\mathbb{R}_{+}.
 \]
-For every $t\in\{1,\ldots,T\}$ and $a\in\mathcal{A}$, $\theta_a^t\in\mathbb{R}$ is a fixed coefficient, and $\bar\theta^t\in\mathbb{R}$ is a fixed intercept. Thus, for each $t$, the coefficient vector $\theta^t=(\theta_a^t)_{a\in\mathcal{A}}$ has dimension $|\mathcal{A}|$.
+对于每一个$t\in\{1,\ldots,T\}$和$a\in\mathcal{A}$，$\theta_a^t\in\mathbb{R}$是一个固定的系数，而$\bar\theta^t\in\mathbb{R}$是一个固定的截距。因此，对于每一个$t$，系数向量$\theta^t=(\theta_a^t)_{a\in\mathcal{A}}$的维度为$|\mathcal{A}|$。
 
-\section{Decision variables}
+\section{决策变量}
 
 \begin{align*}
 x_a&\in\{0,1\} && \forall a\in\mathcal{A},\\
@@ -64,9 +65,9 @@ s_a^\ell&\in\{0,1\} && \forall \ell\in\mathcal{N}_d,\ a\in\mathcal{A},\\
 w_{\ell t}&\in\mathbb{R} && \forall \ell\in\mathcal{N}_d,\ t=1,\ldots,T,\\
 u_{\ell t}&\in\mathbb{R}_{+} && \forall \ell\in\mathcal{N}_d,\ t=1,\ldots,T.
 \end{align*}
-Here $x_a=1$ if arc $a$ belongs to a selected route, and $s_a^\ell=1$ if arc $a$ belongs to the route ending at dummy destination $\ell$.
+这里$x_a=1$表示如果弧$a$属于某个选定路线，而$s_a^\ell=1$表示如果弧$a$属于终点为虚拟目的地$\ell$的路线。
 
-\section{Optimization model}
+\section{优化模型}
 
 \begin{align}
 \min_{x,s,\eta,w,u}\quad
@@ -137,6 +138,6 @@ Here $x_a=1$ if arc $a$ belongs to a selected route, and $s_a^\ell=1$ if arc $a$
 \label{aux-domains}
 \end{align}
 
-Constraint \eqref{max-general} is an exact scalar maximum general constraint and can be imposed directly as a Gurobi maximum general constraint with constant zero.
+约束条件\eqref{max-general}是一个精确的最大标量约束条件，可以直接作为 Gurobi 的最大通用约束条件来应用，其值为零。
 
 \end{document}

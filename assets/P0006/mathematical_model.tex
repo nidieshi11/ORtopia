@@ -6,39 +6,29 @@
 \usepackage{geometry}
 \geometry{a4paper, margin=1in}
 
-\title{Core Solvable Mathematical Model}
+\title{核心可解数学模型}
 \author{Paper 2}
 \date{\today}
 
+\usepackage[UTF8]{ctex}
 \begin{document}
 
 \maketitle
 
-\section*{Retained Core Model}
-According to the \texttt{tex} formulas and the PDF, the practical directly solvable model is the
-exact McCormick-linearized deterministic equivalent in Appendix A (Page 35--36). 
+\section*{保留的核心模型}
+根据\texttt{tex}公式以及PDF文件，可以直接求解的实用模型，就是附录A中第35-36页所描述的精确McCormick线性化确定性模型。 
 
-\paragraph{Sets and parameters.}
-Let $\mathcal{P}$ be the product set and $\mathcal{F}$ the facility set. For each
-$p \in \mathcal{P}$, let $\mathcal{D}_p$ be the set of admissible distributions, and for each
-$(p,d)$ let $\mathcal{S}_{pd}$ be the scenario set. For each $(p,f)$, let $\mathcal{L}_{pf}$ be
-the set of production levels. The parameters are:
-$C_{pf}$ unit production cost, $B_f$ facility capacity, $b_f$ facility-specific upper bound used
-in the linearized model, $L_{pfl}$ and $U_{pfl}$ lower/upper bounds of production level $l$,
-$l(p,f,d)$ the production level required by distribution $d$, $\pi_{sd}$ scenario probability,
-$Y_{pfds}$ realized yield, $D_{pds}$ demand, $P_p$ full-price revenue, $O_p$ discounted revenue,
-and $N_{pds}$ a valid upper bound on discounted sales $o_{pds}$.
+\paragraph{集合与参数。}
+设$\mathcal{P}$为产品组合集合，$\mathcal{F}$为设施集合。对于每一个$p \in \mathcal{P}$，设$\mathcal{D}_p$为允许的分布集合；对于每一个$(p,d)$，设$\mathcal{S}_{pd}$为情景集合。对于每一个$(p,f)$，设$\mathcal{L}_{pf}$为生产水平集合。相关参数包括：$C_{pf}$为单位生产成本，$B_f$为设施容量，$b_f$为线性化模型中使用的设施特定上限，$L_{pfl}$和$U_{pfl}$分别为生产水平$l$的下限/上限，$l(p,f,d)$为分布$d$所要求的生产水平，$\pi_{sd}$为情景概率，$Y_{pfds}$为实际产量，$D_{pds}$为需求，$P_p$为全价收入，$O_p$为折现后的收入，而$N_{pds}$则为折现后销售额的有效上限。$o_{pds}$则代表折现后销售额的有效上限。
 
-\paragraph{Decision variables.}
-$x_{pf} \ge 0$ is the production allocation of product $p$ at facility $f$.
-$y_{pfl}\in\{0,1\}$ selects production level $l$.
-$\delta_{pd}\in\{0,1\}$ selects the yield-demand distribution.
-$z_{pds}, w_{pds}, o_{pds} \ge 0$ denote available inventory, full-price sales, and discounted
-sales in scenario $(p,d,s)$.
-$\mu_{pds}$ and $\rho_{pds}$ are McCormick linearization variables replacing
-$\delta_{pd} w_{pds}$ and $\delta_{pd} o_{pds}$.
+\paragraph{决策变量。}
+$x_{pf} \ge 0$表示在设施$f$对产品$p$的生产分配。  
+$y_{pfl}\in\{0,1\}$选择生产级别$l$。  
+$\delta_{pd}\in\{0,1\}$选择产量与需求的分配方式。  
+$z_{pds}, w_{pds}, o_{pds} \ge 0$分别表示在情景$(p,d,s)$中可用的库存、全价销售以及打折销售。  
+$\mu_{pds}$和$\rho_{pds}$是McCormick线性化变量，分别替代$\delta_{pd} w_{pds}$和$\delta_{pd} o_{pds}$。
 
-\section*{Linearized MIP Formulation}
+\section*{线性化的 MIP 公式}
 \begin{equation}
 v_{PP\text{-}DESUP}^{*}
 = \max

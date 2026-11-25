@@ -1,33 +1,22 @@
 \documentclass{article}
 \usepackage{amsmath,amssymb,geometry}
+\usepackage[UTF8]{ctex}
 \begin{document}
 
-\section*{P183: complete inbound logistics model with consistent shipment units}
-This independently repaired version retains the substantive mode, inventory,
-delivery-pattern and capacity families of the paper. It corrects the extracted
-indices and the overloaded price/weight notation, using the explicit indices and meanings below.
+\section*{P183：以一致的运输单位来完整构建入境物流模型}
+这个经过独立修复的版本保留了原稿中的主要内容、目录、交付模式以及容量系列等要素。同时，它修正了提取出的索引以及过于复杂的价格/重量表示方式，采用了下面列出的明确索引和含义。
 
-\subsection*{Input and variables}
-Suppliers are $i\in L$, dates $j\in D=\{1,\ldots,N\}$ with positive even $N$,
-modes $M=\{\mathrm{FTL},\mathrm{CES},\mathrm{LTL}\}$, frequencies $o\in O$,
-zones $z\in Z$, storage resources $h\in H$, LTL weight classes $b\in Q$
-and CES classes $k\in K$. $d_i>0$ is horizon shipment volume; $q$ and $s$
-are fractions of it. $SS_i$ is a safety-stock fraction. $f_i$ is freight weight
-per volume, $e_i$ the empty-container volume factor, and $\omega_i$ its weight
-per empty volume. All tariff coefficients $c^L_{ib},c^C_k$ are separate from
-weight-class bounds $(L^L_{ib},U^L_{ib})$ and $(L^C_k,U^C_k)$.
-The zero CES-weight class has a zero tariff. The implementation's JSON names
-are respectively fwq, fSLC, omega\_ec, Bp, BpCES, WeightLo/WeightHi and CESLo/CESHi.
+\subsection*{输入与变量}
+供应商为$i\in L$，日期为$j\in D=\{1,\ldots,N\}$，其中正数偶数的数量为$N$；模式为$M=\{\mathrm{FTL},\mathrm{CES},\mathrm{LTL}\}$，频率为$o\in O$；区域为$z\in Z$，存储资源为$h\in H$，LTL重量等级为$b\in Q$，CES等级为$k\in K$。$d_i>0$表示交货量；$q$和$s$则是该交货量的分数部分。$SS_i$是安全库存的比例。$f_i$是每单位体积的货物重量。$e_i$是空容器体积系数。$\omega_i$则是每单位空容器体积的重量。所有关税系数$c^L_{ib},c^C_k$都与重量等级的限制$(L^L_{ib},U^L_{ib})$和$(L^C_k,U^C_k)$分开计算。
+零CES重量等级的关税为零。实施过程中的JSON名称分别为fwq、fSLC、omega\_ec、Bp、BpCES、WeightLo/WeightHi以及CESLo/CESHi。
 
-Binary variables are $v_i^m,p_{ij}^m,\gamma_i,\tau_{ij},\beta_{io},
-\alpha_{bij},\alpha^{ec}_{bij},\delta_{kij}$.
-$0\le q_{ij}^m\le1$, $s_{ij}\ge0$ including $s_{i0}$, and
-$w_{bij},w^{ec}_{bij},w^C_{kij}\ge0$.
-$n_{ij},n^{ec}_{ij},n^L_{jz}$ are nonnegative integers.
-All sums below span the declared index sets; the constraints indexed by half
-period use $j=1,\ldots,N/2$.
+二进制变量为$v_i^m,p_{ij}^m,\gamma_i,\tau_{ij},\beta_{io},
+\alpha_{bij},\alpha^{ec}_{bij},\delta_{kij}$。  
+$0\le q_{ij}^m\le1$、$s_{ij}\ge0$（包括$s_{i0}$）以及$w_{bij},w^{ec}_{bij},w^C_{kij}\ge0$。  
+$n_{ij},n^{ec}_{ij},n^L_{jz}$是非负整数。  
+以下所有求和运算都适用于所声明的索引集；由半周期索引的约束条件则使用$j=1,\ldots,N/2$来表示。
 
-\subsection*{Objective}
+\subsection*{目标}
 \begin{align}
 \min\quad&
 \sum_{i,j}C_i^D(n_{ij}+n^{ec}_{ij})
@@ -36,8 +25,8 @@ period use $j=1,\ldots,N/2$.
 &+A\sum_{i,j,m}p_{ij}^m
 +N\sum_{i,o}(C_i^{dR}u_{io}^R+C_i^{dI}u_{io}^I)\beta_{io}.
 \end{align}
-The five cost components are added, as in the paper, page 6, equation (1).
-\subsection*{Demand, inventory and mode choice}
+如论文第6页方程(1)所示，这五个成本组成部分被相加在一起。
+\subsection*{需求、库存和模式选择}
 \begin{align}
 \sum_{j,m}q_{ij}^m&=1,&
 s_{i0}+\sum_{\ell=1}^j\sum_mq_{i\ell}^m&\ge j/N,\\
@@ -48,10 +37,9 @@ q_{ij}^m&\le p_{ij}^m\le v_i^m,\\
 q_{ij}^m&\ge(Q^{min}/d_i)p_{ij}^m\quad(m=\mathrm{FTL},\mathrm{CES}),&
 q_{ij}^{LTL}&\ge p_{ij}^{LTL}/N.
 \end{align}
-The initial-stock fraction remains a decision variable, as in the selected
-model.
+初始库存比例仍然是一个决策变量，就像在所选模型中一样。
 
-\subsection*{Cyclic patterns and frequency}
+\subsection*{循环模式与频率}
 \begin{align}
 -\gamma_i&\le p_{ij}^m-p_{i,j+N/2}^m\le\gamma_i,\\
 \sum_{j,m}p_{ij}^m&\le1+N(1-\gamma_i),\\
@@ -64,9 +52,9 @@ model.
 \sum_{j=N/2+1}^{N}\sum_m p_{ij}^m&\ge1-\gamma_i,&
 \sum_jp_{ij}^m&\ge v_i^m.
 \end{align}
-These inequalities define the one-way relations between $\tau$ and the delivery indicators.
+这些不等式定义了$\tau$与交付指标之间的单向关系。
 
-\subsection*{Entrance, storage and vehicle capacities}
+\subsection*{入口、储存空间以及车辆的容量}
 \begin{align}
 \sum_i n_{ij}+\sum_z n^L_{jz}&\le Cap_{GI},&
 \sum_i p_{ij}^{CES}&\le Cap_{WK},\\
@@ -80,10 +68,9 @@ f_id_iq_{ij}^{LTL}&\ge\omega^{LTL}p_{ij}^{LTL},\\
 \sum_i r_{iz}d_iq_{ij}^{LTL}&\le Cap_Ln^L_{jz},&
 \sum_i r_{iz}f_id_iq_{ij}^{LTL}&\le Cap_{WL}n^L_{jz}.
 \end{align}
-The FTL empty-container weight bound now includes $d_i$, just like the LTL
-empty-container weight. This is the only second-round solver-code correction.
+FTL空容器重量约束现在包含$d_i$，与LTL空容器重量相同。这是唯一的第二轮求解器代码修正。
 
-\subsection*{Freight and empty-return weight classes}
+\subsection*{货运及空运回程的重量等级}
 \begin{align}
 \sum_b\alpha_{bij}&=1,&
 L^L_{ib}\alpha_{bij}&\le w_{bij}\le U^L_{ib}\alpha_{bij},&
@@ -96,15 +83,7 @@ L^C_k\delta_{kij}&\le w^C_{kij}\le U^C_k\delta_{kij},&
 \sum_kw^C_{kij}&=f_i d_iq_{ij}^{CES}.
 \end{align}
 
-\subsection*{Source and repair evidence}
-Paper pp.6--8 and15--16, equations (6),(17),(18),(38)--(49), distinguish the
-fractional shipment quantity and physical capacity units. The source-linked
-first repair separates price rates from weight bounds, restores the missing
-$b$ index on $w$, and restores $Q^{min}/d_i$, $SS_i$ and storage factor $d_i$.
-The second repair corrects the remaining FTL empty-weight factor.
-For all ten current instances, $\omega_i Cap_L\le Cap_{WL}$ and $d_i\ge1$,
-so both the former weak weight inequality and the corrected inequality are
-implied by empty-volume capacity. This explains preservation of the previous
-values on these inputs; the corrected code is nevertheless rerun for all ten.
+\subsection*{提供并修复证据}
+论文第6-8页以及第15-16页中，方程(6)、(17)、(18)、(38)至(49)分别区分了 fractional shipment quantity与物理容量单位。第一次修复将价格比率与重量限制分开处理，恢复了$b$在$w$上的缺失索引，并且恢复了$Q^{min}/d_i$、$SS_i$以及存储因子$d_i$。第二次修复则修正了剩余的FTL空重量因子。对于当前所有的十个实例，$\omega_i Cap_L\le Cap_{WL}$和$d_i\ge1$都参与其中；因此，无论是之前的弱重量不等式，还是经过修正的不等式，都可以通过空体积容量来理解。这就解释了为什么在这些输入条件下，之前的值能够被保留下来；不过，修正后的代码仍然需要对所有十个实例进行重新运行。
 
 \end{document}

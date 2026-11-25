@@ -2,9 +2,10 @@
 \usepackage{amsmath,amssymb}
 \usepackage[margin=0.7in]{geometry}
 \allowdisplaybreaks
+\usepackage[UTF8]{ctex}
 \begin{document}
 
-\section*{Integrated sample-average truck--drone routing and waiting-time model}
+\section*{集成化的卡车与无人机路由及等待时间模型}
 \begin{equation}
 \begin{aligned}
 \min\quad &c\sum_{k\in K}\sum_{(i,j)\in A}r_{ij}(x_{ij}^k+y_{ij}^k)
@@ -14,9 +15,9 @@
 &+\frac{1}{|\Xi|}\sum_{\xi\in\Xi}\left(\sum_{i\in N_c}(c^e\delta_i^{-,\xi}+c^l\delta_i^{+,\xi})+\sum_{k\in K}c^k\delta^{k,\xi}\right).
 \end{aligned}\tag{21}
 \end{equation}
-\noindent Subject to (2)--(8), (10)--(12), and (14)--(20), $\forall\xi\in\Xi$, expanded below, and the inherited variable domains. The first-stage variables are common to all scenarios. As stated immediately before (21), (9a)--(9b) are redundant and are not imposed here.
+\noindent 在遵守 (2)--(8)、(10)--(12) 以及 (14)--(20) 的条件下，保留 $\forall\xi\in\Xi$ 及其下方的扩展内容，同时保留继承下来的变量域。第一阶段中的变量是适用于所有情景的通用变量。如 (21) 所述，(9a)--(9b) 是多余的，因此在此不再赘述。
 
-\subsection*{Routing, service, and deployment: (2)--(8)}
+\subsection*{路由、服务与部署：(2)–(8)}
 \begin{align}
 \sum_{i\in N_e}(x_{0i}^k+y_{0i}^k)
 &=\sum_{i\in N_s}(x_{i,n+1}^k+y_{i,n+1}^k)=1,
@@ -47,12 +48,10 @@
 \sum_{j\in N_s}\sum_{\substack{i\in N_c\\(j,i)\in A}}(x_{ji}^k+y_{ji}^k)+\sum_{i\in N_d}z_i^k&\leq n\cdot u^k,
 &&k\in K.\tag{8}
 \end{align}
-\noindent\emph{Selected source scope in (7b).}
-Page 7 prints outer $j\in N_c$, binding its sum dummy again and leaving $i$
-free. Page 8 describes an arrival restriction for each customer, supporting
-outer $i\in N_c$. This is an annotated correction, not literal transcription.
+\noindent\emph{在(7b)中选择的来源范围。}
+第7页打印外部$j\in N_c$，再次将总和 dummy 绑定在一起，并留下$i$自由。第8页描述了每个客户的到达限制，支持外部$i\in N_c$。这是注释修正，而非逐字转录。
 
-\subsection*{Capacity, payload, and endurance: (10)--(12)}
+\subsection*{容量、有效载荷以及耐久性：(10)–(12)}
 \begin{equation}
 \sum_{i\in N_s}\sum_{\substack{j\in N_c\\(i,j)\in A}}(x_{ij}^k+y_{ij}^k)d_j+\sum_{i\in N_d}z_i^k d_i\leq W,
 \qquad k\in K.\tag{10}
@@ -85,10 +84,10 @@ e_i^k+\frac{\hat r_{ij}}{\hat v}-M\left(2-\hat y_{ij}^k-\sum_{\substack{i'\in N_
 \qquad i\in N_d,\ j\in N_e,\ (i,j)\in A,\ k\in K.\tag{12c}
 \end{equation}
 
-\subsection*{Scenario-wise timing and penalties: (14)--(20)}
-Every row in this subsection is imposed for every $\xi\in\Xi$, in addition to its displayed node and vehicle indices.
+\subsection*{情景相关的时间限制和惩罚：(14)–(20)}
+本小节的每一行都对应一个$\xi\in\Xi$，除了其显示的节点和车辆编号之外，还包含了其他数值信息。
 
-\paragraph{Drone arrival times.}
+\paragraph{无人机到达时间。}
 \begin{equation}
 \begin{aligned}
 \varphi_i^\xi+\hat s_i+\frac{\hat r_{ij}}{\hat v}-M(2-\hat y_{ij}^k-z_i^k)
@@ -118,7 +117,7 @@ i\in N_s,\ j\in N_d,\ (i,j)\in A,\ k\in K.&
 \end{aligned}\tag{15b}
 \end{equation}
 
-\paragraph{Truck arrival times.}
+\paragraph{卡车到达的时间。}
 \begin{equation}
 \begin{aligned}
 \bar\tau_i^{k,\xi}+s^r+s^l\sum_{\substack{j\in N_d\\(i,j)\in A}}\hat y_{ij}^k+\omega_i^{k,\xi}+\frac{r_{ij}}{v_{ij}^\xi}
@@ -139,9 +138,9 @@ i\in N_s,\ j\in N_d,\ (i,j)\in A,\ k\in K.&
 (i,j)\in A,\ k\in K.&
 \end{aligned}\tag{16b}
 \end{equation}
-\noindent Equation (16a) joins its lower half on physical page 8 to its upper half on physical page 9. The reuse of $j$ as both a summation index and an external arc index in (15)--(16) is retained as printed.
+\noindent 方程(16a)的下半部分与物理页面8上的内容相连，而上半部分则与物理页面9上的内容相连。在(15)--(16)中，$j$既被用作求和索引，也被用作外部弧线索引，其用法保持不变，按原样打印下来。
 
-\paragraph{Service starts.}
+\paragraph{服务已启动。}
 \begin{equation}
 \hat\tau_i^{k,\xi}-M(1-z_i^k)\leq\varphi_i^\xi\leq\hat\tau_i^{k,\xi}+M(1-z_i^k),
 \qquad i\in N_d,\ k\in K.\tag{17a}
@@ -155,7 +154,7 @@ i\in N_s,\ j\in N_d,\ (i,j)\in A,\ k\in K.&
 \end{aligned}\tag{17b}
 \end{equation}
 
-\paragraph{Late depot return.}
+\paragraph{延迟的仓库退货。}
 \begin{align}
 \delta^{k,\xi}&\geq\hat\tau_{n+1}^{k,\xi}-l_{max}-M\left(1-\sum_{i\in N_d}\hat y_{i,n+1}^k\right),
 &&k\in K.\tag{18a}\\
@@ -163,7 +162,7 @@ i\in N_s,\ j\in N_d,\ (i,j)\in A,\ k\in K.&
 &&k\in K.\tag{18b}
 \end{align}
 
-\paragraph{Earliness and lateness.}
+\paragraph{迟到与拖延。}
 \begin{align}
 \varphi_i^\xi-e_i&\leq M(1-\alpha_i^\xi),&&i\in N_c.\tag{19a}\\
 \delta_i^{-,\xi}&\leq M\alpha_i^\xi,&&i\in N_c.\tag{19b}\\
@@ -174,7 +173,7 @@ l_i-\varphi_i^\xi&\leq M(1-\beta_i^\xi),&&i\in N_c.\tag{19d}\\
 \alpha_i^\xi+\beta_i^\xi&\leq1,&&i\in N_c.\tag{19g}
 \end{align}
 
-\paragraph{Readiness for drone retrieval.}
+\paragraph{准备接收无人机。}
 \begin{align}
 \hat\tau_i^{k,\xi}-\tau_i^{k,\xi}-s_i&\leq M(1-\gamma_i^{k,\xi}),
 &&i\in N_c,\ k\in K.\tag{20a}\\
@@ -183,14 +182,14 @@ l_i-\varphi_i^\xi&\leq M(1-\beta_i^\xi),&&i\in N_c.\tag{19d}\\
 \tau_i^{k,\xi}+s_i&\leq\bar\tau_i^{k,\xi}\leq\tau_i^{k,\xi}+s_i+M(1-\gamma_i^{k,\xi}),
 &&i\in N_c,\ k\in K.\tag{20c}
 \end{align}
-\noindent The defining relation given in Table 3 and the paragraph following (20c) is
+\noindent 表3中给出的定义关系以及随后的段落（20c）是
 \[
 \bar\tau_i^{k,\xi}=\max\{\tau_i^{k,\xi}+s_i,\hat\tau_i^{k,\xi}\}.
 \]
-Equations (20a)--(20c) are the selected printed linearisation of this relation, with their printed scope $i\in N_c$, $k\in K$ and, in (21), $\xi\in\Xi$; the defining relation is not extended to other nodes here.
+方程式(20a)–(20c)是此关系的选定线性化形式，其对应的打印范围分别为$i\in N_c$、$k\in K$，而在(21)中则是$\xi\in\Xi$。这里，定义该关系的方程式并未扩展到其他节点。
 
-\subsection*{Network, fixed inputs, and sampling}
-The directed graph and node sets in Section 3.2 and Table 2 are
+\subsection*{网络、固定输入和采样}
+第3.2节和表2中的有向图和节点集
 \[
 \begin{gathered}
 G(N,A),\qquad N=\{0,1,\ldots,n+1\},\qquad N_c=\{1,\ldots,n\},\\
@@ -200,40 +199,42 @@ N_e=N\setminus\{0\}=N_c\cup\{n+1\}=\{1,\ldots,n+1\},\\
 A=\{(i,j)\mid i\in N_s,\ j\in N_e,\ i\ne j\}.
 \end{gathered}
 \]
-Nodes $0$ and $n+1$ are the starting and ending copies of the single depot. $N_d$ is the set of drone-eligible customers, and $N_c\setminus N_d$ is the set of truck-only customers. Table 2 defines $K$ as the set of available homogeneous truck--drone pairs, indexed by $k\in K$; the introductory prose also uses $K$ for the fleet size. In the formulas it is the index set.
+节点$0$和$n+1$是单一仓库的起始和结束位置。$N_d$是符合条件的无人机服务客户集合，而$N_c\setminus N_d$则是仅使用卡车的客户集合。表2将$K$定义为可用的同质卡车-无人机组合，以$k\in K$为索引；引言部分也使用$K$来表示车队规模。在公式中，它指的是索引集合。
 
-The fixed distance $r_{ij}$ is the Manhattan truck distance on arc $(i,j)$, and $\hat r_{ij}$ is the Euclidean drone distance, both in km. Truck speed is stochastic:
+固定的距离$r_{ij}$是弧线$(i,j)$上的曼哈顿卡车行驶距离，而$\hat r_{ij}$则是欧几里得无人机行驶距离，单位均为公里。卡车的行驶速度是不确定的。
 \[
 v_{ij}\sim F_{ij},\qquad (i,j)\in A,
 \]
-with all $v_{ij}$ independent. Each distribution $F_{ij}$ is known or can be estimated at planning time and may be continuous or discrete. The drone speed $\hat v$ is constant. The tables give both truck and drone speeds in km/h.
+请将所有$v_{ij}$这样的数学符号按原顺序原样保留下来。所有数字都应保持不变。
 
-Demand $d_i$ is known for customer $i\in N_c$ (kg). The truck and drone capacities are $W$ and $\hat W$ (kg). Drone battery capacity $B$ is measured in minutes. Truck service time $s_i$ is defined for $i\in N_c$, and drone service time $\hat s_i$ for $i\in N_d$, both in minutes. The required launch and retrieval times are $s^l$ and $s^r$ (minutes). $M$ is a sufficiently large number, left abstract by the model.
+每个分布$F_{ij}$在规划时都是已知的，或者可以估算出来，它可以是连续的，也可以是离散的。无人机的速度$\hat v$是恒定的。表格中同时给出了卡车和无人机的速度，单位为公里/小时。
 
-Each node has a soft time window $[e_i,l_i]$ (minutes); the depot window is $[0,l_{max}]$. Here $e_i$ is a fixed window endpoint, distinct from the decision variable $e_i^k$ for cumulative drone energy. The fixed deployment cost is $c^0$ per pair, truck operation costs $c$ per unit distance (\$/km), and drone operation costs $\hat c$ per unit time (\$/min). The earliness and lateness penalties are $c^e$ and $c^l$ (\$/min). The late-return penalty for pair $k$ is $c^k$ (\$/min), with the mandatory assumption in Table 3
+$d_i$的需求是针对客户$i\in N_c$的（以千克为单位）。卡车和无人机的载货能力分别为$W$和$\hat W$千克。无人机电池的容量$B$以分钟为单位衡量。卡车的服务时间$s_i$是针对$i\in N_c$而言的，而无人机的服务时间$\hat s_i$则针对$i\in N_d$而言，两者都以分钟为单位。所需的发射和回收时间分别为$s^l$和$s^r$分钟。$M$是一个足够大的数字，由模型直接给出，未作详细说明。
+
+每个节点都有一个固定的时间窗口$[e_i,l_i]$（以分钟为单位）；仓库的窗口时间为$[0,l_{max}]$。这里的$e_i$是一个固定的窗口终点，与用于累计无人机能量的决策变量$e_i^k$不同。固定的部署成本为每对$c^0$，卡车操作成本则为每单位距离$c$（\$/公里），而无人机操作成本则为每单位时间$\hat c$（\$/分钟）。提前和延迟的惩罚分别为$c^e$和$c^l$（\$/分钟）。对于$k$这一对来说，延迟返回的惩罚为$c^k$（\$/分钟）。这些数值在表3中有详细说明。
 \[
 c^k>c^l>c^e,\qquad k\in K.
 \]
-No numerical values from the computational experiments are fixed for (21).
+计算实验中的数值并未被固定下来。对于(21)，请保持所有数学符号的原始顺序不变，同时保留所有的数字。
 
-Let
+让
 \[
 \boldsymbol\theta=\{x_{ij}^k,y_{ij}^k,\hat y_{ij}^k,\ \forall k\in K,\ (i,j)\in A\},
 \]
-and let $\mathbf v$ be the vector of stochastic truck speeds on all arcs. A sample of $|\Xi|$ realisations $\mathbf v^\xi$ is generated, with $v_{ij}^\xi$ the fixed sampled truck speed on arc $(i,j)$ in scenario $\xi$. Section 3.3 uses
+让$\mathbf v$表示所有弧线上随机卡车行驶速度的向量。然后，从$|\Xi|$中选取一个样本，得到$\mathbf v^\xi$。在场景$\xi$中，弧线$(i,j)$上的卡车行驶速度被固定为$v_{ij}^\xi$。第3.3节中使用了这些数值。
 \[
 \frac{1}{|\Xi|}\sum_{\xi\in\Xi}Q(\boldsymbol\theta,\mathbf v^\xi)
 \quad\text{to approximate}\quad E[Q(\boldsymbol\theta,\mathbf v)].
 \]
-The linked recourse-value definition is
+链接到的“追索价值”定义是：
 \begin{equation}
 Q(\boldsymbol\theta,\mathbf v^\xi)
 =\min\left\{\sum_{i\in N_c}(c^e\delta_i^{-,\xi}+c^l\delta_i^{+,\xi})+\sum_{k\in K}c^k\delta^{k,\xi}\right\},\tag{13}
 \end{equation}
-where, for this definition only, the routing vector and speed realisation are fixed and the minimisation is subject to the already displayed (14)--(20) and Table 3 domains. In (21) these recourse rows are integrated scenario by scenario; (13) is a definition of the sampled value, not an additional optimisation objective.
+在此定义中，路由向量和速度实现是固定的，而最小化过程则受(14)--(20)以及表3中已显示的条件的限制。在(21)中，这些备选方案是根据具体情况进行整合的；(13)则是对采样值的定义，并非额外的优化目标。
 
-\subsection*{Variable roles and inherited domains}
-The first-stage routing and auxiliary variables are those of Table 2:
+\subsection*{变量角色和继承的域}
+第一阶段路由和辅助变量来自表2：
 \[
 \begin{aligned}
 x_{ij}^k,y_{ij}^k,\hat y_{ij}^k&\in\{0,1\},&& (i,j)\in A,\ k\in K,\\
@@ -243,16 +244,16 @@ e_i^k&\in[0,B],\\
 w_i^k&\in[0,\hat W].
 \end{aligned}
 \]
-Here $x_{ij}^k=1$ denotes truck $k$ traversing $(i,j)$ with its drone on board; $y_{ij}^k=1$ denotes the truck traversing independently; and $\hat y_{ij}^k=1$ denotes the drone traversing independently. Each is zero otherwise. The binary $z_i^k$ indicates that customer $i$ is served by drone $k$, and $u^k$ indicates deployment of pair $k$. The variable $e_i^k$ is the cumulative energy consumed by drone $k$ upon leaving node $i$ in a flight; $w_i^k$ is its payload after visiting node $i$. Table 2 gives these interval domains without separate node-index ranges; the rows above retain that presentation. In particular, the upper bound on $w_i^k$ supplies the drone capacity restriction.
+这里$x_{ij}^k=1$表示卡车$k$搭载其无人机在$(i,j)$处行驶；$y_{ij}^k=1$表示卡车独立行驶；而$\hat y_{ij}^k=1$表示无人机独立行驶。 每个都是零，其他情况也是如此。 二进制表示$z_i^k$意味着客户$i$由无人机$k$进行服务，而$u^k$则表示使用了$k$这一对设备进行部署。 变量$e_i^k$表示无人机$k$在离开节点$i$后所消耗的累积能量；而$w_i^k$则表示无人机在访问节点$i$后所携带的有效载荷。 表2中列出了这些区间范围，没有分别列出节点索引范围；上述行仍然保持这种呈现方式。所有数字都保持不变。 特别是，$w_i^k$的上限提供了无人机容量限制。
 
-For completeness, Table 2 also declares the auxiliary relative visit position
+为完整性起见，表2还列出了辅助的相对访问位置。
 \[
 \lambda_i^k\in\mathbb Z_+,\qquad 1\leq\lambda_i^k\leq n,
 \qquad i\in N_c,\ k\in K.
 \]
-It refers to the relative position of customer $i$ in the visit sequence of truck/drone $k$. It has no operative occurrence in (21) after the explicit exclusion of (9a)--(9b); no ordering rows are reinstated.
+它指的是客户$i$在卡车/无人机$k$的访问序列中的相对位置。在(21)中，由于已经明确排除了(9a)--(9b)，因此该指标不再有实际意义；也没有重新排序的行。
 
-For every scenario $\xi\in\Xi$, the Table 3 domains are
+对于每一个场景$\xi\in\Xi$，表3中的领域包括：
 \[
 \begin{gathered}
 \omega_i^{k,\xi}\geq0,\qquad
@@ -263,29 +264,19 @@ For every scenario $\xi\in\Xi$, the Table 3 domains are
 \gamma_i^{k,\xi}\in\{0,1\}.
 \end{gathered}
 \]
-These are the table's node- and pair-indexed domains, applied to the variables in the displayed rows; Table 3 does not separately enumerate node-index sets for these declarations. The recourse decision $\omega_i^{k,\xi}$ is the truck waiting time at node $i$. The auxiliary variables $\delta_i^{-,\xi}$ and $\delta_i^{+,\xi}$ measure service-start earliness and lateness, and $\delta^{k,\xi}$ measures the lateness of pair $k$ returning to the depot. Truck and drone arrival times are $\tau_i^{k,\xi}$ and $\hat\tau_i^{k,\xi}$; $\varphi_i^\xi$ is the service-start time. The ready-for-retrieval time is $\bar\tau_i^{k,\xi}$. The indicators $\alpha_i^\xi$ and $\beta_i^\xi$ are one if service occurs before the lower or after the upper window endpoint, respectively, and zero otherwise. Table 3 describes $\gamma_i^{k,\xi}$ as one if the truck arrives at retrieval node $i$ later than its drone, and zero otherwise.
+这些是表格中按节点和配对索引排列的域，它们应用于显示行中的变量。表3并未单独列出这些声明的节点索引集。$\omega_i^{k,\xi}$这个变量表示节点$i$处的卡车等待时间。辅助变量$\delta_i^{-,\xi}$和$\delta_i^{+,\xi}$分别用于衡量服务开始的早晚程度，而$\delta^{k,\xi}$则用于衡量配对$k$返回仓库的时间。卡车和无人机到达的时间分别用$\tau_i^{k,\xi}$和$\hat\tau_i^{k,\xi}$表示；$\varphi_i^\xi$则是服务开始的时间。准备检索的时间用$\bar\tau_i^{k,\xi}$表示。指标$\alpha_i^\xi$和$\beta_i^\xi$分别表示服务是在较低时间窗口内还是在上限时间窗口之后发生的，如果服务发生在较低时间窗口内，则值为1，否则值为0。表3中$\gamma_i^{k,\xi}$的值表示卡车在检索节点$i$处的到达时间比无人机晚，否则值为0。
 
-\subsection*{Common operational assumptions and printed qualifications}
-The problem description on physical pages 4--5 requires each customer to be served exactly once by either vehicle, with truck-only customers served by trucks. Each deployed homogeneous pair starts at and returns to the single depot. A drone may serve multiple customers in a flight, subject to payload and battery capacity, and may be launched and retrieved repeatedly along its truck's route, at different locations. At each customer location, a drone can be launched and retrieved at most once. When the paired vehicles reconvene, the one arriving first waits for the other. Customer nodes have drone aprons, so drone waiting energy is negligible. A retrieved drone receives a fully charged replacement battery. Vehicles start service immediately upon arrival at customers; trucks may wait after service before departing, including at the depot. Soft-window violations incur earliness or lateness penalties, and a return after $l_{max}$ incurs a late-return penalty rather than a hard return-time restriction.
+\subsection*{常见的操作假设和打印说明/备注}
+在物理页面4-5上的问题描述中，要求每位顾客只能由一辆车服务一次，而仅使用卡车的顾客则由卡车来服务。每对部署好的车辆都从同一个仓库出发，然后返回到同一个仓库。无人机可以在一次飞行中服务多个顾客，但这取决于其载荷能力和电池容量。无人机可以沿着卡车的路线多次往返于不同的地点。在每个顾客所在的位置，无人机最多只能被发射和回收一次。当这对车辆重新会合时，先到达的车辆会等待另一辆车。顾客节点有无人机停机坪，因此无人机的等待时间可以忽略不计。被回收的无人机会获得充满电的替换电池。车辆在到达顾客处后立即开始服务；卡车在离开之前可能需要等待一段时间，包括在仓库内等待。如果违反软窗口规定，将会面临提前或延迟服务的惩罚，而超过$l_{max}$时间的返回则只会面临延迟返回的惩罚，而不是严格的返回时间限制。
 
-\paragraph{Selected source resolutions and remaining qualifications.}
-The original Cartesian scopes and unfiltered sums reference pairs outside the
-page-6 arc set $A$. Select that graph definition: each arc-bearing row and
-each arc summand is restricted to its own directed arc in $A$. Incoming-depot
-sums are empty. No off-arc variable/distance is invented. This is not literal
-equivalence to malformed printed rows; original text remains in the change log.
+\paragraph{选定的源分辨率及剩余条件。}
+原始的笛卡尔范围与未过滤的和参考了对应于页面6弧集$A$之外的配对。选择该图定义：每个弧承载行和每个弧和项都限制于$A$中的相应有向弧。进库和合计数为空。没有引入任何外部弧变量/距离。这与打印出的畸形行并不完全相同；原始文本仍保留在变更日志中。
 
-Select the source-example depot convention $s_0=0$. Table 2 defines only customer
-service times. In page-2 Figure 1(i), waiting is zero, depot departure is zero,
-the first arc lasts three minutes and first-customer arrival is three.
-Combined with page-15 initial $\tau_0=0$ and page-16 non-retrieval recursion
-(23a), this yields $3=0+s_0+3+0$. This is an annotated inference from the example,
-not an explicit Table-2 statement. Use it in (15b),(16b). Do not fix
-$\varphi_0$ or $\bar\tau_0$, extend (20), or import rolling-horizon constraints.
+选择源示例仓库约定$s_0=0$。表2仅定义了客户服务时间。在第2页的图1(i)中，等待时间为零，仓库出发时间为零，第一个弧段持续时间为三分钟，第一个客户到达时间为三。结合第15页的初始条件$\tau_0=0$和第16页的非检索递归(23a)，可以得到$3=0+s_0+3+0$。这是一个基于示例的注释性推理，而非表2中的明确陈述。将其用于(15b)、(16b)中。不要固定$\varphi_0$或$\bar\tau_0$，扩展(20)，也不要引入滚动时域约束。
 
-The prose description of $\gamma_i^{k,\xi}$ compares arrival times, whereas (20) compares the drone arrival with the truck's arrival plus service time. The printed inequalities are retained. Finally, distances are tabulated in km, speeds in km/h, and service, battery, and penalty times in minutes, but the printed ratios $r_{ij}/v_{ij}^\xi$ and $\hat r_{ij}/\hat v$ have no factor of 60. Those printed expressions are retained without a unit-conversion repair.
+$\gamma_i^{k,\xi}$的描述部分比较了到达时间，而(20)则比较了无人机到达时间与卡车到达时间以及服务时间的总和。打印出来的不等式保持不变。最后，距离以公里为单位表示，速度以公里/小时为单位，而服务时间、电池充电时间和惩罚时间则以分钟为单位表示。不过，打印出来的比率$r_{ij}/v_{ij}^\xi$和$\hat r_{ij}/\hat v$中并没有60这个因子。这些打印出来的表达式保持不变，无需进行单位转换。
 
-\paragraph{Source scope.}
-This reconstruction uses the supplied original main-paper pages 2, 4--10, and specifically cited initialization/recursion on pages 15--16, including Tables 2--3 and the page images of (6), (7b), and the page-spanning (16a). The official supplementary materials are not supplied and remain unverified. The selected subject-to chain does not refer to their heuristic algorithms or proofs; no heuristic or rolling-horizon constraints are imported.
+\paragraph{来源范围。}
+该重建使用了提供的原始主论文的2、4-10页，并特别引用了15-16页的初始化/递归部分，包括表2-3以及(6)、(7b)的页面图像和跨页的(16a)。官方补充材料并未提供，且未经验证。所选的主题链并不涉及他们的启发式算法或证明；没有导入任何启发式或滚动视野约束。
 
 \end{document}

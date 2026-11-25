@@ -7,13 +7,14 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 
+\usepackage[UTF8]{ctex}
 \begin{document}
 
-\section*{Problem: Mixed-Integer Linear Programming (MILP), specifically a static network flow-based Vehicle Routing Problem with Pickup and Delivery and Split Deliveries (VRP with PD and SD). The model outputs vehicle and material flows, which must be parsed into specific routes. The paper proposes a Hierarchical Clustering and Routing method (HOGCR) for solution.}
+\section*{问题：混合整数线性规划（MILP），具体来说是一个基于静态网络流的车辆路径问题，涉及取货和送货以及分批送货的情况（VRP with PD and SD）。该模型会输出车辆和物料的流动情况，这些流动信息需要被解析为具体的路线。本文提出了一种分层聚类与路径规划方法（HOGCR）来解决问题。}
 
-\textbf{Model Source}: Directly Extracted
+\textbf{模型来源}：直接提取的
 
-\subsection*{Decision Variables}
+\subsection*{决策变量}
 \begin{align*}
 & UZ_{aop} \ge 0 && \forall a \in A, o, p \in C \\
 & LZ_{op} \ge 0 \text{ and integer} && \forall o, p \in C \\
@@ -23,10 +24,12 @@
 & SUP_{ao} \ge 0 && \forall a \in A, o \in CS
 \end{align*}
 
-\subsection*{Objective Function}
+\subsection*{目标函数}
+\[
 \text{Minimize } \sum_{v \in V} \sum_{(o,p) \in N} d_{op} Y_{opv} \quad (0)
+\]
 
-\subsection*{Constraints}
+\subsection*{约束条件：}
 \begin{align}
 & \sum_{p \in C} UZ_{apo} - \sum_{p \in C} UZ_{aop} + UDEV_{ao} = uq_{ao} && \forall a \in A, o \in CD \quad (1) \\
 & -\sum_{p \in C} LZ_{po} + \sum_{p \in C} LZ_{op} + LDEV_{o} = lq_{o} && \forall o \in CD \quad (2) \\
@@ -41,7 +44,7 @@
 & \sum_{p \in C} \sum_{o \in CS \cup CH} Y_{opv} \le mv_{v} && \forall v \in V \quad (10)
 \end{align}
 
-\subsection*{Complete Mathematical Model}
+\subsection*{完整的数学模型}
 % 集合定义
 \begin{align*}
 & A && \text{（某种资源或商品A的集合）} \\
@@ -76,7 +79,9 @@
 \end{align*}
 
 % 目标函数
+\[
 \text{Minimize } \sum_{v \in V} \sum_{(o,p) \in N} d_{op} Y_{opv} \quad (0)
+\]
 
 % 约束条件
 \begin{align}
@@ -93,10 +98,10 @@
 & \sum_{p \in C} \sum_{o \in CS \cup CH} Y_{opv} \le mv_{v} && \forall v \in V \quad (10)
 \end{align}
 
-\paragraph{Explicit data definitions and arc domain.}
-$CH$ is supplied explicitly; $tsup_a$ is supplied as the aggregate available quantity of commodity $a$.
-$SUP_{ao}$ allocates this aggregate supply among supply nodes.
-Set $UZ_{aop}=LZ_{op}=0$ whenever $(o,p)\notin N$, including self-arcs.
-All sums over $Y$ use only declared arcs; other entries are zero.
-$mv_v$ bounds the number of available departures from supply/hospital nodes.
+\paragraph{明确的数据定义和弧域。}
+$CH$以原始顺序直接给出；$tsup_a$表示商品$a$的总供应量。  
+$SUP_{ao}$将这一总供应量分配到各个供应节点中。  
+当$(o,p)\notin N$发生时，包括自环在内，都应设置$UZ_{aop}=LZ_{op}=0$。  
+所有在$Y$上的求和都仅使用已声明的弧线；其他条目则为零。  
+$mv_v$限制了从供应/医院节点出发的可用次数。
 \end{document}

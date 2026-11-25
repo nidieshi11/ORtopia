@@ -1,9 +1,10 @@
 \documentclass{article}
 \usepackage{amsmath,amssymb}
 \usepackage[margin=1in]{geometry}
+\usepackage[UTF8]{ctex}
 \begin{document}
 
-\section*{Adapted stochastic network revenue-management control}
+\section*{适应性随机网络收入管理控制}
 
 \begin{equation}
 \begin{aligned}
@@ -12,71 +13,71 @@ J_k(x)&=\max E\left[\sum_{t=1}^{k}R_tu_t\right],\\
 &u_t\in E_n.
 \end{aligned}\tag{6}
 \end{equation}
-The maximization is over acceptance processes for the given starting capacity vector $x$ and time-to-go $k$. The action condition applies at each $t=1,\ldots,k$. The accompanying information restriction is
+最大化过程是在给定的起始容量向量$x$和剩余时间$k$的条件下进行的。每个$t=1,\ldots,k$处都适用相应的行动条件。相关的信息限制包括：
 \[
 \mathcal{F}_t=\sigma(\{R_k;\ T\geq k\geq t\}),
 \qquad
 u_t\text{ is }\mathcal{F}_t\text{-measurable},\quad t=1,\ldots,k.
 \]
-The authors describe this as adaptation to the history of requests from $k$ to $t$. Optimizing this process provides a policy only for states reachable from $(x,k)$, which suffices to determine $J_k(x)$.
+作者将这一过程描述为对$k$到$t$之间请求历史的适应。优化这一过程仅适用于从$(x,k)$可达的状态，这足以确定$J_k(x)$的值。
 
-\paragraph{Printed information-index qualification.}
-The filtration above retains the printed $T$ and the use of $k$ inside the generating set. The surrounding prose instead describes history beginning at the starting time $k$. The formulation passages do not define $T$ or explicitly relate it to that starting time; no replacement of $T$ by $k$ is made here.
+\paragraph{印刷信息索引资格。}
+上述过滤过程中，仍然保留了打印出来的$T$，同时也在生成集中使用了$k$。而周围的文字则描述了从起始时间$k$开始的历史。那些描述性段落并没有定义$T$，也没有明确将其与那个起始时间联系起来；因此，这里并没有将$T$替换为$k$的情况。
 
-\subsection*{Fixed network data, state, and time}
-There are $m$ legs and $n$ origin--destination itineraries, indexed by $i=1,\ldots,m$ and $j=1,\ldots,n$. The fixed network matrix is
+\subsection*{固定的网络数据、状态和时间}
+有$m$条腿，以及$n$条往返路线，这些路线通过$i=1,\ldots,m$和$j=1,\ldots,n$进行索引。固定的网络矩阵是……
 \[
 A=[a_{ij}],\qquad
  a_{ij}=\text{number of seats on leg }i\text{ used by itinerary }j,
 \]
-with $a_{ij}=0$ if leg $i$ is not part of itinerary $j$. The notation $A^j$ denotes column $j$, and $A_i$ denotes row $i$. The notation $i\in A^j$ means that leg $i$ is used by itinerary $j$, and $j\in A_i$ means that itinerary $j$ uses leg $i$.
+使用$a_{ij}=0$，如果路段$i$不属于行程$j$的一部分。符号$A^j$表示列$j$，符号$A_i$表示行$i$。符号$i\in A^j$表示路段$i$被行程$j$使用，而$j\in A_i$表示行程$j$使用路段$i$。
 
-Each column $A^j$ is a multiple of the incidence vector of its itinerary; it is the incidence vector itself for a one-seat request. Requests need not use just one seat. Group requests can be represented by separate columns for possible group sizes, with the nonzero column entries equal to the group size and the itinerary revenue equal to the total group revenue.
+每一列中的$A^j$都是其行程的关联向量的倍数；对于单座位请求来说，它实际上就是关联向量本身。请求不一定只能使用一个座位。对于多个座位的请求，可以用不同的列来表示，其中非零的列项表示组的大小，而行程收入则等于整个组的收入总和。
 
-The state is the vector of leg capacities
+该状态就是腿部能力的向量。
 \[
 x=(x^1,\ldots,x^m).
 \]
-Selling itinerary $j$ changes the state to $x-A^j$. The selected interpretation assumes no cancellations or no-shows and no overselling of legs. No additional numerical state domain is imposed beyond the source's description of $x$ as leg capacities.
+出售行程$j$会将其状态更改为$x-A^j$。所选的解释假设没有取消或缺席的情况，也没有过度销售的情况。除了源代码中对$x$的描述之外，没有其他额外的数值状态域。
 
-Time is discrete and counted backwards: $k$ is the current number of periods remaining before departure, and $t$ denotes an arbitrary time-to-go. At most one itinerary request arrives in a period. Superscripts denote vector components and subscripts denote time, except for the explicitly defined matrix-row notation. The paper does not distinguish row and column vectors.
+时间是以离散的方式计算的，并且是向后计算的：$k$表示距离出发还有多少个周期，而$t$则表示还需要经过多少时间。在一个周期内，最多只能有一个行程请求被处理。上标表示向量的各个分量，下标则表示时间，除非有特别定义的矩阵行表示法。本文中并没有区分行向量和列向量。
 
-\subsection*{Request support and distribution assumptions}
-Define
+\subsection*{请求支持及分发假设}
+定义
 \[
 E_n=\{e_0,e_1,\ldots,e_n\},
 \qquad e_0=0,
 \]
-where $e_j$ is the $j$th unit $n$-vector for $j=1,\ldots,n$, and $e_0$ is the zero $n$-vector. The request support is
+其中，$e_j$是$j$th个单元$n$-向量，对应$j=1,\ldots,n$；而$e_0$则是零$n$-向量。请求支持的内容是：
 \[
 \mathcal{S}=\{R:R=\alpha e,\ e\in E_n,\ \alpha\geq0\}.
 \]
-The exogenous request vector satisfies
+外源请求向量满足要求。
 \[
 R_t=(R_t^1,\ldots,R_t^n)\in\mathcal{S},\qquad t\geq1.
 \]
-A component $R_t^j>0$ means that a request for itinerary $j$ occurred with revenue $R_t^j$; $R_t^j=0$ means that no request for that itinerary occurred. The realization $R_t=0$ means that no itinerary request occurred. Thus at most one component of $R_t$ is positive.
+组件$R_t^j>0$表示有请求请求了行程$j$，并且相关的收入为$R_t^j$；而$R_t^j=0$则表示没有对该行程提出过任何请求。而$R_t=0$则表示没有发生任何行程请求。因此，$R_t$组件中最多只有一个值是正的。
 
-The sequence $\{R_t;t\geq1\}$ is independent, with known joint distributions $F_t(r)$ supported on $\mathcal{S}$. Its marginal distributions satisfy
+序列$\{R_t;t\geq1\}$是独立的，其联合分布为已知的$F_t(r)$，该分布基于$\mathcal{S}$。其边缘分布满足…
 \[
 F_t^j(r)=P(R_t^j\leq r),\qquad
 F_t^j\text{ is continuous on }(0,+\infty),\qquad
 E[R_t^j]<\infty,
 \quad t\geq1,\ j=1,\ldots,n.
 \]
-No particular order of arrival is assumed. The distributions may depend on time. The accompanying distribution interpretation is printed as
+无需按照特定的顺序来安排到达时间。这些分布可能取决于时间因素。相关的分布解释已以书面形式给出。
 \[
 P(R_t^j>0)=1-F_t^j(0),
 \qquad
 P(R_t^j\leq r\mid R_t^j>0)
 =\frac{F_t^j(r)}{1-F_t^j(0)}.
 \]
-\emph{Printed inconsistency:} with the preceding definition of $F_t^j$, the displayed conditional-distribution expression does not remove the mass at zero from its numerator. It is retained as printed, without repair; the passage supplies no exceptional-case convention for a zero denominator.
+\emph{原文不一致之处：}按前文对 $F_t^j$ 的定义，列出的条件分布表达式的分子并未剔除零点的概率质量。 保持原样，无需修复；该段落未提供零分母的特殊情况约定。
 
-The additional bounded-support premise $P(R_t^j\leq C)=1$ for some constant $C$ is expressly required for the paper's asymptotic results, not for the adapted control problem (6), and is not imposed here.
+额外的有界支持前提$P(R_t^j\leq C)=1$，对于某个常数$C$，是本文的渐近结果所明确要求的，而不是针对适应性控制问题（6）的，因此在此并不强制执行。
 
-\subsection*{Acceptance decisions and inherited feasible-action definition}
-For a current state $x$ and realized request $r=(r^1,\ldots,r^n)\in\mathcal{S}$, the acceptance decision is an $n$-vector with the interpretation
+\subsection*{接受决策与继承的可行行动定义}
+对于当前状态$x$和已实现的请求$r=(r^1,\ldots,r^n)\in\mathcal{S}$，接受决策是一个$n$-向量，其含义如下：
 \[
 u_k^j=\begin{cases}
 1,&\text{if a request for itinerary }j\text{ is accepted at time }k,\\
@@ -84,20 +85,20 @@ u_k^j=\begin{cases}
 \end{cases}
 \qquad j=1,\ldots,n.
 \]
-The source describes the decision's dependence by
+该来源通过以下方式描述了该决定的依赖性：
 \[
 u_k^j=u_k^j(x,r^j),\qquad
 u_k=u_k(x,r),\qquad r\in\mathcal{S}.
 \]
-At most one request can be accepted in a period, and acceptance cannot oversell a leg. The source-defined feasible-action set at the current inventory is
+在某一时间段内，最多只能接受一项请求，且接受请求的数量不能超过该时间段内允许的最大数量。当前库存中，源代码中定义的可执行操作集合为
 \[
 \mathcal{U}(x)=\{e\in E_n:Ae\leq x\},
 \qquad u_k(x,r)\in\mathcal{U}(x).
 \]
-Here $x$ in $\mathcal{U}(x)$ is the inventory at the decision epoch, whereas $x$ in (6) is the given starting inventory. The cumulative almost-sure capacity constraint in (6) is retained; no additional request-matching constraint is introduced.
+在$\mathcal{U}(x)$中，$x$表示决策时刻的库存量，而(6)中的$x$则表示给定的初始库存量。在(6)中保留了累积的几乎确定容量约束；没有引入额外的请求匹配约束。
 
-\subsection*{Inherited value-function definition and boundary condition}
-The quantity $J_k(x)$ is the maximum expected revenue for seat inventory $x$ and time-to-go $k$. Its defining Bellman characterization in the original formulation is
+\subsection*{继承下来的价值函数定义和边界条件}
+数量$J_k(x)$是座位库存$x$和剩余时间$k$的最大预期收入。在原始公式中，其贝尔曼特征描述如下：
 \begin{equation}
 \begin{aligned}
 J_k(x)={}&\max_{u_k(\cdot)\in\mathcal{U}(x)}
@@ -105,12 +106,12 @@ E\bigl[R_ku_k(x,R_k)\\
 &\hspace{25mm}{}+J_{k-1}(x-Au_k(x,R_k))\bigr].
 \end{aligned}\tag{2}
 \end{equation}
-This characterizes the same value used in (6), rather than introducing another set of decision variables or a relaxation. Its boundary condition is
+这表示的是与(6)中使用的相同的值，而不是引入另一组决策变量或放宽条件。其边界条件为：
 \begin{equation}
 J_0(x)=0,\qquad\forall x.\tag{3}
 \end{equation}
 
-\paragraph{Source.}
-Talluri and van Ryzin, \emph{An Analysis of Bid-Price Controls for Network Revenue Management}, Management Science 44(11), Part 1 (1998): physical PDF pages 3--4 (printed pages 1579--1580) for the network, request, action, and value definitions, and physical PDF page 7 (printed page 1583) for the selected adapted formulation. The cited Bellman-equation reference, Bertsekas (1995), p.~18, was not supplied and is unverified; the relevant equations are printed in the supplied paper itself.
+\paragraph{来源。}
+Talluri和van Ryzin的《\emph{网络收入管理中的 Bid-Price 控制分析}》，《管理科学》第44卷第11期，第1部分（1998年）：网络、请求、操作和价值的定义分别见于物理PDF页面3-4（印刷页码1579-1580）；而选定的适应公式则见于物理PDF页面7（印刷页码1583）。关于Bellman方程的参考文献，Bertsekas（1995年）的论文，页码为~18，并未提供，因此无法验证；相关方程式则直接印在提供的论文中。
 
 \end{document}

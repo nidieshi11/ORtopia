@@ -7,24 +7,30 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 
+\usepackage[UTF8]{ctex}
 \begin{document}
 
 \section*{Problem: 组合优化问题，是设施选址问题（Location Problem）和车辆路径问题（Vehicle Routing Problem）的集成。论文将其命名为“选址或路径问题（Location-or-Routing Problem, LoRP）”，并指出它是位置路径问题（LRP）和集合覆盖问题（Set Covering Problem）的推广，形成了一个包含多个变体（如HMLoRP, pMLoRP等）的问题类。其核心数学模型是一个基于路径的集合覆盖模型（Set Covering Model），是一个混合整数线性规划（MILP）问题。由于路径变量指数级增长，论文使用分支定价（Branch-and-Price）算法进行精确求解。}
 
-\textbf{Model Source}: Directly Extracted
+\textbf{模型来源}：直接提取的
 
-\subsection*{Decision Variables}
+\subsection*{决策变量}
+\[
 \begin{aligned}
 & x_i \in \mathbb{Z}^+ && \forall i \in I && \text{(1 if facility $i$ is open)} \\
 & y_p \in \mathbb{Z}^+ && \forall p \in P && \text{(1 if path $p$ is selected)} \\
 & z_{ij} \in \mathbb{Z}^+ && \forall i \in I, j \in J_i && \text{(1 if customer $j$ is allocated to facility $i$)} \\
 & v_i \in \mathbb{Z}^+ && \forall i \in I && \text{(number of vehicles starting from facility $i$)}
 \end{aligned}
+\]
 
-\subsection*{Objective Function}
+\subsection*{目标函数}
+\[
 \min \quad w_F \sum_{i \in I} f_i x_i + w_R \sum_{p \in P} d_p y_p + w_A \sum_{j \in J} \sum_{i \in I_j} d_{ij} z_{ij}
+\]
 
-\subsection*{Constraints}
+\subsection*{约束条件：}
+\[
 \begin{aligned}
 & \sum_{i \in I_j} z_{ij} + \sum_{p \in \tilde{P}_j} y_p = 1 && \forall j \in J && \text{(2)} \\
 & \sum_{j \in J_i} q_j z_{ij} + \sum_{p \in P_i} q_p y_p \le C_i x_i && \forall i \in I && \text{(3)} \\
@@ -34,8 +40,10 @@
 & \sum_{i \in I} v_i \ge \left\lceil \frac{\sum_{j \in J \setminus \cup_{i \in I} J_i} q_j}{Q} \right\rceil && && \text{(8)} \\
 & x_i, y_p, z_{ij}, v_i \ge 0 && \forall i \in I, j \in J_i, p \in P && \text{(9)}
 \end{aligned}
+\]
 
-\subsection*{Complete Mathematical Model}
+\subsection*{完整的数学模型}
+\[
 \begin{aligned}
 \text{(SC)} \quad \min \quad & w_F \sum_{i \in I} f_i x_i + w_R \sum_{p \in P} d_p y_p + w_A \sum_{j \in J} \sum_{i \in I_j} d_{ij} z_{ij} \\
 \text{s.t.} \quad & \sum_{i \in I_j} z_{ij} + \sum_{p \in \tilde{P}_j} y_p = 1 && \forall j \in J && \text{(2)} \\
@@ -46,5 +54,6 @@
 & \sum_{i \in I} v_i \ge \left\lceil \frac{\sum_{j \in J \setminus \cup_{i \in I} J_i} q_j}{Q} \right\rceil && && \text{(8)} \\
 & x_i, y_p, z_{ij}, v_i \ge 0 \text{ and integer} && \forall i \in I, j \in J_i, p \in P && \text{(9)}
 \end{aligned}
+\]
 
 \end{document}

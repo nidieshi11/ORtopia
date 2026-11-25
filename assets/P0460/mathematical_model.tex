@@ -2,26 +2,27 @@
 \usepackage{amsmath,amssymb,mathtools}
 \usepackage[margin=1in]{geometry}
 \allowdisplaybreaks
+\usepackage[UTF8]{ctex}
 \begin{document}
 
-\section*{DFRP infinite-horizon discounted Markov decision model}
+\section*{DFRP无限时域折扣马尔可夫决策模型}
 
 \[
 \pi^*=\arg\max_{\pi}\mathbb{E}\left\{\left.
 \sum_{t=0}^{\infty}\gamma^t C_t\bigl(S_t,X^\pi(S_t)\bigr)
 \right|S_0\right\}.
 \]
-The optimization is over deterministic stationary policies: a policy $\pi$ maps every state $S_t$ to a feasible routing decision,
+优化过程是在确定性静态策略的基础上进行的：策略$\pi$将每个状态$S_t$映射到一个可行的路由决策上。
 \[
 X^\pi(S_t)\in\mathcal{X}(S_t)\qquad\text{for every state }S_t.
 \]
-Here $S_0$ is an initial state and
+这里的$S_0$是一个初始状态。
 \[
 0<\gamma<1.
 \]
-Stationarity is with respect to the complete state, including the day of the cycle; the policy may therefore be day-differentiated when viewed only as a function of the inventory component $R_t$.
+平稳性是指相对于整个状态而言的，包括周期中的每一天。因此，当仅将政策视为库存组成部分$R_t$的函数时，政策可能会因不同的天数而有所变化。
 
-\subsection*{Feasible routing decisions}
+\subsection*{可行的路由决策}
 \begin{equation}
 \mathcal{X}(S_t)=\left\{x_t:\begin{aligned}
 &\sum_{j\in\mathcal{L}:((i,[t]),(j,[t+1]))\in\mathcal{A}}x_{ijt}^{dl}=R_{it}^{dl}
@@ -34,82 +35,82 @@ Stationarity is with respect to the complete state, including the day of the cyc
 \end{aligned}\right\}.
 \tag{1}
 \end{equation}
-The fixed set $\mathcal{Y}$ is the set of routing decisions complying with the imposed 2-alt load plan. The tactical plan is exogenous and fixed for the operating season: it supplies the weekly trailer movement patterns and two next-terminal options for each location--destination pair. These next-terminal options depend on current location and ultimate destination, rather than on the shipment's origin. The source leaves $\mathcal{Y}$ abstract; it does not supply an algebraic expansion of this set in the MDP formulation.
+固定的集合$\mathcal{Y}$包含了那些符合规定的2-alt负载计划的路由决策。战术计划是固定的，适用于整个运营季节：它规定了每周的拖车移动模式，以及每个地点两个后续终端的选择方案。这些后续终端的选择方案取决于当前的位置和最终目的地，而不是货物的出发地。来源点$\mathcal{Y}$是一个抽象的概念；在MDP公式中，它并没有被赋予具体的代数表达式。
 
-\subsection*{Fixed inputs, network, and demand}
-Time is discretized into operational days. The start of each operational day is a decision epoch. The operating horizon is infinite, and trailer movement patterns and stochastic demand patterns repeat each cycle. The cycle length is $T$, with days
+\subsection*{固定的输入、网络以及需求}
+时间被划分为不同的运营日。每个运营日的开始是一个决策时刻。运营时间范围是无限的，而拖车移动模式以及随机需求模式则会在每个周期中重复出现。这个周期的长度是$T$天。
 \[
 \mathcal{T}=\{0,1,2,\ldots,T-1\}.
 \]
-The wrap-around time-space network and its nodes are
+这种环绕式的时间-空间网络及其节点是
 \[
 \mathcal{G}=(\mathcal{N},\mathcal{A}),\qquad
 n=(i,\tau),\quad i\in\mathcal{L},\ \tau\in\mathcal{T},
 \]
-where $\mathcal{L}$ is the set of terminal locations. The arc set consists of movement arcs $\mathcal{M}$ and inventory arcs $\mathcal{I}$:
+其中，$\mathcal{L}$表示终端位置集合。弧线集合由移动弧线$\mathcal{M}$和库存弧线$\mathcal{I}$组成。
 \[
 \mathcal{A}=\mathcal{M}\cup\mathcal{I}.
 \]
-Movement arcs have the form
+运动弧线的形式如下：
 \[
 ((i_1,\tau_1),(i_2,\tau_2)),\qquad i_1\ne i_2,
 \]
-and represent scheduled trailer dispatches from $i_1$ on day $\tau_1$ to $i_2$ on day $\tau_2$. All movement arcs $m\in\mathcal{M}$ have travel time one day. Travel times that are multiples of a base time period are accommodated in this version by adding dummy nodes to $\mathcal{L}$ and breaking multi-period arcs into single-period arcs. Thus freight is at terminals, not in transit on trailers, at decision epochs. Arcs leaving day $T-1$ wrap around to day
+并表示从$i_1$出发的预定拖车运输在$\tau_1$日至$i_2$日，以及$\tau_2$日的运输。所有运输路径$m\in\mathcal{M}$的行驶时间为一天。在本版本中，将基础时间周期的倍数时间通过向$\mathcal{L}$添加虚拟节点，并将多周期路径分解为单周期路径来处理。因此，货物在决策时刻位于终端，而不是在拖车上运输。从$T-1$日出发的运输路径则循环至该日。
 \[
 (T-1+1)\bmod T=0.
 \]
-For each movement arc
+对于每一个运动弧线：
 \[
 m=((i_1,\tau_1),(i_2,\tau_2))\in\mathcal{M},
 \]
-$Q_{i_1i_2\tau_1}$ is the capacity on its scheduled trailers supplied by the tactical plan. Inventory arcs have the printed form
+$Q_{i_1i_2\tau_1}$是战术计划所指定的、在预定拖车上能够容纳的容量。库存弧线以打印形式呈现。
 \[
 ((i_1,\tau_1),(i_2,\tau_1+1)),\qquad i_1=i_2,
 \]
-with the network's wrap-around interpretation. They have duration one day and are uncapacitated: holding a pallet at a terminal is always a feasible option.
+采用网络的环绕解释方式。它们的持续时间为一天，且无容量限制：在终端处持有托盘始终是一个可行的选择。
 
-The flat network, without the time dimension, is
+没有时间维度的扁平网络是
 \[
 \mathcal{G}^{flat}=(\mathcal{L},\mathcal{A}^{flat}),
 \]
-where $\mathcal{A}^{flat}$ describes how terminals are connected.
+其中，$\mathcal{A}^{flat}$描述了终端之间的连接方式。
 
-A commodity comprises pallets with common origin $o$, destination $d$, availability day $e$, and due day $l$, with $o,d$ terminal locations and $e,l\in\mathcal{T}$. Its random quantity is
+该商品由多个托盘组成，这些托盘的共同来源为$o$，目的地为$d$，可用日期为$e$，到期日为$l$。此外，还有$o,d$个终端位置以及$e,l\in\mathcal{T}$个其他信息。其随机数量为
 \[
 D_{o,d,e,l}\in\mathbb{Z}_{\geq0},
 \]
-with finite support and given distributional information. It is the number of pallets originating at $o$ on day $e$ and promised delivery at $d$ by day $l$. The source assumes
+在有限的支持和给定的分布信息下。这是从$o$出发，在$e$日产生的托盘数量，并承诺在$d$日之前在$l$日交付。来源方假设
 \[
 D_{o,d,e,l}\ \text{and}\ D_{o',d',e',l'}
 \ \text{are independent for }e\ne e'.
 \]
-Demand quantities are realized in each cycle. Pickup from shippers and delivery to consignees are city operations and are exogenous to this model. Due days are not hard deadlines: late delivery is permitted subject to penalties, and freight in danger of being too late is outsourced.
+各周期中都会实现需求量的交付。从发货人到收货人的运输属于城市内部的操作，与这个模型无关。截止日期并不是硬性规定：如果延迟交付，将会受到处罚；而那些可能逾期交付的货物则会被外包处理。
 
-The total possible sojourn time of each commodity in the system is no more than $T$. An instance of a commodity must be delivered, either by the carrier or by a third party, before a new instance can potentially appear. Pallets leave the system only through delivery to their ultimate destination or outsourcing.
+系统中每种商品的总停留时间不得超过$T$。在新的商品出现之前，必须先由运输商或第三方将现有商品交付完毕。托盘只有通过交付到最终目的地或外包给第三方后，才能离开该系统。
 
-\subsection*{State and decision definitions}
-For decision epochs
+\subsection*{状态与决策定义}
+对于决策阶段
 \[
 t\in\mathbb{Z}_{\geq0},\qquad [t]:=t\bmod T,
 \]
-the state is
+该状态是
 \[
 S_t=([t],R_t),\qquad
 R_t=(R_{it}^{dl})_{l\in\mathcal{T},\,i,d\in\mathcal{L},\,i\ne d}.
 \]
-$R_{it}^{dl}$ counts pallets at terminal $i$ at the beginning of epoch $t$ that must be delivered to terminal $d$ by day $l$. The inventory does not distinguish origins or availability times. The day $[t]$ specifies the available trailer capacities and the position in the repeating demand pattern.
+$R_{it}^{dl}$统计终端处的托盘数量；$i$统计纪元开始时的数量；$t$必须于$d$日交付到终端的托盘数量；$l$。库存不区分来源或可用时间。$[t]$日表示可用的拖车容量以及重复需求模式中的位置。
 
-The routing decision vector is
+路由决策向量是
 \[
 x_t=(x_{ijt}^{dl})_{l\in\mathcal{T},\,i,j,d\in\mathcal{L}}.
 \]
-For $((i,[t]),(j,[t+1]))\in\mathcal{A}$, $x_{ijt}^{dl}$ counts pallets with destination $d$ and due day $l$ loaded on that arc: $i\ne j$ means movement, while $i=j$ means holding at terminal $i$. Routing is the only decision; outsourcing is part of the transition, not an independent decision.
+对于$((i,[t]),(j,[t+1]))\in\mathcal{A}$，$x_{ijt}^{dl}$指的是那些目的地为$d$，交货日期为$l$的托盘：其中，$i\ne j$表示运输过程，而$i=j$则表示在终端站$i$的暂存。路由选择是唯一的决策；外包只是过渡过程中的一部分，并非独立的决策。
 
-\paragraph{Printed indexing scope.}
-The state vector is defined only for $i\ne d$, whereas the first row of (1) is printed for all $i,d\in\mathcal{L}$, including $i=d$. The printed scope is retained; no value for $R_{dt}^{dl}$ is supplied here to repair that mismatch. Likewise, the decision vector and integrality row are printed over all $i,j,d\in\mathcal{L}$, while the movement interpretation and the flow sums refer to network arcs. No additional non-arc zero constraints are imposed.
+\paragraph{印刷索引范围。}
+状态向量仅适用于$i\ne d$，而(1)中的第一行则适用于所有$i,d\in\mathcal{L}$，包括$i=d$。所打印的范围被保留下来；这里没有为$R_{dt}^{dl}$提供任何值来修复这种不匹配。同样，决策向量和整体性行也适用于所有$i,j,d\in\mathcal{L}$，而运动解释和流量总和则指的是网络弧线。没有额外的非弧线零约束条件被施加。
 
-\subsection*{Deterministic post-decision and stochastic transitions}
-After a feasible decision $x_t\in\mathcal{X}(S_t)$, the system first moves deterministically from $R_t$ to the post-decision inventory $\bar R_t=(\bar R_{it}^{dl})$, before new freight arrives:
+\subsection*{确定性决策后的状态转移与随机性状态转换}
+在做出可行的决策$x_t\in\mathcal{X}(S_t)$之后，系统会先确定性地从$R_t$转移到决策后的库存状态$\bar R_t=(\bar R_{it}^{dl})$，之后才会处理新的货物。
 \begin{equation}
 \bar R_{i,t}^{dl}=
 \begin{cases}
@@ -122,21 +123,21 @@ After a feasible decision $x_t\in\mathcal{X}(S_t)$, the system first moves deter
 \end{cases}
 \tag{2}
 \end{equation}
-The fixed parameter $p$ controls lateness tolerance. The function $\Delta^{out}(t+1,i,d,p)$ returns 1 if the pallet will be outsourced, meaning that its earliest arrival is $p$ or more days after due day $l$, based on the shortest path in $\mathcal{G}$ from $i$ to $d$ starting at time $t+1$; it returns 0 otherwise. In the wrap-around network, the source says that this function first determines whether due day $l$ is in the past or future using the sojourn-time assumption, then determines whether outsourcing is inevitable. Outsourcing is assessed as soon as this becomes clear. For a pallet sent from $i$ to $j$ at epoch $t$, the outsourcing penalty is assessed at $t$ and the pallet is removed before epoch $t+1$. Equation (2) also removes pallets delivered to their ultimate destinations.
+固定参数$p$控制延迟容忍度。函数$\Delta^{out}(t+1,i,d,p)$在托盘将被外包的情况下返回1，这意味着其最早到达时间为$p$天或更多，且晚于截止日期$l$，这是基于从时间$t+1$开始，在$\mathcal{G}$中从$i$到$d$的最短路径；否则返回0。在循环网络模型中，来源方表示该函数首先根据逗留时间假设判断截止日期$l$是在过去还是未来，然后判断外包是否不可避免。一旦确定这一点，就会立即评估外包情况。对于在时刻$t$从$i$发送到$j$的托盘，外包惩罚会在$t$进行评估，并且在时刻$t+1$之前将托盘移除。方程（2）也适用于运送到最终目的地的托盘。
 
-\paragraph{Printed outsourcing notation and boundary.}
-Although its definition depends on due day $l$, the printed argument list of $\Delta^{out}(t+1,i,d,p)$ omits $l$; that list is retained. The preceding prose says a pallet can be late ``by up to $p$ days'' before being too late, but the definition following (2) says ``$p$ or more days,'' and the example in the transition paragraph outsources at $p$ days. The operative reading here is the definition accompanying (2), including equality at $p$; no threshold repair is made.
+\paragraph{印刷外包表示法和边界。}
+虽然其定义取决于特定日期$l$，但$\Delta^{out}(t+1,i,d,p)$中的打印参数列表却省略了$l$；不过，该列表本身仍然被保留了下来。 前面的文字说托盘可延迟“至多 $p$ 天”才算过期，但式 (2) 后的定义写的是“$p$ 天或更久”，且状态转移说明中的例子在延迟 $p$ 天时即外包。 这里的操作内容是指(2)中的定义，包括$p$处的等式；没有进行任何阈值修复。
 
-The stochastic arrival transition is
+随机到达转移是
 \begin{equation}
 R_{i,t+1}^{dl}=\bar R_{i,t}^{dl}+D_{i,d,[t+1],l}
 \qquad\forall d\in\mathcal{L},\ l\in\mathcal{T},\ i\ne d.
 \tag{3}
 \end{equation}
-Here $i$ is a terminal location as in the inventory definition; the displayed quantifier is retained as printed. The next complete state is determined by the same state definition at epoch $t+1$, with cycle day $[t+1]$.
+这里$i$是库存定义中的终端位置；显示的量化因子保持原样。下一个完整状态由$t+1$时刻的相同状态定义决定，周期为$[t+1]$天。
 
-\subsection*{One-period reward}
-For state $S_t$ and feasible routing $x_t$, the three printed components are
+\subsection*{单期奖励}
+对于状态$S_t$和可行的路由$x_t$，这三个打印出来的组件是：
 \begin{align*}
 C_t^1(S_t,x_t)
 &=\beta\sum_{d,l,i,j}x_{ijt}^{dl}\,1_{\{j=d\}},\\
@@ -149,17 +150,17 @@ C_t^3(S_t,x_t)
 C_t(S_t,x_t)
 &=C_t^1(S_t,x_t)+C_t^2(S_t,x_t)+C_t^3(S_t,x_t).
 \end{align*}
-The sums retain the source's shorthand indices $d,l,i,j$, corresponding to terminal indices $d,i,j\in\mathcal{L}$ and due day $l\in\mathcal{T}$. The factors $1_{\{\cdot\}}$ are indicators of their displayed conditions.
+这些求和结果保留了原文中的简写索引$d,l,i,j$，这些索引对应于终端索引$d,i,j\in\mathcal{L}$和到期日$l\in\mathcal{T}$。而因子$1_{\{\cdot\}}$则代表了它们所代表的特定条件。
 
 \begin{itemize}
-\item $\beta$ is revenue per pallet delivered by the carrier to its final destination. Outsourced deliveries do not earn this revenue.
-\item $c^{late}$ is the per-pallet, per-day late-delivery penalty. The function $\Delta^{late}(t,l,p)$ returns 1 if a pallet will be late when delivered to its ultimate destination $d$ by the end of decision epoch $t$, and 0 otherwise. The function $\Lambda(t,l,p)$ returns the number of days the pallet will be late if $j=d$ and $\Delta^{late}(t,l,p)=1$, and 0 otherwise. These functions are retained in the abstract form used in the paper.
-\item $c^{out}$ is the per-pallet outsourcing penalty. The source describes $\delta(j,d)$ as the shortest path from terminal $j$ to destination $d$ in $\mathcal{G}^{flat}$, and uses it as the remaining travel distance: the outsourcing penalty is proportional to that distance. No additional edge-length convention is imposed.
+\item $\beta$指的是承运人将货物交付到最终目的地时所获得的收入。外包运输服务并不产生这种收入。
+\item $c^{late}$表示每个托盘在到达最终目的地$d$时迟到的惩罚金额。函数$\Delta^{late}(t,l,p)$在决策时期$t$结束时，如果托盘会迟到，则返回1；否则返回0。函数$\Lambda(t,l,p)$则返回托盘迟到的天数，如果满足$j=d$和$\Delta^{late}(t,l,p)=1$的条件，则返回该天数；否则返回0。这些函数以论文中使用的抽象形式保留下来。
+\item $c^{out}$是每托盘外包的惩罚费用。来源将$\delta(j,d)$描述为从终端$j$到目的地$d$在$\mathcal{G}^{flat}$中的最短路径，并将其作为剩余的行程距离：外包惩罚费用与该距离成正比。没有额外的边长约定。
 \end{itemize}
-The fixed parameters $\beta$, $c^{late}$, and $c^{out}$ are the same for all commodities. Numerical values and demand distributions used only in the computational experiments are not imposed on this formulation.
+固定参数$\beta$、$c^{late}$和$c^{out}$对所有商品都是相同的。仅在计算实验中使用的数值和需求分布并不适用于这一公式。
 
-\subsection*{Linked optimality equations}
-The paper gives the following Bellman characterization and optimal decision rule for this same discounted MDP:
+\subsection*{关联的最优性方程}
+该论文给出了针对这一相同的折现马尔可夫决策过程所适用的贝尔曼特征描述以及最优决策规则：
 \begin{equation}
 V^*(S_t)=\max_{x_t\in\mathcal{X}(S_t)}
 \left\{C_t(S_t,x_t)+\gamma\mathbb{E}\left[
@@ -174,9 +175,9 @@ X^{\pi^*}(S_t)=\arg\max_{x_t\in\mathcal{X}(S_t)}
 \qquad\forall S_t.
 \tag{5}
 \end{equation}
-$V^*$ is the optimal expected total future discounted reward from a state onward. The next state is obtained through (2)--(3) under the selected action. The conditioning in (4)--(5) is retained exactly as printed.
+$V^*$是从某个状态开始，未来预期获得的总奖励的最佳值。下一个状态是通过(2)--(3)公式在选定的动作下获得的。而(4)--(5)中的条件设定则保持原样。
 
-\paragraph{Source scope.}
-This article transcribes the model in Sections 3.1--3.2.5 of Baubaid, Boland, and Savelsbergh, \emph{The Dynamic Freight Routing Problem for Less-than-Truckload Carriers}, November 5, 2020, physical PDF pages 7--12, using the supplied page images where available. The cited companion paper on designing 2-alt load plans is not supplied and is unverified here; its design formulation is not substituted for the fixed routing set $\mathcal{Y}$. No official supplement was supplied. The ADP approximations, extended integer-programming subproblems, aggregation schemes, and experimental instance restrictions are outside this selected model.
+\paragraph{来源范围。}
+本文转录 Baubaid、Boland 与 Savelsbergh 的论文 \emph{零担运输承运人的动态货运路径问题} 中第 3.1 至 3.2.5 节的模型，日期为 2020 年 11 月 5 日，PDF 实际第 7 至 12 页；可用时以所提供的页面图像为准。 所引用的关于设计 2-alt 负载方案的配套论文并未提供，因此在此无法验证其准确性；该论文中的设计方案并未被用作固定路由集 $\mathcal{Y}$的替代方案。 没有提供官方补充材料。 ADP近似方法、扩展的整数编程子问题、聚合方案以及实验性实例限制等，都超出了这个选定模型的范畴。
 
 \end{document}

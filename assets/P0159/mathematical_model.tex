@@ -9,7 +9,7 @@
 
 
 
-\subsection*{Decision Variables}
+\subsection*{决策变量}
 \begin{align*}
 & n_{brbc} \in [0, u_{brb}] && \text{number of new $b$-type electric buses assigned to route $r$ and charged at a $c$-type charger} \\
 & y_{rbc} \in \{0, 1\} && \text{binary indicator equal to 1 iff a new $b$-type electric bus is assigned to route $r$ and charged at a $c$-type charger} \\
@@ -34,10 +34,12 @@
 & \xi_{jrc}, \xi_{jrbc} \in \{0, 1\} && \text{auxiliary binary variables for linearization of max function}
 \end{align*}
 
-\subsection*{Objective Function}
+\subsection*{目标函数}
+\[
 \max \quad \sum_{r \in R} \left( Z_r - \frac{\sum_{b \in V_r} nv_{rb} cap_b}{dem_r} \right) - \frac{\sum_{j \in N} \sum_{c \in C} nc_{jc}}{|N| \sum_{c \in C} u_{cc}} - \frac{\sum_{j \in N} \sum_{c \in C} np_{jc}}{\sum_{j \in N} u_{pj}} - \frac{\sum_{t \in T \setminus T^O} \beta_t}{|T|} - \frac{\sum_{j \in N \setminus N^O} \sum_{t \in T_j} \gamma_{tj}}{|N||T|}
+\]
 
-\subsection*{Constraints}
+\subsection*{约束条件：}
 \begin{align*}
 &\text{Capital cost:} \\
 & \sum_{j \in N} csta_j ns_j + \sum_{j\in N}\sum_{c \in C} ccp_c np_{jc} + \sum_{r \in R} \sum_{b \in B_r} \left( cbus_b * \sum_{c \in C_b} n_{brbc} \right) + \sum_{t \in T \setminus T^O} ccpst \beta_t + \sum_{t \in T \setminus T^O} \sum_{j \in N \setminus N^O} cl_{tj} \gamma_{tj} \leq cc \tag{2} \\

@@ -2,15 +2,16 @@
 \usepackage{amsmath,amssymb,mathtools}
 \usepackage[margin=1in]{geometry}
 \allowdisplaybreaks
+\usepackage[UTF8]{ctex}
 \begin{document}
 
-\section*{Full D-ALP and its single-nurse greedy policy}
+\section*{完整的 D-ALP 模型及其单护士贪婪策略}
 \begin{equation}
 \mathbf{D\text{-}ALP}:\quad
 \min_{\vec\beta}\sum_{s\in S,\,a\in A_s}\beta(s,a)c(s,a).
 \tag{20a}
 \end{equation}
-Subject to
+在以下条件下：
 \begin{align}
 (1-\gamma)\sum_{s\in S,\,a\in A_s}\beta(s,a)&=1,\tag{20b}\\
 \sum_{s\in S,\,a\in A_s}\beta(s,a)
@@ -21,44 +22,44 @@ Subject to
 &\geq\mathbb E_\alpha[Y_{kl}],&&\forall kl,\tag{20d}\\
 \vec\beta&\geq0.\tag{20e}
 \end{align}
-Here
+这里
 \[
 \vec\beta=\{\beta(s,a);\ \forall s\in S,\ \forall a\in A_s\},
 \]
-and $\beta(s,a)$ is the dual variable for a state--action pair. The state--action pairs index the full model, not a restricted column set. The parameters used by the policy are the optimal dual prices of (20b), (20c), and (20d), respectively $\eta^*$, $\tau^*_{tklj}$, and $\rho^*_{kl}$. No two-index or one-dimensional heuristic reduction is imposed.
+$\beta(s,a)$是状态-动作对的双变量。状态-动作对索引的是整个模型，而不是某个有限的列集合。策略所使用的参数分别是(20b)、(20c)和(20d)的最优双变量价格，分别表示为$\eta^*$、$\tau^*_{tklj}$和$\rho^*_{kl}$。没有采用任何二维或一维的启发式降维方法。
 
-\section*{Fixed problem data and index scope}
-The source is Khorasanian, Patrick, and Saur\'e, \emph{Dynamic Home Care Routing and Scheduling with Uncertain Number of Visits per Referral}, preprint dated March 12, 2024, Sections 2--4 and Electronic Companion EC.1. Equation numbers below are the source numbers.
+\section*{固定了问题数据和索引范围。}
+来源为 Khorasanian、Patrick 和 Saur\'e 的预印本 \emph{每次转介访视次数不确定的动态居家护理路径与排程}，日期为 2024 年 3 月 12 日，采用第 2 至 4 节和电子附录 EC.1。 下面的方程编号是来源编号。
 
-There are $K$ service types and $L$ regions. Regions are equal-sized squares, with their centers used as patient locations. Location $0$ is the depot. The described area is a circular grid with Manhattan distances; the authors also allow asymmetric areas. Each day's route starts and ends at the depot. Known travel times are $d_{ll'}$, for $l,l'\in\{1,\ldots,L\}\cup\{0\}$. For service type $k$, $h_k$ is the constant number of days between consecutive visits, $T_k$ is the maximum wait for an accepted referral's first visit, $e_k$ is the deterministic service time per visit, and $\hat J_k$ is the random required number of visits, at most $J_k$. The distribution of $\hat J_k$ is input data. The service time includes a small fixed allowance for travel between actual patient locations and the region-center approximation.
+有$K$种服务类型以及$L$个区域。这些区域被划分为大小相等的正方形，其中心被用作患者的位置。位置$0$是仓库。所描述的区域是一个以曼哈顿距离计算的圆形网格；作者也允许使用非对称的区域。每天的路线都从仓库开始并结束。已知的旅行时间为$d_{ll'}$，分别对应$l,l'\in\{1,\ldots,L\}\cup\{0\}$。对于服务类型$k$，$h_k$是连续两次访问之间的固定天数，$T_k$是接受推荐后首次访问的最大等待时间，$e_k$是每次访问的确定性服务时间，而$\hat J_k$是所需的随机访问次数，最多为$J_k$次。$\hat J_k$的分布是输入数据。服务时间还包括在实际患者位置与区域中心之间转移的少量固定费用。
 
-The regular daily shift length is $\chi$ and the maximum allowable overtime is $\chi'$. The geographical accessibility premise is
+常规的每日轮班时间为$\chi$，而允许的最长加班时间为$\chi'$。地理上的可达性条件为：
 \[
 d_{0,l}+\max_k\{e_k\}+d_{l,0}\leq\chi,\qquad\forall l.
 \]
-Decisions are made once daily before work starts. A referral arriving during a day does not require a visit that same day. The rolling planning horizon is
+决策是在每天工作开始前做出的。如果某一天收到转诊请求，则不需要在同一天进行就诊。滚动规划的时间范围为……
 \[
 T=\max\{\max_k\{h_k\},\max_k\{T_k\}\}.
 \]
-Day $t$ becomes day $t-1$ at the next epoch. Index ranges are
+在下一个时期，$t$这一天将变成$t-1$这一天。各索引范围保持不变。
 \[
 t=1,\ldots,T,\qquad k=1,\ldots,K,\qquad
 l=1,\ldots,L,\qquad j=0,\ldots,J_k-1.
 \]
-Unqualified sums and quantifiers over these indices have these ranges; in particular the range of $j$ depends on $k$. In the routing constraints, $l,l'$ denote regions; depot travel is written explicitly using index $0$.
+这些索引上的无条件求和与量词具有特定的范围；特别是$j$的范围取决于$k$。在路由约束中，$l,l'$表示区域；而仓库的行程则通过索引$0$来明确表示。
 
-New referrals have known, steady-state daily distributions for each service type and region. $Y_{kl}$ denotes the corresponding referral count, and $\mathbb E[Y_{kl}]$ its expected value. These distributions remain abstract in the general model. The Poisson arrivals, numerical discount factor, service-type ranges, and cost-weight values of Section 7 are experimental settings, not additional restrictions of this full general formulation. The symbol $\gamma$ is the daily discount factor of the discounted infinite-horizon model; Sections 2--4 do not print a numerical interval for it.
+新的引用方式具有已知的、稳定的日分布规律，适用于每种服务类型和地区。$Y_{kl}$表示相应的引用次数，而$\mathbb E[Y_{kl}]$则表示其预期值。这些分布在整个模型中仍然保持抽象状态。第7节中提到的泊松到达、数值折扣因子、服务类型范围以及成本权重值都是实验性设置，并非该完整通用公式的额外限制条件。符号$\gamma$表示无限时间范围内的日折扣因子；第2至4节并未给出其具体的数值区间。
 
-Only new referrals can be rejected. Once accepted, a patient must be served until discharge. Visits have no within-day appointment-time restriction. Only the immediate next visit is scheduled: whether another visit is needed becomes known at the preceding visit. A diverted visit is served by an on-call nurse, assumed available near every location; diversion does not discharge the patient.
+只有新的转诊请求才能被拒绝。一旦被接受，患者必须得到治疗，直到出院为止。就诊时间没有限制，只有下一次就诊的时间需要安排。是否需要再次就诊的情况，会在之前的就诊时告知患者。如果就诊需要改期，则由值班护士负责安排，假设每个地点都有值班护士可用；不过，改期并不会使患者出院。
 
-\section*{States and structural zeros}
-The state is $s=(\vec x,\vec y)$, where
+\section*{状态与结构上的零}
+状态为$s=(\vec x,\vec y)$，即
 \[
 \vec x=\{x_{tklj};\ t=1,\ldots,T,\ k=1,\ldots,K,\ l=1,\ldots,L,\ j=0,\ldots,J_k-1\},
 \qquad
 \vec y=\{y_{kl};\ \forall kl\}.
 \]
-Here $x_{tklj}$ counts patients of type $k$ in region $l$ with $j$ visits completed before day $t$ and visit $j+1$ assigned to day $t$. Patients with $J_k$ completed visits have left the system. The count $y_{kl}$ is the number of new referrals awaiting a decision. The finite upper bounds $x^{\max}_{tklj}$ and $y^{\max}_{kl}$ are fixed input values, left abstract by the authors.
+这里，$x_{tklj}$表示在区域$l$中，患有类型$k$的患者数量。在日期$t$之前完成了$j$次就诊，而就诊$j+1$被安排到了日期$t$。已经完成了$J_k$次就诊的患者已经离开了系统。计数$y_{kl}$表示等待决策的新转诊人数。有限的上下限$x^{\max}_{tklj}$和$y^{\max}_{kl}$是固定的输入值，由作者抽象给出。
 \begin{equation}
 \begin{split}
 S=\{(\vec x,\vec y)\mid{}&x_{tklj}\leq x^{\max}_{tklj},\ \forall tklj,
@@ -67,19 +68,19 @@ S=\{(\vec x,\vec y)\mid{}&x_{tklj}\leq x^{\max}_{tklj},\ \forall tklj,
 \quad y_{kl}\in\mathbb Z_{\geq0},\ \forall kl\}.
 \end{split}\tag{1}
 \end{equation}
-The accompanying state-defining prose additionally specifies
+附带的、用于定义状态的文字描述也进行了相应的说明。
 \begin{align*}
 x_{tklj}&=0,&&\forall tklj,\ t\geq h_k+1,\ j\geq1,\\
 x_{T_k,kl,0}&=0,&&\forall kl.
 \end{align*}
-First-visit state entries $x_{tkl,0}$ can be nonzero only for $t\leq T_k-1$. The source writes the set of always-zero indices as
+首次访问状态条目$x_{tkl,0}$只有在$t\leq T_k-1$的情况下才能为非零值。源代码中始终为零的索引集合被表示为
 \[
 \Theta=\{\forall tklj\mid(t\geq h_k+1,j\geq1)\cup(T_k\leq t\leq T,j=0)\}.
 \]
-Thus $x_{tklj}=0$ for indices in $\Theta$, as specified by that prose. These are state restrictions, not restrictions forcing the ALP coefficients $\tau_{tklj}$ to zero.
+因此，$x_{tklj}=0$应保留在$\Theta$中的索引位置，正如该文本所指定的那样。这些只是状态限制，并非强制要求ALP系数$\tau_{tklj}$为零的限制。
 
-\section*{Actions and the inherited feasible action set}
-For a given state, the action is
+\section*{动作以及继承下来的可行动作集合}
+对于给定的状态，该动作是
 \[
 a=(\vec r,\vec n,\vec z,\vec o,u),\qquad
 \vec r=\{r_{kl};\forall kl\},\quad
@@ -87,9 +88,9 @@ a=(\vec r,\vec n,\vec z,\vec o,u),\qquad
 \vec z=\{z_{kl};\forall kl\},\quad
 \vec o=\{o_{ll'};\forall ll'\}.
 \]
-The quantities $r_{kl}$, $n_{tkl}$, and $z_{kl}$ are, respectively, numbers of rejected new referrals, accepted new referrals assigned to day $t$, and diverted visits. First visits of accepted referrals are assigned within their respective wait-time targets. The binary variable $o_{ll'}$ takes value one if the nurse serves location $l$ before $l'$. The quantity $u$ is overtime. Diversion, routing, and overtime concern only day 1, and diversion concerns one visit of each patient at a time.
+$r_{kl}$、$n_{tkl}$和$z_{kl}$分别表示被拒绝的新转诊次数、在$t$日被接受的新的转诊次数，以及被转接的就诊次数。被接受的转诊的首次就诊次数则按照各自的等待时间目标进行分配。二进制变量$o_{ll'}$的值为1，表示护士在$l$之前为地点$l'$提供了服务。$u$表示超时次数。转接、路由和超时问题仅涉及第一天，而转接则每次只涉及一位患者的就诊情况。
 
-The auxiliary variable $w_l$ indicates a location to be visited, $f_l$ represents accumulated travel time from the depot to location $l$, $q$ is the day's total travel time, and $g$ is the day's tour length. The fixed coefficient $M$ is described only as a big number.
+辅助变量$w_l$表示需要访问的地点，$f_l$表示从仓库到地点$l$的累计旅行时间，$q$是当天的总旅行时间，而$g$则是当天的游览长度。固定系数$M$仅以一个大数字的形式描述。
 \begin{align}
 r_{kl}&=y_{kl}-\sum_{t=1}^{T_k}n_{tkl},&&\forall kl,\tag{2}\\
 z_{kl}&\leq\sum_jx_{1,klj}+n_{1,kl},&&\forall kl,\tag{3}\\
@@ -105,17 +106,17 @@ g&=q+\sum_k\left(\sum_{lj}x_{1,klj}+\sum_ln_{1,kl}-\sum_lz_{kl}\right)e_k,\tag{1
 g&\leq\chi+u,\tag{11}\\
 u&\leq\chi'.\tag{12}
 \end{align}
-The source defines $A_s$ as the set of all feasible actions for state $s$ satisfying (1)--(12), with the state and action meanings just stated. At the action-generation stage $s$ is fixed; the action and auxiliary routing quantities are selected.
+源代码中将$A_s$定义为状态$s$下所有可行的动作集合，这些动作需要满足(1)--(12)的条件。状态与动作的含义已在前文明确说明。在动作生成的阶段，$s$被固定下来；此时会选定相应的动作以及辅助路由参数。
 
-\paragraph{Printed-scope note.}
-The action prose identifies referral and visit quantities as counts and the time quantities by their physical roles. Unlike the state domains in (1) and the binary domains (5), (8), the printed action block does not separately list integer/nonnegative domain rows for $r,n,z$ or nonnegative time-domain rows. No extra domain rows or big-$M$ bound are supplied here. Also, (7)--(8) print no relation linking $o_{ll'}$ to $o_{l'l}$: the stated precedence interpretation is not enforced by an additional ordering equation in that block. The printed routing rows are retained without repair.
+\paragraph{印刷版说明。}
+在动作描述中，引用和访问的数量被标记为计数，而时间量则根据其物理作用来标识。与(1)中的状态域以及(5)、(8)中的二进制域不同，打印出的动作块中并没有为$r,n,z$单独列出整数/非负域行，也没有列出非负时间域行。这里也没有提供任何额外的域行或大$M$约束。此外，(7)--(8)中也没有将$o_{ll'}$与$o_{l'l}$关联起来：所陈述的优先级解释并未在该块中通过额外的排序方程来强制执行。打印出的路由行则保持不变。
 
-\section*{Stochastic transitions and their expectations}
-After $j$ completed visits, the probability that a type-$k$ patient needs at least one more visit is $p_{k,j+1}$. Its printed definition is
+\section*{随机转移及其期望值}
+在$j$完成所有访问之后，类型为$k$的患者至少需要再进行一次访问的概率就是$p_{k,j+1}$。其打印定义如下：
 \[
 p_{kj}=\mathbb P(\hat J_k\geq j\mid\hat J_k\geq j-1),\qquad\forall j\geq1.
 \]
-The symbol $B(x,p)$ denotes a binomial random variable with $x$ trials and success probability $p$. For the next state $s'=(\vec x',\vec y')$, the random vector corresponding to $\vec x'$ is $\vec X'$, defined by
+符号$B(x,p)$表示具有$x$次试验和成功概率为$p$的二项随机变量。对于下一个状态$s'=(\vec x',\vec y')$，与$\vec x'$相对应的随机向量为$\vec X'$，其定义如下：
 \begin{equation}
 X'_{tklj}(s,a)=
 \begin{cases}
@@ -128,19 +129,19 @@ x_{t+1,kl,0}+n_{t+1,kl},&j=0,\ t<T_k,\\
 \quad\forall s\in S,\ \forall a\in A_s,\ \forall tklj.
 \tag{13}
 \end{equation}
-The accompanying explanation gives
+附带的说明如下：
 \[
 x_{t+1,klj}=0,\qquad\forall t=h_k,\ kl,\ j\geq1,
 \]
-as the reason no such carried-over term appears in the first two branches. The binomial counts include patients whose current visit is diverted, since those visits are still served.
+因为在前两个分支中并没有出现这样的延续术语。二项式计数包括那些当前就诊被转移的患者，因为这些就诊仍然得到了服务。
 
-Let $\vec\xi=\{\xi_{klj};\forall klj\}$ denote the numbers of patients visited on the previous day who need at least one more visit. The authors assume independence among the elements of $\vec\xi$, among the arrival counts across types and regions, and between $\vec\xi$ and $\vec y'$. Their transition-probability expression is
+让$\vec\xi=\{\xi_{klj};\forall klj\}$表示前一天需要至少再进行一次就诊的患者数量。作者假设$\vec\xi$中的各个元素之间是独立的，不同类型的就诊以及不同地区的就诊数量之间也是独立的，同时$\vec\xi$和$\vec y'$之间也是独立的。它们的转移概率表达式如下：
 \[
 \mathbb P(s'\mid s,a)
 =\mathbb P(\vec\xi)\mathbb P(\vec y')
 =\prod_{klj}\mathbb P(\xi_{klj})\times\prod_{kl}\mathbb P(y'_{kl}).
 \]
-The next day's referral distribution is the fixed daily referral distribution. The expected transition used in (20c) and the greedy objective is
+第二天的推荐分配是固定的每日推荐分配。在(20c)中使用的预期转换方式，以及贪婪目标如下：
 \begin{equation}
 \mathbb E[X'_{tklj}(s,a)]=
 \begin{cases}
@@ -153,30 +154,30 @@ x_{t+1,kl,0}+n_{t+1,kl},&j=0,\ t<T_k,\\
 \quad\forall s\in S,\ \forall a\in A_s,\ \forall tklj.
 \tag{19}
 \end{equation}
-No truncation or overflow rule reconciling these transitions with the abstract finite state bounds is specified in the defining passages; none is added here. The conditional probability definition is retained without an added convention for conditioning events of probability zero.
+在定义段落中，没有规定任何截断或溢出规则来协调这些转换与抽象有限状态边界之间的关系；这里也没有添加任何这样的规则。条件概率的定义被保留了下来，但没有为概率为零的事件添加任何额外的规则。
 
-\section*{Immediate cost and fixed cost coefficients}
+\section*{直接成本与固定成本系数}
 \begin{equation}
 c(s,a)=\sum_{kl}R_kr_{kl}+\sum_{kl}Z_kz_{kl}+Uu+Qq(s,a),
 \qquad\forall s\in S,\ a\in A_s.
 \tag{14}
 \end{equation}
-Here $R_k$ is the cost of rejecting a whole referral of type $k$, $Z_k$ is the cost of diverting one visit of that type, $U$ is the unit overtime cost, and $Q$ is the unit travel-time cost. The fixed coefficient definitions are
+这里的$R_k$表示拒绝一个类型为$k$或$Z_k$的推荐所带来的成本；$U$表示转换一次该类型访问所产生的单位加班成本；而$Q$则代表单位旅行时间的成本。固定系数的定义如下：
 \[
 R_k=\zeta^r\mathbb E[\hat J_k]e_k,\qquad
 Z_k=\zeta^z e_k,\qquad
 U=\zeta^u,\qquad Q=\zeta^q.
 \]
-The weights $\zeta^r,\zeta^z,\zeta^u,\zeta^q$ are chosen according to stakeholder preferences. Rejection cost represents the expected lost profit of not serving all visits of a referral. Diversion cost accounts for on-call service and the violation of continuity of care, and does not depend on location. The notation $q(s,a)$ refers to the travel-time quantity in (9)--(10), not a separate input coefficient.
+权重$\zeta^r,\zeta^z,\zeta^u,\zeta^q$是根据利益相关方的偏好来选择的。拒绝成本指的是未能为所有来访者提供服务所带来的预期利润损失。分流成本则涉及到紧急服务以及护理连续性的破坏，这一成本并不依赖于地理位置。符号$q(s,a)$指的是公式(9)--(10)中的旅行时间量，而不是一个独立的输入系数。
 
-\section*{Affine value function and the source of the policy parameters}
-The affine approximation is
+\section*{仿射值函数以及策略参数的来源}
+仿射近似是
 \begin{equation}
 \widetilde v(s)=\eta+\sum_{tklj}\tau_{tklj}x_{tklj}+\sum_{kl}\rho_{kl}y_{kl},
 \qquad\forall s\in S.
 \tag{17}
 \end{equation}
-The parameter domains and vectors are
+参数域和向量是：
 \[
 \tau_{tklj}\in\mathbb R_{\geq0},\ \forall tklj,\qquad
 \rho_{kl}\in\mathbb R_{\geq0},\ \forall kl,\qquad
@@ -186,9 +187,9 @@ The parameter domains and vectors are
 \vec\tau=\{\tau_{tklj};\forall tklj\},\qquad
 \vec\rho=\{\rho_{kl};\forall kl\}.
 \]
-The coefficients $\tau_{tklj}$ and $\rho_{kl}$ represent marginal expected infinite-horizon discounted costs of an additional scheduled visit and an additional referral, respectively. They are optimization parameters when solving the ALP and fixed coefficients when taking a daily greedy action.
+系数$\tau_{tklj}$和$\rho_{kl}$分别代表了额外安排访问和额外推荐所带来的边际预期无限时域折现成本。它们在解决ALP问题时作为优化参数，而在采取每日贪婪策略时则作为固定系数。
 
-For completeness of the dual-price linkage, the parent ALP whose dual is (20) is printed as follows; it is not an additional action-feasibility restriction:
+为了完整展示双价关联机制，其双价对应物为 (20) 的父 ALP 会被如下打印出来；这并不属于额外的行动可行性限制。
 \begin{equation}
 \mathbf{ALP}:\quad
 \max_{\eta,\vec\tau,\vec\rho}
@@ -196,7 +197,7 @@ For completeness of the dual-price linkage, the parent ALP whose dual is (20) is
 +\sum_{kl}\rho_{kl}\mathbb E_\alpha[Y_{kl}]\right\}.
 \tag{18a}
 \end{equation}
-Subject to
+在以下条件下：
 \begin{equation}
 \begin{split}
 (1-\gamma)\eta
@@ -213,19 +214,19 @@ Subject to
 \tag{18c}
 \end{equation}
 
-\subsection*{State-relevance coefficients}
-The source introduces strictly positive state-relevance weights for its exact-LP argument:
+\subsection*{状态相关性系数}
+该来源为其精确线性规划论点，提出了严格的正数值状态相关性权重：
 \[
 \alpha(s)>0,\qquad\forall s\in S.
 \]
-The retained coefficient definitions on page 14 are
+第14页上保留的系数定义如下：
 \[
 \mathbb E_\alpha[X_{tklj}]=\sum_{s\in S}\alpha(s)x_{tklj},\qquad
 \mathbb E_\alpha[Y_{kl}]=\sum_{s\in S}\alpha(s)y_{kl}.
 \]
-These are distinct from the arrival expectation $\mathbb E[Y_{kl}]$ and the conditional transition expectation $\mathbb E[X'_{tklj}(s,a)]$.
+这些数值与到达期望值$\mathbb E[Y_{kl}]$以及条件性转移期望值$\mathbb E[X'_{tklj}(s,a)]$是不同的。
 
-The coefficient choice specified on page 16 and repeated in EC.1 is retained:
+第16页上指定的系数选择，以及EC.1中重复提及的内容，均被保留下来。
 \[
 \mathbb E_\alpha[X_{tklj}]=
 \begin{cases}
@@ -236,17 +237,17 @@ The coefficient choice specified on page 16 and repeated in EC.1 is retained:
 \qquad
 \mathbb E_\alpha[Y_{kl}]=\mathbb E[Y_{kl}],\quad\forall kl.
 \]
-Here $\varepsilon$ is an unknown constant to be tuned, not a D-ALP decision variable. EC.1 tunes it through simulation-based policy comparisons and explicitly includes $\varepsilon=0$. It does not replace the full D-ALP rows or prescribe a universal numerical value for $\varepsilon$; its example value is not imposed here.
+这里的$\varepsilon$是一个需要调整的未知常数，而不是D-ALP决策变量。EC.1通过基于模拟的策略比较来调整它，并且明确包含了$\varepsilon=0$。它并不取代完整的D-ALP行，也不为$\varepsilon$指定一个通用的数值；其示例值在此处并未被指定。
 
-\paragraph{Printed relevance-weight qualifications.}
-The source prints coefficient one on $\eta$ in (18a), and hence right-hand side one in (20b), but does not explicitly print a normalization of $\alpha$ in the defining passage. Those coefficients are retained without adding such a normalization. Strict positivity of $\alpha$ in the exact-LP discussion cannot produce $\mathbb E_\alpha[X_{tklj}]=0$ for a coordinate positive in any state. Thus the explicitly allowed tuning endpoint $\varepsilon=0$ need not have the strictly positive-weight interpretation of that preceding discussion. The printed moment coefficients, including that endpoint, are retained rather than repaired by a new restriction on $\varepsilon$.
+\paragraph{印刷相关性权重说明。}
+在(18a)中，源文件在$\eta$上打印了系数一，因此在(20b)中右侧也打印了系数一。但在定义段落中并未明确打印$\alpha$的归一化。这些系数被保留下来，但没有进行归一化处理。在精确线性规划的讨论中，$\alpha$的严格正性无法在任意状态下产生正坐标的$\mathbb E_\alpha[X_{tklj}]=0$。因此，明确允许的调谐端点$\varepsilon=0$不必具有前面讨论中的严格正权重解释。包括该端点在内的打印出的矩系数被保留下来，而不是通过新的$\varepsilon$限制来修正。
 
-\section*{Greedy daily action selection}
-For a given observed state $s\in S$ and the parameter set
+\section*{贪婪的每日行动选择}
+对于给定的观测状态$s\in S$，以及参数集：
 \[
 \pi^*=(\eta^*,\tau^*_{tklj},\rho^*_{kl}),
 \]
-the source's ALP policy obtains its action by solving
+源代码的 ALP 策略是通过求解来得到其动作的。
 \begin{equation}
 \min_{a\in A_s}
 \left\{c(s,a)+\gamma\left(
@@ -255,9 +256,9 @@ the source's ALP policy obtains its action by solving
 \right)\right\}.
 \tag{22}
 \end{equation}
-The expectation of $X'_{tklj}$ in this expression is (19) for the current state and candidate action. The inherited set $A_s$ is the complete set defined above, not a reduced scheduling or routing subproblem. Equation (22) prints an unstarred $\eta$ despite the preceding definition of $\pi^*$; that notation is preserved. This term is constant with respect to the selected action.
+在这个表达式中，$X'_{tklj}$的期望值为（19），该值对应于当前状态和候选行动。继承的$A_s$是上述定义的完整集合，而不是简化的调度或路由子问题。方程（22）中打印出的$\eta$并未被标星号，尽管之前已经定义了$\pi^*$；这种表示方式被保留了下来。这个术语与所选行动无关，是一个常数。
 
-The authors' expansion, after collecting action-independent terms, is
+作者在收集了与动作无关的术语之后，所做的扩展如下：
 \begin{equation}
 \begin{split}
 \min_{a\in A_s}\Biggl\{
@@ -270,6 +271,6 @@ The authors' expansion, after collecting action-independent terms, is
 \end{split}
 \tag{23}
 \end{equation}
-The source leaves the collected constant abstract. Equation (23) is an expansion of (22), not a second optimization imposed alongside it. Its first sum prints a $j=1$ coefficient without an explicit exception for $J_k=1$, although the stated coefficient index range is $j=0,\ldots,J_k-1$. No out-of-range coefficient convention or added lower bound on $J_k$ is introduced here.
+来源中保留了收集到的常数摘要。方程(23)是方程(22)的扩展，并非附加的第二种优化方案。其第一个求和项包含一个$j=1$系数，而$J_k=1$没有明确的例外情况，尽管所指定的系数索引范围是$j=0,\ldots,J_k-1$。这里没有引入超出范围的系数约定，也没有对$J_k$增加下限限制。
 
 \end{document}

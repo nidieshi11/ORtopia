@@ -4,17 +4,16 @@
 \usepackage{geometry}
 \geometry{margin=1in}
 
-\title{Core Solvable Model}
+\title{核心可解模型}
 \author{}
 \date{}
 
+\usepackage[UTF8]{ctex}
 \begin{document}
 \maketitle
 
-\section*{SAA Reformulation of the SP-CVaR Model}
-The directly solvable core model is the sample-average approximation of the stochastic CVaR
-formulation. It keeps the original first-stage assignment and sequencing decisions together with
-scenario-wise recourse variables.
+\section*{SP-CVaR模型的重新表述}
+直接可求解的核心模型，实际上是随机 CVaR 公式的采样平均近似模型。它保留了原始的第一阶段分配和排序决策，同时包含了基于情景的补偿变量。
 
 \begin{equation}
 \begin{aligned}
@@ -27,7 +26,7 @@ scenario-wise recourse variables.
 \tag{M1}
 \end{equation}
 
-subject to
+受…的约束
 \begin{equation}
 \sum_{a \in A_i} x_{i,a} = 1,
 \qquad
@@ -63,8 +62,7 @@ s_i \le T^{\mathrm{end}},
 \beta_{i,i',r} \le u_{i,i'},
 \tag{M7}
 \end{equation}
-for all $\{(i,a),(i',a)\}\subseteq \mathcal{F}^A$ and
-$\{(i,r),(i',r)\}\subseteq \mathcal{F}^R$,
+对于所有$\{(i,a),(i',a)\}\subseteq \mathcal{F}^A$和$\{(i,r),(i',r)\}\subseteq \mathcal{F}^R$，
 \begin{equation}
 u_{i,i'} + u_{i',i} \le 1,
 \qquad \forall \{i,i'\} \subseteq I,
@@ -85,7 +83,7 @@ u_{i,i''} \ge u_{i,i'} + u_{i',i''} - 1,
 \alpha_{i,i',a} + \alpha_{i',i,a} \ge x_{i,a} + x_{i',a} - 1,
 \tag{M11}
 \end{equation}
-for all $\{(i,a),(i',a)\}\subseteq \mathcal{F}^A$,
+对于所有$\{(i,a),(i',a)\}\subseteq \mathcal{F}^A$，
 \begin{equation}
 \beta_{i,i',r} + \beta_{i',i,r} \le z_{i,r},
 \qquad
@@ -96,7 +94,7 @@ for all $\{(i,a),(i',a)\}\subseteq \mathcal{F}^A$,
 \beta_{i,i',r} + \beta_{i',i,r} \ge z_{i,r} + z_{i',r} - 1,
 \tag{M13}
 \end{equation}
-for all $\{(i,r),(i',r)\}\subseteq \mathcal{F}^R$,
+对于所有$\{(i,r),(i',r)\}\subseteq \mathcal{F}^R$，
 \begin{equation}
 \alpha_{i,i',a} \ge x_{i,a} + x_{i',a} + \beta_{i,i',r} - 2,
 \tag{M14}
@@ -105,9 +103,7 @@ for all $\{(i,r),(i',r)\}\subseteq \mathcal{F}^R$,
 \beta_{i,i',r} \ge z_{i,r} + z_{i',r} + \alpha_{i,i',a} - 2,
 \tag{M15}
 \end{equation}
-for all feasible pairs
-$\{(i,a),(i',a)\}\subseteq \mathcal{F}^A$ and
-$\{(i,r),(i',r)\}\subseteq \mathcal{F}^R$,
+对于所有可行的组合$\{(i,a),(i',a)\}\subseteq \mathcal{F}^A$与$\{(i,r),(i',r)\}\subseteq \mathcal{F}^R$，
 \begin{equation}
 \eta_n \ge
 \sum_{a \in A} \left(c_a^{\mathrm g} g_a^n + c_a^{\mathrm o} o_a^n\right)

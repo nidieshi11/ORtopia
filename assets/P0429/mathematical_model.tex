@@ -2,31 +2,32 @@
 \usepackage{amsmath,amssymb}
 \usepackage[margin=1in]{geometry}
 
-\title{Piecewise-Linear Value Reformulation}
+\title{分段线性值重新表述}
 \author{}
 \date{}
 
+\usepackage[UTF8]{ctex}
 \begin{document}
 \maketitle
 
-\section*{Sets and indices}
-Let \(\mathcal N\) be a finite node set and let \(\mathcal E\subseteq\mathcal N\times\mathcal N\) be a finite directed-edge set. Let \(\mathcal E_h\subseteq\mathcal E\) be the set of candidate edges and \(\mathcal N_h\subseteq\mathcal N\) the set of candidate nodes. For every \(i\in\mathcal N_h\), let \(\mathcal E_h^{-}(i)\subseteq\mathcal E_h\) and \(\mathcal E_h^{+}(i)\subseteq\mathcal E_h\) denote the designated incoming and outgoing candidate-edge sets, respectively, and define the incident candidate-edge set
+\section*{集合与索引}
+设\(\mathcal N\)为一个有限的节点集，\(\mathcal E\subseteq\mathcal N\times\mathcal N\)为一个有限的有向边集。设\(\mathcal E_h\subseteq\mathcal E\)为候选边的集合，\(\mathcal N_h\subseteq\mathcal N\)为候选节点的集合。对于每一个\(i\in\mathcal N_h\)，设\(\mathcal E_h^{-}(i)\subseteq\mathcal E_h\)和\(\mathcal E_h^{+}(i)\subseteq\mathcal E_h\)分别表示指定的进入候选边的集合和离开候选边的集合，并定义相关的候选边集合。
 \[
 \mathcal E_h(i):=\mathcal E_h^{-}(i)\cup\mathcal E_h^{+}(i).
 \]
-Let \(\mathcal S\subseteq\mathcal N\times\mathcal N\) be the finite set of origin--destination pairs, indexed by \((o,d)\). Let \(\mathcal R\) be the finite row-index set for the flow-balance equations.
+让\(\mathcal S\subseteq\mathcal N\times\mathcal N\)表示起点与终点对的有限集合，这些对的索引由\((o,d)\)表示。让\(\mathcal R\)表示流量平衡方程的有限行索引集合。
 
-\section*{Parameters}
+\section*{参数}
 \begin{itemize}
-    \item \(q^{od}\in\mathbb R_+\): weight of OD pair \((o,d)\in\mathcal S\).
-    \item \(\mathbf c=(c_{ij})_{(i,j)\in\mathcal E_h}\in\mathbb R^{|\mathcal E_h|}\): candidate-edge cost vector.
-    \item \(\mathbf b=(b_i)_{i\in\mathcal N_h}\in\mathbb R^{|\mathcal N_h|}\): candidate-node cost vector.
-    \item \(B_{\mathrm{edge}},B_{\mathrm{node}}\in\mathbb R\): edge and node budgets.
-    \item \(\mathbf A\in\mathbb R^{|\mathcal R|\times|\mathcal E|}\): flow-balance matrix, whose columns are indexed by \(\mathcal E\).
-    \item \(\mathbf e^{od}\in\mathbb R^{|\mathcal R|}\): flow-balance right-hand side for each \((o,d)\in\mathcal S\).
-    \item \(\mathbf t=(t_{ij})_{(i,j)\in\mathcal E}\in\mathbb R^{|\mathcal E|}\): edge travel-time vector.
-    \item \(\beta_1,\beta_2\in\mathbb R\): affine-piece slope coefficients satisfying \(\beta_1\leq\beta_2\).
-    \item \(T_1\in\mathbb R\): breakpoint used to define the affine-piece intercepts
+    \item \(q^{od}\in\mathbb R_+\)：OD对的重量，对应\((o,d)\in\mathcal S\)。
+    \item \(\mathbf c=(c_{ij})_{(i,j)\in\mathcal E_h}\in\mathbb R^{|\mathcal E_h|}\): 候选边成本向量。
+    \item \(\mathbf b=(b_i)_{i\in\mathcal N_h}\in\mathbb R^{|\mathcal N_h|}\): 候选节点成本向量。
+    \item \(B_{\mathrm{edge}},B_{\mathrm{node}}\in\mathbb R\)：边和节点的预算。
+    \item \(\mathbf A\in\mathbb R^{|\mathcal R|\times|\mathcal E|}\): 流量平衡矩阵，其列索引由\(\mathcal E\)表示。
+    \item \(\mathbf e^{od}\in\mathbb R^{|\mathcal R|}\): 每个\((o,d)\in\mathcal S\)的右侧流量平衡。
+    \item \(\mathbf t=(t_{ij})_{(i,j)\in\mathcal E}\in\mathbb R^{|\mathcal E|}\)：边沿行进时间向量。
+    \item \(\beta_1,\beta_2\in\mathbb R\)：满足\(\beta_1\leq\beta_2\)的仿射片段斜率系数。
+    \item \(T_1\in\mathbb R\): 用于定义仿射片段截距的断点
     \[
     \alpha_1:=1,
     \qquad
@@ -34,14 +35,14 @@ Let \(\mathcal S\subseteq\mathcal N\times\mathcal N\) be the finite set of origi
     \]
 \end{itemize}
 
-\section*{Decision variables}
-For every \((o,d)\in\mathcal S\), let
+\section*{决策变量}
+对于每一个\((o,d)\in\mathcal S\)，让
 \[
 \mathbf y^{od}=(y_{ij}^{od})_{(i,j)\in\mathcal E}\in\mathbb R^{|\mathcal E|}
 \]
-be the routing-flow vector and let \(v^{od}\in\mathbb R\) be its piecewise-linear performance value. For every \((i,j)\in\mathcal E_h\), let \(x_{ij}\) be the candidate-edge design variable, and for every \(i\in\mathcal N_h\), let \(z_i\) be the candidate-node design variable.
+设为路由流向量，令\(v^{od}\in\mathbb R\)为其分段线性性能值。对于每一个\((i,j)\in\mathcal E_h\)，令\(x_{ij}\)为候选边设计变量；对于每一个\(i\in\mathcal N_h\)，令\(z_i\)为候选节点设计变量。
 
-\section*{Mixed-integer linear formulation}
+\section*{混合整数线性规划}
 \begin{align}
 \max_{\mathbf v,\mathbf x,\mathbf y,\mathbf z}\quad
 & \sum_{(o,d)\in\mathcal S}q^{od}v^{od} \label{obj}\\

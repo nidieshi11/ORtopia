@@ -1,11 +1,12 @@
 \documentclass{article}
 \usepackage{amsmath,amssymb}
 \usepackage[margin=1in]{geometry}
+\usepackage[UTF8]{ctex}
 \begin{document}
 
-\section*{Known-demand stochastic dynamic pricing with financial milestone penalties}
+\section*{已知需求的随机动态定价，并附带财务里程碑相关的惩罚措施}
 
-Select a nonanticipating pricing policy $\{p(t):t\in[0,T]\}$ to maximize
+请选择一种非预期定价策略$\{p(t):t\in[0,T]\}$，以最大化收益。
 \begin{equation}
 \mathbb{E}\left[
 \int_0^T p(t)\,dS(t)
@@ -15,62 +16,62 @@ Select a nonanticipating pricing policy $\{p(t):t\in[0,T]\}$ to maximize
 \right]\right],
 \tag{3}
 \end{equation}
-subject to
+受…的约束
 \begin{equation}
 S(T)\le C\qquad\text{almost surely}.
 \tag{4}
 \end{equation}
-For every $t\in[0,T]$, nonanticipation means that $p(t)$ is allowed to depend only on past demand observations and price realizations. The decision is the pricing policy; sales and revenues are the resulting stochastic processes. The paper defines $J^*$ as the supremum of (3) over all nonanticipating pricing policies satisfying (4).
+对于每一个$t\in[0,T]$，非预期性意味着$p(t)$只能依赖于过去的需求观测数据和价格实际表现。这一决策就是定价策略；而销售和收入则是由该策略所引发的随机过程。论文中将$J^*$定义为满足(4)条件的所有非预期性定价策略下，式(3)的最大值。
 
-\section*{Demand and cumulative processes}
+\section*{需求与累积过程}
 
-The seller starts with $C$ units of a homogeneous good to sell over a horizon $T$. Potential customers arrive according to a homogeneous Poisson process with instantaneous rate $\Lambda$. Each customer has willingness to pay $v$ for one unit, independently drawn from the cumulative distribution function $F(\cdot)$. In this selected version, $\Lambda$ and $F(\cdot)$ are known to the decision-maker. A customer arriving at time $t$ purchases one unit if $v\ge p(t)$ and otherwise leaves without purchasing. The resulting instantaneous arrival rate is
+卖家以$C$单位的同质商品开始销售，销售时间跨度为$T$。潜在客户按照同质泊松过程到达，瞬时到达率为$\Lambda$。每位客户愿意支付$v$来购买一单位商品，该数值是从累积分布函数$F(\cdot)$中独立抽取的。在这个选定的版本中，$\Lambda$和$F(\cdot)$是决策者已知的。如果客户在时间$t$到达，并且满足条件$v\ge p(t)$，则他会购买一单位商品；否则，他不会购买任何商品，直接离开。最终的瞬时到达率就是如此。
 \begin{equation}
 \lambda(p(t)):=\Lambda\mathbb{P}(v\ge p(t))
 =\Lambda\bar F(p(t)),
 \tag{1}
 \end{equation}
-where
+其中
 \[
 \bar F(\cdot):=1-F(\cdot).
 \]
-For every $t\in[0,T]$, $S(t)$ is the number of units sold in $[0,t]$, and $R(t)$ is the revenue accumulated up to time $t$. All time processes are right continuous with left limits. Revenue used in milestone comparisons is actual sales revenue, excluding penalties: an incurred penalty does not reduce the revenue used for future revenue targets.
+对于每一个$t\in[0,T]$，$S(t)$表示在$[0,t]$期间售出的单位数量，而$R(t)$则表示截至$t$时间的累计收入。所有时间过程都是右连续型的，并且具有左极限。用于比较里程碑的收入是指实际销售收入，不包括任何罚款；发生的罚款不会减少用于未来收入目标的收入。
 
-\section*{Milestone data and penalties}
+\section*{里程碑数据及处罚}
 
-Before combining the milestone grids, the sales targets are specified by
+在合并这些里程碑网格之前，销售目标已经明确指定了。
 \[
 0<t_1<t_2<\cdots<t_k\le T,
 \qquad
 \xi_1\le\xi_2\le\cdots\le\xi_k\le C,
 \]
-and the revenue targets by
+以及通过以下方式实现收入目标：
 \[
 0<t'_1<t'_2<\cdots<t'_{k'}\le T,
 \qquad
 \zeta_1\le\zeta_2\le\cdots\le\zeta_{k'}.
 \]
-Here $\xi_i$ is the minimum number of units targeted for sale by $t_i$, and $\zeta_i$ is the cumulative revenue targeted by $t'_i$.
+这里的$\xi_i$是$t_i$计划销售的最小单位数量，而$\zeta_i$则是$t'_i$计划实现的累计收入。
 
-The paper places both types of targets on the common grid
+该论文将这两种目标都放置在同一个网格上。
 \[
 \tau_0=0<\tau_1<\tau_2<\cdots<\tau_m=T,
 \qquad \xi_0=0,\qquad\zeta_0=0.
 \]
-On this common grid, the corresponding target is set to zero whenever a sales or revenue constraint is absent at $\tau_i$. Thus the preceding monotonicity statements describe the original target sequences, not additional monotonicity constraints on the zero-filled common-grid arrays. Targets at $\tau_m=T$ are optional; the paper does not require either complete sellout or a positive terminal revenue target.
+在这个共同的网格上，当$\tau_i$处没有销售或收入限制时，相应的目标值会被设定为零。因此，前面的单调性声明描述的是原始的目标序列，而不是对填充了零值的共同网格数组的额外单调性限制。$\tau_m=T$处的目标值是可选的；论文并不要求完全售罄或达到正的终端收入目标。
 
-The fixed penalty parameters satisfy
+固定的处罚参数满足以下条件：
 \[
 \beta_{1,i}>0,\qquad\beta_{2,i}>0,
 \qquad i=1,\ldots,m.
 \]
-The sales and revenue milestone conditions referred to in the penalty definition are, respectively,
+在处罚定义中提到的销售和收入里程碑条件分别是：
 \[
 S(\tau_i)\ge\xi_i,
 \qquad R(\tau_i)\ge\zeta_i,
 \qquad i=1,\ldots,m.
 \]
-These are targets that may be violated, not additional hard feasibility constraints in (3)--(4). Their respective shortfall penalties are
+这些是可能被违反的目标，而不是在(3)--(4)中新增的硬性可行性约束条件。它们各自的不足惩罚如下：
 \begin{equation}
 \beta_{1,i}(\xi_i-S(\tau_i))^+
 \qquad\text{and}\qquad
@@ -78,34 +79,34 @@ These are targets that may be violated, not additional hard feasibility constrai
 \qquad i=1,\ldots,m.
 \tag{2}
 \end{equation}
-The penalty is proportional to the amount by which the target is missed.
+处罚的严重程度与目标被遗漏的幅度成正比。
 
-\section*{Input assumptions and their defining quantities}
+\section*{输入假设及其定义量}
 
-The paper introduces the following assumptions as holding throughout the paper. They are restrictions on the demand model and fixed input data, rather than additional sample-path milestone constraints.
+本文提出了以下假设，这些假设在整篇论文中均成立。这些假设是对需求模型以及固定输入数据的限制，而非额外的样本路径约束条件。
 
-\paragraph{Assumption 1.}
-The willingness-to-pay distribution has support in $[0,\bar p]$, where
+\paragraph{假设 1.}
+支付意愿分布在$[0,\bar p]$中有体现，其中……
 \[
 0<\bar p<\infty,
 \]
-and $\bar F(\cdot)$ is continuously differentiable on $[0,\bar p]$.
+$\bar F(\cdot)$在$[0,\bar p]$上是连续可微分的。
 
-Let $\psi(\cdot)$ denote the inverse of $\bar F(\cdot)$ over $[0,1]$. Define the revenue function by
+让$\psi(\cdot)$表示$\bar F(\cdot)$在$[0,1]$上的逆运算。通过以下方式定义收入函数：
 \[
 r(\lambda):=\lambda\psi(\lambda/\Lambda),
 \qquad \lambda\in[0,\Lambda].
 \]
 
-\paragraph{Assumption 2.}
-(i) $r(\lambda)$ is strictly concave for $\lambda\in[0,\Lambda]$.
+\paragraph{假设 2.}
+(i) $r(\lambda)$对于$\lambda\in[0,\Lambda]$来说，是严格凹的。
 
-(ii) Define the revenue-maximizing price and its corresponding sales rate by
+(ii) 通过以下方式定义能够实现收入最大化的价格及其相应的销售率：
 \[
 p^*=\operatorname*{arg\,max}_{p\in[0,\bar p]}p\bar F(p),
 \qquad \lambda^*=\lambda(p^*).
 \]
-For some $\sigma>0$, capacity and targets satisfy
+对于某些$\sigma>0$，其容量和目标都是符合要求的。
 \[
 \lambda^*-\sigma\ge\frac{C}{T},
 \qquad
@@ -115,13 +116,13 @@ p^*\lambda^*-\sigma\ge\frac{\zeta_i}{\tau_i},
 \qquad i=1,\ldots,m.
 \]
 
-\paragraph{Associated definitions in the explanation of Assumption 2.}
-The inverse revenue function is
+\paragraph{在假设2的解释中相关的定义。}
+逆收入函数是指…
 \begin{equation}
 \varphi(u):=\min\{\lambda:r(\lambda)=u\},
 \tag{5}
 \end{equation}
-with codomain $[0,\lambda^*]$. It gives the sales rate achieving expected revenue rate $u$. The prices associated with capacity depletion and the individual targets are
+以 codomain $[0,\lambda^*]$为条件。这代表了能够实现预期收入率 $u$的销售率。与产能消耗相关的价格以及各个目标值都包含在其中。
 \[
 p_0=\psi\!\left(\frac{C}{T\Lambda}\right),
 \qquad
@@ -130,14 +131,14 @@ p_i^s=\psi\!\left(\frac{\xi_i}{\tau_i\Lambda}\right),
 p_i^r=\psi\!\left(\frac{\varphi(\zeta_i/\tau_i)}{\Lambda}\right),
 \qquad i=1,\ldots,m.
 \]
-Here $p_0$ is the price that would deplete capacity exactly at $T$, not a prescribed initial value of the stochastic pricing policy. The paper states that Assumption 2(ii) implies elasticity of $\lambda(p)$ for prices
+这里的$p_0$是指恰好在$T$时耗尽容量的价格，而不是随机定价政策的预设初始值。论文指出，假设2(ii)意味着$\lambda(p)$对于价格具有弹性。
 \[
 p\ge\min(p_0,p_1^s,\ldots,p_m^s,p_1^r,\ldots,p_m^r).
 \]
-This is an explanatory property of the demand function, not a restriction imposing this lower bound on the decision process $p(t)$.
+这是需求函数的一个解释性属性，并非对决策过程$p(t)$施加的某种限制。所有数字符号都应保持原样。
 
-\paragraph{Assumption 3.}
-For some $\underline K,\bar K,\underline\kappa>0$,
+\paragraph{假设 3.}
+对于某些$\underline K,\bar K,\underline\kappa>0$，
 \[
 \underline K\le F'(p)\le\bar K
 \qquad\text{on }[p^*,\bar p],
@@ -145,14 +146,14 @@ For some $\underline K,\bar K,\underline\kappa>0$,
 r'\!\left(\lambda^*-\frac{\sigma}{2}\right)
 \ge\underline\kappa,
 \]
-where $\sigma$ is the value used in Assumption 2.
+其中$\sigma$是假设2中使用的值。
 
-\section*{Source scope and limitations}
+\section*{来源范围与限制}
 
-The formulation and definitions above are from Besbes and Maglaras, \emph{Dynamic Pricing with Financial Milestones: Feedback-Form Policies}, Management Science 58(9), 2012, Section 2, pp.~1717--1719 (physical PDF pages 3--5).
+上述的表述和定义均来自 Besbes 和 Maglaras 的著作\emph{《动态定价与财务里程碑：反馈型政策》}，《管理科学》第58卷第9期，2012年，第2节，页码为~1717–1719页（物理PDF文件中的第3–5页）。
 
-The printed policy statement in (3)--(4) does not separately specify a pointwise admissible-price interval for $p(t)$. The interval $[0,\bar p]$ is explicitly stated for willingness-to-pay support, differentiability, and the maximization defining $p^*$. No extra policy bound is inserted here. Likewise, the inverse in (5) is retained with its printed codomain without adding an unprinted convention for an empty level set.
+在(3)至(4)中打印出的政策声明中，并未单独指定$p(t)$的允许价格区间。 区间$[0,\bar p]$被明确指定用于表示支付意愿、可微性以及最大化$p^*$所定义的目标。所有数字符号都需保持原样，按原始顺序进行复制。 此处不插入额外的政策约束。 同样，式(5)中的逆函数也保持不变，包括其打印出的陪域，同时不添加任何关于空水平集的未打印约定。
 
-The hard-target deterministic formulation, its feasibility criterion, and the later sufficiently-large-penalty condition are not imposed on this stochastic penalized formulation. The online companion cited for the later feedback-policy proofs was not supplied and remains unverified; no formulas from it are used here.
+这种针对特定目标的确定性表述、其可行性标准以及后来出现的足够大惩罚条件，并未适用于这种随机惩罚表述。用于后续反馈策略证明的在线辅助资料并未提供，且尚未经过验证；因此这里并未使用其中的任何公式。
 
 \end{document}

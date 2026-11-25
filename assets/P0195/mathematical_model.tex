@@ -7,13 +7,15 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 
+\usepackage[UTF8]{ctex}
 \begin{document}
 
-\section*{Problem: Optimization Problem}
+\section*{问题：优化问题}
 
-\textbf{Model Source}: Directly Extracted
+\textbf{模型来源}：直接提取的
 
-\subsection*{Decision Variables}
+\subsection*{决策变量}
+\[
 \begin{aligned}
 &\text{第一阶段决策变量:} \\
 &\quad \alpha_k \geq 0, \text{ integer} && \forall k \in K_2 \\
@@ -24,14 +26,15 @@
 &\quad \theta^w_i \geq 0, \text{ integer} && \forall w \in W, i \in I \\
 &\quad \lambda^w_{k,s} \geq 0, \text{ integer} && \forall w \in W, k \in K, s \in S_k
 \end{aligned}
+\]
 
-\subsection*{Objective Function}
+\subsection*{目标函数}
 \begin{equation}\tag{1}
 \text{Maximize} \quad \sum_{w \in W} p_w y(w, \alpha_k, \beta_k, \mu_k) - \sum_{k \in K_2} F1_k \alpha_k - \sum_{k \in K_3} F2_k \beta_k
 \end{equation}
 
-\subsection*{Constraints}
-\begin{aligned}
+\subsection*{约束条件：}
+\begin{align}
 &\text{第一阶段约束:} \\
 &\quad \mu_k \le \alpha_k \le N \mu_k && \forall k \in K_2 \tag{2} \\
 &\quad \alpha_k \geq 0, \text{ integer} && \forall k \in K_2 \tag{3} \\
@@ -46,10 +49,10 @@
 &\quad \lambda^w_{k,s} \le c_3 \beta_k && \forall w \in W, k \in K_3, s \in S_k \tag{12} \\
 &\quad \sum_{i \in I} (g^1_{i,s} + g^2_{i,s}) \gamma^w_{k,i} \le Q_{k,s} && \forall w \in W, k \in K, s \in S \tag{13} \\
 &\quad \lambda^w_{k,s}, \gamma^w_{k,i}, \theta^w_i \ge 0, \text{ integer} && \forall w \in W, k \in K, i \in I \tag{14}
-\end{aligned}
+\end{align}
 
-\subsection*{Complete Mathematical Model}
-\begin{aligned}
+\subsection*{完整的数学模型}
+\begin{align}
 \text{[M0] Maximize} \quad & \sum_{w \in W} p_w y(w, \alpha_k, \beta_k, \mu_k) - \sum_{k \in K_2} F1_k \alpha_k - \sum_{k \in K_3} F2_k \beta_k \tag{1} \\
 \text{Subject to:} \quad & \mu_k \le \alpha_k \le N \mu_k && \forall k \in K_2 \tag{2} \\
 & \alpha_k \geq 0, \text{ integer} && \forall k \in K_2 \tag{3} \\
@@ -64,6 +67,6 @@
 & \lambda^w_{k,s} \le c_3 \beta_k && \forall w \in W, k \in K_3, s \in S_k \tag{12} \\
 & \sum_{i \in I} (g^1_{i,s} + g^2_{i,s}) \gamma^w_{k,i} \le Q_{k,s} && \forall w \in W, k \in K, s \in S \tag{13} \\
 & \lambda^w_{k,s}, \gamma^w_{k,i}, \theta^w_i \ge 0, \text{ integer} && \forall w \in W, k \in K, i \in I \tag{14}
-\end{aligned}
+\end{align}
 
 \end{document}

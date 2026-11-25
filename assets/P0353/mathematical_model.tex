@@ -1,32 +1,23 @@
 \documentclass[11pt]{article}
 \usepackage{amsmath,amssymb,geometry}
 \geometry{margin=22mm}
+\usepackage[UTF8]{ctex}
 \begin{document}
 
-\section*{P353: deterministic multimode railway freight model}
-This is the complete currently executed model M0 for one supplied demand
-scenario, with explicit OD and deadline eligibility repairs. It is a mixed
-integer quadratically constrained problem: products
-$\alpha\eta$ and $\delta\theta$ are retained exactly and handled by global
-nonconvex optimization. Each demand scenario has its own decisions and is solved independently.
+\section*{P353：确定性多模式铁路货运模型}
+这是当前为某个供应需求情景所执行的完整模型M0，其中包含了明确的OD和截止日期相关的修复措施。这是一个混合整数二次约束问题：产品$\alpha\eta$和$\delta\theta$被精确保留，并通过全局非凸优化方法进行处理。每个需求情景都有各自的决策，并且可以独立求解。
 
-\paragraph{Sets and fixed parameters.}
-$Y$ is the OD-pair set, $R$ the freight-class set and $K$ the train set.
-$K_y^1,K_y^2,K_y^3$ are the compatible piggyback, reserved-coach and
-dedicated-freight trains for $y$. Each current train belongs to its specified
-OD. $O,D,N$ are separate origin-role, destination-role and intermediate
-station sets; $I=O\cup D\cup N$. Different roles at one physical station
-have explicit distance/time mappings in the input.
-All $p,q,a,u^1,u^2,u_3,u_4,w,l,c_1,c_2,c_3,c_4,c_5,c_6,
-d_1,d_2,t_1,t_2,t_3,t_4,t_5,t_6,t_7,M$ are supplied numerical parameters,
-with exactly the indices in the following formulas.
-In particular $c_1,c_6,t_5$ are scalars, $a_{yi}$ is OD endpoint incidence,
-$l_{kr}$ is a fixed feasibility flag for a fixed train's scheduled arrival,
-$t_1^r$ is freight availability and $t_7^r$ its deadline.
-The source-style positive domains are deliberate: $\beta_k\in\{1,2,3\}$
-and $\iota\in\mathbb Z_{\ge1}$, with the stated positive-integer domains.
-Dedicated-train path variables obey the stated rows for both used and unused paths.
-\subsection*{Decision Variables}
+\paragraph{集合与固定参数。}
+$Y$是OD对集合，$R$是货运列车集合，$K$是火车集合。  
+$K_y^1,K_y^2,K_y^3$是适用于$y$的兼容式样列车、预留车厢以及专用货运列车。每列当前运行的列车都属于其指定的OD。  
+$O,D,N$是独立的起点角色、终点角色以及中间站集合。  
+$I=O\cup D\cup N$中，同一物理站点的不同角色之间有明确的距离/时间映射关系。  
+所有$p,q,a,u^1,u^2,u_3,u_4,w,l,c_1,c_2,c_3,c_4,c_5,c_6,
+d_1,d_2,t_1,t_2,t_3,t_4,t_5,t_6,t_7,M$都是数值参数，其索引与以下公式中的索引完全一致。  
+特别是$c_1,c_6,t_5$是标量，$a_{yi}$是OD端点的关联信息，$l_{kr}$是固定列车预定到达时间的标志，$t_1^r$是货运的可用性，而$t_7^r$则是其截止日期。  
+源代码中提到的正数值域是特意设定的：$\beta_k\in\{1,2,3\}$和$\iota\in\mathbb Z_{\ge1}$，其中正数值域也是明确指定的。  
+专用列车路径变量遵循所指定的规则，适用于使用过的路径和未使用的路径。
+\subsection*{决策变量}
 \[
 \begin{aligned}
 & \alpha_{ykr} && \text{quantity of freights of type $r$ transported by high-speed train $k$ of OD pair $y$.} \\
@@ -40,7 +31,7 @@ Dedicated-train path variables obey the stated rows for both used and unused pat
 \end{aligned}
 \]
 
-\subsection*{Objective Function}
+\subsection*{目标函数}
 \[
 \begin{aligned}
 \text{Maximize} \quad & \sum_{y \in Y} \sum_{k \in K} \sum_{r \in R} p_r \alpha_{ykr} \\
@@ -55,7 +46,7 @@ Dedicated-train path variables obey the stated rows for both used and unused pat
 \end{aligned}
 \]
 
-\subsection*{Constraints}
+\subsection*{约束条件：}
 \[
 \begin{aligned}
 & \sum_{k \in K} \alpha_{ykr} \leq q_{yr} && \forall y \in Y, r \in R && (2) \\
@@ -87,9 +78,8 @@ Dedicated-train path variables obey the stated rows for both used and unused pat
 \]
 
 
-\subsection*{Explicit eligibility repairs}
-In addition to every displayed objective term, constraint and domain above,
-impose
+\subsection*{明确的资格修复措施}
+除了上述每个显示的目标术语、约束条件和领域之外，还需施加…
 \[
 \alpha_{ykr}=\delta_{ykr}=0
 \quad(k\notin K_y^1\cup K_y^2\cup K_y^3),
@@ -98,19 +88,13 @@ impose
 \alpha_{ykr}=\delta_{ykr}=0
 \quad(k\in K_y^1\cup K_y^2,\ l_{kr}=0).
 \]
-In the current completed inputs,
-$l_{kr}=0$ exactly when $t_2^k+t_4^k>t_7^r$.
-These are repairs to omissions in the extracted model, supported by the
-source's OD train definitions and deadline requirements (pp.7--8);
-the repaired index definitions are used throughout.
-All original rows (2)--(26) are retained, including row (8)'s fixed $l_{kr}$.
+在已完成的输入数据中，
+$l_{kr}=0$与$t_2^k+t_4^k>t_7^r$的时间点完全一致。
+这些是对提取出的模型中的遗漏部分的修复，得到了源代码的OD列车定义和截止日期要求的支持（第7-8页）；
+修复后的索引定义将在整个模型中继续使用。
+所有原始行（2–26）都被保留下来，包括行（8）中修复后的$l_{kr}$。
 
-\paragraph{Implementation and evidence.}
-Current code lines 23--49 implement input axes, domains and all objective
-terms; lines 50--76 implement (2)--(26), and lines 77--84 implement the two
-repairs. It evaluates all instantiated linear and quadratic constraints,
-all variable domains and the objective independently at the returned point.
- Each recorded
-scenario has its own objective and result; a weighted summary aggregates these scenario-specific results.
+\paragraph{实施与证据。}
+当前代码中的第23行到第49行实现了输入轴、域以及所有目标项；第50行到第76行实现了(2)--(26)部分的功能；而第77行到第84行则实现了两次修复操作。这些代码会独立地评估所有线性约束和二次约束、所有变量域以及目标值。每个记录的场景都有其自己的目标和结果；而加权汇总则将这些特定于场景的结果整合在一起。
 
 \end{document}

@@ -1,10 +1,11 @@
 \documentclass{article}
 \usepackage{amsmath,amssymb}
+\usepackage[UTF8]{ctex}
 \begin{document}
 
-\section*{Stochastic neoadjuvant chemotherapy MILP (17)}
+\section*{随机新辅助化疗 MILP (17)}
 
-Let $\mathcal D$ be the set of available drugs, $\mathcal Q$ the set of cancer cell types, and $\mathcal S=\{0,\ldots,S\}$ the time indices. For fixed step size $h$, the grid satisfies $t(0)=0$, $t(S)=T=Sh$. The scenario set is indexed by $k\in\{1,\ldots,K\}$. The model is
+让$\mathcal D$表示可用的药物集合，$\mathcal Q$表示癌症细胞类型集合，而$\mathcal S=\{0,\ldots,S\}$则表示时间索引。对于固定的步长$h$，网格满足$t(0)=0$和$t(S)=T=Sh$的条件。场景集合由$k\in\{1,\ldots,K\}$进行索引。模型是……
 \begin{align}
 \min\quad &\sum_{q\in\mathcal Q}P_{q,S}^{(1)} \tag{17a}\\
 \text{s.t.}\quad
@@ -31,35 +32,35 @@ Let $\mathcal D$ be the set of available drugs, $\mathcal Q$ the set of cancer c
 &(\mathbf U,\mathbf C,\mathbf N_{\mathrm{neu}},\mathbf N_{\mathrm{lym}})\in\widehat{\mathcal O}. && \tag{17j}
 \end{align}
 
-\paragraph{Scenario and parameter definitions.}
-The tumor heterogeneity is represented by a discrete random vector
+\paragraph{情景与参数定义。}
+肿瘤的异质性可以用一个离散随机向量来表示。
 \[
 \pi\in\mathbb R_+^{|\mathcal Q|},\qquad
 \pi\in\{\pi^{(1)},\ldots,\pi^{(K)}\},\qquad
 \mu^{(k)}=\Pr\{\pi=\pi^{(k)}\},\quad k\in\{1,\ldots,K\},
 \]
-with the stated most-likely-scenario premise
+根据所述的最可能情景前提，
 \[
 \mu^{(1)}\geq\mu^{(k)},\qquad \forall k\in\{1,\ldots,K\}.
 \]
-The source defines $P_{\mathrm{surg}}=\ln(N_{\mathrm{surg}})$ and $P_{q,\infty}=\ln(N_{q,\infty})$. Here $N_{\mathrm{surg}}$ is the fixed clinically determined operable size and $\epsilon$ is the fixed probability of not meeting the target. The superscript $(k)$ denotes the value under scenario $k$; the treatment variables $U,C,E$ are shared across scenarios. The objective minimizes terminal log populations for scenario 1, not an expectation over scenarios.
+源代码中定义了$P_{\mathrm{surg}}=\ln(N_{\mathrm{surg}})$和$P_{q,\infty}=\ln(N_{q,\infty})$。这里，$N_{\mathrm{surg}}$是临床确定的固定可操作尺寸，而$\epsilon$则是未达到目标的概率。上标$(k)$表示在场景$k$下的数值；处理变量$U,C,E$则在不同场景中共享。目标是在场景1中最小化最终的对数种群，而不是对多个场景的期望值进行求和。
 
-The fixed effect-compartment volume satisfies $\mathcal V>0$. The variables $U_{d,s}$, $C_{d,s}$, and $E_{d,s}$ denote administered dose, concentration, and effective concentration, respectively. The logarithmic population state has the meaning $P_{q,s}^{(k)}=\ln(N_{q,s}^{(k)})$. The parameters $\xi_d,\Lambda,\eta_{d,q},\rho_{d,q}$ are respectively the drug elimination rate, Gompertz shape parameter, cancer-cell fractional kill effect, and temporal effectiveness decay parameter. The paper states $\eta_{d,q}\geq0$. The fixed input populations $N_{q,0}^{(k)}$ and $N_{q,\infty}^{(k)}$ are scenario initial and asymptotic cell-type populations.
+固定效应-隔室体积满足$\mathcal V>0$的条件。变量$U_{d,s}$、$C_{d,s}$和$E_{d,s}$分别表示给药剂量、浓度以及有效浓度。对数种群状态的含义为$P_{q,s}^{(k)}=\ln(N_{q,s}^{(k)})$。参数$\xi_d,\Lambda,\eta_{d,q},\rho_{d,q}$分别表示药物消除速率、Gompertz形状参数、癌细胞部分杀伤效应以及时间有效性衰减参数。论文中所述为$\eta_{d,q}\geq0$。固定的输入种群$N_{q,0}^{(k)}$和$N_{q,\infty}^{(k)}$分别对应于情景初始状态和渐近细胞类型种群。
 
-\paragraph{Selected operational-set construction.}
-In (17j), choose the paper's discrete approximation (13), rather than the alternative McCormick constraints (12). Write $N_{w,0}$ for the fixed pretreatment white-blood-cell count, $N_{w,s}$ for its discretized count, and $B_{d,s}$ for the approximation of the product of white-blood-cell count and delayed drug concentration. The paper assumes
+\paragraph{选定的运筹学构建方法。}
+在 (17j) 中，选择论文中的离散近似方法 (13)，而不是另一种 McCormick 约束方法 (12)。将 $N_{w,0}$ 写作固定预处理后的白细胞计数，将 $N_{w,s}$ 写作其离散化后的计数，将 $B_{d,s}$ 写作白细胞计数与延迟药物浓度乘积的近似值。论文假设……
 \[
 \beta_w=\min\left\{\frac{\beta_{\mathrm{neu}}}{\theta_{\mathrm{neu}}},
 \frac{\beta_{\mathrm{lym}}}{\theta_{\mathrm{lym}}}\right\},\qquad
 0\leq C_{d,s}\leq\beta_{d,\mathrm{conc}},\quad
 \beta_w\leq N_{w,s}\leq N_{w,0},
 \]
-for all applicable $d\in\mathcal D$ and $s\in\mathcal S$. The delay index $\tau$ corresponds to the response delay $t_w$. Before drug effects begin, the unnumbered recurrence printed on page 8 is
+对于所有适用的$d\in\mathcal D$和$s\in\mathcal S$。延迟指数$\tau$对应于响应延迟$t_w$。在药物效应开始之前，第8页上未标注序号的重复内容
 \[
 N_{w,s+1}=N_{w,s}+h(\upsilon_w-\nu_wN_{w,s}),
 \qquad \forall s\in\{0,\ldots,\tau-1\},
 \]
-where $N_{w,0}$ is the initial count. The selected post-delay construction is
+其中，$N_{w,0}$表示初始计数。所选的延迟构造为
 \begin{align}
 N_{w,s+1}&=N_{w,s}+h\left(\upsilon_w-\nu_wN_{w,s}
 -\sum_{d\in\mathcal D}\eta_{d,w}B_{d,s}\right),
@@ -80,14 +81,14 @@ N_{w,s+1}&=N_{w,s}+h\left(\upsilon_w-\nu_wN_{w,s}
 &Z_{w,s,k}\in\mathbb B,
 &&\forall s\in\{\tau,\ldots,S-1\},\ k\in\{1,\ldots,K\}. \tag{13j}
 \end{align}
-The two inequalities in (13b--c) are the printed pair
+在 (13b–c) 中的两个不等式，就是那对被打印出来的不等式。
 \[
 N_{w,s}-\left(\beta_w+\sum_{k=1}^{K}k\Delta Z_{w,s,k}\right)\leq\frac{\Delta}{2},\qquad
 -N_{w,s}+\left(\beta_w+\sum_{k=1}^{K}k\Delta Z_{w,s,k}\right)\leq\frac{\Delta}{2}.
 \]
-The prose introducing the discrete approximation on page 7 specifies $Z_{w,s,k}\in\mathbb B$ for $k\in\{0,\ldots,K\}$; include this domain for all $k=0,\ldots,K$. The printed (13j) gives the narrower range $k\in\{1,\ldots,K\}$, which conflicts with that prose; retain the printed (13j) scope and note the conflict.
+第7页中关于离散近似的引言中，将$k\in\{0,\ldots,K\}$标记为$Z_{w,s,k}\in\mathbb B$；对于所有$k=0,\ldots,K$，都应包含该领域内容。打印版中的【13j】给出了更窄的范围$k\in\{1,\ldots,K\}$，这与引言中的描述存在冲突；应保留打印版中的【13j】范围，并指出这一冲突。
 
-The neutropenia and lymphocytopenia constraints included in the operational set are
+操作集中包含的中性粒细胞减少症和淋巴细胞减少症的约束条件包括：
 \begin{align*}
 N_{\mathrm{neu},s}&\geq\beta_{\mathrm{neu}},\qquad
 N_{\mathrm{neu},s}=\theta_{\mathrm{neu}}N_{w,s},
@@ -96,10 +97,10 @@ N_{\mathrm{lym},s}&\geq\beta_{\mathrm{lym}},\qquad
 N_{\mathrm{lym},s}=\theta_{\mathrm{lym}}N_{w,s},
 &&\forall s\in\{0,\ldots,S\}.
 \end{align*}
-Here $\upsilon_w$ is white-blood-cell production, $\nu_w$ is turnover, $\eta_{d,w}$ is the white-blood-cell fractional kill effect, and $\theta_{\mathrm{neu}},\theta_{\mathrm{lym}}$ are the fixed fractions of total white blood cells. The fixed clinical thresholds are $\beta_{\mathrm{neu}},\beta_{\mathrm{lym}}$. The drug effect on white blood cells uses concentration, including below $\beta_{d,\mathrm{eff}}$, and does not decay through temporal resistance.
+这里的$\upsilon_w$代表白细胞的生成量，$\nu_w$代表白细胞的更新率，$\eta_{d,w}$代表白细胞的死亡率，而$\theta_{\mathrm{neu}},\theta_{\mathrm{lym}}$则代表总白细胞中的固定比例。固定的临床阈值为$\beta_{\mathrm{neu}},\beta_{\mathrm{lym}}$。药物对白细胞的效应取决于其浓度，即使浓度低于$\beta_{d,\mathrm{eff}}$，药物效果仍然有效，且不会因时间推移而减弱。
 
-\paragraph{Discrete operational administration constraints.}
-The operational-constraint definition partitions the treatment period into $M$ days $D_m$, with $\mathrm{DAYS}=\{1,\ldots,M\}$, and designates meal times by $\mathrm{MEALS}$. The detailed official Appendix A rows specialize to capecitabine, docetaxel, and etoposide, labeled $1,2,3$. For capecitabine:
+\paragraph{离散的运营管理限制。}
+操作限制的定义将治疗期划分为$M$天、$D_m$天，以及$\mathrm{DAYS}=\{1,\ldots,M\}$天。而用餐时间则被标记为$\mathrm{MEALS}$。详细的官方附录A中，分别列出了卡培他滨、多西他赛和伊托比索的详细信息，这些内容被标记为$1,2,3$。对于卡培他滨而言：
 \begin{align*}
 C_{1,s}&\leq\beta_{1,\mathrm{conc}}, &&\forall s\in\mathcal S,\\
 U_{1,s}&\leq\beta_{1,\mathrm{rate}}, &&\forall s\in\mathcal S,\\
@@ -108,7 +109,7 @@ U_{1,s}&=0, &&\forall s\notin\mathrm{MEALS},\\
 U_{1,s}&=\alpha_{1,\mathrm{pill}}Z_{1,\mathrm{pill},s}, &&\forall s\in\mathrm{MEALS},\\
 Z_{1,\mathrm{pill},s}&\in\mathbb Z_+, &&\forall s\in\mathrm{MEALS}.
 \end{align*}
-For docetaxel:
+对于多西他赛：
 \begin{align*}
 C_{2,s}&\leq\beta_{2,\mathrm{conc}}, &&\forall s\in\mathcal S,\\
 U_{2,s}&\leq\beta_{2,\mathrm{rate}}, &&\forall s\in\mathcal S,\\
@@ -116,7 +117,7 @@ U_{2,s}&\leq\beta_{2,\mathrm{rate}}, &&\forall s\in\mathcal S,\\
 \sum_{l=0}^{\min\{\alpha_{2,\mathrm{rest}},M-m\}}(1-Z_{2,\mathrm{rest}}^{m+l})&\leq1, &&\forall m\in\mathrm{DAYS},\\
 Z_{2,\mathrm{rest}}^m&\in\mathbb B, &&\forall m\in\mathrm{DAYS}.
 \end{align*}
-For etoposide:
+对于依托泊苷：
 \begin{align*}
 C_{3,s}&\leq\beta_{3,\mathrm{conc}}, &&\forall s\in\mathcal S,\\
 U_{3,s}&\leq\beta_{3,\mathrm{rate}}, &&\forall s\in\mathcal S,\\
@@ -125,11 +126,11 @@ U_{3,s}&=0, &&\forall s\notin\mathrm{MEALS},\\
 U_{3,s}&=\alpha_{3,\mathrm{pill}}Z_{3,\mathrm{pill},s}, &&\forall s\in\mathrm{MEALS},\\
 Z_{3,\mathrm{pill},s}&\in\mathbb Z_+, &&\forall s\in\mathcal S.
 \end{align*}
-The source does not specify the exact meal-time indices in these mathematical rows. The docetaxel rest-sum endpoint is inclusive as printed. The rest rows apply to the stated rest-requiring drug; pill rows apply to the stated oral drugs.
+源文档并未明确这些数学行中的具体用餐时间指标。多西他赛的休息终点值是按照打印格式包含的。休息相关的行适用于所述的需要休息的药物；口服药物的行则适用于所述的口服药物。
 
-The operational set also enforces nonnegativity of $U_{d,s},C_{d,s},E_{d,s},N_{w,s},N_{\mathrm{neu},s},N_{\mathrm{lym},s}$, except that cancer log-population states $P_{q,s}^{(k)}$ need not be nonnegative. The elected construction has $B_{d,s}$ as an approximation variable and $V_{d,s,k}\geq0$ as specified above. The parameter premises stated for the underlying models include $\mathcal V>0$; the paper's Euler stability results additionally state $\xi_d,h,\mathcal V>0$ and $h<2/\xi_d$, and $\Lambda,h>0$ and $h<2/\Lambda$. These stability conditions are premises of those analytical results, not extra rows of (17).
+运算集还要求$U_{d,s},C_{d,s},E_{d,s},N_{w,s},N_{\mathrm{neu},s},N_{\mathrm{lym},s}$的非负性，不过癌症对数种群的状态$P_{q,s}^{(k)}$不必是非负的。所选的构造方式将$B_{d,s}$作为近似变量，而$V_{d,s,k}\geq0$则按照上述规定进行处理。为底层模型所设定的参数中包含了$\mathcal V>0$；论文中的欧拉稳定性结果还包含了$\xi_d,h,\mathcal V>0$和$h<2/\xi_d$，以及$\Lambda,h>0$和$h<2/\Lambda$。这些稳定性条件是这些分析结果的前提条件，而不是额外的行（17）。
 
-\paragraph{Printed coefficient distinction.}
-Equation (17d) prints the scenario-indexed $N_{q,\infty}^{(k)}$, whereas (17g) prints the scenario-independent $P_{q,\infty}$, defined as $\ln(N_{q,\infty})$. Both printed forms are retained; the coefficient in (17g) is not changed to a scenario-indexed quantity. The chance-constraint surrogate (17g)--(17i) is the selected conservative construction; the original probability constraint is not imposed as an additional row.
+\paragraph{印刷系数区分。}
+方程(17d)打印的是与场景相关的$N_{q,\infty}^{(k)}$，而方程(17g)打印的是与场景无关的$P_{q,\infty}$，其定义为$\ln(N_{q,\infty})$。两种打印形式都被保留下来；方程(17g)中的系数并未被转换为与场景相关的量。概率约束替代方案(17g–(17i))是选定的保守构造方式；原始的概率约束并未作为额外的行被添加进来。
 
 \end{document}
