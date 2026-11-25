@@ -115,12 +115,12 @@ const rootLink='<a href="replay.html">实例仿真</a>';
 function directory(){
  document.title='实例仿真 · ORtopia';
  const domains=[...new Set(ids.map(id=>cases.get(id).domain))];
- host.innerHTML='<div class="wrap replay-page"><div class="replay-breadcrumb"><a href="index.html">ORtopia</a> / 实例仿真</div><div class="replay-heading"><h1>实例仿真</h1><p>这里收录 '+ids.length+' 个已通过可行性检查的实例回放。<a href="index.html#/domains">查看题库全部 '+cases.size+' 道题 →</a></p></div><div class="replay-filters">'+['全部',...domains].map(g=>'<button data-filter="'+esc(g)+'" aria-pressed="'+(selectedGroup===g)+'">'+esc(g)+'</button>').join('')+'</div><div class="replay-cards">'+ids.filter(id=>selectedGroup==='全部'||cases.get(id).domain===selectedGroup).map(id=>{
- const p=cases.get(id);return '<a href="#'+id+'" class="replay-card"><img loading="lazy" src="assets/replays/'+id+'/world-preview.webp" alt=""><div><small>'+id+' · '+esc(p.domain)+'</small><h2>'+esc(decisionUI.questions[id]||p.title)+'</h2><span>'+esc(labs[id]?.link||'查看决策过程')+' →</span></div></a>';
+ host.innerHTML='<div class="wrap replay-page"><div class="replay-breadcrumb"><a href="index.html">ORtopia</a> / 实例仿真</div><div class="replay-heading"><h1>实例仿真</h1><p>这里收录 '+ids.length+' 道题的实例仿真。<a href="index.html#/domains">查看题库全部 '+cases.size+' 道题 →</a></p></div><div class="replay-filters">'+['全部',...domains].map(g=>'<button data-filter="'+esc(g)+'" aria-pressed="'+(selectedGroup===g)+'">'+esc(g)+'</button>').join('')+'</div><div class="replay-cards">'+ids.filter(id=>selectedGroup==='全部'||cases.get(id).domain===selectedGroup).map(id=>{
+ const p=cases.get(id);return '<a href="#'+id+'" class="replay-card"><img loading="lazy" src="'+(window.ORTOPIA_FIELD_PLAYER.supports(id)?esc(p.scene)+'?v='+encodeURIComponent(p.sceneVersion||'1'):'assets/replays/'+id+'/world-preview.webp')+'" alt=""><div><small>'+id+' · '+esc(p.domain)+'</small><h2>'+esc(decisionUI.questions[id]||p.title)+'</h2><span>'+esc(labs[id]?.link||'查看决策过程')+' →</span></div></a>';
  }).join('')+'</div></div>';
 }
 async function openPage(){
- const token=++renderToken;stop();leaveTheater();data=null;elapsed=0;finished=false;svgRoots=[];cssTracks=[];
+ const token=++renderToken;window.ORTOPIA_FIELD_PLAYER.close();stop();leaveTheater();data=null;elapsed=0;finished=false;svgRoots=[];cssTracks=[];
  const route=location.hash.slice(1);
  if(!route){directory();return;}
  // An optional one-based step lets a shared scene open directly at its action.
@@ -129,6 +129,11 @@ async function openPage(){
  if(!id||!ids.includes(id)){host.innerHTML='<div class="wrap load">此题暂未提供实例仿真。 '+rootLink+'</div>';return;}
  host.innerHTML='<div class="wrap load">正在读取 '+id+' 的实例解…</div>';
  try{
+  if(window.ORTOPIA_FIELD_PLAYER.supports(id)){
+   const pack=await loadDataset(id,'field-scenes','ORTOPIA_FIELD_CASES');
+   if(token===renderToken)window.ORTOPIA_FIELD_PLAYER.mount(host,cases.get(id),pack,Number(match[2]||1));
+   return;
+  }
   const [r,rows]=await Promise.all([loadDataset(id,'replays','ORTOPIA_REPLAYS'),loadDataset(id,'replay-logic','ORTOPIA_REPLAY_LOGIC'),loadLab(id)]);if(token!==renderToken)return;
   if(rows.length!==r.steps.length)throw Error('Replay decision count mismatch');
   logic=rows;selectedOption=0;
