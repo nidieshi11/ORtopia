@@ -1,0 +1,80 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\begin{document}
+\section*{Electric vehicle routes and time-dependent charge/discharge decisions}
+This current model preserves all original rows and objective, and explicitly
+repairs physical energy conservation. The old model and code are retained.
+Source: local paper, pp.\ 4--5, Table 2 and (1)--(20).
+Let $C,S$ be customer and charging-station nodes, $o=0,p$ the distinct
+departure/return depot copies, $V=C\cup S\cup\{o,p\}$,
+$I=C\cup S\cup\{o\}$, $J=C\cup S\cup\{p\}$, $H=S\cup\{o,p\}$.
+Vehicles are $k=1,\ldots,K$, charging periods $t=1,\ldots,|T|$, length
+$\delta$, and $M=\delta|T|$. Inputs are travel time $t_{ij}$, service time
+$s_i$, delivery $q_i$, windows $[e_i,l_i]$, capacity $Q$, and battery
+capacity $B$ in equivalent charging minutes. Travel consumes $f_{ij}$
+charging minutes. If physical battery capacity is $C_b$ kWh, per-period
+buy/sell costs are $P_t^{re}=\delta C_bp_t^b/B$ and
+$P_t^{dis}=\delta C_bp_t^s/B$; $P_{night}=C_bp_{night}/B$.
+All time/energy coefficients in the current inputs use these units.
+
+Variables are binary route $x_{ijk}$, binary charging/discharging
+$r_{itk},d_{itk}$, arrival time $\tau_{ik}\ge0$, arrival energy
+$0\le b_{ik}\le B$ and arrival cargo $0\le u_{ik}\le Q$.
+Define $E_{ik}=\delta\sum_t(r_{itk}-d_{itk})$ for $i\in H$ and zero
+for customers.
+\begin{align*}
+\min\quad&
+\sum_{k,i\in H,t}(r_{itk}P_t^{re}-d_{itk}P_t^{dis})
++\sum_kP_{night}(B-b_{pk}-E_{pk}).
+\end{align*}
+\subsection*{All routing, temporal and original resource constraints}
+\begin{align}
+\sum_{k,j\in J}x_{ijk}&=1 &&(i\in C),\\
+\sum_{i\in I}x_{ipk}&=1 &&(k),\\
+\sum_{j\in I}x_{jik}&=\sum_{j\in J}x_{ijk} &&(i\in C\cup S,k),\\
+\tau_{ik}+(t_{ij}+s_i)x_{ijk}-M(1-x_{ijk})&\le\tau_{jk}&&(i\in I,j\in J,k),\\
+t\delta(r_{itk}+d_{itk})+t_{ij}x_{ijk}-M(1-x_{ijk})&\le\tau_{jk}&&(i\in S\cup\{o\},j\in J,t,k),\\
+e_i\le\tau_{ik}&\le l_i&&(i\in V,k),\\
+b_{ok}&=B,\qquad u_{ok}=Q&&(k),\\
+b_{jk}&\le b_{ik}+E_{ik}-f_{ij}x_{ijk}+B(1-x_{ijk})&&(i\in I,j\in J,k),\\
+\delta\sum_t r_{itk}&\le B-b_{ik}&&(i\in H,k),\\
+\delta\sum_t d_{itk}&\le b_{ik}&&(i\in H,k),\\
+r_{itk}+d_{itk}&\le1&&(i\in H,t,k),\\
+\tau_{ik}-(t-1)\delta&\le M(1-d_{itk}-r_{itk})&&(i\in S\cup\{p\},t,k),\\
+u_{jk}&\le u_{ik}-q_ix_{ijk}+Q(1-x_{ijk})&&(i\in I,j\in J,k),\\
+b_{jk}&\le B\sum_{i\in I}x_{ijk}&&(j\in S,k).
+\end{align}
+The original total-charge and total-discharge restrictions are retained
+even though they can be more restrictive than cumulative SOC bounds.
+
+\subsection*{Explicit physical completion}
+\begin{align}
+\sum_{j\in J}x_{ojk}&=1,\qquad x_{iik}=0&&(i\in C\cup S,k),\\
+v_{ik}:=\sum_{j\in I\setminus\{i\}}x_{jik}&\le1&&(i\in S,k),\\
+r_{itk}+d_{itk}&\le v_{ik}&&(i\in S,t,k),\\
+x_{ijk}=1&\Longrightarrow b_{jk}=b_{ik}+E_{ik}-f_{ij}&&(i\in I,j\in J,k),\\
+x_{ijk}=1&\Longrightarrow u_{jk}=u_{ik}-q_i&&(i\in I,j\in J,k),\\
+0\le b_{ik}+\delta\sum_{a=1}^{t}(r_{iak}-d_{iak})&\le B&&(i\in H,t,k),\\
+\tau_{ok}&=0&&(k).
+\end{align}
+The indicator equalities enforce the conditional state updates exactly. Every station visit is represented once per vehicle, consistent
+with one arrival-state variable per node/vehicle. Positive travel/service
+time removes disconnected cycles; the delivery instance has distinct
+non-depot coordinates and positive travel on each such edge. The depot
+copies may be connected directly for an unused vehicle.
+
+The source calls $b$ and $u$ remaining resources. Its one-sided energy
+rows can reduce $b$ without physical consumption, then allow charging
+above true capacity. A delivered old three-vehicle certificate demonstrated
+this error. The new equalities and per-period bounds explicitly remove it;
+this specifies the physical load-dependent energy consumption. Cargo
+equalities remove ambiguity in the reported remaining-load values.
+The full source objective and all original rows are still checked.
+Charging availability at each station is represented by its energy and timing conditions, with simultaneous charging allowed.
+
+The solver is Gurobi with a total per-input wall-clock budget of 3600
+seconds, including any initial feasible-start search. Initial routes are
+warm starts only. A time-limit
+incumbent is accepted only after original-row, added-row, and independent
+exact route/energy replay checks. The result records the incumbent status and the solver bound when available.
+\end{document}

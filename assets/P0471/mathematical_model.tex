@@ -1,0 +1,250 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\section*{Optimal rebate contract design with endogenous forecasting}
+
+\subsection*{No-forecasting contract: objective and constraints}
+The manufacturer chooses a single contract $(q_N,r_N,t_N)$:
+\begin{equation}
+\max_{q_N,r_N,t_N}\left\{t_N-cq_N-r_NE\min(q_N,D_N)\right\}.
+\tag{OBJ--N}
+\end{equation}
+\begin{align}
+\text{s.t.}\quad R^r(N,N)&\geq \lambda\max(R^r(H,N),0)
+ +(1-\lambda)\max(R^r(L,N),0)-k,\tag{IC}\\
+R^r(N,N)&\geq 0.\tag{IR}
+\end{align}
+These are the objective and subject-to block of Section 5.1 (printed p.~1658). The first constraint discourages forecasting; the second ensures acceptance without forecasting.
+
+\subsection*{Forecasting menu: objective and constraints}
+The manufacturer instead may choose the two-contract menu
+$\{(q_H,r_H,t_H),(q_L,r_L,t_L)\}$, with contract $S\in\{H,L\}$ intended for the retailer who forecasts and observes signal $S$:
+\begin{equation}
+\begin{split}
+\max_{(q_H,r_H,t_H),(q_L,r_L,t_L)}\bigl\{
+&\lambda[t_H-cq_H-r_HE\min(q_H,D_H)]\\
+&+(1-\lambda)[t_L-cq_L-r_LE\min(q_L,D_L)]\bigr\}.
+\end{split}
+\tag{OBJ--F}
+\end{equation}
+\begin{align}
+\text{s.t.}\quad R^r(H,H)&\geq R^r(H,L),\tag{IC1}\\
+R^r(L,L)&\geq R^r(L,H),\tag{IC2}\\
+R^r(H,H)&\geq 0,\tag{IR1}\\
+R^r(L,L)&\geq 0,\tag{IR2}\\
+\lambda R^r(H,H)+(1-\lambda)R^r(L,L)-k
+&\geq R^r(N,H),\tag{IC3}\\
+\lambda R^r(H,H)+(1-\lambda)R^r(L,L)-k
+&\geq R^r(N,L),\tag{IC4}\\
+\lambda R^r(H,H)+(1-\lambda)R^r(L,L)-k
+&\geq 0.\tag{IR3}
+\end{align}
+This is the Section 5.2 block (printed pp.~1659--1660). Constraints (IC1)--(IR2) govern contract selection and participation after observing the signal; forecasting cost is then sunk. Constraints (IC3)--(IR3) govern the prior forecasting and participation decisions. These two blocks are alternative regimes, not simultaneous constraints on a single menu. Their optimal profits are compared below.
+
+\subsection*{Inherited definitions, domains, and information structure}
+The fixed inputs are the retail price $p$, unit production cost $c$, forecasting cost $k$, signal probability $\lambda$, and demand distributions. Production precedes the selling season; unsold inventory has negligible salvage value. The retailer's reservation profit is normalized to zero. Demand is exogenous, and the model concerns one product and one period with a binary forecasting decision.
+
+The unconditional demand $D_N$ is a nonnegative random variable with distribution $F_N$. Forecasting costs $k$ and privately reveals a signal:
+\[
+\Pr(S=H)=\lambda,\qquad \Pr(S=L)=1-\lambda.
+\]
+Conditional demand $D_S$ is nonnegative and has distribution $F_S$, for $S\in\{H,L\}$. The defining distribution relations are
+\[
+F_N(x)=\lambda F_H(x)+(1-\lambda)F_L(x),
+\]
+\[
+F_H(x)\leq F_L(x)\qquad\text{for all }x\geq 0,
+\]
+\[
+\bar F_S(x)\equiv 1-F_S(x),\qquad S\in\{H,L,N\}.
+\]
+The paper assumes the distributions $F_S(\cdot)$ are strictly increasing for expositional ease, while stating that its results hold when this assumption is relaxed. The conditional distributions and forecasting cost are common knowledge; only the retailer observes whether she forecasts and, if she does, the realized signal. Here $E$ denotes expectation under the demand distribution indicated by the random variable.
+
+The manufacturer's rebate-menu transfer function has the printed domain and codomain
+\[
+T^r(q,r):\mathbb R^+\times\mathbb R^+\longrightarrow\mathbb R^+.
+\]
+The quantity $q$ is the retailer's order, $r$ is the rebate per unit sold to end consumers, and $T^r(q,r)$ is the transfer paid by the retailer to the manufacturer. Thus the contract coordinates have the inherited nonnegative domains
+\[
+q_C\geq 0,\qquad r_C\geq 0,\qquad t_C\geq 0,
+\]
+with $C=N$ in the no-forecasting block and $C\in\{H,L\}$ in the forecasting block. In particular, $t_C$ is a total transfer, not a per-unit wholesale price. The manufacturer chooses these coordinates; the retailer chooses whether to forecast and which offered contract to accept, or rejects the offer.
+
+Section 3 (printed p.~1657) gives the two-contract menu representation
+\[
+T^r(q,r)=
+\begin{cases}
+t_L,&q\leq q_L\text{ and }r\leq r_L,\\
+t_H,&q_L<q\leq q_H\text{ and }r\leq r_H,\\
+\infty,&\text{otherwise},
+\end{cases}
+\qquad (q,r)\in\mathbb R^+\times\mathbb R^+,
+\]
+and writes it compactly as
+\[
+\{(q_H,r_H,t_H),(q_L,r_L,t_L)\}.
+\]
+The revelation-principle construction in Section 5.2 restricts attention to two contracts because there are two possible signals. A single contract is used when the manufacturer intends acceptance without forecasting. The paper's statement that transfer prices would typically increase with quantity and rebate generosity is descriptive, not an additional constraint in either printed optimization block.
+
+The event order is: the manufacturer offers the menu; the retailer decides whether to forecast and privately observes the signal if she forecasts; she selects a contract or rejects the offer; upon acceptance the manufacturer produces the ordered quantity and receives the transfer; demand is realized and the rebate is paid.
+
+The retailer's expected profit, excluding any forecasting cost, is
+\[
+R^r(S,C)=(p+r_C)E\min(q_C,D_S)-t_C,
+\qquad S\in\{H,L,N\},
+\]
+where $C$ ranges over the contracts in the applicable regime. The superscript $r$ denotes the rebate contract form; $S$ identifies the demand information, whereas $C$ identifies the contract selected.
+
+Under the single offer, forecasting followed by the optimal acceptance decision yields
+\[
+\lambda\max(R^r(H,N),0)
+ +(1-\lambda)\max(R^r(L,N),0)-k.
+\]
+The unconditional-profit identity is
+\[
+\lambda R^r(H,N)+(1-\lambda)R^r(L,N)=R^r(N,N).
+\]
+As explained in Section 5.1, forecasting is valuable for this acceptance decision only when the low signal makes acceptance unattractive:
+\[
+R^r(L,N)<0.
+\]
+This last relation describes that circumstance; it is not an additional constraint imposed on every no-forecasting contract.
+
+\subsection*{Definitions used by the optimal-contract characterizations}
+The integrated-system quantities used in Propositions 2 and 3 are defined in Section 4 by
+\[
+q_N^I=\bar F_N^{-1}(c/p),\qquad
+q_S^I=\bar F_S^{-1}(c/p),\quad S\in\{H,L\}.
+\]
+The inverse symbols are retained as printed, without an added generalized-inverse convention. Section 5.1 defines
+\[
+\Gamma(q)\equiv(1-\lambda)p\int_0^q
+ [\bar F_N(x)-\bar F_L(x)]\,dx.
+\]
+It states that $q_N^I\geq q_L^I$ and that, for any $q\in(q_L^I,q_N^I)$,
+\[
+\bar F_N(q)>c/p,\qquad \bar F_L(q)<c/p,
+\]
+\[
+\Gamma'(q)=(1-\lambda)p[\bar F_N(q)-\bar F_L(q)]>0.
+\]
+Consequently, the inverse $\Gamma^{-1}(\cdot)$ used in the rebate characterization is stated to be well defined over
+\[
+[\Gamma(q_L^I),\Gamma(q_N^I)].
+\]
+The different inverse convention introduced later for returns contracts is not imported here.
+
+Section 5.2 defines
+\[
+\Delta(q)\equiv E[\min(q,D_H)-\min(q,D_L)],
+\]
+the expected increase in units sold after a favorable rather than an unfavorable signal.
+
+\subsection*{Optimal no-forecasting contract and its profit}
+Proposition 2 gives an optimal contract as
+\[
+(q_N^*,r_N^*,t_N^*)=
+\begin{cases}
+\left(q_L^I,0,pE\min(q_L^I,D_N)
+ -\dfrac{\Gamma(q_L^I)-k}{1-\lambda}\right),
+ &k\leq\Gamma(q_L^I),\\[6pt]
+\left(\Gamma^{-1}(k),0,pE\min(\Gamma^{-1}(k),D_N)\right),
+ &k\in(\Gamma(q_L^I),\Gamma(q_N^I)),\\[6pt]
+\left(q_N^I,0,pE\min(q_N^I,D_N)\right),
+ &k\geq\Gamma(q_N^I).
+\end{cases}
+\]
+In particular, $r_N^*=0$ and $q_N^*\leq q_N^I$. The manufacturer's corresponding optimal expected profit is
+\begin{equation}
+\mathcal M_N^r=
+\begin{cases}
+pE\min(q_L^I,D_N)-cq_L^I
+ -\dfrac{\Gamma(q_L^I)-k}{1-\lambda},
+ &k\leq\Gamma(q_L^I),\\[6pt]
+pE\min(\Gamma^{-1}(k),D_N)-c\Gamma^{-1}(k),
+ &k\in(\Gamma(q_L^I),\Gamma(q_N^I)),\\[6pt]
+pE\min(q_N^I,D_N)-cq_N^I,
+ &k\geq\Gamma(q_N^I).
+\end{cases}
+\tag{1}
+\end{equation}
+At this optimum, the text additionally states
+\[
+R^r(N,N)=\frac{\Gamma(q_L^I)-k}{1-\lambda}>0
+\qquad\text{when }k<\Gamma(q_L^I).
+\]
+
+\subsection*{Optimal forecasting contracts and their profits}
+If the forecasting problem (OBJ--F)--(IR3) does not have a solution, the paper directs the manufacturer not to induce forecasting. Proposition 3 addresses the case in which that problem does have a solution and gives
+\begin{align*}
+q_L^*&=\operatorname*{arg\,max}_{q_L\geq0}
+ \left\{p\int_0^{q_L}[\bar F_L(x)-\lambda\bar F_H(x)]\,dx
+ -(1-\lambda)cq_L\right\},\\
+r_L^*&=0,\\
+t_L^*&=pE\min(q_L^*,D_L),\\
+q_H^*&=q_H^I,\\
+r_H^*&=k/\lambda(1-\lambda)\Delta(q_H^I),\\
+t_H^*&=(p+r_H^*)E\min(q_H^*,D_H)
+ -p\Delta(q_L^*)-k/\lambda.
+\end{align*}
+\noindent\emph{Printed-notation note.} The rebate row for $r_H^*$ above retains the unparenthesized solidus expression printed in Proposition 3 (physical PDF p.~7). The source does not delimit the denominator there; no additional parentheses or repaired fraction have been inserted.
+
+These are solution characterizations, not additional constraints imposed on arbitrary menus in (OBJ--F)--(IR3). The accompanying text states
+\[
+q_L^*\leq q_L^I,\qquad q_H^*=q_H^I,
+\]
+and, at the characterized menu, the retailer's profits before subtracting forecasting cost are
+\[
+R^r(L,L)=0,\qquad R^r(H,H)=p\Delta(q_L^*)+k/\lambda.
+\]
+Its ex ante expected profit satisfies the linked equation family
+\begin{align}
+\lambda R^r(H,H)+(1-\lambda)R^r(L,L)-k
+ &=\lambda R^r(H,L)\tag{2}\\
+ &=R^r(N,L)\tag{3}\\
+ &=\lambda p\Delta(q_L^*).\tag{4}
+\end{align}
+The paper states that this profit is strictly positive when $F_L(0)=0$ and $F_H(x)<F_L(x)$ for some sufficiently small $x$. This is a sufficient condition for that strict-profit conclusion, not an additional restriction on the optimization model.
+
+The manufacturer's optimal expected profit in the forecasting regime is
+\begin{equation}
+\begin{split}
+\mathcal M_F^r={}&\lambda\left[
+ p\int_0^{q_H^*}\bar F_H(x)\,dx-cq_H^*\right]\\
+&+(1-\lambda)\left[
+ p\int_0^{q_L^*}\frac{\bar F_L(x)-\lambda\bar F_H(x)}{1-\lambda}\,dx
+ -cq_L^*\right]-k.
+\end{split}
+\tag{5}
+\end{equation}
+
+\subsection*{Endogenous choice of forecasting regime}
+Sections 5.3 and the opening of printed p.~1662 compare the two optimal profits:
+\[
+\mathcal M^r=\max(\mathcal M_F^r,\mathcal M_N^r).
+\]
+Subject to the preceding qualification that the forecasting problem has a solution, the manufacturer induces forecasting if and only if
+\[
+\mathcal M_F^r>\mathcal M_N^r.
+\]
+Otherwise the manufacturer offers the no-forecasting contract. In particular, the stated rule uses a strict comparison, assigning equality to no forecasting. The paper states that $\mathcal M_F^r$ strictly decreases with $k$, that $\mathcal M_N^r$ increases with $k$, and that
+\[
+\left.\mathcal M_F^r\right|_{k=0}
+ \geq \left.\mathcal M_N^r\right|_{k=0}.
+\]
+It therefore identifies a threshold $k^r\geq0$ satisfying
+\[
+\mathcal M_F^r>\mathcal M_N^r
+\quad\Longleftrightarrow\quad k<k^r.
+\]
+For $k<k^r$ the manufacturer offers the Proposition 3 menu; otherwise the manufacturer offers the Proposition 2 single contract. No explicit formula for $k^r$ is supplied in this passage.
+
+\paragraph{Source scope and qualifications.}
+The operative source is Taylor and Xiao, \emph{Incentives for Retailer Forecasting: Rebates vs. Returns}, \emph{Management Science} 55(10), 2009, Sections 3--5, printed pp.~1656--1662. The displayed (OBJ--N) and (OBJ--F) tags distinguish the two objectives both labeled (OBJ) in the source. Returns contracts, linear-transfer restrictions, and the later robustness extensions are not part of this formulation.
+
+The printed map $T^r:\mathbb R^+\times\mathbb R^+\to\mathbb R^+$ and its subsequent assignment $T^r=\infty$ outside the offered regions are retained together, despite their codomain mismatch. The supplied primary model passages do not state explicit strict bounds $0<\lambda<1$ or $0<c<p$, nor prescriptions for vanishing denominators or inverse boundary cases in the characterizations; none have been added. The paper refers proofs to an electronic companion. That companion was not supplied and remains unverified; no companion-only conditions or replacements are asserted here.
+
+\end{document}

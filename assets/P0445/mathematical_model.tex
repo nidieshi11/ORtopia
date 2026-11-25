@@ -1,0 +1,131 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\begin{document}
+
+\section*{General-demand stochastic dynamic pricing with given initial inventory}
+
+\begin{equation}
+J^*(n,t)\doteq\sup_{u\in\mathcal U}J_u(n,t).
+\tag{7}
+\end{equation}
+The decision is a non-anticipating pricing policy $u$. The class $\mathcal U$ consists of all such policies satisfying
+\begin{equation}
+\int_0^t dN_s\leq n\qquad(\mathrm{a.s.})
+\tag{2}
+\end{equation}
+and
+\begin{equation}
+p_s\in\mathcal P\ \Longleftrightarrow\ \lambda_s\in\Lambda
+\qquad\forall s.
+\tag{3}
+\end{equation}
+The firm seeks a policy $u^*$, if one exists, maximizing total expected sales revenue over $[0,t]$.
+
+\subsection*{Fixed inputs, policy domains, and sales process}
+The initial inventory $n$ is a given nonnegative integer, and the sales horizon $t$ is given and finite:
+\[
+n\in\{0,1,2,\ldots\},\qquad 0<t<+\infty.
+\]
+Time $s$ runs over the sales horizon $[0,t]$. The given demand function $\lambda(\cdot)$ is regular in the sense specified below. Prices and their corresponding demand intensities satisfy
+\[
+\lambda_s=\lambda(p_s),\qquad
+\mathcal P=\mathbb R_+\cup\{p_\infty\},\qquad
+\Lambda=\{\lambda(p):p\in\mathcal P\},\qquad
+0\in\Lambda.
+\]
+Here $p_s$ is the price selected by the policy at time $s$, and $N_s$ counts the items sold up to time $s$. Demand is a Poisson process whose intensity is controlled through $\lambda_s$. If $dN_s=1$, the firm sells one item and receives revenue $p_s$.
+
+The firm operates under imperfect competition. Demand depends only on the current price, not on past or anticipated prices; the demand function is given rather than derived from an explicit model of competition. No backlogging is allowed. When stock is exhausted, the firm collects no further revenue. The null price $p_\infty$ permits constraint (2) to turn off demand: the model forces pricing at $p=p_\infty$ when inventory is zero. Unsold inventory has zero salvage value at time $t$, and all purchase and production costs are sunk. The basic model does not charge for price changes.
+
+\subsection*{Regular-demand assumptions}
+The function $\lambda(p)$ is non-increasing in $p$. Prices and demand rates have a one-to-one correspondence, with inverse denoted by $p(\lambda)$. Thus the policy can equivalently control the intensity, with the corresponding price determined by this inverse.
+
+The revenue rate is
+\begin{equation}
+r(\lambda)\doteq\lambda p(\lambda).
+\tag{1}
+\end{equation}
+It is continuous, bounded, and concave, and satisfies
+\[
+\lim_{\lambda\to0}r(\lambda)=0.
+\]
+It has a bounded least maximizer, defined in the paper by
+\[
+\lambda^*=\min\left\{\lambda:
+ r(\lambda)=\max_{\lambda\geq0}r(\lambda)\right\}.
+\]
+The scalar $\lambda^*$ is a property of the given revenue-rate function, not the state-dependent optimal intensity $\lambda^*(n,t)$ introduced below.
+
+There is a null price $p_\infty$, possibly $+\infty$, for which
+\[
+\lim_{p\to p_\infty}\lambda(p)=0,
+\qquad
+\lim_{p\to p_\infty}p\lambda(p)=0.
+\]
+The authors call a demand function satisfying these assumptions a regular demand function.
+
+For a price held at $p$ over a small interval $\delta$, the printed local demand description is
+\[
+\begin{array}{c|c}
+\text{number of items sold}&\text{probability}\\ \hline
+1&\lambda(p)\delta+o(\delta)\\
+0&1-\lambda(p)\delta-o(\delta)\\
+\text{more than }1&o(\delta).
+\end{array}
+\]
+This local description is used together with the stock-exhaustion mechanism in (2).
+
+\subsection*{Expected-revenue functional and boundary cases}
+For $u\in\mathcal U$, initial stock $n>0$, and horizon $t>0$, the expected revenue under that policy is
+\begin{equation}
+J_u(n,t)\doteq E_u\left[\int_0^t p_s\,dN_s\right],
+\tag{4}
+\end{equation}
+where $E_u$ denotes expectation under policy $u$. The boundary definitions are
+\begin{equation}
+J_u(n,0)\doteq0\qquad\forall n
+\tag{5}
+\end{equation}
+and
+\begin{equation}
+J_u(0,t)\doteq0\qquad\forall t.
+\tag{6}
+\end{equation}
+The boundary quantifiers apply to the nonnegative inventory and time arguments of the value functions.
+
+\subsection*{Linked optimality characterization}
+The following equations characterize the value of (7); they are not additional restrictions on every admissible policy. The paper's informal small-interval optimality relation is
+\[
+\begin{aligned}
+J^*(n,t)=\sup_\lambda\bigl[&\lambda\delta t
+ \bigl(p(\lambda)+J^*(n-1,t-\delta t)\bigr)\\
+ &+(1-\lambda\delta t)J^*(n,t-\delta t)+o(\delta t)\bigr].
+\end{aligned}
+\]
+Using (1), rearranging, and taking $\delta t\to0$ gives the printed Hamilton--Jacobi sufficient conditions
+\begin{equation}
+\begin{aligned}
+\frac{\partial J^*(n,t)}{\partial t}
+ &=\sup_\lambda\left[r(\lambda)-\lambda\bigl(J^*(n,t)-J^*(n-1,t)\bigr)\right],\\
+ &\hspace{25mm}\forall n\geq1,\quad\forall t>0.
+\end{aligned}
+\tag{8}
+\end{equation}
+Here the intensity choices are those of the pricing model, with allowable rates $\Lambda$; the printed supremum in (8) is subscripted simply by $\lambda$. Its boundary conditions are
+\[
+J^*(n,0)=0\qquad\forall n,
+\qquad
+J^*(0,t)=0\qquad\forall t.
+\]
+The intensities $\lambda^*(n,t)$ achieving the supremum form an optimal intensity control. Proposition 1 states that regular demand gives a unique solution to (8), and that
+\[
+\lambda^*(n,s)\leq\lambda^*
+\qquad\text{for all }n\text{ and all }0\leq s\leq t.
+\]
+This is a property of optimal intensities, not a defining bound on the policy class $\mathcal U$ in (7). The appendix proves existence by showing that the supremum in (8) can be restricted to a maximum on $[0,\lambda^*]$; the unreplaced, printed supremum form (8) is retained here.
+
+\paragraph{Source scope.}
+The formulation and regular-demand definitions are from Gallego and van Ryzin, \emph{Optimal Dynamic Pricing of Inventories with Stochastic Demand over Finite Horizons}, Sections 2.1--2.2.1, physical PDF pages 5--7 (printed pages 1003--1005). The proof of Proposition 1 is in the paper's appendix, physical PDF page 19 (printed page 1017). Equations (9)--(10) specialize to exponential demand and are not part of this general-demand formulation. The external intensity-control results cited from Br\'emaud to justify sufficiency and existence have not been independently verified from that reference.
+
+\end{document}

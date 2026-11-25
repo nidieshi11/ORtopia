@@ -1,0 +1,137 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+
+\title{Core Solvable Mathematical Model}
+\author{Paper 4}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section*{Retained Core Model}
+According to the \texttt{tex} formulas and the PDF, the directly solvable compact model is the
+time-indexed mixed-integer formulation (TI), labeled EC.2a--EC.2p in the e-companion. The
+Page 9 pattern-based formulation, the Page 10 pricing problem, and the Page 22 connectivity
+cuts belong to the branch-price-and-cut framework and are omitted here because they rely on
+implicit route generation rather than an explicit standalone formulation.
+
+\paragraph{Sets and parameters.}
+Let $V=\{0\}\cup N \cup \{n'\}$ be the node set, where $0$ is the start depot and $n'$ is the
+dummy end depot. The customer set is partitioned into pickup customers $N^{+}$ and delivery
+customers $N^{-}$, with $N=N^{+}\cup N^{-}$. Let $A$ be the arc set and $K$ the vehicle set.
+For each node $i$, parameter $q_i$ denotes collected quantity if $q_i>0$ and delivered quantity
+if $q_i<0$. Parameter $d_{ij}$ is routing cost, $t_{ij}$ is travel time, $Q$ is vehicle capacity,
+and $T$ is the maximum route duration. For any subset $S \subseteq N$, let
+$A(S)=\{(i,j)\in A : i \in S,\ j \in S\}$.
+
+\paragraph{Decision variables.}
+$x_{ij}^{k}\in\{0,1\}$ equals 1 if vehicle $k$ traverses arc $(i,j)$.
+$y_i^k$ is the quantity collected or delivered by vehicle $k$ at customer $i$.
+$z_i^k$ is the vehicle load after visiting node $i$.
+
+\section*{Time-Indexed MIP Formulation}
+\begin{equation}
+\min \sum_{k \in K} \sum_{(i,j) \in A} d_{ij} x_{ij}^{k}
+\tag{EC.2a}
+\end{equation}
+
+\begin{equation}
+\sum_{(0,i) \in A} x_{0i}^{k} = \sum_{(i,n') \in A} x_{in'}^{k}
+\quad \forall k \in K
+\tag{EC.2b}
+\end{equation}
+
+\begin{equation}
+\sum_{(i,j) \in A} x_{ij}^{k} = \sum_{(j,i) \in A} x_{ji}^{k}
+\quad \forall i \in V,\ \forall k \in K
+\tag{EC.2c}
+\end{equation}
+
+\begin{equation}
+\sum_{k \in K} y_i^k = q_i
+\quad \forall i \in V
+\tag{EC.2d}
+\end{equation}
+
+\begin{equation}
+y_i^k \le \min\{q_i,Q\} \sum_{(i,j) \in A} x_{ij}^{k}
+\quad \forall i \in N^{+},\ \forall k \in K
+\tag{EC.2e}
+\end{equation}
+
+\begin{equation}
+y_i^k \ge \max\{q_i,-Q\} \sum_{(i,j) \in A} x_{ij}^{k}
+\quad \forall i \in N^{-},\ \forall k \in K
+\tag{EC.2f}
+\end{equation}
+
+\begin{equation}
+z_j^k \ge z_i^k + y_j^k + (x_{ij}^{k} - 1)(Q+1)
+\quad \forall j \in N^{+},\ \forall (i,j) \in A,\ \forall k \in K
+\tag{EC.2g}
+\end{equation}
+
+\begin{equation}
+z_j^k \le z_i^k + y_j^k + (1 - x_{ij}^{k})(Q+1)
+\quad \forall j \in N^{-},\ \forall (i,j) \in A,\ \forall k \in K
+\tag{EC.2h}
+\end{equation}
+
+\begin{equation}
+z_i^k \le Q
+\quad \forall i \in V,\ \forall k \in K
+\tag{EC.2i}
+\end{equation}
+
+\begin{equation}
+\sum_{(i,j) \in A} t_{ij} x_{ij}^{k} \le T
+\quad \forall k \in K
+\tag{EC.2j}
+\end{equation}
+
+\begin{equation}
+\sum_{(i,j) \in A(S)} x_{ij}^{k} \le |S| - 1
+\quad \forall S \subseteq N,\ |S| > 1,\ \forall k \in K
+\tag{EC.2k}
+\end{equation}
+
+\begin{equation}
+y_0^k = y_{n'}^k = 0
+\quad \forall k \in K
+\tag{EC.2l}
+\end{equation}
+
+\begin{equation}
+x_{ij}^{k} \in \{0,1\}
+\quad \forall (i,j) \in A,\ \forall k \in K
+\tag{EC.2m}
+\end{equation}
+
+\begin{equation}
+y_i^k \ge 0
+\quad \forall i \in N^{+},\ \forall k \in K
+\tag{EC.2n}
+\end{equation}
+
+\begin{equation}
+y_i^k \le 0
+\quad \forall i \in N^{-},\ \forall k \in K
+\tag{EC.2o}
+\end{equation}
+
+\begin{equation}
+z_i^k \ge 0
+\quad \forall i \in V,\ \forall k \in K
+\tag{EC.2p}
+\end{equation}
+
+\paragraph{Current problem-set network convention.}
+The TI formulation uses a closed directed network. Equation (EC.2c) applies to every node in $V$, including both depot copies. The supplied instances use $A=\{(i,j):i,j\in V,\ i\ne j\}$, including $(n',0)$ and the other depot arcs. Equations (EC.2a) and (EC.2j) include the supplied costs and times of all selected arcs, including the return arc. The customer quantities satisfy $q_i\ge0$ for $i\in N^+$ and $q_i\le0$ for $i\in N^-$, allowing zero demand, and $q_0=q_{n'}=0$. 
+
+\end{document}

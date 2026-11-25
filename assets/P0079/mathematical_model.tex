@@ -1,0 +1,83 @@
+\documentclass[11pt]{ctexart}
+\usepackage{amsmath,amssymb,longtable}
+\begin{document}
+\section*{P79: 当前完整数学模型（2026-10-20）}
+\section*{修订依据与边界}以非抢占加工的物理占用定义 T_tij={t': t'≤t<t'+p_ij} 明确当前模型。旧印刷区间结果留作诊断，当前目标值只取已实际求解的active_processing_interval分支。
+
+
+
+\section*{Deterministic-Equivalent MILP for the Minimum-Makespan Case}
+The paper is primarily algorithmic. The directly solvable core model is the deterministic-equivalent
+MILP used for the minimum-makespan two-stage stochastic planning and scheduling problem.
+
+\begin{equation}
+\min \quad \sum_{\omega \in \Omega} \pi_\omega \beta_\omega
+\tag{M1}
+\end{equation}
+
+subject to
+\begin{equation}
+\sum_{i \in I} x_{ij} = 1,
+\qquad \forall j \in J,
+\tag{M2}
+\end{equation}
+\begin{equation}
+\beta_\omega \ge \beta_{i\omega},
+\qquad \forall i \in I,\ \forall \omega \in \Omega,
+\tag{M3}
+\end{equation}
+\begin{equation}
+\beta_\omega \ge \sum_{t \in T} (t + p_{ij}^{\omega}) z_{ijt}^{\omega},
+\qquad \forall i \in I,\ \forall j \in J,\ \forall \omega \in \Omega,
+\tag{M4}
+\end{equation}
+\begin{equation}
+z_{ijt}^{\omega} \le x_{ij},
+\qquad \forall i \in I,\ \forall j \in J,\ \forall t \in T,\ \forall \omega \in \Omega,
+\tag{M5}
+\end{equation}
+\begin{equation}
+\sum_{i \in I} \sum_{t \in T} z_{ijt}^{\omega} = 1,
+\qquad \forall j \in J,\ \forall \omega \in \Omega,
+\tag{M6}
+\end{equation}
+\begin{equation}
+\sum_{j \in J} \sum_{t' \in T_{tij}^{\omega}} c_{ij} z_{ijt'}^{\omega} \le K_i,
+\qquad \forall i \in I,\ \forall t \in T,\ \forall \omega \in \Omega,
+\tag{M7}
+\end{equation}
+\begin{equation}
+z_{ijt}^{\omega} = 0,
+\qquad \forall i \in I,\ \forall j \in J,\ \forall \omega \in \Omega,\ \forall t<r_j,
+\tag{M8}
+\end{equation}
+\begin{equation}
+x_{ij} \in \{0,1\},
+\qquad \forall i \in I,\ \forall j \in J,
+\tag{M9}
+\end{equation}
+\begin{equation}
+z_{ijt}^{\omega} \in \{0,1\},
+\qquad \forall i \in I,\ \forall j \in J,\ \forall t \in T,\ \forall \omega \in \Omega,
+\tag{M10}
+\end{equation}
+\begin{equation}
+\beta_\omega \ge 0,
+\qquad
+\beta_{i\omega} \ge 0,
+\qquad \forall i \in I,\ \forall \omega \in \Omega.
+\tag{M11}
+\end{equation}
+
+
+\section*{加工占用集合}
+对每个机器$i$、作业$j$、情景$\omega$和整数时刻$t$，
+\[
+T_{tij}^{\omega}=\{t'\in T:t'\le t<t'+p_{ij}^{\omega}\}.
+\]
+这是在$t$仍加工的起点集合，而非已完成任务集合。每个情景所有作业各开始一次，
+处理时间正、资源消耗和容量有限，机器指派$x$跨情景共用。
+代码返回两种历史解释；当前入口清单只选active\_processing\_interval。
+
+
+\end{document}

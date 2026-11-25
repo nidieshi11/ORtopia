@@ -1,0 +1,35 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\begin{document}
+\section*{Rectangular-coordinate AC optimal power flow}
+
+Let $B$ be a finite set of buses, $U\subseteq B$ the generator buses, and $L$ a finite set of endpoint-directed branch indices. Each $a\in L$ has endpoints $k_a,\ell_a\in B$; distinct indices may identify parallel branches. Define $\delta(k)=\{a\in L:k_a=k\}$. All data below are fixed real scalars: demands $p_k^d,q_k^d$ and shunt coefficients $g_{kk},h_{kk}$ for $k\in B$; branch coefficients $G_a,B_a$ and thermal limits $d_a^+$ for $a\in L$; generation bounds $(p_k^g)^\pm,(q_k^g)^\pm$ and cost coefficients $C_{k,1},C_{k,2},C_{k,3}$ for $k\in U$, with $C_{k,1}\geq0$; and voltage-magnitude bounds $|V_k|^\pm$ for $k\in B$. For each $a\in L$, the fixed angle-bound coefficients $\alpha_a^-=\tan\theta_a^-$ and $\alpha_a^+=\tan\theta_a^+$ are finite.
+
+The decision variables are $p^g,q^g\in\mathbb R^{|U|}$, $e,f\in\mathbb R^{|B|}$, and the real branch-flow auxiliaries $p,q\in\mathbb R^{|L|}$. For nodal balances, define $P_k^g=p_k^g$ and $Q_k^g=q_k^g$ when $k\in U$, and $P_k^g=Q_k^g=0$ otherwise. Define the following expressions.
+\[
+W_k=e_k^2+f_k^2\quad(k\in B),\qquad
+D_a=e_{k_a}e_{\ell_a}+f_{k_a}f_{\ell_a},\qquad
+N_a=e_{\ell_a}f_{k_a}-e_{k_a}f_{\ell_a}\quad(a\in L).
+\]
+The model is
+\[
+\min_{p^g,q^g,e,f,p,q}\ \sum_{k\in U}\bigl(C_{k,1}(p_k^g)^2+C_{k,2}p_k^g+C_{k,3}\bigr)
+\]
+subject to
+\begin{align*}
+P_k^g-p_k^d &= g_{kk}W_k+\sum_{a\in\delta(k)}p_a &&(k\in B),\\
+Q_k^g-q_k^d &= -h_{kk}W_k+\sum_{a\in\delta(k)}q_a &&(k\in B),\\
+p_a &= -G_a(W_{k_a}-D_a)+B_aN_a &&(a\in L),\\
+q_a &= B_a(W_{k_a}-D_a)+G_aN_a &&(a\in L),\\
+p_a^2+q_a^2 &\leq (d_a^+)^2 &&(a\in L),\\
+(p_k^g)^- &\leq p_k^g &&(k\in U),\\
+p_k^g &\leq (p_k^g)^+ &&(k\in U),\\
+(q_k^g)^- &\leq q_k^g &&(k\in U),\\
+q_k^g &\leq (q_k^g)^+ &&(k\in U),\\
+(|V_k|^-)^2 &\leq W_k &&(k\in B),\\
+W_k &\leq (|V_k|^+)^2 &&(k\in B),\\
+\alpha_a^-D_a-N_a &\leq 0 &&(a\in L),\\
+N_a-\alpha_a^+D_a &\leq 0 &&(a\in L),\\
+D_a &\geq 0 &&(a\in L).
+\end{align*}
+\end{document}

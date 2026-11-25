@@ -1,0 +1,175 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\section*{Asymmetric decentralized supply-chain equilibrium}
+For every manufacturer $i=1,\ldots,M$, the manufacturer's MPEC is
+\begin{align}
+\max_{y_i,\hat{x},v}\quad &v^T y_i-c_i^T y_i, \tag{10}\\
+\text{s.t.}\quad &\sum_{k=1}^{M}y_k=\sum_{j=1}^{N}x_j, \tag{11}\\
+&0\leq\hat{q}+(\hat{B}+\hat{H})\hat{x}\perp\hat{x}\geq0, \tag{12}\\
+&y_i\geq0. \tag{13}
+\end{align}
+In manufacturer $i$'s maximization, the production quantities $y_k$ of all other manufacturers, $k\ne i$, are held fixed. The manufacturer--retailer equilibrium simultaneously solves these MPECs for all $M$ manufacturers, with the same retailer order vector $\hat{x}$ and wholesale price vector $v$. Thus the selected model is the coupled equilibrium problem with equilibrium constraints, not a maximization of aggregate manufacturer profit. Only $y_i$ is the manufacturer's free production decision; $v$ is implicitly determined through wholesale market clearing and the retailers' equilibrium. There is no manufacturer differentiation: every manufacturer sells a given product at the same wholesale price.
+
+\section*{Indices, data, and variable roles}
+There are $M$ manufacturers, $N$ retailers, and $P$ products. Manufacturer indices run from $1$ to $M$, retailer indices from $1$ to $N$, and product indices from $1$ to $P$. In particular, $k$ in (11) is a manufacturer index, whereas $k$ in $x_{jk}$ and $p_{jk}$ below is a product index.
+
+The fixed unit production cost of manufacturer $i$ is $c_i\in\mathbb{R}^{P}$. Its production vector is $y_i\in\mathbb{R}^{P}$. The wholesale price vector is
+\[
+v=(v_1,v_2,\ldots,v_P)\in\mathbb{R}^{P}.
+\]
+The retailer order vectors and their stack are
+\[
+x_j=(x_{j1},x_{j2},\ldots,x_{jP})\in\mathbb{R}^{P},
+\qquad
+\hat{x}=(x_1,x_2,\ldots,x_N)\in\mathbb{R}^{NP}.
+\]
+Here $x_{jk}$ is retailer $j$'s order quantity of product $k$. Nonnegative orders are imposed by (12), and nonnegative production by (13) in every manufacturer's block. The displayed model imposes no separate sign constraint on $v$.
+
+The fixed inverse-demand intercepts and their stack are
+\[
+a_j=(a_{j1},a_{j2},\ldots,a_{jP})\in\mathbb{R}^{P},
+\qquad
+\hat{a}=(a_1,a_2,\ldots,a_N)\in\mathbb{R}^{NP}.
+\]
+The vector $\hat{a}$ gives the prices consumers would pay at zero retail supply and at a realization $\epsilon=1$. The inverse-demand sensitivity matrix is $\hat{B}\in\mathbb{R}^{NP\times NP}$; its blocks $H_j$ and $G_{jl}$ are $P\times P$ matrices.
+
+\section*{Demand and risk adjustment}
+The operative stochastic inverse demand is
+\[
+\hat{p}=(\hat{a}-\hat{B}\hat{x})\epsilon,
+\qquad
+\hat{p}=(p_1,p_2,\ldots,p_N)\in\mathbb{R}^{NP},
+\qquad
+p_j=(p_{j1},p_{j2},\ldots,p_{jP}).
+\]
+Here $p_{jk}$ is retailer $j$'s retail price for product $k$. The common multiplicative shock $\epsilon$ is a positive scalar random variable with mean one and finite standard deviation $\sigma$:
+\[
+\epsilon>0,\qquad \mathbb{E}[\epsilon]=1,
+\qquad \operatorname{sd}(\epsilon)=\sigma<\infty.
+\]
+Consequently,
+\[
+\mathbb{E}[\hat{p}]=\hat{a}-\hat{B}\hat{x}.
+\]
+For each $j=1,\ldots,N$, define the block row
+\[
+\hat{B}_{j\bullet}=(G_{j1},\ldots,H_j,\ldots,G_{jN}).
+\]
+The retailer-specific demand relation and random profit are, respectively,
+\[
+p_j=\left(a_j-H_jx_j-\sum_{\substack{l=1\\l\ne j}}^{N}G_{jl}x_l\right)\epsilon,
+\]
+\[
+-x_j^T v+x_j^T(a_j-\hat{B}_{j\bullet}\hat{x})\epsilon.
+\]
+Wholesale decisions and retailer orders are made before $\epsilon$ is realized. Wholesale prices and manufacturer profits are therefore deterministic in this decentralized model.
+
+Retailer $j$ has fixed risk-aversion parameter $\gamma_j$. The paper assumes risk-averse retailers and also allows the risk-neutral boundary case $\gamma_j=0$. Its risk adjustment is
+\[
+\eta_j=1-\gamma_j\sigma,
+\qquad \eta_j>0,
+\qquad j=1,\ldots,N.
+\]
+The strict positivity of $\eta_j$ is the paper's maintained premise to avoid trivial equilibria. The stated boundary cases are
+\[
+\gamma_j=0\ \text{or}\ \sigma=0
+\quad\Longrightarrow\quad \eta_j=1.
+\]
+
+\section*{Matrices and premise for the retailer-equilibrium replacement}
+The matrices in (12) are exactly those in Assumption 5.1:
+\[
+\hat{B}=
+\begin{pmatrix}
+H_1&G_{12}&\cdots&G_{1N}\\
+G_{21}&H_2&\cdots&G_{2N}\\
+\vdots&\vdots&\ddots&\vdots\\
+G_{N1}&G_{N2}&\cdots&H_N
+\end{pmatrix},
+\qquad
+\hat{H}=
+\begin{pmatrix}
+H_1&0&\cdots&0\\
+0&H_2&\cdots&0\\
+\vdots&\vdots&\ddots&\vdots\\
+0&0&\cdots&H_N
+\end{pmatrix}.
+\]
+\begin{quote}
+\textbf{Assumption 5.1.} The matrix $\hat{B}+\hat{H}$ is positive definite.
+\end{quote}
+This is an input premise, not a constraint on production or orders. Proposition B.4 states that it implies that every $H_j$, $j=1,\ldots,N$, is positive definite.
+
+The vector in (12) is defined by
+\[
+\hat{q}=\left(\frac{v}{\eta_1}-a_1,
+\frac{v}{\eta_2}-a_2,\ldots,
+\frac{v}{\eta_N}-a_N\right)\in\mathbb{R}^{NP}.
+\]
+In particular, $\hat{q}$ depends on the wholesale price variable; it is not independent fixed data in the manufacturer MPEC.
+
+\section*{Defining retailer preferences and complementarity}
+The following rows define the retailer response represented by (12); they are not additional upper-level maximizations. Given $v$ and the orders of the other retailers, retailer $j$'s printed mean--standard-deviation decision is
+\begin{equation}
+\max_{x_j\geq0}\quad
+-x_j^T v+x_j^T(a_j-\hat{B}_{j\bullet}\hat{x})
+-\gamma_jx_j^T(a_j-\hat{B}_{j\bullet}\hat{x})\sigma.
+\tag{1}
+\end{equation}
+With the above definition of $\eta_j$, the paper rewrites this as
+\begin{equation}
+\max_{x_j\geq0}\quad
+-x_j^T v+\eta_jx_j^T(a_j-\hat{B}_{j\bullet}\hat{x}).
+\tag{2}
+\end{equation}
+The proof of Proposition 5.2 in Appendix C writes the same objective explicitly as
+\[
+\max_{x_j\geq0}\quad
+-x_j^T v+\eta_jx_j^T
+\left(a_j-H_jx_j-\sum_{\substack{l=1\\l\ne j}}^{N}G_{jl}x_l\right),
+\qquad j=1,\ldots,N,
+\]
+and gives the following retailer best-response complementarity rows:
+\[
+0\leq\frac{v}{\eta_j}
+-\left(a_j-2H_jx_j-\sum_{\substack{l=1\\l\ne j}}^{N}G_{jl}x_l\right)
+\perp x_j\geq0,
+\qquad j=1,\ldots,N.
+\]
+Their concatenation is precisely
+\begin{equation}
+0\leq\hat{q}+(\hat{B}+\hat{H})\hat{x}
+\perp\hat{x}\geq0.
+\tag{9}
+\end{equation}
+Equation (12) is this same condition, imposed once in each manufacturer's feasible block. Proposition 5.2 states that under Assumption 5.1, for a given wholesale price $v$, (9) has a unique solution, the retailer equilibrium. Its $j$th block defines the implicit response
+\[
+x_j(v):\mathbb{R}^{P}\longrightarrow\mathbb{R}^{P}.
+\]
+The manufacturer formulation (10)--(13) replaces the implicit-response formulation (3)--(4); the latter is not imposed as a second manufacturer problem.
+
+As defined on page 12 and in Appendix A, for $s,t\in\mathbb{R}^{n}$,
+\[
+0\leq s\perp t\geq0
+\quad\Longleftrightarrow\quad
+s_r\geq0,\quad t_r\geq0,\quad s_rt_r=0,
+\qquad r=1,\ldots,n.
+\]
+Thus the complementarity in (12), with $n=NP$, means
+\[
+\hat{x}\geq0,\qquad
+\hat{q}+(\hat{B}+\hat{H})\hat{x}\geq0,\qquad
+\hat{x}^{T}\bigl[\hat{q}+(\hat{B}+\hat{H})\hat{x}\bigr]=0.
+\]
+These are the meaning of (12), not an alternative algorithmic subproblem.
+
+\section*{Source scope and printed qualifications}
+The operative block and coupling are from Section 5.2, physical pages 20--21; the defining demand and preferences are from pages 6--10. The complementarity definition is in Appendix A, pages 34--35, and the asymmetric retailer proof is on pages 45--46. Equation (14), on page 21, specifies a numerical example in Section 5.3.1, not a further condition of the general asymmetric equilibrium, and is not imposed here. The paper does not establish uniqueness of the coupled manufacturer--retailer equilibrium for the asymmetric chain.
+
+Two printed qualifications are retained without repair. First, (1) identifies $x_j^T(a_j-\hat{B}_{j\bullet}\hat{x})\sigma$ as the profit standard deviation, without an absolute value or an accompanying restriction making the revenue coefficient nonnegative. Second, the asymmetric retailer proof and (9)--(12) use $2H_jx_j$ on the diagonal, although the general demand definition and Assumption 5.1 do not state that $H_j$ is symmetric. Positive definiteness alone does not supply that symmetry. The printed expressions and their stated scope are retained; no revenue-sign restriction, symmetry assumption, or transpose correction has been added.
+
+\end{document}

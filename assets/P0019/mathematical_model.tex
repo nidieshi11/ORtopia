@@ -1,0 +1,48 @@
+\documentclass[UTF8,11pt]{ctexart}
+\usepackage{amsmath,amssymb,geometry}
+\geometry{margin=22mm}
+\begin{document}
+\section*{P19: 非预见实时网约车随机匹配策略模型}
+\paragraph{来源与范围}依据原论文PDF第7, 8, 9, 10, 11, 12, 14, 15页，第2节式(1)、(4)、(6)、(8)和Definition 1；第3.2节式(12)用于识别流体上界。
+
+\subsection*{随机系统与参数}
+司机区域类型集合$\mathcal N=\{1,\ldots,N\}$、乘客类型集合$\mathcal J=\{1,\ldots,J\}$、期限$T>0$。
+司机到达率$\lambda_i(t)$、乘客到达率$\mu_j(t)$、未匹配司机离开率$\theta_i(t)$均为已知非负函数；
+$\Lambda_i(t)=\int_0^t\lambda_i(s)\,ds$，$\Gamma_j(t)=\int_0^t\mu_j(s)\,ds$。
+$A_i,R_i,E_j$是原文使用的相互独立单位速率Poisson过程，分别驱动司机到达、司机离开与乘客到达。
+$Q_i(0)\in\mathbb Z_+$为给定分布的初始司机数，独立于其他随机原语。
+确定时段边界$0=\tau_0<\tau_1<\cdots$趋于无穷；$t_{ij}(m)\ge0$为时段$m$的接驾时间。
+$a_j^k(m)\ge0$为第$k$名$j$类乘客在时段$m$可接受的最长接驾等待，其分布给定，按$k$独立同分布并独立于其他随机原语。
+$w_{ij}\ge0$是完成$i$类司机与$j$类乘客匹配的给定权重。所有随机原语在同一概率空间$(\Omega,\mathcal F,\mathbb P)$上定义。
+乘客到达时刻为$\nu_j(k)=\inf\{t:E_j(\Gamma_j(t))=k\}$。
+\subsection*{决策、状态与可行策略}
+决策是策略$\pi=(\pi_j)_{j\in\mathcal J}$，其中$\pi_j(k)\in\mathcal N\cup\{0\}$指定第$k$名$j$类乘客获推荐的司机类型；0表示不推荐。
+$D_{ij}^\pi(t)$为截至$t$接受推荐并成功匹配的累计数量，$Q_i^\pi(t)$为未匹配司机数，按下式唯一演化：
+\begin{align}
+D_{ij}^\pi(t)&=\sum_{k=1}^{E_j(\Gamma_j(t))}\sum_{m\ge0}
+\mathbf1\{\nu_j(k)\in[\tau_m,\tau_{m+1}),\ a_j^k(m)\ge t_{ij}(m),\ \pi_j(k)=i\},\tag{4}\\
+Q_i^\pi(t)&=Q_i(0)+A_i(\Lambda_i(t))-R_i\left(\int_0^t\theta_i(s)Q_i^\pi(s)\,ds\right)-\sum_{j\in\mathcal J}D_{ij}^\pi(t)\ge0.\tag{1}
+\end{align}
+式(1)适用于$i\in\mathcal N,0\le t\le T$，式(4)适用于所有$i,j,t$。
+为明确非预见性，令$u=s\wedge\nu_j(k)$，定义推荐时的信息域
+\begin{align*}
+\mathcal F_j(k)=\sigma\bigl(&A_i(\Lambda_i(u)),\ E_{j'}(\Gamma_{j'}(u)),\
+R_i(\int_0^{u^-}\theta_i(v)Q_i^\pi(v)\,dv),\
+D_{ij'}^\pi(u^-),\ Q_i^\pi(u^-):s\ge0,i\in\mathcal N,j'\in\mathcal J;\\
+&a_{j'}^r(m):j'\ne j,\ 1\le r\le E_{j'}(\Gamma_{j'}(\nu_j(k)^-)),\ m\ge0;\\
+&a_j^r(m):1\le r<k,\ m\ge0\bigr).
+\end{align*}
+可行策略集合$\Pi$要求每个$\pi_j(k)$是$\mathcal F_j(k)$可测，并满足
+\[
+ Q_i^\pi(\nu_j(k)^-)=0\ \Longrightarrow\ \pi_j(k)\ne i
+ \qquad(i\in\mathcal N,j\in\mathcal J,k\ge1).
+\]
+这允许使用先前乘客的耐心信息，但禁止使用当前新到乘客尚未揭示的耐心和未来到达信息。需要随机化时，可按原文Remark 4加入独立且不含未来信息的随机原语。
+\subsection*{唯一优化目标：原文逐路径准则}
+\[
+ \max_{\pi\in\Pi}\ \sum_{i\in\mathcal N}\sum_{j\in\mathcal J}w_{ij}D_{ij}^\pi(T,\omega),\qquad\text{对每个 }\omega\in\Omega.\tag{6}
+\]
+该式按逐样本路径定义绩效，策略使用当时已观测的信息作出推荐。
+原文在大市场极限下分析策略的渐近最优性。
+
+\end{document}

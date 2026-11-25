@@ -1,0 +1,90 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,geometry}
+\geometry{margin=22mm}
+\begin{document}
+
+\section*{P110: passenger-level timetable and vehicle-chain repair}
+The complete input keeps $n=20$ round trips, $q=10$ physical stops,
+$F=8$ vehicles, capacity $C=30$ and all $470$ completed passenger records.
+Each trip visits $j=0,\ldots,2q-1$ with physical location
+$v(j)=j$ for $j<q$ and $v(j)=2q-1-j$ otherwise.
+Travel $T_j$ follows the input road times outwards, the given far-terminal
+turnaround, and the mirrored return times. Base dwell $b_j$,
+boarding/alighting times $b,a$ in minutes, separation $h=6$,
+layover bounds $L_{\min}=3,L_{\max}=8$, absolute planning start $t_0=360$,
+and relative operating end $H=840$ are all finite input values.
+
+Each passenger $p$ has unique ID, physical origin/destination, arrival $r_p$,
+booking flag and a unique compatible origin visit $o(p)$ and later destination
+visit $d(p)$ in the same direction. Let $D_{ij},A_{ij},W_{ij}$
+be departure, arrival and dwell. Origin departures $D_{i0}$ are integer minutes;
+all absolute times $t_0+A_{ij}$ are nonnegative.
+Let $B_{ij}$ be the set boarding at a visit and $O_{ij}$ its onboard set after
+service; $O_{i,-1}=\varnothing$. The actual alighting set is
+\[
+E_{ij}=\{p\in O_{i,j-1}:d(p)=j\},\qquad
+O^-_{ij}=O_{i,j-1}\setminus E_{ij}.
+\]
+The unserved eligible queue consists of all passengers of that origin/direction
+with $r_p\le D_{ij}$ who have not boarded an earlier trip. Sort by booked first,
+then arrival, then ID. $B_{ij}$ is exactly the first
+$\min\{|Q_{ij}|,C-|O^-_{ij}|\}$ records of this sorted queue:
+\[
+O_{ij}=O^-_{ij}\cup B_{ij},\quad |O_{ij}|\le C,\quad
+W_{ij}=b_{v(j)}+\max\{b|B_{ij}|,a|E_{ij}|\}.
+\]
+This is an exact discrete priority-queue definition, including its
+departure-time/dwell fixed point. Every passenger boards and alights exactly
+once and every round trip finishes empty. The queue is cumulative over every
+preceding trip, across all preceding trips.
+
+The timetable feasible set is
+\begin{align}
+D_{ij}&=A_{ij}+W_{ij},&
+A_{i,j+1}&=D_{ij}+T_j,\\
+A_{i+1,j}-D_{ij}&\ge h,&
+D_{i,2q-1}&\le H.
+\end{align}
+Vehicle chains partition the $n$ trips into at most $F$ directed, increasing-index
+paths. Binary $y_{ii'}=1$ means $i'$ immediately succeeds $i$ on one vehicle,
+so each trip has at most one predecessor and successor. Every selected link
+must satisfy
+\[
+L_{\min}\le D_{i'0}-A_{i,2q-1}\le L_{\max},\qquad
+D_{i'0}\ge D_{i,2q-1}.
+\]
+Fleet availability follows from actual nonoverlapping vehicle chains.
+
+With positive fixed input normalization constants $N_1,N_2,N_3$ minimize
+\[
+ w_1\frac{\sum_{i,j}\sum_{p\in B_{ij}}(D_{ij}-r_p)}{N_1}
+ +w_2\frac{\sum_{i=1}^{n-1}|D_{i0}-D_{i-1,0}-h|}{N_2}
+ -w_3\frac{\sum_{i<i'}y_{ii'}}{N_3}.
+\]
+Here $(w_1,w_2,w_3)=(0.5,0.3,0.2)$ and
+$(N_1,N_2,N_3)=(1410,114,19)$ for the retained input.
+The objective counts actual waiting, departure-headway deviation and valid
+successor links; it neither subtracts all eligible pairs nor uses binary
+indicator differences in units of minutes.
+
+\paragraph{Explicit source correction.}
+Source pp.8--12 supplies passenger priority, running/dwell, separation,
+vehicle links and three objectives. Its hard origin windows
+$D_{i0}\in[(i-1)h,ih]$ conflict with positive dwell and
+$A_{i+1,j}-D_{ij}\ge h$ for this full $20$-trip input.
+They are replaced by the original finite operating horizon and the above soft
+nominal deviation. Source Eq.(30)'s departure differences
+replace the extracted binary-$x$ expression. Actual boarded OD records replace
+the broken alighting/backlog shortcuts. Parallel doors give the explicit
+maximum service-time dwell. The original02 and instances remain intact.
+
+\paragraph{Implemented feasible search and certificate.}
+The solver searches cyclic vehicle chains $i\mapsto i+F$ and a finite sequence
+of headway/first-departure perturbations. This is an algorithmic subset of the
+above feasible set and provides a feasible objective value.
+All original trips, stops, vehicles and passengers are retained. Exact independent
+replay checks all queue choices, actual destinations, dwell, travel, separation,
+fleet nonoverlap, layovers and the objective. Existing executed evidence can
+be reused because this round changes only the complete mathematical exposition.
+
+\end{document}

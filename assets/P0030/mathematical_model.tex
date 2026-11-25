@@ -1,0 +1,90 @@
+\documentclass[UTF8,11pt]{ctexart}
+\usepackage{amsmath,amssymb,geometry}
+\geometry{margin=22mm}
+\begin{document}
+\section*{P30: 双阶段随机生产配送完整模型2-BF}
+\paragraph{来源与范围}依据原论文PDF第1, 4, 5, 6, 7, 8页，(1)–(19)。
+\subsection*{范围、集合与参数}
+选择论文双阶段随机生产配送模型2-BF。第一阶段在需求揭示前确定各期生产启用和所有车辆路径；第二阶段在完整需求场景揭示后确定各期生产量、配送量、库存与未满足需求量。后者可依赖全时域需求，故本文件不另加多阶段非预见性约束。
+
+节点$N=\{0,1,\ldots,n\}$，工厂0、客户$N_c=N\setminus\{0\}$；$E=\{(i,j):i,j\in N,i<j\}$为完全无向边集，$\delta(i)$为关联边，$E(S)$为两端在$S$中的边。周期$T=\{1,\ldots,\ell\}$；同质车辆$K=\{1,\ldots,m\}$。有限需求场景$\Omega$及概率$\rho_\omega\geq0$、$\sum_\omega\rho_\omega=1$。
+
+参数为场景需求$d_{it\omega}\geq0$、每期生产能力$C$、车容量$Q$、仓储容量$L_i$、共同初始库存$I_i^0$、单位生产成本$u$、每期生产启用成本$f$、边行驶成本$c_{ij}$、库存成本$h_i$、未满足需求惩罚$\sigma_i$。所有成本非负。定义
+\[
+M_{t\omega}=\min\{C,\sum_{s=t}^{\ell}\sum_{i\in N_c}d_{is\omega}\},\qquad
+M'_{it\omega}=\min\{L_i,Q,\sum_{s=t}^{\ell}d_{is\omega}\}.
+\]
+\subsection*{变量}
+$y_t$为生产启用，$z_{ikt}$为车辆$k$在期$t$访问节点$i$（$z_{0kt}$表示用车），$x_{ijkt}$为车辆在无向边的通过次数。第二阶段$p_{t\omega}$为产量、$I_{it\omega}$为期末库存、$q_{ikt\omega}$为向客户$i$的配送量、$e_{it\omega}$为需求缺口；$q,e$仅对客户定义。缺口按期惩罚，不作为下一期积压。给定$I_{i0\omega}=I_i^0$。
+\subsection*{唯一完整模型}
+
+\begin{align}
+\min\quad &
+\sum_{t \in T} \left( f y_t + \sum_{(i,j) \in E} \sum_{k \in K} c_{ij} x_{ijkt} \right)
++\sum_{t \in T}\sum_{\omega \in \Omega} \rho_{\omega}
+\left(
+u p_{t\omega} + \sum_{i \in N} h_i I_{it\omega} + \sum_{i \in N_c} \sigma_i e_{it\omega}
+\right)
+\\[1mm]
+\text{s.t.}\quad
+&I_{0,t-1,\omega} + p_{t\omega} =
+\sum_{i \in N_c} \sum_{k \in K} q_{ikt\omega} + I_{0t\omega}
+&& \forall t \in T,\forall \omega \in \Omega
+\\
+&I_{i,t-1,\omega} +
+\sum_{k \in K} q_{ikt\omega} + e_{it\omega} =
+d_{it\omega} + I_{it\omega}
+&& \forall i \in N_c,\forall t \in T,\forall \omega \in \Omega
+\\
+&I_{0t\omega} \leq L_0
+&& \forall t \in T,\forall \omega \in \Omega
+\\
+&I_{it\omega} + d_{it\omega} \leq L_i
+&& \forall i \in N_c,\forall t \in T,\forall \omega \in \Omega
+\\
+&p_{t\omega} \leq M_{t\omega} y_t
+&& \forall t \in T,\forall \omega \in \Omega
+\\
+&\sum_{i \in N_c} q_{ikt\omega} \leq Q z_{0kt}
+&& \forall k \in K,\forall t \in T,\forall \omega \in \Omega
+\\
+&q_{ikt\omega} \leq M'_{it\omega} z_{ikt}
+&& \forall i \in N_c,\forall k \in K,\forall t \in T,\forall \omega \in \Omega
+\\
+&\sum_{k \in K} z_{ikt} \leq 1
+&& \forall i \in N_c,\forall t \in T
+\\
+&\sum_{(j,j') \in \delta(i)} x_{jj'kt} = 2 z_{ikt}
+&& \forall i \in N,\forall k \in K,\forall t \in T
+\\
+&\sum_{(i,j) \in E(S)} x_{ijkt} \leq
+\sum_{i \in S} z_{ikt} - z_{ekt}
+&& \forall S \subseteq N_c:\ |S| \geq 2,\forall e \in S,\forall k \in K,\forall t \in T
+\\
+&z_{ikt} \leq z_{0kt}
+&& \forall i \in N_c,\forall k \in K,\forall t \in T
+\\
+&x_{ijkt} \leq z_{ikt},\qquad x_{ijkt} \leq z_{jkt}
+&& \forall (i,j) \in E(N_c),\forall k \in K,\forall t \in T
+\\
+&z_{0kt} \geq z_{0,k+1,t}
+&& \forall 1 \leq k \leq m-1,\forall t \in T
+\\
+&\sum_{i=1}^{j} 2^{\,j-i} z_{ikt} \geq \sum_{i=1}^{j} 2^{\,j-i} z_{i,k+1,t}
+&& \forall j \in N_c,\forall 1 \leq k \leq m-1,\forall t \in T
+\\
+&p_{t\omega},I_{it\omega} \geq 0,\quad e_{jt\omega},q_{jkt\omega}\geq0
+&& \forall i\in N,j\in N_c,k\in K,t\in T,\omega\in\Omega
+\\
+&y_t,z_{ikt} \in \{0,1\}
+&& \forall i \in N,\forall k \in K,\forall t \in T
+\\
+&x_{ijkt} \in \{0,1\}
+&& \forall (i,j) \in E:\ i \neq 0,\forall k \in K,\forall t \in T
+\\
+&x_{0jkt} \in \{0,1,2\}
+&& \forall j \in N_c,\forall k \in K,\forall t \in T
+\end{align}
+
+
+\end{document}

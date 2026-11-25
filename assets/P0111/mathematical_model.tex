@@ -1,0 +1,57 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,geometry}
+\geometry{margin=25mm}
+\begin{document}
+\section*{Core model: bounded dispatch-menu assortment with driver decline}
+Source: Sections 2 and 3.1, PDF pp.4--6, utility (1), choice (2)--(3),
+objective (4)--(5), limits (6)--(7), and independent-choice probability
+(12). One complete general application model is retained. Instance
+parameters $a,b$ fix the menu-exposure policy.
+\paragraph{Inputs and meaning.}
+$D$ and $O$ are the finite sets of idle drivers and unmatched orders
+in one batching window. $a\in\{1,\ldots,|D|\}$ is the maximum number
+of menus containing an order; $b\in\{1,\ldots,|O|\}$ is maximum menu
+size. Larger supplied bounds are equivalent to these finite maxima.
+Input $u_{do}\ge0$ is the attractiveness of order $o$ to driver $d$,
+and $u_d^c>0$ is the decline attractiveness. They may be supplied directly
+or evaluated using the paper's estimated behavioral coefficients:
+\[
+ u_{do}=\beta_{0d}+\beta_{1d}I_o+\beta_{2d}f_o
+ -\beta_{3d}\tau(l_d,l_o^{\rm org})
+ +\beta_{4d}V(l_o^{\rm dest}).\tag{1}
+\]
+Here $I_o$ is order type, $f_o$ fare, $l_d$ driver location,
+$l_o^{\rm org},l_o^{\rm dest}$ the order endpoints, $\tau$ pickup time,
+and $V$ future spatial destination value.
+The proportional probability rule uses fixed nonnegative calibrated utilities.
+\paragraph{Single binary decision domain.}
+$x_{do}\in\{0,1\}$ means that order $o$ appears in driver $d$'s menu.
+The subsequent acceptance and assignment events follow the probability expressions below.
+Define deterministic expressions
+\begin{align*}
+ Z_d(x)&=u_d^c+\sum_{o\in O}u_{do}x_{do}>0,\\
+ p_{do}(x)&=\frac{u_{do}x_{do}}{Z_d(x)},\qquad
+ p_{dc}(x)=\frac{u_d^c}{Z_d(x)},\\
+ P_o(x)&=1-\prod_{d\in D}(1-p_{do}(x)).
+\end{align*}
+Each driver selects at most one displayed order or declines, independently
+of other drivers. Thus $P_o$ counts an order selected by at least one
+driver exactly once, even when several select it. A tie is resolved in
+favor of the nearest selecting driver as in Section 2.
+An unlisted order has $p_{do}=0$, and an empty menu has decline probability
+one, defining the empty-set case.
+\paragraph{Complete optimization model.}
+\begin{align}
+\max_{x}\quad &\sum_{o\in O}\left[
+1-\prod_{d\in D}\left(1-
+\frac{u_{do}x_{do}}{u_d^c+\sum_{o'\in O}u_{do'}x_{do'}}\right)\right],\tag{5/12}\\
+\text{s.t.}\quad &\sum_{d\in D}x_{do}\le a &&o\in O,\tag{6}\\
+&\sum_{o\in O}x_{do}\le b &&d\in D,\tag{7}\\
+&x_{do}\in\{0,1\} &&d\in D,o\in O.\tag{D}
+\end{align}
+The objective is expected \emph{distinct successful matches}. Capacity here concerns
+the displayed menu size.
+Behavioral normalization and collision probability remain part of this
+single model; homogeneous-case analyses, independent disjoint objective,
+unlimited joint-menu specialization and bundled-order extension are omitted.
+\end{document}

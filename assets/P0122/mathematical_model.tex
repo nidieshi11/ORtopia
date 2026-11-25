@@ -1,0 +1,28 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\begin{document}
+\section*{Capacitated vehicle routing: a single route model}
+Given an undirected graph $G=(V,E)$ with $V=\{0,1,\ldots,n\}$ and
+$V_c=V\setminus\{0\}$, node $0$ is the depot. Edge costs $d_{ij}\ge0$
+and demands $0\le q_i\le\bar q$ are inputs; $q_0=0$, and $m$ is the
+available fleet size. Each undirected edge may be traversed in either direction.
+Select $m_s\in\{0,\ldots,m\}$ nonempty routes. A route is an ordered
+sequence $R_i^s=(0,v_1^i,\ldots,v_{t_i-1}^i,0)$ with $t_i\ge2$;
+its internal nodes are distinct customers. Write $C_i$ for its customer set.
+For $n>0$ the customer partition below implies $m_s\ge1$.
+\begin{align*}
+\min\quad &\sum_{i=1}^{m_s}\sum_{h=0}^{t_i-1}d_{v_h^i v_{h+1}^i}\\
+\text{s.t.}\quad &v_0^i=v_{t_i}^i=0 && i=1,\ldots,m_s,\\
+&v_h^i\in V_c &&i=1,\ldots,m_s,\ h=1,\ldots,t_i-1,\\
+&v_h^i\ne v_{h'}^i &&1\le h<h'<t_i,\ i=1,\ldots,m_s,\\
+&\{v_h^i,v_{h+1}^i\}\in E &&i=1,\ldots,m_s,\ h=0,\ldots,t_i-1,\\
+&C_i=\{v_h^i:1\le h<t_i\},\quad C_i\cap C_j=\varnothing &&i\ne j,\\
+&\bigcup_{i=1}^{m_s}C_i=V_c,\\
+&\sum_{v\in C_i}q_v\le\bar q &&i=1,\ldots,m_s,\\
+&m_s\le m.
+\end{align*}
+This makes explicit the no-node-repetition convention in Section 2, PDF page 3,
+of the AILS-II paper. Only the start and terminal depot coincide. Unused vehicles
+need no empty route. 
+\end{document}

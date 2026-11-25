@@ -1,0 +1,74 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\begin{document}
+\section*{Dynamic pickup-delivery with explicit LIFO event semantics}
+The event model defines route predecessors, event times and stack states following source
+Table2,Sections3.1--3.2 and the stated LIFO/soft-deadline semantics.
+
+
+Let$O$be parent orders and$L$transport lots. Each lot$\ell$has parent
+$o(\ell)$,pickup$p_\ell$,delivery$d_\ell$,quantity$q_\ell>0$,release$r_\ell$,
+deadline$\bar t_{o(\ell)}$,loading duration$a_\ell$and unloading duration$b_\ell$.
+Quantity is preserved:$\sum_{\ell:o(\ell)=o}q_\ell=q_o$.
+Orders exceeding the15-pallet capacity are split into capacity-feasible lots;
+these values define the completed instance.
+Vehicle$k$has initial location$f_k$,available time$v_k^0$,capacity$Q_k$,
+and a finite number of visits $n_k\in\mathbb Z_{\ge0}$ with ordered sequence
+$(f_{kn})_{n=1}^{n_k}$. A vehicle may remain unused, with $n_k=0$,
+no visit events, and zero traveled distance. All visit-indexed requirements
+apply only to $n=1,\ldots,n_k$.
+Each visit has arrival$A_{kn}$,service start$S_{kn}$,end$E_{kn}$,
+dock index$j_{kn}$and an ordered list of pickup/delivery events.
+Each lot has exactly one pickup and one later delivery on the same vehicle.
+Every visit's service duration is
+\[
+E_{kn}-S_{kn}=g+\sum_{\ell\ {\rm picked\ at}(k,n)}a_\ell
+                  +\sum_{\ell\ {\rm delivered\ at}(k,n)}b_\ell,
+\]
+where$g\ge0$is the factory entry/setup time. Travels obey the supplied
+directed matrix$\tau_{ij}$:
+\[
+A_{k1}\ge v_k^0+\tau_{f_k,f_{k1}}\quad(n_k\ge1),\quad
+A_{k,n+1}\ge E_{kn}+\tau_{f_{kn},f_{k,n+1}}\quad(1\le n<n_k),\quad S_{kn}\ge A_{kn}.
+\]
+A pickup cannot begin before release or before its dispatch epoch:
+$S_{kn}\ge r_\ell$and$S_{kn}\ge h\Delta$,where
+$h\ge\lceil r_\ell/\Delta\rceil$and$\Delta=600$seconds.
+At each pickup event push its lot onto the vehicle's stack; at each delivery
+event the delivered lot must be the stack top and is popped.
+For the stack$\mathcal S_{kns}$after every event$s$require
+\[
+0\le\sum_{\ell\in\mathcal S_{kns}}q_\ell\le Q_k.
+\]
+The stack is initially and finally empty. These event recurrences replace
+the ambiguous static load expressions and ensure pickup before delivery.
+
+Each factory$f$has$m_f$docks:
+$1\le j_{kn}\le m_{f_{kn}}$. Any two service intervals at the same
+factory and dock must be nonoverlapping:
+$E_{kn}\le S_{k'n'}$or$E_{k'n'}\le S_{kn}$.
+The selected event convention confirms deliveries at the end of their
+factory service visit:
+$C_\ell=E_{kn}$for the visit delivering$\ell$,
+and$C_o=\max_{\ell:o(\ell)=o}C_\ell$.
+The objective,with seconds converted to hours,is
+\[
+\min\quad\lambda\sum_{o\in O}\max\{0,(C_o-\bar t_o)/3600\}
++\frac1{|K|}\sum_{k\in K}D_k,\qquad
+D_k=\begin{cases}0,&n_k=0,\\ d_{f_k,f_{k1}}+\sum_{n=1}^{n_k-1}d_{f_{kn},f_{k,n+1}},&n_k\ge1.\end{cases}
+\]
+The fleet $K$ is nonempty. The denominator includes every supplied vehicle,
+including unused ones, consistent with the paper page 6, equation (8), and
+the current route initialization and distance replay.
+Routes terminate at their final delivery. Orders released within 24 hours may finish later, with lateness charged in the objective.
+A dynamic policy can use only orders released by its current epoch and
+previously committed vehicle/dock states.
+
+The executable algorithm constructs a feasible policy by same-OD packing
+within each epoch,then incremental assignment and finite dock calendars.
+Those are heuristic choices for constructing feasible event schedules. Its marginal lot-based score is a dispatch
+heuristic; the returned objective is recomputed from parent completion times.
+The heuristic is implemented in Python. A real3600second computation budget
+is checked during construction and replay; expiration before a complete
+validated plan returns no claimed complete solution.
+\end{document}

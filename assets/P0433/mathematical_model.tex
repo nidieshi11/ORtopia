@@ -1,0 +1,33 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[a4paper,margin=1in]{geometry}
+
+\title{Binary set-partitioning model}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Notation and Data}
+Let $V$ be a finite set of customers and let $\mathcal{R}$ be a finite set of feasible routes. For each customer $i\in V$ and route $r\in\mathcal{R}$, let $a_{ir}\in\{0,1\}$ be the fixed route--customer incidence coefficient, where $a_{ir}=1$ if route $r$ serves customer $i$ and $a_{ir}=0$ otherwise. Let $c_r\in\mathbb{R}$ denote the fixed cost of route $r$.
+
+\section*{Decision Variables}
+For each $r\in\mathcal{R}$, let
+\[
+\lambda_r\in\{0,1\}
+\]
+indicate whether route $r$ is selected.
+
+\section*{Model}
+\begin{align}
+\min_{\lambda}\quad
+&\sum_{r\in\mathcal{R}} c_r\lambda_r \\
+\text{s.t.}\quad
+&\sum_{r\in\mathcal{R}} a_{ir}\lambda_r=1,
+&&\forall i\in V,\\
+&\lambda_r\in\{0,1\},
+&&\forall r\in\mathcal{R}.
+\end{align}
+
+\end{document}

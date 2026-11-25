@@ -1,0 +1,36 @@
+\documentclass[UTF8,11pt]{ctexart}
+\usepackage{amsmath,amssymb,geometry}
+\geometry{margin=22mm}
+\begin{document}
+\section*{P48: 簇结构车辆路径主模型（CluVRP2）}
+\paragraph{来源与范围}依据原论文PDF第1, 2, 3, 4, 5, 7, 8页，第2节式(8)–(15)；第4.2节式(34)–(39)用于识别移出的定价子问题。
+
+\subsection*{数据与预处理结果}
+$G=(V,E)$为完整无向图，$0\in V$为仓库，$V_c=V\setminus\{0\}$为客户。
+$\mathcal C$为$V_c$的非空不交簇划分，$\kappa(i)$为客户$i$所属簇。
+客户需求$d_i>0$，簇需求$d_C=\sum_{i\in C}d_i\le Q$；有$m$辆容量$Q>0$的同质车辆。
+$\bar E$为连接不同客户簇或连接仓库与客户的边，$\hat E=E\setminus\bar E$为簇内边。
+$\delta(S)=\{\{i,j\}\in E:i\in S,j\notin S\}$，$E(S)=\{\{i,j\}\in E:i,j\in S\}$。
+原边费用$c_{ij}$给定。对每个$C\in\mathcal C$且$|C|\ge2$，每一对不同端点$i,j\in C$预先给出遍历$C$中全部客户的最短Hamilton路径费用$\hat c_{ij}$及一条达到该费用的路径。令
+\[
+ c'_{ij}=\begin{cases}c_{ij},&\{i,j\}\in\bar E,\\\hat c_{ij},&\{i,j\}\in\hat E.\end{cases}
+\]
+预处理得到的Hamilton路径费用作为模型参数。
+对任意非空簇子集$\mathcal R\subseteq\mathcal C$，令$S_{\mathcal R}=\bigcup_{C\in\mathcal R}C$，$r(\mathcal R)=\lceil\sum_{C\in\mathcal R}d_C/Q\rceil$。
+\subsection*{CluVRP2完整模型}
+变量$x_{ij}=x_{ji}$表示选择的簇间边使用次数；簇内边表示所选Hamilton路径端点对。
+\begin{align}
+\min\quad &\sum_{\{i,j\}\in E}c'_{ij}x_{ij},\tag{8}\\
+\text{s.t.}\quad&\sum_{j:\{i,j\}\in E(\kappa(i))}x_{ij}=\sum_{j:\{i,j\}\in\delta(\kappa(i))}x_{ij} &&i\in V_c:|\kappa(i)|>1,\tag{9}\\
+&\sum_{\{i,j\}\in\delta(C)}x_{ij}=2 &&C\in\mathcal C,\tag{10}\\
+&\sum_{i\in V_c}x_{0i}=2m,\tag{11}\\
+&\sum_{\{i,j\}\in\delta(S_{\mathcal R})}x_{ij}\ge2r(\mathcal R) &&\varnothing\ne\mathcal R\subseteq\mathcal C,\tag{12}\\
+&x_{ij}\in\{0,1\} &&\{i,j\}\in\bar E\setminus E_{0,1},\tag{13}\\
+&x_{0j}\in\{0,1,2\} &&j\in V_c:|\kappa(j)|=1,\tag{14}\\
+&x_{ij}\ge0 &&\{i,j\}\in\hat E,\tag{15}
+\end{align}
+其中$E_{0,1}=\{\{0,j\}:j\in V_c,|\kappa(j)|=1\}$。
+簇内变量按原文保留连续非负域；给定整数簇间边时，式(9)及(10)使其选择一个端点对。
+展开各端点对对应的预处理Hamilton路径，即得到连续访问每个簇全部客户的车辆路线。
+
+\end{document}

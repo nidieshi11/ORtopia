@@ -1,0 +1,180 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\section*{Bayesian single-store dynamic pricing with an unknown arrival rate}
+
+\subsection*{Objective and policy restrictions}
+\begin{align*}
+J^*(z)&=\sup_{\pi\in\Pi}J^\pi(z),\\
+J^\pi(z)&=E_{z,\pi}\left[\int_{t=0}^{\tau_0}e^{-\alpha t}p_t\lambda\bar F(p_t)\,dt\right],\\
+\text{subject to}\qquad
+p_t&=\pi(z_t),\qquad z_t=(x_t,a_t,b_t,w_t),\qquad z_0=z,\\
+\pi(0,a,b,w)&=\infty\qquad\text{for all arrival-rate distribution parameters }a,b,w.
+\end{align*}
+Here \(\Pi\) is the source's class of measurable real-valued functions of inventory and arrival-rate distribution parameters, with the displayed exception at zero inventory. Its printed domain is
+\[
+\mathcal S=\mathbb N\times\mathbb R_+^k\times\mathbb R_+^k\times\mathbb R_+^k.
+\]
+The prior specification uses \(K\) for the finite mixture order; the domain above is printed with lowercase \(k\). Component indices in the mixture formulas run over \(k=1,\ldots,K\). The decision is the feedback policy \(\pi\); inventory and posterior parameters are state variables, not additional independent controls. The expectation includes the random arrival rate \(\lambda\), rather than replacing it by its mean. A policy is optimal when
+\[
+J^*=J^\pi.
+\]
+The notation \(J^{*,\alpha}\) emphasizes dependence on the discount rate. The paper's explicit price optimization for this unknown-rate model, reproduced below from Section 4.3, uses \(p\geq0\). Section 2 itself describes \(\Pi\) as real-valued rather than explicitly nonnegative; this wording is retained rather than silently changing the printed policy class.
+
+\subsection*{Fixed inputs, sales, and inventory (Section 2)}
+The vendor begins with a finite inventory of \(x_0\) identical indivisible units and adjusts prices over
+\[
+t\in[0,\infty),\qquad \alpha>0.
+\]
+Conditional on its rate \(\lambda\), the customer-arrival process is Poisson. The source takes the arrival process to be right continuous with left limits. Each customer's reservation price is an independent random variable with common cumulative distribution function \(F\). A customer purchases one unit if inventory is available and the prevailing price is no greater than the customer's reservation price; otherwise the customer permanently leaves. The vendor observes only arrivals that result in sales.
+
+The reservation-price assumptions are
+\[
+\bar F(p)=1-F(p),\qquad
+\rho(p)=\frac{f(p)}{\bar F(p)},
+\]
+where \(F\) has a differentiable density \(f\) with support \(\mathbb R_+\), and \(\rho(p)\) is nondecreasing in \(p\) (Assumption 1).
+
+Let \(t_k\) be the time of the \(k\)th purchase. Then
+\begin{align*}
+n_t&=\bigl|\{t_k:t_k\leq t\}\bigr|,\\
+x_t&=x_0-n_t,\\
+\tau_0&=\inf\{t:x_t=0\}.
+\end{align*}
+The purchase index in \(t_k\) is distinct from the mixture-component index. For \(t\leq\tau_0\), the source describes \(n_t\) as following a Poisson process with intensity
+\[
+\lambda\bar F(p_t).
+\]
+The discounted-revenue relation used to obtain the objective is
+\[
+E\left[\int_{t=0}^{\infty}e^{-\alpha t}p_t\,dn_t\right]
+=
+E\left[\int_{t=0}^{\tau_0}e^{-\alpha t}p_t\lambda\bar F(p_t)\,dt\right].
+\]
+The cited justification is Theorem III.T9 of Br\'emaud (1981); that external reference is unverified here.
+
+\subsection*{Finite Gamma-mixture prior and posterior}
+The initial prior is a finite mixture of \(K\) Gamma distributions, specified by fixed vectors
+\[
+a_0,b_0\in\mathbb R_+^K,\qquad
+w_0\in\mathbb R_+^K,\qquad
+\sum_k w_{0,k}=1.
+\]
+Its density and the Gamma function are
+\begin{align*}
+g(\lambda)
+&=\sum_k w_{0,k}
+\frac{b_{0,k}^{a_{0,k}}\lambda^{a_{0,k}-1}e^{-\lambda b_{0,k}}}
+{\Gamma(a_{0,k})},\\
+\Gamma(x)&=\int_{s=0}^{\infty}s^{x-1}e^{-s}\,ds.
+\end{align*}
+The density fixes the role of \(b_{0,k}\) through the factor \(e^{-\lambda b_{0,k}}\); no alternative scale parameterization is substituted. The initial moments are
+\begin{align*}
+E[\lambda]&=\sum_k w_{0,k}\frac{a_{0,k}}{b_{0,k}}\triangleq\mu_0,\\
+\operatorname{Var}[\lambda]
+&=\sum_k w_{0,k}\frac{a_{0,k}(a_{0,k}+1)}{b_{0,k}^2}-\mu_0^2.
+\end{align*}
+At time \(t\), the posterior remains a finite Gamma mixture, with parameters
+\[
+a_{t,k}=a_{0,k}+n_t,
+\qquad
+b_{t,k}=b_{0,k}+\int_{\tau=0}^{t}\bar F(p_\tau)\,d\tau,
+\qquad k=1,\ldots,K.
+\]
+The printed weight evolution is
+\[
+\begin{aligned}
+dw_{t,k}=w_{t,k}\Bigg(&
+\frac{a_{t,k}/b_{t,k}-\sum_k w_{t,k}(a_{t,k}/b_{t,k})}
+{\sum_k w_{t,k}(a_{t,k}/b_{t,k})}\,dn_t\\
+&+\left(a_{t,k}/b_{t,k}-\sum_k w_{t,k}(a_{t,k}/b_{t,k})\right)dt
+\Bigg).
+\end{aligned}
+\]
+This row retains the source's reuse of \(k\) as both free component index and summation index.
+
+\paragraph{Printed inconsistency.}
+The weight equation on physical PDF page 4 has a plus sign before its drift term and no factor \(\bar F(p_t)\) multiplying that term. The HJB operator on physical PDF page 5 instead uses \(w_k(\mu(z)-a_k/b_k)\) inside an overall factor \(\bar F(\pi(z))\). Thus the two printed passages disagree on the weight drift. Both source expressions are retained below and above without a repaired posterior equation.
+
+\subsection*{Reachable states and function class (Section 3.2)}
+The set described as containing states that might be visited from
+\(x_0=\tilde x\), \(a_0=\tilde a\), and \(b_0=\tilde b\) is printed as
+\[
+S_{\tilde x,\tilde a,\tilde b}
+=\{(x,a,b,w)\in S:
+ a+x=\tilde a+\tilde x,\quad
+ \tilde b\leq b,\quad w\geq0,\quad 1'w=1\}.
+\]
+The same state domain and reachable set are subsequently written with calligraphic \(\mathcal S\). The source leaves the scalar additions to the parameter vectors in the form displayed above.
+
+Let \(\mathcal J\) denote the functions
+\[
+J:\mathcal S\longmapsto\mathbb R
+\]
+that satisfy
+\[
+\sup_{z\in\mathcal S_{\tilde x,\tilde a,\tilde b}}|J(z)|<\infty
+\qquad\text{for all }\tilde x\text{ and }\tilde b>0,
+\]
+and have bounded derivatives with respect to their third and fourth arguments. This is the printed quantifier: the paragraph does not separately quantify \(\tilde a\).
+
+The posterior mean at state \(z=(x,a,b,w)\) is
+\[
+\mu(z)=\sum_k w_k\frac{a_k}{b_k}.
+\]
+The state after a purchase and its updated weights are
+\[
+z'=(x-1,a+1,b,w'),
+\qquad
+w'_k=\frac{w_ka_k}{b_k\mu(z)},\qquad k=1,\ldots,K.
+\]
+
+\subsection*{Differential operator and HJB characterization}
+For each \(\pi\in\Pi\), the source defines, with
+\(z\in\mathcal S_{\tilde x,\tilde a,\tilde b}\),
+\[
+(H^\pi J)(z)
+=\bar F(\pi(z))\left(
+\mu(z)\bigl(\pi(z)+J(z')-J(z)\bigr)+(DJ)(z)
+\right)-\alpha J(z).
+\]
+Its differential operator is printed as
+\[
+(DJ)(z)=\sum_k w_k\bigl(\mu(z)-a_k/b_k\bigr)
+\frac{d}{dw_k}J(z)+\frac{d}{db_k}J(z).
+\]
+\paragraph{Printed scope issue.}
+The displayed differential operator has no brackets enclosing the two derivative terms and no separate summation sign before \(dJ/db_k\). Read literally, the latter term has a free \(k\). The expression above preserves the printed scope; a summation or enclosing brackets have not been inserted.
+
+The dynamic programming operator and HJB equation are
+\begin{align}
+(HJ)(z)&=\sup_\pi(H^\pi J)(z),\tag{3}\\
+(HJ)(z)&=0.\tag{4}
+\end{align}
+The supremum is over the policies just defined. Section 3.2 states that the value function \(J^*\) solves (4), and that
+\[
+\pi\text{ is optimal}\quad\Longleftrightarrow\quad H^\pi J^*=0.
+\]
+It does not state a general-mixture uniqueness theorem there.
+
+For completeness, the explicit nonnegative-price form of (4) printed at the beginning of Section 4.3 is
+\[
+\max_{p\geq0}\bar F(p)\left(
+\mu(z)\bigl(p+J^*(z')-J^*(z)\bigr)+(DJ^*)(z)
+\right)=\alpha J^*(z),
+\]
+for all \(z=(x,a,b,w)\) and \(z'=(x-1,a+1,b,w')\) with
+\[
+x>0,\qquad w'_k=\frac{w_ka_k}{b_k\mu(z)}.
+\]
+This is the same optimal-control characterization, not a heuristic pricing objective. Section 3.2 prints its operator with the reachable-state scope above but does not give a separate zero-inventory interpretation of its \(z'\) expression; no extension to negative inventory or additional boundary convention is supplied here.
+
+\subsection*{Source scope and unavailable companion}
+These formulas are from Farias and Van Roy, \emph{Dynamic Pricing with a Prior on Market Response}, Operations Research 58(1), 16--29 (2010), Sections 2 and 3.2 (physical PDF pages 3--5), together with the explicit expansion of (4) in Section 4.3 (physical PDF page 6). The supplied page images verify the printed weight equation, state-domain typography, and differential-operator scope.
+
+The appendix references on physical PDF page 4 concern comparative statics for the known-arrival-rate model; the reference on physical PDF page 5 concerns a heuristic value bound. Section 6, physical PDF page 8, separately refers to an online-appendix proof of HJB existence and uniqueness for a single Gamma prior and exponential reservation prices. The electronic companion is announced on physical PDF pages 4 and 14 but was not supplied and remains unverified. Its special-case proof is not substituted for the full finite-mixture model, and no unverified companion conditions are added.
+
+\end{document}

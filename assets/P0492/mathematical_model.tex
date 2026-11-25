@@ -1,0 +1,224 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\section*{Nonparametric individual-customer MDP approximation}
+
+For every current state $x\in\mathcal X$, select the policy by
+\begin{equation}
+\hat\pi(x)\in\operatorname*{arg\,max}_{a\in\mathcal A(x)}
+\left\{g(x,a)+\alpha\int_{\mathcal X}\hat V(y)\,Q[dy\mid x,a]\right\}.
+\tag{6}
+\end{equation}
+The continuation value is the optimal value of the nonlinear knapsack problem
+\begin{equation}
+\begin{aligned}
+\hat V(x)&\equiv\max_{k_n}\sum_{n=1}^{N}V_n^*(x_n,k_n)\\
+\text{s.t.}\quad&\sum_{n=1}^{N}t_nk_n\leq MT.
+\end{aligned}
+\tag{5}
+\end{equation}
+Here $k_n$ is the number of vehicle trips made available to customer $n$, hence a nonnegative integer count. The printed block (5) contains no separate domain row or individual upper bound for $k_n$. The fixed quantity $t_n$ is the time required for a vehicle route from the supplier to customer $n$ and back; $M$ is the number of vehicles; and $T$ is the maximum work time per vehicle per time period. The knapsack constructs a value, not the feasible action set in (6): the paper explicitly qualifies the resulting assignment as a possible policy only ``if feasible for the IRPDD.''
+
+\section*{Inherited inputs, states, and feasible itineraries}
+
+There is one product, one supplier's plant, and $N$ customers indexed by $n=1,\ldots,N$. The fleet has $M$ homogeneous vehicles of known capacity $C_V$. Customer $n$ has known storage capacity $C_n$. Time is discrete, $t=0,1,\ldots$, and a period is called a day. The inventory state is
+\[
+\mathcal X=[0,C_1]\times[0,C_2]\times\cdots\times[0,C_N],\qquad
+X_{nt}\in[0,C_n],\qquad
+X_t=(X_{1t},\ldots,X_{Nt})\in\mathcal X.
+\]
+For the decomposition in Section 6.1 the paper assumes that the demand distribution and thus the state space $\mathcal X$ are discrete. It does not specify a general discretization grid here.
+
+The fixed joint distribution $F$ of customer demand is known to the supplier and does not change with time. Demand vectors on different days are independent; independence between customers on the same day is not assumed. Write $U_{nt}$ for customer $n$'s demand on day $t$, $F_n$ for the marginal distribution of $U_n$, and $f_n(u_n)$ for the probability that customer $n$'s demand is $u_n$ in the discrete version. The discount factor is
+\[
+\alpha\in[0,1).
+\]
+The supplier can measure the customers' inventory levels at any time. An itinerary has duration less than one day, so all vehicles and drivers are available at the beginning of each day. A vehicle may perform more than one route per day.
+
+For the direct-delivery specialization, $\mathcal A(x)$ is the set of itineraries whose routes each visit only one customer and that satisfy the inherited workload, travel-time and driver-work-hour restrictions, customer delivery time windows, vehicle capacities, customer storage capacities after delivery, and other application-specific itinerary restrictions. These restrictions are specified as part of the itinerary set in the paper, not as a separate algebraic routing formulation.
+
+An itinerary $a$ consists of individual-customer itineraries $a_n$, $n=1,\ldots,N$. Each $a_n$ specifies the number of visits to customer $n$ by each vehicle and the amount delivered by each vehicle. The quantity $d_n(a)$, or $d_n(a_n)$ in the direct-delivery notation, is the total amount delivered to customer $n$; $k_n(a_n)$ is the number of times that customer is visited by a vehicle. The function $k_n(a_n)$ counts actual visits, whereas the state/knapsack variable $k_n$ is the number of trips made available.
+
+The inherited feasibility requirements include
+\[
+A_t\in\mathcal A(X_t)\quad(t=0,1,\ldots),
+\qquad
+X_{nt}+d_n(A_t)\leq C_n
+\quad(n=1,\ldots,N,\ t=0,1,\ldots).
+\]
+The latter is the version actually used by the authors, assuming that no product is used between the inventory measurement and delivery. Vehicle capacities must not be exceeded on any route. The aggregate workload inequality in (5) does not replace these itinerary restrictions.
+
+Every action $A_t$ must depend only on the history
+\[
+(X_0,A_0,X_1,\ldots,X_t),
+\]
+not on future information. A stationary deterministic policy $\pi\in\Pi$ chooses $\pi(x)\in\mathcal A(x)$ using only the current state $x$. Its customer-$n$ itinerary is denoted by $\pi_n(x)$.
+
+\section*{Inventory dynamics and system reward}
+
+Demand not satisfied is lost, not backlogged. For every customer and day the amount used, shortage, and next inventory are, respectively,
+\[
+\min\{X_{nt}+d_n(A_t),U_{nt}\},
+\]
+\[
+S_{nt}=\max\{U_{nt}-(X_{nt}+d_n(A_t)),0\},
+\qquad
+X_{n,t+1}=\max\{X_{nt}+d_n(A_t)-U_{nt},0\}.
+\]
+For $x\in\mathcal X$, $a\in\mathcal A(x)$, and a measurable $B\subseteq\mathcal X$, the paper defines
+\[
+\mathcal U(x,a,B)\equiv
+\left\{U\in\mathbb R_+^N:
+\max\{x_n+d_n(a)-U_n,0\}\in B\right\},
+\]
+\[
+P[X_{t+1}\in B\mid X_t=x,A_t=a]
+=Q[B\mid x,a]\equiv F[\mathcal U(x,a,B)].
+\]
+The defining display for $\mathcal U$ is retained in its printed component notation, although $B$ is a subset of the vector state space.
+
+The fixed functions $r_n(d_n)$, $h_n(\cdot)$, and $p_n(s_n)$ are, respectively, the reward for a delivery, the inventory holding cost, and the penalty for unsatisfied demand. They remain abstract functions. The fixed $c_n$ is the transportation cost for making a delivery at customer $n$. The direct-delivery expected single-stage system reward used in (6) is
+\begin{equation}
+\begin{aligned}
+g(x,a)\equiv\sum_{n=1}^{N}\Bigl\{
+&r_n(d_n(a_n))-c_nk_n(a_n)-h_n(x_n+d_n(a_n))\\
+&-E^{F_n}\!\left[p_n\!\left(\max\{U_n-(x_n+d_n(a_n)),0\}\right)\right]
+\Bigr\}.
+\end{aligned}
+\tag{3}
+\end{equation}
+Here $E^{F_n}$ denotes expectation with respect to the marginal demand distribution $F_n$.
+
+\section*{Individual-customer transition construction}
+
+Fix a policy $\pi\in\Pi$ and assume the existence of unique stationary probabilities $\nu^\pi(x)$ under that policy. The conditional probability that the next inventory at customer $n$ is $y_n$ and that the next policy itinerary visits that customer $k_n$ times, given present inventory $x_n$ and delivery $d_n$, is
+\begin{equation}
+q_n(y_n,k_n\mid x_n,d_n)=
+\frac{
+\displaystyle\sum_{\{s\in\mathcal X:\ s_n=x_n,\ d_n(\pi_n(s))=d_n\}}
+\nu^\pi(s)
+\displaystyle\sum_{\{z\in\mathcal X:\ z_n=y_n,\ k_n(\pi_n(z))=k_n\}}
+Q[z\mid s,\pi(s)]
+}{
+\displaystyle\sum_{\{s\in\mathcal X:\ s_n=x_n,\ d_n(\pi_n(s))=d_n\}}
+\nu^\pi(s)
+}.
+\tag{4}
+\end{equation}
+This expression applies if the denominator is positive. The printed exceptional case is
+\[
+q_n(y_n,k_n\mid x_n,d_n)=0
+\quad\text{if the denominator in (4) is zero}.
+\]
+No alternative probability distribution is supplied for that case.
+
+For each $n=1,\ldots,N$, the customer MDP has state $(x_n,k_n)$: $x_n$ is the customer's inventory and up to $k_n$ vehicle visits are available. Inventory coordinates $x_n,y_n$ belong to the corresponding discrete inventory state space within $[0,C_n]$; $k_n,l_n$ are visit counts. The admissible set $\mathcal A(x_n,k_n)$ consists of dispatching up to $k_n$ vehicle trips to customer $n$, with delivered amounts constrained by vehicle capacity $C_V$ and customer storage capacity $C_n$.
+
+Its printed transition relation is
+\[
+\begin{aligned}
+&P[(X_{n,t+1},K_{n,t+1})=(y_n,l_n)
+\mid (X_{nt},K_{nt})=(x_n,k_n),A_{nt}=a_n]\\
+&\hspace{35mm}=q_n(y_n,l_n\mid x_n,d_n(a_n)).
+\end{aligned}
+\]
+The single-stage reward specified in Section 6.1 is
+\[
+\begin{aligned}
+g_n(x_n,a_n)\equiv{}&r_n(d_n(a_n))-c_nk_n(a_n)-h_n(x_n)\\
+&-E^{F_n}\!\left[p_n\!\left(\max\{U_n-(x_n+d_n(a_n)),0\}\right)\right].
+\end{aligned}
+\]
+Its optimal discounted value is
+\[
+V_n^*(x_n,k_n)\equiv
+\sup_{\{A_{nt}\}_{t=0}^{\infty}}
+E\!\left[
+\left.\sum_{t=0}^{\infty}\alpha^t g_n(X_{nt},A_{nt})
+\right|(X_{n0},K_{n0})=(x_n,k_n)
+\right],
+\]
+subject to
+\[
+A_{nt}\in\mathcal A(X_{nt},K_{nt}),
+\qquad n=1,\ldots,N,\quad t=0,1,\ldots,
+\]
+and the requirement that the actions are nonanticipatory: they use only the customer process history available at the decision time. These are the individual-customer values used in (5).
+
+\paragraph{Printed reward contradiction.}
+Section 6.1, physical page 11, asserts
+\[
+g(x,a)=\sum_{n=1}^{N}g_n(x_n,a_n).
+\]
+However, its definition of $g_n$ contains $-h_n(x_n)$, whereas (3) contains $-h_n(x_n+d_n(a_n))$. The equality is therefore not generally consistent with the two printed definitions. Above, (3) is retained for the system reward in (6), and the printed Section 6.1 definition is retained for the customer values. The asserted equality is recorded here as a source contradiction, not imposed as an additional identity or used to change either holding-cost argument.
+
+\section*{Selected nonparametric estimation and policy update}
+
+The selected version is Algorithm 1, using the reduced conditional probabilities of physical page 14. This uses the following construction in place of the direct five-dimensional empirical update (7); the two estimators are not simultaneously imposed.
+
+Under the fixed simulation policy $\pi$, define the probability that customer $n$ is visited by $k_n$ vehicles conditional on inventory $y_n$ by
+\[
+p_n(k_n\mid y_n)=
+\frac{
+\displaystyle\sum_{\{x\in\mathcal X:\ x_n=y_n,\ k_n(\pi_n(x))=k_n\}}\nu^\pi(x)
+}{
+\displaystyle\sum_{\{x\in\mathcal X:\ x_n=y_n\}}\nu^\pi(x)
+}
+\quad\text{if the denominator is positive}.
+\]
+The zero-denominator sentence is printed with a different customer index:
+\[
+p_i(k_i\mid y_i)=0\quad\text{if the denominator is zero}.
+\]
+This is retained as the printed exceptional-case notation. The conditional probability $p_n(k_n\mid y_n)$ is distinct from the shortage-penalty function $p_n(s_n)$; the paper uses the same letter for both, distinguished by their arguments.
+
+Let $\hat p_{nt}(k_n\mid y_n)$ estimate $p_n(k_n\mid y_n)$ after $t$ transitions of the simulation, and let $N_{nt}(y_n)$ be the number of times customer $n$ has been in inventory state $y_n$ by transition $t$. The initial-estimate weight is denoted by $N_{n0}(k_n\mid y_n)$, analogously to the initial observation weight in (7). The printed update is
+\[
+\hat p_{n,t+1}(k_n\mid y_n)=
+\begin{cases}
+\displaystyle
+\frac{(N_{n0}(k_n\mid y_n)+N_{nt}(y_n))\hat p_{nt}(k_n\mid y_n)+1}
+{N_{n0}(k_n\mid y_n)+N_{nt}(y_n)+1},
+&\begin{array}{l}
+\text{if }X_{nt}=y_n\text{ and}\\
+k_n(\pi_n(X_t))=k_n,
+\end{array}\\[4mm]
+\displaystyle
+\frac{(N_{n0}(k_n\mid y_n)+N_{nt}(y_n))\hat p_{nt}(k_n\mid y_n)}
+{N_{n0}(k_n\mid y_n)+N_{nt}(y_n)+1},
+&\begin{array}{l}
+\text{if }X_{nt}=y_n\text{ and}\\
+k_n(\pi_n(X_t))\ne k_n,
+\end{array}\\[4mm]
+\hat p_{nt}(k_n\mid y_n),&\text{if }X_{nt}\ne y_n.
+\end{cases}
+\]
+The resulting estimate of the customer transition probability is
+\[
+\hat q_{nt}(y_n,k_n\mid x_n,d_n)=
+\begin{cases}
+f_n(x_n+d_n-y_n)\hat p_{nt}(k_n\mid y_n),&\text{if }y_n>0,\\[1mm]
+\displaystyle\sum_{u_n=x_n+d_n}^{\infty}f_n(u_n)\hat p_{nt}(k_n\mid y_n),&\text{if }y_n=0.
+\end{cases}
+\]
+The lower endpoint $u_n=x_n+d_n$ and the separate boundary case $y_n=0$ are as printed. The paper notes that these estimates generally differ from those obtained using (7). Equation (4) defines the conditional probabilities being approximated; it is not an extra requirement that the reduced estimates equal that stationary-probability ratio. In the updated customer MDPs, the estimated transition probabilities replace the exact $q_n$ in the transition relation above.
+
+The paper states that the $\hat p$ estimates have convergence results similar to the direct empirical estimates: for states occurring infinitely often, the estimates converge with probability one under the fixed simulation policy. No numerical initial weights, estimates, or stopping tolerances are prescribed for this construction.
+
+\paragraph{Algorithm 1: policy-update construction.}
+\begin{enumerate}
+\item Start with an initial policy $\hat\pi_0$ and set $i=0$.
+\item Repeat the following simulation, solution, policy update, and increment for a chosen number of iterations or until a convergence test is satisfied.
+\item Simulate the IRPDD under $\hat\pi_i$ to estimate $p_n(k_n\mid y_n)$ using the selected updates above.
+\item With the updated estimates, formulate and solve the updated individual-customer MDPs, obtaining $V_n^*(x_n,k_n)$.
+\item Define $\hat\pi_{i+1}$ by (6), with $\hat V$ given by (5) using those updated customer values.
+\item Increment $i\leftarrow i+1$.
+\end{enumerate}
+
+\paragraph{Source scope.}
+The formulation uses Sections 2, 5, 6.1 and 6.2 of Kleywegt, Nori and Savelsbergh, \emph{The Stochastic Inventory Routing Problem with Direct Deliveries}, June 1999, physical pages 4--6 and 10--15. The parametric approximation, sampling-based action-comparison procedure, greedy action subproblem, and Appendix A's CBW formulation are not part of this selected form. No additional official supplement was supplied; any additional supplementary material is unverified.
+
+\end{document}

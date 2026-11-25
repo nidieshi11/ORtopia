@@ -1,0 +1,91 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\section*{Affine approximate dynamic programming: (D1)}
+
+\begin{equation}
+(\mathbf{D1})\qquad
+\min_{\theta,V}\;\theta_1+\sum_i V_{1,i}c_i
+\tag{6}
+\end{equation}
+subject to
+\begin{equation}
+\begin{aligned}
+&\theta_t-\theta_{t+1}
+ +\sum_i\left(V_{t,i}x_i-V_{t+1,i}\left(x_i-\sum_{j\in S}\lambda P_j(S)a_{ij}\right)\right)
+ \geq \sum_{j\in S}\lambda P_j(S)f_j,\\
+&\hspace{25mm}\forall\,t=1,\ldots,\tau,\quad x\in X,\quad S\subseteq N(x).
+\end{aligned}
+\tag{7}
+\end{equation}
+The terminal coefficients are fixed:
+\[
+\theta_{\tau+1}=0,\qquad V_{\tau+1,i}=0\quad\forall\,i=1,\ldots,m.
+\]
+The decision variables are the affine coefficients $\theta_t$ and $V_{t,i}$ for $t=1,\ldots,\tau$ and $i=1,\ldots,m$. No sign restrictions on these decision variables are imposed in the printed (D1) block. The states $x$ and offer sets $S$ index its inequalities; they are not additional decision variables of this linear program.
+
+\section*{Fixed inputs and indexed feasible sets}
+
+There are $m$ flight legs and $n$ products. A product is a flight-itinerary and fare-class combination. The initial capacity vector and product set are
+\[
+c=(c_1,\ldots,c_m),\qquad N=\{1,\ldots,n\},
+\]
+where $c_i$ is the capacity of leg $i$. The fare for product $j$ is $f_j$. The consumption matrix is the $m\times n$ matrix
+\[
+A\equiv(a_{ij}).
+\]
+Its entry $a_{ij}$ is the integer amount of resource $i$ required by a class-$j$ customer. Its $i$th row $A_i$ is the incidence vector for leg $i$, and its $j$th column $A^j$ is the incidence vector for product $j$. Throughout, $i$ indexes legs, $j$ indexes products, and $t$ indexes time; every sum over $i$ in (5)--(7) runs over $i=1,\ldots,m$.
+
+There are $\tau$ discrete periods, counted forward, with $\tau$ the last period. In each period there is one customer arrival with probability $\lambda$, and no customer arrival with probability $1-\lambda$. Conditional on an arrival and an offer set $S\subseteq N$, the customer chooses product $j\in S$ with probability $P_j(S)$ and makes no purchase with probability
+\[
+P_0(S)=1-\sum_{j\in S}P_j(S),\qquad S\subseteq N.
+\]
+The choice probabilities are fixed inputs; no particular choice model is imposed in this formulation. The set $S=\varnothing$ means that no product is offered and is included among the possible offer sets.
+
+At the beginning of a period, $x$ is the $m$-vector of unsold seats. The state space and feasible-product set are
+\[
+X=\{0,\ldots,c_1\}\times\cdots\times\{0,\ldots,c_m\},
+\qquad
+N(x)=\{j\in N:x\geq A^j\},\quad x\in X.
+\]
+Thus $N(x)$ consists of products that can be offered at state $x$; the vector inequality requires sufficient capacity on each leg. The initial state is $c$. Every subset $S\subseteq N(x)$, including the empty set, indexes a constraint in (7).
+
+\section*{Affine value-function construction}
+
+Let $v_t(x)$ be the maximum total expected revenue over periods $t,\ldots,\tau$ when the state at the beginning of period $t$ is $x$. The selected approximation is
+\begin{equation}
+v_t(x)\approx\theta_t+\sum_i V_{t,i}x_i,
+\qquad t=1,\ldots,\tau,\quad x\in X.
+\tag{5}
+\end{equation}
+Here $V_{t,i}$ estimates the marginal value of a seat on flight $i$ in period $t$, and $\theta_t$ is a constant offset.
+
+The inherited value-function definition is the Bellman equation
+\begin{equation}
+\begin{aligned}
+v_t(x)
+&=\max_{S\subseteq N(x)}\left\{
+\sum_{j\in S}\lambda P_j(S)\bigl(f_j+v_{t+1}(x-A^j)\bigr)
+ +(\lambda P_0(S)+1-\lambda)v_{t+1}(x)
+\right\}\\
+&=\max_{S\subseteq N(x)}\left\{
+\sum_{j\in S}\lambda P_j(S)
+\bigl[f_j-\bigl(v_{t+1}(x)-v_{t+1}(x-A^j)\bigr)\bigr]
+\right\}+v_{t+1}(x),\\
+&\hspace{30mm}\forall\,t=1,\ldots,\tau,\quad x\in X,
+\end{aligned}
+\tag{1}
+\end{equation}
+with boundary conditions
+\[
+v_{\tau+1}(x)=0\qquad\forall\,x\in X.
+\]
+Equation (1) defines the exact value function being approximated, not additional constraints on the affine coefficients. The paper obtains (D1) by substituting (5) into the Bellman inequalities of (D0); (7) is the resulting complete inequality family, and the fixed terminal coefficients above implement the terminal value.
+
+\paragraph{Scope and source.}
+This is the original (D1) of Zhang and Adelman, \emph{An Approximate Dynamic Programming Approach to Network Revenue Management with Customer Choice}, Transportation Science 43(3), 2009, pp.~381--394, Section~2.1 (physical PDF p.~4), with definitions from Section~1.1 (physical PDF pp.~2--3). The dual (P1) is not selected. The implementation passage on physical PDF p.~9 confirms that monotonicity constraints suggested by Theorem~1 were added in the numerical experiments; these experimental additions are not part of the selected printed (6)--(7) formulation. The online appendix referenced for the proof of Theorem~1 was not supplied and remains unverified; no condition from that appendix is imported here.
+
+\end{document}

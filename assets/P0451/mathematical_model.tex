@@ -1,0 +1,94 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\begin{document}
+
+\begin{align}
+\text{Minimize}\quad &V\sum_{c\in\mathcal N_{\mathrm C}}\sum_{v\in\mathcal N_{\mathrm V}} C_{vc}(t)y_{vc}(t)
+-\sum_{c\in\mathcal N_{\mathrm C}}H_c(t)\sum_{v\in\mathcal N_{\mathrm V}}y_{vc}(t) \tag{3}\\
+\text{s.t.}\quad &\sum_{c\in\mathcal N_{\mathrm C}}y_{vc}(t)\leq 1,
+&&v\in\mathcal N_{\mathrm V}, \tag{4}\\
+&\sum_{v\in\mathcal N_{\mathrm V}}y_{vc}(t)\leq 1,
+&&c\in\mathcal N_{\mathrm C}, \tag{5}\\
+&y_{vc}(t)\in\{0,1\},
+&&c\in\mathcal N_{\mathrm C},\ v\in\mathcal N_{\mathrm V}. \tag{6}
+\end{align}
+
+\paragraph{Per-time-step inputs and decisions.}
+At every time step $t$, the operator observes
+\[
+\mathbf H(t)\equiv\{H_c(t):c\in\mathcal N_{\mathrm C}\}
+\]
+and solves (3)--(6). The fixed penalty constant satisfies
+\[
+V\geq 0.
+\]
+Here $H_c(t)$ is the observed waiting time of the head-of-line (HOL) customer at customer-charge node $c$, and $C_{vc}(t)$ is the estimated dispatch cost at time $t$. These are inputs, not decision variables in (3)--(6). The decision $y_{vc}(t)$ equals $1$ if vehicle $v$ is assigned to serve the HOL customer at node $c$ at time $t$, and $0$ otherwise. Constraint (4) permits at most one customer per vehicle; (5) permits at most one vehicle per customer node. The case $V=0$ is retained as printed.
+
+\paragraph{Network, availability, and charging-inclusive costs.}
+The car-sharing graph is
+\[
+\mathcal G=(\mathcal N_{\mathrm C},\mathcal N_{\mathrm V},\mathcal A),
+\]
+where $\mathcal N_{\mathrm C}$ and $\mathcal N_{\mathrm V}$ are the customer and vehicle node sets, respectively, and $\mathcal A$ is the arc set. A customer node is a geographic zone with a specific charge level; a zone can have multiple customer nodes with different charge levels. The five charge levels in the paper's Fig.~1 are an example, not fixed data for (3)--(6).
+
+An arc from $v\in\mathcal N_{\mathrm V}$ to $c\in\mathcal N_{\mathrm C}$ exists only when $v$ is idle. A vehicle is idle whenever it is not assigned to a customer; a charging vehicle can therefore be idle. Once assigned, a vehicle remains committed while driving to the customer and carrying that customer to the destination; the assignment is not changed upon a new vehicle becoming available or a new customer arriving. Vehicles dropping customers off in zones with charging stations are assumed to connect automatically to chargers. Vehicles dropping customers off in zones without charging stations remain at the drop-off location until reassigned.
+
+For $(v,c)\in\mathcal A$, $C_{vc}(t)$ is the travel time from $v$ to $c$, including the required charging time when charging is needed before customer pickup. The cost description on physical page~4 distinguishes the following cases: if $v$ has enough charge to serve customer-charge node $c$ and then reach the nearest charging station after drop-off, the arc weight is the travel time; otherwise it is the travel time plus the required time to charge $v$. No separate algebraic battery-consumption or charging-time formula is supplied for this assignment model.
+
+The arcs represent directed zone-to-zone endpoints, not the physical routes. Routes depend on the road topology and real-time traffic conditions. Every vehicle $v$ is assumed capable of assessing $C_{vc}$ for every $c\in\mathcal N_{\mathrm C}$ and reporting
+\[
+\{C_{vc}\}_{c\in\mathcal N_{\mathrm C}}
+\]
+to the operator. In the supporting road-network description,
+\[
+\mathcal G_{\mathrm{roads}}=(\mathcal V,\mathcal L),
+\]
+$\mathcal V$ is the intersection set and $\mathcal L$ the road-segment set. The paper partitions $\mathcal V$ into $\mathcal V_{\mathrm S}$ and $\mathcal V\setminus\mathcal V_{\mathrm S}$, where $\mathcal V_{\mathrm S}$ consists of the nearest intersections to charging stations without customers. Without a charging requirement, the costs are determined by a single-source shortest-path search. When charging is required, the described path consists of a shortest path from the vehicle to a charging station followed by a shortest path from that station to the customer, with the station determined during the searches. Costs vary with time and are periodically updated; the suggested five-minute update interval is not a fixed model parameter. The road-node set $\mathcal V$ is distinct from the penalty constant $V$.
+
+\paragraph{Printed availability scope.}
+Although the graph description permits arcs only from idle vehicles and defines $C_{vc}(t)$ as an arc cost, (3)--(6) are printed over all $c\in\mathcal N_{\mathrm C}$ and $v\in\mathcal N_{\mathrm V}$. They contain no explicit restriction to $(v,c)\in\mathcal A$, no explicit rule for the cost of a nonexistent arc, and no explicit constraint excluding assignments to empty customer nodes. The printed index ranges are retained here; no zero-fixing, infinite-cost convention, or additional feasibility constraint is inserted.
+
+\paragraph{Inherited waiting-time state and its link to the assignment.}
+Time is discretized into equal-length intervals, with $t$ denoting the beginning of $[t,t+1)$. The source defines the waiting-time process, for each $c\in\mathcal N_{\mathrm C}$, by
+\begin{equation}
+H_c(t+1)=\chi_c(t)\bigl[H_c(t)+1-x_c(t)\tau_c\bigr]^+
+ +(1-\chi_c(t))A_c(t). \tag{1}
+\end{equation}
+The positive-part notation is
+\[
+[\,\cdot\,]^+\equiv\max\{\,\cdot\,,0\}.
+\]
+The state indicator $\chi_c(t)$ is binary, equal to $0$ if node $c$ is empty at time $t$ and $1$ otherwise. The binary control $x_c(t)$ equals $1$ if the HOL customer at $c$ is served at time $t$ and $0$ otherwise. The symbol $\tau_c$ denotes the inter-arrival time between the HOL customer and the following customer at node $c$; its lack of a time subscript is retained. The random arrival count satisfies
+\[
+A_c(t)\in\{0,1\},\qquad c\in\mathcal N_{\mathrm C},
+\]
+and counts arrivals during $[t,t+1)$. These state and arrival quantities are not additional decision variables of (3)--(6).
+
+The defining boundary cases and observations accompanying (1), for each node $c$, are
+\begin{align*}
+\chi_c(t)=0
+&\ \Longrightarrow\ H_c(t)=0,\quad \tau_c=0,\quad H_c(t+1)=A_c(t),\\
+\chi_c(t)=1
+&\ \Longrightarrow\ H_c(t)\in\mathbb Z_+,\quad \tau_c\in\mathbb Z_+,\\
+\chi_c(t)=1,\ x_c(t)=0
+&\ \Longrightarrow\ H_c(t+1)=H_c(t)+1,\\
+\chi_c(t)=1,\ x_c(t)=1
+&\ \Longrightarrow\ H_c(t+1)=\bigl[H_c(t)+1-\tau_c\bigr]^+.
+\end{align*}
+A customer arriving at time $t$ joins the queue at time $t+1$ with waiting time $1$. Upon service of the HOL customer, the new waiting time is that of the subsequent customer, or zero if the subsequent customer has not arrived; the latter case is described by
+\[
+\tau_c>H_c(t)+1.
+\]
+This waiting process concerns time before entry into service. The time subsequently required for the assigned vehicle to reach the customer is represented by $C_{vc}$.
+
+Denote the solution of (3)--(6) by $\{y^{\mathrm{MDPP}}_{vc}(t)\}$. The resulting binary controls are
+\begin{equation}
+x^{\mathrm{MDPP}}_c(t)=\sum_{v\in\mathcal N_{\mathrm V}}y^{\mathrm{MDPP}}_{vc}(t). \tag{7}
+\end{equation}
+For $c\in\mathcal N_{\mathrm C}$, these are the controls used in (1). Equations (1) and (7) describe the state-to-control link across time; they do not turn the per-time-step problem into a multistage optimization.
+
+\paragraph{Scope and source.}
+This is the full per-time-step minimization in Li, Pantelidis, Chow, and Jabari, \emph{A real-time dispatching strategy for shared automated electric vehicles with performance guarantees}, arXiv:2006.15615v3, physical pages~3--6. The second-moment relation (2) is used for performance guarantees, not to define the observed inputs or feasible assignments of (3)--(6). The example time-increment choice (8) belongs to the subsequent event-driven solution approach, rather than a mandatory time scale for this full assignment problem. Neither the alternative maximization objective (9), its event-specific subproblems, nor the linear relaxation is imposed here. Vehicle rebalancing is not included in the selected model.
+
+\end{document}

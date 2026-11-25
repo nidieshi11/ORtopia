@@ -1,0 +1,343 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,mathrsfs,mathtools}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\section*{Adaptive learning-and-routing policy optimization}
+
+Choose a routing policy $\pi$ to maximize the long-term expected reward rate, printed in the paper as
+\begin{equation}
+\frac{1}{t}\sum_{(ij)\in\mathcal L}\theta_{ij}\mathbb E(D_{ij}(t)).
+\tag{1}
+\end{equation}
+Subject to the queueing dynamics and compatibility relations below, the policy requirements are
+\begin{align}
+\lim_{t\to\infty}\left(t\lambda_i-\sum_{j\in\mathcal S_i}\mathbb E^\theta_\pi(D_{ij}(t))\right)&<\infty,
+&&\forall i\in\mathcal I,\tag{7}\\
+t(\mu_j-\varepsilon)-\sum_{i\in\mathcal C_j}\mathbb E^\theta_\pi(D_{ij}(t))&\geq0,
+&&\forall j\in\mathcal J,\quad\forall t\geq0.\tag{8}
+\end{align}
+The paper states these requirements for $\varepsilon\geq0$ and any payoff vector. The selected adaptive construction uses fixed $\varepsilon>0$ and Bernoulli payoffs, as specified below. A routing policy determines which customer is served by which server and at what time. The notation $\mathbb P^\theta_\pi,\mathbb E^\theta_\pi$ denotes its probability law and expectation under payoff vector $\theta$. The quantity $D_{ij}(t)$ is the total number of type-$i$ service completions at server $j$ up to time $t\geq0$. Thus the accumulated expected payoff is
+\begin{equation}
+\sum_{(ij)\in\mathcal L}\theta_{ij}\mathbb E^\theta_\pi(D_{ij}(t)).
+\tag{9}
+\end{equation}
+Requirement (8) is described as an expected workload of at most $(\mu_j-\varepsilon)/\mu_j$ at server $j$. The accompanying requirements (a)--(d) are to honor the queueing dynamics and compatibility relations, guarantee stability of every queue, learn unknown or misspecified $\theta_{ij}$, and handle exploration versus exploitation efficiently.
+
+\paragraph{Scope of the objective.}
+Equation (1) is retained without adding a limit, liminf, or discounted criterion: the source calls this expression the long-term expected reward rate but prints no limiting operator. In the sentence introducing (7)--(8), the source prints $\theta\in\mathbb R_{\geq0}$ while calling $\theta$ a vector; its definition in Sections 2.1--2.2 is $\theta\in\mathbb R_{\geq0}^{L}$.
+
+\section*{Fixed network, stochastic inputs, and payoff restrictions}
+
+The fixed customer-type and server sets and their cardinalities are
+\[
+\mathcal I=\{1,\ldots,I\},\qquad
+\mathcal J=\{1,\ldots,J\},\qquad I,J\in\mathbb N_{>0}.
+\]
+The printed definition of the compatibility-line set and its size is
+\[
+\mathcal L=\{(ij):i\in\mathcal I,\ j\in\mathcal J\},\qquad
+L=|\mathcal L|\in\mathbb N_{>0},\qquad L>I+J-1.
+\]
+The compatibility neighborhoods are
+\begin{align}
+\mathcal S_i&=\{j\in\mathcal J:(ij)\in\mathcal L\},\tag{2}\\
+\mathcal C_j&=\{i\in\mathcal I:(ij)\in\mathcal L\}.\tag{3}
+\end{align}
+For every $i\in\mathcal I$, type-$i$ arrivals form a Poisson process with fixed rate $\lambda_i>0$. Arrival processes are independent across customer types, as stated in Section 4.3.1. Customers wait in queue $i$ until allocated to a compatible, idle server. The system has no customers at time $t=0$. For every $j\in\mathcal J$, service times at server $j$ are exponentially distributed with fixed rate $\mu_j>0$, independently between servers and across customers. Their distribution depends on the server, not on the customer type. Write
+\[
+\lambda=(\lambda_1,\ldots,\lambda_I),\qquad
+\mu=(\mu_1,\ldots,\mu_J),\qquad
+\mathcal S_A=\bigcup_{i\in A}\mathcal S_i.
+\]
+The input stability assumption is
+\begin{equation}
+\sum_{i\in A}\lambda_i<\sum_{j\in\mathcal S_A}\mu_j,
+\qquad\text{for any }\varnothing\ne A\subseteq\mathcal I.
+\tag{4}
+\end{equation}
+
+\paragraph{Printed network issue and selected stability correction.}
+The displayed complete-pair definition of $\mathcal L$ is retained, together
+with its conflict with sparse-network prose. The original scope of (4) includes
+$A=\varnothing$ and would require $0<0$. The operative scope excludes only that
+subset. This is an annotated quantifier correction, not an explicitly printed
+qualification. The source's page-16 network has $\lambda=(10,10)$,
+$\mu=(15,12)$ and $\varepsilon=0.5$; all its nonempty cuts satisfy (4), whereas
+the empty-cut reading rejects even this example. No nonempty cut is relaxed.
+
+Upon completion of a type-$i$ customer's service at server $j$, a payoff $Y_{ij}$ is sampled from $P_{\theta_{ij}}$, with
+\[
+\mathcal X\subseteq\mathbb N_{\geq0},\qquad
+\theta_{ij}\in\mathbb R_{\geq0}\text{ unknown and finite},\qquad
+\theta=(\theta_{ij})_{(ij)\in\mathcal L}\in\mathbb R_{\geq0}^{L}.
+\]
+All lines use the same distribution family, with line-dependent mean. The general payoff assumptions in Section 2.1 are
+\begin{align}
+I(\theta_{ij},\theta_{k\ell})
+&:=\sum_{x\in\mathcal X}P_{\theta_{ij}}(x)
+\ln\!\left(\frac{P_{\theta_{ij}}(x)}{P_{\theta_{k\ell}}(x)}\right),\tag{5}\\
+0&<I(\theta_{ij},\theta_{k\ell})<\infty
+\qquad\text{when }\theta_{ij}<\theta_{k\ell},
+\quad (ij),(k\ell)\in\mathcal L.\tag{6}
+\end{align}
+For the selected construction, Section 4.1 specializes the payoff family to
+\[
+Y_{ij}\sim\operatorname{Ber}(\theta_{ij}),\qquad
+\theta_{ij}\in[0,1],\qquad (ij)\in\mathcal L.
+\]
+Payoff samples on a line are independent and identically distributed; payoffs are sampled independently of the rest of the system, as stated in Section 4.3.2 and Appendix A.
+
+\paragraph{Payoff boundary issue.}
+The closed Bernoulli parameter interval is retained. It does not automatically satisfy the earlier assumption (6): for example, a comparison with $\theta_{k\ell}=1$ and $\theta_{ij}<1$ has infinite KL divergence. No open-interval replacement or endpoint convention is added.
+
+\section*{LP defining the action space, not the policy objective}
+
+For fixed $\theta\in\mathbb R_{\geq0}^{L}$ and fixed $\varepsilon\geq0$, the auxiliary static problem is
+\begin{align}
+\operatorname{LP}(\theta,\varepsilon):\quad
+\max_x\quad&\sum_{(ij)\in\mathcal L}\theta_{ij}x_{ij},\tag{10a}\\
+\text{subject to}\quad
+&\sum_{j\in\mathcal S_i}x_{ij}=\lambda_i,
+&&\forall i\in\mathcal I,\tag{10b}\\
+&\sum_{i\in\mathcal C_j}x_{ij}\leq\mu_j-\varepsilon,
+&&\forall j\in\mathcal J,\tag{10c}\\
+&x_{ij}\geq0,
+&&\forall(ij)\in\mathcal L.\tag{10d}
+\end{align}
+Here $x_{ij}\in[0,\lambda_i]$ is a routing-rate variable, and $\varepsilon$ is a fixed amount of slack at each server. The selected policy uses the basic feasible solutions of this problem as actions, rather than substituting (10a) for (1).
+
+The paper assumes that all basic feasible solutions of this LP and its dual are nondegenerate. For clarity, the dual referred to by that assumption is
+\begin{align}
+\operatorname D(\theta,\varepsilon):\quad
+\min_{v,w}\quad&\sum_{i\in\mathcal I}\lambda_i v_i+
+\sum_{j\in\mathcal J}(\mu_j-\varepsilon)w_j,\tag{16a}\\
+\text{subject to}\quad&v_i+w_j-\theta_{ij}\geq0,
+&&\forall(ij)\in\mathcal L,\tag{16b}\\
+&v_i\in\mathbb R,&&\forall i\in\mathcal I,\tag{16c}\\
+&w_j\geq0,&&\forall j\in\mathcal J.\tag{16d}
+\end{align}
+This dual is only the auxiliary problem identified in the nondegeneracy assumption; its variables are not routing-policy decisions. The source asserts uniqueness of the optimal basic feasible solution under its nondegeneracy assumption.
+
+\subsection*{Basis, forest, routing-rate, and slack definitions}
+
+Use $\mathscr L\subseteq\mathcal L$ for a chosen set of line columns and $\mathscr J\subseteq\mathcal J$ for a chosen set of server-slack columns. The distinction between $\mathscr L,\mathscr J$ and $\mathcal L,\mathcal J$ is essential. The graph $\mathcal G(\mathscr L,\mathscr J)$ is a spanning forest of $(\mathcal I\cup\mathcal J,\mathcal L)$ when it contains no cycles, contains every vertex of $\mathcal I\cup\mathcal J$, and each of its trees has a unique root $j\in\mathscr J$. Parents and children alternate between customer types and servers.
+
+The subtree rooted at $v$, including $v$, is denoted by $\Cap(v)$, with
+\[
+\mathrm C(\Cap(v))=\Cap(v)\cap\mathcal I,\qquad
+\mathrm S(\Cap(v))=\Cap(v)\cap\mathcal J.
+\]
+For $\varepsilon\geq0$, Lemma 1 states
+\[
+B=\mathscr L\cup\mathscr J\text{ is a basis of }\operatorname{LP}(\theta,\varepsilon)
+\quad\Longleftrightarrow\quad
+\mathcal G(\mathscr L,\mathscr J)\text{ is a spanning forest}.
+\]
+Appendix C.1 supplies the column definitions
+\begin{align}
+A'&\in\mathbb R^{I\times L},&
+A'_{i,k\ell}&=\begin{cases}1,&i=k\text{ and }\ell\in\mathcal S_i,\\0,&\text{otherwise},\end{cases}\tag{112}\\
+A''&\in\mathbb R^{J\times L},&
+A''_{j,k\ell}&=\begin{cases}1,&j=\ell\text{ and }k\in\mathcal C_j,\\0,&\text{otherwise}.\end{cases}\tag{113}
+\end{align}
+The standard-form constraint and slack domains used to define these bases are
+\begin{equation}
+\begin{bmatrix}A'&0\\A''&I\end{bmatrix}
+\begin{bmatrix}x\\\sigma\end{bmatrix}
+=\begin{bmatrix}\lambda\\\mu-\varepsilon\end{bmatrix},
+\qquad x\in\mathbb R_{\geq0}^{L},\quad\sigma\in\mathbb R_{\geq0}^{J}.
+\tag{111b}
+\end{equation}
+Here $I$ in the block matrix is the identity matrix. For a basis, $|B|=I+J$ and the basis matrix has full rank:
+\begin{equation}
+\mathbf B=
+\begin{bmatrix}C_{\mathscr L}&D_{\mathscr J}\end{bmatrix}
+=\begin{bmatrix}A'_{\mathscr L}&0_{\mathscr J}\\
+A''_{\mathscr L}&I_{\mathscr J}\end{bmatrix}
+\in\mathbb R^{(I+J)\times(I+J)}.
+\tag{114}
+\end{equation}
+A basic solution is feasible when its basic coordinates are nonnegative, and nondegenerate when every basic coordinate is nonzero.
+
+For such a basis, Lemma 2 gives the routing-rate coordinates $x\in\mathbb R^L$ explicitly:
+\begin{equation}
+x_{ij}=\begin{cases}
+\displaystyle\sum_{k\in\mathrm C(\Cap(i))}\lambda_k
+-\sum_{\ell\in\mathrm S(\Cap(i))}(\mu_\ell-\varepsilon),
+&\text{if }i\text{ is a child of }j\text{ in }\mathcal G(\mathscr L,\mathscr J),\\[6pt]
+\displaystyle\sum_{\ell\in\mathrm S(\Cap(j))}(\mu_\ell-\varepsilon)
+-\sum_{k\in\mathrm C(\Cap(j))}\lambda_k,
+&\text{if }i\text{ is the parent of }j\text{ in }\mathcal G(\mathscr L,\mathscr J),\\[6pt]
+0,&\text{if }(ij)\in\mathcal L\setminus\mathscr L.
+\end{cases}
+\tag{11}
+\end{equation}
+The associated slack definition in Appendix C.2 is
+\[
+\sigma_j:=\mu_j-\varepsilon-\sum_{i\in\mathcal C_j}x_{ij},
+\qquad j\in\mathcal J.
+\]
+The feasible basic solutions satisfy the domains in (111b). The forest characterization and (11) are the action-construction definitions, not additional alternative routing policies.
+
+\subsection*{Permitted fixed slack}
+
+Let $B=\mathscr L\cup\mathscr J$, with $\mathscr L\subseteq\mathcal L$ and $\mathscr J\subseteq\mathcal J$, be a nondegenerate feasible basis of $\operatorname{LP}(\theta,0)$. Lemma 3 states that it remains a nondegenerate feasible basis of $\operatorname{LP}(\theta,\varepsilon)$ if
+\begin{equation}
+0\leq\varepsilon<\min_{j\in\mathcal J}
+\frac{\displaystyle\sum_{\ell\in\mathrm S(\Cap(j))}\mu_\ell
+-\displaystyle\sum_{k\in\mathrm S(\Cap(j))}\lambda_k}
+{|\mathrm S(\Cap(j))|}.
+\tag{12}
+\end{equation}
+Section 4.1 fixes the network $\mathcal I,\mathcal J,\mathcal L,\lambda,\mu$ and selects $\varepsilon>0$ satisfying (12). The basis-dependent premise of Lemma 3 is retained; no additional minimum over bases is inserted.
+
+\paragraph{Printed slack issues.}
+In (12), the arrival-rate sum is indexed by the server set $\mathrm S(\Cap(j))$, although $\lambda$ is indexed by customer types. This is the printed expression, also repeated in (126); it has not been changed to $\mathrm C(\Cap(j))$. Appendix C.3 prints $\sigma_j^\varepsilon=\mu_j-\sum_{i\in\mathcal C_j}x_{ij}^\varepsilon$ in (121), without $-\varepsilon$, but prints $\sigma_j^\varepsilon=\mu_j-\varepsilon-\sum_{i\in\mathcal C_j}x_{ij}^\varepsilon$ in (127). The operative slack definition above follows (111b) and Appendix C.2, not the conflicting (121).
+
+\section*{Actions and episodic learning-and-routing construction}
+
+The finite set $\mathcal A$ consists of the basic feasible solutions of (10). Each action $a\in\mathcal A$ has a routing-rate vector $x^a\in\mathbb R_{\geq0}^{L}$. These vectors depend on the fixed network, rates, and slack, not on knowledge of the payoff means. Define
+\begin{align}
+\mathcal L^a&:=\{(ij)\in\mathcal L:x^a_{ij}>0\},\tag{27}\\
+r^a&:=\sum_{(ij)\in\mathcal L^a}x^a_{ij}\theta_{ij}\in\mathbb R_{\geq0},\tag{28}\\
+d^a&:=\max_{\tilde a}r^{\tilde a}-r^a.\tag{29}
+\end{align}
+The maximum in (29) is over actions. The action corresponding to the optimal basic feasible solution is called the optimal action.
+
+\subsection*{Selected episode-length specification}
+
+Select the theoretical episode-length construction of Section 4.2, rather than the numerical variants. Its input quantities are
+\[
+x_{\min}:=\min_{a\in\mathcal A}\min_{(ij)\in\mathcal L^a}x^a_{ij},\qquad
+\widetilde\lambda^a_j:=\sum_{i\in\mathcal C_j}x^a_{ij},
+\qquad j\in\mathcal J,\quad a\in\mathcal A,
+\]
+\begin{equation}
+\rho^a_j:=\widetilde\lambda^a_j/\mu_j\in(0,1),
+\qquad j\in\mathcal J,\quad a\in\mathcal A.
+\tag{34}
+\end{equation}
+Choose fixed $\beta\in\mathbb R_{>1}$ and $\alpha\in\mathbb R_{\geq1}$ satisfying
+\begin{equation}
+\alpha\geq\max_{j\in\mathcal J}\max_{a\in\mathcal A}
+\left\{
+\frac{3(\widetilde\lambda^a_j+\mu_j)\ln(\rho^a_j)
+-2\sqrt{(\mu_j-\widetilde\lambda^a_j)^2+
+9\widetilde\lambda^a_j\mu_j\ln^2(\rho^a_j)}}
+{2(\mu_j-\widetilde\lambda^a_j)^2\ln(\rho^a_j)},\ 1
+\right\}.
+\tag{35}
+\end{equation}
+For $H_0\in\mathbb R_{\geq1}$, the predetermined lengths are
+\begin{equation}
+H_k=\tau_k+H_0,\qquad
+\tau_k=\alpha\ln^\beta(2Jk),\qquad
+H_0\geq\max\left\{\frac4{x_{\min}},1\right\},
+\qquad k=1,2,\ldots.
+\tag{36}
+\end{equation}
+Each episode has length $H_k\in\mathbb R_{>0}$. Its warmup period is followed by a period of length $H_0$; the routing algorithm operates throughout both periods. Appendix B defines the cumulative duration
+\begin{equation}
+T_k:=\sum_{m=1}^{k}H_m,\qquad k\in\mathbb N_{\geq1}.
+\tag{75}
+\end{equation}
+The scalar $T_k$ is distinct from the line counters $T_{ij}(k)$ below.
+
+\paragraph{Zero-load boundary issue.}
+The positive-load interval in (34) is printed for every server and action, but (10) permits an action with an unused server, for which $\widetilde\lambda^a_j=\rho^a_j=0$. The source supplies no zero-load case for the logarithms in (35). The interval and formula are retained without a limiting convention or deletion of unused servers.
+
+\subsection*{Algorithm 1: Adaptive UCB Queue Routing}
+
+Initialize
+\[
+k=1,\qquad
+T_{ij}(0)=0,\quad S_{ij}(0)=0,\quad\widehat\theta_{ij}(0)=0,\quad U_{ij}(0)=\infty
+\quad\forall(ij)\in\mathcal L,
+\qquad U^a(0)=\infty\quad\forall a\in\mathcal A.
+\]
+For episodes $k=1,2,\ldots$ of length $H_k$:
+\begin{enumerate}
+\item Choose
+\[
+A_k=\operatorname*{argmax}_{a}U^a(k-1),
+\]
+with ties broken arbitrarily.
+\item If $k>1$ and $A_k\ne A_{k-1}$, reallocate every waiting type-$i$ customer to the virtual queue of server $j$ with probability
+\[
+\frac{x^{A_k}_{ij}}{\lambda_i}.
+\]
+For each $j\in\mathcal J$, order the customers in that virtual queue by their arrival time.
+\item For the duration of the episode, serve customers according to FCFS RR$(A_k)$, specified below. The printed time-loop header is ``for time $t=0,\ldots,H_k$''.
+\item For every $(ij)\in\mathcal L$, count all actual service
+completions in episode $k$, including service begun in an earlier episode.
+Let $N^k_{ij}$ count these and $(Y^\ell_{ij})$ be their payoffs. Maintain
+\begin{align}
+T_{ij}(k)&=T_{ij}(k-1)+N^k_{ij},\tag{30}\\
+S_{ij}(k)&=S_{ij}(k-1)+\sum_{\ell=1}^{N^k_{ij}}Y^\ell_{ij},\\
+\widehat\theta_{ij}(k)&=S_{ij}(k)/T_{ij}(k),\qquad T_{ij}(k)>0.\tag{31}
+\end{align}
+At zero count the empirical mean is not evaluated or needed. Its initialized
+value at $k=0$ is retained; no new zero-count mean is imposed. For every line,
+\begin{equation}
+U_{ij}(k)=\begin{cases}
+S_{ij}(k)/T_{ij}(k)+\sqrt{\ln(k)/T_{ij}(k)},&T_{ij}(k)>0,\\
+\infty,&T_{ij}(k)=0.
+\end{cases}\tag{32}
+\end{equation}
+\item Calculate the current index for every action:
+\begin{equation}
+U^a(k)=\sum_{(ij)\in\mathcal L^a}x^a_{ij}U_{ij}(k),\qquad a\in\mathcal A.\tag{33}
+\end{equation}
+Only positive-support lines enter this sum, avoiding $0\cdot\infty$.
+\end{enumerate}
+Here $N^k_{ij}$ is the random number of type-$(ij)$ departures in episode $k$. The paper describes $T_{ij}(k)$ as the total number of type-$i$ departures at server $j$ up to episode $k\in\mathbb N_{\geq1}$, $\widehat\theta_{ij}(k)$ as the empirical payoff mean, and $U_{ij}(k)$ as its UCB estimator. The observed samples, counters, estimates, and selected actions are random policy quantities; $\theta$ remains fixed and unknown.
+
+\subsection*{Algorithm 2: FCFS RR$(a)$}
+
+For a fixed action $a\in\mathcal A$:
+\begin{enumerate}
+\item At each arrival of a type-$i$ customer, assign that customer to the virtual queue of server $j$ with probability
+\[
+\frac{x^a_{ij}}{\lambda_i}.
+\]
+If the server is idle, start service.
+\item At each service completion at server $j$, obtain
+\[
+Y_{ij}\sim\operatorname{Ber}(\theta_{ij}),
+\]
+where $i$ is the departing customer's type. If server $j$'s virtual queue is nonempty, start service of the customer at its head.
+\end{enumerate}
+The virtual queues use first-come-first-served order. At an action change, Algorithm 1 reallocates waiting customers and restores arrival-time order; it does not specify reallocation of customers already in service.
+
+\paragraph{Original conflicts and selected executable source form.}
+Algorithm 1 prints updates of selected-support lines and the selected action
+only, and its (31) lacks a zero-count case. In contrast, page 11 defines $T$
+using all actual departures, and Appendix C.10, page 42, equation (219) uses
+current line estimates for arbitrary action $a$ and episode $m$. Select these
+latter source definitions; they are not literally equivalent to the printed
+selected-only pseudocode. Cumulative $S$ is an algebraic sufficient statistic:
+its ratio to $T$ equals (31) for positive counts, while (32) directly gives
+infinity for zero counts. In-service customers retain their service; only
+waiting customers are reallocated. Later completions count on their actual
+lines. No $A_0$ is assigned: the first episode has empty queues, so omitting
+empty reallocation has no routing effect. Interpret the discrete-looking
+time-loop through the paper's continuous-time dynamics and real durations.
+All original statements are preserved in the candidate change log.
+
+\section*{Linked accumulated-reward benchmark}
+
+For the same fixed $\varepsilon>0$ satisfying (12), let $x^\theta\in\mathbb R_{\geq0}^{L}$ be the optimal basic feasible solution of (10). The source defines the expected regret of a routing policy at time $t\geq0$ by
+\begin{equation}
+R^\theta_\pi(t):=
+\sum_{(ij)\in\mathcal L}\theta_{ij}
+\left(tx^\theta_{ij}-\mathbb E^\theta_\pi(D_{ij}(t))\right).
+\tag{13}
+\end{equation}
+This is the benchmark associated with the retained adaptive policy, not a replacement objective or an additional feasibility constraint. The regret-analysis subproblems and the numerical benchmark policies are not part of this formulation.
+
+\paragraph{Source scope.}
+The formulation follows the supplied original paper, physical pages 2, 5--8, 10--11, and the defining material in Appendices B, C.1--C.3, and C.10 (page 42, equation (219)). The external LP and forest results cited there as references [6] and [37] are unverified as external sources; the paper's own defining formulas are given above.
+
+\end{document}

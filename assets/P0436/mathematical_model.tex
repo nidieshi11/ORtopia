@@ -1,0 +1,313 @@
+\documentclass[10pt]{article}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[margin=0.75in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\section*{Full nested multistage stochastic disruption-aware OPF}
+\subsection*{First-stage nominal model (1)}
+\begin{equation}
+\begin{aligned}
+z^*=\min\ &\sum_{b\in\mathcal B}c_b^B u_b+\sum_{t=1}^{T}\sum_{\omega\in\Omega}p_t^\omega\Bigl[C_{1,t}(s^p,L^{p+},L^{p-},L^{q+},L^{q-})\\
+&\hspace{43mm}+f_{1+t}^\omega(s_{\cdot t}^p,w_{\cdot t},u)\Bigr].
+\end{aligned}\tag{1a}
+\end{equation}
+Subject to
+\begin{align}
+\sum_{b\in\mathcal B_i}z_{bt}^p+\sum_{g\in\mathcal G_i}s_{gt}^p-d_{it}^p+L_{it}^{p+}-L_{it}^{p-}&=\sum_{ij\in\mathcal E}P_{ijt} &&\forall i\in\mathcal N,\ t\in\mathcal T, \tag{1b}\\
+\sum_{b\in\mathcal B_i}z_{bt}^q+\sum_{g\in\mathcal G_i}s_{gt}^q-d_{it}^q+L_{it}^{q+}-L_{it}^{q-}&=\sum_{ij\in\mathcal E}Q_{ijt} &&\forall i\in\mathcal N,\ t\in\mathcal T, \tag{1c}\\
+(P_{ijt})^2+(Q_{ijt})^2&\leq W_{ij}^2 &&\forall ij\in\mathcal E,\ t\in\mathcal T, \tag{1d}\\
+V_{jt}&=V_{it}-2(R_{ij}P_{ijt}+X_{ij}Q_{ijt}) &&\forall ij\in\mathcal E,\ t\in\mathcal T, \tag{1e}\\
+R_g^D\leq s_{gt}^p-s_{g,t-1}^p&\leq R_g^U &&\forall g\in\mathcal G,\ t=2,\ldots,T, \tag{1f}\\
+\underline{s}_g^p\leq s_{gt}^p&\leq\bar{s}_g^p &&\forall g\in\mathcal G,\ t\in\mathcal T, \tag{1g}\\
+\underline{s}_g^q\leq s_{gt}^q&\leq\bar{s}_g^q &&\forall g\in\mathcal G,\ t\in\mathcal T, \tag{1h}\\
+\underline V_i\leq V_{it}&\leq\bar V_i &&\forall i\in\mathcal N,\ t\in\mathcal T, \tag{1i}\\
+w_{bt}&=w_{b,t-1}-y_{bt}\Delta_t &&\forall b\in\mathcal B,\ t\in\mathcal T, \tag{1j}\\
+(z_{bt}^p)^2+(z_{bt}^q)^2&\leq u_b^2 &&\forall b\in\mathcal B,\ t\in\mathcal T, \tag{1k}\\
+z_{bt}^p&\leq\alpha_b^\ell y_{bt}+\beta_b^\ell &&\forall b\in\mathcal B,\ \ell\in\mathcal L_b,\ t\in\mathcal T, \tag{1l}\\
+0\leq w_{bt}&\leq\bar I_b &&\forall b\in\mathcal B,\ t\in\mathcal T, \tag{1m}\\
+0\leq u_b&\leq\bar u_b &&\forall b\in\mathcal B, \tag{1n}\\
+L_{it}^{p+},L_{it}^{p-},L_{it}^{q+},L_{it}^{q-}&\geq0 &&\forall i\in\mathcal N,\ t\in\mathcal T. \tag{1o}
+\end{align}
+
+\subsection*{Conditional continuation model (2)}
+Given an observed disruption $\bar\omega$ at time $t_D$, write
+$j_d=t_D+\tau^{\bar\omega}+d$. The user-approved executable clarification
+(2026-11-13) distinguishes the current scenario from the next one:
+\begin{equation}
+\begin{aligned}
+f_{t_D}^{\bar\omega}(\hat s,\hat w,\hat u)=\min\ 
+\sum_{d=1}^{T}\sum_{\omega'\in\Omega}p_d p^{\omega'}
+\bigl[C_{t_D,\min(j_d-1,T)}+\mathcal F_{j_d}^{\omega'}\bigr],\\
+\mathcal F_{j}^{\omega'}=
+\begin{cases}f_j^{\omega'}(s_{\cdot,j-1}^p,w_{\cdot,j-1},u),&j\leq T,\\
+0,&j>T.\end{cases}
+\end{aligned}\tag{2a}
+\end{equation}
+No out-of-horizon state variable is read. In the following conditional
+constraints, $\omega=\bar\omega$ denotes the observed scenario.
+Subject to
+\begin{align}
+\sum_{b\in\mathcal B_i}z_{bt}^p+\sum_{g\in\mathcal G_i}s_{gt}^p-d_{it}^p+L_{it}^{p+}-L_{it}^{p-}&=\sum_{ij\in\mathcal E}P_{ijt} &&\forall i\in\mathcal N,\ t=t_D,\ldots,T, \tag{2b}\\
+\sum_{b\in\mathcal B_i}z_{bt}^q+\sum_{g\in\mathcal G_i}s_{gt}^q-d_{it}^q+L_{it}^{q+}-L_{it}^{q-}&=\sum_{ij\in\mathcal E}Q_{ijt} &&\forall i\in\mathcal N,\ t=t_D,\ldots,T, \tag{2c}\\
+(P_{ijt})^2+(Q_{ijt})^2&\leq(1-B_{ijt}^{\omega})W_{ij}^2 &&\forall ij\in\mathcal E,\ t=t_D,\ldots,T, \tag{2d}\\
+V_{jt}-V_{it}&\leq-2(R_{ij}P_{ijt}+X_{ij}Q_{ijt})+B_{ijt}^{\omega}M &&\forall ij\in\mathcal E,\ t=t_D,\ldots,T, \tag{2e}\\
+V_{jt}-V_{it}&\geq-2(R_{ij}P_{ijt}+X_{ij}Q_{ijt})-B_{ijt}^{\omega}M &&\forall ij\in\mathcal E,\ t=t_D,\ldots,T, \tag{2f}\\
+s_{gt}^p-s_{g,t-1}^p&\geq R_g^D-B_{gt}^{\omega}M &&\forall g\in\mathcal G,\ t=t_D,\ldots,T, \tag{2g}\\
+s_{gt}^p-s_{g,t-1}^p&\leq R_g^U+B_{gt}^{\omega}M &&\forall g\in\mathcal G,\ t=t_D,\ldots,T, \tag{2h}\\
+\underline{s}_g^p(1-B_{gt}^{\omega})\leq s_{gt}^p&\leq\bar{s}_g^p(1-B_{gt}^{\omega}) &&\forall g\in\mathcal G,\ t=t_D,\ldots,T, \tag{2i}\\
+\underline{s}_g^q(1-B_{gt}^{\omega})\leq s_{gt}^q&\leq\bar{s}_g^q(1-B_{gt}^{\omega}) &&\forall g\in\mathcal G,\ t=t_D,\ldots,T, \tag{2j}\\
+\underline V_i\leq V_{it}&\leq\bar V_i &&\forall i\in\mathcal N,\ t=t_D,\ldots,T, \tag{2k}\\
+w_{bt}&=w_{b,t-1}-y_{bt}\Delta_t &&\forall b\in\mathcal B,\ t=t_D,\ldots,T, \tag{2l}\\
+(z_{bt}^p)^2+(z_{bt}^q)^2&\leq u_b^2 &&\forall b\in\mathcal B,\ t=t_D,\ldots,T, \tag{2m}\\
+z_{bt}^p&\leq\alpha_b^\ell y_{bt}+\beta_b^\ell &&\forall b\in\mathcal B,\ \ell\in\mathcal L_b,\ t=t_D,\ldots,T, \tag{2n}\\
+0\leq w_{bt}&\leq\bar I_b &&\forall b\in\mathcal B,\ t=t_D,\ldots,T, \tag{2o}\\
+0\leq u_b&\leq\bar u_b &&\forall b\in\mathcal B, \tag{2p}\\
+L_{it}^{p+},L_{it}^{p-},L_{it}^{q+},L_{it}^{q-}&\geq0 &&\forall i\in\mathcal N,\ t=t_D,\ldots,T, \tag{2q}\\
+s_{g,t_D-1}^p&=\hat s_{g,t_D-1}^p &&\forall g\in\mathcal G, \tag{2r}\\
+w_{b,t_D-1}&=\hat w_{b,t_D-1} &&\forall b\in\mathcal B, \tag{2s}\\
+u_b&=\hat u_b &&\forall b\in\mathcal B. \tag{2t}
+\end{align}
+
+\paragraph{Explicit execution conventions approved on 2026-11-13.}
+The source reused one scenario index for two roles in (2a). The reindexing
+above uses the observed recovery duration and the independent next-scenario
+probability. Every eligible history, including zero-probability histories,
+is retained. For the first-stage continuation in (1a), a term with $1+t>T$
+is zero without evaluating a state outside the horizon.
+The initial storage is given input:
+\[w_{b0}=w_b^{\mathrm{initial}},\qquad 0\leq w_b^{\mathrm{initial}}\leq\bar I_b.\]
+Each physical edge has one stored orientation. In nodal sums,
+$\sum_{ij\in\mathcal E}P_{ijt}$ means outgoing stored flows minus incoming
+stored flows; likewise for $Q$. Reverse-arc values are the negatives.
+Generator limits, storage limits and recovery times may be heterogeneous;
+there is no common-voltage-intersection requirement.
+
+\section*{Index sets, fixed data, and decision roles}
+The distribution network is the graph $(\mathcal N,\mathcal E)$: $\mathcal N$ is the set of buses, indexed by $i$, and $\mathcal E$ is the set of lines, indexed by $ij$ for the line between buses $i$ and $j$. The distribution network is operated radially. The generator set is $\mathcal G$, indexed by $g$, with $\mathcal G_i\subseteq\mathcal G$ the generators at bus $i$ and $i_g\in\mathcal N$ the location of generator $g$. The battery set is $\mathcal B$, indexed by $b$, with $\mathcal B_i\subseteq\mathcal B$ the batteries at bus $i$ and $i_b\in\mathcal N$ the location of battery $b$. The time-period set is $\mathcal T=\{1,\ldots,T\}$; $\Omega$ is the disruption-scenario set; and $\mathcal L_b$ is the set of pieces of battery $b$'s efficiency curve, indexed by $\ell$ in the constraints.
+
+The fixed parameters are:
+\begin{itemize}
+\item $d_{it}^p,d_{it}^q$: deterministic active and reactive demand throughout the horizon (MW, MVAr).
+\item $R_{ij},X_{ij}$: line resistance and reactance ($\mathrm{k}\Omega$); $W_{ij}$: apparent-power thermal limit (MVA).
+\item $\underline V_i,\bar V_i$: lower and upper bounds on squared voltage ($(\mathrm{kV})^2$).
+\item $\underline s_g^p,\bar s_g^p,\underline s_g^q,\bar s_g^q$: lower and upper active and reactive generation bounds (MW, MVAr); $R_g^U,R_g^D$: up and down ramp rates (MW/h).
+\item $\bar I_b$: maximum battery energy-storage capacity (MWh); $\bar u_b$: upper bound on apparent-power output capacity (MVA); $\alpha_b^\ell,\beta_b^\ell$: slope and intercept of efficiency piece $\ell$; $\Delta_t$: time step (h).
+\item $c_b^B$: battery apparent-power capacity cost (\$/MVA); $c^l$: load-mismatch penalty (\$/MW, \$/MVAr); $c_{g,1},c_{g,2}$: linear and quadratic active-generation cost coefficients (\$/MW, \$/$(\mathrm{MW})^2$).
+\item $\tau^\omega$: recovery time in time steps for scenario $\omega$; $t_D$: observed disruption time; $B_{gt}^\omega,B_{ijt}^\omega$: fixed disruption indicators; $p_t^\omega$: finite-support disruption probability mass; $M$: a large number, left abstract by the source.
+\end{itemize}
+The source describes $\bar I_b$ as estimated from implied bounds using worst-case values attained by the upper bound on apparent-power output capacity, but supplies no general formula for that estimate.
+
+The continuous operating decisions are $s_{gt}^p,s_{gt}^q$ (active/reactive generation), $V_{it}$ (squared voltage), $P_{ijt},Q_{ijt}$ (active/reactive line flow), $w_{bt}$ (battery state of charge), $z_{bt}^p,z_{bt}^q$ (actual battery active/reactive output), $y_{bt}$ (active output before losses), and $L_{it}^{p+},L_{it}^{q+}$ and $L_{it}^{p-},L_{it}^{q-}$ (load shedding and load compensation, respectively). The investment decision $u_b$ is apparent-power output capacity, not energy capacity. Its cost is incurred before the first time period, and (2t) fixes it at its inherited value in every continuation problem. The hats in (2r)--(2t) denote fixed entering-state data for that conditional problem. The variable bounds and nonnegativity restrictions are exactly those displayed above; no additional sign restrictions are imposed on line flows, $y$, or battery outputs.
+
+A symbol without a subscript denotes a vector. A dot in a subscript collects the corresponding component indices, for example
+\[
+s_{\cdot,t-1}^p=\{s_{g,t-1}^p\mid g\in\mathcal G\}.
+\]
+The nominal plan in (1) is implemented only until the first disruption. A plan in (2) is implemented only until the next disruption. The linking state comprises active generation, battery state of charge, and installed battery apparent-power capacity.
+
+\section*{Operating cost, battery premise, and disruption law}
+The unnumbered definition on physical page 6 is
+\begin{equation}
+\begin{aligned}
+C_{t_1,t_2}(s^p,L^{p+},L^{p-},L^{q+},L^{q-})
+={}&\sum_{t=t_1}^{\min\{t_2,T\}}\left[\sum_{i\in\mathcal N}c^l\left(L_{it}^{p+}+L_{it}^{p-}+L_{it}^{q+}+L_{it}^{q-}\right)\right.\\
+&\left.\hspace{31mm}+\sum_{g\in\mathcal G}\left(c_{g,2}(s_{gt}^p)^2+c_{g,1}s_{gt}^p\right)\right].
+\end{aligned}\tag{C}
+\end{equation}
+No factor $\Delta_t$ appears in this printed cost definition. Likewise, the ramp rows retain their printed coefficients without adding a time-step factor.
+
+The fixed generation-data premise on page 4 is
+\[
+\underline s_g^p=0,\qquad\forall g\in\mathcal G.
+\]
+The battery-efficiency curve is piecewise linear and passes through the origin because standby loss is assumed negligible. The selected model uses the polyhedral relaxation consisting of the area underneath that curve, as in Figure 1 and (1l), (2n), rather than binary piece selection. Page 10 expresses the origin premise as
+\[
+\forall b\in\mathcal B,\quad\exists\ell\in\mathcal L_b\quad\text{such that}\quad\beta_b^\ell=0.
+\]
+The affine pieces shown in Figure 1 are $\alpha_b^\ell y_{bt}+\beta_b^\ell$. No equality to a selected piece is added.
+
+A disruption is the failure of a single line or generator. Recovery lasts the scenario-dependent time $\tau^\omega$, during which there is no additional disruption. The indicator parameters equal one for a failed component and zero otherwise. In particular, the printed line-failure rule is
+\[
+B_{ijt'}^\omega=1,\qquad t'=t_D,\ldots,t_D+\tau^\omega,
+\]
+when line $ij$ is the disrupted component; all other line and generator indicators are zero during those periods. The source similarly uses $B_{gt}^\omega=1$ to enforce zero active/reactive generation and relax ramping for a failed generator. The recovery interval includes both printed endpoints. The next disruption can occur only after $t_D+\tau^\omega$.
+
+Given the earliest possible disruption time $t'$, $p_t^\omega$ is the probability of observing scenario $\omega$ at time $t'+t$, with waiting-time support $t=1,\ldots,T$. The waiting time is conditionally independent of the history given $t'$. In (1), the first disruption is at $1+t$. The distribution is kept abstract; the exponential waiting-time distribution, uniform component probabilities, common recovery times, and numerical battery data used in the experiments are not imposed here.
+
+\section*{Probability and value-function assumptions}
+The function $f_t^\omega(s_{\cdot,t-1}^p,w_{\cdot,t-1},u)$ is the optimal expected operating cost from $t$ to the horizon, conditional on observing scenario $\omega$ at $t$ and the entering state. Equation (2) defines this continuation problem within the horizon.
+
+\paragraph{A.1.}
+The waiting-time and scenario distributions are independent: $p_t$ is the probability of a waiting time of $t$ periods and $p^\omega$ is the probability of scenario $\omega$. Thus
+\begin{equation}
+p_t^\omega=p_t p^\omega,\qquad\forall t=1,\ldots,T,\ \omega\in\Omega.\tag{A.1}
+\end{equation}
+\paragraph{A.2.}
+Given $(s_{\cdot,t-1}^p,w_{\cdot,t-1},u)$, the future cost function $f_t^\omega$ is conditionally independent of previous disruptions and the decisions
+\[
+\begin{gathered}
+(s_{\cdot t'}^p,s_{\cdot t'}^q,V_{\cdot t'},P_{\cdot t'},Q_{\cdot t'},z_{\cdot t'}^p,z_{\cdot t'}^q,y_{\cdot t'},w_{\cdot t'},
+L_{\cdot t'}^{p+},L_{\cdot t'}^{p-},L_{\cdot t'}^{q+},L_{\cdot t'}^{q-}),\\
+\forall t'=1,\ldots,t-2.
+\end{gathered}
+\]
+\paragraph{A.3.}
+The printed terminal condition is
+\begin{equation}
+f_t^\omega(s_{\cdot,t-1}^p,w_{\cdot,t-1},u)=0,\qquad\forall\omega\in\Omega,\ t>T,\tag{A.3}
+\end{equation}
+if
+\[
+\begin{gathered}
+s_{g,t-1}^p\in[\underline s_g^p,\bar s_g^p],\quad\forall g\in\mathcal G,\qquad
+w_{b,t-1}\in[0,\bar I_b],\quad\forall b\in\mathcal B,\\
+u_b\in[0,\bar u_b],\quad\forall b\in\mathcal B.
+\end{gathered}
+\]
+The printed vector-domain shorthand is applied componentwise. Beyond the horizon, the continuation is evaluated as zero directly, without constructing fictitious states.
+\paragraph{A.4.}
+\begin{equation}
+c_{g,2}\geq0,\qquad\forall g\in\mathcal G.\tag{A.4}
+\end{equation}
+\paragraph{A.5.}
+Model (1) has a feasible region with a nonempty relative interior.
+
+The entering-state domain used in Lemma 1 is
+\begin{equation}
+\begin{gathered}
+\hat s_{g,t-1}^p\in[\underline s_g^p,\bar s_g^p]\quad g\in\mathcal G,\qquad
+\hat w_{b,t-1}\in[0,\bar I_b]\quad b\in\mathcal B,\\
+\hat u_b\in[0,\bar u_b]\quad b\in\mathcal B.
+\end{gathered}\tag{3}
+\end{equation}
+For every $t=2,3,\ldots$ and $\omega\in\Omega$, the source states that these conditions imply
+\[
+f_t^\omega(\hat s_{\cdot,t-1}^p,\hat w_{\cdot,t-1},\hat u)<+\infty.
+\]
+
+\section*{Referenced feasibility constructions (not operative constraints)}
+Equations (4)--(5), on physical pages 9--10, construct feasible points in the proof of Lemma 1. They neither replace nor supplement the decision constraints of (1)--(2). Let $\widetilde V,\widetilde P,\widetilde Q$ denote voltages and flows from a feasible solution of (1), whose existence follows from A.5.
+
+For $t=T$, given an entering state satisfying (3), the source constructs, for all $\omega\in\Omega$,
+\begin{equation}
+\begin{aligned}
+s_{gT}^p&=\begin{cases}0,&\text{if }B_{gT}^\omega=1,\\ \hat s_{g,T-1}^p,&\text{otherwise},\end{cases}
+& s_{gT}^q&=\begin{cases}0,&\text{if }B_{gT}^\omega=1,\\ \underline s_g^q,&\text{otherwise},\end{cases}
+\quad\forall g\in\mathcal G.
+\end{aligned}\tag{4a}
+\end{equation}
+\begin{equation}
+V_{iT}=\widetilde V_{iT},\qquad\forall i\in\mathcal N.\tag{4b}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+P_{ijT}&=\begin{cases}0,&\text{if }B_{ijT}^\omega=1,\\\widetilde P_{ijT},&\text{otherwise},\end{cases}
+&Q_{ijT}&=\begin{cases}0,&\text{if }B_{ijT}^\omega=1,\\\widetilde Q_{ijT},&\text{otherwise},\end{cases}
+\quad\forall ij\in\mathcal E.
+\end{aligned}\tag{4c}
+\end{equation}
+\begin{equation}
+w_{bT}=\hat w_{b,T-1},\qquad z_{bT}^p=z_{bT}^q=y_{bT}=0,\qquad u_b=\hat u_b,\qquad\forall b\in\mathcal B.\tag{4d}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+\phi_{iT}^p&=d_{iT}^p-\sum_{g\in\mathcal G_i}s_{gT}^p+\sum_{ij\in\mathcal E}P_{ijT},\\
+\phi_{iT}^q&=d_{iT}^q-\sum_{g\in\mathcal G_i}s_{gT}^q+\sum_{ij\in\mathcal E}Q_{ijT},\qquad\forall i\in\mathcal N.
+\end{aligned}\tag{4e}
+\end{equation}
+\begin{align}
+L_{iT}^{p+}=\max\{\phi_{iT}^p,0\},\qquad L_{iT}^{p-}&=\max\{-\phi_{iT}^p,0\},&&\forall i\in\mathcal N,\tag{4f}\\
+L_{iT}^{q+}=\max\{\phi_{iT}^q,0\},\qquad L_{iT}^{q-}&=\max\{-\phi_{iT}^q,0\},&&\forall i\in\mathcal N.\tag{4g}
+\end{align}
+The proof cites $0\in[\underline s_g^p,\bar s_g^p]$ for every $g\in\mathcal G$ and the origin premise on the efficiency curve.
+
+For the backward-induction step, given $(\hat s_{\cdot,t-2}^p,\hat w_{\cdot,t-2},\hat u)$ satisfying (3) at the corresponding entering time, the source constructs, for all $\omega\in\Omega$,
+\begin{equation}
+\begin{gathered}
+s_{gt'}^p=\begin{cases}0,&\text{if }B_{g,t-1}^\omega=1,\\\hat s_{g,t-2}^p,&\text{otherwise},\end{cases}
+\qquad s_{gt'}^q=\begin{cases}0,&\text{if }B_{g,t-1}^\omega=1,\\\underline s_g^q,&\text{otherwise},\end{cases}\\
+\forall t'=t-1,\ldots,T,\ g\in\mathcal G.
+\end{gathered}\tag{5a}
+\end{equation}
+\begin{equation}
+V_{it'}=\widetilde V_{it'},\qquad\forall t'=t-1,\ldots,T,\ i\in\mathcal N.\tag{5b}
+\end{equation}
+\begin{equation}
+\begin{gathered}
+P_{ijt'}=\begin{cases}0,&\text{if }B_{ijt'}^\omega=1,\\\widetilde P_{ijt'},&\text{otherwise},\end{cases}
+\qquad Q_{ijt'}=\begin{cases}0,&\text{if }B_{ijt'}^\omega=1,\\\widetilde Q_{ijt'},&\text{otherwise},\end{cases}\\
+\forall t'=t-1,\ldots,T,\ ij\in\mathcal E.
+\end{gathered}\tag{5c}
+\end{equation}
+\begin{equation}
+w_{bt'}=\hat w_{b,t-2},\qquad z_{bt'}^p=z_{bt'}^q=y_{bt'}=0,\qquad\forall t'=t-1,\ldots,T,\ b\in\mathcal B.\tag{5d}
+\end{equation}
+\begin{equation}
+u_b=\hat u_b,\qquad\forall b\in\mathcal B.\tag{5e}
+\end{equation}
+\begin{align}
+\phi_{ijt'}^p&=d_{it'}^p-\sum_{g\in\mathcal G_i}s_{gt'}^p+\sum_{ij\in\mathcal E}P_{ijt'}
+&&\forall t'=t-1,\ldots,T,\ i\in\mathcal N,\tag{5f}\\
+\phi_{ijt'}^q&=d_{it'}^q-\sum_{g\in\mathcal G_i}s_{gt'}^q+\sum_{ij\in\mathcal E}Q_{ijt'}
+&&\forall t'=t-1,\ldots,T,\ i\in\mathcal N.\tag{5g}
+\end{align}
+\begin{equation}
+\begin{gathered}
+L_{it'}^{p+}=\max\{\phi_{ijt'}^p,0\},\qquad L_{it'}^{p-}=\max\{-\phi_{ijt'}^p,0\},\\
+\forall t'=t-1,\ldots,T,\ i\in\mathcal N.
+\end{gathered}\tag{5h}
+\end{equation}
+\begin{equation}
+\begin{gathered}
+L_{it'}^{q+}=\max\{\phi_{ijt'}^q,0\},\qquad L_{it'}^{q-}=\max\{-\phi_{ijt'}^q,0\},\\
+\forall t'=t-1,\ldots,T,\ i\in\mathcal N.
+\end{gathered}\tag{5i}
+\end{equation}
+The printed $ijt'$ subscripts on $\phi$ in (5f)--(5i) are retained, although only the bus index $i$ is quantified and (4e)--(4g) use $iT$. The reactive-generation branches in (4a) and (5a) use the lower bound $\underline s_g^q$, as visible in the original page images.
+
+\section*{Stage feasible sets and value-function domain}
+Definition 1 on page 11 collects the decisions as
+\[
+\begin{aligned}
+x_t=(&s_{\cdot t}^p,s_{\cdot t}^q,V_{\cdot t},P_{\cdot t},Q_{\cdot t},z_{\cdot t}^p,z_{\cdot t}^q,y_{\cdot t},w_{\cdot t},u,\\
+&L_{\cdot t}^{p+},L_{\cdot t}^{p-},L_{\cdot t}^{q+},L_{\cdot t}^{q-}).
+\end{aligned}
+\]
+With all defining constraint rows displayed above, the source's sets are:
+\begin{itemize}
+\item $X^1$: the set of $\{x_t\mid t=1,\ldots,T\}$ satisfying (1b)--(1o).
+\item $X^1_{t'\omega}$: the set of $\{\hat x_t\mid t=1,\ldots,T\}$ such that there exists $\{x_t\mid t=t',\ldots,T\}$ satisfying the constraints in (2), given $\hat x_{t'-1}$, for each $t'=2,3,\ldots$ and $\omega\in\Omega$.
+\item $X^{t\omega}$: the set of $\{x_{\tilde t}\mid\tilde t=t,\ldots,T\}$ satisfying (2b)--(2t).
+\item $X^{t\omega}_{t'\omega'}$: the set of $\{\hat x_{\tilde t}\mid\tilde t=t,\ldots,T\}$ such that there exists $\{x_{\tilde t}\mid\tilde t=t',\ldots,T\}$ satisfying the constraints in (2), given $\hat x_{t'-1}$, for all $\omega'\in\Omega$ and $t'=t+\tau^{\omega'}+1,\ldots,T$.
+\end{itemize}
+Proposition 2 states
+\[
+X^1\subseteq\bigcap_{\substack{t=2,\ldots,T\\\omega\in\Omega}}X^1_{t\omega},
+\qquad
+X^{t\omega}\subseteq\bigcap_{\substack{\omega'\in\Omega\\t'=t+\tau^{\omega'}+1,\ldots,T}}X^{t\omega}_{t'\omega'}.
+\]
+The $\tau^{\omega'}$ in this set definition and inclusion is retained as printed. These are induced feasibility statements, not additional optimization constraints.
+
+Proposition 3 states that $f_t^\omega$ is convex in its entering state on the domain
+\[
+\left\{(s^p,w,u)\ \middle|\
+\begin{array}{l}
+s_g^p\in[\underline s_g^p,\bar s_g^p],\quad\forall g\in\mathcal G;\\
+w_b\in[0,\bar I_b],\quad u_b\in[0,\bar u_b],\quad\forall b\in\mathcal B
+\end{array}\right\},
+\]
+for all $t=2,3,\ldots$ and $\omega\in\Omega$. The dual proof, cut approximations, algorithmic sampling assumptions, and the alternative dual/SOCP formulation in Online Supplement B are not substituted for the nested model (1)--(2).
+
+\section*{Printed omissions and official implementation distinctions}
+The printed (1j) uses $w_{b0}$, but (1m) bounds only $t\in\mathcal T$ and the paper does not supply an initial-storage equality in model (1) or its defining prose. The official implementation instead bounds storage at time zero and fixes it to input battery-initial-state data. Neither that equality nor an instance-specific initial value is imported here.
+
+The printed balance rows retain $\sum_{ij\in\mathcal E}$ for each bus $i$. The paper does not explicitly specify a reverse-arc convention or opposite-direction flow equalities. The official implementation constructs directed reverse arcs and imposes opposite-flow equalities; those additional implementation rows are not added to the printed formulation.
+
+The official implementation uses a functional-component status parameter opposite to the paper's failure-indicator convention. It conditionally imposes functional-line voltage equations and functional-generator ramp rows instead of the printed big-$M$ rows. Here (2d)--(2j) retain the paper's indicators and coefficients. No numerical choice of $M$ is introduced.
+
+The implementation's conditional objective builder takes a supplied recovery duration and omits continuation terms whose times exceed $T$. This differs from the repeated-$\omega$ scope printed in (2a) and avoids evaluating states beyond the horizon. These implementation choices are not used to repair the printed recursion or to strengthen the conditional terminal statement A.3.
+
+The sources used are Yang and Nagarajan's main paper, particularly physical pages 3--12, the supplied official online supplements, and the supplied official repository snapshot. External works cited for battery physics and capacity estimation have not been independently supplied or verified; no additional formulas from those references are asserted here.
+
+\end{document}

@@ -1,0 +1,80 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,geometry}
+\geometry{margin=22mm}
+\begin{document}
+
+\section*{P408: locker delivery, empty-flight counts and executable schedule}
+Source: graph model (3)--(6) and the scheduling argument on pp.4--8.
+The extracted file incorrectly turned illustrative duplicate tasks,
+proof-specific sets/endpoints and numerical examples into universal
+constraints. This independent repair removes those extraction artifacts
+and states the executed graph problem and its operational certificate.
+
+\paragraph{Data.}
+$V$ is the supplied set of six locker sites.
+Each task $t\in T$ is a distinct required loaded flight from $o_t$ to $d_t$,
+possibly sharing its OD with another task, with release time $b_t$.
+Initial parked drones are $s_v$, capacity is $c_v\ge s_v$, and
+$r_v=c_v-s_v$. Distances $\lambda_{ij}$ are the supplied kilometres.
+Candidate empty flights are $E=\{(i,j):i,j\in V,\ i\ne j\}$.
+Define
+\[
+d_v^F=\#\{t:o_t=v\}-\#\{t:d_t=v\},\qquad
+\mu_v^{ij}={\bf1}\{i=v\}-{\bf1}\{j=v\}.
+\]
+Use this out-minus-in convention throughout. It makes final parking
+$s_v-d_v^F-\sum_{ij}\mu_v^{ij}x_{ij}$.
+
+\paragraph{Integer graph optimization.}
+Let $V_0=\{v:s_v=0\}$, and let $\mathcal C$ contain every nonempty
+$W\subseteq V_0$ which touches at least one task and is not crossed by a
+fixed task arc. The exact graph model executed is
+\begin{align}
+\min\quad & z_E=\sum_{(i,j)\in E}\lambda_{ij}x_{ij},\\
+s_v-c_v \le\quad &d_v^F+\sum_{(i,j)\in E}\mu_v^{ij}x_{ij}\le s_v
+ &&(v\in V),\\
+&\sum_{\substack{(i,j)\in E\\{\bf1}\{i\in W\}\ne{\bf1}\{j\in W\}}}
+x_{ij}\ge1 &&(W\in\mathcal C),\\
+&x_{ij}\in\mathbb Z_{\ge0} &&((i,j)\in E).
+\end{align}
+All inactive subsets are enumerated for this six-site instance.
+Every operationally feasible solution satisfies these degree and connection
+conditions, so the graph optimum is also a lower bound on the operational
+empty-flight distance.
+
+\paragraph{Full operational feasibility and certificate.}
+An operational solution must execute every labelled task once, together with
+$x_{ij}$ empty flights of each OD. Each flight is assigned to a drone at its
+origin; the drone may not overlap another flight, departures may not precede
+release/loading readiness, and the number of parked drones at any site may
+never exceed $c_v$ or fall below zero. The current algorithm searches a serial
+execution of the optimal multiset. For a serial order $e_1,\ldots,e_m$, define
+$q_v^0=s_v$ and impose for every step $h$, with $e_h=(i_h,j_h)$,
+\[
+q_{i_h}^{h-1}\ge1,\quad q_{j_h}^{h-1}<c_{j_h},\qquad
+q_v^h=q_v^{h-1}-{\bf1}\{v=i_h\}+{\bf1}\{v=j_h\}.
+\]
+Assign an actually present drone at $i_h$. If loading/unloading takes
+$\ell$ seconds for a loaded task and zero for an empty leg, and speed is
+$v_{\rm fly}>0$, the returned timing is
+\[
+a_h=\max\{C_{h-1},b_{e_h}\},\quad
+D_h=a_h+\ell_h,\quad
+A_h=D_h+\frac{1000\lambda_{i_hj_h}}{v_{\rm fly}},\quad
+C_h=A_h+\ell_h,\quad C_0=0.
+\]
+For empty legs $b_{e_h}=0$. The objective is determined by the stated routing costs.
+Serial execution is a method for constructing feasible schedules. The existing instance has a feasible serial
+certificate attaining the graph lower bound, which proves the same optimal
+distance even for the larger operational scheduling domain.
+
+The solver reports $z_E$ as \texttt{objective\_value}; total distance is
+\[
+z_{\rm total}=z_E+\sum_{t\in T}\lambda_{o_td_t},
+\]
+whose second term is constant. Both values are kept separately.
+Code lines 6--20 implement the graph model; 23--42 construct a schedule,
+and 43--56 independently replay parking, drone continuity, every task,
+degree constraints and objective.
+
+\end{document}

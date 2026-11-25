@@ -1,0 +1,114 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\section*{General-choice finite-horizon revenue-management DP}
+
+\begin{equation}
+V_t(x)=\max_{k=1,\ldots,m}
+\left\{\lambda\bigl(R_k-Q_k\Delta V_{t-1}(x)\bigr)\right\}
++V_{t-1}(x).
+\tag{7}
+\end{equation}
+The recursion applies at states $t=1,\ldots,T$, $x=1,\ldots,C$, with the inherited boundary conditions
+\begin{equation}
+V_t(0)=0,\quad t=1,\ldots,T
+\qquad\text{and}\qquad
+V_0(x)=0,\quad x=1,\ldots,C.
+\tag{2}
+\end{equation}
+The decision at each such state is an index $k\in\{1,\ldots,m\}$: the offered set is $S_k$. A maximizing index in (7) supplies an optimal offered set. The sets, their ordering, and their coefficients are defined below; they are not arbitrary inputs.
+
+\paragraph{States, fixed data, and interpretation (pp.~5--7).}
+There are $n$ fare products, with fixed fares satisfying
+\[
+N=\{1,\ldots,n\},
+\qquad r_1\ge r_2\ge\cdots\ge r_n\ge0.
+\]
+$C$ is the aircraft capacity in inventory units and $T$ is the number of time periods. The state $x$ counts remaining inventory units and $t$ counts remaining periods. Time is discrete and runs backwards: $t=0$ is the sales deadline. Thus the state counts range over $x=0,\ldots,C$ and $t=0,\ldots,T$. The value $V_t(x)$ is the maximum expected revenue obtainable during periods $t,t-1,\ldots,1$, given $x$ units remaining at time $t$.
+
+There is at most one customer arrival in each period. The fixed arrival probability $\lambda$ is the same in every period. The firm offers a subset $S\subseteq N$. Conditional on a customer arrival, $P_j(S)$ is the probability of choosing product $j\in S$; $j=0$ denotes no purchase and $P_0(S)$ is its probability. These fixed choice probabilities do not depend on time. Choices depend only on the currently offered set, not on the seller's policy, other buyers' strategies, or purchase history. The authors require a proper probability function and state
+\begin{align*}
+P_j(S)&=0,
+&&j\in N\setminus S,\quad S\subseteq N,\\
+P_j(S)&\ge0,
+&&j\in S,\quad S\subseteq N,\\
+\sum_{j\in S}P_j(S)+P_0(S)&=1,
+&&S\subseteq N.
+\end{align*}
+For an offered set $S$, the period probabilities are
+\begin{align*}
+\Pr(\text{sale of product }j\text{ in the period}\mid S)
+&=\lambda P_j(S),\qquad j\in N,\\
+\Pr(\text{no sale in the period}\mid S)
+&=\lambda P_0(S)+(1-\lambda).
+\end{align*}
+The second expression includes both no arrival and an arrival with no purchase.
+
+\paragraph{Marginal value and aggregate coefficients (p.~7).}
+The marginal cost of capacity used in (7) is
+\[
+\Delta V_{t-1}(x)=V_{t-1}(x)-V_{t-1}(x-1),
+\qquad t=1,\ldots,T,\quad x=1,\ldots,C.
+\]
+For every offered set $S\subseteq N$, define
+\begin{align*}
+Q(S)&=\sum_{j\in S}P_j(S)=1-P_0(S),\\
+R(S)&=\sum_{j\in S}P_j(S)r_j.
+\end{align*}
+Here $Q(S)$ is the total probability of purchase and $R(S)$ is the total expected revenue from offering $S$, conditional on an arrival. The arrival factor remains outside these coefficients in (7).
+
+\paragraph{Construction of the nondominated family: Definition 1 (p.~8).}
+In this definition only, $T$ denotes a candidate subset of $N$, not the horizon length. A set $T\subseteq N$ is dominated if there exist probabilities $\alpha(S)$ over subsets satisfying
+\[
+\alpha(S)\ge0\quad(S\subseteq N),
+\qquad \sum_{S\subseteq N}\alpha(S)=1,
+\]
+such that either
+\[
+Q(T)\ge\sum_{S\subseteq N}\alpha(S)Q(S)
+\quad\text{and}\quad
+R(T)<\sum_{S\subseteq N}\alpha(S)R(S),
+\]
+or
+\[
+Q(T)>\sum_{S\subseteq N}\alpha(S)Q(S)
+\quad\text{and}\quad
+R(T)\le\sum_{S\subseteq N}\alpha(S)R(S).
+\]
+A set is nondominated if it is not dominated. The weights $\alpha(S)$ are witnesses in this definition, not additional period-by-period controls in (7).
+
+\paragraph{Supporting characterization: Proposition 1 (pp.~8--11).}
+The printed proposition states that a set $T$ is nondominated if and only if, for some value $v>0$, $T$ is an optimal solution to
+\[
+\max_{S\subset N}\{R(S)-vQ(S)\}.
+\]
+The scalar $v$ here is a supporting value for the characterization, not an additional decision in (7). The displayed proposition prints $S\subset N$, whereas Definition 1 and the proposition's proof use $S\subseteq N$. The operative family here follows Definition 1 over all $S\subseteq N$; the displayed characterization retains its printed subset symbol.
+
+\paragraph{Reduction and its boundary case: Proposition 2 (p.~11).}
+The source states that if $\Delta V_{t-1}(x)>0$, a dominated set is never optimal in the original unrestricted offered-set recursion. If $\Delta V_{t-1}(x)=0$, there always exists a nondominated set that is optimal. Thus (7) retains the nondominated family rather than imposing a strict positive marginal-value restriction on its states. No optional elimination of nondominated sets that fail to be strongly nondominated is performed.
+
+\paragraph{Ordering and coefficients: Proposition 3 and the definition preceding (7) (pp.~11--12).}
+Let $m$ be the number of nondominated sets, and let $S_1,\ldots,S_m$ enumerate those sets. Index them so that
+\[
+Q(S_1)\le Q(S_2)\le\cdots\le Q(S_m).
+\]
+Proposition 3 gives the corresponding order
+\[
+R(S_1)\le R(S_2)\le\cdots\le R(S_m).
+\]
+The coefficients in (7) are
+\[
+R_k=R(S_k),\qquad Q_k=Q(S_k),\qquad k=1,\ldots,m.
+\]
+These are non-strict orders. No inclusion ordering $S_1\subseteq\cdots\subseteq S_m$ is required for this general-choice formulation.
+
+\paragraph{Printed boundary omission and qualification.}
+Equation (2), as printed and retained above, does not assign $V_0(0)$, although $\Delta V_0(1)$ in (7) refers to it. No value for that corner is added here. Also, the strict exclusion statement of Proposition 2 does not state $\lambda>0$: at $\lambda=0$ the expression maximized in (7), and likewise in the original recursion, is identical for every offered set. This does not contradict the proposition, whose strict exclusion claim assumes positive marginal value; no extra strict positivity assumption is imposed on the printed model.
+
+\paragraph{Source scope.}
+This formulation follows Talluri and van Ryzin, \emph{Revenue Management Under a General Discrete Choice Model of Consumer Behavior}, October 21, 2001, physical PDF pp.~5--12. Equation (7) is the selected recursion, replacing the unrestricted offered-set recursions; their marginal-value, probability, revenue, and boundary definitions are inherited above. The proof-only linear programs, specialized choice models, nested-allocation implementations, and estimation procedures are not part of this formulation.
+
+\end{document}

@@ -1,0 +1,62 @@
+\documentclass[UTF8,11pt]{ctexart}
+\usepackage{amsmath,amssymb,mathtools,geometry}
+\geometry{a4paper,margin=20mm}\allowdisplaybreaks
+\begin{document}
+\section*{单期两级包裹柜与偶发配送员联合配送模型}
+
+\paragraph{来源} PDF第6--9页，§3，式(1)--(24)。以单期已知订单为输入。
+\subsection*{输入}
+$o$ 为仓库，$L$ 为包裹柜，$C_D$ 为上门客户，$C_L$ 为自提客户（可作为偶发配送员OC）。
+$q_c>0$ 为需求，$a_k\in L\cup\{o\}$ 为自提客户选定提货点；
+$S_k\subseteq C_D$ 为其愿意额外配送的客户集合，$p_{ck}$ 为补偿。
+专业车队PF容量 $Q$、供柜车容量 $Q^L$、柜 $l$ 本地车队LF容量 $Q_l$；
+柜容量 $W_l$，相应弧成本 $c_{ij},c^L_{ij},c^l_{ij}\ge0$。
+不限定车队路线总数；PF、供柜车和各柜LF分别行驶。
+定义 $B^0=\{o\}\cup C_D,\ B^L=\{o\}\cup L,\ B^l=\{l\}\cup C_D$，
+各弧域 $A^a=\{(i,j)\in B^a\times B^a:i\ne j\}$。
+\subsection*{变量与派生量}
+$x^a_{ij}\in\{0,1\}$ 为对应车队弧选择，$y^a_{ij}\ge0$ 为弧上载货量，
+$a\in\{0,L\}\cup L$，其中标签 $L$ 表示供柜车队，与柜的单个元素标签区分。
+$z_c,z_c^l,z_l^L\in\{0,1\}$ 分别表示PF服务、柜 $l$ 的LF服务、供柜车访问柜；
+$w_{ck}\in\{0,1\}$ 表示偶发配送。定义柜供货需求
+\[
+d_l=\sum_{k\in C_L:a_k=l}\left(q_k+\sum_{c\in S_k}q_cw_{ck}\right)
+       +\sum_{c\in C_D}q_cz_c^l .
+\]
+\subsection*{完整模型}
+\begin{align}
+\min\quad&
+\sum_{(i,j)\in A^L}c^L_{ij}x^L_{ij}
++\sum_{k\in C_L,c\in S_k}p_{ck}w_{ck}
++\sum_{(i,j)\in A^0}c_{ij}x^0_{ij}
++\sum_{l\in L,(i,j)\in A^l}c^l_{ij}x^l_{ij},\tag{1}\\
+z_c+\sum_{k:c\in S_k}w_{ck}+\sum_{l\in L}z_c^l&=1 &&c\in C_D,\tag{2}\\
+\sum_{c\in S_k}w_{ck}&\le1 &&k\in C_L,\tag{3}\\
+d_l&\le W_lz_l^L &&l\in L.\tag{4}
+\end{align}
+为完整而紧凑地列出原文三组同构流约束，定义车队索引 $a\in\mathcal A=\{0,\mathrm{sup}\}\cup L$：
+\[
+(b_a,J_a,Q_a,z_i^a,d_i^a)=
+\begin{cases}
+(o,C_D,Q,z_i,q_i z_i),&a=0,\\
+(o,L,Q^L,z_i^L,d_i),&a=\mathrm{sup},\\
+(l,C_D,Q_l,z_i^l,q_i z_i^l),&a=l\in L.
+\end{cases}
+\]
+其中 $x^{\mathrm{sup}}=x^L,\ y^{\mathrm{sup}}=y^L$，
+车队弧域均为 $\{b_a\}\cup J_a$ 上无自环有向弧。对每一个 $a\in\mathcal A$ 同时施加
+\begin{align}
+\sum_{j\in J_a\cup\{b_a\}:j\ne i}x^a_{ij}
+&=\sum_{j\in J_a\cup\{b_a\}:j\ne i}x^a_{ji}=z_i^a &&i\in J_a,\tag{5/11/17}\\
+\sum_{j\in J_a}x^a_{b_aj}&=\sum_{j\in J_a}x^a_{jb_a},\tag{6/12/18}\\
+\sum_{j\in J_a\cup\{b_a\}:j\ne i}(y^a_{ji}-y^a_{ij})
+&=d_i^a &&i\in J_a,\tag{7/13/19}\\
+\sum_{j\in J_a}(y^a_{jb_a}-y^a_{b_aj})
+&=-\sum_{i\in J_a}d_i^a,\tag{8/14/20}\\
+0\le y^a_{ij}&\le Q_ax^a_{ij} &&(i,j)\in A^a,\tag{9/15/21}\\
+y^a_{ib_a}&=0 &&i\in J_a.\tag{10/16/22}
+\end{align}
+上述所有 $x,z,w$ 为二元，所有 $y$ 非负。一个公共约束模板同时实例化PF、供柜车及每一个LF，
+
+
+\end{document}

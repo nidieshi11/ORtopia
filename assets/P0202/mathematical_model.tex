@@ -1,0 +1,47 @@
+\documentclass[11pt]{ctexart}
+\usepackage{amsmath,amssymb,longtable}
+\begin{document}
+\section*{P202: 当前完整数学模型（2026-10-20）}
+\section*{修订依据与边界}明确完整期内计划的合法起始域t+h−1≤H，逐一保留型谱、共享泊位、双层岸桥、场景恢复与堆场约束。共享堆场变量仍按所选02为连续变量，不改为原论文另一个取整版本。
+
+\section*{两阶段计划与完整型谱}
+船$i$、泊位$b$、整数期$t=1,\ldots,H$、场景$\omega$。船的可选完整岸桥型谱$p$
+给出持续期$h_{ip}$及每期上下层岸桥$q^1_{ipa},q^2_{ipa}$。
+阶段$w=-1$为基础计划，$w\in\Omega$为恢复。
+合法选择$(i,p,b,t,w)$满足$t\ge a_i^w$、$t+h_{ip}-1\le H$；
+基础还满足结束不晚于$b_i^f$。恢复$a_i^w=\max(a_i^f,a_{i\omega})$。
+二元$\eta_{ipbtw}$，跨情景泊位$\alpha_{ib}$，整数专用堆场$\sigma_i\ge s_i^{min}$。
+\[
+\sum_b\alpha_{ib}=1,\quad\sum_{pbt}\eta_{ipbtw}=1,\quad
+\sum_{pt}\eta_{ipbtw}=\alpha_{ib},\quad\sum_i\sigma_i\le S.
+\]
+$s_{iw}=\sum t\eta$，$e_{iw}=\sum(t+h_{ip}-1)\eta$。
+每泊位每期所有占用$\eta$之和不超过1；型谱累积得到$Q^1_{wt},Q^2_{wt}$，
+\[
+Q^1_{wt}+Q^2_{wt}\le\min(Q^{total},P_t),\quad
+|Q^1_{wt}-Q^2_{wt}|\le\bar Q^{gap}.
+\]
+基础偏离$\psi_i\ge a_i^e-s_{i,-1}$、$\chi_i\ge e_{i,-1}-b_i^e$，均非负。
+恢复延迟$\rho_{i\omega}\ge e_{i\omega}-e_{i,-1}$且$\rho\ge0$。
+\section*{完整堆场费用线性化}
+每场景给定装$L_{i\omega}$、卸$U_{i\omega}$、概率$p_\omega$，每块容量$z$。
+$\pi_{i\omega}\in\{0,1\}$、$\tau_{i\omega}\ge0$、共享块$s_{i\omega}\ge0$连续：
+\[
+M(\pi-1)\le L-z\sigma\le M\pi,\quad
+0\le\tau\le M\pi,\quad\tau\le\sigma,\quad\tau\ge\sigma+M(\pi-1),
+\]
+\[
+s_{i\omega}-1\le(L_{i\omega}-z\sigma_i)/z\le s_{i\omega},
+\qquad\sum_i s_{i\omega}\le S-\sum_i\sigma_i.
+\]
+共享块采用连续变量域。
+\[
+\min\sum_i[c_i^P(\psi_i+\chi_i)+c^E\sigma_i]
++\sum_\omega p_\omega\sum_i[
+c_i^D\rho_{i\omega}+(d^{LE}-d^{LS})z\tau_{i\omega}
++(d^{LS}-d^{LE})L_{i\omega}\pi_{i\omega}
++d^{LE}L_{i\omega}+d^UU_{i\omega}+c^Ss_{i\omega}].
+\]
+选择变量完整枚举全部合法型谱、泊位、开始时刻；不截断方案。规划期内完成是当前明确业务边界。
+
+\end{document}

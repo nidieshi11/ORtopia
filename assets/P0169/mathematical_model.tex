@@ -1,0 +1,189 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{amsmath,amssymb,geometry}
+\geometry{margin=2cm}
+\allowdisplaybreaks
+\title{Integrated Trading and Generation Profit Maximization}
+\author{}
+\date{}
+\begin{document}
+\maketitle
+
+The retained formulation is the single-scenario integrated model (1)--(24), with the source-defined affine fuel-consumption functions substituted exactly.  All scenario-dependent data refer to one fixed scenario.
+
+\section*{Sets and indices}
+\begin{itemize}
+\item $T\in\mathbb Z_{>0}$ is the number of periods, and $\mathcal T=\{1,\ldots,T\}$.
+\item $J_t\in\mathbb Z_{>0}$ is the number of segments in period $t$, and $\mathcal J_t=\{1,\ldots,J_t\}$.
+\item $\mathcal A=\{(\tau,t)\in\mathcal T^2:\tau\le t\}$ indexes contract periods and delivery periods.
+\item $\varepsilon=\{\mathrm{on},\mathrm{off}\}$ indexes on-peak and off-peak electricity. The supplied mapping $p:\bigcup_{t\in\mathcal T}\mathcal J_t\to\varepsilon$ assigns peak status to segment index $j$.
+\item $I$ is the finite generator set; $\mathrm{Gas},\mathrm{Coal},\mathrm{Nuc}\subseteq I$ are the supplied fuel-specific generator sets.
+\item $\mathcal D$ is the finite day set. For each $d\in\mathcal D$, $t(d)\in\mathcal T$ is its period and $j(d)\subseteq\mathcal J_{t(d)}$ contains its two segment indices.
+\end{itemize}
+All summation and constraint index ranges are integer ranges. An empty range contributes no constraints, and a sum over an empty set is zero.
+
+\section*{Fixed parameters and boundary data}
+The instance supplies the following parameters. Apart from the index counts and explicitly specified discrete data, coefficients are real scalars indexed as stated.
+\begin{description}
+\item[$H_e$:] Segment duration in hours, with $H_{\mathrm{on}}=16$ and $H_{\mathrm{off}}=8$.
+\item[$P$:] Regulated electricity sales price.
+\item[$\alpha$:] Real-valued liquidity-limit coefficient.
+\item[$D_{tj},PS_{tj}$:] Electricity demand and spot electricity price, respectively, for $t\in\mathcal T$, $j\in\mathcal J_t$.
+\item[$PP_{\tau te},PG_{\tau t}$:] Electricity and gas forward prices, respectively, for $(\tau,t)\in\mathcal A$, with $e\in\varepsilon$ for electricity.
+\item[$PT_t$:] Required profit threshold for period $t\in\mathcal T$.
+\item[$ML$:] Maximum acceptable daily loss.
+\item[$CP_t,NP_t$:] Coal and nuclear fuel prices for $t\in\mathcal T$.
+\item[$q_i,Q_i$:] Minimum and maximum operating generation levels for $i\in I$.
+\item[$L_i,l_i$:] Supplied integer minimum up-time and down-time lengths in segment units for $i\in I$.
+\item[$a_i,b_i$:] Affine fuel-consumption intercept and slope for each $i\in\mathrm{Gas}\cup\mathrm{Coal}\cup\mathrm{Nuc}$. The intercept is independent of commitment status.
+\item[$W_{itj},\varpi_{itj}\in\{0,1\}$:] Scheduled and forced availability indicators for $i\in I$, $t\in\mathcal T$, $j\in\mathcal J_t$; zero denotes unavailability.
+\item[$YP_{0te}^{+},YP_{0te}^{-}\ge0$:] Initial long and short electricity holdings for $t\in\mathcal T$, $e\in\varepsilon$, respectively equal to the supplied initial holdings $YL_{0te}$ and $YS_{0te}$.
+\item[$YG_{0t}\ge0$:] Initial gas holdings for $t\in\mathcal T$.
+\item[$U_{it0}\in\{0,1\}$:] Supplied initial operating state for each $i\in I$, $t\in\mathcal T$. These are fixed boundary data for each period.
+\item[$\overline{FP}_{\tau te}^{+},\overline{FP}_{\tau te}^{-},\overline{YP}_{\tau te}^{+},\overline{YP}_{\tau te}^{-}$:] Supplied nonnegative upper bounds on electricity forward trade and holding components for $(\tau,t)\in\mathcal A$, $e\in\varepsilon$. 
+\end{description}
+
+\section*{Decision variables and domains}
+For $(\tau,t)\in\mathcal A$, $e\in\varepsilon$, $FP_{\tau te}$ is the signed electricity forward trade and $YP_{\tau te}$ is the signed electricity forward holding; positive and negative values denote long and short positions. Their long and short magnitude components satisfy
+\begin{align*}
+FP_{\tau te},YP_{\tau te}&\in\mathbb R,
+&& (\tau,t)\in\mathcal A,\ e\in\varepsilon,\\
+0\le FP_{\tau te}^{+}&\le\overline{FP}_{\tau te}^{+},
+&& (\tau,t)\in\mathcal A,\ e\in\varepsilon,\\
+0\le FP_{\tau te}^{-}&\le\overline{FP}_{\tau te}^{-},
+&& (\tau,t)\in\mathcal A,\ e\in\varepsilon,\\
+0\le YP_{\tau te}^{+}&\le\overline{YP}_{\tau te}^{+},
+&& (\tau,t)\in\mathcal A,\ e\in\varepsilon,\\
+0\le YP_{\tau te}^{-}&\le\overline{YP}_{\tau te}^{-},
+&& (\tau,t)\in\mathcal A,\ e\in\varepsilon.
+\end{align*}
+Gas forward purchases $FG_{\tau t}$ and holdings $YG_{\tau t}$ have domains
+\[
+FG_{\tau t},YG_{\tau t}\in\mathbb R_{\ge0}
+\qquad ((\tau,t)\in\mathcal A).
+\]
+The remaining variables are:
+\begin{itemize}
+\item $SP_{tj}$: signed spot electricity trade, positive for purchases and negative for sales;
+\item $ZP_{te},ZG_t$: total electricity and gas forward costs;
+\item $G_{itj},TG_{tj}$: individual and total generation;
+\item $SG_{tj},SC_{tj},SN_{tj}$: gas, coal, and nuclear fuel consumption;
+\item $C_{tj}$: generation cost;
+\item $U_{itj}$: operating indicator, equal to one when generator $i$ is on.
+\end{itemize}
+Their domains are
+\begin{align*}
+ZP_{te}&\in\mathbb R
+&&t\in\mathcal T,\ e\in\varepsilon,\\
+ZG_t&\in\mathbb R
+&&t\in\mathcal T,\\
+SP_{tj},TG_{tj},SG_{tj},SC_{tj},SN_{tj},C_{tj}&\in\mathbb R
+&&t\in\mathcal T,\ j\in\mathcal J_t,\\
+G_{itj}&\in\mathbb R
+&&i\in I,\ t\in\mathcal T,\ j\in\mathcal J_t,\\
+U_{itj}&\in\{0,1\}
+&&i\in I,\ t\in\mathcal T,\ j\in\mathcal J_t.
+\end{align*}
+All continuous variables are real-valued and satisfy the constraints below.
+
+\section*{Objective}
+Maximize over the declared decision variables:
+\begin{equation}
+\max\quad
+\sum_{t\in\mathcal T}\sum_{j\in\mathcal J_t}
+\left[(D_{tj}P-SP_{tj}PS_{tj})H_{p(j)}-C_{tj}\right]
+-\sum_{t\in\mathcal T}\sum_{e\in\varepsilon}ZP_{te}.
+\tag{24}
+\end{equation}
+
+\section*{Trading constraints}
+\begin{align}
+FP_{\tau te}&=FP_{\tau te}^{+}-FP_{\tau te}^{-}
+&& (\tau,t)\in\mathcal A,\ e\in\varepsilon,\tag{1}\\
+YP_{\tau te}&=YP_{\tau te}^{+}-YP_{\tau te}^{-}
+&& (\tau,t)\in\mathcal A,\ e\in\varepsilon,\tag{2}\\
+YP_{\tau te}^{+}&=YP_{(\tau-1)te}^{+}+FP_{\tau te}^{+}
+&& (\tau,t)\in\mathcal A,\ e\in\varepsilon,\tag{3}\\
+YP_{\tau te}^{-}&=YP_{(\tau-1)te}^{-}+FP_{\tau te}^{-}
+&& (\tau,t)\in\mathcal A,\ e\in\varepsilon,\tag{4}\\
+YG_{\tau t}&=YG_{(\tau-1)t}+FG_{\tau t}
+&& (\tau,t)\in\mathcal A,\ e\in\varepsilon,\tag{5}\\
+\sum_{t=\tau}^{T}FP_{\tau te}^{+}
+&\le\alpha\sum_{t=\tau}^{T}YP_{(\tau-1)te}^{+}
+&& \tau\in\mathcal T,\ e\in\varepsilon,\tag{6}\\
+\sum_{t=\tau}^{T}FP_{\tau te}^{-}
+&\le\alpha\sum_{t=\tau}^{T}YP_{(\tau-1)te}^{-}
+&& \tau\in\mathcal T,\ e\in\varepsilon,\tag{7}\\
+ZP_{te}&=\frac{J_t}{2}\sum_{\tau=1}^{t}PP_{\tau te}FP_{\tau te}H_e
+&&t\in\mathcal T,\ e\in\varepsilon,\tag{8}\\
+ZG_t&=\sum_{\tau=1}^{t}PG_{\tau t}FG_{\tau t}
+&&t\in\mathcal T.\tag{9}
+\end{align}
+\begin{equation}
+\sum_{j\in\mathcal J_t}
+\left[(D_{tj}P-SP_{tj}PS_{tj})H_{p(j)}-C_{tj}\right]
+-\sum_{e\in\varepsilon}ZP_{te}\ge PT_t
+\qquad t\in\mathcal T.
+\tag{10}
+\end{equation}
+
+\section*{Energy balances and generation accounting}
+\begin{align}
+YP_{tt,p(j)}+SP_{tj}+TG_{tj}&=D_{tj}
+&&t\in\mathcal T,\ j\in\mathcal J_t,\tag{11}\\
+YG_{tt}&=\sum_{j\in\mathcal J_t}SG_{tj}
+&&t\in\mathcal T,\tag{12}\\
+SG_{tj}&=\sum_{i\in\mathrm{Gas}}a_i
+       +\sum_{i\in\mathrm{Gas}}b_iG_{itj}
+&&t\in\mathcal T,\ j\in\mathcal J_t,\tag{13}\\
+SC_{tj}&=\sum_{i\in\mathrm{Coal}}a_i
+       +\sum_{i\in\mathrm{Coal}}b_iG_{itj}
+&&t\in\mathcal T,\ j\in\mathcal J_t,\tag{14}\\
+SN_{tj}&=\sum_{i\in\mathrm{Nuc}}a_i
+       +\sum_{i\in\mathrm{Nuc}}b_iG_{itj}
+&&t\in\mathcal T,\ j\in\mathcal J_t,\tag{15}\\
+C_{tj}&=\frac{ZG_t}{J_t}+NP_tSN_{tj}+CP_tSC_{tj}
+&&t\in\mathcal T,\ j\in\mathcal J_t,\tag{16}\\
+TG_{tj}&=\sum_{i\in I}G_{itj}
+&&t\in\mathcal T,\ j\in\mathcal J_t.\tag{17}
+\end{align}
+
+\section*{Operating and availability constraints}
+\begin{equation}
+q_iU_{itj}\le G_{itj}\le Q_iU_{itj}
+\qquad i\in I,\ t\in\mathcal T,\ j\in\mathcal J_t.
+\tag{18}
+\end{equation}
+\begin{equation}
+\begin{gathered}
+U_{itj}-U_{it,j-1}\le U_{it\tau},\\
+i\in I,\quad t\in\mathcal T,\quad j\in\mathcal J_t,\quad
+\tau\in\{j+1,\ldots,\min(j+L_i-1,J_t)\}.
+\end{gathered}
+\tag{19}
+\end{equation}
+\begin{equation}
+\begin{gathered}
+U_{it,j-1}-U_{itj}\le 1-U_{it\tau},\\
+i\in I,\quad t\in\mathcal T,\quad j\in\mathcal J_t,\quad
+\tau\in\{j+1,\ldots,\min(j+l_i-1,J_t)\}.
+\end{gathered}
+\tag{20}
+\end{equation}
+\begin{align}
+U_{itj}&\le W_{itj}
+&&i\in I,\ t\in\mathcal T,\ j\in\mathcal J_t,\tag{21}\\
+U_{itj}&\le\varpi_{itj}
+&&i\in I,\ t\in\mathcal T,\ j\in\mathcal J_t.\tag{22}
+\end{align}
+
+\section*{Daily loss limits}
+\begin{equation}
+\begin{gathered}
+\sum_{j\in j(d)}
+\left[(D_{tj}P-SP_{tj}PS_{tj})H_{p(j)}-C_{tj}\right]
+-\frac{2}{J_t}\sum_{e\in\varepsilon}ZP_{te}+ML\ge0,\\
+d\in\mathcal D,\qquad t=t(d).
+\end{gathered}
+\tag{23}
+\end{equation}
+\end{document}

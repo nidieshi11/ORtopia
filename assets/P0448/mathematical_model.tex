@@ -1,0 +1,216 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,mathrsfs}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\section*{Affine dynamic-bid-price LP: normalized P1 and paired D1}
+
+\begin{equation}
+(\mathbf{P1})\qquad
+z_{\mathrm{P1}}=\max_X
+\sum_{t,\,\vec r\in\mathscr R_t,\,\vec u\in\mathscr U_{\vec r}}
+\left(\sum_j p_{t,j}f_j u_j\right)X_{t,\vec r,\vec u}.
+\tag{18}
+\end{equation}
+Subject to
+\begin{equation}
+\begin{split}
+&\sum_{\vec r\in\mathscr R_t,\,\vec u\in\mathscr U_{\vec r}}
+ r_iX_{t,\vec r,\vec u}\\
+&\quad=
+\begin{cases}
+c_i, &\text{if }t=1,\\[2pt]
+\displaystyle
+\sum_{\vec r\in\mathscr R_{t-1},\,\vec u\in\mathscr U_{\vec r}}
+\left(r_i-\sum_j p_{t-1,j}a_{i,j}u_j\right)
+X_{t-1,\vec r,\vec u},
+&\forall t=2,\ldots,\tau,
+\end{cases}
+\qquad\forall i,t,
+\end{split}
+\tag{19}
+\end{equation}
+\begin{equation}
+\sum_{\vec r\in\mathscr R_t,\,\vec u\in\mathscr U_{\vec r}}
+X_{t,\vec r,\vec u}=1
+\qquad\forall t,
+\tag{21}
+\end{equation}
+\[
+X\geqslant0.
+\]
+Here the nonnegativity applies to every decision variable
+\(X_{t,\vec r,\vec u}\), for every \(t\),
+\(\vec r\in\mathscr R_t\), and \(\vec u\in\mathscr U_{\vec r}\).
+Equation (21) is the author's stated replacement for (20); the superseded
+flow-normalization equations are not imposed. The \(t=1\) part of (19)
+is retained, although the author notes that it can be eliminated.
+
+The objective maximizes approximate total expected revenue over the finite
+horizon. Equation (19) balances the expected mass of each resource type.
+With (21), the variables \(X_{t,\vec r,\vec u}\) can be interpreted as
+state--action probabilities. As the author cautions, an \(X\) solution
+does not in general yield an implementable randomized control policy:
+its support need not specify an action for every attainable state.
+
+\section*{Fixed data, indices, states, and admissible actions}
+
+There are \(m\) resources and \(n\) product or customer classes. Throughout,
+\[
+i\in\{1,\ldots,m\},\qquad
+j\in\{1,\ldots,n\},\qquad
+t\in\{1,\ldots,\tau\}.
+\]
+The last period in which sales can occur is \(\tau\). Unqualified sums
+and quantifiers over \(i,j,t\) use these ranges.
+
+The fixed resource vector and consumption matrix are
+\[
+\vec c\equiv(c_i),\qquad A\equiv(a_{i,j}),
+\]
+where \(A\) is an \(m\times n\) matrix. For every \(i\), \(c_i>0\)
+is the integer amount of resource \(i\) available at the beginning of
+period 1. For every \(i,j\), \(a_{i,j}\) is the integer amount of
+resource \(i\) required by a class \(j\) customer. The \(j\)th column
+of \(A\) is denoted by \(A^j\). An accepted class \(j\) customer earns
+the fixed revenue
+\[
+f_j>0\qquad\forall j.
+\]
+The selected formulation uses \(f_j\), not the optional time-dependent
+fare variant mentioned in the paper.
+
+At most one customer arrives in each period. A class \(j\) customer
+arrives in period \(t\) with probability \(p_{t,j}\); no customer arrives
+with probability
+\[
+1-\sum_j p_{t,j}.
+\]
+These are fixed arrival probabilities, not decision variables. No
+strict-positivity assumption on all arrival probabilities is imposed
+in the formulation of Section 4.1.
+
+The resource-state set and its period-specific versions are
+\[
+\mathscr R\equiv
+\left\{\vec r\in\mathbb Z_+^m:
+ r_i\in\{0,1,\ldots,c_i\}\ \forall i\right\},
+\qquad \vec r\in\mathscr R,
+\]
+\[
+\mathscr R_t=
+\begin{cases}
+\{\vec c\},&\text{if }t=1,\\
+\mathscr R,&\text{if }t=2,\ldots,\tau.
+\end{cases}
+\]
+In period 1 the state is \(\vec r=\vec c\). These sets are not reduced
+to the states reachable under a particular initial state and arrival
+process.
+
+An action \(\vec u\) specifies whether each class would be accepted
+if it arrived: \(u_j=1\) means acceptance and \(u_j=0\) means rejection.
+The admissible-action sets are
+\[
+\vec u\in\mathscr U_{\vec r}
+=\left\{\vec u\in\{0,1\}^n:
+\vec r\geqslant A^j u_j\ \forall j\right\}
+\qquad\forall\vec r\in\mathscr R.
+\]
+Thus a request must be rejected if insufficient resources remain, but
+may also be rejected when resources suffice. The vectors \(\vec r\)
+and \(\vec u\) index the columns of P1; they are not additional
+continuous decision vectors in that LP.
+
+Given \(\vec r\) and \(\vec u\) in period \(t\), the one-step outcomes are
+\[
+\begin{array}{c|c|c}
+\text{event probability}&\text{current reward}&\text{next state}\\ \hline
+p_{t,j}\quad\text{for each }j&f_j u_j&\vec r-A^j u_j\\
+1-\sum_jp_{t,j}&0&\vec r
+\end{array}
+\]
+The random next-period resource vector is denoted by \(\vec R^{t+1}\),
+and its resource-\(i\) component by \(R_i^{t+1}\). Conditional
+expectations below use only these one-step probabilities.
+
+\section*{Affine approximation and paired D1}
+
+The value \(v_t(\vec r)\) is the expected cost-to-go over periods
+\(t,\ldots,\tau\) starting from state \(\vec r\). The terminal value is
+\[
+v_{\tau+1}(\vec r)\equiv0\qquad\forall\vec r.
+\]
+The selected affine functional approximation is
+\begin{equation}
+v_t(\vec r)\approx\theta_t+\sum_i V_{t,i}r_i
+\qquad\forall t,\vec r.
+\tag{14}
+\end{equation}
+Here \(V_{t,i}\) estimates the marginal value of a unit of resource
+\(i\) in period \(t\), and \(\theta_t\) is a constant offset with
+respect to the resource state. They are the decision coefficients in
+D1, not fixed input prices. The basis functions specializing the general
+functional approximation are
+\[
+\phi_i(\vec r)=r_i\quad\forall i,
+\qquad \phi_0(\vec r)=1.
+\]
+The terminal coefficients are fixed as stated in Section 4.1:
+\[
+\theta_{\tau+1}=0,\qquad V_{\tau+1,i}=0\quad\forall i.
+\]
+
+The source-identified dual counterpart is
+\begin{equation}
+(\mathbf{D1})\qquad
+\min_{\theta,V}\ \theta_1+\sum_i V_{1,i}c_i,
+\tag{16}
+\end{equation}
+subject to
+\begin{equation}
+\begin{split}
+\theta_t-\theta_{t+1}
++\sum_i\left(V_{t,i}r_i
+ -V_{t+1,i}\mathrm E[R_i^{t+1}\mid\vec r,\vec u]\right)
+\geqslant\sum_j p_{t,j}f_j u_j\\
+\forall t,\quad\vec r\in\mathscr R_t,\quad
+\vec u\in\mathscr U_{\vec r}.
+\end{split}
+\tag{17}
+\end{equation}
+The coefficients \(\theta_t,V_{t,i}\) for \(t=1,\ldots,\tau\)
+are unrestricted real LP variables; Section 4.1 imposes no sign or
+monotonicity constraints on them.
+
+The unnumbered expansion of (17) printed immediately after it is
+\[
+\begin{split}
+\theta_t-\theta_{t+1}
++\sum_i\left(
+V_{t,i}r_i-V_{t+1,i}
+\left(r_i-\sum_j p_{t,j}a_{i,j}u_j\right)
+\right)
+\geqslant\sum_j p_{t,j}f_j u_j\\
+\forall t,\quad\vec r\in\mathscr R_t,\quad
+\vec u\in\mathscr U_{\vec r}.
+\end{split}
+\]
+This is the same constraint, not an additional restriction. It also
+specifies explicitly the conditional-expectation coefficient used
+in (17).
+
+\paragraph{Scope and source.}
+The operative formulation is Section 4.1 of Daniel Adelman,
+``Dynamic Bid Prices in Revenue Management,'' \emph{Operations Research}
+55(4), 647--661 (2007), printed p.~652 (physical PDF p.~6), with the
+problem data and state--action definitions on printed pp.~648--649
+(physical PDF pp.~2--3). The general basis-function programs of
+Section 3 specialize to the rows above; they introduce no additional
+constraints for this affine version. The later structural results and
+computational monotonicity restrictions are not imposed in this
+selected Section 4.1 formulation. The appendix's quasistatic
+approximation is a different formulation and is not included.
+
+\end{document}

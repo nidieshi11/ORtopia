@@ -1,0 +1,128 @@
+\documentclass[11pt]{ctexart}
+\usepackage{amsmath,amssymb,longtable}
+\begin{document}
+\section*{P124: 当前完整数学模型（2026-10-20）}
+\section*{修订依据与边界}按源文第7页扩展语义将充电时长写为能量/功率，明确逐小时真实占用、整数有限插头及基础设施日成本；保留237条已补全服务与所有SOC/接续约束。
+
+
+\section*{当前问题与输入边界}
+当前保留带充电设施选址、有限整数插头和逐小时占用的确定性多车场公交调度扩展。时间、能耗和费用由实例给定，组成确定性调度模型。
+按论文第6页表1，车场编号集合$C'\subseteq C$，车场$c$与充电站$c$使用相同编号，$s_c,f_c$为对应出发和返回节点。本问题集现有实例采用$C'=C$，每个站点同时是车场。返场充电要求在该共同编号下解释为$Y_{ic}\ge X^k_{if_c}$。$T$为全部服务行程集合，式(21)的占用求和对$T$进行。不参与本模型的遗留变量$H$已从声明中删除。
+
+\subsection*{Decision Variables}
+\begin{align*}
+& X^k_{ij} \in \{0, 1\}, && \forall i \in T_s, j \in T_f, k \in K \\
+& Y_{ic} \in \{0, 1\}, && \forall i \in T, c \in C \\
+& W_{inc} \in \{0, 1\}, && \forall i \in T, n \in N, c \in C \\
+& V_{inc} \in \{0, 1\}, && \forall i \in T, n \in N, c \in C \\
+& G_{inc} \ge 0, && \forall i \in T, n \in N, c \in C \\
+& T_{ijk} \ge 0, && \forall i \in T, j \in T_i, k \in K \\
+& B_i \ge 0, && \forall i \in T \\
+& \tau_{ic} \ge 0, && \forall i \in T, c \in C \\
+& Z_c \in \{0, 1\}, && \forall c \in C \\
+& A_c \ge 0 \text{ (integer)}, && \forall c \in C
+\end{align*}
+
+\subsection*{Objective Function}
+\begin{equation}
+\min \sum_{j \in T} \sum_{k \in K} \sum_{c \in C'} l_k X^k_{s_c j} + \sum_{i \in T} \sum_{c \in C} \Omega Y_{ic} + \sum_{i \in T} \sum_{c \in C} \sum_{n \in N} p_{nc} G_{inc} + \sum_{i \in T} \sum_{k \in K} \sum_{n \in N} h_{kn} \left( \sum_{j \in T_i} T_{ijk} + \sum_{j \in T^f_i} d_i X^k_{ij} + \sum_{c \in C'} t_{s_i c} X^k_{s_c i} + \sum_{c \in C'} t_{e_i c} X^k_{i f_c} \right) \tag{1}
+\end{equation}
+
+\subsection*{Constraints}
+\paragraph{网络流约束}
+\begin{equation}
+\sum_{i \in T'_j} \sum_{k \in K_j} X^k_{ij} = 1 \quad \forall j \in T \tag{2}
+\end{equation}
+\begin{equation}
+\sum_{j \in T^f_i} \sum_{k \in K_i} X^k_{ij} = 1 \quad \forall i \in T \tag{3}
+\end{equation}
+\begin{equation}
+\sum_{i \in T'_j} X^k_{ij} - \sum_{i \in T^f_j} X^k_{ji} = 0 \quad \forall j \in T, k \in K \tag{4}
+\end{equation}
+\begin{equation}
+\sum_{i \in T} X^k_{s_c i} - \sum_{i \in T} X^k_{i f_c} = 0 \quad \forall k \in K, c \in C' \tag{5}
+\end{equation}
+\begin{equation}
+b_i - b_j + d_i + T_{ijk} + \sum_{c \in C} \sum_{n \in N} \frac{1}{\sigma_k} G_{inc} + \sum_{c \in C} \lambda Y_{ic} \le M(1 - X^k_{ij}) \quad \forall i \in T, j \in T_i, k \in K \tag{6}
+\end{equation}
+\begin{equation}
+T_{ijk} - \sum_{c \in C} \left( \tau_{ic} + (t_{e_i c} + t_{s_j c}) Y_{ic} \right) + u_{ij} \left( \sum_{c \in C} Y_{ic} - 1 \right) \ge M(X^k_{ij} - 1) \quad \forall i \in T, j \in T_i, k \in K \tag{7}
+\end{equation}
+\paragraph{电池电量与能耗约束}
+\begin{equation}
+B_i \le \sum_{j \in T'_i} \sum_{k \in K} a^{\text{upp}} D_k X^k_{ji} \quad \forall i \in T \tag{8}
+\end{equation}
+\begin{equation}
+B_i - e_{d_{ik}} - \sum_{c \in C} e_{e_{ic k}} Y_{ic} \ge \sum_{j \in T^f_i} a^{\text{low}} D_k X^k_{ij} \quad \forall i \in T, k \in K \tag{9}
+\end{equation}
+\begin{equation}
+B_i - a^{\text{upp}} D_k - e_{d_{ik}} + \sum_{c \in C} \sum_{n \in N} G_{inc} - \sum_{c \in C} e_{e_{ic k}} Y_{ic} \ge M \left( \sum_{f_c \in F} X^k_{i f_c} - 1 \right) \quad \forall i \in T, k \in K \tag{10}
+\end{equation}
+\begin{equation}
+B_i - B_j - e_{d_{ik}} - \sum_{c \in C} (e_{e_{ic k}} + e_{s_{j c k}}) Y_{ic} - e_{u_{ij k}} \left( 1 - \sum_{c \in C} Y_{ic} \right) + \sum_{c \in C} \sum_{n \in N} G_{inc} \ge M(X^k_{ij} - 1) \quad \forall i \in T, j \in T_i, k \in K \tag{11}
+\end{equation}
+\begin{equation}
+\sum_{n \in N} G_{inc} \le D^{\max} Y_{ic} \quad \forall i \in T, c \in C \tag{12}
+\end{equation}
+\paragraph{充电时间分区约束}
+\begin{equation}
+\sum_{n \in N} W_{inc} q_n \le \tau_{ic} + (b_i + d_i + t_{e_i c} + \lambda) Y_{ic} \le \sum_{n \in N} W_{inc} q_{(n+1)} \quad \forall i \in T, c \in C \tag{13}
+\end{equation}
+\begin{equation}
+\sum_{c \in C} G_{inc} \le D^{\max} \sum_{c \in C} W_{inc} \quad \forall i \in T, n \in N \tag{14}
+\end{equation}
+\begin{equation}
+\sum_{n \in N} \sum_{c \in C} W_{inc} \le 1 \quad \forall i \in T \tag{15}
+\end{equation}
+\paragraph{变量类型约束}
+\begin{equation}
+\boldsymbol{X}, \boldsymbol{Y}, \boldsymbol{W} \in \{0, 1\} \tag{16}
+\end{equation}
+\begin{equation}
+\boldsymbol{T}, \boldsymbol{G}, \boldsymbol{B} \ge \boldsymbol{0} \tag{17}
+\end{equation}
+\paragraph{扩展模型：充电站选址与充电桩数量约束}
+\begin{equation}
+\sum_{i \in T} Y_{ic} \le M Z_c \quad \forall c \in C \tag{19}
+\end{equation}
+\begin{equation}
+\sum_{i \in T} V_{inc} \le A_c \quad \forall n \in N, c \in C \tag{21}
+\end{equation}
+\begin{equation}
+\boldsymbol{V}, \boldsymbol{Z} \in \{0, 1\} \tag{22}
+\end{equation}
+\begin{equation}
+\boldsymbol{A}\in\mathbb Z_+ \tag{23}
+\end{equation}
+
+
+\section*{当前启用的完整基础设施与占用约束}
+扩展为当前模型的组成部分。$X$仅定义于给定接续弧和兼容车型；不兼容量为零。
+设$u_{ik}=\sum_{j\in T'_i}X^k_{ji}$，$g_{ic}=\sum_nG_{inc}$，
+$t^c_{ic}=\tau_{ic}+(b_i+d_i+t_{e_i c}+\lambda)Y_{ic}$。
+\[
+0\le T_{ijk}\le MX^k_{ij},\quad
+\sum_nW_{inc}=Y_{ic},\quad
+0\le A_c\le \overline A_cZ_c,\quad A_c\in\mathbb Z_+.
+\]
+\[
+\sum_iV_{inc}\le A_c,\quad V_{inc}\le\sum_{n_0\le n}W_{in_0c},\quad
+\sum_iY_{ic}\le|T|Z_c.
+\]
+若$q_{n+1}<b_i+d_i+t_{e_ic}+\lambda$则$W_{inc}=0$。对于每个$k,n'\ge n$，
+\[
+t^c_{ic}+G_{inc}/\sigma_k
+\le q_{n'}+M(V_{in'c}-W_{inc}+2-u_{ik}).
+\]
+此式强制充电开始到完成经过的每小时段都有占用，包含跨段充电，不仅计算开始次数。
+\[
+B_i\le D_k-e_{s_ic k}+M(1-X^k_{s_ci}),\quad Y_{ic}\ge X^k_{if_c},
+\]
+\[
+B_i-e_{d_{ik}}-e_{e_ic k}+g_{ic}\le D_k+M(2-u_{ik}-Y_{ic}),\quad
+t^c_{ic}+g_{ic}/\sigma_k\le1440+M(1-u_{ik}),\quad0\le\tau_{ic}\le1440.
+\]
+目标为上文运营目标加$\sum_c(r_{1c}Z_c+r_{2c}A_c)$日摊基础设施成本。
+数据完整定义237条行程、兼容类型和前后继；小时单价与分钟能量/功率分别换算。
+
+\end{document}

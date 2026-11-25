@@ -1,0 +1,145 @@
+\documentclass[11pt]{ctexart}
+\usepackage{amsmath,amssymb,longtable}
+\begin{document}
+\section*{P159: 当前完整数学模型（2026-10-20）}
+\section*{修订依据与边界}按源文第6、8–9页修复求和与整数域；新插头=max(0,需求总插头−已有插头)，允许保留闲置已有设施。全部原预算分支、候选站、有限能力和目标保持。
+
+
+\section*{Problem: 整数线性规划问题。论文在“可行充电点数量较少”（例如仅限于终点站）的合理假设下，将先前研究中一个复杂的非线性优化问题（Opt-Fast-Char）转化为一个高效的整数线性规划模型。该问题是一个综合性的网络设计问题，融合了车队构成与分配、设施选址（充电站、变电站）、资源匹配（充电设备与电力）以及基于场景的充电方案选择。模型的核心创新是引入了“可行充电场景”的概念来线性化充电逻辑。}
+
+
+
+\subsection*{Decision Variables}
+\begin{align*}
+& n_{brbc} \in [0, u_{brb}] && \text{number of new $b$-type electric buses assigned to route $r$ and charged at a $c$-type charger} \\
+& y_{rbc} \in \{0, 1\} && \text{binary indicator equal to 1 iff a new $b$-type electric bus is assigned to route $r$ and charged at a $c$-type charger} \\
+& y_r \in \{0, 1\} && \text{binary indicator equal to 1 iff at least one electric bus is assigned to route $r$} \\
+& y^{(s)}_{rbc} \in \{0, 1\} && \text{binary indicator equal to 1 iff $b$-type electric buses are charged by type $c$ on route $r$ according to scenario $s$} \\
+& y_{bc} \in \{0, 1\} && \text{binary indicator equal to 1 iff $b$-type electric buses are charged by type $c$ on any route $r \in R \setminus R^O$} \\
+& y_{jrbc} \in \{0, 1\} && \text{binary indicator equal to 1 iff $b$-type electric buses are charged by type $c$ at a non-depot stop $j$ of route $r \in R_{jc}$ according to some scenario} \\
+& y^{(s)}_{jrbc} \in \{0, 1\} && \text{binary indicator equal to 1 iff $b$-type electric buses are charged by type $c$ at stop $j$ of route $r$ according to scenario $s$} \\
+& ns_j \in \{0, 1\} && \text{binary indicator equal to 1 iff a new charger is opened at stop $j$} \\
+& \alpha_{jc} \in \{0, 1\} && \text{binary indicator equal to 1 iff a new charging plug device of type $c$ is assigned to depot $j$} \\
+& nc_{jc} \in \mathbb{Z}^+ && \text{number of new plug devices of type $c$ at stop $j$} \\
+& np_{jc} \in \mathbb{Z}^+ \text{ or } \{0,1\} && \text{number of new charging points of type $c$ at stop $j$ (binary for depots)} \\
+& \beta_t \in \{0, 1\} && \text{binary indicator equal to 1 iff an old or new power station is used at power station spot $t$} \\
+& \gamma_{tj} \in \{0, 1\} && \text{binary indicator equal to 1 iff there is an old or new link between power station spot $t$ and stop or depot $j$} \\
+& Z_r \in [0, dem_r] && \text{contribution of route $r$ to the passenger flow} \\
+& nv_{rb} \in [0, nv^0_{rb}] && \text{number of non-battery $b$-type vehicles remaining on route $r$} \\
+& y_{rb} \in \{0, 1\} && \text{binary indicator equal to 1 iff a new $b$-type electric bus is assigned to route $r$} \\
+& nc^{(ct)}_{jrc} \in [0, nc^{(max)}_{jrc}] && \text{number of new and old plug devices of type $c$ used by electric buses of route $r$ at stop $j$ (based on charging time)} \\
+& nc^{(b)}_{jrc} \in \mathbb{Z}^+ && \text{number of new and old electric buses of type $b$ on route $r$ that charge by type $c$ at stop $j$} \\
+& nc_{jrc} \in \mathbb{Z}^+ && \text{number of new and old plug devices of type $c$ used by electric buses on route $r$ at stop $j$} \\
+& \eta_{jrc1}, \eta_{jrc2} \in \{0, 1\} && \text{auxiliary binary variables for linearization of min function} \\
+& \xi_{jrc}, \xi_{jrbc} \in \{0, 1\} && \text{auxiliary binary variables for linearization of max function}
+\end{align*}
+
+\subsection*{Objective Function}
+\max \quad \sum_{r \in R} \left( Z_r - \frac{\sum_{b \in V_r} nv_{rb} cap_b}{dem_r} \right) - \frac{\sum_{j \in N} \sum_{c \in C} nc_{jc}}{|N| \sum_{c \in C} u_{cc}} - \frac{\sum_{j \in N} \sum_{c \in C} np_{jc}}{\sum_{j \in N} u_{pj}} - \frac{\sum_{t \in T \setminus T^O} \beta_t}{|T|} - \frac{\sum_{j \in N \setminus N^O} \sum_{t \in T_j} \gamma_{tj}}{|N||T|}
+
+\subsection*{Constraints}
+\begin{align*}
+&\text{Capital cost:} \\
+& \sum_{j \in N} csta_j ns_j + \sum_{j\in N}\sum_{c \in C} ccp_c np_{jc} + \sum_{r \in R} \sum_{b \in B_r} \left( cbus_b * \sum_{c \in C_b} n_{brbc} \right) + \sum_{t \in T \setminus T^O} ccpst \beta_t + \sum_{t \in T \setminus T^O} \sum_{j \in N \setminus N^O} cl_{tj} \gamma_{tj} \leq cc \tag{2} \\
+&\text{Variable cost:} \\
+& \sum_{j \in N} \left( vcc_j ns_j + \sum_{c \in C} vcp_c np_{jc} \right) + \sum_{r \in R} \sum_{b \in B_r} vc_{brb} \leq uoc \tag{3} \\
+&\text{Power demand satisfaction:} \\
+& \sum_{c \in C} (nc_{jc} + n_{odjc}) p_c \leq \sum_{t \in T_j} u_t p_t \beta_t, \quad j \in N \tag{4} \\
+&\text{Power station linking:} \\
+& \beta_t = \sum_{j \in N} \gamma_{tj}, \quad t \in T \tag{5} \\
+&\text{Old bus charging type consistency:} \\
+& \sum_{c \in C_b} y_{rbc} - y_{rbc_{ob}} \leq 0, \quad r \in R, \quad b \in B^O \cap B_r \tag{6} \\
+&\text{New bus charging type selection and route assignment:} \\
+& y_{bc} \leq \sum_{r \in R} y_{rbc}, \quad b \in B \setminus B^O, \quad c \in C_b \tag{7} \\
+& |R| y_{bc} \geq \sum_{r \in R} y_{rbc}, \quad b \in B \setminus B^O, \quad c \in C_b \tag{8} \\
+& \sum_{c \in C_b} y_{bc} \leq 1, \quad b \in B \setminus B^O \tag{9} \\
+&\text{Charging point limit at stop:} \\
+& \sum_{c \in C} np_{jc} + \sum_{c \in C} n_{opjc} \leq u_{pj}, \quad j \in N \tag{10} \\
+&\text{Depot charging point activation:} \\
+& \alpha_{jc} - np_{jc} \leq 0, \quad j \in D \setminus N^O \tag{11} \\
+&\text{Passenger capacity requirement:} \\
+& \sum_{b \in B_r} \left( cap_b * \sum_{c \in C_b} n_{brbc} \right) + \sum_{b \in V_r} cap_b nv_{rb} \geq dem^0_r y_r, \quad r \in R \tag{12} \\
+&\text{Non-battery vehicle number limit:} \\
+& nv_{rb} \leq nv^0_{rb}, \quad r \in R, \quad b \in V_r \tag{13} \\
+&\text{Scenario selection:} \\
+& y_{rbc} - \sum_{s=1}^{n_{rbc}} y^{(s)}_{rbc} \leq 0, \quad r \in R, b \in B_r, c \in C_b \tag{14} \\
+&\text{Passenger flow contribution definition:} \\
+& Z_r \leq \sum_{b \in B_r} cap_b \sum_{c \in C_b} n_{brbc}, \quad r \in R \tag{15} \\
+& Z_r \leq dem^0_r y_r, \quad r \in R \tag{16} \\
+&\text{Relation between bus number and usage indicator:} \\
+& n_{brbc} \geq y_{rbc}, \quad r \in R, b \in B_r, c \in C_b \tag{17} \\
+& n_{brbc} \leq u_{brb} y_{rbc}, \quad r \in R, b \in B_r, c \in C_b \tag{18} \\
+&\text{Aggregation of bus usage indicator:} \\
+& y_{rb} = \sum_{c \in C_b} y_{rbc}, \quad r \in R, b \in B_r \tag{19} \\
+&\text{Charger opening logic:} \\
+& ns_j \leq \sum_{c \in C} (np_{jc} + n_{opjc}), \quad j \in N \setminus N_O \tag{20} \\
+& u_{pj} ns_j \geq \sum_{c \in C} (np_{jc} + n_{opjc}), \quad j \in N \setminus N_O \tag{21} \\
+&\text{Non-depot charging point number calculation:} \\
+& np_{jc} \geq \frac{nc_{jc} + n_{odjc}}{u_{cc}} - n_{opjc}, \quad j \in N \setminus D, c \in C \tag{22} \\
+&\text{Non-depot charging point limit:} \\
+& \sum_{c \in C} np_{jc} + \sum_{c \in C} n_{opjc} \leq u_{pj}, \quad j \in N \setminus D \tag{23} \\
+&\text{Route operation and bus usage link:} \\
+& y_r \leq \sum_{b \in B_r} \sum_{c \in C_b} y_{rbc}, \quad r \in R \tag{24} \\
+& |B_r| y_r \geq \sum_{b \in B_r} \sum_{c \in C_b} y_{rbc}, \quad r \in R \tag{25} \\
+&\text{Depot plug device activation and route operation link:} \\
+& \alpha_{jc} \leq \sum_{r \in R_{jc}} y_r, \quad j \in D \setminus N_O, c \in C \tag{26} \\
+& |R_{jc}| \alpha_{jc} \geq \sum_{r \in R_{jc}} y_r, \quad j \in D \setminus N_O, c \in C \tag{27} \\
+&\text{Traffic interval preservation:} \\
+& L_r y_r \leq ut_r \sum_{b \in B_r} \left( \sum_{c \in C_b} n_{brbc} + n_{obrb} \right) + ut_r \sum_{b \in V_r} nv_{rb}, \quad r \in R \tag{28} \\
+& L_r y_r \geq lt_r \sum_{b \in B_r} \left( \sum_{c \in C_b} n_{brbc} + n_{obrb} \right) + lt_r \sum_{b \in V_r} nv_{rb}, \quad r \in R \tag{29} \\
+&\text{Depot plug device number upper bound:} \\
+& u_{cc} \alpha_{jc} - nc_{jc} \leq 0, \quad j \in D \setminus N_O \tag{30} \\
+&\text{Non-depot plug device number calculation (linearized):} \\
+& nc_{jc} = \max\{0,\sum_{r \in R_{jc}} nc_{jrc} - n_{odjc}\}, \quad j \in N \setminus D, c \in C \tag{31} \\
+& nc^{(b)}_{jrc} = \sum_{b \in B_{rc}}(n_{brbc} + n_{obrbc}), \quad j \in N \setminus D, r \in R_{jc}, c \in C \tag{32} \\
+& nc_{jrc} \leq nc^{(ct)}_{jrc}, \quad j \in N \setminus D, r \in R_{jc}, c \in C \tag{33} \\
+& nc_{jrc} \leq nc^{(b)}_{jrc}, \quad j \in N \setminus D, r \in R_{jc}, c \in C \tag{34} \\
+& nc_{jrc} \geq nc^{(ct)}_{jrc} - u_{pj} u_{cc} (1 - \eta_{jrc1}), \quad j \in N \setminus D, r \in R_{jc}, c \in C \tag{35} \\
+& nc_{jrc} \geq nc^{(b)}_{jrc} - u_{pj} u_{cc} (1 - \eta_{jrc2}), \quad j \in N \setminus D, r \in R_{jc}, c \in C \tag{36} \\
+& \eta_{jrc1} + \eta_{jrc2} = 1, \quad j \in N \setminus D, r \in R_{jc}, c \in C \tag{37} \\
+& nc^{(ct)}_{jrc} \geq \frac{ctr_{jbc} y_{jrbc}}{lt_r}, \quad j \in N \setminus D, r \in R_{jc}, c \in C, b \in B_{rc} \tag{38} \\
+& nc^{(ct)}_{jrc} \leq \frac{ctr_{jbc} y_{jrbc}}{lt_r} + nc^{(max)}_{jrc} (1 - \xi_{jrbc}), \quad j \in N \setminus D, r \in R_{jc}, c \in C, b \in B_{rc} \tag{39} \\
+& nc^{(ct)}_{jrc} \geq noc^{(ct)}_{jrc}, \quad j \in N \setminus D, r \in R_{jc}, c \in C, b \in B_{rc} \tag{40} \\
+& nc^{(ct)}_{jrc} \leq noc^{(ct)}_{jrc} + nc^{(max)}_{jrc} (1 - \xi_{jrc}), \quad j \in N \setminus D, r \in R_{jc}, c \in C, b \in B_{rc} \tag{41} \\
+& \xi_{jrc} + \sum_{b \in B_{rc}} \xi_{jrbc} = 1, \quad j \in N \setminus D, r \in R_{jc}, c \in C \tag{42} \\
+&\text{Aggregation of stop charging indicator:} \\
+& y_{jrbc} = \sum_{s=1}^{n_{rbc}} y^{(s)}_{jrbc}, \quad r \in R, j \in \pi_r, b \in B_r, c \in C_b \tag{43} \\
+&\text{Scenario stop requirement satisfaction:} \\
+& \sum_{j \in S^{(s)}_{rbc}} y^{(s)}_{jrbc} - l^{(s)}_{rbc} y^{(s)}_{rbc} = 0, \quad r \in R, b \in B_r, s = 1, \dots, n_{rbc}, c \in C_b \tag{44} \\
+&\text{Fixed old infrastructure:} \\
+& \beta_t = 1, \quad t \in T_O \tag{45} \\
+& \gamma_{tj} = 1, \quad j \in N_O, t \in T_{Oj} \tag{46} \\
+&\text{Variable domains:} \\
+& \beta_t \in \{0, 1\}, \quad t \in T \setminus T_O \tag{47} \\
+& \gamma_{tj} \in \{0, 1\}, \quad t \in T \setminus T_O \tag{48} \\
+& Z_r \in [0, dem_r], \quad r \in R \tag{49} \\
+& n_{brbc} \in [0, u_{brb}], \quad r \in R, b \in B_r, c \in C_b \tag{50} \\
+& nv_{rb} \in [0, nv^0_{rb}], \quad r \in R, b \in V_r \tag{51} \\
+& y_r \in \{0, 1\}, \quad r \in R \tag{52} \\
+& nc_{jc} \in [0, u_{pj} u_{cc} - n_{odjc}], \quad j \in N \setminus D, c \in C \tag{53} \\
+& np_{jc} \in [0, u_{pj} - n_{opjc}], \quad j \in N \setminus D, c \in C \tag{54} \\
+& nc_{jc} \in [0, u_{cc} - n_{odjc}], \quad j \in D \setminus N_O, c \in C \tag{55} \\
+& np_{jc} \in \{0, 1\}, \quad j \in D \setminus N_O, c \in C \tag{56} \\
+& ns_j \in \{0, 1\}, \quad j \in N \setminus N_O \tag{57} \\
+& y_{rb} \in \{0, 1\}, \quad r \in R, b \in B_r \tag{58} \\
+& y_{rbc} \in \{0, 1\}, \quad r \in R, b \in B_r, c \in C_b \tag{59} \\
+& \alpha_{jc} \in \{0, 1\}, \quad j \in D \setminus N_O \tag{60} \\
+& nc^{(ct)}_{jrc} \in [0, nc^{(max)}_{jrc}], \quad r \in R, j \in \pi_r, c \in C \tag{61} \\
+& nc^{(b)}_{jrc} \in [0, \sum_{b \in B_r} (u_{brb} + n_{obrb})], \quad r \in R, j \in \pi_r, c \in C \tag{62} \\
+& nc_{jrc} \in [0, \min\{u_{pj} u_{cc}, nc^{(max)}_{jrc}\}], \quad r \in R, j \in \pi_r, c \in C \tag{63} \\
+& y^{(s)}_{jrbc} \in \{0, 1\}, \quad r \in R, b \in B_r, j \in \pi_r, s = 1, \dots, n_{rbc}, c \in C_b \tag{64} \\
+& y^{(s)}_{jrbc} = 0, \quad r \in R, b \in B_r, j \in \pi_r, j \notin S^{(s)}_{rbc}, s = 1, \dots, n_{rbc}, c \in C_b \tag{65} \\
+& y^{(s)}_{rbc} \in \{0, 1\}, \quad r \in R, b \in B_r, s = 1, \dots, n_{rbc}, c \in C_b \tag{66}
+\end{align*}
+
+
+\section*{域与物理补全}
+$n_{brbc},nv_{rb},nc_{jc},np_{jc},nc^{(ct)}_{jrc},nc^{(b)}_{jrc},nc_{jrc}$
+均为非负整数并满足上文有限上界（源文第9页的整数说明）。
+式4的$u_tp_t$为单一供电功率参数，非遗漏乘积。
+实例给出每站专属有限供电候选和全部已建站/旧车/旧插头，旧设施可闲置，不被删除。
+新插头非负最大值是修复定义，禁止用负“新建数量”抵消投资。
+每个预算为独立完整求解；式3常数运营项按所选模型保留，不任意加决策乘子。
+
+
+\end{document}

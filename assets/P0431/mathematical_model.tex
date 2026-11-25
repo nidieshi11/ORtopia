@@ -1,0 +1,142 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=2.54cm]{geometry}
+
+\title{Explicit Auxiliary-Variable Reformulation}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Notation and Data}
+Let $I,J,N\in\mathbb{Z}_{>0}$ denote, respectively, the number of appointments, patient types, and observed scenarios. Define
+\[
+[K]:=\{1,\ldots,K\},
+\qquad
+[a;b]:=\{a,a+1,\ldots,b\}.
+\]
+For each patient type $j\in[J]$, let $I_j\in\mathbb{Z}_{>0}$ satisfy
+\[
+\sum_{j\in[J]} I_j=I.
+\]
+Let $T\in\mathbb{Z}_{>0}$ be the planning horizon, let $\beta\in(0,1]$ be the CVaR parameter, let $\varphi\ge 0$ be the Wasserstein-radius parameter, and let $p\ge 1$. Let
+\[
+\boldsymbol{\tau}=(\tau_1,\ldots,\tau_J)^\top\in\mathbb{R}^J
+\]
+be the vector of type-specific delay tolerances. For every $l\in[I]$ and $n\in[N]$, let
+\[
+\boldsymbol{z}_l^n=(z_{l1}^n,\ldots,z_{lJ}^n)^\top\in\mathbb{R}^J
+\]
+be the observed scenario data. For every $i\in[I]$, write
+\[
+\boldsymbol{x}_i=(x_{i1},\ldots,x_{iJ})^\top.
+\]
+
+The sequencing-feasible set is
+\[
+\mathcal{X}:=\left\{
+\boldsymbol{x}\in\{0,1\}^{I\times J}:\;
+\sum_{j\in[J]}x_{ij}=1\ \forall i\in[I],\quad
+\sum_{i\in[I]}x_{ij}=I_j\ \forall j\in[J]
+\right\},
+\]
+and the appointment-time-feasible set is
+\[
+\mathcal{Y}:=\left\{
+\boldsymbol{y}\in\mathbb{Z}^I:
+0\le y_1\le y_2\le\cdots\le y_I\le T
+\right\}.
+\]
+
+\section*{Decision Variables}
+The decision variables are $\boldsymbol{x}$, $\boldsymbol{y}$, and the continuous auxiliary variables
+\[
+\eta_i\in\mathbb{R}
+\qquad \forall i\in\{0\}\cup[2;I],
+\]
+\[
+\gamma_i^n\in\mathbb{R}
+\qquad \forall n\in[N],\ i\in\{0\}\cup[2;I].
+\]
+
+\section*{Auxiliary-Variable Reformulation}
+For each $i\in[2;I]$, the empirical delay-CVaR expression in the decision-dependent empirical model is represented by the auxiliary variables $\eta_i$ and $\gamma_i^n$ through
+\[
+\left(1-\frac{1}{\beta}\right)\eta_i-y_i
++\frac{1}{N\beta}\sum_{n\in[N]}\gamma_i^n,
+\]
+subject to
+\[
+\gamma_i^n\ge y_t+
+\sum_{l=t}^{i-1}\boldsymbol{x}_l^\top\boldsymbol{z}_l^n,
+\qquad \forall n\in[N],\ i\in[2;I],\ t\in[i-1],
+\]
+\[
+\gamma_i^n\ge y_i,
+\qquad \forall n\in[N],\ i\in[2;I],
+\]
+and
+\[
+\gamma_i^n\ge\eta_i,
+\qquad \forall n\in[N],\ i\in[2;I].
+\]
+The empirical overtime-CVaR objective is represented by
+\[
+\left(1-\frac{1}{\beta}\right)\eta_0-T
++\frac{1}{N\beta}\sum_{n\in[N]}\gamma_0^n,
+\]
+subject to
+\[
+\gamma_0^n\ge T,
+\qquad \forall n\in[N],
+\]
+\[
+\gamma_0^n\ge y_t+
+\sum_{l=t}^{I}\boldsymbol{x}_l^\top\boldsymbol{z}_l^n,
+\qquad \forall n\in[N],\ t\in[I],
+\]
+and
+\[
+\gamma_0^n\ge\eta_0,
+\qquad \forall n\in[N].
+\]
+
+\section*{Optimization Model}
+The deterministic finite-dimensional reformulation is
+\begin{alignat}{2}
+\min_{\boldsymbol{x},\boldsymbol{y},\boldsymbol{\eta},\boldsymbol{\gamma}}\quad
+&\left(1-\frac{1}{\beta}\right)\eta_0-T
++\frac{1}{N\beta}\sum_{n\in[N]}\gamma_0^n
+\label{eq:objective}\\[0.5em]
+\text{s.t.}\quad
+&\left(1-\frac{1}{\beta}\right)\eta_i-y_i
++\frac{1}{N\beta}\sum_{n\in[N]}\gamma_i^n
+\le \boldsymbol{\tau}^{\top}\boldsymbol{x}_i
+-\frac{\varphi}{\beta}(i-1)^{\frac{p-1}{p}},
+&&\forall i\in[2;I],
+\label{eq:delay-cvar}\\
+&\gamma_i^n\ge y_t+
+\sum_{l=t}^{i-1}\boldsymbol{x}_l^{\top}\boldsymbol{z}_l^n,
+&&\forall n\in[N],\ i\in[2;I],\ t\in[i-1],
+\label{eq:delay-scenario}\\
+&\gamma_i^n\ge y_i,
+&&\forall n\in[N],\ i\in[2;I],
+\label{eq:appointment-scenario}\\
+&\gamma_i^n\ge\eta_i,
+&&\forall n\in[N],\ i\in[2;I]\cup\{0\},
+\label{eq:threshold-scenario}\\
+&\gamma_0^n\ge T,
+&&\forall n\in[N],
+\label{eq:overtime-horizon}\\
+&\gamma_0^n\ge y_t+
+\sum_{l=t}^{I}\boldsymbol{x}_l^{\top}\boldsymbol{z}_l^n,
+&&\forall n\in[N],\ t\in[I],
+\label{eq:overtime-scenario}\\
+&\boldsymbol{x}\in\mathcal{X},\qquad \boldsymbol{y}\in\mathcal{Y}.&&
+\label{eq:domains}
+\end{alignat}
+
+All products involving $\boldsymbol{x}$ and the scenario vectors $\boldsymbol{z}_l^n$, as well as $\boldsymbol{\tau}^{\top}\boldsymbol{x}_i$, are affine after expansion because the scenario data and tolerance vector are fixed. The auxiliary variables $\eta,\gamma\in\mathbb R$ satisfy the displayed constraints.
+
+\end{document}

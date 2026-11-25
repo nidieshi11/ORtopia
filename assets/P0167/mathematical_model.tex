@@ -1,0 +1,111 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=2.5cm]{geometry}
+\allowdisplaybreaks
+\title{Full-Horizon Unit Commitment and Dispatch}
+\author{}
+\date{}
+\begin{document}
+\maketitle
+
+\section{Sets and data}
+Let $T=\{1,\ldots,H\}$, where $H\geq1$ is the number of periods. Let $G$, $I$, $B$, $L$, $W$, $P$, and $D$ be finite sets of thermal generators, interpolation vertices, buses, transmission lines, wind units, storage units, and loads, respectively. For each bus $b\in B$, the given incidence sets $G_b\subseteq G$, $W_b\subseteq W$, $P_b\subseteq P$, and $D_b\subseteq D$ identify equipment and loads located at that bus. Each line $l\in L$ has start bus $sb_l\in B$ and end bus $eb_l\in B$; let $L_b^{\mathrm{in}}=\{l\in L:eb_l=b\}$ and $L_b^{\mathrm{out}}=\{l\in L:sb_l=b\}$. A reference bus $\mathrm{ref}\in B$ is given.
+
+All parameters below are fixed scalar data at each indicated index:
+\begin{itemize}
+\item $\Delta t>0$: period duration; $c_{gi}$ and $p_{gi}$, $(g,i)\in G\times I$: generation-cost and generation-output values at interpolation vertices. 
+\item $C_p^{ls}$ and $C_p^{gs}$: the load-shedding and grid-shedding penalty coefficients. The subscript $p$ labels these penalty coefficients.
+\item $UT_g,DT_g\in\mathbb Z_{\geq1}$: minimum up- and down-times; $P_g^{\min},P_g^{\max}$: generation limits; and $R_g^{up},R_g^{down},R_g^{SU},R_g^{SD}$: ramp-up, ramp-down, startup-ramp, and shutdown-ramp limits, for $g\in G$.
+\item $I_w^t$: available wind power, for $(w,t)\in W\times T$; $d_d^t$: demand, for $(d,t)\in D\times T$.
+\item $\eta_p^{chg}$ and $\eta_p^{disc}>0$: charging and discharging efficiencies; $Cap_p^{chg},Cap_p^{disc}$: charging and discharging power capacities; and $S_p^{\min},S_p^{\max}$: storage-state limits, for $p\in P$.
+\item $B_l$: line susceptance; $F_l$: line-flow capacity, for $l\in L$.
+\item $x_g^0,p_g^0,s_p^0$ and all startup and shutdown history values $u_g^\tau,v_g^\tau$ with $\tau<1$ appearing in the constraints: known initial-condition data.
+\end{itemize}
+All quantities referenced at times below $1$ are fixed initial conditions.
+
+\section{Decision variables}
+For every modeled period $t\in T$, the variables are:
+\begin{itemize}
+\item $x_g^t\in\{0,1\}$: commitment status, and $u_g^t,v_g^t\in\mathbb R_{\geq0}$: startup and shutdown variables, for $g\in G$.
+\item $w_{gi}^t\in\mathbb R_{\geq0}$: interpolation weights, for $(g,i)\in G\times I$; $p_g^t\in\mathbb R$: thermal generation, for $g\in G$.
+\item $g_w^t,c_w^t\in\mathbb R_{\geq0}$: wind generation and curtailment, for $w\in W$.
+\item $pc_p^t,pd_p^t,s_p^t\in\mathbb R$: charging power, discharging power, and stored energy, for $p\in P$.
+\item $f_l^t\in\mathbb R$: line flow, for $l\in L$; $\theta_b^t\in\mathbb R$: voltage angle, for $b\in B$.
+\item $ls_b^t,gs_b^t\in\mathbb R_{\geq0}$, for $b\in B$: nonnegative load shedding and excess generation, as physically defined in source Table 3.
+\end{itemize}
+Continuous variables follow the listed domains. Wind generation, curtailment and shedding are nonnegative physical quantities. Source equation (5m), PDF page 7, uses $gs_b^t$ in the nodal balance; the extracted independent $ps_b^t$ was a transcription error and is removed.
+
+\section{Optimization model}
+The finite-horizon objective combines the commitment equations and full-horizon operating costs below. Minimize
+\begin{equation}
+\min\quad
+\sum_{t\in T}\left[
+\sum_{g\in G}\sum_{i\in I}c_{gi}w_{gi}^t
++\sum_{b\in B}\left(C_p^{ls}ls_b^t+C_p^{gs}gs_b^t\right)
+\right]\Delta t
+\end{equation}
+subject to the following constraints.
+
+\subsection*{Commitment}
+\begin{align}
+x_g^t-x_g^{t-1}&=u_g^t-v_g^t
+&&g\in G,\ t\in T,\\
+\sum_{k=0}^{UT_g-1}u_g^{t-k}&\leq x_g^t
+&&g\in G,\ t\in T,\\
+\sum_{k=0}^{DT_g-1}v_g^{t-k}&\leq1-x_g^t
+&&g\in G,\ t\in T.
+\end{align}
+
+\subsection*{Thermal generation}
+\begin{align}
+p_g^t&=\sum_{i\in I}w_{gi}^t p_{gi}
+&&g\in G,\ t\in T,\\
+\sum_{i\in I}w_{gi}^t&=x_g^t
+&&g\in G,\ t\in T,\\
+x_g^tP_g^{\min}\leq p_g^t&\leq x_g^tP_g^{\max}
+&&g\in G,\ t\in T,\\
+p_g^t-p_g^{t-1}&\leq x_g^{t-1}R_g^{up}+(1-x_g^{t-1})R_g^{SU}
+&&g\in G,\ t\in T,\\
+p_g^{t-1}-p_g^t&\leq x_g^tR_g^{down}+(1-x_g^t)R_g^{SD}
+&&g\in G,\ t\in T.
+\end{align}
+
+\subsection*{Wind and storage}
+\begin{align}
+g_w^t+c_w^t&=I_w^t
+&&w\in W,\ t\in T,\\
+s_p^t&=s_p^{t-1}+\left(\eta_p^{chg}pc_p^t-\frac{pd_p^t}{\eta_p^{disc}}\right)\Delta t
+&&p\in P,\ t\in T,\\
+0\leq pc_p^t&\leq Cap_p^{chg}
+&&p\in P,\ t\in T,\\
+0\leq pd_p^t&\leq Cap_p^{disc}
+&&p\in P,\ t\in T,\\
+S_p^{\min}\leq s_p^t&\leq S_p^{\max}
+&&p\in P,\ t\in T.
+\end{align}
+
+\subsection*{Network and shedding bounds}
+\begin{align}
+f_l^t&=B_l\left(\theta_{eb_l}^t-\theta_{sb_l}^t\right)
+&&l\in L,\ t\in T,\\
+\theta_{\mathrm{ref}}^t&=0
+&&t\in T,\\
+-F_l\leq f_l^t&\leq F_l
+&&l\in L,\ t\in T,\\
+ls_b^t&\leq\sum_{d\in D_b}d_d^t
+&&b\in B,\ t\in T,\\
+gs_b^t&\leq\sum_{g\in G_b}p_g^t
+&&b\in B,\ t\in T.
+\end{align}
+The nodal balances are
+\begin{equation}
+\begin{aligned}
+&\sum_{g\in G_b}p_g^t+\sum_{w\in W_b}g_w^t
++\sum_{p\in P_b}pd_p^t+\sum_{l\in L_b^{\mathrm{in}}}f_l^t+ls_b^t\\
+&\qquad=\sum_{d\in D_b}d_d^t
++\sum_{l\in L_b^{\mathrm{out}}}f_l^t
++\sum_{p\in P_b}pc_p^t+gs_b^t,
+\qquad b\in B,\ t\in T.
+\end{aligned}
+\end{equation}
+\end{document}

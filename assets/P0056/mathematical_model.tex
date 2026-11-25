@@ -1,0 +1,53 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,geometry}
+\geometry{margin=22mm}
+\begin{document}
+\section*{P56: selected Euler continuous relaxation, with defined CVaR}
+This model retains the original selected M1--M5 and M8, including its explicit
+first-order Euler state transition and continuous control domain. Risk is represented by the finite-scenario CVaR epigraph in the source paper's equation (6).
+
+\subsection*{Data and variables}
+There are $J$ control channels, $T$ time steps and $S$ scenarios; $\Delta t>0$,
+$p_s\ge0$, $\sum_s p_s=1$, $\eta\in(0,1]$, $\alpha\in[0,1]$, and $\theta\ge0$.
+Drift/control matrices $H^{(0)},H^{(j)}\in\mathbb C^{d\times d}$, initial matrix
+$X_{\rm init}$, target $X_{\rm targ}$ and real perturbations $\xi_{jk}^s$ are data.
+Choose $u_{jk}\in[0,1]$, complex states $X_k^s$, real threshold $\zeta$, and
+nonnegative $r_s$. All matrix dimensions and scenario/time indices are retained.
+
+\subsection*{Complete program}
+\begin{align}
+F_L(u)&=\sum_{k=1}^T\left(\sum_{j=1}^J u_{jk}-1\right)^2, \tag{M1}\\
+H_k^s&=(1+\xi_{0k}^s)H^{(0)}
+       +\sum_{j=1}^J(1+\xi_{jk}^s)u_{jk}H^{(j)}, \tag{M2}\\
+X_k^s&=(I-\mathrm i\Delta t H_k^s)X_{k-1}^s
+      &&(s=1,\ldots,S;\ k=1,\ldots,T), \tag{M3}\\
+X_0^s&=X_{\rm init} &&(s=1,\ldots,S), \tag{M4}\\
+F_s&=1-\frac{|\operatorname{tr}(X_{\rm targ}^H X_T^s)|}{d}
+      &&(s=1,\ldots,S), \tag{M5}\\
+r_s&\ge F_s-\zeta,\qquad r_s\ge0 &&(s=1,\ldots,S), \tag{M6R}\\
+F_C&=\zeta+\eta^{-1}\sum_s p_sr_s. \tag{M7R}
+\end{align}
+Minimize
+\[
+ \alpha\sum_s p_sF_s+(1-\alpha)F_C+\theta F_L(u)
+ \quad\text{subject to M1--M6R and }u\in[0,1]^{J\times T},\
+ \zeta\in\mathbb R. \tag{M8}
+\]
+The trace expression completes the previously symbolic $F_X$ using source
+equation (3). For any fixed $u$, the optimal CVaR value equals
+\[
+ \min_{z\in\{F_1,\ldots,F_S\}}
+ \left(z+\eta^{-1}\sum_s p_s\max\{F_s-z,0\}\right).
+\]
+The solver eliminates the states by M3 and the CVaR variables by this breakpoint
+minimum; neither elimination modifies the stated repaired program.
+
+\subsection*{Approximation and solver limits}
+The model approximates quantum evolution by the first-order Euler recurrence with continuous controls. The trace-based loss is real-valued and may be negative. Channel-sum deviations contribute a squared penalty. State feasibility is determined by the recurrence and the displayed variable domains.
+
+Six reproducible bounded local-search starts return the best feasible point
+within a monotonic 3600-second budget; convergence may end the computation
+earlier. The solver reports the best feasible local-search point. A separate
+real/imaginary recurrence independently checks all states, control bounds,
+losses, CVaR epigraph/value, penalty, and objective. Unitarity deviation is recorded as a diagnostic.
+\end{document}

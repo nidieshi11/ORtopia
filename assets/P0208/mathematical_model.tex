@@ -1,0 +1,196 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+\title{Flow-Direction Mixed-Integer Piecewise-Linear Relaxation of Optimal Water Flow}
+\date{}
+\maketitle
+
+\section*{Sets and data}
+The directed network is $G=(\mathcal N,\mathcal L)$. Its node partition is $\mathcal N=\mathcal D\mathbin{\dot\cup}\mathcal R\mathbin{\dot\cup}\mathcal T$, comprising demand nodes (including zero-demand junctions), reservoirs, and tanks. Its link partition is $\mathcal L=\mathcal A\mathbin{\dot\cup}\mathcal V\mathbin{\dot\cup}\mathcal P$, comprising pipes, valves, and fixed-speed pumps. Define
+\[
+\delta_i^+=\{(i,j)\in\mathcal L\},\qquad
+\delta_i^-=\{(j,i)\in\mathcal L\},\qquad
+\deg_i^+=|\delta_i^+|,\quad \deg_i^-=|\delta_i^-|.
+\]
+For an integer $K\ge1$, let $\mathcal K=\{1,\ldots,K\}$ and $\widetilde{\mathcal K}=\{1,\ldots,K+1\}$. The time at index $k$ is $t(k)$ and the interval length from $k$ to $k+1$ is $\Delta t^k$.
+
+All coefficients below are fixed instance data. Supply head bounds $\underline h_i^k,\overline h_i^k$ for $i\in\mathcal N$, $k\in\widetilde{\mathcal K}$; prescribed reservoir heads $H_i^k$; signed demands $\overline q_i^k$ for $i\in\mathcal D$, $k\in\mathcal K$; and tank nodal-flow bounds $\underline q_i^k,\overline q_i^k$ for $i\in\mathcal T$, $k\in\mathcal K$. Positive nodal flow denotes injection into the network, and negative nodal flow denotes withdrawal. Tank data are diameters $D_i$, bottom elevations $B_i^k$, and initial volumes $\widetilde v_i$, with bottom elevations at or below the minimum water elevations.
+
+Supply signed link-flow bounds $\underline q_{ij}^k,\overline q_{ij}^k$ and nonnegative directional lower bounds $\underline q_{ij}^{k+},\underline q_{ij}^{k-}$. The pump on-state lower bounds $\underline q_{ij}^{k+}$ are positive. Directional upper bounds are
+\begin{equation}
+\overline q_{ij}^{k+}=\max\{0,\overline q_{ij}^k\},\qquad
+\overline q_{ij}^{k-}=\max\{0,-\underline q_{ij}^k\},\qquad
+\underline q_{ij}^{ks}\ge0\quad(s\in\{+,-\}).
+\tag{D1}
+\end{equation}
+Pump reverse-flow bounds are zero. For each pipe, supply length $L_{ij}>0$ and resistance per unit length $r_{ij}$; the pipe exponent is $\alpha=1.852$. Pump coefficients satisfy $a_{ij}>0$, $b_{ij}<0$, $c_{ij}>0$ and define the source's strictly concave pump-curve class. Supply electricity-cost coefficients $\lambda_{ij}^{\mathrm{cost},k},\mu_{ij}^k$, minimum pump on/off durations $\tau^{\mathrm{on}},\tau^{\mathrm{off}}$, and activation limits $N_{ij}$.
+
+For each pipe, operating time, and direction $s\in\{+,-\}$, supply an ordered finite array of partition points
+\[
+\mathcal Q_{ij}^{ks}=(\widehat q_{ijp}^{ks})_{p=1}^{n_{ij}^{ks}},\qquad n_{ij}^{ks}=|\mathcal Q_{ij}^{ks}|.
+\]
+For each pump and operating time, supply $\mathcal Q_{ij}^{k+}=(\widehat q_{ijp}^{k+})_{p=1}^{n_{ij}^{k+}}$. The displayed endpoint and interval indexing requires $n_{ij}^{ks}\ge2$ for every array used. All breakpoint powers and tangent coefficients must be finite real numbers. Their numerical values, like the network sizes and other parameter values, are instance inputs.
+
+\section*{Variables and domains}
+The real variables are heads $h_i^k$ ($i\in\mathcal N$, $k\in\widetilde{\mathcal K}$), nodal flows $q_i^k$ ($i\in\mathcal N$, $k\in\mathcal K$), signed link flows $q_{ij}^k$ ($ (i,j)\in\mathcal L$, $k\in\mathcal K$), and tank volumes $v_i^k$ ($i\in\mathcal T$, $k\in\widetilde{\mathcal K}$). They have only the bounds and equalities stated below. Link flows use a signed real domain. Directional flows, pipe head differences, and pump gains have domains
+\begin{align}
+&q_{ij}^{ks}\ge0 &&((i,j)\in\mathcal L,\ k\in\mathcal K,\ s\in\{+,-\}),\
+&\Delta h_{ij}^{ks}\ge0 &&((i,j)\in\mathcal A,\ k\in\mathcal K,\ s\in\{+,-\}),\
+&g_{ij}^k\ge0 &&((i,j)\in\mathcal P,\ k\in\mathcal K).
+\end{align}
+The binary domains are
+\begin{align}
+&y_{ij}^k\in\{0,1\} &&((i,j)\in\mathcal L,\ k\in\mathcal K),\
+&z_{ij}^k\in\{0,1\} &&((i,j)\in\mathcal V\cup\mathcal P,\ k\in\mathcal K),\
+&z_{ij}^{\mathrm{on},k},z_{ij}^{\mathrm{off},k}\in\{0,1\} &&((i,j)\in\mathcal P,\ k\in\mathcal K).
+\end{align}
+For pipes, for each $k\in\mathcal K$ and $s\in\{+,-\}$, the piecewise variables satisfy
+\[
+0\le\lambda_{ijp}^{ks}\le1\quad(p=1,\ldots,n_{ij}^{ks}),\qquad
+x_{ijp}^{ks}\in\{0,1\}\quad(p=2,\ldots,n_{ij}^{ks}).
+\]
+For pumps, the same domains apply to $\lambda_{ijp}^{k+}$ and $x_{ijp}^{k+}$ with $n_{ij}^{k+}$ in place of $n_{ij}^{ks}$. These $\lambda$ variables are distinct from the fixed electricity-cost coefficients $\lambda^{\mathrm{cost}}$.
+
+Use the affine direction aliases
+\begin{equation}
+y_{ij}^{k+}:=y_{ij}^k,\qquad y_{ij}^{k-}:=1-y_{ij}^k.
+\tag{D2}
+\end{equation}
+
+\section*{Objective}
+\begin{equation}
+\min\ \sum_{k\in\mathcal K}\sum_{(i,j)\in\mathcal P}
+\left(\lambda_{ij}^{\mathrm{cost},k}q_{ij}^k+\mu_{ij}^kz_{ij}^k\right).
+\tag{14}
+\end{equation}
+
+\section*{Nodal and temporal constraints}
+\begin{align}
+\underline h_i^k\le h_i^k\le\overline h_i^k
+&\quad(i\in\mathcal N,\ k\in\widetilde{\mathcal K}), \tag{1}\\
+h_i^k=H_i^k
+&\quad(i\in\mathcal R,\ k\in\widetilde{\mathcal K}), \tag{R1}\\
+q_i^k=\overline q_i^k
+&\quad(i\in\mathcal D,\ k\in\mathcal K), \tag{N1}\\
+q_i^k\ge0
+&\quad(i\in\mathcal R,\ k\in\mathcal K), \tag{N2}\\
+\underline q_i^k\le q_i^k\le\overline q_i^k
+&\quad(i\in\mathcal T,\ k\in\mathcal K), \tag{N3}\\
+v_i^k=\frac{\pi}{4}D_i^2(h_i^k-B_i^k)
+&\quad(i\in\mathcal T,\ k\in\widetilde{\mathcal K}), \tag{2}\\
+v_i^{k+1}=v_i^k-\Delta t^kq_i^k
+&\quad(i\in\mathcal T,\ k\in\mathcal K), \tag{3}\\
+v_i^1=\widetilde v_i,\qquad v_i^1\le v_i^{K+1}
+&\quad(i\in\mathcal T). \tag{12}
+\end{align}
+\begin{equation}
+\sum_{(i,j)\in\delta_i^+}q_{ij}^k-
+\sum_{(j,i)\in\delta_i^-}q_{ji}^k=q_i^k
+\quad(i\in\mathcal N,\ k\in\mathcal K).
+\tag{11}
+\end{equation}
+
+\section*{Valves and pumps}
+For every $(i,j)\in\mathcal V$, $k\in\mathcal K$,
+\begin{align}
+\underline q_{ij}^kz_{ij}^k\le q_{ij}^k\le\overline q_{ij}^kz_{ij}^k, \tag{6}\\
+(1-z_{ij}^k)(\underline h_i^k-\overline h_j^k)
+\le h_i^k-h_j^k\le
+(1-z_{ij}^k)(\overline h_i^k-\underline h_j^k). \tag{7}
+\end{align}
+For every $(i,j)\in\mathcal P$, $k\in\mathcal K$,
+\begin{align}
+\underline q_{ij}^{k+}z_{ij}^k\le q_{ij}^k\le\overline q_{ij}^kz_{ij}^k, \tag{8}\\
+q_{ij}^{k-}=0, \tag{P1}\\
+h_i^k-h_j^k+g_{ij}^k\le(1-z_{ij}^k)(\overline h_i^k-\underline h_j^k), \tag{10a}\\
+h_i^k-h_j^k+g_{ij}^k\ge(1-z_{ij}^k)(\underline h_i^k-\overline h_j^k). \tag{10b}
+\end{align}
+The off-state gain is zero as enforced by nonnegative gain and the pump envelope constraints below.
+
+For every $(i,j)\in\mathcal P$, impose
+\begin{align}
+z_{ij}^k-z_{ij}^{k-1}\le z_{ij}^{\mathrm{on},k}
+&\quad(k\in\mathcal K\setminus\{1\}), \tag{13b}\\
+z_{ij}^{\mathrm{on},k}\le z_{ij}^{k'}
+&\quad(k,k'\in\mathcal K:\ t(k)\le t(k')\le t(k)+\tau^{\mathrm{on}}), \tag{13c}\\
+z_{ij}^{k-1}-z_{ij}^k\le z_{ij}^{\mathrm{off},k}
+&\quad(k\in\mathcal K\setminus\{1\}), \tag{13d}\\
+z_{ij}^{k'}\le1-z_{ij}^{\mathrm{off},k}
+&\quad(k,k'\in\mathcal K:\ t(k)\le t(k')\le t(k)+\tau^{\mathrm{off}}), \tag{13e}\\
+\sum_{k\in\mathcal K}z_{ij}^{\mathrm{on},k}\le N_{ij}. & \tag{13f}
+\end{align}
+
+\section*{Directional formulation}
+For every $(i,j)\in\mathcal L$, $k\in\mathcal K$,
+\begin{align}
+q_{ij}^k=q_{ij}^{k+}-q_{ij}^{k-}, \tag{15}\\
+\underline q_{ij}^{k+}y_{ij}^k\le q_{ij}^{k+}\le\overline q_{ij}^{k+}y_{ij}^k, \tag{16b}\\
+\underline q_{ij}^{k-}(1-y_{ij}^k)\le q_{ij}^{k-}\le\overline q_{ij}^{k-}(1-y_{ij}^k). \tag{16c}
+\end{align}
+For every $(i,j)\in\mathcal A$, $k\in\mathcal K$,
+\begin{align}
+\Delta h_{ij}^{k+}-\Delta h_{ij}^{k-}=h_i^k-h_j^k, \tag{17a}\\
+0\le\Delta h_{ij}^{k+}\le y_{ij}^k\max\{0,\overline h_i^k-\underline h_j^k\}, \tag{17b}\\
+0\le\Delta h_{ij}^{k-}\le(1-y_{ij}^k)\max\{0,\overline h_j^k-\underline h_i^k\}. \tag{17c}
+\end{align}
+
+\section*{Pipe envelopes}
+For every $(i,j)\in\mathcal A$, $k\in\mathcal K$, $s\in\{+,-\}$, impose the tangent inequalities
+\begin{equation}
+r_{ij}\left[\widehat q^{\alpha}y_{ij}^{ks}
++\alpha\widehat q^{\alpha-1}(q_{ij}^{ks}-\widehat qy_{ij}^{ks})\right]
+\le\frac{\Delta h_{ij}^{ks}}{L_{ij}}
+\quad(\widehat q\in\mathcal Q_{ij}^{ks}),
+\tag{18}
+\end{equation}
+and the piecewise envelope and adjacency constraints
+\begin{align}
+\sum_{p=1}^{n_{ij}^{ks}}r_{ij}(\widehat q_{ijp}^{ks})^\alpha\lambda_{ijp}^{ks}
+&\ge\frac{\Delta h_{ij}^{ks}}{L_{ij}}, \tag{22}\\
+q_{ij}^{ks}&=\sum_{p=1}^{n_{ij}^{ks}}\widehat q_{ijp}^{ks}\lambda_{ijp}^{ks}, \tag{23}\\
+\sum_{p=1}^{n_{ij}^{ks}}\lambda_{ijp}^{ks}=y_{ij}^{ks},\qquad
+\sum_{p=2}^{n_{ij}^{ks}}x_{ijp}^{ks}&=y_{ij}^{ks}, \tag{24a}\\
+\lambda_{ijp}^{ks}&\le x_{ijp}^{ks}+x_{ij,p+1}^{ks}
+\quad(p=2,\ldots,n_{ij}^{ks}-1), \tag{24b}\\
+\lambda_{ij,1}^{ks}\le x_{ij,2}^{ks},\qquad
+\lambda_{ij,n_{ij}^{ks}}^{ks}&\le x_{ij,n_{ij}^{ks}}^{ks}. \tag{24c}
+\end{align}
+
+\section*{Pump envelopes}
+For every $(i,j)\in\mathcal P$, $k\in\mathcal K$, impose
+\begin{equation}
+g_{ij}^k\le[a_{ij}+b_{ij}\widehat q^{c_{ij}}]z_{ij}^k
++b_{ij}c_{ij}\widehat q^{c_{ij}-1}(q_{ij}^{k+}-\widehat qz_{ij}^k)
+\quad(\widehat q\in\mathcal Q_{ij}^{k+}),
+\tag{20}
+\end{equation}
+\begin{align}
+g_{ij}^k&\ge\sum_{p=1}^{n_{ij}^{k+}}
+\left(a_{ij}+b_{ij}(\widehat q_{ijp}^{k+})^{c_{ij}}\right)\lambda_{ijp}^{k+}, \tag{25}\\
+q_{ij}^{k+}&=\sum_{p=1}^{n_{ij}^{k+}}\widehat q_{ijp}^{k+}\lambda_{ijp}^{k+}, \tag{26}\\
+\sum_{p=1}^{n_{ij}^{k+}}\lambda_{ijp}^{k+}=z_{ij}^k,\qquad
+\sum_{p=2}^{n_{ij}^{k+}}x_{ijp}^{k+}&=z_{ij}^k, \tag{27a}\\
+\lambda_{ijp}^{k+}&\le x_{ijp}^{k+}+x_{ij,p+1}^{k+}
+\quad(p=2,\ldots,n_{ij}^{k+}-1), \tag{27b}\\
+\lambda_{ij,1}^{k+}\le x_{ij,2}^{k+},\qquad
+\lambda_{ij,n_{ij}^{k+}}^{k+}&\le x_{ij,n_{ij}^{k+}}^{k+}. \tag{27c}
+\end{align}
+
+\section*{Direction-based valid inequalities}
+For each $k\in\mathcal K$, impose
+\begin{align}
+\sum_{(i,j)\in\delta_i^+}y_{ij}^k&\ge1
+&&\left(i\in\mathcal R\cup\{i'\in\mathcal D:\overline q_{i'}^k>0\}\right), \tag{32}\\
+\sum_{(j,i)\in\delta_i^-}y_{ji}^k+
+\sum_{(i,j)\in\delta_i^+}(1-y_{ij}^k)&\ge1
+&&(i\in\mathcal D:\overline q_i^k<0), \tag{33}\\
+\sum_{(j,i)\in\delta_i^-}y_{ji}^k-
+\sum_{(i,j)\in\delta_i^+}y_{ij}^k&=0
+&&(i\in\mathcal D:\overline q_i^k=0,\ \deg_i^+=\deg_i^-=1), \tag{34a}\\
+\sum_{(j,i)\in\delta_i^-}y_{ji}^k+
+\sum_{(i,j)\in\delta_i^+}y_{ij}^k&=1
+&&\left(\begin{array}{l}i\in\mathcal D:\overline q_i^k=0,\\(\deg_i^+,\deg_i^-)\in\{(2,0),(0,2)\}\end{array}\right). \tag{34b}
+\end{align}
+\end{document}

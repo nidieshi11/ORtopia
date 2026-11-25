@@ -1,0 +1,58 @@
+\documentclass[11pt]{ctexart}
+\usepackage{amsmath,amssymb,longtable}
+\begin{document}
+\section*{P148: 当前完整数学模型（2026-10-20）}
+\section*{修订依据与边界}按实际选弧激活充电和死行驶，保留所有车型、车场、班次、SOC及分段退化约束。历史literal_energy_definition为不可行诊断；当前模型为完整物理激活修复，取已运行conditional_energy_repair。
+
+\section*{集合、弧与变量}
+班次$I=\{1,\ldots,n\}$按时间排序，车场$W$、车型$K$，
+源汇$0,n+1$。允许弧为$(0,j),(i,n+1),(i,j):i<j$。
+$x_{wkij}\in\{0,1\}$；$e^-_{wki},e^+_{wki}\in[\underline s_kE_k,\bar s_kE_k]$；
+接续充电量$c_{wkij}\ge0$、充电时长$t_{wkij}\ge0$、计费量$\delta_{wkij}\ge0$。
+\[
+\sum_jx_{wk0j}\le f_{wk},\quad\sum_ix_{wki,n+1}\le f_{wk},\quad
+v_{wki}:=\sum_{j>i}x_{wkij}=\sum_{j<i}x_{wkji},\quad
+\sum_{wk}\sum_{i<j}x_{wkij}=1\quad(j\in I).
+\]
+\[
+|(\bar s_kE_k-e^-_{wki})-E^{start}_{wki}|\le M(1-x_{wk0i}),\quad
+e^-_{wki}-e^+_{wki}=E^{trip}_{ki}v_{wki}.
+\]
+每个接续$i<j$，记$a=x_{wkij}$、空驶能耗$D_{kij}$及空驶时间$\tau_{ij}$：
+\[
+b_j-a_i-\theta-\tau_{ij}-t_{wkij}\ge M_t(a-1),
+\]
+\[
+-M(1-a)\le e^-_{wkj}-e^+_{wki}-\sigma t_{wkij}+aD_{kij}\le M(1-a),
+\]
+\[
+c_{wkij}=\sigma t_{wkij},\quad
+-M(1-a)\le c_{wkij}-e^-_{wkj}+e^+_{wki}-aD_{kij}\le M(1-a),
+\]
+\[
+0\le c_{wkij}\le Ma,\quad
+0\le\delta_{wkij}\le c_{wkij},\quad
+\delta_{wkij}\ge c_{wkij}-M(1-a).
+\]
+指定单班车型从非高峰到高峰的禁接弧按实例置零。所有SOC上下界对原域中的班次变量均保留。
+\section*{分段退化的完整定义}
+每次能量过程用$\mathcal B(Q,U,L,\chi)$表示一组新增连续$s_h\ge0$、
+二元$f_h$和以下约束，$[l_h,u_h]$及成本$c_h$为给定SOC区间：
+\[
+\sum_hs_h=Q,\quad s_h\le(u_h-l_h)f_h,\quad
+s_h\le U-l_h+1-f_h,\quad s_h\le u_h-L+1-f_h.
+\]
+若有激活$\chi$还要求$f_h\le\chi$。此过程成本为$E_k\sum_hc_hs_h$。
+班次使用$(Q,U,L)=((e^-_i-e^+_i)/E_k,e^-_i/E_k,e^+_i/E_k)$。
+每条接续的充电使用$(c/E_k,(e^-_j+D)/E_k,e^+_i/E_k,a)$；
+空驶使用$(aD/E_k,(e^-_j+D)/E_k,e^-_j/E_k,a)$。
+初始空驶使用$(x_{wk0i}E^{start}_{wki}/E_k,\bar s_k,e^-_i/E_k,x_{wk0i})$，
+其辅助约束保留，但按所选目标不另计初始退化成本。
+\[
+\min\sum_{wki}F_kx_{wk0i}+\beta\sum_{wkij}\delta_{wkij}
++\sum_{\text{班次、充电、接续空驶过程}}E_k\sum_hc_hs_h.
+\]
+接续弧选中时启用充电与退化关系，未选弧取$c=t=0$。
+旧字面分支全部不可行的记录留作模型缺陷证据；当前数值采用该完整激活修复。
+
+\end{document}

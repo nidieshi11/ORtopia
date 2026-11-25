@@ -1,0 +1,213 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\section*{Model M: common-information profit sharing, final $\alpha$ formulation}
+
+\begin{equation}
+\begin{aligned}
+\max_{\alpha}\quad &
+\frac{(E(P_s)/2-f-\alpha)\sigma(D)\beta}
+{\left(E(D)+\dfrac{\alpha}{\sqrt{\beta-\alpha^2}}\sigma(D)\right)(\beta-\alpha^2)^{3/2}}
+\left(\alpha E(D)-\sigma(D)\sqrt{\beta-\alpha^2}+\frac{E(P_sD)}{2}\right)\\
+\text{subject to}\quad &
+\alpha\in\left[\frac{E(P_s)}{2}-w_u,\frac{E(P_s)}{2}-w_l\right].
+\end{aligned}
+\tag{21}
+\end{equation}
+The displayed objective is the paper's expression for $(1-\gamma)\Pi$, representing the retailer's profit $(1-\gamma)\Pi(w(\gamma))$. The maximization and interval are specified in the prose immediately following equation (21), physical PDF page 22.
+
+\paragraph{Printed endpoint names and derived identification.}
+The authors do not separately define the printed endpoint names $w_u$ and $w_l$. Physical PDF page 22 states $w(Q)\in[f,w_0]$ and $\alpha=E(P_s)/2-w$. The image of that price interval under this order-reversing affine map is $[E(P_s)/2-w_0,E(P_s)/2-f]$. Comparing it with the printed interval in (21) gives the derived endpoint identifications $w_u=w_0$ and $w_l=f$. These are source-supported derived mappings, not a claim that the authors explicitly printed those aliases. The quantity $w_0$ remains the globally determined no-sharing response defined below, not the threshold $w^{UB}$ or an arbitrary replacement bound. The distinct quantity endpoints $Q_l,Q_u$, printed objective and recovery formulas, and their endpoint and undefined-value qualifications remain as stated below.
+
+\subsection*{Fixed inputs, information, and decision roles}
+Demand $D\geq0$ and selling price $P_s\geq0$ are exogenous random quantities. Both parties have the same prescribed first and second moments. The supplier's fixed unit cost satisfies $f\geq0$. The retailer chooses the profit share in stage 1, the supplier chooses the unit wholesale price $w\geq0$ in stage 2, and the retailer chooses capacity $Q\geq0$ in stage 3. The wholesale payment is linear:
+\[
+c(Q)=wQ.
+\]
+Unused capacity has zero salvage value. Before taking the worst case over distributions, the decentralized profit and the parties' shares are
+\begin{equation}
+\Pi=E_{P_s,D}\!\left[P_s\min(Q,D)\right]-wQ.
+\tag{2}
+\end{equation}
+\[
+\Pi_R:=(1-\gamma)\Pi,\qquad
+\Pi_S:=\gamma\Pi+(w-f)Q.
+\]
+Here $\gamma$ is the supplier's share and $1-\gamma$ is the retailer's share; $\alpha$ in (21) is the transformed wholesale-price variable, not a profit share.
+
+The given moments matrix and its distributional ambiguity set are
+\[
+\boldsymbol{\Sigma}=
+\begin{pmatrix}
+E(P_s^2)&E(P_sD)&E(P_s)\\
+E(P_sD)&E(D^2)&E(D)\\
+E(P_s)&E(D)&1
+\end{pmatrix},
+\]
+\[
+\Phi(\boldsymbol{\Sigma}_0)=
+\left\{(P_s,D)\;;\;P_s,D\geq0,\ 
+P_s,D\text{ have moments matrix }\boldsymbol{\Sigma}=\boldsymbol{\Sigma}_0\right\}.
+\]
+The matrix $\boldsymbol{\Sigma}_0$ is fixed data. All five moments in these formulas take their values from its entries. As stated on page 10, a moments matrix of nonnegative $P_s,D$ is positive semidefinite and has nonnegative entries:
+\[
+\boldsymbol{\Sigma}\succeq0,\qquad \boldsymbol{\Sigma}\geq0.
+\]
+The latter inequality is entrywise. The notation $\sigma(D)$ denotes the standard deviation of demand.
+
+\subsection*{Retailer response and the selected closed-form replacement}
+The original response and value to which the final formulation refers are
+\begin{equation}
+Q(w):=\operatorname{argmax}_{Q\geq0}
+\left\{-wQ+\inf_{(P_s,D)\in\Phi(\boldsymbol{\Sigma}_0)}
+E_{P_s,D}\!\left(P_s\min(Q,D)\right)\right\},
+\tag{3}
+\end{equation}
+\begin{equation}
+\Pi(w):=\max_{Q\geq0}
+\left\{-wQ+\inf_{(P_s,D)\in\Phi(\boldsymbol{\Sigma}_0)}
+E_{P_s,D}\!\left(P_s\min(Q,D)\right)\right\}.
+\tag{4}
+\end{equation}
+These specify the meaning of the response functions; the final $\alpha$ formulation uses the authors' closed-form response below, not an additional semidefinite optimization problem.
+
+Definition 1 (page 15) gives
+\[
+\alpha(w)=\frac{E(P_s)}{2}-w,\qquad
+\beta=\frac{E(P_s^2)}{4}.
+\]
+Theorem 3 and Definition 2 (page 16) give the threshold and the mandatory input premise
+\[
+w^{UB}=\frac12\left[
+E(P_s)+
+\frac{E(P_sD)E(D)-\sigma(D)\sqrt{E(P_s^2)E(D^2)-E(P_sD)^2}}
+{E(D^2)}
+\right],\qquad w^{UB}>f.
+\]
+Under the printed condition
+\begin{equation}
+w\leq\frac12\left[
+E(P_s)+
+\frac{E(P_sD)E(D)-\sigma(D)\sqrt{E(P_s^2)E(D^2)-E(P_sD)^2}}
+{E(D^2)}
+\right],
+\tag{17}
+\end{equation}
+the selected retailer response is
+\begin{equation}
+Q(w)=Q^*=E(D)+\frac{\alpha(w)}{\sqrt{\beta-\alpha(w)^2}}\sigma(D).
+\tag{18}
+\end{equation}
+The associated value, using Theorem 3's replacement of $Q_r^*$ by $Q^*$ in equation (16), is
+\begin{equation}
+\begin{aligned}
+\Pi(w)=\Pi_{wst}
+&=-wQ(w)+\inf_{(P_s,D)\in\Phi(\boldsymbol{\Sigma}_0)}
+E_{P_s,D}\!\left(P_s\min(D,Q(w))\right)\\
+&=\alpha(w)E(D)-\sigma(D)\sqrt{\beta-\alpha(w)^2}
++\frac12E(P_sD),\qquad w\leq w^{UB}.
+\end{aligned}
+\tag{16}
+\end{equation}
+Theorem 3 states that otherwise $Q^*=0$. Its proof (pages 47--48) states
+\[
+\Pi(w)=0\quad\text{for }w\geq w^{UB},\qquad
+Q^*=0\quad\text{for }w>w^{UB}.
+\]
+In particular, at $w=w^{UB}$ the printed closed-form response is retained and the profit is zero. Section 5 considers wholesale prices inducing positive retailer orders. Appendix B, page 41, states that the expression for the positive response requires $\beta>\alpha^2$; this is not used here to replace or tighten the printed interval in (21). No extra convention for zero denominators or degenerate moments is introduced.
+
+\subsection*{Supplier response retained in the final formulation}
+Section 5 restricts the supplier's response to $f\leq w\leq w^{UB}$ and defines
+\[
+\Pi_1(w)=(w-f)Q(w),\qquad
+\Pi_S(w,\gamma)=\Pi_1(w)+\gamma\Pi(w),\quad w\leq w^{UB}.
+\]
+\begin{equation}
+w(\gamma):=\operatorname{argmax}_{f\leq w\leq w^{UB}}
+\left\{\Pi_1(w)+\gamma\Pi(w)\right\}.
+\tag{19}
+\end{equation}
+This is the supplier response used by the selected version, replacing the earlier unrestricted response over $w\geq0$. For $w>w^{UB}$, Section 5 prints $\Pi_S=0$.
+
+The final response analysis treats $\gamma\in[0,1]$. In particular,
+\[
+w(1)=f,\qquad w(\gamma)>f\quad\text{for all }\gamma\in[0,1).
+\]
+At $\gamma=1$, the retailer is indifferent because its profit share is zero. Endnote 3 specifies the Strong Stackelberg Equilibrium convention: among multiple optimal retailer decisions, the retailer chooses $Q$ to maximize the supplier's payoff.
+
+\paragraph{Scope of the share range.}
+The starting equation (5) prints only $\gamma\geq0$, whereas Sections 5.1--5.2 and Theorem 4 use shares in $[0,1]$. The selected formulation is the final equation (21), with its printed $\alpha$ interval and the endpoint response rules below; the earlier $\gamma$ maximization is not imposed as another objective.
+
+\subsection*{Response inversion, endpoint definitions, and recovery}
+The inversion printed on page 21 is
+\[
+\alpha(Q)=
+\begin{cases}
+\displaystyle\frac{\sqrt{\beta}}{\sqrt{1+\left(\dfrac{\sigma(D)}{Q-E(D)}\right)^2}},&Q\geq E(D),\\[6pt]
+\displaystyle-\frac{\sqrt{\beta}}{\sqrt{1+\left(\dfrac{\sigma(D)}{Q-E(D)}\right)^2}},&Q<E(D),
+\end{cases}
+\]
+\[
+w(Q)=\frac{E(P_s)}2-\alpha(Q)=
+\begin{cases}
+\displaystyle\frac{E(P_s)}2-\frac{\sqrt{\beta}}{\sqrt{1+\left(\dfrac{\sigma(D)}{Q-E(D)}\right)^2}},&Q\geq E(D),\\[6pt]
+\displaystyle\frac{E(P_s)}2+\frac{\sqrt{\beta}}{\sqrt{1+\left(\dfrac{\sigma(D)}{Q-E(D)}\right)^2}},&Q<E(D).
+\end{cases}
+\]
+Definition 3 and the surrounding text give
+\[
+w_0=w(\gamma=0),\qquad f<w_0\leq w^{UB},\qquad
+Q_u=Q(f),\qquad Q_l=Q(w_0),
+\]
+\[
+w(Q)\in[f,w_0],\qquad Q\in[Q_l,Q_u].
+\]
+For the interior response, the paper uses the first-order condition
+\[
+\frac{\partial\Pi_S}{\partial w}(w^*,\gamma)
+=\frac{d\Pi_1}{dw}(w^*)+\gamma\frac{d\Pi}{dw}(w^*)=0
+\]
+and states
+\begin{equation}
+\gamma(Q)=-\frac{\dfrac{d\Pi_1}{dw}(w(Q))}
+{\dfrac{d\Pi}{dw}(w(Q))}.
+\tag{20}
+\end{equation}
+The derivative definitions used in Appendix B, pages 48--49, are
+\begin{align}
+\frac{dQ}{dw}(w)&=-\frac{\beta\sigma(D)}{(\beta-\alpha^2)^{3/2}}<0,
+&&f\leq w\leq w^{UB},\tag{48}\\
+\frac{d\Pi}{dw}(w)&=-\left(E(D)+\sigma(D)\frac{\alpha}{\sqrt{\beta-\alpha^2}}\right)=-Q(w),\tag{49}\\
+\frac{d\Pi_1}{dw}(w)&=Q(w)+(w-f)\frac{dQ}{dw}(w),\tag{50}\\
+\frac{\partial\Pi_S}{\partial w}(w,\gamma)&=(1-\gamma)Q(w)+(w-f)\frac{dQ}{dw}(w),\tag{51}
+\end{align}
+where $\alpha=\alpha(w)$ in these derivative formulas.
+
+Theorem 4 states that the outcome is $Q\in[Q_l,Q_u]$ when the retailer chooses
+\[
+\gamma=1-
+\frac{(E(P_s)/2-f-\alpha(Q))\sigma(D)\beta}
+{(\beta-\alpha(Q)^2)^{3/2}Q},\qquad Q\in(Q_l,Q_u),
+\]
+with the separate endpoint choices
+\[
+Q=Q_l:\ \gamma=0,\qquad Q=Q_u:\ \gamma=1.
+\]
+The text also states $\gamma(Q)=0$ if and only if $w^*=w_0$, and $\gamma(Q)=1$ if and only if $w^*=f$.
+
+For an optimizer $\alpha^*$ of (21), the printed recovery equation is
+\begin{equation}
+\gamma^*=1-
+\frac{(E(P_s)/2-f-\alpha^*)\sigma(D)\beta}
+{\left(E(D)+\dfrac{\alpha^*}{\sqrt{\beta-(\alpha^*)^2}}\sigma(D)\right)
+(\beta-(\alpha^*)^2)^{3/2}}.
+\tag{22}
+\end{equation}
+
+\paragraph{Boundary and sufficiency qualifications retained from the source.}
+The branch $Q\geq E(D)$ in the printed inversion includes $Q=E(D)$ although its expression divides by $Q-E(D)$; no value at that equality is supplied, and none is added here. Page 21 explicitly calls the first-order condition necessary but potentially insufficient, then asserts that the share in (20) induces the desired supplier response. Theorem 4 retains that assertion and supplies the endpoint choices separately. The objective (21) and recovery (22) are printed over the closed $\alpha$ interval without separate endpoint qualifications, while the explicit interior share formula in Theorem 4 is scoped to $Q\in(Q_l,Q_u)$. These scopes are preserved rather than repaired. No unavailable external supplement or erratum has been used; any correction from such a source remains unverified.
+
+\end{document}

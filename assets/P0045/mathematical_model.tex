@@ -1,0 +1,47 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+
+\geometry{a4paper, margin=1in}
+
+\title{Core Solvable Mathematical Model}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+This file retains the original individual-level constrained personalization model (IPwC), which is the paper's core directly solvable linear program. Abstract matrix reformulations, segment-level approximations, and interaction extensions are omitted.
+
+\section{Individual Personalization with Constraints}
+
+\begin{equation}
+\max \quad \sum_{i=1}^{I} \sum_{j=1}^{J} p_i^j x_i^j
+\tag{1}
+\end{equation}
+
+\begin{equation}
+\begin{aligned}
+\text{s.t.}\quad
+& a_k^j \le \sum_{i\in S_k} x_i^j \le b_k^j
+&& \forall j=1,\dots,J,\ \forall k=1,\dots,K, \\
+& L_k \le \sum_{i\in S_k} \sum_{j=1}^{J} c_i^j x_i^j \le U_k
+&& \forall k=1,\dots,K, \\
+& \frac{1}{n_{k_1}} \sum_{i\in S_{k_1}} x_i^j
+\le
+\lambda_j^{k_1 k_2}\frac{1}{n_{k_2}} \sum_{i\in S_{k_2}} x_i^j + g_j^{k_1 k_2}
+&& \forall j=1,\dots,J,\ \forall k_1,k_2=1,\dots,K,\ k_1\ne k_2, \\
+& \frac{1}{n_{k_1}} \sum_{i\in S_{k_1}} \sum_{j=1}^{J} d_i^j x_i^j
+\le
+\gamma^{k_1 k_2}\frac{1}{n_{k_2}} \sum_{i\in S_{k_2}} \sum_{j=1}^{J} d_i^j x_i^j + h^{k_1 k_2}
+&& \forall k_1,k_2=1,\dots,K,\ k_1\ne k_2, \\
+& \sum_{j=1}^{J} x_i^j \le M_i
+&& \forall i=1,\dots,I, \\
+& 0 \le x_i^j \le 1
+&& \forall i=1,\dots,I,\ \forall j=1,\dots,J.
+\end{aligned}
+\end{equation}
+
+\end{document}

@@ -1,0 +1,182 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\section*{DFRP infinite-horizon discounted Markov decision model}
+
+\[
+\pi^*=\arg\max_{\pi}\mathbb{E}\left\{\left.
+\sum_{t=0}^{\infty}\gamma^t C_t\bigl(S_t,X^\pi(S_t)\bigr)
+\right|S_0\right\}.
+\]
+The optimization is over deterministic stationary policies: a policy $\pi$ maps every state $S_t$ to a feasible routing decision,
+\[
+X^\pi(S_t)\in\mathcal{X}(S_t)\qquad\text{for every state }S_t.
+\]
+Here $S_0$ is an initial state and
+\[
+0<\gamma<1.
+\]
+Stationarity is with respect to the complete state, including the day of the cycle; the policy may therefore be day-differentiated when viewed only as a function of the inventory component $R_t$.
+
+\subsection*{Feasible routing decisions}
+\begin{equation}
+\mathcal{X}(S_t)=\left\{x_t:\begin{aligned}
+&\sum_{j\in\mathcal{L}:((i,[t]),(j,[t+1]))\in\mathcal{A}}x_{ijt}^{dl}=R_{it}^{dl}
+&&\forall i,d\in\mathcal{L},\ l\in\mathcal{T},\\
+&\sum_{l\in\mathcal{T}}\sum_{d\in\mathcal{L}}x_{ijt}^{dl}\leq Q_{ij[t]}
+&&\forall ((i,[t]),(j,[t+1]))\in\mathcal{M},\\
+&x_{ijt}^{dl}\in\mathbb{Z}_{\geq0}
+&&\forall l\in\mathcal{T},\ i,j,d\in\mathcal{L},\\
+&x_t\in\mathcal{Y}
+\end{aligned}\right\}.
+\tag{1}
+\end{equation}
+The fixed set $\mathcal{Y}$ is the set of routing decisions complying with the imposed 2-alt load plan. The tactical plan is exogenous and fixed for the operating season: it supplies the weekly trailer movement patterns and two next-terminal options for each location--destination pair. These next-terminal options depend on current location and ultimate destination, rather than on the shipment's origin. The source leaves $\mathcal{Y}$ abstract; it does not supply an algebraic expansion of this set in the MDP formulation.
+
+\subsection*{Fixed inputs, network, and demand}
+Time is discretized into operational days. The start of each operational day is a decision epoch. The operating horizon is infinite, and trailer movement patterns and stochastic demand patterns repeat each cycle. The cycle length is $T$, with days
+\[
+\mathcal{T}=\{0,1,2,\ldots,T-1\}.
+\]
+The wrap-around time-space network and its nodes are
+\[
+\mathcal{G}=(\mathcal{N},\mathcal{A}),\qquad
+n=(i,\tau),\quad i\in\mathcal{L},\ \tau\in\mathcal{T},
+\]
+where $\mathcal{L}$ is the set of terminal locations. The arc set consists of movement arcs $\mathcal{M}$ and inventory arcs $\mathcal{I}$:
+\[
+\mathcal{A}=\mathcal{M}\cup\mathcal{I}.
+\]
+Movement arcs have the form
+\[
+((i_1,\tau_1),(i_2,\tau_2)),\qquad i_1\ne i_2,
+\]
+and represent scheduled trailer dispatches from $i_1$ on day $\tau_1$ to $i_2$ on day $\tau_2$. All movement arcs $m\in\mathcal{M}$ have travel time one day. Travel times that are multiples of a base time period are accommodated in this version by adding dummy nodes to $\mathcal{L}$ and breaking multi-period arcs into single-period arcs. Thus freight is at terminals, not in transit on trailers, at decision epochs. Arcs leaving day $T-1$ wrap around to day
+\[
+(T-1+1)\bmod T=0.
+\]
+For each movement arc
+\[
+m=((i_1,\tau_1),(i_2,\tau_2))\in\mathcal{M},
+\]
+$Q_{i_1i_2\tau_1}$ is the capacity on its scheduled trailers supplied by the tactical plan. Inventory arcs have the printed form
+\[
+((i_1,\tau_1),(i_2,\tau_1+1)),\qquad i_1=i_2,
+\]
+with the network's wrap-around interpretation. They have duration one day and are uncapacitated: holding a pallet at a terminal is always a feasible option.
+
+The flat network, without the time dimension, is
+\[
+\mathcal{G}^{flat}=(\mathcal{L},\mathcal{A}^{flat}),
+\]
+where $\mathcal{A}^{flat}$ describes how terminals are connected.
+
+A commodity comprises pallets with common origin $o$, destination $d$, availability day $e$, and due day $l$, with $o,d$ terminal locations and $e,l\in\mathcal{T}$. Its random quantity is
+\[
+D_{o,d,e,l}\in\mathbb{Z}_{\geq0},
+\]
+with finite support and given distributional information. It is the number of pallets originating at $o$ on day $e$ and promised delivery at $d$ by day $l$. The source assumes
+\[
+D_{o,d,e,l}\ \text{and}\ D_{o',d',e',l'}
+\ \text{are independent for }e\ne e'.
+\]
+Demand quantities are realized in each cycle. Pickup from shippers and delivery to consignees are city operations and are exogenous to this model. Due days are not hard deadlines: late delivery is permitted subject to penalties, and freight in danger of being too late is outsourced.
+
+The total possible sojourn time of each commodity in the system is no more than $T$. An instance of a commodity must be delivered, either by the carrier or by a third party, before a new instance can potentially appear. Pallets leave the system only through delivery to their ultimate destination or outsourcing.
+
+\subsection*{State and decision definitions}
+For decision epochs
+\[
+t\in\mathbb{Z}_{\geq0},\qquad [t]:=t\bmod T,
+\]
+the state is
+\[
+S_t=([t],R_t),\qquad
+R_t=(R_{it}^{dl})_{l\in\mathcal{T},\,i,d\in\mathcal{L},\,i\ne d}.
+\]
+$R_{it}^{dl}$ counts pallets at terminal $i$ at the beginning of epoch $t$ that must be delivered to terminal $d$ by day $l$. The inventory does not distinguish origins or availability times. The day $[t]$ specifies the available trailer capacities and the position in the repeating demand pattern.
+
+The routing decision vector is
+\[
+x_t=(x_{ijt}^{dl})_{l\in\mathcal{T},\,i,j,d\in\mathcal{L}}.
+\]
+For $((i,[t]),(j,[t+1]))\in\mathcal{A}$, $x_{ijt}^{dl}$ counts pallets with destination $d$ and due day $l$ loaded on that arc: $i\ne j$ means movement, while $i=j$ means holding at terminal $i$. Routing is the only decision; outsourcing is part of the transition, not an independent decision.
+
+\paragraph{Printed indexing scope.}
+The state vector is defined only for $i\ne d$, whereas the first row of (1) is printed for all $i,d\in\mathcal{L}$, including $i=d$. The printed scope is retained; no value for $R_{dt}^{dl}$ is supplied here to repair that mismatch. Likewise, the decision vector and integrality row are printed over all $i,j,d\in\mathcal{L}$, while the movement interpretation and the flow sums refer to network arcs. No additional non-arc zero constraints are imposed.
+
+\subsection*{Deterministic post-decision and stochastic transitions}
+After a feasible decision $x_t\in\mathcal{X}(S_t)$, the system first moves deterministically from $R_t$ to the post-decision inventory $\bar R_t=(\bar R_{it}^{dl})$, before new freight arrives:
+\begin{equation}
+\bar R_{i,t}^{dl}=
+\begin{cases}
+\displaystyle\sum_{j\in\mathcal{L}:((j,[t]),(i,[t+1]))\in\mathcal{A}}x_{jit}^{dl},
+&\begin{gathered}
+\forall d\in\mathcal{L},\ i\in\mathcal{L},\ l\in\mathcal{T},\ i\ne d,\\[-2pt]
+\Delta^{out}(t+1,i,d,p)=0,
+\end{gathered}\\
+0,&\text{otherwise}.
+\end{cases}
+\tag{2}
+\end{equation}
+The fixed parameter $p$ controls lateness tolerance. The function $\Delta^{out}(t+1,i,d,p)$ returns 1 if the pallet will be outsourced, meaning that its earliest arrival is $p$ or more days after due day $l$, based on the shortest path in $\mathcal{G}$ from $i$ to $d$ starting at time $t+1$; it returns 0 otherwise. In the wrap-around network, the source says that this function first determines whether due day $l$ is in the past or future using the sojourn-time assumption, then determines whether outsourcing is inevitable. Outsourcing is assessed as soon as this becomes clear. For a pallet sent from $i$ to $j$ at epoch $t$, the outsourcing penalty is assessed at $t$ and the pallet is removed before epoch $t+1$. Equation (2) also removes pallets delivered to their ultimate destinations.
+
+\paragraph{Printed outsourcing notation and boundary.}
+Although its definition depends on due day $l$, the printed argument list of $\Delta^{out}(t+1,i,d,p)$ omits $l$; that list is retained. The preceding prose says a pallet can be late ``by up to $p$ days'' before being too late, but the definition following (2) says ``$p$ or more days,'' and the example in the transition paragraph outsources at $p$ days. The operative reading here is the definition accompanying (2), including equality at $p$; no threshold repair is made.
+
+The stochastic arrival transition is
+\begin{equation}
+R_{i,t+1}^{dl}=\bar R_{i,t}^{dl}+D_{i,d,[t+1],l}
+\qquad\forall d\in\mathcal{L},\ l\in\mathcal{T},\ i\ne d.
+\tag{3}
+\end{equation}
+Here $i$ is a terminal location as in the inventory definition; the displayed quantifier is retained as printed. The next complete state is determined by the same state definition at epoch $t+1$, with cycle day $[t+1]$.
+
+\subsection*{One-period reward}
+For state $S_t$ and feasible routing $x_t$, the three printed components are
+\begin{align*}
+C_t^1(S_t,x_t)
+&=\beta\sum_{d,l,i,j}x_{ijt}^{dl}\,1_{\{j=d\}},\\
+C_t^2(S_t,x_t)
+&=-c^{late}\sum_{d,l,i,j}\Lambda(t,l,p)x_{ijt}^{dl}
+\,1_{\{j=d\,\wedge\,\Delta^{late}(t,l,p)=1\}},\\
+C_t^3(S_t,x_t)
+&=-c^{out}\sum_{d,l,i,j}\delta(j,d)x_{ijt}^{dl}
+\,1_{\{j\ne d\,\wedge\,\Delta^{out}(t+1,j,d,p)=1\}},\\
+C_t(S_t,x_t)
+&=C_t^1(S_t,x_t)+C_t^2(S_t,x_t)+C_t^3(S_t,x_t).
+\end{align*}
+The sums retain the source's shorthand indices $d,l,i,j$, corresponding to terminal indices $d,i,j\in\mathcal{L}$ and due day $l\in\mathcal{T}$. The factors $1_{\{\cdot\}}$ are indicators of their displayed conditions.
+
+\begin{itemize}
+\item $\beta$ is revenue per pallet delivered by the carrier to its final destination. Outsourced deliveries do not earn this revenue.
+\item $c^{late}$ is the per-pallet, per-day late-delivery penalty. The function $\Delta^{late}(t,l,p)$ returns 1 if a pallet will be late when delivered to its ultimate destination $d$ by the end of decision epoch $t$, and 0 otherwise. The function $\Lambda(t,l,p)$ returns the number of days the pallet will be late if $j=d$ and $\Delta^{late}(t,l,p)=1$, and 0 otherwise. These functions are retained in the abstract form used in the paper.
+\item $c^{out}$ is the per-pallet outsourcing penalty. The source describes $\delta(j,d)$ as the shortest path from terminal $j$ to destination $d$ in $\mathcal{G}^{flat}$, and uses it as the remaining travel distance: the outsourcing penalty is proportional to that distance. No additional edge-length convention is imposed.
+\end{itemize}
+The fixed parameters $\beta$, $c^{late}$, and $c^{out}$ are the same for all commodities. Numerical values and demand distributions used only in the computational experiments are not imposed on this formulation.
+
+\subsection*{Linked optimality equations}
+The paper gives the following Bellman characterization and optimal decision rule for this same discounted MDP:
+\begin{equation}
+V^*(S_t)=\max_{x_t\in\mathcal{X}(S_t)}
+\left\{C_t(S_t,x_t)+\gamma\mathbb{E}\left[
+\left.V^*(S_{t+1})\right|S_t\right]\right\},
+\qquad\forall S_t.
+\tag{4}
+\end{equation}
+\begin{equation}
+X^{\pi^*}(S_t)=\arg\max_{x_t\in\mathcal{X}(S_t)}
+\left\{C_t(S_t,x_t)+\gamma\mathbb{E}\left[
+\left.V^*(S_{t+1})\right|S_t\right]\right\},
+\qquad\forall S_t.
+\tag{5}
+\end{equation}
+$V^*$ is the optimal expected total future discounted reward from a state onward. The next state is obtained through (2)--(3) under the selected action. The conditioning in (4)--(5) is retained exactly as printed.
+
+\paragraph{Source scope.}
+This article transcribes the model in Sections 3.1--3.2.5 of Baubaid, Boland, and Savelsbergh, \emph{The Dynamic Freight Routing Problem for Less-than-Truckload Carriers}, November 5, 2020, physical PDF pages 7--12, using the supplied page images where available. The cited companion paper on designing 2-alt load plans is not supplied and is unverified here; its design formulation is not substituted for the fixed routing set $\mathcal{Y}$. No official supplement was supplied. The ADP approximations, extended integer-programming subproblems, aggregation schemes, and experimental instance restrictions are outside this selected model.
+
+\end{document}

@@ -1,0 +1,59 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,geometry}
+\geometry{margin=25mm}
+\begin{document}
+\section*{Core model: two-stage aircraft recovery with precancellation}
+Source: Section 3.1, PDF pp.4--5, Table 3 and (1)--(9).
+The complete route-based BM is retained; the nonanticipative first-stage
+precancellation and all scenario recovery decisions form one model.
+\paragraph{Data and feasible routes.}
+$L,A,S,B$ are flights, aircraft, disruption scenarios and required end bases.
+$p_s>0$, $\sum_s p_s=1$. Costs $c_l$ and $d_l^s>c_l$ are advance and
+real-time cancellation costs. $c_b\ge0$ penalizes base imbalance and
+$n_b$ is the required number at base $b$. $O_s$ indexes airport/interval
+slot restrictions with integer capacity $u_o^s$.
+For aircraft $a$ and scenario $s$, $R_a^s$ is the \emph{complete} set of
+physically feasible routes on its finite time-space network, with every route satisfying the network requirements below. Each route
+starts at the aircraft's actual available airport/time, uses compatible
+flight copies (scheduled time plus an allowed nonnegative delay), and
+connects successive flights only when airports agree and the previous
+arrival plus required turn time does not exceed the next departure.
+It respects aircraft availability/disruption restrictions, terminates
+within the recovery horizon, and contains at most one copy of each flight.
+Ground waiting arcs connect consecutive events at the same airport.
+An idle route can represent an aircraft staying at its starting base.
+These rules define $R_a^s$ from the supplied flight times, delay-copy grid,
+aircraft availability, compatibility and turn-time data.
+
+For each route, $\delta_{lr}$ indicates inclusion of flight $l$,
+$\theta_{or}$ counts its departures/arrivals in slot $o$, and
+$\gamma_{br}$ indicates its end base. Its cost is
+\[
+ q_{ar}=\sum_{l\in L}\delta_{lr}(k_{al}+\varphi_{lr}),
+\]
+where $k_{al}$ is aircraft swapping cost and $\varphi_{lr}$ the delay
+cost of the selected copy. These are route coefficients.
+\paragraph{Variables.}
+$x_l\in\{0,1\}$ is advance cancellation and is common to every scenario;
+$y_l^s\in\{0,1\}$ is real-time cancellation;
+$z_{ar}^s\in\{0,1\}$ selects a route; $v_b^s\in\mathbb Z_+$ is the
+nonnegative base-shortage slack. The source prints $\mathbb Z$ in (9),
+but defines $v$ as a penalized slack for missing aircraft. This document
+makes that physical nonnegative domain explicit.
+\paragraph{Single complete model.}
+\begin{align}
+\min\quad &\sum_{l\in L}c_lx_l+
+ \sum_{s\in S}p_s\left(\sum_{l\in L}d_l^s y_l^s+
+ \sum_{a\in A}\sum_{r\in R_a^s}q_{ar}z_{ar}^s+
+ \sum_{b\in B}c_bv_b^s\right),\tag{1}\\
+\text{s.t.}\quad &\sum_{a\in A}\sum_{r\in R_a^s}\delta_{lr}z_{ar}^s+x_l+y_l^s=1
+ &&l\in L,s\in S,\tag{2}\\
+&\sum_{r\in R_a^s}z_{ar}^s\le1 &&a\in A,s\in S,\tag{3}\\
+&\sum_{a\in A}\sum_{r\in R_a^s}\theta_{or}z_{ar}^s\le u_o^s
+ &&o\in O_s,s\in S,\tag{4}\\
+&\sum_{a\in A}\sum_{r\in R_a^s}\gamma_{br}z_{ar}^s+v_b^s\ge n_b
+ &&b\in B,s\in S,\tag{5}\\
+&x_l,y_l^s,z_{ar}^s\in\{0,1\},\qquad v_b^s\in\mathbb Z_+.
+\end{align}
+
+\end{document}

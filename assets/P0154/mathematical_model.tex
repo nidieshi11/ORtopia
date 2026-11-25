@@ -1,0 +1,146 @@
+\documentclass{ctexart}
+\usepackage{amsmath,amssymb}
+\begin{document}
+\section*{市郊铁路与地铁的时刻及速度协同模型}
+对应原论文第9--15页式(1)--(34)。原02把移动闭塞区段集合、
+相邻区段对以及顺序变量域混写，本文件分开定义。
+所有时间为整数秒，距离m，速度m/s。当前实例的两个方向使用独立轨道，
+原给定列车数、站点和运行时间全部保留；缺少的区段长度和物理参数另见数据记录。
+
+\subsection*{集合、变量与目标}
+$K$为列车集合，$S_k$为列车固定路径，$\mathcal F$为相邻区段对，
+$Z$为移动闭塞区段集合，$S_B$为起始区段。
+$\widehat s$为$s$的后继，末端以边界时间表示。
+输入运行时间$n_{ks}$固定，$\xi_k=1$表示直通车，0为普通车。
+$t_{ks},t^{bc}_{ks},t^{ec}_{ks}$为非负整数时间；
+$v^{in}_{ks},v^{cru}_{ks}\ge0$，
+$a_{ks}\in[0,a^{max}]$、$b_{ks}\in[-b^{max}_{service},0]$为连续控制。
+对于共享同一物理区段的有序列车对，
+$\lambda_{ij}^s\in\{0,1\}$且$\lambda_{ji}^s=1-\lambda_{ij}^s$；
+$x_{ij}\in\{0,1\}$为同一起点不同列车之间的直接后继记录：当列车$j$紧接列车$i$发车时取1，否则取0；其索引为$i,j\in K_s,\ i\ne j,\ s\in S_B$。此二元域依原论文第11页定义补全。目标为
+\[
+\min\sum_{k\in K}t_{k,s_k^e}.
+\]
+
+\subsection*{运行、顺序与发车间隔}
+\[
+t_{k,\widehat s}=t_{ks}+n_{ks}.
+\]
+非移动闭塞区段$s\notin Z$对所有$i<j$：
+\[
+t_{is}\ge t_{js}+n_{js}+\delta-\lambda_{ij}^sM,\qquad
+t_{js}\ge t_{is}+n_{is}+\delta-(1-\lambda_{ij}^s)M.
+\]
+同一起点$s=s_i^b=s_j^b$：
+\begin{align*}
+t_{is}&\ge t_{js}+h^{min}-\lambda_{ij}^sM,&
+t_{js}&\ge t_{is}+h^{min}-(1-\lambda_{ij}^s)M,\\
+t_{is}&\le t_{js}+h^{max}+\lambda_{ij}^sM+(1-x_{ji})M,&
+t_{js}&\le t_{is}+h^{max}+(1-\lambda_{ij}^s)M+(1-x_{ij})M.
+\end{align*}
+每个起点的列车集合$K_s$满足
+\[
+\sum_{j\ne i}x_{ij}\le1,\quad \sum_{i\ne j}x_{ij}\le1,\quad
+\sum_i\sum_{j\ne i}x_{ij}=|K_s|-1,\quad x_{ij}\le\lambda_{ij}^s.
+\]
+定义$B_i=\sum_{j\ne i}x_{ij}\xi_j+
+\sum_{j\ne i}\sum_{j'\notin\{i,j\}}x_{ij}x_{jj'}\xi_{j'}$。
+普通车满足$B_i=\sum_{j\ne i}x_{ij}$，直通车满足$B_i\le1$。
+这是源文式(7)--(8)的有限序列规则；末尾不足两个后继时按实际存在的后继计。
+
+\subsection*{完整三阶段速度曲线}
+\[
+v^{in}_{k,s_k^b}=v^{in}_{k,s_k^e}=0,\quad
+0\le v^{in}_{ks},v^{cru}_{ks}\le v_s^{lim},\quad
+t_{ks}\le t^{bc}_{ks}\le t^{ec}_{ks}\le t_{k,\widehat s}.
+\]
+\begin{align*}
+v^{cru}_{ks}&=v^{in}_{ks}+a_{ks}(t^{bc}_{ks}-t_{ks}),\\
+v^{in}_{k,\widehat s}&=v^{cru}_{ks}+b_{ks}(t_{k,\widehat s}-t^{ec}_{ks}),\\
+L_s&=\tfrac12(v^{in}_{ks}+v^{cru}_{ks})(t^{bc}_{ks}-t_{ks})
+ +v^{cru}_{ks}(t^{ec}_{ks}-t^{bc}_{ks})
+ +\tfrac12(v^{cru}_{ks}+v^{in}_{k,\widehat s})(t_{k,\widehat s}-t^{ec}_{ks}).
+\end{align*}
+各列车在各自的同一运行阶段内采用恒定加速度。
+
+\subsection*{冲突与制动安全}
+物理检查集合$\mathcal Q$包含共享线路的有序对$(i,j,s',s)$：
+固定闭塞采用$s'=\widehat s$（两区段均为固定闭塞），
+移动闭塞采用$s'=s\in Z$。不同独立轨道没有冲突对。
+令二元变量
+\[
+\check\theta=\mathbf1_{\{t_{i,\widehat{s'}}\ge t_{js}\}},\quad
+\hat\theta=\mathbf1_{\{t_{i,\widehat{s'}}\le t_{j,\widehat s}\}},\quad
+\zeta=\check\theta\hat\theta\lambda_{ij}^{s'}.
+\]
+上述逻辑等价于源文(26)--(33)，可用有界时间域和$\epsilon=1$写为：
+\begin{align*}
+t_{js}-t_{i,\widehat{s'}}&\le M(1-\check\theta),&
+t_{js}-t_{i,\widehat{s'}}&\ge1-(M+1)\check\theta,\\
+t_{i,\widehat{s'}}-t_{j,\widehat s}&\le M(1-\hat\theta),&
+t_{i,\widehat{s'}}-t_{j,\widehat s}&\ge1-(M+1)\hat\theta,\\
+\zeta&\ge\check\theta+\hat\theta+\lambda_{ij}^{s'}-2,&
+\zeta&\le\check\theta,\ \hat\theta,\ \lambda_{ij}^{s'} .
+\end{align*}
+安全条件按源文(34)：
+\[
+t_{j,\widehat s}-t_{i,\widehat{s'}}
+\ge \frac{v^{max}_{js}}{b^{max}_{emergency}}+\delta
+ -(3-\iota_{\alpha,js}-\iota_{\beta,js}-\zeta)M.
+\]
+$v^{max}_{js}$为该三阶段曲线最大速度，$\iota_\alpha,\iota_\beta$
+是源文速度曲线危险情形指示量。交付候选采用更强的认证：
+对所有$\zeta=1$均直接满足不含$M$的制动间隔，
+因此无论上述两指示量如何取值都满足式(34)；
+该取值用于构造候选可行证书。
+源文迭代算法在安全不足时使用的$\sigma$修正为算法步骤；
+当前候选安全余量非负，取$\sigma=0$。
+实现证书也额外检查若干固定/移动交界的邻接对，属于更强检查。
+
+
+\subsection*{官方附录C的六个速度指标：完整闭合定义}
+以下定义来自官方补充材料Appendix C，PDF第4页（印刷46页）表7和表8。
+对每个$k,s$，记$v^-=v^{in}_{ks}$、$v^0=v^{cru}_{ks}$、
+$v^+=v^{in}_{k,\widehat s}$（末段采用其已定义的终点速度）。
+六个指标均为二元，并由速度唯一决定：
+\begin{align*}
+\iota_{1,ks}=1&\ \Longleftrightarrow\ v^-\le v^0,&
+\iota_{2,ks}=1&\ \Longleftrightarrow\ v^-=v^0,&
+\iota_{3,ks}=1&\ \Longleftrightarrow\ v^-\ge v^0,\\
+\iota_{4,ks}=1&\ \Longleftrightarrow\ v^0\le v^+,&
+\iota_{5,ks}=1&\ \Longleftrightarrow\ v^0=v^+,&
+\iota_{6,ks}=1&\ \Longleftrightarrow\ v^0\ge v^+ .
+\end{align*}
+这里保留表7的弱不等式：相等时对应的弱比较与等号指标同时为1；
+不得错误增加one-hot条件，也不得将未知指标作为可自由置零的变量。
+表8指定六对
+\[
+\mathcal I=\{(1,4),(3,6),(2,5),(1,5),(2,6),(1,6)\}.
+\]
+对每个$(\alpha,\beta)\in\mathcal I$和每个冲突元组$\mathcal Q$均施加式(34)，
+其中最大速度定义为
+\[
+v^{max}_{js}=\max\{v^{in}_{js},v^{cru}_{js},v^{in}_{j,\widehat s}\}.
+\]
+在相应活跃轨迹内，其值依次是
+$v^{in}_{j,\widehat s},v^{in}_{js},v^{in}_{js},
+v^{in}_{j,\widehat s},v^{in}_{js},v^{cru}_{js}$，
+对应附录式(47)--(52)。附录表7中的$s'$表示该速度段的后继，本文件统一写为
+$\widehat s$，避免与冲突元组中前车的$s'$混用。
+上述速度比较逻辑定义指标的取值，连续速度差按其实际符号进行比较。
+源文正文已有$a\ge0,b\le0$，也保留在当前模型中；
+它使当前候选的加速--巡航--制动轨迹激活$(1,6)$，不改变附录其他指标的定义。
+
+当前数值证书逐段根据实际速度重建六个指标，再逐冲突元组核六组式(34)。
+更强的无$M$活跃安全检查保留为附加证据；
+检查按完整指标定义核对各冲突元组的安全关系。
+
+\subsection*{输入边界与求解}
+有界时间域可以取
+$0\le t\le\sum_sn_s+(|K|+1)h^{max}$，$M$取该上界与所有运行/安全间隔之和，
+用于上述逻辑表达。
+代码先寻找满足类型后继式的列车顺序，再构造固定安全间隔和精确速度曲线。
+候选构造采用各段起终速度0及加减速各20秒，模型中的速度和加减速时间按其变量域选择。
+所有运行时间、距离二次等式、速度界、两类后继约束和物理安全对另行检查。
+每实例实际预算3600秒，返回完整可行时刻和速度曲线及可行目标值。
+\end{document}

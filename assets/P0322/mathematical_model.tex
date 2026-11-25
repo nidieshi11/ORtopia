@@ -1,0 +1,102 @@
+% Mathematical Model - paper
+% Auto-generated at 2026-01-12T15:04:28.992088
+% Model Source: Directly Extracted
+% This model is directly extracted from the paper
+
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\begin{document}
+
+\section*{Problem: Mixed-Integer Linear Programming (MILP), specifically a static network flow-based Vehicle Routing Problem with Pickup and Delivery and Split Deliveries (VRP with PD and SD). The model outputs vehicle and material flows, which must be parsed into specific routes. The paper proposes a Hierarchical Clustering and Routing method (HOGCR) for solution.}
+
+\textbf{Model Source}: Directly Extracted
+
+\subsection*{Decision Variables}
+\begin{align*}
+& UZ_{aop} \ge 0 && \forall a \in A, o, p \in C \\
+& LZ_{op} \ge 0 \text{ and integer} && \forall o, p \in C \\
+& UDEV_{ao} \ge 0 && \forall a \in A, o \in CD \\
+& LDEV_{o} \ge 0 && \forall o \in CD \\
+& Y_{opv} \ge 0 \text{ and integer} && \forall (o, p) \in N, v \in V \\
+& SUP_{ao} \ge 0 && \forall a \in A, o \in CS
+\end{align*}
+
+\subsection*{Objective Function}
+\text{Minimize } \sum_{v \in V} \sum_{(o,p) \in N} d_{op} Y_{opv} \quad (0)
+
+\subsection*{Constraints}
+\begin{align}
+& \sum_{p \in C} UZ_{apo} - \sum_{p \in C} UZ_{aop} + UDEV_{ao} = uq_{ao} && \forall a \in A, o \in CD \quad (1) \\
+& -\sum_{p \in C} LZ_{po} + \sum_{p \in C} LZ_{op} + LDEV_{o} = lq_{o} && \forall o \in CD \quad (2) \\
+& -\sum_{p \in C} UZ_{apo} + \sum_{p \in C} UZ_{aop} \leq SUP_{ao} && \forall a \in A, o \in CS \quad (3) \\
+& \sum_{p \in C} LZ_{po} - \sum_{p \in C} LZ_{op} \leq lsq_{o} && \forall o \in CH \quad (4) \\
+& \sum_{o \in CD} UDEV_{ao} = \max \left\{ \sum_{o \in CD} uq_{ao} - tsup_{a}, 0 \right\} && \forall a \in A \quad (5) \\
+& \sum_{o \in CD} LDEV_{o} = \max \left\{ \sum_{o \in CD} lq_{o} - \sum_{o \in CH} lsq_{o}, 0 \right\} && \quad (6) \\
+& \sum_{o \in CS} SUP_{ao} \leq tsup_{a} && \forall a \in A \quad (7) \\
+& \sum_{a \in A} UZ_{aop} \le \sum_{v \in V} capu_{zv} Y_{opv} && \forall (o, p) \in N \quad (8a) \\
+& LZ_{op} \le \sum_{v \in V} capl_{zv} Y_{opv} && \forall (o, p) \in N \quad (8b) \\
+& \sum_{p \in C} Y_{opv} = \sum_{p \in C} Y_{pov} && \forall o \in CD, v \in V \quad (9) \\
+& \sum_{p \in C} \sum_{o \in CS \cup CH} Y_{opv} \le mv_{v} && \forall v \in V \quad (10)
+\end{align}
+
+\subsection*{Complete Mathematical Model}
+% 集合定义
+\begin{align*}
+& A && \text{（某种资源或商品A的集合）} \\
+& V && \text{（车辆或运输工具的集合）} \\
+& C && \text{（所有节点的集合）} \\
+& N \subseteq C \times C && \text{（可通行弧的集合）} \\
+& CD \subseteq C && \text{（需求节点的集合）} \\
+& CS \subseteq C && \text{（供应节点的集合）} \\
+& CH \subseteq C && \text{（处理节点的集合）}
+\end{align*}
+
+% 参数定义
+\begin{align*}
+& d_{op} && \forall (o,p) \in N && \text{弧(o,p)的距离或成本} \\
+& uq_{ao} && \forall a \in A, o \in CD && \text{节点o对商品a的需求量} \\
+& lq_{o} && \forall o \in CD && \text{节点o的另一种需求量} \\
+& lsq_{o} && \forall o \in CH && \text{节点o的处理能力} \\
+& tsup_{a} && \forall a \in A && \text{商品a的总供应能力} \\
+& capu_{zv} && \forall v \in V && \text{车辆v对商品A的运输容量} \\
+& capl_{zv} && \forall v \in V && \text{车辆v对另一种货物的运输容量} \\
+& mv_{v} && \forall v \in V && \text{车辆v的最大行程数（如访问节点次数）}
+\end{align*}
+
+% 决策变量
+\begin{align*}
+& UZ_{aop} \ge 0 && \forall a \in A, o, p \in C && \text{从节点o到p运输的商品a的数量} \\
+& LZ_{op} \ge 0 \text{ and integer} && \forall o, p \in C && \text{从节点o到p运输的另一种货物的数量} \\
+& UDEV_{ao} \ge 0 && \forall a \in A, o \in CD && \text{节点o对商品a的需求未满足量} \\
+& LDEV_{o} \ge 0 && \forall o \in CD && \text{节点o的另一种需求未满足量} \\
+& Y_{opv} \ge 0 \text{ and integer} && \forall (o, p) \in N, v \in V && \text{车辆v使用弧(o,p)的次数} \\
+& SUP_{ao} \ge 0 && \forall a \in A, o \in CS && \text{从节点o供应的商品a的数量}
+\end{align*}
+
+% 目标函数
+\text{Minimize } \sum_{v \in V} \sum_{(o,p) \in N} d_{op} Y_{opv} \quad (0)
+
+% 约束条件
+\begin{align}
+& \sum_{p \in C} UZ_{apo} - \sum_{p \in C} UZ_{aop} + UDEV_{ao} = uq_{ao} && \forall a \in A, o \in CD \quad (1) \\
+& -\sum_{p \in C} LZ_{po} + \sum_{p \in C} LZ_{op} + LDEV_{o} = lq_{o} && \forall o \in CD \quad (2) \\
+& -\sum_{p \in C} UZ_{apo} + \sum_{p \in C} UZ_{aop} \leq SUP_{ao} && \forall a \in A, o \in CS \quad (3) \\
+& \sum_{p \in C} LZ_{po} - \sum_{p \in C} LZ_{op} \leq lsq_{o} && \forall o \in CH \quad (4) \\
+& \sum_{o \in CD} UDEV_{ao} = \max \left\{ \sum_{o \in CD} uq_{ao} - tsup_{a}, 0 \right\} && \forall a \in A \quad (5) \\
+& \sum_{o \in CD} LDEV_{o} = \max \left\{ \sum_{o \in CD} lq_{o} - \sum_{o \in CH} lsq_{o}, 0 \right\} && \quad (6) \\
+& \sum_{o \in CS} SUP_{ao} \leq tsup_{a} && \forall a \in A \quad (7) \\
+& \sum_{a \in A} UZ_{aop} \le \sum_{v \in V} capu_{zv} Y_{opv} && \forall (o, p) \in N \quad (8a) \\
+& LZ_{op} \le \sum_{v \in V} capl_{zv} Y_{opv} && \forall (o, p) \in N \quad (8b) \\
+& \sum_{p \in C} Y_{opv} = \sum_{p \in C} Y_{pov} && \forall o \in CD, v \in V \quad (9) \\
+& \sum_{p \in C} \sum_{o \in CS \cup CH} Y_{opv} \le mv_{v} && \forall v \in V \quad (10)
+\end{align}
+
+\paragraph{Explicit data definitions and arc domain.}
+$CH$ is supplied explicitly; $tsup_a$ is supplied as the aggregate available quantity of commodity $a$.
+$SUP_{ao}$ allocates this aggregate supply among supply nodes.
+Set $UZ_{aop}=LZ_{op}=0$ whenever $(o,p)\notin N$, including self-arcs.
+All sums over $Y$ use only declared arcs; other entries are zero.
+$mv_v$ bounds the number of available departures from supply/hospital nodes.
+\end{document}

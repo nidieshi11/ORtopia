@@ -1,0 +1,125 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+
+\geometry{a4paper, margin=1in}
+
+\title{Core Solvable Mathematical Model}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+This file retains the paper's core directly solvable extensive-form two-stage stochastic optimization model (SIPPAR). 
+
+\section{SIPPAR Extensive Form}
+
+\begin{equation}
+\begin{aligned}
+\min \quad
+& \sum_{i\in\mathcal{I}} \ell_i x_i
++ \sum_{\omega\in\Omega} p_\omega
+\Bigg[
+\sum_{i\in\mathcal{I}_\omega}
+\Bigg(
+\sum_{r\in\mathcal{R}_{i\omega}} (f+v_r)y_{ir\omega}
+- \sum_{r\in\mathcal{R}_{i\omega}\setminus \mathcal{R}_\omega^{ns}} \beta_{ir\omega} y_{ir\omega} \\
+& \qquad\qquad
++ \sum_{r\in\mathcal{R}_{i\omega}^{in}} \alpha_{ir\omega} a_{ir\omega}
+- \sum_{r\in\left(\bigcup_{j\in\mathcal{I}_\omega}\mathcal{R}_{j\omega}^{in}\right)\cap\mathcal{R}_{i\omega}\setminus \mathcal{R}_\omega^{ns}} \beta_{ir\omega} b_{ir\omega}
+\Bigg)
++ \sum_{(r,s)\in\mathcal{A}_\omega} (c_{rs}-f) z_{rs\omega}
+\Bigg]
+\end{aligned}
+\tag{3}
+\end{equation}
+
+\begin{equation}
+\sum_{i\in\mathcal{I}} x_i \le W
+\tag{4}
+\end{equation}
+
+\begin{equation}
+\sum_{i\in\mathcal{I}: r\in \bigcup_{\omega\in\Omega}\mathcal{R}_{i\omega}} x_i = 1
+\quad \forall r\in\mathcal{R}^{all}
+\tag{5}
+\end{equation}
+
+\begin{equation}
+\sum_{i\in\mathcal{I}_\omega: r\in\mathcal{R}_{i\omega}^{in}} a_{ir\omega}
++ \sum_{i\in\mathcal{I}_\omega: r\in\mathcal{R}_{i\omega}} y_{ir\omega} = 1
+\quad \forall \omega\in\Omega,\ \forall r\in\mathcal{R}_\omega^{ns}
+\tag{6}
+\end{equation}
+
+\begin{equation}
+\sum_{i\in\mathcal{I}_\omega: r\in\mathcal{R}_{i\omega}^{in}} a_{ir\omega}
+=
+\sum_{i\in\mathcal{I}_\omega: r\in\mathcal{R}_{i\omega}} b_{ir\omega}
+\quad
+\forall \omega\in\Omega,\ \forall r\in
+\left(\bigcup_{i\in\mathcal{I}_\omega}\mathcal{R}_{i\omega}^{in}\right)\setminus \mathcal{R}_\omega^{ns}
+\tag{7}
+\end{equation}
+
+\begin{equation}
+\sum_{s\in\bigcup_{i\in\mathcal{I}_\omega}\mathcal{R}_{i\omega}:(r,s)\in\mathcal{A}_\omega} z_{rs\omega}
+\le
+\sum_{i\in\mathcal{I}_\omega:r\in\mathcal{R}_{i\omega}} y_{ir\omega}
+\quad
+\forall \omega\in\Omega,\ \forall r\in\bigcup_{i\in\mathcal{I}_\omega}\mathcal{R}_{i\omega}
+\tag{8}
+\end{equation}
+
+\begin{equation}
+\sum_{s\in\bigcup_{i\in\mathcal{I}_\omega}\mathcal{R}_{i\omega}:(s,r)\in\mathcal{A}_\omega} z_{sr\omega}
+\le
+\sum_{i\in\mathcal{I}_\omega:r\in\mathcal{R}_{i\omega}} y_{ir\omega}
+\quad
+\forall \omega\in\Omega,\ \forall r\in\bigcup_{i\in\mathcal{I}_\omega}\mathcal{R}_{i\omega}
+\tag{9}
+\end{equation}
+
+\begin{equation}
+\sum_{r\in\mathcal{R}_{i\omega}\setminus \mathcal{R}_\omega^{ns}} y_{ir\omega}
++ \sum_{r\in\mathcal{R}_{i\omega}^{in}} a_{ir\omega}
++ \sum_{r\in\left(\bigcup_{j\in\mathcal{I}_\omega}\mathcal{R}_{j\omega}^{in}\right)\cap\mathcal{R}_{i\omega}\setminus \mathcal{R}_\omega^{ns}} b_{ir\omega}
+\le x_i
+\quad \forall \omega\in\Omega,\ \forall i\in\mathcal{I}_\omega
+\tag{10}
+\end{equation}
+
+\begin{equation}
+x_i \in \{0,1\}
+\quad \forall i\in\mathcal{I}
+\tag{11a}
+\end{equation}
+
+\begin{equation}
+y_{ir\omega} \in \{0,1\}
+\quad \forall \omega\in\Omega,\ \forall i\in\mathcal{I}_\omega,\ \forall r\in\mathcal{R}_{i\omega}
+\tag{11b}
+\end{equation}
+
+\begin{equation}
+a_{ir\omega} \in \{0,1\}
+\quad \forall \omega\in\Omega,\ \forall i\in\mathcal{I}_\omega,\ \forall r\in\mathcal{R}_{i\omega}^{in}
+\tag{11c}
+\end{equation}
+
+\begin{equation}
+b_{ir\omega} \in \{0,1\}
+\quad \forall \omega\in\Omega,\ \forall i\in\mathcal{I}_\omega,\ \forall r\in\left(\bigcup_{j\in\mathcal{I}_\omega}\mathcal{R}_{j\omega}^{in}\right)\cap\mathcal{R}_{i\omega}\setminus \mathcal{R}_\omega^{ns}
+\tag{11d}
+\end{equation}
+
+\begin{equation}
+z_{rs\omega} \in \{0,1\}
+\quad \forall \omega\in\Omega,\ \forall (r,s)\in\mathcal{A}_\omega
+\tag{11e}
+\end{equation}
+
+\end{document}

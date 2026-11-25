@@ -1,0 +1,126 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,geometry}
+\geometry{margin=22mm}
+\begin{document}
+
+\section*{P360: complete nonlinear metro regulation repair}
+Stations $s=0,\ldots,9$ enumerate the ten directional service locations
+of five physical stations, trains $j=0,\ldots,5$ retain all six original trains.
+Each directional service location has the finite storage state used below.
+All time is seconds, mass tonnes, energy kWh and auxiliary power kW.
+Input contains full arrays $r^{pla},l^{pla},d^{pla},w^{run},w^{dwe},
+\lambda,\beta$, first arrivals $a_{0j}$ and preceding departures $d_{s,-1}$.
+Capacity is $C=1200$, storage capacity $E^{max}=500$ and initial energy
+$E^0=250$ at each modeled service location; these are explicit completed
+scenario values supplied by the instance.
+
+Choose controls $x_{sj}\in[-30,30]$ for $s<9$ and
+$g_{sj}\in[-15,15]$. Define
+\begin{align}
+r_{sj}&=r^{pla}_{sj}+x_{sj}+w^{run}_{sj},&
+l_{sj}&=l^{pla}_{sj}+g_{sj}+w^{dwe}_{sj},\\
+d_{sj}&=a_{sj}+l_{sj},&
+a_{sj}&=d_{s-1,j}+r_{s-1,j}\quad(s>0),\\
+h_{sj}&=d_{sj}-d_{s,j-1}.&&
+\end{align}
+Require $h_{sj}\ge270$ for $j>0$, $h_{s0}\ge0$, $l_{sj}\ge20$,
+$300\le r_{4j}\le600$, and the passenger dwell condition below.
+The turnaround interval is the zero-distance transition between the two
+directional service sequences. Controls may be negative, correcting the
+original extracted blanket nonnegative domain.
+
+\paragraph{Complete passenger dynamics.}
+Put $n_{-1,j}=0$ and $m_{s,-1}=0$. Then
+\[
+ q_{sj}=\beta_{sj}n_{s-1,j},\quad
+ p_{sj}=\lambda_{sj}h_{sj}+m_{s,j-1},\quad
+ b_{sj}=\min\{p_{sj},C-n_{s-1,j}+q_{sj}\},
+\]
+\[
+ n_{sj}=n_{s-1,j}+b_{sj}-q_{sj},\quad
+ m_{sj}=p_{sj}-b_{sj},\quad
+ l_{sj}\ge3+0.03(b_{sj}+q_{sj}).
+\]
+All counts here are continuous passenger-flow approximations;
+$0\le n\le C$ and $b,q,p,m\ge0$. Left-behind passengers persist in the queue.
+Passengers still in the network at the horizon remain in the terminal state.
+
+\paragraph{Running level and energy tables.}
+For each segment, input table breakpoints $\ell_{s\eta}$ increase strictly;
+choose $\eta(s,j)=\max\{\eta:r_{sj}\ge\ell_{s\eta}\}$.
+The last interval extends to the largest feasible running time;
+the input lower breakpoint covers all feasible controls.
+Let $M_{sj}=200+0.075n_{sj}$.
+With the table's traction/braking coefficients $c^{tra}_{s\eta},
+c^{brk}_{s\eta}$ and acceleration/deceleration durations
+$A_{s\eta},B_{s\eta}$, define for $s<9$
+\[
+ E^{tra}_{sj}=M_{sj}c^{tra}_{s,\eta(s,j)},\quad
+ E^{brk}_{s+1,j}=M_{sj}c^{brk}_{s,\eta(s,j)},\quad
+ t^{acc}_{sj}=A_{s,\eta(s,j)},\quad
+ t^{dec}_{s+1,j}=B_{s,\eta(s,j)}.
+\]
+Set first-station braking/deceleration and last-station
+traction/acceleration to zero.
+
+\paragraph{Immediate regenerative flow.}
+The opposite service location is $\sigma(s)=9-s$.
+For each braking train $j$ and traction train $k$ define the actual overlap
+\[
+ O_{sjk}=\max\{0,\min(a_{sj},d_{\sigma(s),k}+t^{acc}_{\sigma(s),k})
+ -\max(a_{sj}-t^{dec}_{sj},d_{\sigma(s),k})\}.
+\]
+Nonnegative delivered flow $z_{sjk}$ satisfies
+\[
+ z_{sjk}\le \rho_2 O_{sjk},\qquad
+ U_{sj}:=\sum_kz_{sjk}\le\rho_1E^{brk}_{sj},\qquad
+ V_{tk}:=\sum_{j}z_{\sigma(t),j,k}\le E^{tra}_{tk}.
+\]
+Input values are $\rho_1=0.7$ and $\rho_2=500/3600$ kWh/s.
+Immediate-flow imports equal exports. The code chooses one feasible allocation
+in lexicographic $(s,j,k)$ order, each time taking the minimum residual
+braking supply, overlap bound and traction demand. This deterministic choice
+is an energy-allocation heuristic.
+
+\paragraph{Storage and auxiliary energy.}
+Let $\eta_c=\eta_d=0.9$.
+At every modeled service location, sequentially for all trains,
+\begin{align}
+E^{st1}_{s0}&=E^0,&
+E^{st1}_{sj}&=E^{after}_{s,j-1}\quad(j>0),\\
+E^{sav}_{sj}&=\min\{\eta_c\max(0,E^{brk}_{sj}-U_{sj}/\rho_1),
+                      E^{max}-E^{st1}_{sj}\},\\
+E^{st2}_{sj}&=E^{st1}_{sj}+E^{sav}_{sj},\\
+E^{tak}_{sj}&=\min\{\eta_d E^{st2}_{sj},\max(0,E^{tra}_{sj}-V_{sj})\},\\
+E^{after}_{sj}&=E^{st2}_{sj}-E^{tak}_{sj}/\eta_d.
+\end{align}
+All energy amounts are nonnegative; storage stays within $[0,E^{max}]$.
+The saved-energy formula removes braking energy already supplied immediately,
+and delivered discharge is divided by efficiency in the state balance.
+For $s>0$,
+$E^{aux}_{sj}=(50+0.11n_{s-1,j})(a_{sj}-a_{s-1,j})/3600$;
+$E^{aux}_{0j}=0$.
+
+\paragraph{Full objective.}
+With input weights $(\xi_1,\ldots,\xi_6)=(0.8,1,1,1.5,10,0.5)$ minimize
+\begin{align}
+F_1&=\xi_1\sum_{sj}(d_{sj}-d^{pla}_{sj})^2
+       +\xi_2\sum_{s,j>0}(h_{sj}-300)^2,\\
+F_2&=\sum_{sj}\{\tfrac12\xi_3\lambda_{sj}h_{sj}^2
+                         +\xi_4m_{s,j-1}h_{sj}\},\\
+F_3&=\xi_5\sum_{sj}(E^{tra}_{sj}+E^{aux}_{sj}-V_{sj}-E^{tak}_{sj}),\\
+F_4&=\xi_6\{\sum_{s<9,j}x_{sj}^2+\sum_{sj}g_{sj}^2\},\qquad
+F=F_1+F_2+F_3+F_4.
+\end{align}
+Source pp.6--11,18 supplies train/passenger/energy/control structure.
+The original02 omitted the four objectives and level/overlap definitions,
+misstated boarding capacity and omitted storage initialization/discharge loss.
+The above is the explicit separate completed physical interpretation,
+using the completed passenger-flow definitions above.
+
+The unchanged solver uses bounded coordinate search and the feasible
+immediate-flow allocation described above. All ten service locations,
+six trains and finite capacities are retained; the output is a feasible MINLP solution. Independent complete replay of the saved output verifies all
+listed equations/domains and the four objective components.
+
+\end{document}

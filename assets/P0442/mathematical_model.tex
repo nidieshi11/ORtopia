@@ -1,0 +1,305 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\section*{Decomposable Cooperative DeeP-LCC}
+\paragraph{Selected source form.}
+The operative model below uses the paper-linked author implementation's complete
+output-stage weights and their exact prediction-horizon assembly. This source form
+was explicitly adopted and passed the normal model-specification audit. The malformed
+printed output-weight diagonal is retained in the separate unmodified source archive;
+it is not the cost definition for this selected form. All constraints and decision
+families of (50) are retained. The precise source conflict and construction are disclosed below.
+\begin{align}
+\min_{\substack{g_i,z_i,\tilde{s}_i,u_i\\i\in\mathbb N_1^n}}
+&\ \sum_{i=1}^{n}\bigl(f_i(g_i)+h_i(z_i,\tilde{s}_i,u_i)\bigr) \tag{50a}\\
+\text{subject to}\quad
+&g_i=z_i, &&i\in\mathbb N_1^n, \tag{50b}\\
+&E_{i+1,\mathrm f}g_{i+1}=K_iY_{i,\mathrm f}z_i,
+&&i\in\mathbb N_1^{n-1}, \tag{50c}\\
+&P_iY_{i,\mathrm f}g_i=\tilde{s}_i,
+&&i\in\mathbb N_1^n, \tag{50d}\\
+&U_{i,\mathrm f}g_i=u_i,
+&&i\in\mathbb N_1^n. \tag{50e}
+\end{align}
+The domain restriction retained in the prose immediately following (50) is
+\[
+g_i\in\mathbf{Dom}(f_i),\qquad i\in\mathbb N_1^n.
+\]
+The two decision-variable groups are
+\[
+(g_1,\ldots,g_n),\qquad
+(z_1,\ldots,z_n,\tilde{s}_1,\ldots,\tilde{s}_n,u_1,\ldots,u_n).
+\]
+Here $g_i\in\mathbb R^{T_i-T_{\mathrm{ini}}-N+1}$ is the local trajectory coefficient vector, $z_i$ is its copy, and $\tilde{s}_i,u_i\in\mathbb R^N$ are future spacing-error and control-input sequences. The paper describes $z_i$ as the assumed value of $g_i$ for subsystem $i+1$; (50b) nevertheless includes the terminal copy $z_n$ as printed. The data matrices, past trajectories, horizons, physical bounds, and weight coefficients below are fixed data at the current time $t$.
+
+\subsection*{Objective functions and inherited domains}
+The complete quadratic definition from physical PDF page 15, with the explicitly adopted author-supported horizon weights, is
+\begin{align*}
+f_i(g_i)&:=g_i^\top Q_{g_i}g_i+2c_{g_i}^\top g_i
+ +\lambda_{y_i}y_{i,\mathrm{ini}}^\top y_{i,\mathrm{ini}},\\
+Q_{g_i}&=Y_{i,\mathrm f}^\top(I_N\otimes Q_i)Y_{i,\mathrm f}
+ +U_{i,\mathrm f}^\top R_iU_{i,\mathrm f}
+ +\lambda_{g_i}I+\lambda_{y_i}Y_{i,\mathrm p}^\top Y_{i,\mathrm p},\\
+c_{g_i}&=-\lambda_{y_i}Y_{i,\mathrm p}^\top y_{i,\mathrm{ini}},
+\qquad i\in\mathbb N_1^n.
+\end{align*}
+\begin{equation}
+\mathbf{Dom}(f_i)=\{g_i\mid A_{g_i}g_i=b_{g_i}\}. \tag{46}
+\end{equation}
+Its defining matrices and right-hand sides are
+\[
+A_{g_1}=\begin{bmatrix}U_{1,\mathrm p}\\E_{1,\mathrm p}\\E_{1,\mathrm f}\end{bmatrix},
+\qquad
+b_{g_1}=\begin{bmatrix}u_{1,\mathrm{ini}}\\\epsilon_{1,\mathrm{ini}}\\0_N\end{bmatrix},
+\]
+\[
+A_{g_i}=\begin{bmatrix}U_{i,\mathrm p}\\E_{i,\mathrm p}\end{bmatrix},
+\qquad
+b_{g_i}=\begin{bmatrix}u_{i,\mathrm{ini}}\\\epsilon_{i,\mathrm{ini}}\end{bmatrix},
+\qquad i\in\mathbb N_2^n.
+\]
+Thus (46) incorporates the past-input and past-reference equalities (44), together with the first-subsystem forecast equality (45c); these are not additional variable groups.
+
+The other objective component is
+\begin{equation}
+h_i(z_i,\tilde{s}_i,u_i)=\mathcal I_s(\tilde{s}_i)+\mathcal I_u(u_i).
+\tag{49}
+\end{equation}
+The sets defining these indicator functions are
+\[
+\mathcal C_s=\{\tilde{s}\in\mathbb R^N\mid
+\tilde{s}_{\min}\leq\tilde{s}\leq\tilde{s}_{\max}\},\qquad
+\mathcal C_u=\{u\in\mathbb R^N\mid a_{\min}\leq u\leq a_{\max}\}.
+\]
+For either set $\mathcal C$, the paper's indicator definition is
+\[
+\mathcal I(x)=
+\begin{cases}
+0,&x\in\mathcal C,\\
++\infty,&\text{otherwise}.
+\end{cases}
+\]
+In particular, $\mathcal I_s$ uses $\mathcal C_s$ and $\mathcal I_u$ uses $\mathcal C_u$. These are box bounds on every entry of the corresponding vector (as stated on page 17). The prose following (49) writes $\mathcal I_s(s_i)$ without a tilde; (49) itself and its defining set use spacing errors, and their printed expressions are retained here.
+
+\subsection*{Selected forecast, physical bounds, and selectors}
+The selected conversion (45), hence (50), uses the forecast
+\begin{equation}
+\hat\epsilon=0_N. \tag{37}
+\end{equation}
+Although page 13 presents this as a possible forecast choice, page 14 fixes this choice through $E_{1,\mathrm f}g_1=0_N$, which is inherited in $b_{g_1}$ above.
+
+The fixed acceleration limits are $a_{\min}$ and $a_{\max}$. The fixed minimum and maximum physical spacings are $s_{\min}$ and $s_{\max}$, with error bounds
+\[
+\tilde{s}_{\min}=s_{\min}-s^*,\qquad
+\tilde{s}_{\max}=s_{\max}-s^*.
+\]
+The selectors used in (50) are
+\[
+K_i=I_N\otimes\begin{bmatrix}0_{1\times m_i}&1&0\end{bmatrix},
+\qquad i\in\mathbb N_1^{n-1},
+\]
+\[
+P_i=I_N\otimes\begin{bmatrix}0_{1\times(m_i+1)}&1\end{bmatrix},
+\qquad i\in\mathbb N_1^n.
+\]
+$K_i$ selects the last vehicle's velocity error in subsystem $i$, and $P_i$ selects its CAV's spacing error. The source's input/output sets are specified by the following defining bounds:
+\begin{align}
+a_{\min}&\leq u_i\leq a_{\max}, &&i\in\mathbb N_1^n, \tag{38}\\
+\tilde{s}_{\min}&\leq\tilde{s}_i\leq\tilde{s}_{\max}, &&i\in\mathbb N_1^n, \tag{39}\\
+\tilde{s}_{\min}&\leq P_i y_i\leq\tilde{s}_{\max}, &&i\in\mathbb N_1^n. \tag{40}
+\end{align}
+Here (38) defines $u_i\in\mathcal U_i$, and (40) is the selected output constraint $y_i\in\mathcal Y_i$. In (50) these bounds are encoded by (49), not appended as a second constraint formulation. The source also assumes consistency of the subsystem and system-wide feasible sets:
+\begin{equation}
+u\in\mathcal U,\ y\in\mathcal Y
+\quad\Longleftrightarrow\quad
+u_i\in\mathcal U_i,\ y_i\in\mathcal Y_i,
+\quad\forall i\in\mathbb N_1^n. \tag{29}
+\end{equation}
+In (29), $u$ and $y$ are the corresponding aggregate system trajectories.
+
+\subsection*{Local cost and elimination defining the selected quadratic}
+The local trajectory cost referenced by the conversion is
+\begin{equation}
+V_i(u_i,y_i)=\sum_{k=t}^{t+N-1}
+\left(\|y_i(k)\|_{Q_i}^2+\|u_i(k)\|_{\omega_u}^2\right).
+\tag{28}
+\end{equation}
+The regularized local cost is printed as
+\begin{equation}
+J_i(g_i,u_i,y_i,\sigma_{y_i})
+=V_i(y_i,u_i)+\lambda_{g_i}\|g_i\|_2^2
+ +\lambda_{y_i}\|\sigma_{y_i}\|_2^2. \tag{35}
+\end{equation}
+The regularization parameters satisfy
+\[
+\lambda_{y_i},\lambda_{g_i}>0,\qquad i\in\mathbb N_1^n.
+\]
+The unnumbered elimination relations following (44), used to obtain $f_i$, are
+\begin{align*}
+\sigma_{y_i}&=Y_{i,\mathrm p}g_i-y_{i,\mathrm{ini}},&
+u_i&=U_{i,\mathrm f}g_i,&
+\epsilon_i&=E_{i,\mathrm f}g_i,\\
+y_i&=Y_{i,\mathrm f}g_i,&
+\tilde{s}_i&=P_iY_{i,\mathrm f}g_i,
+&&i\in\mathbb N_1^n.
+\end{align*}
+These are the authors' substitutions: $y_i$, $\epsilon_i$, and $\sigma_{y_i}$ are eliminated quantities, not additional independent decisions in (50). In particular the exact, noise-free past-output equality is not imposed on (50). The old neighboring coupling is replaced by (50b)--(50c), and is not separately enforced.
+
+The selected positive cost weights and their stage definitions are
+\[
+\omega_v,\omega_s,\omega_u>0,
+\]
+\begin{equation}
+Q=\operatorname{diag}(Q_1,Q_2,\ldots,Q_n), \tag{17}
+\end{equation}
+\begin{equation}
+Q_i=\operatorname{diag}\bigl(
+\overbrace{\omega_v,\omega_v,\ldots,\omega_v}^{m_i+1},\omega_s
+\bigr),\qquad i\in\mathbb N_1^n. \tag{18-author}
+\end{equation}
+\begin{equation}
+R=\operatorname{diag}\bigl(
+\overbrace{\omega_u,\omega_u,\ldots,\omega_u}^{n}
+\bigr). \tag{19}
+\end{equation}
+The prose describes these as positive weights on velocity errors, spacing errors, and control inputs, respectively. The notation for a quadratic form is $\|a\|_X^2=a^\top Xa$ for symmetric positive definite $X$.
+
+\paragraph{Disclosed original conflict and adopted cost construction.}
+The original page-7 image confirms that printed (18) contains only $m_i$ velocity
+weights followed by one spacing weight, whereas (3) contains the CAV velocity,
+$m_i$ HDV velocities, and the CAV spacing. That printed diagonal is dimensionally
+inconsistent. The full original transcription is archived unchanged and is not
+asserted algebraically equivalent to the adopted diagonal (18-author).
+The paper links \texttt{PREDICT-EPFL/Distributed-DeeP-LCC} in page-19 footnote 2.
+At author commit \texttt{8af2ae80c26674769ff4f2f2276332c271620d9e},
+\texttt{main\_ModerateScale.m}, lines 153--158, 216--217 and 247--260, counts
+the leading CAV in each subsystem, assigns one velocity weight to every such
+vehicle, and repeats the complete output and scalar input weights over all
+prediction samples. \texttt{main\_LargeScale.m} independently uses the same construction.
+Thus $Q_i$ in the operative stage cost has $m_i+1$ velocity weights and one spacing
+weight, and its horizon form is $I_N\otimes Q_i$. The input horizon weight is
+\[
+R_i=\omega_u I_N.
+\]
+The horizon assembly also follows directly from the complete per-sample sum (28),
+chronological stacking (14), and the quadratic-form convention on page 4. It does
+not omit, discount, duplicate or average any prediction sample. The printed
+$w$ and $\omega$ weight glyphs denote the corresponding positive velocity,
+spacing and input weights here. No experiment-specific numerical value is imposed.
+The resulting $f_i$ is exactly the selected complete trajectory charge plus
+coefficient and past-output-mismatch penalties: expansion retains all four
+quadratic contributions, the factor $2$ on the linear term and the full constant.
+This is an author-supported source resolution, not literal equality to malformed
+printed (18). Equation (35) reverses the arguments of $V_i$ relative to (28);
+the explicit complete $f_i$ and the per-sample definition (28) determine the cost.
+No ADMM penalty, algorithmic decision or simulation-only restriction is added.
+
+The prose following (35) prints
+\[
+\sigma_{y_i}\in\mathbb R^{(1+m_i)T_{\mathrm{ini}}},
+\qquad i\in\mathbb N_1^n.
+\]
+This conflicts with the $(m_i+2)T_{\mathrm{ini}}$ past-output entries in (25), (36b), and the displayed elimination relation. The printed declaration is recorded as an antecedent inconsistency, not imposed as an extra restriction on the eliminated slack in (50).
+
+\subsection*{Subsystem indices and physical signals}
+$\mathbb N$ denotes the natural numbers and $\mathbb N_a^b$ their range $[a,b]$ for $a\leq b$. There are $n$ CAVs, indexed front to rear, $m$ HDVs, and a head vehicle indexed $0$. The fixed subsystem counts and vehicle sets satisfy
+\[
+m_i\geq0,\qquad \sum_{i=1}^n m_i=m,
+\qquad
+\mathcal F_i=\{1^{(i)},2^{(i)},\ldots,m_i^{(i)}\},
+\quad i\in\mathbb N_1^n,
+\]
+\[
+\mathcal F=\mathcal F_1\cup\cdots\cup\mathcal F_n,
+\qquad \Omega=\mathbb N_1^n\cup\mathcal F.
+\]
+Subsystem $i$ consists of CAV $i$ and these $m_i$ following HDVs. If $m_i=0$, the CAV alone is a subsystem. The selected signal definition assumes that all vehicle velocities are available through V2X and all CAV spacings through onboard sensors; the partial-connectivity variant is not selected.
+
+With equilibrium velocity $v^*$ and equilibrium spacing $s^*$, the errors are
+\begin{equation}
+\tilde v_j(t)=v_j(t)-v^*,\qquad
+\tilde s_j(t)=s_j(t)-s^*,\qquad j\in\Omega. \tag{1}
+\end{equation}
+The local measured output is
+\begin{equation}
+y_i(t)=\begin{bmatrix}
+\tilde v_i(t)&\tilde v_{1^{(i)}}(t)&\cdots&
+\tilde v_{m_i^{(i)}}(t)&\tilde s_i(t)
+\end{bmatrix}^{\!\top}\in\mathbb R^{m_i+2},
+\qquad i\in\mathbb N_1^n. \tag{3}
+\end{equation}
+The aggregate signals are $y(t)=\operatorname{col}(y_1(t),\ldots,y_n(t))$ and $u(t)=[u_1(t),\ldots,u_n(t)]^\top$. The local scalar input $u_i(t)$ is the CAV control input (desired or actual acceleration); the acceleration-input model used in the paper is
+\begin{equation}
+\dot v_i(t)=u_i(t),\qquad i\in\mathbb N_1^n. \tag{9}
+\end{equation}
+The local reference is printed as
+\begin{equation}
+\epsilon_i(t)=\tilde v_{m_{i-1}^{(i-1)}}(t)
+=v_{m_{i-1}^{(i-1)}}(t)-v^*\in\mathbb R. \tag{23}
+\end{equation}
+Its stated meaning is the velocity error of the vehicle immediately ahead of CAV $i$. For $i=1$ this is the head vehicle, so
+\[
+\epsilon_1(t)=\epsilon(t)=\tilde v_0(t)=v_0(t)-v^*.
+\]
+When $\mathcal F_{i-1}=\varnothing$, that vehicle is CAV $i-1$, rather than an HDV. Thus the prose supplies the exceptional physical interpretation of (23). Likewise, when subsystem $i$ has no HDVs, $K_i$ selects CAV $i$'s velocity error.
+
+\subsection*{Fixed trajectory data and Hankel construction}
+For each $i\in\mathbb N_1^n$, the pre-collected local trajectory has length $T_i\in\mathbb N$:
+\begin{align}
+u_i^{\mathrm d}&=\operatorname{col}\bigl(u_i^{\mathrm d}(1),u_i^{\mathrm d}(2),\ldots,u_i^{\mathrm d}(T_i)\bigr)\in\mathbb R^{T_i}, \tag{25a}\\
+\epsilon_i^{\mathrm d}&=\operatorname{col}\bigl(\epsilon_i^{\mathrm d}(1),\epsilon_i^{\mathrm d}(2),\ldots,\epsilon_i^{\mathrm d}(T_i)\bigr)\in\mathbb R^{T_i}, \tag{25b}\\
+y_i^{\mathrm d}&=\operatorname{col}\bigl(y_i^{\mathrm d}(1),y_i^{\mathrm d}(2),\ldots,y_i^{\mathrm d}(T_i)\bigr)\in\mathbb R^{(m_i+2)T_i}. \tag{25c}
+\end{align}
+For $T,l\in\mathbb N$, $l\leq T$, and $\omega=\operatorname{col}(\omega(1),\ldots,\omega(T))$, the Hankel definition is
+\begin{equation}
+\mathcal H_l(\omega):=
+\begin{bmatrix}
+\omega(1)&\omega(2)&\cdots&\omega(T-l+1)\\
+\omega(2)&\omega(3)&\cdots&\omega(T-l+2)\\
+\vdots&\vdots&\ddots&\vdots\\
+\omega(l)&\omega(l+1)&\cdots&\omega(T)
+\end{bmatrix}. \tag{11}
+\end{equation}
+The local application of (13), explicitly prescribed after (25), is
+\[
+\begin{bmatrix}U_{i,\mathrm p}\\U_{i,\mathrm f}\end{bmatrix}
+=\mathcal H_{T_{\mathrm{ini}}+N}(u_i^{\mathrm d}),\qquad
+\begin{bmatrix}E_{i,\mathrm p}\\E_{i,\mathrm f}\end{bmatrix}
+=\mathcal H_{T_{\mathrm{ini}}+N}(\epsilon_i^{\mathrm d}),\qquad
+\begin{bmatrix}Y_{i,\mathrm p}\\Y_{i,\mathrm f}\end{bmatrix}
+=\mathcal H_{T_{\mathrm{ini}}+N}(y_i^{\mathrm d}).
+\]
+All subsystems use the same $T_{\mathrm{ini}},N\in\mathbb N$, with $T_{\mathrm{ini}}+N\leq T_i$. The $\mathrm p$ blocks contain the first $T_{\mathrm{ini}}$ block rows and the $\mathrm f$ blocks the last $N$ block rows. Each matrix has $T_i-T_{\mathrm{ini}}-N+1$ columns.
+
+The local application of the trajectory-stacking definition (14) is, at current time $t\in\mathbb N$,
+\begin{align*}
+u_{i,\mathrm{ini}}&=\operatorname{col}\bigl(u_i(t-T_{\mathrm{ini}}),u_i(t-T_{\mathrm{ini}}+1),\ldots,u_i(t-1)\bigr),\\
+u_i&=\operatorname{col}\bigl(u_i(t),u_i(t+1),\ldots,u_i(t+N-1)\bigr),\\
+\epsilon_{i,\mathrm{ini}}&=\operatorname{col}\bigl(\epsilon_i(t-T_{\mathrm{ini}}),\epsilon_i(t-T_{\mathrm{ini}}+1),\ldots,\epsilon_i(t-1)\bigr),\\
+\epsilon_i&=\operatorname{col}\bigl(\epsilon_i(t),\epsilon_i(t+1),\ldots,\epsilon_i(t+N-1)\bigr),\\
+y_{i,\mathrm{ini}}&=\operatorname{col}\bigl(y_i(t-T_{\mathrm{ini}}),y_i(t-T_{\mathrm{ini}}+1),\ldots,y_i(t-1)\bigr),\\
+y_i&=\operatorname{col}\bigl(y_i(t),y_i(t+1),\ldots,y_i(t+N-1)\bigr).
+\end{align*}
+Here the three past sequences are measurements, whereas the future sequences are reconstructed using $g_i$.
+
+\subsection*{Data premises and scope}
+A sequence is persistently exciting of order $l$ when $\mathcal H_l$ of that sequence has full row rank. Assumption 2 requires, for every $i\in\mathbb N_1^n$, that $u_i^{\mathrm d}$ be persistently exciting of order
+\[
+T_{\mathrm{ini}}+N+2+2m_i.
+\]
+The corresponding printed lower bound on local data length is
+\begin{equation}
+T_i\geq2(T_{\mathrm{ini}}+N+2m_i+2)-1,
+\qquad i\in\mathbb N_1^n. \tag{34}
+\end{equation}
+This length bound does not replace the full-row-rank condition.
+
+The underlying exact linear trajectory representation in Corollary 1 additionally assumes controllability and observability. Its uniqueness statement is conditional: if $T_{\mathrm{ini}}\geq2+2m_i$, the future $y_i$ is uniquely determined for every $(u_{i,\mathrm{ini}},\epsilon_{i,\mathrm{ini}},y_{i,\mathrm{ini}},u_i,\epsilon_i)$ by that exact representation. This is not an additional constraint on the decisions of (50). The selected regularized formulation is expressly intended for nonlinear, non-deterministic behavior and noise-corrupted data. The equal-data-length and centralized/local data-consistency hypotheses of Theorem 1 are not premises of (50).
+
+\paragraph{Source scope.}
+The operative model is (50) on physical PDF page 15 of Wang et al., \emph{Distributed data-driven predictive control for cooperatively smoothing mixed traffic flow}, arXiv:2210.13171v2, with its defining rows on pages 4--15. The supplied images verify the conversion and objective/domain definitions on pages 12--15. The external system-specific controllability/observability results referenced in [17] and [33] are not supplied and remain unverified; no extra conditions from them are inserted. Appendix A concerns equivalence of the separate noise-free formulations, and Appendix B specifies an algorithmic stopping rule; neither supplies additional feasible-set constraints for (50). No ADMM subproblem or simulation-specific parameter values are included.
+
+\end{document}

@@ -1,0 +1,228 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\section*{ADP-2: segment-level ad delivery planning}
+\begin{align}
+\text{[ADP-2]}\qquad \max\quad &-\Gamma x+\sum_{w\in\mathcal W}h_w \tag{10}\\
+\text{s.t.}\qquad &x\geq\sum_{w\in\mathcal W_v}m_{vw}, &&\forall v\in\mathcal V, \tag{11}\\
+&h_w-\sum_{v\in\mathcal V_w}m_{vw}\leq\sum_{v\in\mathcal V_w}\varphi e_{vw}(\mu_v-\hat s_v)p_{vw}, &&\forall w\in\mathcal W, \tag{12}\\
+&m_{vw}\leq\varphi e_{vw}\hat s_vp_{vw}, &&\forall v\in\mathcal V_w,\ w\in\mathcal W, \tag{13}\\
+&h_w\leq B_w, &&\forall w\in\mathcal W, \tag{14}\\
+&\sum_{v\in\mathcal V_j}\varphi\mu_vp_{vj}-\sum_{v\in\mathcal V_j}m^d_{vj}-\Gamma^d_jh^d_j\geq D_j, &&\forall j\in\mathcal J, \tag{15}\\
+&h^d_j+m^d_{vj}\geq\varphi\hat s_vp_{vj}, &&\forall v\in\mathcal V_j,\ j\in\mathcal J, \tag{16}\\
+&-\Gamma^r_jh^r_j+\sum_{v\in\mathcal V_j}m^r_{vj}\geq R_j, &&\forall j\in\mathcal J, \tag{17}\\
+&-h^r_j+m^r_{vj}\leq-a^l_v(p_{vj})+b^l_v(p_{vj}), &&\forall v\in\mathcal V_j,\ j\in\mathcal J,\ l\in\mathcal L, \tag{18}\\
+&m^r_{vj}\leq b^l_v(p_{vj}), &&\forall v\in\mathcal V_j,\ j\in\mathcal J,\ l\in\mathcal L, \tag{19}\\
+&\sum_{j\in\mathcal J_v}p_{vj}+\sum_{w\in\mathcal W_v}p_{vw}\leq1, &&\forall v\in\mathcal V, \tag{20}\\
+&0\leq p_{vj}\leq1,\quad m^d_{vj}\geq0, &&\forall v\in\mathcal V_j,\ j\in\mathcal J, \tag{21}\\
+&0\leq p_{vw}\leq1,\quad m_{vw}\geq0, &&\forall v\in\mathcal V_w,\ w\in\mathcal W, \tag{22}\\
+&h^d_j\geq0,\quad h^r_j\geq0, &&\forall j\in\mathcal J. \tag{23}
+\end{align}
+
+\paragraph{Decision variables and scope.}
+The delivery plan is
+\[
+\boldsymbol p=\{p_{vj}\mid v\in\mathcal V,\ j\in\mathcal J_v;\ p_{vw}\mid v\in\mathcal V,\ w\in\mathcal W_v\}.
+\]
+Here $p_{vj}$ and $p_{vw}$ are the proportions of segment $v$'s impressions allocated to guaranteed campaign $j$ and non-guaranteed campaign $w$, respectively. The auxiliary variables in this linear program are $x$, $h_w$, $m_{vw}$, $h^d_j$, $m^d_{vj}$, $h^r_j$, and $m^r_{vj}$, with the campaign and segment indices appearing in (11)--(23). The printed formulation imposes the sign and interval restrictions in (21)--(23); it does not impose additional sign restrictions on $h_w$ or $m^r_{vj}$, or a separate sign restriction on $x$. No such restrictions are added here. In particular, the auxiliary variables are not fixed inputs, and no integrality restriction is imposed on the decisions.
+
+\section*{Fixed inputs, indexing, and assumptions}
+The planning horizon is a single period. The sets and data below are those of Table~1 and Sections~3.1--3.3 (physical PDF pages 9--13).
+\begin{description}
+\item[$\mathcal V$] Set of viewer segments. Each viewer belongs to a unique, finest viewer segment.
+\item[$\mathcal J$, $\mathcal W$] Sets of guaranteed and non-guaranteed ad campaigns, respectively.
+\item[$\mathcal V_j$, $\mathcal V_w$] Sets of viewer segments targeted by guaranteed campaign $j$ and non-guaranteed campaign $w$, respectively.
+\item[$\mathcal J_v$, $\mathcal W_v$] Sets of guaranteed and non-guaranteed campaigns targeting viewer segment $v$, respectively.
+\item[$D_j$, $R_j$] Impression demand and minimum expected reach of guaranteed campaign $j\in\mathcal J$. A targeted reach is specified for each guaranteed contract.
+\item[$B_w$] Budget of non-guaranteed campaign $w\in\mathcal W$.
+\item[$N_v$] Population size of viewer segment $v\in\mathcal V$.
+\item[$\varphi$] Number of available ad slots on a web page, with the printed restriction $\varphi\geq1$.
+\item[$e_{vw}$] Average revenue per impression from non-guaranteed campaign $w$ on segment $v$, for $w\in\mathcal W$, $v\in\mathcal V_w$. It is the bid price when the bid is unchanged during the period; otherwise it may be estimated from the campaign's effective cost per mille or that of similar campaigns.
+\item[$\mu_v$, $\hat s_v$] Mean supply and half-width of the supply interval for segment $v$.
+\item[$\varepsilon$, $\varepsilon^d_j$, $\varepsilon^r_j$] Exogenously given revenue, delivery, and reach risk levels. Experimental risk choices in Section~6.3 are not fixed inputs of the general formulation.
+\end{description}
+
+\paragraph{Supply assumptions.}
+Individuals within a viewer segment are homogeneous: an impression from the segment is equally likely to be supplied by any individual in that segment. The random supplies $\{\tilde s_v\mid v\in\mathcal V\}$ are mutually independent, and, for every $v\in\mathcal V$, $\tilde s_v$ is symmetrically distributed in
+\[
+[\mu_v-\hat s_v,\ \mu_v+\hat s_v],\qquad
+\mathbb E[\tilde s_v]=\mu_v.
+\]
+Tildes denote random variables; the corresponding symbols without tildes denote realizations. The source defines
+\[
+\tilde{\boldsymbol s}=\{\tilde s_v\mid v\in\mathcal V\},\qquad
+\boldsymbol\mu=\{\mu_v\mid v\in\mathcal V\},
+\]
+\[
+\Xi_{\tilde{\boldsymbol s}}=
+\left\{\tilde{\boldsymbol s}\in\mathbb R^{|\mathcal V|}\ \middle|\
+\mu_v-\hat s_v\leq\tilde s_v\leq\mu_v+\hat s_v,\ \forall v\in\mathcal V\right\},
+\]
+\[
+\mathcal D_{\tilde{\boldsymbol s}}=
+\left\{\mathbb P_{\tilde{\boldsymbol s}}\in\mathcal M(\Xi_{\tilde{\boldsymbol s}})\ \middle|\
+\int_{\Xi_{\tilde{\boldsymbol s}}}d\mathbb P_{\tilde{\boldsymbol s}}=1,\quad
+\int_{\Xi_{\tilde{\boldsymbol s}}}\tilde{\boldsymbol s}\,d\mathbb P_{\tilde{\boldsymbol s}}=\boldsymbol\mu
+\right\}.
+\]
+Here $\mathcal M(\Xi_{\tilde{\boldsymbol s}})$ is the set of all symmetric probability distributions on the support satisfying mutual independence of the supplies. These are the distributional premises underlying the calibration, not additional decision constraints of ADP-2.
+
+\paragraph{Printed supply terminology.}
+Table~1 calls $\tilde s_v$ the supply ``(impressions)'', whereas the objective discussion on page~12 calls $\varphi\tilde s_v$ the number of impressions. The latter scaling is used in (12), (13), (15), and (16), exactly as printed; neither the factor $\varphi$ nor the exponent in the reach definition below is changed to resolve this terminology conflict.
+
+\section*{Uncertainty-budget calibration}
+The fixed budgets used in (10), (15), and (17) are defined in Propositions~2--3 and the revenue-approximation paragraph (pages 14--16):
+\[
+\Gamma=g^{-1}(|\mathcal V|,\varepsilon),\qquad
+\Gamma^d_j=g^{-1}(|\mathcal V_j|,\varepsilon^d_j),\qquad
+\Gamma^r_j=g^{-1}(|\mathcal V_j|,\varepsilon^r_j),\quad\forall j\in\mathcal J.
+\]
+The function used for this calibration is printed as
+\[
+g(n,\Gamma)=\frac{1}{2^n}\left[
+\left(1-\frac{\Gamma+n}{2}+\left\lfloor\frac{\Gamma+n}{2}\right\rfloor\right)
+\binom{n}{\left\lfloor(\Gamma+n)/2\right\rfloor}
++\sum_{m=\left\lfloor(\Gamma+n)/2\right\rfloor+1}^{n}\binom{n}{m}
+\right],
+\]
+\[
+g^{-1}(n,\varepsilon)=
+\begin{cases}
+\displaystyle\min_{\substack{\Gamma\in[1,n]:\\g(n,\Gamma)\leq\varepsilon}}\Gamma,
+&\text{if }\varepsilon\geq1/2^n,\\[2mm]
+n,&\text{if }\varepsilon<1/2^n.
+\end{cases}
+\]
+Theorem~1 uses a set $\{\tilde\xi_k\mid k\in\mathcal K\}$ of $n$ independent random variables, each symmetric in $[-1,1]$, coefficients $\lambda_k\in[0,1]$ for $k\in\mathcal K$, and a scalar $\Gamma\in[1,n]$. Its bound is
+\[
+\mathbb P_{\tilde{\boldsymbol\xi}}\left\{\sum_{k\in\mathcal K}\lambda_k\tilde\xi_k\geq\Gamma\right\}\leq g(n,\Gamma).
+\]
+Here $n$ is a positive integer, as specified in Lemma~1. The calibration retains the printed exceptional branch $\varepsilon<1/2^n$; it does not replace that branch by an inverse outside $[1,n]$.
+
+\paragraph{Printed endpoint assertion.}
+Lemma~1 states that $g(n,\Gamma)$ is strictly decreasing on $[1,n]$ and that
+\[
+g(n,1)=\tfrac12,\qquad g(n,n)=\tfrac{1}{2^n}.
+\]
+The first endpoint assertion agrees with the displayed expression for $g$, by binomial symmetry. The operative calibration above retains the displayed expression and the printed definition of $g^{-1}$, without altering either to enforce that assertion.
+
+\paragraph{Underlying uncertainty sets.}
+The budget definitions refer to the following sets (pages 14 and 16):
+\[
+\mathcal F_{\phi}(\Gamma)=
+\left\{\phi_v,\ v\in\mathcal V\ \middle|\
+\begin{array}{l}
+\displaystyle\sum_{v\in\mathcal V}\phi_v\geq-\Gamma,\\
+-1\leq\phi_v\leq0,\quad\forall v\in\mathcal V
+\end{array}\right\},
+\]
+\[
+\mathcal F_{\theta_j}(\Gamma^d_j)=
+\left\{\theta_{vj},\ v\in\mathcal V_j\ \middle|\
+\begin{array}{l}
+\displaystyle\sum_{v\in\mathcal V_j}\theta_{vj}\geq-\Gamma^d_j,\\
+-1\leq\theta_{vj}\leq0,\quad\forall v\in\mathcal V_j
+\end{array}\right\},\qquad\forall j\in\mathcal J,
+\]
+\[
+\mathcal F_{\eta_j}(\Gamma^r_j)=
+\left\{\eta_{vj},\ v\in\mathcal V_j\ \middle|\
+\begin{array}{l}
+\displaystyle\sum_{v\in\mathcal V_j}\eta_{vj}\geq-\Gamma^r_j,\\
+-1\leq\eta_{vj}\leq0,\quad\forall v\in\mathcal V_j
+\end{array}\right\},\qquad\forall j\in\mathcal J.
+\]
+The symbols $\phi_v$, $\theta_{vj}$, and $\eta_{vj}$ describe uncertainty in the predecessor robust construction. They are not additional decisions or constraints to be appended to (10)--(23).
+
+\section*{Reach functions and coefficient construction}
+The affine functions used in (18)--(19) are the page~16 definitions, for each $j\in\mathcal J$:
+\begin{align*}
+a^l_v(p_{vj})&=\hat s_v\alpha^l_vp_{vj}+\hat s_v\beta^l_v,
+&&\forall v\in\mathcal V_j,\ l\in\mathcal L,\\
+b^l_v(p_{vj})&=(\mu_v\alpha^l_v+\gamma^l_v)p_{vj}+\mu_v\beta^l_v+\delta^l_v,
+&&\forall v\in\mathcal V_j,\ l\in\mathcal L.
+\end{align*}
+Lemma~2 (page~15) defines a fixed index set and fixed breakpoints:
+\[
+\mathcal L=\{1,\ldots,L-1\},\qquad L\geq2,\qquad
+0=\hat p^1_v<\cdots<\hat p^L_v=1.
+\]
+For each segment occurring in a targeted pair $v\in\mathcal V_j$, $j\in\mathcal J$, and each $l\in\mathcal L$, the coefficients are
+\begin{align*}
+\alpha^l_v&=\frac{f^1_v(\hat p^{l+1}_v)-f^1_v(\hat p^l_v)}{\hat p^{l+1}_v-\hat p^l_v},&
+\beta^l_v&=\frac{\hat p^{l+1}_vf^1_v(\hat p^l_v)-\hat p^l_vf^1_v(\hat p^{l+1}_v)}{\hat p^{l+1}_v-\hat p^l_v},\\
+\gamma^l_v&=\frac{f^2_v(\hat p^{l+1}_v)-f^2_v(\hat p^l_v)}{\hat p^{l+1}_v-\hat p^l_v},&
+\delta^l_v&=\frac{\hat p^{l+1}_vf^2_v(\hat p^l_v)-\hat p^l_vf^2_v(\hat p^{l+1}_v)}{\hat p^{l+1}_v-\hat p^l_v},
+\end{align*}
+where
+\begin{align*}
+f^1_v(p)&=\frac{f_v(\mu_v+\hat s_v,p)-f_v(\mu_v-\hat s_v,p)}{2\hat s_v},\\
+f^2_v(p)&=\frac{(\mu_v+\hat s_v)f_v(\mu_v-\hat s_v,p)-(\mu_v-\hat s_v)f_v(\mu_v+\hat s_v,p)}{2\hat s_v},\\
+f_v(s,p)&=N_v-N_v\left[1-\frac1{N_v}+\frac{(1-p)^\varphi}{N_v}\right]^s.
+\end{align*}
+These definitions are retained with their printed denominators; no zero-half-width limiting rule is added.
+
+\paragraph{Reach quantity being approximated.}
+The random variable $\tilde r_{vj}$ is the number of unique individuals in segment $v$ reached by campaign $j$. Proposition~1 gives
+\[
+\mathbb E[\tilde r_{vj}\mid(\tilde s_v,p_{vj})]
+=N_v-N_v\left[1-\frac1{N_v}+\frac{(1-p_{vj})^\varphi}{N_v}\right]^{\tilde s_v},
+\qquad\forall j\in\mathcal J,\ v\in\mathcal V_j,
+\]
+and the campaign's total conditional expected reach is
+\[
+\sum_{v\in\mathcal V_j}\mathbb E[\tilde r_{vj}\mid(\tilde s_v,p_{vj})],\qquad\forall j\in\mathcal J.
+\]
+Lemma~2 states that the segment-level expected reach has the lower bound
+\[
+\min_{l\in\mathcal L}\{\alpha^l_v\tilde s_vp_{vj}+\beta^l_v\tilde s_v+\gamma^l_vp_{vj}+\delta^l_v\},
+\qquad\forall v\in\mathcal V_j,\ j\in\mathcal J.
+\]
+This lower-bound expression defines the coefficient construction; it is not an additional reach constraint imposed alongside (17)--(19).
+
+\paragraph{Breakpoint selection in Remark~1.}
+The paper first takes the secant of the expected-reach function in $\tilde s_v$ on $[\mu_v-\hat s_v,\mu_v+\hat s_v]$, denoted by $F(\tilde s_v,p_{vj})$, and then takes its piecewise-linear interpolation in $p_{vj}\in[0,1]$. For the breakpoint selection, the supply is fixed at its mean $\mu_v$. Along with $\hat p^1_v=0$ and $\hat p^L_v=1$, the stated selection equation is
+\[
+\int_0^{\hat p^l_v}\left|\frac{d^2F(\mu_v,p)}{dp^2}\right|^{1/2}\,dp
+=\frac{l-1}{L-1}\int_0^1\left|\frac{d^2F(\mu_v,p)}{dp^2}\right|^{1/2}\,dp,
+\qquad l=2,\ldots,L-1.
+\]
+Here $F$ is the secant function specified by the authors, distinct from $f_v$, $f^1_v$, and $f^2_v$. The breakpoint equations define fixed approximation data, not optimization variables in ADP-2.
+
+\section*{Transformation scope and qualifications}
+Sections~4.1--4.2 obtain (10)--(14) by linearizing and relaxing the revenue construction and then using its dual. Proposition~4 states that this yields a lower bound on the robust revenue objective, rather than an exact transformation in general. Proposition~5 gives an exact delivery transformation, resulting in (15)--(16) and their nonnegativity conditions. Theorem~3 and Proposition~6 give the exact transformation of the robust piecewise reach construction, resulting in (17)--(19) and $h^r_j\geq0$. The paper states this reach exactness for general uncertainty budgets, not only integer budgets. The underlying reach function has already been lower-bounded as above. Remark~2 identifies the preceding chance-constraint approximation as using deterministic lower bounds. Superseded robust or chance constraints are not imposed in addition to (11)--(23).
+
+\paragraph{Performance qualification, not additional constraints.}
+Writing $Z^{\mathrm{ADP}-1}$ and $Z^{\mathrm{ADP}-2}$ for the optimal objective values of the predecessor robust model and the selected linear program, Section~4.3 defines
+\[
+\Omega=Z^{\mathrm{ADP}-1}-Z^{\mathrm{ADP}-2},\qquad
+Z^{\mathrm{ADP}-2}\leq Z^{\mathrm{ADP}-1},\qquad\Omega\geq0.
+\]
+Proposition~7 supplies a sufficient zero-gap condition: if $\boldsymbol p^*$ is optimal for the predecessor robust model and, for every $w\in\mathcal W$, either
+\[
+B_w\leq\sum_{v\in\mathcal V_w}\varphi e_{vw}(\mu_v-\hat s_v)p^*_{vw}
+\quad\text{or}\quad
+B_w\geq\sum_{v\in\mathcal V_w}\varphi e_{vw}\mu_vp^*_{vw},
+\]
+then $\Omega=0$. These are not assumptions required to use ADP-2. Proposition~8 gives
+\[
+\Omega\leq\sum_{v\in\mathcal V_\Gamma}\varphi\hat s_v\bar e_v,
+\qquad
+\bar e_v=\max_{w\in\mathcal W_v}e_{vw},
+\]
+where
+\[
+\mathcal V_\Gamma\subseteq\mathcal V,\qquad
+|\mathcal V_\Gamma|=\lceil\Gamma\rceil,\qquad
+\min_{v\in\mathcal V_\Gamma}\hat s_v\bar e_v
+\geq\max_{v\in\mathcal V\setminus\mathcal V_\Gamma}\hat s_v\bar e_v.
+\]
+No empty-set convention is added to these printed expressions. Remark~5 warns that this bound can perform badly when guaranteed demand is high and campaigns compete intensely for the same resources, or when supplies are concentrated in few segments.
+
+\paragraph{Source scope.}
+The operative formulation is (10)--(23) on physical PDF page~21 of Shen, Li, Chen, and Pan, \emph{Integrated Ad Delivery Planning for Targeted Display Advertising}. Its definitions above follow physical pages 9--16 and its transformation qualifications follow pages 18--23. The supplied page images verify pages 9, 10, 16, and 21; the remaining cited main-paper passages are supplied as text. The official e-companion, including the dual derivation cited as Section~EC.5 and the proofs referenced by the main paper, was not supplied and remains unverified. No clustered model, revenue-certification SDP, or substitute algorithmic subproblem is included.
+
+\end{document}

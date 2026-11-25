@@ -1,0 +1,159 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\begin{equation}
+\varrho_*(x):=\inf_{U\in\mathfrak U}\mathfrak J(x,U).
+\tag{2.12}
+\end{equation}
+\[
+\mathfrak J(x,\hat U):=\limsup_{T\to\infty}\frac1T\,\mathbb E\left[\int_0^T\mathcal R\bigl(\hat X(s),\hat U(s)\bigr)\,\mathrm ds\right].
+\]
+Subject to the limiting controlled dynamics and admissibility conditions:
+\begin{equation}
+\mathrm d\hat X(t)=b\bigl(\hat X(t),\hat U(t)\bigr)\,\mathrm dt+\mathrm d\hat W(t),\qquad t\geq0,
+\tag{2.9}
+\end{equation}
+\[
+\hat X(0)=x,\qquad x\in\mathbb R^d,
+\qquad \hat U\in\mathfrak U,\qquad \hat U(t)\in\mathbb U\quad(t\geq0),
+\]
+\[
+\mathbb U:=\{u\in\mathbb R_+^d:\langle e,u\rangle=1\}.
+\]
+Here \(x\) is fixed initial data, \(\hat X\) is the controlled state, and \(\hat U\) is the control process (denoted by \(U\) in (2.12)). The class \(\mathfrak U\) is the set of all admissible controls for (2.9), as specified in Section 2.3. The nonanticipativity condition stated in Theorem 2.1(iv) is
+\[
+\hat W(t)-\hat W(s)\ \text{is independent of }\mathcal F_s,
+\qquad 0\leq s\leq t,
+\]
+\[
+\mathcal F_s:=\sigma\bigl(\hat U(r),\hat W(r):r\leq s\bigr)\vee\mathcal N,
+\]
+where \(\mathcal N\) is the collection of \(\mathbb P\)-null sets. Equation (2.9) is taken in the strong-solution sense stated in that theorem. No stationary-Markov or positive-recurrence restriction is imposed on the optimization class.
+
+\section*{Running cost: the version (2.10)}
+The selected cost is the power cost, rather than the alternative in Remark 2.1:
+\begin{equation}
+\widetilde{\mathcal R}(y)=c|y|^m,\qquad y\in\mathbb R_+^d,
+\qquad c>0,\quad m\geq1.
+\tag{2.10}
+\end{equation}
+\[
+\widetilde{\mathcal R}:\mathbb R_+^d\longrightarrow\mathbb R_+,
+\qquad
+\mathcal R:\mathbb R^d\times\mathbb U\longrightarrow\mathbb R_+,
+\qquad
+\mathcal R(x,u):=\widetilde{\mathcal R}\bigl(\langle e,x\rangle^+u\bigr).
+\]
+The constants \(c,m\) are fixed data. As in Section 1.2, \(|\cdot|\) is the Euclidean norm, \(a^+:=a\vee0\) for \(a\in\mathbb R\), \(\langle\cdot,\cdot\rangle\) is the inner product, and \(e=(1,\ldots,1)^\prime\) in the relevant vector dimension. The notation \(\mathbb R_+\) includes zero.
+
+\section*{Drift and its fixed coefficients}
+\[
+b:\mathbb R^d\times\mathbb U\longrightarrow\mathbb R^d,
+\qquad
+b(x,u)=\ell-M\bigl(x-\langle e,x\rangle^+u\bigr)-\Gamma\langle e,x\rangle^+u,
+\]
+\[
+M=\operatorname{diag}(\mu_1^\pi,\ldots,\mu_d^\pi),
+\qquad
+\Gamma=\operatorname{diag}(\gamma_1^\pi,\ldots,\gamma_d^\pi),
+\]
+\[
+\ell:=(\ell_1,\ldots,\ell_d)^\prime,
+\qquad
+\ell_i:=\hat\lambda_i^\pi-\rho_i\hat\mu_i^\pi,
+\qquad i\in\mathcal I.
+\]
+The coefficient definitions on pages 5--7 are
+\[
+\begin{aligned}
+\lambda_i^\pi&:=\sum_{k\in\mathcal K}\pi_k\lambda_i(k),&
+\mu_i^\pi&:=\sum_{k\in\mathcal K}\pi_k\mu_i(k),&
+\gamma_i^\pi&:=\sum_{k\in\mathcal K}\pi_k\gamma_i(k),\\
+\hat\lambda_i^\pi&:=\sum_{k\in\mathcal K}\pi_k\hat\lambda_i(k),&
+\hat\mu_i^\pi&:=\sum_{k\in\mathcal K}\pi_k\hat\mu_i(k),&
+\rho_i&:=\lambda_i^\pi/\mu_i^\pi,
+\end{aligned}
+\qquad i\in\mathcal I.
+\]
+
+\section*{Brownian law}
+The process \(\hat W\) is the \(d\)-dimensional Brownian motion of Theorem 2.1(ii), with covariance coefficient matrix
+\[
+\sigma_\alpha^\prime\sigma_\alpha=
+\begin{cases}
+\Lambda^2,&\alpha>1,\\
+\Lambda^2+\Theta,&\alpha=1,\\
+\Theta,&\alpha<1,
+\end{cases}
+\qquad
+\Lambda:=\operatorname{diag}\bigl(\sqrt{2\lambda_1^\pi},\ldots,\sqrt{2\lambda_d^\pi}\bigr).
+\]
+\[
+\Theta=[\theta_{ij}]_{i,j\in\mathcal I}.
+\]
+\begin{equation}
+\theta_{ij}:=2\sum_{l\in\mathcal K}\sum_{k\in\mathcal K}
+\bigl(\lambda_i(k)-\rho_i\mu_i(k)\bigr)
+\bigl(\lambda_j(l)-\rho_j\mu_j(l)\bigr)
+\pi_k\Upsilon_{kl},\qquad i,j\in\mathcal I.
+\tag{2.8}
+\end{equation}
+For the operative definition of \(\Upsilon\), use the matrix expression printed immediately after (2.8):
+\[
+\Upsilon=(\Pi-Q)^{-1}-\Pi,
+\]
+where every row of \(\Pi\) is the stationary probability vector \(\pi\).
+
+\paragraph{Printed covariance-definition conflict.}
+The same passage on page 7 also prints
+\[
+\Upsilon_{kl}:=\int_0^{+\infty}\bigl(P_{kl}(t)-\pi_k\bigr)\,\mathrm dt,
+\qquad P_{kl}(t)=[e^{Qt}]_{kl},\qquad k,l\in\mathcal K.
+\]
+With the stated row convention for \(\Pi\), this integral expression does not generally agree with the printed matrix expression, since \(P_{kl}(t)\) tends to \(\pi_l\). The matrix expression above is the selected definition; the integral is recorded here only as the conflicting printed reading. Also, (2.8), as printed, need not be symmetric for general irreducible \(Q\), although the theorem calls \(\Theta\) a covariance matrix. The coefficient formula and the theorem's covariance designation are retained without symmetrization or an additional premise on \(Q\).
+
+\section*{Primitive data, indices, and standing input assumptions}
+The source defines
+\[
+\mathcal I:=\{1,\ldots,d\},\qquad
+\mathcal K:=\{1,\ldots,K\},\qquad n\in\mathbb N,
+\qquad \alpha>0,
+\qquad \beta:=\max\{1/2,1-\alpha/2\}.
+\]
+Here \(\mathbb N\) is the set of positive integers. For each \(n\), \(J^n\) is a continuous-time Markov chain on \(\mathcal K\) with irreducible transition rate matrix \(n^\alpha Q\). Its stationary distribution is \(\pi=(\pi_1,\ldots,\pi_K)\), and it starts in that distribution. The stationary equations printed in Section 2.2 are
+\[
+\pi^\prime Q=0,\qquad \pi^\prime e=1.
+\]
+For \(i\in\mathcal I\), \(k\in\mathcal K\), and \(n\in\mathbb N\), \(\lambda_i^n(k)\in\mathbb R_+\) is the primitive arrival rate, and \(\mu_i^n(k)\) and \(\gamma_i^n(k)\) are the primitive exponential service and patience rates, respectively. These parameter families, their limits, and \(Q,\pi\) are fixed data, not diffusion controls.
+
+\paragraph{Assumption 2.1.}
+For every \(i\in\mathcal I\) and \(k\in\mathcal K\), as \(n\to\infty\),
+\[
+\begin{aligned}
+n^{-1}\lambda_i^n(k)&\longrightarrow\lambda_i(k)>0,\\
+\mu_i^n(k)&\longrightarrow\mu_i(k)>0,\\
+\gamma_i^n(k)&\longrightarrow\gamma_i(k)>0,\\
+n^{-\beta}\bigl(\lambda_i^n(k)-n\lambda_i(k)\bigr)&\longrightarrow\hat\lambda_i(k),\\
+n^{1-\beta}\bigl(\mu_i^n(k)-\mu_i(k)\bigr)&\longrightarrow\hat\mu_i(k).
+\end{aligned}
+\]
+\paragraph{Assumption 2.2.}
+\[
+\sum_{i\in\mathcal I}\rho_i=1.
+\]
+These are standing assumptions of the paper. In particular, the critical-load equality is an input condition, not a constraint that may be weakened to an inequality.
+
+\paragraph{Initial state and the scope of the limit theorem.}
+The source's scaled initial states are defined componentwise by
+\[
+\hat X_i^n(0)=n^{-\beta}\bigl(X_i^n(0)-\rho_i n\bigr),\qquad i\in\mathcal I.
+\]
+Page 6 assumes that \(\{\hat X^n(0):n\in\mathbb N\}\) is deterministic and does not depend on \(n\). Theorem 2.1 states its limit result under uniform boundedness of these initial states; in part (iv), \(x\) is their limit, and tightness of \(\hat U^n\) is the premise for identifying a limiting process \(\hat U\) and the strong solution (2.9). Appendix A, page 24, specifies tightness in the space of \(d\)-dimensional c\`adl\`ag paths. These are premises for the queue-to-diffusion limit, not additional restrictions reducing (2.12) to controls obtainable from a prescribed queueing sequence.
+
+\paragraph{Source scope.}
+The operative model is (2.12), (2.9), and their definitions on pages 4--8, with the power cost (2.10). The stationary occupation-measure formulation and the optimality equations of Section 4.1 are not imposed. The paper cites reference [1], equation (4) and Proposition 3.2, for the drift-offset and environmental-noise limits; that external reference is not supplied and is unverified here. The coefficient formulas used above are printed in the supplied main paper itself.
+
+\end{document}

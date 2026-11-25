@@ -1,0 +1,129 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\title{Core Mathematical Model}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Multiresource Flexible Job-Shop Scheduling}
+
+\paragraph{Source and data definitions.}
+The selected application is the simultaneous-occupation multi-resource flexible
+job-shop problem, PDF pp.2--3 (printed pp.2323--2324), Sections 2 and 3.1,
+source equations (1)--(11). Let $J$ be jobs, $\Omega=\bigcup_{u\in J}O_u$
+be their operations, and $R$ be actual unary resources. Operation $i$ has
+requirement groups $G_i$; group $j$ must receive one resource from
+$R_{i,j}\subseteq R$. The same actual resource cannot serve two groups of
+the same operation. $p_{i,k}\ge0$ are fixed processing times. $PJ_i$ are
+immediate predecessors in a given acyclic precedence graph. All assigned
+resources are occupied simultaneously for the common operation duration.
+$\mathcal M$ is a valid disjunctive constant for the finite scheduling horizon;
+a feasible serial schedule supplies a makespan upper bound when needed.
+The independent variables are nonnegative starts $\tau_i$, durations $p_i$,
+makespan $C_{\max}\ge0$, assignments $Y$, resource-use indicators $U$ and
+pairwise order indicators $X$, with the binary domains below.
+The source completion variable is $t_i=\tau_i+p_i$; this changes notation,
+defined by its assignment meaning. The source's printed equation (3)
+has a double sum inconsistent with its explanation: we use its explicitly
+stated per-resource rule, also confirmed by CP constraint (14). The duration
+epigraph is retained as in source (4); at an optimum durations may be reduced
+to the largest selected resource processing time without worsening makespan.
+
+
+For practical Gurobi implementation, we use start-time variables $\tau_i$, duration variables $p_i$, and auxiliary binary variables $U_{i,k}$ indicating whether operation $i$ uses resource $k$. Let $R_i = \bigcup_{j \in G_i} R_{i,j}$ and let $\mathcal{P} = \{(i,i') \in \Omega \times \Omega : i < i'\}$. This is equivalent to the paper's MILP but avoids ambiguous time notation.
+
+\begin{equation}
+\min C_{\max}
+\tag{1}
+\end{equation}
+
+\begin{equation}
+\sum_{k \in R_{i,j}} Y_{i,j,k} = 1,
+\qquad
+\forall i \in \Omega,\ \forall j \in G_i
+\tag{2}
+\end{equation}
+
+\begin{equation}
+\sum_{j \in G_i:\ k \in R_{i,j}} Y_{i,j,k} \le 1,
+\qquad
+\forall i \in \Omega,\ \forall k \in R
+\tag{3}
+\end{equation}
+
+\begin{equation}
+U_{i,k} =
+\sum_{j \in G_i:\ k \in R_{i,j}} Y_{i,j,k},
+\qquad
+\forall i \in \Omega,\ \forall k \in R
+\tag{4}
+\end{equation}
+
+\begin{equation}
+p_i \ge \sum_{k \in R_{i,j}} p_{i,k} Y_{i,j,k},
+\qquad
+\forall i \in \Omega,\ \forall j \in G_i
+\tag{5}
+\end{equation}
+
+\begin{equation}
+\tau_i \ge \tau_{i'} + p_{i'},
+\qquad
+\forall i \in \Omega,\ \forall i' \in PJ_i
+\tag{6}
+\end{equation}
+
+\begin{equation}
+\tau_{i'} \ge
+\tau_i + p_i
+- \mathcal{M}\left(3 - X_{i,i',k} - U_{i,k} - U_{i',k}\right),
+\quad
+\forall (i,i') \in \mathcal{P},\ \forall k \in R_i \cap R_{i'}
+\tag{7}
+\end{equation}
+
+\begin{equation}
+\tau_i \ge
+\tau_{i'} + p_{i'}
+- \mathcal{M}\left(2 + X_{i,i',k} - U_{i,k} - U_{i',k}\right),
+\quad
+\forall (i,i') \in \mathcal{P},\ \forall k \in R_i \cap R_{i'}
+\tag{8}
+\end{equation}
+
+\begin{equation}
+C_{\max} \ge \tau_i + p_i,
+\qquad \forall i \in \Omega
+\tag{9}
+\end{equation}
+
+\begin{equation}
+\tau_i \ge 0,\quad p_i \ge 0,
+\qquad \forall i \in \Omega
+\tag{10}
+\end{equation}
+
+\begin{equation}
+X_{i,i',k} \in \{0,1\},
+\qquad \forall (i,i') \in \mathcal{P},\ \forall k \in R_i \cap R_{i'}
+\tag{11}
+\end{equation}
+
+\begin{equation}
+Y_{i,j,k} \in \{0,1\},
+\qquad \forall i \in \Omega,\ \forall j \in G_i,\ \forall k \in R_{i,j}
+\tag{12}
+\end{equation}
+
+\begin{equation}
+U_{i,k} \in \{0,1\},
+\qquad \forall i \in \Omega,\ \forall k \in R
+\tag{13}
+\end{equation}
+
+\end{document}

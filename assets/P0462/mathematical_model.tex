@@ -1,0 +1,85 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\begin{document}
+
+\begin{align}
+\min\quad & \sum_{r\in R}c_r y_r \tag{4}\\
+\text{s.t.}\quad & \sum_{r\in R}a_{ir}y_r=1, && i\in V', \tag{5}\\
+& y_r\in\{0,1\}, && r\in R. \tag{6}
+\end{align}
+
+\section*{CFR full-route set-partitioning model}
+The objective minimizes total transportation cost. The decision variable $y_r$ equals one if route $r$ is selected and zero otherwise. Equations (5) require every customer to be visited exactly once. The set $R$ is the full set of feasible routes defined below, not a restricted column set.
+
+\subsection*{Fixed data and customer demands}
+The problem is defined on the complete directed graph
+\[
+G=(V,A),\qquad V=\{0,\ldots,n\},\qquad V'=\{1,\ldots,n\},
+\qquad A=\{(i,j):i,j\in V,\ i\ne j\}.
+\]
+Node $0$ is the depot and $V'$ is the customer set. The fixed cost of traversing arc $(i,j)\in A$ is $c_{ij}$. Vehicles form a homogeneous fleet, with capacity $Q$ per vehicle. The fixed target fill rate is $F$.
+
+Section 3 assumes that customer demands are independent and identically distributed. For each customer, demand is a discrete random variable satisfying
+\[
+\xi_i\in\mathbb N,\qquad
+\mathbb E[\xi_i]=\mu_i,\qquad
+\mathbb P(\xi_i=0)=0,
+\qquad i\in V'.
+\]
+Demand is revealed only upon arrival at the customer's location. Allocation to the current customer is decided without knowing the demands of customers still to be visited. A customer's fill rate is the proportion of its demand supplied.
+
+\subsection*{Full feasible-route set and route coefficients}
+A route has the form
+\[
+r=(i_0,i_1,\ldots,i_m,i_{m+1}),\qquad
+ i_0=i_{m+1}=0,\qquad
+ i_k\in V'\quad(k\in\{1,\ldots,m\}).
+\]
+The set $R$ contains exactly those routes that start and end at the depot, visit each customer at most once, and satisfy the collective-fill-rate requirement
+\begin{equation}
+{}_r\ge F. \tag{3}
+\end{equation}
+Here ${}_r$ is the route's collective fill rate, defined by (1)--(2) and the evaluation relation below. Requirement (3) applies to each route admitted to $R$; it is not an additional restriction on the selection variables outside this definition.
+
+For $r\in R$, $A(r)$ denotes the set of arcs traversed by route $r$. Its transportation cost and customer-incidence coefficients are
+\[
+c_r=\sum_{(i,j)\in A(r)}c_{ij},\qquad r\in R,
+\]
+\[
+a_{ir}=\begin{cases}
+1,&\text{if customer }i\text{ is visited in route }r,\\
+0,&\text{otherwise},
+\end{cases}
+\qquad i\in V',\quad r\in R.
+\]
+These are fixed coefficients of the set-partitioning model.
+
+\subsection*{Defining collective-fill-rate equations}
+Section 3 calls the expected minimum fill rate over all customers in a route its collective fill rate and computes it using the following recursion:
+\begin{equation}
+v^r(k,q)=
+\begin{cases}
+\displaystyle\sum_{d=1}^{\infty}\mathbb P(\xi_{i_k}=d)
+\max_{x\le\min(d,q)}
+\min\!\left[\frac{x}{d},v^r(k+1,q-x)\right],
+&\text{if }k=1,\ldots,m-1,\\[6pt]
+f_{i_k}(q),&\text{if }k=m.
+\end{cases}
+\tag{1}
+\end{equation}
+Here $q$ is the capacity remaining, $d$ is the realized demand at customer $i_k$, and $x$ is the allocation to that customer. The expected fill rate at customer $i_k$ with $q$ units of capacity left is
+\begin{equation}
+f_{i_k}(q)=\sum_{d=1}^{\infty}\mathbb P(\xi_{i_k}=d)
+\frac{\min(q,d)}{d}. \tag{2}
+\end{equation}
+Starting at $k=m$ and recursively solving (1) for $k\in\{m,\ldots,1\}$ gives the route's collective fill rate:
+\[
+{}_r=v^r(1,Q).
+\]
+Thus route feasibility uses the ordered customer sequence, not merely its customer set. The allocation maximization in (1) defines a route coefficient; $x$ is not a route-selection variable in (4)--(6).
+
+\paragraph{Source notes.}
+The operative formulation is Section 3 and Section 3.1, physical PDF pages 6--8, of Sluijk et al., \emph{Fair stochastic vehicle routing with partial deliveries} (April 2023). The original page images show an empty base with subscript $r$ for the collective-fill-rate symbol on pages 6--7, including (3); this is retained as ${}_r$, rather than supplying a missing letter. Equation (1) prints only $x\le\min(d,q)$ beneath the maximization: it does not state a lower bound or an integer/real domain for $x$, nor an explicit domain for $q$. These have not been supplied. Section 3's printed assumption of identically distributed demands is retained, although the subsequent two-customer illustration uses different demand distributions. That illustration does not replace the operative assumption here. The continuation on page 8 introduces a linear relaxation and column generation as solution methods, not additional conditions on (4)--(6); those algorithmic formulations are not included.
+
+\end{document}

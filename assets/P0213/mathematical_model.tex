@@ -1,0 +1,100 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\title{Hydraulic Flow--Pressure Optimization Core}
+\author{}
+\date{}
+\begin{document}
+\maketitle
+
+\section{Sets and supplied data}
+Let $V$ be a finite node set, partitioned into entry nodes $V_+$, exit nodes $V_-$, and internal nodes $V_0$. Write $S:=V_+\cup V_-$. Let $A$ be a finite directed arc set with specified tail and head for each arc, denoted $a=(u,v)$. Define
+\[
+\delta^{\mathrm{out}}(u):=\{a\in A:\operatorname{tail}(a)=u\},
+\qquad
+\delta^{\mathrm{in}}(u):=\{a\in A:\operatorname{head}(a)=u\}.
+\]
+The supplied subsets $A_{\mathrm{pi}}\subseteq A$ and $A_{\mathrm{rs\text{-}nl}}\subseteq A$ index pipes and nonlinear resistors, respectively. Set
+\[
+B:=A_{\mathrm{pi}}\cup A_{\mathrm{rs\text{-}nl}}.
+\]
+The numerical data consist of pipe coefficients $c_{1,a},c_{2,a}\in\mathbb R$ for $a\in A_{\mathrm{pi}}$, resistor coefficients $c_a\in\mathbb R$ for $a\in A_{\mathrm{rs\text{-}nl}}$, and the supplied lower and upper bounds
+\[
+(p_u^-,p_u^+)\quad(u\in V),\qquad
+(q_u^-,q_u^+)\quad(u\in S),\qquad
+(q_a^-,q_a^+)\quad(a\in A).
+\]
+
+
+The five scalar objective components $f_1,\ldots,f_5$ are supplied finite-dimensional Gurobi-compatible expressions for the selected core. Their expression definitions and numerical coefficients are supplied by the instance. With
+\[
+z:=\bigl((p_u)_{u\in V},(q_u)_{u\in S},(q_a)_{a\in A}\bigr)
+\in\mathbb R^{|V|+|S|+|A|},
+\]
+write these expressions as $f_i(z)$. 
+
+\section{Decision variables}
+The continuous physical variables are pressure $p_u\in\mathbb R$ for $u\in V$, nodal supply or demand $q_u\in\mathbb R$ for $u\in S$, and arc flow $q_a\in\mathbb R$ for $a\in A$. Arc flow is positive along the specified arc direction; nodal supply is positive and demand is negative under the balance convention below.
+
+Introduce continuous auxiliary variables
+\[
+t_a\in\mathbb R_{\geq0},\quad r_a\in\mathbb R
+\qquad(a\in B),
+\]
+\[
+d_a\in\mathbb R,\quad w_a\in\mathbb R_{\geq0},\quad h_a\in\mathbb R
+\qquad(a\in A_{\mathrm{rs\text{-}nl}}).
+\]
+Here $\operatorname{ABS}(x)$ denotes the exact absolute-value general constraint: an equality $y=\operatorname{ABS}(x)$ requires $y=|x|$.
+
+\section{Optimization formulation}
+\begin{align}
+\min_{p,q,t,r,d,w,h}\quad
+&\sum_{i=1}^{5} f_i(z)
+\label{eq:objective}\\
+\text{subject to}\quad
+&\sum_{a\in\delta^{\mathrm{out}}(u)}q_a
+-\sum_{a\in\delta^{\mathrm{in}}(u)}q_a
+=\begin{cases}
+q_u,&u\in S,\\
+0,&u\in V_0,
+\end{cases}
+&&u\in V,
+\label{eq:balance}\\
+&t_a=\operatorname{ABS}(q_a),
+&&a\in B,
+\label{eq:flowabs}\\
+&r_a=t_aq_a,
+&&a\in B,
+\label{eq:flowproduct}\\
+&p_v^2=c_{1,a}p_u^2-c_{2,a}r_a,
+&&a=(u,v)\in A_{\mathrm{pi}},
+\label{eq:pipe}\\
+&d_a=p_u-p_v,
+&&a=(u,v)\in A_{\mathrm{rs\text{-}nl}},
+\label{eq:difference}\\
+&w_a=\operatorname{ABS}(d_a),
+&&a\in A_{\mathrm{rs\text{-}nl}},
+\label{eq:pressureabs}\\
+&h_a=w_ad_a,
+&&a\in A_{\mathrm{rs\text{-}nl}},
+\label{eq:pressureproduct}\\
+&p_u^2-p_v^2+h_a=2c_ar_a,
+&&a=(u,v)\in A_{\mathrm{rs\text{-}nl}},
+\label{eq:resistor}\\
+&p_u^-\leq p_u\leq p_u^+,
+&&u\in V,
+\label{eq:pressurebounds}\\
+&q_u^-\leq q_u\leq q_u^+,
+&&u\in S,
+\label{eq:nodalbounds}\\
+&q_a^-\leq q_a\leq q_a^+,
+&&a\in A.
+\label{eq:arcbounds}
+\end{align}
+All variables have the continuous domains stated above; in particular, $r_a,d_a,h_a$ are unrestricted in sign.
+
+\paragraph{Exact solver representation and selection.}
+This is the selected hydraulic core, consisting only of the stated objective, nodal balances, pipe and nonlinear-resistor physics, and pressure and flow bounds.  Equations~\eqref{eq:flowabs} and~\eqref{eq:pressureabs} are exact absolute-value general constraints. Equations~\eqref{eq:flowproduct}, \eqref{eq:pipe}, \eqref{eq:pressureproduct}, and~\eqref{eq:resistor} are nonconvex quadratic equalities; Gurobi must be configured to accept nonconvex quadratic constraints. 
+
+\end{document}

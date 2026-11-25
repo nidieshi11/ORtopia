@@ -1,0 +1,184 @@
+\documentclass[11pt]{ctexart}
+\usepackage{amsmath,amssymb,longtable}
+\begin{document}
+\section*{P11: 当前完整数学模型（2026-10-20）}
+\section*{修订依据与边界}依据源文第4–7页每项作业一次、同车取送含义，排除 i=j，增加访问/车辆归属等式及禁止自环，完整保留能耗、载重、时窗和排队约束。该项为明确业务逻辑修复，不称原式字面等价。
+
+
+
+
+\section{Formulations on Page 5}
+
+\subsection{Objective Function}
+\begin{equation}
+    \label{eq:1}
+    \min \lambda_1 \sum_{(i,j) \in \mathbb{A}} d_{ij}x_{ij} + \lambda_2 \sum_{i \in \mathbb{O} \cup \mathbb{F}} (\tau_i^* - \tau_i). \tag{1}
+\end{equation}
+
+\subsection{Constraints}
+\begin{equation}
+    \label{eq:2}
+    \sum_{j \in \mathbb{O} \cup \mathbb{F} \cup \{2n+1\}} x_{ij} = 1, \forall i \in \mathbb{O}, \tag{2}
+\end{equation}
+
+\begin{equation}
+    \label{eq:3}
+    \sum_{i \in \{0\} \cup \mathbb{O} \cup \mathbb{F}} x_{ij} = 1, \forall j \in \mathbb{O}. \tag{3}
+\end{equation}
+
+\begin{equation}
+    \label{eq:4}
+    \sum_{j \in \mathbb{O} \cup \mathbb{F} \cup \{2n+1\}} x_{ij} \le 1, \forall i \in \mathbb{F}. \tag{4}
+\end{equation}
+
+\newpage
+
+\section{Formulations on Page 6}
+
+\subsection{Constraints}
+\begin{equation}
+    \label{eq:5}
+    \sum_{i \in \{0\} \cup \mathbb{O} \cup \mathbb{F}} x_{ij} = \sum_{i \in \mathbb{O} \cup \mathbb{F} \cup \{2n+1\}} x_{ji}, \forall j \in \mathbb{F}, \tag{5}
+\end{equation}
+
+\begin{equation}
+    \label{eq:6}
+    u_i + q_i - Q^L(1 - x_{ij}) \le u_j, \forall i \in \{0\} \cup \mathbb{O} \cup \mathbb{F}, j \in \mathbb{O} \cup \mathbb{F} \cup \{2n+1\}, \tag{6}
+\end{equation}
+
+\begin{equation}
+    \label{eq:7}
+    u_i \le Q^L, \forall i \in \mathbb{O} \cup \mathbb{F}. \tag{7}
+\end{equation}
+
+\begin{equation}
+    \label{eq:8}
+    z_{ik} \le z_{0k}, \forall i \in \mathbb{O}, k \in \mathbb{K}, \tag{8}
+\end{equation}
+
+\begin{equation}
+    \label{eq:9}
+    z_{ik} + z_{jk} \le 3 - x_{0i} - x_{0j}, \forall i, j \in \mathbb{O} \cup \mathbb{F}, i\ne j, k \in \mathbb{K}, \tag{9}
+\end{equation}
+
+\begin{equation}
+    \label{eq:10}
+    2x_{ij} \le \sum_{k \in \mathbb{K}} (z_{ik} + z_{jk}), \forall i \in \{0\} \cup \mathbb{O} \cup \mathbb{F}, j \in \mathbb{O} \cup \mathbb{F} \cup \{2n + 1\}, \tag{10}
+\end{equation}
+
+\begin{equation}
+    \label{eq:11}
+    z_{ik} + (x_{ij} - 1) \le z_{jk}, \forall i, j \in \mathbb{O} \cup \mathbb{F}, k \in \mathbb{K}. \tag{11}
+\end{equation}
+
+\begin{equation}
+    \label{eq:12}
+    \sum_{k \in \mathbb{K}} z_{ik} \le 1, \forall i \in \mathbb{O} \cup \mathbb{F}, \tag{12}
+\end{equation}
+
+\begin{equation}
+    \label{eq:13}
+    z_{ik} = z_{(i+n)k}, \forall i \in \mathbb{P}, k \in \mathbb{K}. \tag{13}
+\end{equation}
+
+\begin{equation}
+    \label{eq:14}
+    y_j \le y_i - \gamma_{ij} - M(x_{ij} - 1), \forall i \in \{0\} \cup \mathbb{O}, j \in \mathbb{O} \cup \mathbb{F} \cup \{2n + 1\}, \tag{14}
+\end{equation}
+
+\begin{equation}
+    \label{eq:15}
+    y_j \le Q^E - \gamma_{ij} - M(x_{ij} - 1), \forall i \in \{0\} \cup \mathbb{F}, j \in \mathbb{O} \cup \mathbb{F} \cup \{2n + 1\}, \tag{15}
+\end{equation}
+
+\begin{equation}
+    \label{eq:16}
+    y_i \le Q^E, \forall i \in \{0, 2n + 1\} \cup \mathbb{O} \cup \mathbb{F}. \tag{16}
+\end{equation}
+
+\begin{equation}
+    \label{eq:17}
+    \tau_i^* + s_i \le \tau_{i+n}, \forall i \in \mathbb{P}, \tag{17}
+\end{equation}
+
+\begin{equation}
+    \label{eq:18}
+    \tau_i \le \tau_i^*, \forall i \in \mathbb{O} \cup \mathbb{F}, \tag{18}
+\end{equation}
+
+\begin{equation}
+    \label{eq:19}
+    b_i \le \tau_i^* \le e_i, \forall i \in \{0, 2n + 1\} \cup \mathbb{O} \cup \mathbb{F}. \tag{19}
+\end{equation}
+
+\begin{equation}
+    \label{eq:20}
+    \tau_i^* + s_i + t_{ij} \le \tau_j + M(1 - x_{ij}), \forall i \in \{0\} \cup \mathbb{O}, j \in \mathbb{O} \cup \mathbb{F} \cup \{2n + 1\}, \tag{20}
+\end{equation}
+
+\begin{equation}
+    \label{eq:21}
+    \tau_j \le \tau_i^* + s_i + t_{ij} + M(1 - x_{ij}), \forall i \in \{0\} \cup \mathbb{O}, j \in \mathbb{O} \cup \mathbb{F}, \tag{21}
+\end{equation}
+
+\begin{equation}
+    \label{eq:22}
+    \tau_i^* + (Q^E - y_i)g + t_{ij} \le \tau_j + M(1 - x_{ij}), \forall i \in \mathbb{F}, j \in \mathbb{O} \cup \mathbb{F} \cup \{2n + 1\}, \tag{22}
+\end{equation}
+
+\begin{equation}
+    \label{eq:23}
+    \tau_j \le \tau_i^* + (Q^E - y_i)g + t_{ij} + M(1 - x_{ij}), \forall i \in \mathbb{F}, j \in \mathbb{O} \cup \mathbb{F}. \tag{23}
+\end{equation}
+
+\newpage
+
+\section{Formulations on Page 7}
+
+\subsection{Constraints}
+\begin{equation}
+    \label{eq:24}
+    \tau_j - \tau_i \le M w_{ij}, \forall i, j \in \{0, 2n + 1\} \cup \mathbb{O} \cup \mathbb{F}, \tag{24}
+\end{equation}
+
+\begin{equation}
+    \label{eq:25}
+    w_{ij} + w_{ji} = 1, \forall i, j \in \{0, 2n + 1\} \cup \mathbb{O} \cup \mathbb{F}, i \neq j, \tag{25}
+\end{equation}
+
+\begin{equation}
+    \label{eq:26}
+    M(w_{ij} - 1) \le \tau_j^* - \tau_i^* - s_i, \forall i, j \in \mathbb{S}^C(c), i \neq j, c \in \mathbb{C}, \tag{26}
+\end{equation}
+
+\begin{equation}
+    \label{eq:27}
+    M(w_{ij} - 1) \le \tau_j^* - \tau_i^* - (Q^E - y_i)g, \forall i, j \in \mathbb{S}^F(f), i \neq j, f \in \mathbb{F}^0. \tag{27}
+\end{equation}
+
+\begin{equation}
+    \label{eq:28}
+    x_{ij}, w_{ij}, z_{ik} \in \{0, 1\}, \forall i \in \{0\} \cup \mathbb{O} \cup \mathbb{F}, j \in \mathbb{O} \cup \mathbb{F} \cup \{2n + 1\}, k \in \mathbb{K}. \tag{28}
+\end{equation}
+
+\begin{equation}
+    \label{eq:29}
+    y_i, \tau_i, \tau_i^*, u_i \ge 0, \forall i \in \{0, 2n + 1\} \cup \mathbb{O} \cup \mathbb{F}, \tag{29}
+\end{equation}
+
+
+
+\section*{集合、归属与完整域}
+$N=\{0,2n+1\}\cup O\cup F$, $I=\{0\}\cup O\cup F$, $J=O\cup F\cup\{2n+1\}$。
+$P$为取货作业，其送货配对为$i+n$；$K$为车辆；实例给出全部物理同址服务组及充电组。
+\[
+x_{ij}\in\{0,1\}\ (i\in I,j\in J),\quad
+w_{ij}\in\{0,1\}\ (i,j\in N),\quad z_{ik}\in\{0,1\}\ (i\in N,k\in K).
+\]
+\[
+\sum_kz_{ik}=\sum_{j\in J}x_{ij}\quad(i\in O\cup F),\qquad x_{ii}=0.
+\]
+式9只用于不同$i,j$。服务时间、距离、行驶能耗、充电速率、有限容量、时间窗及共同物理位置组均为实例参数。
+所有非负连续变量保留上文域；$0\le y_i\le Q^E$。
+
+\end{document}

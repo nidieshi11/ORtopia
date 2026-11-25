@@ -1,0 +1,264 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\section*{Preventive SC-AC-OPF model (24): explicitly corrected polar formulation B}
+
+\begin{equation}
+\begin{aligned}
+\min_{\substack{p,q,b,v,\theta\\\delta,\nu,\rho,\sigma}}\quad
+&\sum_{g\in\mathcal G}C_g(p_{g,0})
+ +\sum_{e\in\mathcal E}\bigl(C_e(\sigma_{e,o,0})+C_e(\sigma_{e,d,0})\bigr)\\
+&+\sum_{n\in\mathcal N}\bigl(C_n^P(\sigma_{n,0}^P)+C_n^Q(\sigma_{n,0}^Q)\bigr)\\
+&+\frac{1}{|\mathcal K|}\sum_{k\in\mathcal K}\left(
+ \sum_{e\in\mathcal E(k)}\bigl(C_e(\sigma_{e,o,k})+C_e(\sigma_{e,d,k})\bigr)
+ +\sum_{n\in\mathcal N}\bigl(C_n^P(\sigma_{n,k}^P)+C_n^Q(\sigma_{n,k}^Q)\bigr)
+ \right)\\
+\text{s.t.}\quad
+&\text{Base case constraints, }k=0:\ (4),(6),(14),(15)\text{--}(18),(20),(22),(23),\\
+&\text{Transition constraints, }k\in\mathcal K:\ (7)\text{--}(12),\\
+&\text{Post-contingency constraints, }k\in\mathcal K:\\
+&\hspace{2em}(5),(6),(13),(14),(15)\text{--}(18),(19),(21),(22),(23),\\
+&\theta_{n^{\mathrm{ref}},k}=0\quad\forall k\in\mathcal K_0
+\qquad\text{(reference bus fixed in Section 2.2.1).}
+\end{aligned}\tag{24}
+\end{equation}
+
+\paragraph{Printed scope of (24).}
+Approved clarification: the printed contingency objective contains an unbound $k$. This executable clarification explicitly aggregates every supplied contingency, using $|\mathcal K|^{-1}\sum_{k\in\mathcal K}$ and requiring a finite nonempty $\mathcal K$. This is a disclosed amendment, not a claim that the paper printed the missing sum. No singleton restriction is imposed. The source reference blocks include the approved addition of (7); the equipment domains and active self-voltage terms are corrected explicitly below. The source-stated reference-angle condition remains operative.
+
+\subsection*{Sets, data, and variable roles}
+The fixed sets $\mathcal N$, $\mathcal G$, and $\mathcal E$ are the buses, generators, and AC transmission lines. The fixed contingency set and system-condition set satisfy
+\[
+0\notin\mathcal K,\qquad |\mathcal K|\geq1,\qquad
+\mathcal K_0:=\mathcal K\cup\{0\}.
+\]
+The generators and lines remaining online in contingency $k$ are $\mathcal G(k)\subseteq\mathcal G$ and $\mathcal E(k)\subseteq\mathcal E$, respectively, with
+\[
+\mathcal G(0)=\mathcal G,\qquad \mathcal E(0)=\mathcal E.
+\]
+The fixed connection maps give $n(g)\in\mathcal N$ for each $g\in\mathcal G$, and $o(e),d(e)\in\mathcal N$ for each $e\in\mathcal E$. A contingency represents abrupt disconnection of equipment. The preventive interpretation assumes no intervening decision between the base case and the post-contingency state; the transition is dictated by automatic controller actions based on local observations. Transformers, phase-shifters, and DC transmission lines are not modeled in the paper's branch equations.
+
+The decision groups in (24) have the following roles:
+\begin{itemize}
+\item $v_{n,k}$ and $\theta_{n,k}$ are RMS bus-voltage magnitude and angle, with voltage phasor $v_{n,k}\angle\theta_{n,k}$, for $n\in\mathcal N$, $k\in\mathcal K_0$.
+\item $p_{g,k}$ and $q_{g,k}$ are active and reactive generator injections, for $g\in\mathcal G$, $k\in\mathcal K_0$. The quantities $p_{e,o,k},q_{e,o,k},p_{e,d,k},q_{e,d,k}$ are powers entering line $e$ at its origin and destination terminals, for $e\in\mathcal E$, $k\in\mathcal K_0$.
+\item $b_{n,k}$ is total shunt susceptance at bus $n$, for $n\in\mathcal N$, $k\in\mathcal K_0$.
+\item $\delta_k$ is system-wide post-contingency frequency drop relative to the base frequency, for $k\in\mathcal K$.
+\item $\nu_{n(g),k}^{+}$ and $\nu_{n(g),k}^{-}$ are described as voltage increase and decrease in contingency $k$. They are bus-indexed, not generator-indexed.
+\item $\rho_{g,k}^{+}$ and $\rho_{g,k}^{-}$ are upward and downward deviations from the linear generator response due to saturation at minimum and maximum power output, respectively. The controller discussion concerns $g\in\mathcal G(k)$, $k\in\mathcal K$.
+\item $\sigma_{e,o,k},\sigma_{e,d,k}$ are overload slacks on the line-rating families below. The quantities $\sigma_{n,k}^P,\sigma_{n,k}^Q$ are balance slacks for $n\in\mathcal N$, $k\in\mathcal K_0$; no nonnegativity restriction on these signed balance slacks is printed.
+\end{itemize}
+The scalar magnitudes, angles, powers, susceptances, deviations, and slacks are the real quantities in the polar-voltage/rectangular-power description. Their printed bounds and nonnegativity conditions are given below; no additional angle, frequency, or slack bounds are introduced.
+
+Fixed data include the constant active and reactive load withdrawals $P_n^L,Q_n^L$, voltage and generator-output bounds, shunt-susceptance bounds, generator droop slopes $A_g$, and line parameters $G_e,B_e,B_e^{CH},R_e,R_e^E$. The source's input conditions are
+\begin{align*}
+\underline V_n^E&\leq\underline V_n\leq\overline V_n\leq\overline V_n^E
+&&\forall n\in\mathcal N,\\
+A_g&\geq0 &&\forall g\in\mathcal G,\\
+R_e&>0,\qquad R_e^E\geq R_e &&\forall e\in\mathcal E.
+\end{align*}
+Here $R_e$ is the normal thermal rating and $R_e^E$ the emergency rating. These are not electrical resistances.
+
+The fixed function $C_g$ represents generation cost (fuel cost for thermal generators, opportunity cost for hydros, etc.). The function $C_e$ is convex and increasing and penalizes line overload. The functions $C_n^P,C_n^Q$ are convex, nonlinear, and symmetric about zero and penalize power imbalance. They remain abstract as in the prose following (24); no particular sample-point representation, penalty coefficients, or additional assumption on $C_g$ is imported.
+
+\subsection*{Bus, generator, and shunt constraints}
+\begin{align}
+\underline V_n&\leq v_{n,0}\leq\overline V_n
+&&\forall n\in\mathcal N,\tag{4}\\
+\underline V_n^E&\leq v_{n,k}\leq\overline V_n^E
+&&\forall n\in\mathcal N,\ k\in\mathcal K,\tag{5}\\
+\underline P_g&\leq p_{g,k}\leq\overline P_g,\qquad
+\underline Q_g\leq q_{g,k}\leq\overline Q_g
+&&\forall g\in\mathcal G(k),\ k\in\mathcal K_0,\tag{6}\\
+p_{g,k}&=q_{g,k}=0
+&&\forall g\in\mathcal G\setminus\mathcal G(k),\ k\in\mathcal K,\tag{13}\\
+\underline B_n&\leq b_{n,k}\leq\overline B_n
+&&\forall n\in\mathcal N,\ k\in\mathcal K_0.\tag{14}
+\end{align}
+Approved correction: (6) applies only to online generators in each condition. Outaged generators instead satisfy (13), without retaining nonzero output lower bounds. The source printed an unconditional domain; this domain correction is disclosed.
+
+\subsection*{Transition constraints listed in (24)}
+\begin{align}
+0&\leq\nu_{n(g),k}^{-}\perp\overline Q_g-q_{g,k}\geq0
+&&\forall g\in\mathcal G(k),\ k\in\mathcal K,\tag{8}\\
+0&\leq\nu_{n(g),k}^{+}\perp q_{g,k}-\underline Q_g\geq0
+&&\forall g\in\mathcal G(k),\ k\in\mathcal K,\tag{9}\\
+\rho_{g,k}^{+}-\rho_{g,k}^{-}
+&=p_{g,k}-(p_{g,0}+A_g\delta_k),\tag{10}\\
+0&\leq\rho_{g,k}^{-}\perp\overline P_g-p_{g,k}\geq0
+&&\forall g\in\mathcal G(k),\ k\in\mathcal K,\tag{11}\\
+0&\leq\rho_{g,k}^{+}\perp p_{g,k}-\underline P_g\geq0
+&&\forall g\in\mathcal G(k),\ k\in\mathcal K.\tag{12}
+\end{align}
+Equation (10) has no separately printed inline quantifier; it belongs to the controller family for online generators in post-contingency states described above. Complementarity is retained, not replaced by a relaxation or a mixed-integer formulation.
+
+\paragraph{Approved frequency-sign clarification.}
+The plus sign in (10) is retained, and $\delta_k$ is explicitly defined as the frequency decrease relative to the base frequency: positive $\delta_k$ increases the unsaturated target $p_{g,0}+A_g\delta_k$. This corrects the source's conflicting sign interpretation; no finite frequency bound is introduced.
+
+\subsection*{Polar AC line-flow constraints}
+All four numbered rows below have the approved online-equipment domain
+\[
+ e\in\mathcal E(k),\qquad k\in\mathcal K_0.
+\]
+\begin{equation}
+\begin{aligned}
+p_{e,o,k}={}&G_ev_{o(e),k}^{2}
+-G_e\cos\bigl(\theta_{o(e),k}-\theta_{d(e),k}\bigr)v_{o(e),k}v_{d(e),k}\\
+&-B_e\sin\bigl(\theta_{o(e),k}-\theta_{d(e),k}\bigr)v_{o(e),k}v_{d(e),k}.
+\end{aligned}\tag{15}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+q_{e,o,k}={}&-\bigl(B_e+B_e^{CH}/2\bigr)v_{o(e),k}^{2}
++B_e\cos\bigl(\theta_{o(e),k}-\theta_{d(e),k}\bigr)v_{o(e),k}v_{d(e),k}\\
+&-G_e\sin\bigl(\theta_{o(e),k}-\theta_{d(e),k}\bigr)v_{o(e),k}v_{d(e),k}.
+\end{aligned}\tag{16}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+p_{e,d,k}={}&G_ev_{d(e),k}^{2}
+-G_e\cos\bigl(\theta_{d(e),k}-\theta_{o(e),k}\bigr)v_{d(e),k}v_{o(e),k}\\
+&-B_e\sin\bigl(\theta_{d(e),k}-\theta_{o(e),k}\bigr)v_{d(e),k}v_{o(e),k}.
+\end{aligned}\tag{17}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+q_{e,d,k}={}&-\bigl(B_e+B_e^{CH}/2\bigr)v_{d(e),k}^{2}
++B_e\cos\bigl(\theta_{d(e),k}-\theta_{o(e),k}\bigr)v_{d(e),k}v_{o(e),k}\\
+&-G_e\sin\bigl(\theta_{d(e),k}-\theta_{o(e),k}\bigr)v_{d(e),k}v_{o(e),k}.
+\end{aligned}\tag{18}
+\end{equation}
+\begin{equation}
+p_{e,o,k}=p_{e,d,k}=q_{e,o,k}=q_{e,d,k}=0
+\quad\forall e\in\mathcal E\setminus\mathcal E(k),\ k\in\mathcal K.
+\tag{19}
+\end{equation}
+Approved corrections: the active self-voltage terms in (15) and (17) are squared. Equations (15)--(18) apply only to online lines; outaged lines satisfy (19) and do not constrain their endpoint states through active-line physics. These are explicit corrections to the supplied paper, not literal transcription claims.
+
+\subsection*{Line current ratings and overload-slack domains}
+\begin{equation}
+\begin{aligned}
+\sqrt{p_{e,o,0}^{2}+q_{e,o,0}^{2}}&\leq R_ev_{e,o,0}+\sigma_{e,o,0},\\
+\sqrt{p_{e,d,0}^{2}+q_{e,d,0}^{2}}&\leq R_ev_{e,d,0}+\sigma_{e,d,0}
+\qquad\forall e\in\mathcal E.
+\end{aligned}\tag{20}
+\end{equation}
+The accompanying unnumbered nonnegativity conditions are
+\[
+\sigma_{e,o,0}\geq0,\qquad\sigma_{e,d,0}\geq0
+\qquad\forall e\in\mathcal E.
+\]
+\begin{equation}
+\begin{aligned}
+\sqrt{p_{e,o,k}^{2}+q_{e,o,k}^{2}}&\leq R_e^Ev_{e,o,k}+\sigma_{e,o,k},\\
+\sqrt{p_{e,d,k}^{2}+q_{e,d,k}^{2}}&\leq R_e^Ev_{e,d,k}+\sigma_{e,d,k}
+\qquad\forall e\in\mathcal E(k),\ k\in\mathcal K.
+\end{aligned}\tag{21}
+\end{equation}
+The nonnegativity conditions expressly stated immediately after (21), with the scope of that line-rating family, are operative:
+\[
+\sigma_{e,o,k}\geq0,\qquad\sigma_{e,d,k}\geq0
+\qquad\forall e\in\mathcal E(k),\ k\in\mathcal K.
+\]
+Approved clarification: identify the terminal notation with its endpoint bus magnitude:
+\[
+ v_{e,o,k}:=v_{o(e),k},\qquad v_{e,d,k}:=v_{d(e),k}
+ \quad(e\in\mathcal E,\ k\in\mathcal K_0).
+\]
+This is an explicit interpretation of the paper's otherwise undefined terminal-voltage notation. No independent terminal-voltage decisions are introduced.
+
+\subsection*{Active and reactive nodal balance}
+\begin{equation}
+\begin{aligned}
+\sum_{\substack{g\in\mathcal G(k):\\n(g)=n}}p_{g,k}-P_n^L
+-\sum_{\substack{e\in\mathcal E(k):\\o(e)=n}}p_{e,o,k}
+-\sum_{\substack{e\in\mathcal E(k):\\d(e)=n}}p_{e,d,k}
+&=\sigma_{n,k}^P\\[-1mm]
+&\forall n\in\mathcal N,\ k\in\mathcal K_0.
+\end{aligned}\tag{22}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+\sum_{\substack{g\in\mathcal G(k):\\n(g)=n}}q_{g,k}-Q_n^L+b_{n,k}v_{n,k}^{2}
+-\sum_{\substack{e\in\mathcal E(k):\\o(e)=n}}q_{e,o,k}
+-\sum_{\substack{e\in\mathcal E(k):\\d(e)=n}}q_{e,d,k}
+&=\sigma_{n,k}^Q\\[-1mm]
+&\forall n\in\mathcal N,\ k\in\mathcal K_0.
+\end{aligned}\tag{23}
+\end{equation}
+
+\subsection*{Electrical definitions underlying the polar rows}
+The paper uses a dot below a symbol for a phasor. In Section 2.1, $\mathrm i=\sqrt{-1}$, and $S_\omega$ is the set of sinusoidal functions with frequency $\omega$. The phasor transformation and its inverse are
+\begin{gather}
+\mathcal F_\omega:S_\omega\longrightarrow\mathbb C,\qquad
+\mathcal F_\omega\bigl(\sqrt2 A\cos(\omega t+\phi)\bigr)
+=A\exp(\mathrm i\phi)\equiv A\angle\phi,\tag{1}\\
+\mathcal F_\omega(v(t))=\underset{\cdot}{v},\qquad
+\mathcal F_\omega^{-1}(\underset{\cdot}{x})
+=\Re\bigl(\underset{\cdot}{x}\,\sqrt2\exp(\mathrm i\omega t)\bigr).\notag
+\end{gather}
+The admittance relations recalled in the paper and electronic companion are
+\[
+\underset{\cdot}{i}_e=Y_e\underset{\cdot}{v},\qquad
+Y_R=\frac1R,\quad Y_L=-\frac{\mathrm i}{\omega L},\quad Y_C=\mathrm i\omega C,
+\qquad G=\Re(Y),\quad B=\Im(Y).
+\]
+Here $R,L,C$ denote resistance, inductance, and capacitance in the electrical discussion, not the thermal rating $R_e$ or a cost function. Complex power, unlike voltage and current, is not a phasor under $\mathcal F_\omega$. Its definition is
+\begin{equation}
+\begin{aligned}
+\underset{\cdot}{s}
+&=\underset{\cdot}{v}\,\underset{\cdot}{i}^{*}
+=(V\angle\alpha)(I\angle(-\beta))
+=VI\angle(\alpha-\beta)\\
+&=\underbrace{VI\cos(\alpha-\beta)}_{p}
++\mathrm i\underbrace{VI\sin(\alpha-\beta)}_{q},
+\end{aligned}\tag{3}
+\end{equation}
+where the star denotes complex conjugation, $p$ is active power, and $q$ is reactive power. The unnumbered relation used to derive the line-rating constraints is
+\[
+\underset{\cdot}{s}=\underset{\cdot}{v}\,\underset{\cdot}{i}^{*}
+\quad\Longrightarrow\quad
+|\underset{\cdot}{s}|=|\underset{\cdot}{v}|\,|\underset{\cdot}{i}|.
+\]
+For line $e$, Figure 1 specifies combined series admittance $G_e+\mathrm i B_e$ and two shunt-capacitor admittances $\mathrm i B_e^{CH}/2$, one at each end. Complex power enters the line at both ends. These definitions leave the line coefficients as fixed data; no resistance/reactance data-file construction is imposed on this abstract model. The electronic companion's (EC.1)--(EC.8) concern an illustrative parallel RLC circuit, not further constraints on (24); its illustrative numerical values are not model data.
+
+\paragraph{Unnumbered line expression and its discrepancy.}
+For closure of the derivation, the following is the unnumbered expression on physical PDF page 11, preceding (15)--(16), for the origin-terminal complex power in condition $k\in\mathcal K_0$:
+\[
+\begin{aligned}
+p_{e,o,k}+\mathrm i q_{e,o,k}
+={}&\bigl(v_{o(e),k}\angle\theta_{o(e),k}\bigr)\\
+&\times\left[
+\left(\mathrm i\frac{B_e^{CH}}2\,\bigl(v_{o(e),k}\angle\theta_{o(e),k}\bigr)\right)^*
+\right.\\
+&\qquad\left.+\left((G_e+\mathrm i B_e)
+\left(\bigl(v_{o(e),k}\angle\theta_{o(e),k}\bigr)
+-\bigl(v_{d(e),k}\angle\theta_{d(e),0}\bigr)\right)\right)^*
+\right].
+\end{aligned}
+\]
+This expression prints $\theta_{d(e),0}$, whereas the succeeding numbered equations use $\theta_{d(e),k}$. Moreover, its claimed separation does not give the unsquared first terms printed in the original (15) and (17), which are explicitly corrected above. It is recorded as the source derivation, not imposed as an additional competing line-flow constraint: the operative family is the approved corrected polar family (15)--(18), using angle indices $k$ throughout. The terminal-defining sentence also says ``origin $o$ and destination $e$,'' although the figure and later equations use terminal $d$.
+
+\subsection*{Voltage-controller connection restored to the operative model}
+The voltage-controller discussion, for online generators $g\in\mathcal G(k)$ in $k\in\mathcal K$, prints
+\begin{equation}
+\nu_{n(g),k}^{+}-\nu_{n(g),k}^{-}
+=v_{n(g),k}-v_{n(g),0}.
+\tag{7}
+\end{equation}
+Approved correction: impose (7) for all online generators $g\in\mathcal G(k)$, $k\in\mathcal K$, and include it in (24). The bus-indexed auxiliaries are shared when generators have the same bus. This restores the link required for the voltage/reactive-power controller.
+
+The bus discussion on physical PDF page 9 chooses a reference bus and prints the source-stated angle convention
+\[
+n^{\mathrm{ref}}\in\mathcal N,\qquad
+\theta_{n^{\mathrm{ref}},k}=0\quad\text{for all }k\in\mathcal K_0.
+\]
+This reference-angle condition applies to the model's voltage angles.
+
+\paragraph{Reconciliation with the official competition material.}
+The supplied April 9, 2019 official formulation is a second source, not a corrected edition of this paper. The user's explicit B selection authorizes the displayed contingency mean, endpoint-voltage definition, inclusion of (7), squared active self-voltage terms, online-equipment domains, and frequency-drop convention. The two terminal overload slacks, abstract costs and line-only equipment scope remain those of the selected main-paper model. No transformer equations, shared-slack replacement, official penalty weights or full competition model are imported. Synthetic numerical functions are instance data and are not a reproduction of the competition's piecewise-linear scoring experiment.
+
+\end{document}

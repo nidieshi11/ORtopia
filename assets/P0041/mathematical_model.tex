@@ -1,0 +1,98 @@
+\documentclass[11pt]{ctexart}
+\usepackage{amsmath,amssymb,longtable}
+\begin{document}
+\section*{P41: 当前完整数学模型（2026-10-20）}
+\section*{修订依据与边界}按源文第5–9页恢复集合/变量界/飞行时间与终点零悬停；未选弧能量为零，能量激活上界由全部弧最大物理能量推导。所有客户、原需求与有限车机容量保留。
+
+
+\section*{Problem: **车辆路径问题（VRP）** 的一个复杂变体，具体为：带无人机的多访问取货送货车辆路径问题（Multi-visit Drone Routing Problem with Pickup and Delivery, MDRP-PD）。该问题通过混合整数线性规划（MILP）模型进行建模，属于 **NP-hard** 组合优化问题。}
+
+
+
+\subsection*{Decision Variables}
+\begin{align*}
+&x0k_{ij}, x1k_{ij}, x2k_{ij} \in \{0, 1\} && \forall k \in [1:K], (i,j) \in A \\
+&z1k_i, z2k_i \in \{0, 1\} && \forall k \in [1:K], i \in N_c \\
+&s1k_i, s'1k_i, s2k_i, s'2k_i \ge 0 && \forall k \in [1:K], i \in N \\
+&e_k^{ij}, t_k^{ij} \ge 0 && \forall k \in [1:K], (i,j) \in A \\
+&tk_{h,i} \ge 0 && \forall k \in [1:K], i \in N_c \\
+&wk_i, wdk_i, vk_i, e_k^i \ge 0 && \forall k \in [1:K], i \in N \\
+&1\le l_k^i\le n && \forall k \in [1:K], i \in N_c \\
+&t_k^i \in \{0, 1\} && \forall k \in [1:K], i \in N_c
+\end{align*}
+
+\subsection*{Objective Function}
+\[
+\min \quad c_T \sum_{k \in [1:K]} \sum_{(i,j) \in A \setminus (0,n+1)} (x0k_{ij} + x1k_{ij}) r_{ij} + c_F \sum_{k \in [1:K]} \left( \sum_{(i,j) \in A} e_k^{ij} + P \bullet \sum_{i \in N_d} z2k_i u'_i + P \sum_{i \in N_c} tk_{h,i} \right) + c_0 \sum_{k \in [1:K]} (1 - x0k_{0,n+1})
+\]
+
+\subsection*{Constraints}
+\begin{align*}
+&\text{(2a)} \quad \sum_{j \in N_e} (x0k_{0j} + x1k_{0j}) = \sum_{i \in N_o} (x0k_{i,n+1} + x1k_{i,n+1}) = 1, \quad k \in [1 : K] \\
+&\text{(2b)} \quad \sum_{j \in N_e} (x0k_{0j} + x2k_{0j}) = \sum_{i \in N_o} (x0k_{i,n+1} + x2k_{i,n+1}) = 1, \quad k \in [1 : K] \\
+&\text{(3)} \quad \sum_{k \in [1:K]} (x0k_{ij} + x1k_{ij} + x2k_{ij}) \leq 1, \quad (i, j) \in A \setminus (0, n + 1) \\
+&\text{(4a)} \quad \sum_{i \in N_o} (x0k_{ij} + x1k_{ij}) = \sum_{i \in N_e} (x0k_{ji} + x1k_{ji}) = z1k_j, \quad j \in N_c, k \in [1 : K] \\
+&\text{(4b)} \quad \sum_{i \in N_o} (x0k_{ij} + x2k_{ij}) = \sum_{i \in N_e} (x0k_{ji} + x2k_{ji}), \quad j \in N_c, k \in [1 : K] \\
+&\text{(5a)} \quad 2 * z2k_j \leq \sum_{i \in N_o} x2k_{ij} + \sum_{i \in N_e} x2k_{ji}, \quad j \in N_d, k \in [1 : K] \\
+&\text{(5b)} \quad \sum_{k \in [1:K]} (z1k_j + z2k_j) = 1, \quad j \in N_c \\
+&\text{(5c)} \quad \sum_{k \in [1:K]} z1k_j = 1, \quad j \in N_c\setminus N_d \\
+&\text{(5d)} \quad z1k_i \geq \sum_{j \in N_e} x2k_{ij} - z2k_i, \quad i \in N_c, k \in [1 : K] \\
+&\text{(5e)} \quad z1k_i \geq \sum_{j \in N_o} x2k_{ji} - z2k_i, \quad i \in N_c, k \in [1 : K] \\
+&\text{(5f)} \quad z2k_j \geq x2k_{ij} + \sum_{j' \in N_e} x0k_{ij'} + \sum_{j' \in N_e} x1k_{ij'} - 1, \quad i \in N_o, j \in N_c, k \in [1 : K] \\
+&\text{(6a)} \quad \sum_{k \in [1:K]} \sum_{j \in N_e} x2k_{ij} \leq 1, \quad i \in N_c \\
+&\text{(6b)} \quad \sum_{k \in [1:K]} \sum_{j \in N_o} x2k_{ji} \leq 1, \quad i \in N_c \\
+&\text{(7a)} \quad s'1k_i + \frac{r_{ij}}{v_T} + M(1 - x0k_{ij} - x1k_{ij}) \geq s1k_j \geq s'1k_i + \frac{r_{ij}}{v_T} - M(1 - x0k_{ij} - x1k_{ij}), \quad (i, j) \in A, k \in [1 : K] \\
+&\text{(7b)} \quad s'1k_i \geq s1k_i + u_i \cdot z1k_i + BR \cdot \sum_{j \in N_d} x2k_{ji}, \quad i \in N_c, k \in [1 : K] \\
+&\text{(7c)} \quad s'2k_i + t^k_{ij} + M(1 - x2k_{ij}) \geq s2k_j \geq s'2k_i + t^k_{ij} - M(1 - x2k_{ij}), \quad (i, j) \in A, k \in [1 : K] \\
+&\text{(7d)} \quad s2k_i + u'_i + M(1 - z2k_i) \geq s'2k_i \geq s2k_i + u'_i - M(1 - z2k_i), \quad i \in N_d, k \in [1 : K] \\
+&\text{(7e)} \quad s'2k_i \geq s2k_i + BR - M(3 - \sum_{j \in N_o} x1k_{ji} - \sum_{j \in N_d} x2k_{ji} - \sum_{j \in N_d} x2k_{ij}), \quad i \in N_c, k \in [1 : K] \\
+&\text{(7f)} \quad s2k_i \geq s'2k_i - M(3 - \sum_{j \in N_o} x0k_{ji} - \sum_{j \in N_d} x2k_{ij} - \sum_{j \in N_d} x2k_{ji}), \quad i \in N_c, k \in [1 : K] \\
+&\text{(7g)} \quad s'1k_i \geq s'2k_i - M(2 - \sum_{j \in N_e} x0k_{ij} - \sum_{j \in N_e} x1k_{ij} - \sum_{j \in N_d} x2k_{ij}), \quad i \in N_o, k \in [1 : K] \\
+&\text{(7h)} \quad s'2k_i \geq s1k_i + BR \cdot \sum_{j \in N_d} x2k_{ji} - M(2 - z1k_i - \sum_{j \in N_d} x2k_{ij}), \quad i \in N_c, k \in [1 : K] \\
+&\text{(7i)} \quad s'1k_i \geq s2k_i + BR - M(2 - \sum_{j \in N_d} x2k_{ji} - z1k_i), \quad i \in N_c, k \in [1 : K] \\
+&\text{(8a)} \quad 0 \leq e^k_{ij} \leq E \cdot x2k_{ij}, \quad (i, j) \in A, k \in [1 : K] \\
+&\text{(8b)} \quad \alpha \cdot (w_0 + w^k_i) \cdot r'_{ij} - M_E(1 - x2k_{ij}) \leq e^k_{ij} \leq \alpha \cdot (w_0 + w^k_i) \cdot r'_{ij}, \quad (i, j) \in A, k \in [1 : K] \\
+&\text{(9a)} \quad 0 \leq tk_{h,j} \leq \frac{E}{P} \cdot t^k_j, \quad j \in N_c, k \in [1 : K] \\
+&\text{(9b)} \quad s1k_j \geq s2k_j - M(1 - t^k_j), \quad s1k_j \leq s2k_j + M \cdot t^k_j, \quad j \in N_c, k \in [1 : K] \\
+&\text{(9c)} \quad (s1k_j - s2k_j) - M(1 - t^k_j) \leq tk_{h,j} \leq (s1k_j - s2k_j) + M(1 - t^k_j), \quad j \in N_c, k \in [1 : K] \\
+&\text{(10)} \quad 0 \leq e^k_i \leq E(2 - \sum_{j \in N_e} x0k_{ij} - \sum_{j \in N_e} x1k_{ij} - \sum_{j \in N_d} x2k_{ij}), \quad i \in N_o, k \in [1 : K] \\
+&\text{(11)} \quad e^k_i + e^k_{ij} + P \cdot u'_j - M(2 - x2k_{ij} - z2k_j) \leq e^k_j, \quad i \in N_o, j \in N_d, k \in [1 : K] \\
+&\text{(12)} \quad e^k_i + e^k_{ij} + P \cdot tk_{h,j} \cdot z1k_j - M(2 - x2k_{ij} - \sum_{i \in N_o} x0k_{ij} - \sum_{i \in N_o} x1k_{ij}) \leq E, \quad i \in N_d, j \in N_e, k \in [1 : K] \\
+&\text{(13a)} \quad wdk_i - W(2 - \sum_{j \in N_e} x0k_{ij} - \sum_{j \in N_e} x1k_{ij} - \sum_{j \in N_d} x2k_{ij}) \leq wk_i \leq wdk_i + W(2 - \sum_{j \in N_e} x0k_{ij} - \sum_{j \in N_e} x1k_{ij} - \sum_{j \in N_d} x2k_{ij}), \quad i \in N_o, k \in [1 : K] \\
+&\text{(13b)} \quad 0 \leq wdk_i \leq W(2 - x2k_{ij} - \sum_{i \in N_o} x0k_{ij} - \sum_{i \in N_o} x1k_{ij}), \quad i \in N_d, j \in N_e, k \in [1 : K] \\
+&\text{(13c)} \quad wdk_i - d_j - M(2 - x2k_{ij} - z2k_j) \leq wdk_j \leq wdk_i - d_j + M(2 - x2k_{ij} - z2k_j), \quad i \in N_o, j \in N_d, k \in [1 : K] \\
+&\text{(13d)} \quad wk_i - d_j + p_j - M(2 - x2k_{ij} - z2k_j) \leq wk_j \leq wk_i - d_j + p_j + M(2 - x2k_{ij} - z2k_j), \quad i \in N_o, j \in N_d, k \in [1 : K] \\
+&\text{(14a)} \quad \sum_{i \in N_c} z1k_i d_i + \sum_{i \in N_d} z2k_i d_i - wk_0 \sum_{i \in N_d} x2k_{0i} \leq vk_0 \leq Q(\sum_{i \in N_c} x0k_{0i} + \sum_{i \in N_c} x1k_{0i}), \quad k \in [1 : K] \\
+&\text{(14b)} \quad vk_i + (p_j - d_j) - M(1 + \sum_{i \in N_d} x2k_{ji} + \sum_{i \in N_d} x2k_{ij} - x0k_{ij} - x1k_{ij}) \leq vk_j \leq vk_i + (p_j - d_j) + M(1 + \sum_{i \in N_d} x2k_{ji} + \sum_{i \in N_d} x2k_{ij} - x0k_{ij} - x1k_{ij}), \quad i \in N_o, j \in N_c, k \in [1 : K] \\
+&\text{(14c)} \quad vk_i + (p_j - d_j - wk_j) - M(2 + \sum_{i \in N_d} x2k_{ij} - \sum_{i \in N_d} x2k_{ji} - x0k_{ij}) \leq vk_j \leq vk_i + (p_j - d_j - wk_j) + M(2 + \sum_{i \in N_d} x2k_{ij} - \sum_{i \in N_d} x2k_{ji} - x0k_{ij}), \quad i \in N_o, j \in N_c, k \in [1 : K] \\
+&\text{(14d)} \quad vk_i + (p_j - d_j + wk_{i'}) - M(2 + \sum_{i \in N_d} x2k_{ji} - x2k_{i'j} - x1k_{ij}) \leq vk_j \leq vk_i + (p_j - d_j + wk_{i'}) + M(2 + \sum_{i \in N_d} x2k_{ji} - x2k_{i'j} - x1k_{ij}), \quad i' \in N_d, i \in N_o, j \in N_c, k \in [1 : K] \\
+&\text{(14e)} \quad vk_i + (p_j - d_j + wk_{i'} - wk_j) - M(3 - x2k_{i'j} - \sum_{i \in N_d} x2k_{ji} - x0k_{ij} - x1k_{ij}) \leq vk_j \leq vk_i + (p_j - d_j + wk_{i'} - wk_j) + M(3 - x2k_{i'j} - \sum_{i \in N_d} x2k_{ji} - x0k_{ij} - x1k_{ij}), \quad i' \in N_d, i \in N_o, j \in N_c, k \in [1 : K] \\
+&\text{(20a)} \quad x0k_{0,n+1} + z1k_j \leq 1, \quad j \in N_c, k \in [1 : K] \\
+&\text{(20b)} \quad x0k_{0,n+1} + z2k_j \leq 1, \quad j \in N_d, k \in [1 : K]
+\end{align*}
+
+
+
+\section*{完整物理定义}
+$N_c$为全部客户，$N_d\subset N_c$为可用无人机服务客户，
+$N_o=\{0\}\cup N_c,N_e=N_c\cup\{n+1\}$；$A=\{(i,j):i\in N_o,j\in N_e,i\ne j\}$，与原PDF第6页表2一致。节点全集$N=\{0\}\cup N_c\cup\{n+1\}$。所有弧求和自动略去自环和不属于$A$的弧；约束中未被求和的显式弧下标也仅取$A$，(14d)--(14e)要求$(i,j),(i^{\prime},j)\in A$。
+$x0,x1$为卡车带/不带无人机弧，$x2$为无人机飞行弧。
+每个$k$和弧的实际飞行时间为$t^k_{ij}=e^k_{ij}/P$，未选弧为零。
+\[
+M_E=\max_{(i,j)\in A}\alpha(w_0+W)r'_{ij},\qquad
+t^k_{h,n+1}=0,\quad
+0\le t^k_{h,j}\le E/P,\quad0\le w_i^k,w_{di}^k\le W,\quad0\le v_i^k\le Q,\quad0\le e_i^k\le E.
+\]
+Truck-only式5c用于$N_c\setminus N_d$。时间变量采用非负实数域，并满足上述时序关系。
+非服务节点的时间、能量和载荷不一律清零；仅按已列边界与激活约束取值，未激活时的有限$M$限制仍保留。
+源文第9页规定终点不悬停；为使(12)在终点的记号闭合，定义常量$z1k_{n+1}=0$，于是终点悬停乘积为零，不新建车场服务决策。
+$M$为实例给定的共同有限正值；$r_{ij}$取曼哈顿距离，$r'_{ij}$取欧氏距离，服务时长按有送货/有取货分别相加。
+对原提取中未使用的$b_k^{ij}$声明予以移除。$l_k^i$为当前实现的客户访问顺序，补齐其有效路径限制及同质组合的编号约定：
+\begin{align*}
+ l_k^j&\ge l_k^i+1-(n+1)(1-x0k_{ij}-x1k_{ij})
+ &&i,j\in N_c,\ i\ne j,\ k\in[1:K],\\
+ x0k_{0,n+1}&\le x0(k+1)_{0,n+1} && k\in[1:K-1].
+\end{align*}
+最后一行中的$x0(k+1)_{0,n+1}$表示下一组合的同类弧变量；它把未使用组合排在已使用组合之后。组合相同且成本相同，重编号不改变任何运营方案或费用。顺序辅助量禁止脱离车场的卡车回路；未访问客户仍可在$[1,n]$内赋顺序值，不要求归零。上述两类辅助规则已存在于当前求解入口，没有增加新的服务政策。
+
+\end{document}

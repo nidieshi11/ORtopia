@@ -1,0 +1,111 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[margin=1in]{geometry}
+\begin{document}
+
+\section*{MAR minimax inventory control: Problem (2.4)}
+\begin{equation}
+\inf_{\pi\in\Pi}\ \sup_{Q\in\mathbf{MAR}}
+\mathbb{E}_{Q}\left[\sum_{t=1}^{T}C_t^\pi\right].
+\tag{2.4}
+\end{equation}
+The policy and distribution are subject to the definitions and restrictions below. The outer decision is the admissible inventory policy \(\pi\); the inner choice is the joint demand probability measure \(Q\). Here \(\mathbf{MAR}=\mathbf{MAR}_T\), with the horizon suppressed in the notation.
+
+\subsection*{Fixed data and notation}
+The model has backlogging, a finite discrete-time horizon \(T\geq1\), strictly positive rational support bound \(U\) and backorder cost \(b\), fixed initial inventory \(x_0\), and fixed marginal mean demand \(\mu\):
+\[
+U,b\in\mathbb{Q}^{+},\qquad U>0,\quad b>0,\qquad
+x_0,\mu\in[0,U]_{\mathbb{Q}},
+\qquad [0,U]_{\mathbb{Q}}\triangleq[0,U]\cap\mathbb{Q}.
+\]
+The per-unit holding cost is \(1\), as normalized in Subsection 2.1 by a scaling argument. The primitives \(x_0,\mu,U,b\) are rational; demand distributions have rational support and policies order rational quantities. The endpoints \(x_0=0,U\) and \(\mu=0,U\) are included.
+
+For a vector \(\mathbf{x}\), the source's history notation is
+\[
+\mathbf{x}_{[s]}=(x_1,\ldots,x_s),\qquad
+\mathbf{x}_{[t_1,t_2]}=(x_{t_1},\ldots,x_{t_2}).
+\]
+Period indices in \([1,T]\) range over the discrete periods \(1,\ldots,T\). The random variable \(D_t\) is demand in period \(t\). The inventory level \(x_t\) is measured after ordering at the start of period \(t\), before \(D_t\) is known.
+
+\subsection*{Admissible policies and inventory feasibility}
+The inherited admissible family \(\hat\Pi\) consists of the \(T\)-dimensional vectors of functions
+\[
+\pi=\{x_t^\pi,t\in[1,T]\}
+\]
+satisfying
+\begin{align*}
+x_1^\pi&\text{ is a constant},&
+x_1^\pi&\geq x_0^\pi\triangleq y_1^\pi\triangleq x_0,\\
+x_t^\pi&:[0,U]_{\mathbb{Q}}^{t-1}\longrightarrow\mathbb{Q}
+\text{ is a deterministic map},&&t\in[2,T],\\
+x_{t+1}^\pi(\mathbf d)&\geq y_{t+1}^\pi(\mathbf d)
+\triangleq x_t^\pi(\mathbf d_{[t-1]})-d_t,
+&&t\in[1,T-1],\quad
+\mathbf d=(d_1,\ldots,d_t)\in[0,U]_{\mathbb{Q}}^t.
+\end{align*}
+As required in Subsection 2.1, actions are measurable functions of the demand history. The inequality means that a nonnegative amount of inventory is ordered in each period. The notation \(x_1^\pi(\mathbf d_{[0]})\), or \(x_1^\pi(q)\) for \(q\in[0,U]_{\mathbb{Q}}\), denotes the same constant \(x_1^\pi\).
+
+The operative policy family in (2.4) is precisely
+\[
+\Pi=\left\{\pi\in\hat\Pi:
+ x_t^\pi(\mathbf d_{[t-1]})\in[0,U]
+ \text{ for all }t\in[1,T]\text{ and }
+ \mathbf d\in[0,U]_{\mathbb{Q}}^T
+ \right\},\qquad x_0\in[0,U]_{\mathbb{Q}}.
+\]
+Thus the bounded post-order inventory requirement belongs to \(\Pi\), not to the definition of \(\hat\Pi\); the history domains remain rational.
+
+\subsection*{Period costs}
+The positive and negative parts are defined in the source by
+\[
+z_+\triangleq\max(z,0),\qquad
+z_-\triangleq\max(-z,0),\qquad z\in\mathbb{R}.
+\]
+The inherited cost relations are
+\begin{align*}
+C_t&\triangleq b[D_t-x_t]_+ +[x_t-D_t]_+,
+&&t\in[1,T],\\
+C(x,d)&\triangleq b(d-x)_+ +(x-d)_+,\\
+C_t^\pi(D_{[t]})&=C\bigl(x_t^\pi(D_{[t-1]}),D_t\bigr),
+&&t\in[1,T].
+\end{align*}
+The notation \(C_t^\pi\) in (2.4) suppresses its dependence on \(D_{[t]}\).
+
+\subsection*{Demand measures and martingale restrictions}
+A probability measure is rationally supported if it assigns probability \(1\) to rational vectors of its finite dimension. For such a measure \(Q\), \(\operatorname{supp}(Q)\) denotes the possibly infinite set of rational vectors assigned strictly positive probability, rather than a topological closure. The random variable or vector \(D^Q\) is distributed according to \(Q\).
+
+For \(\mu\in[0,U]_{\mathbb{Q}}\), the inherited one-period ambiguity set is
+\[
+\mathfrak M(\mu)=
+\left\{Q:\begin{array}{l}
+Q\text{ is a rationally supported probability measure},\\
+\operatorname{supp}(Q)\subseteq[0,U]_{\mathbb{Q}},\\
+\mathbb{E}[D^Q]=\mu
+\end{array}\right\}.
+\]
+The set \(\mathbf{MAR}_T\) consists of all rationally supported probability measures of discrete-time martingale sequences \((D_1,\ldots,D_T)\) such that the marginal distribution of \(D_t\) belongs to \(\mathfrak M(\mu)\) for every \(t\in[1,T]\). Written explicitly, its support, marginal-mean, and martingale restrictions are
+\begin{align*}
+\operatorname{supp}(Q)&\subseteq[0,U]_{\mathbb{Q}}^T,\\
+\mathbb{E}_Q[D_t]&=\mu,
+&&t\in[1,T],\\
+\mathbb{E}_Q[D_t\mid D_{[t-1]}]&=D_{t-1},
+&&t\in[2,T].
+\end{align*}
+The conditional expectation equality is the martingale property under \(Q\). In the source's conditional-distribution statement, this also gives
+\[
+\text{the conditional distribution of }D_t\text{ given }D_{[t-1]}
+\text{ belongs to }\mathfrak M(D_{t-1}),\qquad t\in[2,T].
+\]
+No independence or product-measure restriction is imposed.
+
+\subsection*{Basis for the selected bounded-policy formulation}
+Lemma 1 (physical PDF page 7), whose proof appears in Technical Appendix 6.1 (pages 33--34), supplies the reduction used immediately before (2.4):
+\[
+\forall\hat\pi\in\hat\Pi\quad\exists\pi\in\Pi\quad
+\forall\mathbf d=(d_1,\ldots,d_T)\in[0,U]_{\mathbb{Q}}^T\quad
+\forall t\in[1,T],\qquad
+C_t^\pi(\mathbf d_{[t]})\leq C_t^{\hat\pi}(\mathbf d_{[t]}).
+\]
+Its premises here are the bounded nonnegative demand support and \(x_0\in[0,U]_{\mathbb{Q}}\), with the inherited costs and rational-policy restrictions above. This statement justifies selecting \(\Pi\) in (2.4); it is not an additional decision constraint. The separate dynamic-programming formulations and the independent-demand model are not part of this selected formulation.
+
+\end{document}

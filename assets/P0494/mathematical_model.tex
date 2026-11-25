@@ -1,0 +1,113 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+\section*{Mobile parcel lockers with time-ordered service and depot reloads}
+This is the explicitly approved operational revision of the route-planning model
+of \emph{Route Planning for Last-Mile Deliveries Using Mobile Parcel Lockers:
+A Hybrid Q-Learning Network Approach}. It retains the paper's location-selection,
+task-construction and three cost components. The changes to its printed routing
+constraints are specified below. The original transcription is archived separately.
+
+\subsection*{Parking locations and service tasks}
+Each accepting customer $n$ supplies coordinates $h_{nk}$ and a time window
+$[E_{nk},L_{nk}]$ at each stop $k$. With parking centres $g_i$ and labels
+$b_{nk}$, the location stage (1)--(3) assigns stops to nearest centres to
+minimise within-cluster squared Euclidean distance; each occupied centre is
+the arithmetic mean of its assigned stops. The paper selects the smallest
+number $P$ of sites allowing walking range $d_{in}^k\le\rho_n$ and service
+radius $\rho_n\le r_m$ for the associated site. Within that number of
+sites the squared-distance objective determines the clustering.
+For the released family there is one stop per customer; all points are
+collinear, both radii are one, and strictly separated groups have unique
+nearest centres. One representative from each group is more than two
+distance units from the next, giving a matching lower bound on $P$.
+The route stage uses these centres; it does not relocate them for lower
+delivery cost.
+
+For each parking space $i$ with permitted interval $[E_i,L_i]$,
+the interval construction (15)--(18) intersects parking and customer
+windows and subdivides the effective availability into tasks of duration
+$SV_i$. On these instances every customer window contains every relevant
+parking interval and its width equals one service duration, so there is
+one task per site. The distinct task $u=(i,a)$ has location $i(u)=i$,
+service duration $s_u=SV_i$, time-window endpoints $e_u,l_u$, and a
+given parcel quantity $q_u$. The proximity and total-demand parameters
+are inputs; the paper supplies no general formula for parcel quantities
+from customer coordinates alone. No parking fee or occupancy charge applies.
+
+\subsection*{Revised routing decisions and feasible set}
+Let $M$ be the candidate lockers, $\Psi$ the maximum active fleet size,
+$Q$ the common compartment capacity, and $0$ the depot. $F_m$ denotes
+the fixed cost of locker $m$. For any ordered leg $(i,j)$, distance is
+$d_{ij}$, unit travel cost is $c_{ij}$ and speed is $v>0$. Define
+$\tau_{ij}=d_{ij}/v$. A deployed locker $m$ receives a finite sequence
+$R_m=(r_{m0},\ldots,r_{mH_m})$. It starts and ends at depot occurrences.
+Each interior entry is either a service task or an intermediate return
+to reload. Empty rounds between consecutive depots are excluded. An
+unused locker has $x_m=0$ and no route. Each used locker has $x_m=1$
+and at least one task. Each task occurs once among all routes:
+\[
+ \sum_m x_m\le\Psi,\qquad
+ \sum_m\sum_{k:r_{mk}=u}1=1\quad(u\in U).
+\]
+For each round $S$, the intervening sequence of tasks between two
+successive depot occurrences, require $\sum_{u\in S}q_u\le Q$.
+Parcels for successive rounds can be loaded when the locker reaches the
+depot. There is no additional loading time in the released inputs.
+Let $i(0)=0$, $s_0=0$. A locker is initially available at time zero.
+Service start epochs $t_{mk}$ (and visit-specific depot epochs)
+are continuous and chronological:
+\[
+ t_{m0}=0,\qquad
+ t_{m,k+1}\ge t_{mk}+s_{r_{mk}}+\tau_{i(r_{mk}),i(r_{m,k+1})}
+ \quad(0\le k<H_m).
+\]
+Slack represents waiting. A reload is a chronological visit with its own
+arrival/departure epoch. For a sequence $u,0,w$, the earliest start at
+$w$ includes both legs and service at $u$. Early or late service remains
+possible and is penalised; the task windows are soft. The original
+customer and parking windows determine the task data, not additional hard
+route-time constraints on these benchmarks.
+
+\subsection*{Objective}
+With $(z)_+=\max(z,0)$, minimise
+\[
+ \begin{aligned}
+ &W_1\sum_m F_m x_m+
+ W_2\sum_{m:x_m=1}\sum_{k=0}^{H_m-1}
+       d_{i(r_{mk}),i(r_{m,k+1})}\,c_{i(r_{mk}),i(r_{m,k+1})}\\
+ &\qquad{}+ W_3\sum_m\sum_{k:r_{mk}\in U}
+       \left[(e_{r_{mk}}-t_{mk})_++(t_{mk}-l_{r_{mk}})_+\right].
+ \end{aligned}
+\]
+Each instance retains its own $W_1,W_2,W_3$, units, rates, fleet and
+customer counts. The route construction counts all depot legs including
+intermediate reloads and final returns; fixed cost is paid once per
+activated locker. Earmarked quantities and service-start delays belong
+only to actual visits. A zero-penalty tour is not required.
+
+\subsection*{Differences from the printed equations and author algorithm}
+Physical page 16 gives (4)--(14). In (5) the indexed fixed cost is printed
+outside the sum. Here costs are summed for the activated lockers individually.
+Equation (6) is implemented by charging every actual traversal. Equation (7)
+sums times for all lockers without an assignment factor; here only the
+executed visit contributes. Equation (8) and the exactly-once intent of (10)
+are preserved. Equation (9) bounds a locker's total assigned quantity across
+the horizon; the approved reload model bounds each depot-to-depot round.
+The free/summed locker indices in (11)--(12) are replaced by an actual
+start and final return for each active locker and paired intermediate depot
+visits. The all-pairs equality in (13) also constrains unused arcs and
+uses one depot label where distinct depot visits need different times.
+It is replaced by the precedence inequalities on actual traversals above.
+Route sequences encode the binary visit/order/deployment choices of (14).
+
+The operating prose on physical p.~13 describes initial loading and return
+after a round. Pages 21--22 discuss holding and returning to reload;
+Appendix A on p.~49 decodes a task order. These passages motivate the
+revision. They do not make it identical to (4)--(14), or establish that
+running the paper's heuristic proves a global optimum of the revised model.
+The revised clock cannot restart before the preceding depot return.
+Historical literal-equation results remain attached separately.
+\end{document}

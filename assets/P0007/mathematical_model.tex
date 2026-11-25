@@ -1,0 +1,25 @@
+\documentclass[UTF8,11pt]{ctexart}
+\usepackage{amsmath,amssymb,geometry}
+\geometry{margin=22mm}
+\begin{document}
+\section*{P7: 不可拆分固定费用网络流的完整路径形式（Path-FCNF）}
+\paragraph{来源与范围}依据原论文PDF第1, 3, 4, 5页，第3节，路径目标及式(7)–(10)，二元路径域。
+
+\subsection*{集合与参数}
+有向网络$D=(N,A)$，商品集合$K$。商品$k$有起点$s(k)$、终点$t(k)$及需求$d_k>0$。
+弧$(i,j)$的单位运输费、启用固定费及容量分别为$c_{ij}\ge0,f_{ij}\ge0,u_{ij}\ge0$。
+$P(k)$是商品$k$的全部可行起终点路径集合，$A(p)$为路径$p$使用的弧集合。
+这里选择论文明确研究的不可拆分需求情形，每个商品全部需求走一条路径。
+\subsection*{变量及完整模型}
+$x_p^k$表示商品$k$选择路径$p$，$y_{ij}$表示启用弧$(i,j)$。
+\begin{align}
+\min\quad &\sum_{k\in K}\sum_{p\in P(k)}d_k\Bigl(\sum_{(i,j)\in A(p)}c_{ij}\Bigr)x_p^k+\sum_{(i,j)\in A}f_{ij}y_{ij},\label{obj}\\
+\text{s.t.}\quad &\sum_{p\in P(k)}x_p^k=1 &&k\in K,\tag{7}\\
+&\sum_{k\in K}\sum_{p\in P(k):(i,j)\in A(p)}d_kx_p^k\le u_{ij}y_{ij} &&(i,j)\in A,\tag{8}\\
+&y_{ij}\in\{0,1\} &&(i,j)\in A,\tag{9}\\
+&\sum_{p\in P(k):(i,j)\in A(p)}x_p^k\le y_{ij} &&k\in K,(i,j)\in A,\tag{10}\\
+&x_p^k\in\{0,1\} &&k\in K,p\in P(k).\tag{D}
+\end{align}
+式(10)将路径选择与弧启用联动。采用路径子集$\bar P(k)\subsetneq P(k)$时，可行域由该子集内的路径构成。
+
+\end{document}

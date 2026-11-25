@@ -1,0 +1,150 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\section*{Full VRPSSR Markov decision process}
+
+\[
+\max_{\pi\in\Pi}\;
+\mathbb{E}\left[\left.\sum_{k=0}^{K}
+R\bigl(s_k,X_k^{\pi}(s_k)\bigr)\,\right|\,s_0\right]
+\]
+subject to each decision rule selecting a feasible decision at every state to which it applies:
+\[
+X_k^{\pi}(s_k)\in\mathcal{X}(s_k),\qquad k=0,\ldots,K.
+\]
+The feasible-decision set is the following printed block:
+\begin{align}
+\mathcal{X}(s_k)=\bigl\{(a,c):\quad & \nonumber\\[-1.5ex]
+&a\in\{0,1\}^{|\tilde{\mathcal{C}}_k|}, \tag{1}\\
+&c\in\bar{\mathcal{C}}_k\cup\tilde{\mathcal{C}}'_k
+       \cup\{c_k\}\cup\{\text{depot}\}, \tag{2}\\
+&c\neq\text{depot}\quad\text{if}\quad
+ \bar{\mathcal{C}}_k\cup\tilde{\mathcal{C}}'_k\setminus\{c_k\}
+ \neq\emptyset, \tag{3}\\
+&\text{feasible routing}\ \bigr\}. \tag{4}
+\end{align}
+
+\paragraph{Assignment and routing meanings.}
+A decision is the pair
+\[
+x=(a,c),
+\]
+where the binary vector $a$ has $|\tilde{\mathcal{C}}_k|$ components. Each component permanently assigns its request to the vehicle when equal to one and rejects it when equal to zero. Rejected requests are not reconsidered. The location component $c$ directs the vehicle to a location in the service region $\mathcal{C}$. The newly assigned customer set is
+\[
+\tilde{\mathcal{C}}'_k
+=\left\{c\in\tilde{\mathcal{C}}_k:
+ a_{\tilde{\mathcal{C}}_k^{-1}(c)}=1\right\},
+\]
+where $\tilde{\mathcal{C}}_k^{-1}(c)$ returns the index of element $c$ in $\tilde{\mathcal{C}}_k$.
+
+Setting $c=c_k$ is the decision to wait at the current location for a base unit of time $\bar t$. Condition (3) is described in the source as disallowing travel to the depot when assigned customers in $\bar{\mathcal{C}}_k$ and $\tilde{\mathcal{C}}'_k$ have yet to be serviced. Condition (4) requires that a route exist from the current location, through all assigned customers, and back to the depot, with duration less than or equal to the remaining time $T-t_k$ less any time spent waiting at the current location. This is a route-existence requirement, not a cheapest-insertion test. The source leaves the requirement as ``feasible routing'' rather than supplying an arc-based routing formulation.
+
+\paragraph{Printed scope of (3).}
+The expression in (3) is retained without adding parentheses around the union before the set difference. The accompanying prose gives the interpretation above; the printed expression does not explicitly delimit the scope of the subtraction by $\{c_k\}$.
+
+\section*{Fixed inputs, states, and boundary conditions}
+
+There is one vehicle, a working day of duration $T$, a service region $\mathcal{C}$, and a depot. Service calls arrive randomly over the working day and within $\mathcal{C}$. The early-request customers are known before the working day:
+\[
+\mathcal{C}_{\mathrm{early}}\subseteq\mathcal{C}.
+\]
+The vehicle must serve these customers and begin and end at the depot. The objective is to maximize the expected number of serviced late-request customers, who submit requests throughout the working day.
+
+The fixed function $d(\cdot,\cdot)$ gives known travel times between two locations in $\mathcal{C}$. The fixed quantity $\bar t$ is the base waiting-time unit. No instance-specific travel-time formula, waiting-time value, request distribution, or numerical duration is imposed here.
+
+At decision epoch $k$, the state is
+\[
+s_k=(c_k,t_k,\bar{\mathcal{C}}_k,\tilde{\mathcal{C}}_k),
+\qquad k=0,\ldots,K,
+\]
+with
+\[
+c_k\in\mathcal{C},\qquad
+ t_k\in[0,T],\qquad
+ \bar{\mathcal{C}}_k\subseteq\mathcal{C},\qquad
+ \tilde{\mathcal{C}}_k\subseteq\mathcal{C}.
+\]
+Here $c_k$ is the vehicle's position, representing a customer location or the depot; $t_k$ is the time at which the vehicle arrives at $c_k$ and marks the beginning of decision epoch $k$; and $\bar{\mathcal{C}}_k$ is the set of assigned customers not yet serviced. For epochs after the initial epoch, $\tilde{\mathcal{C}}_k$ is the possibly empty set of service requests made at or before $t_k$ but after $t_{k-1}$, that is, during
+\[
+(t_{k-1},t_k],\qquad k=1,\ldots,K,
+\]
+subject to the final-request assumption below.
+
+The initial state is
+\[
+s_0=(\text{depot},0,\mathcal{C}_{\mathrm{early}},\emptyset).
+\]
+As an input-feasibility assumption, there exists a route from the depot, through each customer in $\mathcal{C}_{\mathrm{early}}$, and back to the depot with duration less than or equal to $T$.
+
+The final decision epoch $K$ may be a random variable. At this epoch the process occupies a terminal state in
+\[
+s_K\in
+\left\{(\text{depot},t_K,\emptyset,\emptyset):t_K\in[0,T]\right\}.
+\]
+Thus the vehicle has returned to the depot by time $T$ and has serviced all early-request customers. The source explicitly assumes the final set of requests is empty:
+\[
+\tilde{\mathcal{C}}_K=\emptyset.
+\]
+
+\section*{Reward and defining dynamics}
+
+When decision $x$ is taken in state $s_k$, the reward equals the number of assigned late-request customers:
+\[
+R(s_k,x)=\bigl|\tilde{\mathcal{C}}'_k(s_k,x)\bigr|.
+\]
+Here $\tilde{\mathcal{C}}'_k(s_k,x)$ denotes the set $\tilde{\mathcal{C}}'_k$ specified by $s_k$ and by $a$, the assignment component of $x$.
+
+Choosing $x$ in $s_k$ transitions the process to the post-decision state
+\[
+s_k^x=(c_k,t_k,\bar{\mathcal{C}}_k^x),
+\qquad
+\bar{\mathcal{C}}_k^x
+=\bar{\mathcal{C}}_k\cup\tilde{\mathcal{C}}'_k.
+\]
+The assigned-customer set is thereby updated to include newly assigned requests. The subsequent pre-decision state is
+\[
+s_{k+1}=(c_{k+1},t_{k+1},\bar{\mathcal{C}}_{k+1},
+\tilde{\mathcal{C}}_{k+1}).
+\]
+For transitions to a subsequent epoch, $k=0,\ldots,K-1$, the source distinguishes movement from waiting.
+
+\paragraph{Movement: $c\neq c_k$.}
+Decision epoch $k+1$ begins upon arrival at position $c$, with
+\[
+c_{k+1}=c,\qquad
+ t_{k+1}=t_k+d(c_k,c_{k+1}),\qquad
+ \bar{\mathcal{C}}_{k+1}
+ =\bar{\mathcal{C}}_k^x\setminus\{c_k\}.
+\]
+The last relation reflects service at the vehicle's previous location $c_k$, not at its arrival location.
+
+\paragraph{Waiting: $c=c_k$.}
+The vehicle waits at its current location, and decision epoch $k+1$ begins after $\bar t$. The source prints
+\[
+t_{k+1}=t_k+\bar t,\qquad
+\bar{\mathcal{C}}_k=\bar{\mathcal{C}}_k^x.
+\]
+\emph{Printed inconsistency.} The waiting paragraph says that the assigned-customer set is unchanged, but prints $\bar{\mathcal{C}}_k=\bar{\mathcal{C}}_k^x$, with subscript $k$ on both sides, rather than an update for $\bar{\mathcal{C}}_{k+1}$. Together with the post-decision definition this equality conflicts with adding genuinely new assignments while waiting. The printed equality is retained here without replacing its left-hand subscript or supplying a missing assigned-set update.
+
+At epoch $k+1$, a new, possibly empty set $\tilde{\mathcal{C}}_{k+1}$ of late-request customers may be observed. Its requests are those made during $(t_k,t_{k+1}]$, with the explicit terminal exception $\tilde{\mathcal{C}}_K=\emptyset$. The general formulation leaves the stochastic request law abstract; the particular distributions used in the computational experiments are not conditions of this full model.
+
+\section*{Policy class and scope}
+
+A policy is a sequence of decision rules
+\[
+\pi=(X_0^{\pi},X_1^{\pi},\ldots,X_K^{\pi}).
+\]
+The source describes each rule by
+\[
+X_k^{\pi}(s_k):s_k\mapsto\mathcal{X}(s_k),
+\qquad k=0,\ldots,K,
+\]
+meaning that the current state is mapped to a feasible decision. The optimization variable $\pi$ ranges over $\Pi$, the set of all Markovian deterministic policies. The expectation in the objective is conditional on $s_0$ and accounts for the stochastic requests and the possibly random final epoch $K$.
+
+\paragraph{Source and selected scope.}
+The objective and policy class are from physical PDF pages 8--9 of Ulmer, Goodson, Mattfeld, and Hennig, \emph{Offline-Online Approximate Dynamic Programming for Dynamic Vehicle Routing with Stochastic Requests}, April 4, 2017. The input, state, and boundary definitions are on pages 6--7; the feasible-decision block, reward, and transitions are on page 8. The Appendix on pages 39--40 describes a reduction of the decision space for the heuristics, using no waiting, ordered assigned customers, and cheapest insertion. That reduction is not part of the selected full MDP and does not replace condition (4) here.
+
+\end{document}

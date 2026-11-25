@@ -1,0 +1,123 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\begin{document}
+
+\begin{equation}
+\begin{aligned}
+\max\quad & \sum_{t=1}^{T} f(\boldsymbol{x}_t;\boldsymbol{\theta}_t) \\
+\text{s.t.}\quad & \sum_{t=1}^{T} g_i(\boldsymbol{x}_t;\boldsymbol{\theta}_t)\le c_i,
+&& i=1,\ldots,m, \\
+& \boldsymbol{x}_t\in\mathcal{X},
+&& t=1,\ldots,T.
+\end{aligned}
+\tag{PCP}
+\end{equation}
+
+\paragraph{Decision variables and fixed data (pp.~7--8).}
+The decision variables are $(\boldsymbol{x}_1,\ldots,\boldsymbol{x}_T)$. The horizon consists of $T$ discrete time periods, and $i=1,\ldots,m$ indexes the budget constraints. The quantity $c_i$ is the initial capacity of budget $i$. The action set satisfies
+\[
+\mathcal{X}\subset\mathbb{R}^{k},\qquad
+\mathcal{X}\text{ is compact and convex}.
+\]
+For the full-horizon program, the realized parameters are data, not decision variables:
+\[
+\boldsymbol{\theta}_t\in\Theta\subset\mathbb{R}^{l},
+\qquad t=1,\ldots,T.
+\]
+The functions $f$ and $\boldsymbol{g}$ are known a priori. In this selected version they are deterministic given the action and parameter; the additional randomness in reward and consumption introduced in Section~6.4 is not used here. No relationship between the horizon $T$ and the initial budget is assumed (p.~18).
+
+\paragraph{Inherited function classes and parameterization (pp.~7--8).}
+The spaces used in the underlying definition are
+\[
+\begin{aligned}
+\mathcal{F}=\mathcal{F}(\mathcal{X})
+&=\{u:\mathcal{X}\to\mathbb{R}:u\text{ is concave and continuous on }\mathcal{X}\},\\
+\mathcal{G}=\mathcal{G}(\mathcal{X})
+&=\{u:\mathcal{X}\to\mathbb{R}:u\text{ is convex and continuous on }\mathcal{X}\},\\
+f_t&\in\mathcal{F}, &&t=1,\ldots,T,\\
+g_{it}&\in\mathcal{G}, &&i=1,\ldots,m,\quad t=1,\ldots,T.
+\end{aligned}
+\]
+The parameterization displayed on the original p.~8 is
+\[
+f_t(\boldsymbol{x}_t):=f(\boldsymbol{x}_t;\boldsymbol{\theta}_t),
+\qquad
+g_{it}(\boldsymbol{x}_t;\boldsymbol{\theta}_t):=g_i(\boldsymbol{x}_t;\boldsymbol{\theta}_t),
+\qquad i=1,\ldots,m,\quad t=1,\ldots,T.
+\]
+The vector-valued constraint function used in (PCP) is
+\[
+\boldsymbol{g}(\boldsymbol{x};\boldsymbol{\theta})
+=\bigl(g_1(\boldsymbol{x};\boldsymbol{\theta}),\ldots,
+ g_m(\boldsymbol{x};\boldsymbol{\theta})\bigr)^{\top}
+:\mathcal{X}\to\mathbb{R}^{m}.
+\]
+The inherited time-indexed vector function is printed on p.~7 as
+\[
+\boldsymbol{g}_t(\boldsymbol{x})
+=\bigl(g_{1t}(\boldsymbol{x}),\ldots,g_{mt}(\boldsymbol{x})\bigr)^{\top}
+:\mathbb{R}^{k}\to\mathbb{R}^{m}.
+\]
+\emph{Notation discrepancies retained:} the original p.~8 image includes the extra parameter argument on the left-hand side of the definition of $g_{it}$, whereas p.~7 writes $g_{it}(\boldsymbol{x})$. Also, p.~7 prints the domain of $\boldsymbol{g}_t$ as $\mathbb{R}^{k}$ although its component function classes are supported on $\mathcal{X}$. The selected p.~8 definition of $\boldsymbol{g}$ has domain $\mathcal{X}$; no extension outside that set is supplied here.
+
+\paragraph{Parameter space and probability measures (pp.~8--9).}
+For $\boldsymbol{\theta},\boldsymbol{\theta}'\in\Theta$, the paper defines
+\begin{equation}
+\rho(\boldsymbol{\theta},\boldsymbol{\theta}')
+:=\sup_{\boldsymbol{x}\in\mathcal{X}}
+\left\|
+\bigl(f(\boldsymbol{x};\boldsymbol{\theta}),\boldsymbol{g}(\boldsymbol{x};\boldsymbol{\theta})\bigr)
+-
+\bigl(f(\boldsymbol{x};\boldsymbol{\theta}'),\boldsymbol{g}(\boldsymbol{x};\boldsymbol{\theta}')\bigr)
+\right\|_{\infty}.
+\tag{2}
+\end{equation}
+Here $\|\cdot\|_{\infty}$ is the supremum norm in $\mathbb{R}^{m+1}$. The authors take $\Theta$ to be a set of class representatives, so that
+\[
+\rho(\boldsymbol{\theta},\boldsymbol{\theta}')>0
+\qquad\text{for every }\boldsymbol{\theta}\ne\boldsymbol{\theta}'\text{ in }\Theta.
+\]
+The sigma-algebra $\mathcal{B}_{\Theta}$ is the smallest sigma-algebra containing all open subsets of $\Theta$ under the metric $\rho$. The distribution $\mathcal{P}_t$ of $\boldsymbol{\theta}_t$ is a probability measure on $(\Theta,\mathcal{B}_{\Theta})$.
+
+\paragraph{Standing input assumptions (Assumption~1, p.~9).}
+These are restrictions on the functions, action set, and stochastic input, separately from the decision constraints in (PCP).
+\begin{align*}
+\text{(a)}\quad
+&|f(\boldsymbol{x};\boldsymbol{\theta})|\le 1
+&&\forall\boldsymbol{x}\in\mathcal{X},\ \forall\boldsymbol{\theta}\in\Theta;\\
+\text{(b)}\quad
+&g_i(\boldsymbol{x};\boldsymbol{\theta})\in[0,1]
+&&\forall\boldsymbol{x}\in\mathcal{X},\ \forall\boldsymbol{\theta}\in\Theta,
+\quad i=1,\ldots,m;\\
+&\boldsymbol{0}\in\mathcal{X},\qquad g_i(\boldsymbol{0};\boldsymbol{\theta})=0
+&&\forall\boldsymbol{\theta}\in\Theta,\quad i=1,\ldots,m.
+\end{align*}
+\[
+\text{(c)}\quad
+\exists q>0\ \text{such that}\ 
+\forall\boldsymbol{\theta}\in\Theta,\ \forall i=1,\ldots,m,
+\ \forall\boldsymbol{x}\in\mathcal{X},\qquad
+ g_i(\boldsymbol{x};\boldsymbol{\theta})>0
+\ \Longrightarrow\ 
+ f(\boldsymbol{x};\boldsymbol{\theta})\le q\cdot g_i(\boldsymbol{x};\boldsymbol{\theta}).
+\]
+\[
+\text{(d)}\quad
+\boldsymbol{\theta}_t\sim\mathcal{P}_t,\qquad t=1,\ldots,T.
+\]
+The accompanying printed independence condition is: ``$\mathcal{P}_t$'s are independent with each others.'' This wording attaches independence to the distributions themselves; it is retained rather than replaced by an additional probabilistic equation. The surrounding stochastic-input description uses independent draws across periods, does not require identical distributions, and permits dependence between components of $(f,\boldsymbol{g})$. Exact knowledge of the distributions is not assumed in the general model.
+\[
+\begin{aligned}
+\text{(e)}\quad
+&f(\boldsymbol{x};\boldsymbol{\theta})\text{ is concave over }\boldsymbol{x},\\
+&g_i(\boldsymbol{x};\boldsymbol{\theta})\text{ is convex over }\boldsymbol{x},
+\qquad\forall\boldsymbol{\theta}\in\Theta,\quad i=1,\ldots,m.
+\end{aligned}
+\]
+Condition (c) applies only when the indicated consumption is strictly positive. In particular, the displayed assumptions do not impose a reward normalization at the zero action. Appendix~A4 (p.~47) nevertheless invokes a zero objective value at that action; that later proof statement is not added as a condition of (PCP).
+
+\paragraph{Scope of the selected form (pp.~7--8 and 11--12).}
+The paper adopts (PCP) as the underlying problem for its first-observe-then-decide online setting: the current parameter, and hence the current reward and consumption functions, is observed before the current action is chosen. The displayed full-horizon program is the offline benchmark, not an optimization over online policies. The online history restriction, regret measure, expected-value relaxation, dual problems, and algorithmic subproblems therefore do not add rows to (PCP).
+
+\end{document}

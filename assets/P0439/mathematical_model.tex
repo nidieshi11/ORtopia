@@ -1,0 +1,479 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,mathtools,longtable}
+\usepackage[margin=0.75in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\section*{Full security-constrained AC-OPF: formulation (2.8)}
+\begin{equation}\tag{2.8}
+\begin{aligned}
+\min_{\substack{(u_0,y_0,\varsigma_0,\varsigma_0^+,\varsigma_0^-)\\
+\{(u_k,y_k,\varsigma_k,\varsigma_k^+,\varsigma_k^-)\}_{k\in\mathcal K}}}
+\quad &f_0(u_0,y_0)+\psi_0(\varsigma_0,\varsigma_0^+,\varsigma_0^-)
++\frac{1}{|\mathcal K|}\sum_{k\in\mathcal K}\psi_k(\varsigma_k,\varsigma_k^+,\varsigma_k^-)\\
+\mathrm{s.t.}\quad
+&a_0(u_0,y_0)=0,\\
+&b_0(u_0,y_0)=\varsigma_0^+-\varsigma_0^-,\\
+&c_0(u_0,y_0)\leq\varsigma_0,\\
+&\underline u_0\leq u_0\leq\overline u_0,\\
+&\underline y_0\leq y_0\leq\overline y_0,\\
+&(\varsigma_0,\varsigma_0^+,\varsigma_0^-)\geq0,\\
+&a_k(u_k,y_k)=0 &&\forall k\in\mathcal K,\\
+&b_k(u_k,y_k)=\varsigma_k^+-\varsigma_k^- &&\forall k\in\mathcal K,\\
+&c_k(u_k,y_k)\leq\varsigma_k &&\forall k\in\mathcal K,\\
+&\underline u_k\leq u_k\leq\overline u_k &&\forall k\in\mathcal K,\\
+&\underline y_k\leq y_k\leq\overline y_k &&\forall k\in\mathcal K,\\
+&(\varsigma_k,\varsigma_k^+,\varsigma_k^-)\geq0 &&\forall k\in\mathcal K,\\
+&0\leq\tau_k^L(u_0,y_0,u_k,y_k)\perp\tau_k^R(u_k,y_k)\geq0
+&&\forall k\in\mathcal K.
+\end{aligned}
+\end{equation}
+
+\paragraph{Scope and sources.}
+The selected model is the paper's full formulation, not its fixed-base-case contingency subproblem or an active-set subproblem. The defining families below follow the paper, physical pp.~3--6, and its reference to the official \emph{SCOPF Problem Formulation: Challenge 1}, updated April 9, 2019 (82 PDF pages). The single-component-outage version specified by that official document is used for the detailed contingency sets. The paper also discusses datasets containing multiple-component outages; those are not imposed on this selected single-outage version. The paper's squared rating construction and complementarity disjunctions are retained. The official document is not treated as a corrected edition of the paper.
+
+\paragraph{Variable roles and abstract functions.}
+The continuous base-case controls $u_0$ are generator active and reactive powers and controllable shunt susceptances. The only contingency controls $u_k$ are controllable shunt susceptances. All other variables are states, except the penalized slacks. Thus $p_g,q_g,b_i^{CS}$ are base-case controls; $b_{ik}^{CS}$ are contingency controls; voltage magnitudes, voltage angles, branch flows, contingency generator powers, and the contingency response scale $\Delta_k$ are state variables. Cost interpolation coefficients and cost variables are auxiliary variables. No binary response or discrete shunt variables are introduced.
+
+The functions $a_0,a_k$ capture the flow definitions below; $a_0$ also fixes one base-case phase angle to zero. The functions $b_0,b_k$ capture the bus balances, $c_0,c_k$ the rating families, and $\tau_k^L,\tau_k^R$ the response complementarity families. The paper does not give explicit vector assembly formulas for these functions. Its bounds remain written as contingency-dependent in (2.8). The detailed bounds below are the referenced competition version. The model uses a balanced single-phase equivalent representation, fixed transformer taps and phase shifts, and continuously variable controllable shunts.
+
+\section*{Indices, sets, fixed data, and units}
+The primitive sets are $\mathcal A$ (areas), $\mathcal E$ (lines), $\mathcal F$ (two-winding transformers), $\mathcal G$ (generators), $\mathcal H$ (cost sample points), $\mathcal I$ (buses), $\mathcal K$ (contingencies), and $\mathcal N$ (penalty segments). Their respective indices are $a,e,f,g,h,i,k,n$. The active base-case sets are $E\subset\mathcal E$, $F\subset\mathcal F$, and $G\subset\mathcal G$; $E_k,F_k,G_k$ are the corresponding active contingency sets. These are sets, whereas $|\mathcal K|$ is a cardinality. The official subset notation is used below to distinguish active subsets from primitive sets; it corresponds to the component sets in the paper's displayed physical equations.
+
+The origin and destination buses of a line are $i_e^o,i_e^d\in\mathcal I$, those of a transformer are $i_f^o,i_f^d\in\mathcal I$, and the bus of a generator is $i_g\in\mathcal I$. The area of bus $i$ is $a_i\in\mathcal A$. The fixed incidence subsets are
+\begin{align*}
+E_i^o&=\{e\in E:i_e^o=i\},&E_i^d&=\{e\in E:i_e^d=i\},&&i\in\mathcal I,\\
+F_i^o&=\{f\in F:i_f^o=i\},&F_i^d&=\{f\in F:i_f^d=i\},&&i\in\mathcal I,\\
+G_i&=\{g\in G:i_g=i\} &&&&i\in\mathcal I,\\
+I_a&=\{i\in\mathcal I:a_i=a\} &&&&a\in\mathcal A,\\
+E_{ik}^o&=E_i^o\cap E_k,&E_{ik}^d&=E_i^d\cap E_k,&&i\in\mathcal I,\ k\in\mathcal K,\\
+F_{ik}^o&=F_i^o\cap F_k,&F_{ik}^d&=F_i^d\cap F_k,&&i\in\mathcal I,\ k\in\mathcal K,\\
+G_{ik}&=G_i\cap G_k,&&&&i\in\mathcal I,\ k\in\mathcal K.
+\end{align*}
+For each $g$, $H_g\subset\mathcal H$ is its set of cost sample points.
+
+The paper's $G_e,B_e,B_e^{CH},G_f,B_f,G_f^M,B_f^M,G_i^{FS},B_i^{FS}$ are fixed electrical parameters, not generator sets or decision variables. They correspond, respectively, to the official document's $g_e,b_e,b_e^{CH},g_f,b_f,g_f^M,b_f^M,g_i^{FS},b_i^{FS}$. Upper-case electrical parameters are used throughout the physical rows below. In contrast, $b_i^{CS},b_{ik}^{CS}$ are decision variables. The fixed data also include loads $p_i^L,q_i^L$, generator bounds $\underline p_g,\overline p_g,\underline q_g,\overline q_g$, voltage bounds $\underline v_i,\overline v_i,\underline v_i^K,\overline v_i^K$, shunt bounds $\underline b_i^{CS},\overline b_i^{CS}$, ratings $\overline R_e,\overline R_e^K,\overline s_f,\overline s_f^K$, tap ratio $\tau_f$, phase shift $\theta_f$, participation factor $\alpha_g$, and cost data $p_{gh},c_{gh}$.
+
+Power, conductance, susceptance, and voltage magnitude in the model use the per-unit convention; angles use radians. The system power base is $\widetilde s$ in MVA and the bus voltage base is $\widetilde v_i$ in kV. Costs are in USD/h. Branch powers $p^o,q^o,p^d,q^d$ are flows from the indicated bus into the branch. $\Delta_k$ is a decision scale factor, in per unit, on the fixed dimensionless participation factors; it is not itself a participation factor. No normalization of the $\alpha_g$ is specified.
+
+\section*{Generation cost and penalty definitions}
+The paper identifies $f_0$ as convex piecewise linear generation cost and refers to the official statement for its auxiliary-variable definition. With the official weighting absorbed into the paper's penalty functions, the correspondence is
+\[
+f_0(u_0,y_0)=\sum_{g\in G}c_g,\qquad
+\psi_0=\delta c^\sigma,\qquad
+\psi_k=(1-\delta)c_k^\sigma\quad(k\in\mathcal K),\qquad
+\delta=\frac12.
+\]
+Here the arguments of $\psi_0,\psi_k$ are the slacks displayed in (2.8). This correspondence retains the coefficient $1/|\mathcal K|$ in (2.8); the averaging is not also included in $\psi_k$.
+
+The defining interpolation rows, official equations (2)--(5), are
+\begin{align*}
+c_g&=\sum_{h\in H_g}c_{gh}t_{gh} &&\forall g\in G,\\
+\sum_{h\in H_g}p_{gh}t_{gh}&=p_g &&\forall g\in G,\\
+0&\leq t_{gh} &&\forall g\in G,\ h\in H_g,\\
+\sum_{h\in H_g}t_{gh}&=1 &&\forall g\in G.
+\end{align*}
+The sample points describe convex piecewise linear cost functions. The interpolation formulation is retained; no secant extrapolation from the later evaluation code is substituted.
+
+The unweighted penalty definitions are
+\begin{align*}
+c^\sigma={}&\sum_{n\in\mathcal N}\left[
+\lambda_n^P\sum_{i\in\mathcal I}(\sigma_{in}^{P+}+\sigma_{in}^{P-})
++\lambda_n^Q\sum_{i\in\mathcal I}(\sigma_{in}^{Q+}+\sigma_{in}^{Q-})
++\lambda_n^S\sum_{e\in E}\sigma_{en}^S
++\lambda_n^S\sum_{f\in F}\sigma_{fn}^S\right],\\
+c_k^\sigma={}&\sum_{n\in\mathcal N}\left[
+\lambda_n^P\sum_{i\in\mathcal I}(\sigma_{ikn}^{P+}+\sigma_{ikn}^{P-})
++\lambda_n^Q\sum_{i\in\mathcal I}(\sigma_{ikn}^{Q+}+\sigma_{ikn}^{Q-})
++\lambda_n^S\sum_{e\in E_k}\sigma_{ekn}^S
++\lambda_n^S\sum_{f\in F_k}\sigma_{fkn}^S\right]
+\quad\forall k\in\mathcal K.
+\end{align*}
+The aggregate violation variables are defined by
+\begin{align*}
+\sigma_i^{P+}&=\sum_{n\in\mathcal N}\sigma_{in}^{P+},&
+\sigma_{ik}^{P+}&=\sum_{n\in\mathcal N}\sigma_{ikn}^{P+},\\
+\sigma_i^{P-}&=\sum_{n\in\mathcal N}\sigma_{in}^{P-},&
+\sigma_{ik}^{P-}&=\sum_{n\in\mathcal N}\sigma_{ikn}^{P-},\\
+\sigma_i^{Q+}&=\sum_{n\in\mathcal N}\sigma_{in}^{Q+},&
+\sigma_{ik}^{Q+}&=\sum_{n\in\mathcal N}\sigma_{ikn}^{Q+},\\
+\sigma_i^{Q-}&=\sum_{n\in\mathcal N}\sigma_{in}^{Q-},&
+\sigma_{ik}^{Q-}&=\sum_{n\in\mathcal N}\sigma_{ikn}^{Q-}
+&&\forall i\in\mathcal I,\ k\in\mathcal K,\\
+\sigma_e^S&=\sum_{n\in\mathcal N}\sigma_{en}^S
+&&\forall e\in E,\\
+\sigma_{ek}^S&=\sum_{n\in\mathcal N}\sigma_{ekn}^S
+&&\forall e\in E,\ k\in\mathcal K,\\
+\sigma_f^S&=\sum_{n\in\mathcal N}\sigma_{fn}^S
+&&\forall f\in F,\\
+\sigma_{fk}^S&=\sum_{n\in\mathcal N}\sigma_{fkn}^S
+&&\forall f\in F,\ k\in\mathcal K.
+\end{align*}
+In the first four lines, the base-case equalities apply to every $i\in\mathcal I$, independently of $k$. The all-$E$ and all-$F$ scopes of the contingency aggregation rows are those printed in official equations (17) and (19), rather than $E_k,F_k$.
+
+The official segment bounds (20)--(27) are
+\begin{align*}
+0\leq\sigma_{in}^{P+}&\leq\overline\sigma_{in}^{P+},&
+0\leq\sigma_{ikn}^{P+}&\leq\overline\sigma_{in}^{P+},\\
+0\leq\sigma_{in}^{P-}&\leq\overline\sigma_{in}^{P-},&
+0\leq\sigma_{ikn}^{P-}&\leq\overline\sigma_{in}^{P-},\\
+0\leq\sigma_{in}^{Q+}&\leq\overline\sigma_{in}^{Q+},&
+0\leq\sigma_{ikn}^{Q+}&\leq\overline\sigma_{in}^{Q+},\\
+0\leq\sigma_{in}^{Q-}&\leq\overline\sigma_{in}^{Q-},&
+0\leq\sigma_{ikn}^{Q-}&\leq\overline\sigma_{in}^{Q-}
+&&\forall i\in\mathcal I,\ n\in\mathcal N,\ k\in\mathcal K.
+\end{align*}
+Again the base-case columns do not depend on $k$. Each branch penalty segment in the executable model uses the single branch slack of the penalty and aggregation equations and the segment cap from Appendix D.1 of the cited Challenge 1 specification:
+\begin{align*}
+0\leq\sigma_{en}^{S}&\leq\overline\sigma_{en}^{S}
+&&\forall e\in E,\ n\in\mathcal N,\\
+0\leq\sigma_{ekn}^{S}&\leq\overline\sigma_{en}^{S}
+&&\forall e\in E,\ n\in\mathcal N,\ k\in\mathcal K,\\
+0\leq\sigma_{fn}^{S}&\leq\overline\sigma_{fn}^{S}
+&&\forall f\in F,\ n\in\mathcal N,\\
+0\leq\sigma_{fkn}^{S}&\leq\overline\sigma_{fn}^{S}
+&&\forall f\in F,\ n\in\mathcal N,\ k\in\mathcal K.
+\end{align*}
+The official PDF p. 21 prints the superscript $S+$ on both sides of (28)--(31). Its explanation on p. 20 bounds each segment slack, the penalty and aggregation equations on pp. 19--20 use $S$, and Appendix D.1 on p. 70 specifies branch segment caps under $S$. This version uses those caps on the penalty segment variables directly and introduces no second family of branch slacks. The printed notation is recorded here for comparison.
+
+The fixed penalty data, not instance-specific examples, are
+\[
+\mathcal N=\{1,2,3\},\qquad
+\begin{array}{c|rrr}
+ n&1&2&3\\\hline
+\mathrm{PViolMax}_n\ (\mathrm{MW})&2&50&\infty\\
+\mathrm{QViolMax}_n\ (\mathrm{MVar})&2&50&\infty\\
+\mathrm{SViolMax}_n\ (\mathrm{MVA})&2&50&\infty\\
+\mathrm{PViolCost}_n\ (\mathrm{USD}/(\mathrm{MW}\,\mathrm h))&10^3&5\cdot10^3&10^6\\
+\mathrm{QViolCost}_n\ (\mathrm{USD}/(\mathrm{MVar}\,\mathrm h))&10^3&5\cdot10^3&10^6\\
+\mathrm{SViolCost}_n\ (\mathrm{USD}/(\mathrm{MVA}\,\mathrm h))&10^3&5\cdot10^3&10^6
+\end{array}
+\]
+\begin{align*}
+\lambda_n^P&=\mathrm{PViolCost}_n\widetilde s,&
+\lambda_n^Q&=\mathrm{QViolCost}_n\widetilde s,&
+\lambda_n^S&=\mathrm{SViolCost}_n\widetilde s,\\
+\overline\sigma_{en}^S&=\mathrm{SViolMax}_n/\widetilde s,&
+\overline\sigma_{fn}^S&=\mathrm{SViolMax}_n/\widetilde s,\\
+\overline\sigma_{ekn}^S&=\mathrm{SViolMax}_n/\widetilde s,&
+\overline\sigma_{fkn}^S&=\mathrm{SViolMax}_n/\widetilde s,\\
+\overline\sigma_{in}^{P+}&=\mathrm{PViolMax}_n/\widetilde s,&
+\overline\sigma_{in}^{P-}&=\mathrm{PViolMax}_n/\widetilde s,\\
+\overline\sigma_{in}^{Q+}&=\mathrm{QViolMax}_n/\widetilde s,&
+\overline\sigma_{in}^{Q-}&=\mathrm{QViolMax}_n/\widetilde s,\\
+\overline\sigma_{ikn}^{P+}&=\mathrm{PViolMax}_n/\widetilde s,&
+\overline\sigma_{ikn}^{P-}&=\mathrm{PViolMax}_n/\widetilde s,\\
+\overline\sigma_{ikn}^{Q+}&=\mathrm{QViolMax}_n/\widetilde s,&
+\overline\sigma_{ikn}^{Q-}&=\mathrm{QViolMax}_n/\widetilde s.
+\end{align*}
+These definitions apply for all indicated buses, branches, contingencies, and $n\in\mathcal N$ in their respective segment families. The second segment has width $50/\widetilde s$, not $(50-2)/\widetilde s$.
+
+\section*{Primary variable bounds and inactive generators}
+The detailed bounds from official equations (32)--(37) and (58)--(63) are
+\begin{align*}
+\underline v_i\leq v_i&\leq\overline v_i &&\forall i\in\mathcal I,\\
+\underline p_g\leq p_g&\leq\overline p_g &&\forall g\in G,\\
+p_g&=0 &&\forall g\in\mathcal G\setminus G,\\
+\underline q_g\leq q_g&\leq\overline q_g &&\forall g\in G,\\
+q_g&=0 &&\forall g\in\mathcal G\setminus G,\\
+\underline b_i^{CS}\leq b_i^{CS}&\leq\overline b_i^{CS} &&\forall i\in\mathcal I,\\
+\underline v_i^K\leq v_{ik}&\leq\overline v_i^K &&\forall k\in\mathcal K,\ i\in\mathcal I,\\
+\underline p_g\leq p_{gk}&\leq\overline p_g &&\forall k\in\mathcal K,\ g\in G_k,\\
+p_{gk}&=0 &&\forall k\in\mathcal K,\ g\in\mathcal G\setminus G_k,\\
+\underline q_g\leq q_{gk}&\leq\overline q_g &&\forall k\in\mathcal K,\ g\in G_k,\\
+q_{gk}&=0 &&\forall k\in\mathcal K,\ g\in\mathcal G\setminus G_k,\\
+\underline b_i^{CS}\leq b_{ik}^{CS}&\leq\overline b_i^{CS} &&\forall k\in\mathcal K,\ i\in\mathcal I.
+\end{align*}
+The additional base-case reference-angle relation specified on paper p.~5 is
+\[
+\theta_i=0\qquad\text{at the single base-case reference bus.}
+\]
+The paper does not identify that bus. No additional contingency reference-angle equation or angle bound is introduced here.
+
+\section*{Flow definitions: the $a$ families}
+For every $e\in E$, the paper's origin-end equations are
+\begin{equation}\tag{2.1}
+\begin{aligned}
+p_e^o&=G_ev_{i_e^o}^2-\bigl(G_e\cos(\theta_{i_e^o}-\theta_{i_e^d})+B_e\sin(\theta_{i_e^o}-\theta_{i_e^d})\bigr)v_{i_e^o}v_{i_e^d},\\
+q_e^o&=-(B_e+B_e^{CH}/2)v_{i_e^o}^2
++\bigl(B_e\cos(\theta_{i_e^o}-\theta_{i_e^d})-G_e\sin(\theta_{i_e^o}-\theta_{i_e^d})\bigr)v_{i_e^o}v_{i_e^d}.
+\end{aligned}
+\end{equation}
+The linked destination-end definitions, available in official equations (40)--(41), are
+\begin{align*}
+p_e^d&=G_ev_{i_e^d}^2+\bigl(-G_e\cos(\theta_{i_e^d}-\theta_{i_e^o})-B_e\sin(\theta_{i_e^d}-\theta_{i_e^o})\bigr)v_{i_e^o}v_{i_e^d},\\
+q_e^d&=-(B_e+B_e^{CH}/2)v_{i_e^d}^2+\bigl(B_e\cos(\theta_{i_e^d}-\theta_{i_e^o})-G_e\sin(\theta_{i_e^d}-\theta_{i_e^o})\bigr)v_{i_e^o}v_{i_e^d}
+\quad\forall e\in E.
+\end{align*}
+For every $f\in F$, the paper prints
+\begin{equation}\tag{2.2}
+\begin{aligned}
+p_f^o={}&(G_f/\tau_f^2+G_f^M)v_{i_f^o}^2\\
+&-\bigl((G_f/\tau_f)\cos(\theta_{i_f^o}-\theta_{i_f^d}-\theta_f)
+ +(B_f/\tau_f)\sin(\theta_{i_f^o}-\theta_{i_f^d}-\theta_f)\bigr)v_{i_f^o}v_{i_f^d},\\
+q_f^o={}&-(B_f/\tau_f^2+B_f^M)v_{i_f^o}^2\\
+&+\bigl((B_f/\tau_f)\cos(\theta_{i_f^o}-\theta_{i_f^d}-\theta_f)
+ -(G_f/\tau_f)\sin(\theta_{i_f^o}-\theta_{i_f^d}-\theta_f)\bigr)v_{i_f^o}v_{i_f^d}.
+\end{aligned}
+\end{equation}
+The linked destination-end definitions, official equations (44)--(45), are
+\begin{align*}
+p_f^d={}&G_fv_{i_f^d}^2+
+\bigl(-(G_f/\tau_f)\cos(\theta_{i_f^d}-\theta_{i_f^o}+\theta_f)
+ -(B_f/\tau_f)\sin(\theta_{i_f^d}-\theta_{i_f^o}+\theta_f)\bigr)v_{i_f^o}v_{i_f^d},\\
+q_f^d={}&-B_fv_{i_f^d}^2+
+\bigl((B_f/\tau_f)\cos(\theta_{i_f^d}-\theta_{i_f^o}+\theta_f)
+ -(G_f/\tau_f)\sin(\theta_{i_f^d}-\theta_{i_f^o}+\theta_f)\bigr)v_{i_f^o}v_{i_f^d}
+\qquad\forall f\in F.
+\end{align*}
+
+The contingency definitions, official equations (64)--(71), are
+\begin{align*}
+p_{ek}^o={}&G_ev_{i_e^o k}^2+
+\bigl(-G_e\cos(\theta_{i_e^o k}-\theta_{i_e^d k})-B_e\sin(\theta_{i_e^o k}-\theta_{i_e^d k})\bigr)v_{i_e^o k}v_{i_e^d k},\\
+q_{ek}^o={}&-(B_e+B_e^{CH}/2)v_{i_e^o k}^2+
+\bigl(B_e\cos(\theta_{i_e^o k}-\theta_{i_e^d k})-G_e\sin(\theta_{i_e^o k}-\theta_{i_e^d k})\bigr)v_{i_e^o k}v_{i_e^d k},\\
+p_{ek}^d={}&G_ev_{i_e^d k}^2+
+\bigl(-G_e\cos(\theta_{i_e^d k}-\theta_{i_e^o k})-B_e\sin(\theta_{i_e^d k}-\theta_{i_e^o k})\bigr)v_{i_e^o k}v_{i_e^d k},\\
+q_{ek}^d={}&-(B_e+B_e^{CH}/2)v_{i_e^d k}^2+
+\bigl(B_e\cos(\theta_{i_e^d k}-\theta_{i_e^o k})-G_e\sin(\theta_{i_e^d k}-\theta_{i_e^o k})\bigr)v_{i_e^o k}v_{i_e^d k}
+\quad\forall k\in\mathcal K,\ e\in E_k;
+\end{align*}
+\begin{align*}
+p_{fk}^o={}&(G_f/\tau_f^2+G_f^M)v_{i_f^o k}^2\\
+&+\bigl(-(G_f/\tau_f)\cos(\theta_{i_f^o k}-\theta_{i_f^d k}-\theta_f)
+ -(B_f/\tau_f)\sin(\theta_{i_f^o k}-\theta_{i_f^d k}-\theta_f)\bigr)v_{i_f^o k}v_{i_f^d k},\\
+q_{fk}^o={}&-(B_f/\tau_f^2+B_f^M)v_{i_f^o k}^2\\
+&+\bigl((B_f/\tau_f)\cos(\theta_{i_f^o k}-\theta_{i_f^d k}-\theta_f)
+ -(G_f/\tau_f)\sin(\theta_{i_f^o k}-\theta_{i_f^d k}-\theta_f)\bigr)v_{i_f^o k}v_{i_f^d k},\\
+p_{fk}^d={}&G_fv_{i_f^d k}^2\\
+&+\bigl(-(G_f/\tau_f)\cos(\theta_{i_f^d k}-\theta_{i_f^o k}+\theta_f)
+ -(B_f/\tau_f)\sin(\theta_{i_f^d k}-\theta_{i_f^o k}+\theta_f)\bigr)v_{i_f^o k}v_{i_f^d k},\\
+q_{fk}^d={}&-B_fv_{i_f^d k}^2\\
+&+\bigl((B_f/\tau_f)\cos(\theta_{i_f^d k}-\theta_{i_f^o k}+\theta_f)
+ -(G_f/\tau_f)\sin(\theta_{i_f^d k}-\theta_{i_f^o k}+\theta_f)\bigr)v_{i_f^o k}v_{i_f^d k}
+\quad\forall k\in\mathcal K,\ f\in F_k.
+\end{align*}
+These destination-end and contingency definitions are available in the supplied official reference; their absence from the paper's short restatement does not leave them unverified.
+
+\section*{Bus balances: the $b$ families}
+For all $i\in\mathcal I$,
+\begin{equation}\tag{2.3}
+\begin{aligned}
+\sum_{g\in G_i}p_g-p_i^L-G_i^{FS}v_i^2
+-\sum_{e\in E_i^o}p_e^o-\sum_{e\in E_i^d}p_e^d
+-\sum_{f\in F_i^o}p_f^o-\sum_{f\in F_i^d}p_f^d
+&=\sigma_i^{P+}-\sigma_i^{P-},\\
+\sum_{g\in G_i}q_g-q_i^L+(B_i^{FS}+b_i^{CS})v_i^2
+-\sum_{e\in E_i^o}q_e^o-\sum_{e\in E_i^d}q_e^d
+-\sum_{f\in F_i^o}q_f^o-\sum_{f\in F_i^d}q_f^d
+&=\sigma_i^{Q+}-\sigma_i^{Q-}.
+\end{aligned}
+\end{equation}
+For all $k\in\mathcal K$ and $i\in\mathcal I$,
+\begin{align*}
+\sum_{g\in G_{ik}}p_{gk}-p_i^L-G_i^{FS}v_{ik}^2
+-\sum_{e\in E_{ik}^o}p_{ek}^o-\sum_{e\in E_{ik}^d}p_{ek}^d
+-\sum_{f\in F_{ik}^o}p_{fk}^o-\sum_{f\in F_{ik}^d}p_{fk}^d
+&=\sigma_{ik}^{P+}-\sigma_{ik}^{P-},\\
+\sum_{g\in G_{ik}}q_{gk}-q_i^L+(B_i^{FS}+b_{ik}^{CS})v_{ik}^2
+-\sum_{e\in E_{ik}^o}q_{ek}^o-\sum_{e\in E_{ik}^d}q_{ek}^d
+-\sum_{f\in F_{ik}^o}q_{fk}^o-\sum_{f\in F_{ik}^d}q_{fk}^d
+&=\sigma_{ik}^{Q+}-\sigma_{ik}^{Q-}.
+\end{align*}
+The aggregate slack domains are
+\begin{align*}
+\sigma_i^{P+},\sigma_i^{P-},\sigma_i^{Q+},\sigma_i^{Q-}&\geq0 &&\forall i\in\mathcal I,\\
+\sigma_{ik}^{P+},\sigma_{ik}^{P-},\sigma_{ik}^{Q+},\sigma_{ik}^{Q-}&\geq0 &&\forall k\in\mathcal K,\ i\in\mathcal I.
+\end{align*}
+
+\section*{Squared ratings: the $c$ families}
+The paper explicitly replaces the official norm inequalities with squared inequalities. The selected base-case line rows are
+\begin{equation}\tag{2.4}
+\begin{aligned}
+(p_e^o)^2+(q_e^o)^2&\leq(\overline R_ev_{i_e^o}+\sigma_e^S)^2,\\
+(p_e^d)^2+(q_e^d)^2&\leq(\overline R_ev_{i_e^d}+\sigma_e^S)^2
+\qquad\forall e\in E.
+\end{aligned}
+\end{equation}
+The operative base-case transformer ratings use the origin endpoint in (55) and the destination endpoint in (57) of the cited Challenge 1 specification (physical PDF p. 24). Equation (56) requires the shared violation slack to be nonnegative. The following uses the squared form selected by the paper:
+\begin{equation}\tag{2.5, implemented}
+\begin{aligned}
+(p_f^o)^2+(q_f^o)^2&\leq(\overline s_f+\sigma_f^S)^2,\\
+(p_f^d)^2+(q_f^d)^2&\leq(\overline s_f+\sigma_f^S)^2
+\qquad\forall f\in F.
+\end{aligned}
+\end{equation}
+The rating and its violation slack are nonnegative; squaring preserves the official norm inequalities. The main paper, physical PDF p. 3, prints $(p_e^d)^2+(q_e^d)^2\leq(\overline s_f+\sigma_f^S)^2$ as the second row of (2.5), with a line index $e$ and a transformer index $f$ and no association between them. This transcription documents the discrepancy. The operative destination row above uses the single transformer $f$ of official (57). Each transformer has exactly one destination rating; line ratings remain in (2.4).
+
+For contingencies, the source-defined indexed families are official equations (78)--(83). Applying the paper's stated squared construction to those rows gives
+\begin{align*}
+(p_{ek}^o)^2+(q_{ek}^o)^2&\leq(\overline R_e^K v_{i_e^o k}+\sigma_{ek}^S)^2
+&&\forall k\in\mathcal K,\ e\in E_k,\\
+(p_{ek}^d)^2+(q_{ek}^d)^2&\leq(\overline R_e^K v_{i_e^d k}+\sigma_{ek}^S)^2
+&&\forall k\in\mathcal K,\ e\in E_k,\\
+(p_{fk}^o)^2+(q_{fk}^o)^2&\leq(\overline s_f^K+\sigma_{fk}^S)^2
+&&\forall k\in\mathcal K,\ f\in F_k,\\
+(p_{fk}^d)^2+(q_{fk}^d)^2&\leq(\overline s_f^K+\sigma_{fk}^S)^2
+&&\forall k\in\mathcal K,\ f\in F_k.
+\end{align*}
+The contingency destination-transformer row retains the $f$ index and scope of the available official contingency definition. The paper does not separately print a contingency-indexed version of (2.5); its mixed-index base-case expression is not propagated into a new, unsupported contingency row.
+\begin{align*}
+\sigma_e^S&\geq0 &&\forall e\in E,&
+\sigma_f^S&\geq0 &&\forall f\in F,\\
+\sigma_{ek}^S&\geq0 &&\forall k\in\mathcal K,\ e\in E_k,&
+\sigma_{fk}^S&\geq0 &&\forall k\in\mathcal K,\ f\in F_k.
+\end{align*}
+The official unsquared rating inequalities are superseded, not additionally enforced. The paper does not specify a componentwise transformation from its schematic $c(u,y)\leq\varsigma$ to the displayed squared rows containing physical slacks inside squares; no such transformation or rescaling of the penalty argument is invented here.
+
+\section*{Cross-case response: the $\tau$ families}
+For a generator active but not participating in real-power response, the common condition from official equation (84) is
+\[
+p_{gk}=p_g\qquad\forall k\in\mathcal K,\ g\in G_k\setminus G_k^P.
+\]
+For participating generators, the selected paper disjunction is
+\begin{equation}\tag{2.6}
+\begin{aligned}
+&0\leq(p_{gk}-\underline p_g)\perp(p_g+\alpha_g\Delta_k-p_{gk})\leq0\\
+&\quad\text{or}\quad
+0\geq(p_{gk}-\overline p_g)\perp(p_g+\alpha_g\Delta_k-p_{gk})\geq0,
+\qquad k\in\mathcal K,\ g\in G_k^P.
+\end{aligned}
+\end{equation}
+For reactive-power response, the selected paper disjunction is
+\begin{equation}\tag{2.7}
+\begin{aligned}
+&0\leq(q_{gk}-\underline q_g)\perp(v_{i_g}-v_{i_g k})\leq0\\
+&\quad\text{or}\quad
+0\geq(q_{gk}-\overline q_g)\perp(v_{i_g}-v_{i_g k})\geq0,
+\qquad k\in\mathcal K,\ g\in G_k.
+\end{aligned}
+\end{equation}
+The lower-bound underlines in the first factors are visible on the supplied original page images: they are $\underline p_g,\underline q_g$, not the base-case decision variables $p_g,q_g$. The response domains are supplied by official Sections 3.14--3.15. The bound constraints on $p_{gk},q_{gk}$ remain in force. The symbol $\perp$ denotes complementarity of the two factors. Neither the projection nor the mixed-integer response formulation is additionally imposed.
+
+\section*{Fixed input construction and restrictions}
+The following are data definitions, not constraints giving the optimizer freedom to choose equipment parameters. They follow official Appendices A, C, and D. Field names in upright type denote the corresponding input record; the same field name in different record types need not have the same meaning.
+
+\paragraph{Network and service status.}
+Primitive equipment sets contain the records read from the input. Generator keys are $(\mathrm I,\mathrm{ID})$; line and transformer keys are $(\mathrm I,\mathrm J,\mathrm{CKT})$. For each record, the origin and destination buses are $\mathrm I,\mathrm J$, or the generator bus is $\mathrm I$. Base-case active sets contain precisely records with the corresponding service flag equal to $1$; flags are binary. Bus numbers are integers from $1$ through $999997$, and area numbers are positive integers. A line's destination bus differs from its origin bus. Parallel branch circuit identifiers distinguish branches in either direction, including transformers. All transformers represented here are two-winding; three-winding equipment is represented by configurations of two-winding transformers.
+
+\paragraph{Base, voltage, loads, and fixed shunts.}
+\begin{align*}
+\widetilde s&=\mathrm{SBASE},\\
+\overline v_i&=\mathrm{NVHI},&\underline v_i&=\mathrm{NVLO},&
+\overline v_i^K&=\mathrm{EVHI},&\underline v_i^K&=\mathrm{EVLO}.
+\end{align*}
+The voltage limits are per-unit data. For each bus, initialize $p_i^L=q_i^L=G_i^{FS}=B_i^{FS}=0$. For each in-service load record at $i$, update
+\[
+p_i^L:=p_i^L+\mathrm{PL}/\widetilde s,\qquad
+q_i^L:=q_i^L+\mathrm{QL}/\widetilde s.
+\]
+For each in-service fixed-shunt record at $i$, update
+\[
+G_i^{FS}:=G_i^{FS}+\mathrm{GL}/\widetilde s,\qquad
+B_i^{FS}:=B_i^{FS}+\mathrm{BL}/\widetilde s.
+\]
+Only records with $\mathrm{STATUS}=1$ contribute. The fixed loads are constant-power loads.
+
+\paragraph{Generator data.}
+For each generator record,
+\[
+\overline q_g=\mathrm{QT}/\widetilde s,\quad
+\underline q_g=\mathrm{QB}/\widetilde s,\quad
+\overline p_g=\mathrm{PT}/\widetilde s,\quad
+\underline p_g=\mathrm{PB}/\widetilde s.
+\]
+The active subset uses $\mathrm{STAT}=1$. Unit commitment and fast-start post-contingency entry are excluded: only initially online units may respond.
+
+\paragraph{Line data.}
+For each line record,
+\begin{align*}
+G_e&=\frac{\mathrm R}{\mathrm R^2+\mathrm X^2},&
+B_e&=-\frac{\mathrm X}{\mathrm R^2+\mathrm X^2},&
+B_e^{CH}&=\mathrm B,\\
+\overline R_e&=\mathrm{RATEA}/\widetilde s,&
+\overline R_e^K&=\mathrm{RATEC}/\widetilde s.
+\end{align*}
+The record restriction is $\mathrm X\in\mathbb R\setminus\{0\}$. The origin and destination buses of a non-transformer branch must have equal voltage bases:
+\[
+\widetilde v_{i_e^o}=\widetilde v_{i_e^d}\qquad\text{for every non-transformer branch }e.
+\]
+The rating fields express current as MVA at this bus base voltage, not transformer apparent-power ratings. The active subset uses $\mathrm{ST}=1$.
+
+\paragraph{Transformer data.}
+For each transformer record,
+\begin{align*}
+G_f^M&=\mathrm{MAG1},&B_f^M&=\mathrm{MAG2},\\
+G_f&=\frac{\mathrm{R12}}{(\mathrm{R12})^2+(\mathrm{X12})^2},&
+B_f&=-\frac{\mathrm{X12}}{(\mathrm{R12})^2+(\mathrm{X12})^2},\\
+\tau_f&=\mathrm{WINDV1}/\mathrm{WINDV2},&
+\theta_f&=\mathrm{ANG1}\,\pi/180,\\
+\overline s_f&=\mathrm{RATA1}/\widetilde s,&
+\overline s_f^K&=\mathrm{RATC1}/\widetilde s.
+\end{align*}
+Magnetizing admittances are in per unit on the system MVA base; winding ratios are on their respective bus voltage bases. The phase-shift input obeys $\mathrm{ANG1}\in(-180,180]$ degrees, hence $\theta_f\in(-\pi,\pi]$. The active subset uses $\mathrm{STAT}=1$. The supplied text extraction of official (154) has an unmatched parenthesis; its fraction above follows the denominator corroborated by the supplied official evaluation code, without adding a parameter-domain restriction. The typography of that official equation has not been independently verified against a supplied page image.
+
+\paragraph{Controllable shunt bounds, including the zero-block case.}
+Initialize
+\[
+\overline b_i^{CS}=0,\qquad\underline b_i^{CS}=0\qquad\forall i\in\mathcal I.
+\]
+For an in-service switched-shunt record at $i$, the eight block counts $\mathrm N_l$ are nonnegative integers and $\mathrm B_l$ are step susceptances in MVar at unit voltage. The official construction is
+\begin{align*}
+\mathrm{BL}_l&=\mathrm N_l\mathrm B_l/\widetilde s,
+\qquad l=1,\ldots,8,\\
+\mathrm{NBL}&=
+\begin{cases}
+\max\{l\in\{1,\ldots,8\}:\mathrm{BL}_{l'}\ne0\ \text{for all }l'\in\{1,\ldots,l\}\},&\mathrm{BL}_1\ne0,\\
+0,&\mathrm{BL}_1=0,
+\end{cases}\\
+\overline b_i^{CS}&=\sum_{l:1\leq l\leq\mathrm{NBL}}\max\{0,\mathrm{BL}_l\},\\
+\underline b_i^{CS}&=\sum_{l:1\leq l\leq\mathrm{NBL}}\min\{0,\mathrm{BL}_l\}.
+\end{align*}
+These assignments are made only for $\mathrm{STAT}=1$. Buses without an active switched shunt retain both bounds equal to zero. The model does not constrain the shunt decision to integer multiples of the steps.
+
+\paragraph{Cost samples.}
+For each generator dispatch record, its dispatch-table link and cost-table link identify the sample-point record. If $N=\mathrm{NPAIRS}$, a positive integer, then
+\[
+H_g=\{1,\ldots,N\},\qquad
+p_{gh}=\mathrm X_h/\widetilde s,\qquad
+c_{gh}=\mathrm Y_h\quad(h\in H_g),\qquad
+\mathcal H=\bigcup_gH_g.
+\]
+Here $\mathrm X_h$ is output in MW, not reactance, and $\mathrm Y_h$ is cost in USD/h, not admittance. A zero $\mathrm X_h$ is allowed. The cost convexity premise is retained; no additional sample spacing, extrapolation rule, or mandatory lower bound of two on $N$ is imported from evaluation-code preprocessing.
+
+\paragraph{Participation factors.}
+For a generator's INL record,
+\[
+\alpha_g=\mathrm R,\qquad \mathrm R\in\mathbb R_{\geq0}.
+\]
+This INL field is used directly as a dimensionless participation factor, despite its industry-format name ``governor permanent droop.'' It is not line resistance, a reciprocal droop, or a decision variable.
+
+\paragraph{Contingency sets and responding areas.}
+The selected official version has exactly one generator, line, or transformer outage per contingency. Starting from $(E,F,G)$, its active sets are
+\[
+(E_k,F_k,G_k)=
+\begin{cases}
+(E\setminus\{e\},F,G),&\text{line }e\text{ is outaged},\\
+(E,F\setminus\{f\},G),&\text{transformer }f\text{ is outaged},\\
+(E,F,G\setminus\{g\}),&\text{generator }g\text{ is outaged}.
+\end{cases}
+\]
+For a branch outage key, the official input assumption is membership in either the line set or the transformer set, but not both. The contingent areas and participation sets are the fixed sets
+\begin{align*}
+A_k&=
+\begin{cases}
+\{a_{i_g}\},&g\in G\setminus G_k,\\
+\{a_{i_e^o},a_{i_e^d}\},&e\in E\setminus E_k,\\
+\{a_{i_f^o},a_{i_f^d}\},&f\in F\setminus F_k,
+\end{cases}
+&&\forall k\in\mathcal K,\\
+G_k^P&=\{g\in G_k:a_{i_g}\in A_k\}
+&&\forall k\in\mathcal K.
+\end{align*}
+Thus participation is not imposed on every online generator in the system, and the common nonparticipant equality remains necessary.
+
+\paragraph{Limits of the reconstruction.}
+The original images establish the lower bounds in (2.6)--(2.7) and the mixed $e,f$ subscripts in (2.5). The source discrepancy is retained in the note on (2.5); the numerical formulation uses the transformer destination endpoint of official (57). The high-level functions and their vector dimensions are not further specified by the paper. The supplied official equations provide the detailed cost, slack, bound, incidence, and flow dependencies; their $S+$ notation discrepancy is identified above. The empty-contingency denominator in (2.8) is retained without a convention replacing $|\mathcal K|$ by $\max\{1,|\mathcal K|\}$. Evaluation-code tolerances, extrapolated costs, scoring caps, starting points, preprocessing aggregations, and active-set replacements are not constraints of this selected model.
+
+\end{document}

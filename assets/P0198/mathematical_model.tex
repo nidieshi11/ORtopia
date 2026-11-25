@@ -1,0 +1,47 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\usepackage[a4paper,margin=1in]{geometry}
+
+\title{Binary Set-Partitioning Formulation for $s$-Club Partitioning}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Notation and Input Data}
+
+Let $G=(V,E)$ be a finite undirected graph, let $s$ be a positive integer, and let
+$\mathcal{S}$ denote the complete finite family of admissible $s$-clubs, represented as
+subsets of $V$. Thus,
+\[
+\mathcal{S}\subseteq 2^V,
+\]
+and every membership incidence $(i,S)$ with $i\in V$ and $S\in\mathcal{S}$ is supplied as input. Equivalently, when the family is generated from $G$ and $s$,
+\[
+\mathcal{S}
+=
+\left\{S\subseteq V:\operatorname{diam}(G[S])\le s\right\},
+\]
+where $G[S]$ is the subgraph induced by $S$ and the diameter is measured using shortest-path distances in $G[S]$.
+
+\section*{Decision Variables}
+
+For each $S\in\mathcal{S}$, let
+\[
+\lambda_S\in\{0,1\},
+\]
+where $\lambda_S=1$ indicates that the set $S$ is selected in the partition.
+
+\section*{Binary Set-Partitioning Model}
+
+\begin{alignat}{2}
+\min\quad & \sum_{S\in\mathcal{S}}\lambda_S && \tag{2a}\\
+\text{s.t.}\quad
+& \sum_{S\in\mathcal{S}:\,i\in S}\lambda_S = 1
+&& \forall i\in V, \tag{2b}\\
+& \lambda_S\in\{0,1\}
+&& \forall S\in\mathcal{S}. \tag{2c}
+\end{alignat}
+
+\end{document}

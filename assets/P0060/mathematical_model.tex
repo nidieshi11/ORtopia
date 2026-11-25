@@ -1,0 +1,81 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+
+\title{Final Finite-Dimensional Linear Reformulation}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Sets and indices}
+Let \(\mathcal I\) be a nonempty finite allocation index set and let \(\mathcal S\) be a nonempty finite scenario set. For each \(s\in\mathcal S\), let \(K_s\) be a positive integer and define
+\[
+[K_s]:=\{1,\ldots,K_s\}.
+\]
+Indices are \(i\in\mathcal I\), \(s\in\mathcal S\), and \(k\in[K_s]\).
+
+\section*{Parameters}
+The model data are
+\[
+\boldsymbol b=(b_i)_{i\in\mathcal I}\in\mathbb R^{\mathcal I},
+\qquad
+\boldsymbol c=(c_i)_{i\in\mathcal I}\in\mathbb R^{\mathcal I},
+\qquad
+\hat{\boldsymbol u}_s=(\hat u_{is})_{i\in\mathcal I}\in\mathbb R^{\mathcal I}
+\quad(s\in\mathcal S),
+\]
+\[
+d\in\mathbb R,
+\qquad
+\theta\in\mathbb R.
+\]
+For every \(s\in\mathcal S\), \(k\in[K_s]\), and \(i\in\mathcal I\), the quantities
+\[
+\tau_s^{2k},\qquad
+\tau_{si}^{5k},\qquad
+\tau_{sii}^{7k},\qquad
+\tau_{sii}^{8k}
+\]
+are fixed real-valued coefficients supplied by the coefficient-generating system associated with the reformulation.
+
+\section*{Decision variables}
+The decision variables are
+\[
+\boldsymbol x=(x_i)_{i\in\mathcal I}\in\mathbb R_+^{\mathcal I},
+\qquad
+\beta^v\in\mathbb R_+,
+\qquad
+\boldsymbol\rho=(\rho_s)_{s\in\mathcal S}\in\mathbb R^{\mathcal S}.
+\]
+Thus, each \(\rho_s\) is unrestricted in sign.
+
+\section*{Linear optimization model}
+\begin{align}
+\underset{\boldsymbol x,\,\beta^v,\,\boldsymbol\rho}{\operatorname{minimize}}
+\quad &
+-\boldsymbol b^{\top}\boldsymbol x
++\theta\beta^v
++\sum_{s\in\mathcal S}\rho_s
+\tag{25a}\\
+\text{subject to}\quad
+&\boldsymbol c^{\top}\boldsymbol x=d,
+\tag{25b}\\
+&\rho_s\ge
+-\tau_s^{2k}\beta^v
++\sum_{i\in\mathcal I}\tau_{si}^{5k}x_i
+-\sum_{i\in\mathcal I}\tau_{si}^{5k}\hat u_{is}
+-\sum_{i\in\mathcal I}\tau_{sii}^{7k}
++\sum_{i\in\mathcal I}\tau_{sii}^{8k},
+&&s\in\mathcal S,\ k\in[K_s],
+\tag{25c}\\
+&x_i\ge 0,
+&&i\in\mathcal I,
+\tag{25d-1}\\
+&\beta^v\ge 0.
+\tag{25d-2}
+\end{align}
+
+\end{document}

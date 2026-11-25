@@ -1,0 +1,63 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,geometry}
+\geometry{margin=25mm}
+\begin{document}
+\section*{Core model: minimum-cost JOCR-R}
+Source: Sections 3 and 4.1, PDF pp.5--7 (printed pp.624--626),
+equations (1)--(12). The restricted-focus and unrestricted-focus policies
+are both introduced as main models in Section 4. The retained policy is
+JOCR-R, matching the discrete-location input and stated code interface.
+\paragraph{Scope and data.}
+$L=\{0,1,\ldots,N\}$ contains the depot $0$ and customer locations.
+Focal points must be in $L$. A truck carries at most $G$ identical drones;
+each drone makes at most one out-and-back delivery per cluster and
+returns to the waiting truck. The truck can carry all orders; it visits
+all selected focal points in one tour. $K\ge2$ is the maximum number
+of selected focal points, including the depot. For each location $i$,
+$(A_i,B_i)$ is its coordinate and $F_i\ge0$ its payload-dependent
+\emph{one-way admissible assignment distance}, in the convention of (8).
+Truck-only locations have $F_i=0$. Distinct location coordinates ensure
+this forces them to be focal points. Define
+\[
+ D^E_{ij}=\sqrt{(A_i-A_j)^2+(B_i-B_j)^2},\qquad
+ D^R_{ij}=|A_i-A_j|+|B_i-B_j|.
+\]
+$C_{D_1},C_{D_2},C_T\ge0$ are fixed drone cost, drone distance cost,
+and truck distance cost. A round-trip flight contributes $2D^E_{ij}$.
+\paragraph{Variables.}
+$x_{ij}\in\{0,1\}$ assigns location $i$ to focal point $j$;
+$x_{jj}=1$ selects $j$. $y_{ij}\in\{0,1\}$ for $i\ne j$ selects
+truck arc $i\to j$; $y_{ii}=0$.
+$g\in\{0,\ldots,G\}$ is the drone count. Nondepot order variables
+$u_i\in\{1,\ldots,K-1\}$ represent an ordering; unselected locations
+can take any value in that range. Their integrality and bounded
+representatives do not remove any valid tour with at most $K$ focal points.
+\paragraph{Single complete cost model.}
+\begin{align}
+\min\quad &C_{D_1}g+2C_{D_2}\sum_{i\in L}\sum_{j\in L}D^E_{ij}x_{ij}
+ +C_T\sum_{i\in L}\sum_{j\in L\setminus\{i\}}D^R_{ij}y_{ij},\tag{1}\\
+\text{s.t.}\quad &\sum_{j\in L}x_{jj}\le K,\tag{2}\\
+&x_{ij}\le x_{jj} &&i,j\in L,\tag{3}\\
+&\sum_{j\in L}x_{ij}=1 &&i\in L,\tag{4}\\
+&x_{00}=1,\tag{5}\\
+&\sum_{i\in L}x_{ij}\le g+1 &&j\in L,\tag{6}\\
+&0\le g\le G,\quad g\in\mathbb Z,\tag{7}\\
+&D^E_{ij}x_{ij}\le F_i &&i,j\in L,\tag{8}\\
+&\sum_{j\in L\setminus\{i\}}y_{ij}=x_{ii} &&i\in L,\tag{9}\\
+&\sum_{i\in L\setminus\{j\}}y_{ij}=x_{jj} &&j\in L,\tag{10}\\
+&u_i-u_j+(K-1)y_{ij}+(K-3)y_{ji}\le K-2
+ &&i,j\in L\setminus\{0\},i\ne j,\tag{11}\\
+&x_{ij}\in\{0,1\},\quad y_{ij}\in\{0,1\},\quad
+ u_i\in\{1,\ldots,K-1\}.\tag{12}
+\end{align}
+The coefficients in (11) are transcribed from the rendered source page,
+with the cardinalities displayed in those equations.
+Cluster cardinality in (6) includes its focal location; the remaining
+customers require at most $g$ parallel drones.
+
+\paragraph{Published-formulation boundary.}
+The degree equations (9)--(10) impose a nontrivial truck tour, hence at
+least two selected focal points. 
+Unrestricted focal coordinates, completion-time objectives, epsilon
+trade-offs and multiple deliveries by one drone per cluster are excluded.
+\end{document}

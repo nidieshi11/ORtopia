@@ -1,0 +1,83 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,geometry}
+\geometry{margin=22mm}
+\begin{document}
+
+\section*{P28: discrete-frequency service design and pricing}
+This is the explicitly repaired source interpretation implemented by the current
+solver. 
+Source: paper pp.5,8--12, equations (1),(2),(9)--(15),(19)--(34),(55).
+
+\subsection*{Sets and input}
+$A$ is the entire supplied transport-arc set. For each $a$, its positive integer
+frequency grid $\Theta_a$, monthly capacity per departure $J_a$, fixed cost $F_a$
+and transport mode are supplied. $T=720$ hours; all times and deadlines use hours.
+Every shipment $k\in K$ belongs to exactly one shipper class with time value $v_k$
+and reliability value $r_k$, and demand $q_k>0$. $L_k$ contains all simple supplied-network
+paths, with transfers included in path time $t_{kl}$ and variable cost $c_{kl}$.
+$u_{kl}$ is the sum of unreliable arc travel times. $D_k$ is the delivery deadline.
+$U_k>0$ is the outside-option generalized cost. $K_C\subseteq K$ has a competing
+service with generalized cost $C_k>0$. $W$ is the carrier's waiting cost and $\Psi$
+the unused-capacity penalty. Prices and outside costs have consistent currency units.
+
+\subsection*{Variables and definitions}
+$B_{ai},f_{kl},b_k^o,b_k^c$ are binary; $b^c$ exists only on $K_C$.
+$0\le z_{kl},z_k^o,z_k^c\le q_k$; $z^c$ exists only on $K_C$.
+$0\le p_{kl},\lambda_k\le U_k$. Auxiliary $0\le g_{klai}\le q_k$
+exists for every non-truck arc $a$ of path $l$ and $i\in\Theta_a$.
+\[
+ \sum_{i\in\Theta_a} B_{ai}=1,\quad
+ y_a=\sum_i i B_{ai},\qquad
+ w_a=\begin{cases}0& a\text{ is truck},\\
+ \sum_i T B_{ai}/(2i)&\text{otherwise},\end{cases}
+\]
+\[
+ w_{kl}=\sum_{a\in l}w_a,\quad
+ G_{kl}=v_k(t_{kl}+w_{kl})+r_k u_{kl},\quad
+ \ell_a=\sum_{k,l:a\in l}z_{kl}.
+\]
+The path price upper bound is without loss for positive-flow paths because
+their price plus nonnegative generalized time cost cannot exceed $U_k$.
+Unused paths can be priced at $U_k$. The finite positive frequency grid is an
+explicit finite frequency choice supplied by the instance.
+
+\subsection*{Full feasible region}
+\begin{align}
+ \sum_{l\in L_k}z_{kl}+z_k^o+\mathbf1_{\{k\in K_C\}}z_k^c&=q_k,\\
+ \ell_a&\le J_a y_a,\\
+ z_k^o&\le q_k b_k^o,& U_k-\lambda_k&\le U_k(1-b_k^o),\\
+ \lambda_k&\le C_k,&z_k^c&\le q_k b_k^c,&
+ C_k-\lambda_k&\le C_k(1-b_k^c)\quad(k\in K_C),\\
+ z_{kl}&\le q_k f_{kl},&
+ 0\le p_{kl}+G_{kl}-\lambda_k&\le M_{kl}(1-f_{kl}),\\
+ t_{kl}+w_{kl}&\le D_k+(t_{kl}+\bar w_{kl})(1-f_{kl}).
+\end{align}
+Here $\bar w_{kl}=\sum_{a\in l}\max_{i\in\Theta_a}w_{ai}$ and
+$M_{kl}=U_k+v_k(t_{kl}+\bar w_{kl})+r_k u_{kl}$, so both constants follow from
+the actual supplied finite bounds. The products needed in the objective have
+the exact binary-continuous linearization
+\[
+ g_{klai}\le z_{kl},\quad g_{klai}\le q_k B_{ai},\quad
+ g_{klai}\ge z_{kl}-q_k(1-B_{ai}),\quad g_{klai}\ge0.
+\]
+Each shipment constraint is indexed by the classes belonging to shipment $k$.
+
+\subsection*{Objective}
+\begin{align}
+\max\quad&
+\sum_k(q_k\lambda_k-U_kz_k^o)
+-\sum_{k\in K_C}C_kz_k^c\\
+&-\sum_{k,l}(v_kt_{kl}+r_ku_{kl}+c_{kl})z_{kl}
+-\sum_{k,l}\sum_{\substack{a\in l\\a\text{ non-truck}}}
+ \sum_{i\in\Theta_a}(v_k+W)\frac{T}{2i}g_{klai}\\
+&-\sum_a\left[F_a y_a+\Psi(J_a y_a-\ell_a)\right].
+\end{align}
+Complementarity and demand conservation imply
+$q_k\lambda_k-U_kz_k^o-C_kz_k^c-\sum_lG_{kl}z_{kl}
+=\sum_lp_{kl}z_{kl}$, with the competitor term omitted outside $K_C$.
+Thus this objective is actual revenue less operating, waiting and idle-capacity
+cost. Idle capacity is charged once per arc. The original extraction omitted
+the outside, competitor and generalized-cost deductions and misbound several
+indices; the current model makes those repairs explicit.
+
+\end{document}

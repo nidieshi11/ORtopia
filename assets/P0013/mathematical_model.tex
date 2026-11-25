@@ -1,0 +1,158 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\title{Core Mathematical Model}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Integrated Stochastic Self-Scheduling in Two-Settlement Markets}
+
+
+The current model uses a scenario tree with a given pre-dispatch state at node 0.
+Write $\Delta>0$ for period length in hours. Power variables are in MW, storage in MWh,
+energy prices/costs in monetary units per MWh, and ramp limits in MW per hour.
+$\mathcal V(i)$ is the set of descendants of $i$, including $i$, and
+\[
+\mathcal H_r(i)=\{k\in\mathcal V(i):0\le t(k)-t(i)\le r-1\}.
+\]
+Thus minimum-up/down time is enforced forward along every scenario branch.
+This definition follows the paper, PDF page 9. 
+The piecewise-linear cost ordinates $\phi_m$ already include $\Delta$ times the
+hourly input values. Capacity bounds and optional terminal storage are supplied in each instance.
+Initial thermal state is given and $s_0=0$. Startup/shutdown logic now also applies at the root;
+this explicit correction prevents a fictitious shutdown credit when a previously-off unit starts.
+
+
+\begin{equation}
+\max
+\sum_{t=1}^T \Delta\bar{Q}_t^d d_t
++ \sum_{i \in \mathcal{V}} p_i
+\left(
+\Delta Q_i^r r_i
+- Uu_i
+- D(y_{i^-} - y_i + u_i)
+- c_i^f
+- \Delta H_c h_i^c
+- \Delta H_d h_i^d
+\right)
+\tag{TMS-DE}
+\end{equation}
+
+\begin{equation}
+y_i - y_{i^-} \le y_k,
+\qquad
+\forall i \in \mathcal{V},\ \forall k \in \mathcal{H}_L(i)
+\tag{1a}
+\end{equation}
+
+\begin{equation}
+y_{i^-} - y_i \le 1 - y_k,
+\qquad
+\forall i \in \mathcal{V},\ \forall k \in \mathcal{H}_{\ell}(i)
+\tag{1b}
+\end{equation}
+
+\begin{equation}
+y_i - y_{i^-} \le u_i,
+\qquad
+\forall i \in \mathcal{V}
+\tag{1c}
+\end{equation}
+
+\begin{equation}
+u_i \le y_i,
+\qquad
+\forall i \in \mathcal{V}
+\tag{1d-1}
+\end{equation}
+
+\begin{equation}
+u_i \le 1-y_{i^-},
+\qquad
+\forall i \in \mathcal{V}
+\tag{1d-2}
+\end{equation}
+
+\begin{equation}
+\underline{C} y_i \le x_i \le \overline{C} y_i,
+\qquad
+\forall i \in \mathcal{V}
+\tag{1e}
+\end{equation}
+
+\begin{equation}
+x_i - x_{i^-} \le \Delta\left(V y_{i^-} + \overline{V}(1-y_{i^-})\right),
+\qquad
+\forall i \in \mathcal{V}
+\tag{1f}
+\end{equation}
+
+\begin{equation}
+x_{i^-} - x_i \le \Delta\left(V y_i + \overline{V}(1-y_i)\right),
+\qquad
+\forall i \in \mathcal{V}
+\tag{1g}
+\end{equation}
+
+\begin{equation}
+s_i = s_{i^-} + \Delta(\lambda_c h_i^c - h_i^d/\lambda_d),
+\qquad
+\forall i \in \mathcal{V}
+\tag{1h}
+\end{equation}
+
+\begin{equation}
+d_{t(i)} + r_i = x_i + W_i - h_i^c + h_i^d,
+\qquad
+\forall i \in \mathcal{V}
+\tag{1i}
+\end{equation}
+
+\begin{equation}
+c_i^f = \operatorname{PWL}(x_i;(\chi_m,\phi_m)_{m\in\mathcal{M}}),
+\qquad
+\forall i \in \mathcal{V}
+\tag{1j}
+\end{equation}
+
+\begin{equation}
+y_0 = \bar{y}_0,\quad
+x_0 = \bar{x}_0,\quad
+s_0 = \bar{s}_0=0
+\tag{1k}
+\end{equation}
+
+\begin{equation}
+y_i \in \{0,1\},\quad
+u_i \in \{0,1\},\quad
+r_i \ge 0,\quad
+h_i^c \in [0,\overline{H}^c],\quad
+h_i^d \in [0,\overline{H}^d],\quad
+\underline{\Lambda} \le s_i \le \overline{\Lambda},
+\qquad
+\forall i \in \mathcal{V}
+\tag{1l}
+\end{equation}
+
+\begin{equation}
+s_i \ge \underline{\Lambda}^{\mathrm{term}},
+\qquad
+\forall i \in \mathcal{V}^{\mathrm{leaf}}
+\tag{1l$'$}
+\end{equation}
+
+\begin{equation}
+d_t \ge 0,\quad
+x_i \ge 0,\quad
+c_i^f \ge 0,
+\qquad
+\forall t=1,\ldots,T,\ \forall i \in \mathcal{V}
+\tag{1m}
+\end{equation}
+
+\end{document}

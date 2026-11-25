@@ -1,0 +1,146 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+
+\title{Core Solvable Mathematical Model}
+\author{Paper 9}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section*{Retained Core Model}
+According to the \texttt{tex} formulas and the PDF, the retained core mathematical model is the
+original hurricane disaster relief multi-stage stochastic mixed-integer linear program (HDR) on
+Pages 22--23. The Page 4 generic MSILP, the Page 6 partially extended formulation, and the later
+aggregated/decision-rule/decomposition formulations are omitted because they are reformulations or
+solution methods built on top of the original core problem.
+
+\paragraph{Decision variables.}
+At each scenario-tree node $n$, $x_{nj}^{\mathrm I}$ is the inventory at DC $j$,
+$x_{nj}^{\mathrm c}$ is the capacity at DC $j$, $v_j$ is production at DC $j$,
+$y_{ij}$ is the shipped relief quantity from DC $j$ to shelter $i$,
+$w_i$ is unmet demand at shelter $i$, and $z_{n\ell}\in\{0,1\}$ indicates activation of
+contingency modality $\ell$.
+
+\paragraph{Sets and parameters.}
+$\mathcal I$ is the shelter set, $\mathcal J$ the distribution-center set, and $\mathcal L$ the
+set of contingency modalities. Costs are given by $g_j$, $q_{nj}$, $f_{nij}$, and $b_i$.
+$d_{ni}$ is demand at shelter $i$. Capacity additions are $K_{j\ell}$.
+The scenario tree transition probabilities are $\bar p_{nn'}$.
+
+\section*{Root-Node Problem}
+\begin{equation}
+\min
+\sum_{j \in \mathcal J}
+\left(
+g_j x_{rj}^{\mathrm I} + q_{rj} v_j + \sum_{i \in \mathcal I} f_{rij} y_{ij}
+\right)
++
+\sum_{i \in \mathcal I} b_i w_i
++
+\sum_{\ell \in \mathcal L} z_{r\ell} c_\ell
++
+\sum_{n \in \mathcal C(r)} \bar p_{rn} Q_n(x_r, z_r)
+\tag{HDR}
+\end{equation}
+
+\begin{equation}
+\sum_{j \in \mathcal J} y_{ij} + w_i \ge d_{ri}
+\quad \forall i \in \mathcal I
+\tag{9a}
+\end{equation}
+
+\begin{equation}
+x_{rj}^{\mathrm I} = I_j - \sum_{i \in \mathcal I} y_{ij} + v_j
+\quad \forall j \in \mathcal J
+\tag{9b}
+\end{equation}
+
+\begin{equation}
+v_j \le x_{rj}^{\mathrm c}
+\quad \forall j \in \mathcal J
+\tag{9c}
+\end{equation}
+
+\begin{equation}
+x_{rj}^{\mathrm c} = C_j
+\quad \forall j \in \mathcal J
+\tag{9d}
+\end{equation}
+
+\begin{equation}
+\sum_{\ell \in \mathcal L} z_{r\ell} \le 1
+\tag{9e}
+\end{equation}
+
+\begin{equation}
+x_{rj}^{\mathrm I},\, x_{rj}^{\mathrm c},\, v_j,\, w_i,\, y_{ij} \ge 0,\qquad
+z_{r\ell} \in \{0,1\}
+\tag{9f}
+\end{equation}
+
+\section*{Recourse Problem at Node $n$}
+\begin{equation}
+Q_n(x_{a(n)}, z_{a(n)}) =
+\min
+\sum_{j \in \mathcal J}
+\left(
+g_j x_{nj}^{\mathrm I} + q_{nj} v_j + \sum_{i \in \mathcal I} f_{nij} y_{ij}
+\right)
++
+\sum_{i \in \mathcal I} b_i w_i
++
+\sum_{\ell \in \mathcal L} z_{n\ell} c_\ell
++
+\sum_{n' \in \mathcal C(n)} \bar p_{nn'} Q_{n'}(x_n, z_n)
+\tag{10-Obj}
+\end{equation}
+
+\begin{equation}
+\sum_{j \in \mathcal J} y_{ij} + w_i \ge d_{ni}
+\quad \forall i \in \mathcal I
+\tag{10a}
+\end{equation}
+
+\begin{equation}
+x_{nj}^{\mathrm I} = x_{a(n)j}^{\mathrm I} - \sum_{i \in \mathcal I} y_{ij} + v_j
+\quad \forall j \in \mathcal J
+\tag{10b}
+\end{equation}
+
+\begin{equation}
+v_j \le x_{nj}^{\mathrm c}
+\quad \forall j \in \mathcal J
+\tag{10c}
+\end{equation}
+
+\begin{equation}
+x_{nj}^{\mathrm c} = x_{a(n)j}^{\mathrm c} + \sum_{\ell \in \mathcal L} K_{j\ell} z_{a(n)\ell}
+\quad \forall j \in \mathcal J
+\tag{10d}
+\end{equation}
+
+\begin{equation}
+\sum_{\ell \in \mathcal L} z_{n\ell} \le 1
+\tag{10e}
+\end{equation}
+
+\begin{equation}
+z_{a(n)\ell} \le z_{n\ell}
+\quad \forall \ell \in \mathcal L
+\tag{10f}
+\end{equation}
+
+\begin{equation}
+x_{nj}^{\mathrm I},\, x_{nj}^{\mathrm c},\, v_j,\, w_i,\, y_{ij} \ge 0,\qquad
+z_{n\ell} \in \{0,1\}
+\tag{10g}
+\end{equation}
+
+\end{document}

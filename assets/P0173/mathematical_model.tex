@@ -1,0 +1,59 @@
+\documentclass[11pt]{ctexart}
+\usepackage{amsmath,amssymb,longtable}
+\begin{document}
+\section*{P173: 当前完整数学模型（2026-10-20）}
+\section*{修订依据与边界}恢复源文第9页上下界并用分钟到小时换算；完整列出线路接续、终端/车库充电、情景PV/BES和径向线性电网。BES初末电量闭合作为真实日运营边界明确加入，不伪称原式逐字等价。
+
+\section*{集合、域与公交接续}
+$S$为全部固定服务，$A=\{(i,j):i\ne j,e_i+t^{dh}_{ij}\le b_j\}$；
+$N$为终端，车库记为0，$K$为桩型，$T=\{0,\ldots,H-1\}$为分钟，$\Delta=1/60$小时。
+$x_{ij},s_i,f_i,z_n\in\{0,1\}$；$q_i,q^d_i\in[\underline a Q,\bar a Q]$。
+\[
+s_i+\sum_jx_{ji}=1,\quad f_i+\sum_jx_{ij}=1,\quad
+s_i=1\Rightarrow q_i\le\bar aQ-e_i^{start}-e_i^{trip},
+\quad f_i=1\Rightarrow q_i^d\le q_i-e_i^{end}.
+\]
+所有计数$n_{nk},n_{0k}$为$0,\ldots,|S|$的整数，
+$\sum_kn_{nk}\le|S|z_n$及$\sum_kn_{nk}P_k\le Cap_n$；车库$\sum_kn_{0k}P_k\le Cap_0$。
+\section*{终端及车库充电}
+对每个可行接续$i,j$，只在$[e_i+t^{dh}_{ij},b_j)$定义二元$\ell_{ijt}$与功率$p_{ijt}$。
+$\ell\le x,\ell\le z_{n(i)},0\le p\le P^{bus}\ell$。
+每站每分钟$\sum\ell\le\sum_kn_{nk}$且$\sum p\le\sum_kn_{nk}P_k$。
+该约束表示充电终端的总功率容量。
+\[
+x_{ij}=1\Rightarrow
+q_j\le q_i+\Delta\sum_tp_{ijt}-e^{dh}_{ij}-e_j^{trip},\qquad
+q_i+\Delta\sum_tp_{ijt}\le\bar aQ.
+\]
+回库后到$H$内定义$\ell^d_{ikt}\in\{0,1\}$、$p^d_{ikt}\ge0$，
+$\sum_k\ell^d_{ikt}\le f_i$，$p^d_{ikt}\le\min(P^{bus},P_k)\ell^d_{ikt}$；
+每型每时$\sum_i\ell^d_{ikt}\le n_{0k}$。
+$f_i=1\Rightarrow q_i^d+\Delta\sum_{kt}p^d_{ikt}\ge\bar aQ$。
+\section*{PV、储能和电网}
+$D_{bt}$为上文全部终端/车库充电功率之和；3个等概率天气情景$w$共享全部车辆/充电决策。
+站点二元$R_b$，$0\le P_b^{PV}\le\overline P^{PV}R_b$，$0\le E_b^{BES}\le\overline E^{BES}R_b$。
+各情景非负购电$g$、PV总发电$v$、直供$p$、充$c$、放$d$、电量$e$满足
+\[
+v_{bwt}\le\rho_{wt}P_b^{PV},\quad v=p+c,\quad p+d+g\ge D_{bt},\quad0\le g\le\bar g_b,
+\]
+\[
+e_{bwt}=e_{bw,t-1}+\Delta\eta_c c_{bwt}-\Delta d_{bwt}/\eta_d,\quad
+.1E_b^{BES}\le e\le.9E_b^{BES},\quad c,d\le.5E_b^{BES}.
+\]
+二元$u$使$c\le.5\bar E^{BES}u,d\le.5\bar E^{BES}(1-u)$；
+$e_{bw,-1}=.5E_b^{BES}$，$e_{bw,H-1}\ge.5E_b^{BES}$。
+无功补偿$0\le Q^c_{bt}\le\bar Q_b$为情景共用变量。每个径向叶：
+\[
+F_{bwt}=-L_{bt}+p_{bwt}+d_{bwt}-D_{bt},\quad
+G_{bwt}=-.33L_{bt}+Q^c_{bt},\quad
+1=V_{bwt}-(r_bF_{bwt}+x_bG_{bwt}),\quad .9\le V\le1.05.
+\]
+$F,G\in[-\bar g_b,\bar g_b]$。线路$r_b,x_b$是给定电阻/电抗；$R_b$才是站点二元决策。
+\[
+\min PVF[c^{bus}\sum_is_i+\sum_kc_k(n_{0k}+\sum_nn_{nk})+
+c^{PV}\sum_bP_b^{PV}+c^{BES}\sum_bE_b^{BES}]
++\Delta\sum_{bwt}\tfrac13c_tg_{bwt}.
+\]
+日运营采用初末SOC闭合条件，初始储能在日末恢复。
+
+\end{document}

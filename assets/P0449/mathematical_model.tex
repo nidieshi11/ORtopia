@@ -1,0 +1,182 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\section*{Single-vehicle-type ADP fleet-management policy}
+
+For each time period $t\in\mathcal T$, given the current state $r_t$, the observed load realization $d_t$, and the supplied policy $\pi$, solve
+\begin{equation}
+\min_{(x_t,r_{t+1},z_{t+1})}\;
+\sum_{i,j\in\mathcal I}\sum_{l\in\mathcal L}c_{ijlt}x_{ijlt}
++\sum_{j\in\mathcal I}\sum_{q=1}^{R}\tilde v^\pi_{j,t+1}(q)z_{j,t+1}(q).
+\tag{11}
+\end{equation}
+Subject to
+\begin{align}
+\sum_{j\in\mathcal I}\sum_{l\in\mathcal L}x_{ijlt}
+&=r_{it} &&\text{for all }i\in\mathcal I,\tag{12}\\
+\sum_{i\in\mathcal I}\sum_{l\in\mathcal L}x_{ijlt}-r_{j,t+1}
+&=0 &&\text{for all }j\in\mathcal I,\tag{13}\\
+r_{j,t+1}-\sum_{q=1}^{R}z_{j,t+1}(q)
+&=0 &&\text{for all }j\in\mathcal I,\tag{14}\\
+x_{ijlt}&\leq d_{ijlt} &&\text{for all }i,j\in\mathcal I,\ l\in\mathcal L,\tag{15}\\
+z_{j,t+1}(q)&\leq 1 &&\text{for all }j\in\mathcal I,\ q=1,\ldots,R,\tag{16}\\
+x_{ijlt},\ r_{j,t+1},\ z_{j,t+1}(q)&\in\mathbb Z_+
+&&\text{for all }i,j\in\mathcal I,\ l\in\mathcal L,\ q=1,\ldots,R.
+\tag{17}
+\end{align}
+
+\section*{Scope, data, and variable roles}
+
+The planning horizon, locations, vehicle types, and movement modes are respectively
+\[
+\mathcal T=\{1,\ldots,T\},\qquad
+\mathcal I,\qquad
+\mathcal K\ \text{with }|\mathcal K|=1,\qquad
+\mathcal L=\{0,\ldots,L\}.
+\]
+As in Section 2 of the paper, the vehicle-type superscript is dropped throughout this formulation. $R$ is the total number of available vehicles; it is distinct from the state-transition function $R^\pi_{t+1}$ below. Movement mode $0$ denotes empty repositioning; the remaining modes denote carrying different types of loads.
+
+The decision $x_{ijlt}$ is the number of vehicles dispatched from location $i$ to location $j$ at time $t$ using movement mode $l$. The fixed coefficient $c_{ijlt}$ is the cost of dispatching one such vehicle. The state component $r_{it}$ is the number of vehicles available at location $i$ at time $t$. Thus $r_t$ is given in the period-$t$ problem, whereas $r_{t+1}$ is determined by that problem. The variables $z_{j,t+1}(q)$ embed the supplied piecewise-linear continuation functions; they are not additional vehicle types or load types.
+
+$D_{ijlt}$ is the random number of loads requiring transport from $i$ to $j$ at time $t$ in movement mode $l$, and $d_{ijlt}$ denotes a particular realization. Suppressing indices denotes the vector of components ranging over those indices; in particular,
+\[
+\begin{aligned}
+r_t&=\{r_{it}:i\in\mathcal I\},\\
+d_t&=\{d_{ijlt}:i,j\in\mathcal I,\ l\in\mathcal L\},\\
+d&=\{d_{ijlt}:i,j\in\mathcal I,\ l\in\mathcal L,\ t\in\mathcal T\}
+  =\{d_t:t\in\mathcal T\}.
+\end{aligned}
+\]
+Empty repositioning movements are unbounded in load availability:
+\[
+D_{ij0t}=\infty
+\qquad\text{for all }i,j\in\mathcal I,\ t\in\mathcal T.
+\]
+If carrying load type $l$ with the sole vehicle type is infeasible, the paper encodes this by
+\[
+c_{ijlt}=\infty
+\qquad\text{for all }i,j\in\mathcal I,\ t\in\mathcal T
+\quad\text{for that load type }l.
+\]
+The paper says that usually $c_{ijlt}<0$ for $l\in\mathcal L\setminus\{0\}$; this is not imposed as a universal input restriction.
+
+Travel between any pair of locations takes one time period. There is no advance information about future loads. Loads not covered in the current period are served by an emergency subcontractor and immediately leave the system. The model uses cost minimization to express the intended maximization of expected profit over the finite horizon. The stochastic assumption stated in Section 1 is that, given $r_t$, $D_t$ is independent of $\{D_{t'}:t'=1,\ldots,t-1\}$. The paper also assumes throughout that $c_t$ is perturbed by small random amounts to obtain a single optimal solution and properly defined decision and transition functions; it specifies no perturbation magnitude or distribution.
+
+\section*{Supplied continuation functions and their embedding}
+
+The policy $\pi$ is fixed and supplied, not optimized over in (11). Its continuation approximations are separable. With the single vehicle type, the specialization of (9), stated on page 7, is
+\begin{equation}
+\tilde V^\pi_t(r_t)=\sum_{i\in\mathcal I}\tilde V^\pi_{it}(r_{it}).
+\tag{9, single type}
+\end{equation}
+Each component is a one-dimensional piecewise-linear convex function whose points of nondifferentiability are a subset of the positive integers. The stated relevant domain of $\tilde V^\pi_{it}(\cdot)$ is
+\[
+\{0,1,\ldots,R\}.
+\]
+The selected representation uses the paper's normalization and slope differences:
+\[
+\tilde V^\pi_{it}(0)=0,\qquad
+\tilde v^\pi_{it}(q)=\tilde V^\pi_{it}(q)-\tilde V^\pi_{it}(q-1),
+\qquad q=1,\ldots,R.
+\]
+Here $\tilde v^\pi_{it}(q)$ is the slope over the open interval $(q-1,q)$. These numbers are supplied coefficients, not stage decisions. For the continuation components appearing in (11), convexity gives
+\[
+\tilde v^\pi_{j,t+1}(1)\leq\tilde v^\pi_{j,t+1}(2)
+\leq\cdots\leq\tilde v^\pi_{j,t+1}(R),
+\qquad j\in\mathcal I.
+\]
+As stated on page 8, in an optimal solution of (11)--(17),
+\[
+\sum_{q=1}^{R}\tilde v^\pi_{j,t+1}(q)z_{j,t+1}(q)
+=\sum_{q=1}^{r_{j,t+1}}\tilde v^\pi_{j,t+1}(q)
+=\tilde V^\pi_{j,t+1}(r_{j,t+1}),
+\qquad j\in\mathcal I.
+\]
+Consequently the second term of (11) computes
+\[
+\sum_{j\in\mathcal I}\tilde V^\pi_{j,t+1}(r_{j,t+1}).
+\]
+These are the source's optimal-solution identities explaining the embedding, not additional ordering constraints on $z$. Constraints (13) and (14) are retained separately, as in the selected printed formulation.
+
+\section*{Inherited feasible set and policy definition}
+
+The feasible set used to define the policy consists of the dispatch decisions and the next-period state they generate. Specializing the defining rows (1)--(4) to $|\mathcal K|=1$ and dropping the type superscript gives
+\begin{equation}
+\mathcal Y(r_t,d_t)=
+\left\{(x_t,r_{t+1}):
+\begin{aligned}
+&\sum_{j\in\mathcal I}\sum_{l\in\mathcal L}x_{ijlt}=r_{it}
+&&\text{for all }i\in\mathcal I,\\
+&\sum_{i\in\mathcal I}\sum_{l\in\mathcal L}x_{ijlt}-r_{j,t+1}=0
+&&\text{for all }j\in\mathcal I,\\
+&x_{ijlt}\leq d_{ijlt}
+&&\text{for all }i,j\in\mathcal I,\ l\in\mathcal L,\\
+&x_{ijlt}\in\mathbb Z_+
+&&\text{for all }i,j\in\mathcal I,\ l\in\mathcal L
+\end{aligned}
+\right\}.
+\tag{1--4, single type}
+\end{equation}
+These are the inherited physical constraints already represented in (12), (13), (15), and (17), rather than an additional formulation to be solved.
+
+A Markovian deterministic policy has decision functions $X_t^\pi(\cdot,\cdot)$ mapping $(r_t,d_t)$ to $x_t$, and transition functions $R_{t+1}^\pi(\cdot,\cdot)$ mapping $(r_t,d_t)$ to $r_{t+1}$, for $t\in\mathcal T$. For the supplied approximations, the defining equation is
+\begin{equation}
+\bigl(X_t^\pi(r_t,d_t),R_{t+1}^\pi(r_t,d_t)\bigr)
+=\operatorname*{argmin}_{(x_t,r_{t+1})\in\mathcal Y(r_t,d_t)}
+\left\{c_t\cdot x_t+\tilde V^\pi_{t+1}(r_{t+1})\right\}.
+\tag{10}
+\end{equation}
+Equation (11) with (12)--(17) is the paper's explicit embedding of this same policy definition. The exact optimal-value-function equations (7)--(8) are replaced by the supplied approximation in (10); they are not imposed on $\pi$.
+
+\section*{Operation over the horizon and cumulative cost}
+
+Given the initial state $r_1$ and a load trajectory $d$, the state and decision trajectories generated by the policy satisfy
+\begin{equation}
+x_t^{\pi d}=X_t^\pi(r_t^{\pi d},d_t),\qquad
+r_{t+1}^{\pi d}=R_{t+1}^\pi(r_t^{\pi d},d_t),\qquad
+r_1^{\pi d}=r_1,
+\quad t\in\mathcal T.
+\tag{18}
+\end{equation}
+The actual cumulative cost under the policy is defined recursively by
+\begin{equation}
+\begin{aligned}
+F_t^\pi(r_t,d_t,d_{t+1},\ldots,d_T)
+={}&c_t\cdot X_t^\pi(r_t,d_t)\\
+&+F_{t+1}^\pi\bigl(R_{t+1}^\pi(r_t,d_t),d_{t+1},d_{t+2},\ldots,d_T\bigr),
+\end{aligned}
+\qquad t\in\mathcal T,
+\tag{5}
+\end{equation}
+with the printed boundary condition
+\[
+F_{T+1}^\pi(\cdot)=0.
+\]
+Repeated application gives the printed horizon expansion
+\begin{equation}
+\begin{aligned}
+F_1^\pi(r_1,d_1,\ldots,d_T)
+={}&c_1\cdot X_1^\pi(r_1,d_1)
++c_2\cdot X_2^\pi\bigl(R_2^\pi(r_1,d_1),d_2\bigr)+\cdots\\
+&+c_T\cdot X_T^\pi\bigl(R_T^\pi(R_{T-1}^\pi(\ldots,d_{T-2}),d_{T-1}),d_T\bigr).
+\end{aligned}
+\tag{6}
+\end{equation}
+The corresponding expected total cost is
+\[
+\mathbb E\bigl\{F_1^\pi(r_1,D_1,\ldots,D_T)\mid r_1\bigr\}.
+\]
+The cumulative cost $F_t^\pi(\cdot,d_t,\ldots,d_T)$ need not be separable. In particular, the paper does not assert the identity
+\[
+\tilde V_t^\pi(r_t)
+=\mathbb E\bigl\{F_t^\pi(r_t,D_t,\ldots,D_T)\mid r_t\bigr\}
+\]
+for this approximate policy; the displayed equality is not an operative constraint.
+
+\paragraph{Source scope and terminal omission.}
+The formulation above uses the supplied original paper, physical pages 4--8, including the supplied page-6 text and the page images for pages 5, 7, and 8. The paper describes the approximation family as $\{\tilde V_t^\pi(\cdot):t\in\mathcal T\}$, but (10)--(11) use the continuation at $t+1$, including $T+1$ when $t=T$. The supplied paper does not state a terminal value for $\tilde V_{T+1}^\pi$ or its slopes. The printed boundary condition for $F_{T+1}^\pi$ is retained only for $F^\pi$; no zero terminal approximation or other repair is added. The sampling-based construction cited to Godfrey and Powell (2002a) is not supplied and is unverified here; it is not part of the selected fixed-policy formulation.
+
+\end{document}
