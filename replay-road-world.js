@@ -3,11 +3,11 @@
 'use strict';
 const cfg={
  P0364:['路网信号联控','同一批车辆，两种配时策略',['归档协同策略','固定相位轮转'],'区域排队总数','辆','8 个路口、4 个区域。两次回放使用相同的随机需求与原环境逐秒执行，排队车辆在各自路段内按先后顺序示意排列。'],
- P0442:['混合车流跟驰','两组车辆如何共享前车速度预测',['在线单步预测','历史路测 · 8 秒'],'受控车 1 间距偏差','厘米','在线解只有一个 0.25 秒预测步。两组均含一辆网联车和一辆人工车；历史片段取自同实例的离线数据。车身按平衡速度移动，偏差由实测值和预测值驱动。'],
- P0476:['公交站间速度规划','对照时刻表行驶，抵达终点停车',['驶过信号灯','途中调速','进站停车'],'相对时刻表的位置偏差','米','三个片段取自同一条 10,021 步预测轨迹，每步 2 秒。蓝色轮廓标记计划位置。该实例时域内未进入红灯区间。'],
- P0477:['信号干道节能跟车','同一前车预测下，比较加速度指令',['归档减速指令','试用加速度上界'],'本车相对初速变化','米/秒','本次预测约 2.64 秒。前车按预测位置均值显示，信号按输入阶段切换。红灯时额外检查停车间距；上界试算只比较运动学和间距。'],
+ P0442:['混合车流跟驰','两组车辆如何共享前车速度预测',['归档预测','历史路测 · 8 秒','首车试加速 +0.5'],'受控车 1 间距偏差','厘米','在线解只有一个 0.25 秒预测步。首车试加速方案将网联车 1 的控制指令固定为 +0.5 m/s²，其他决策按原目标重新求解。两组均含一辆网联车和一辆人工车；历史片段取自同实例的离线数据。先导车和人工车按样本速度积分，网联车按跟驰间距定位。单步慢放分解观测、共享预测和执行指令。'],
+ P0476:['公交站间速度规划','对照时刻表行驶，抵达终点停车',['驶过信号灯','途中调速','进站停车'],'相对时刻表的位置偏差','米','三个片段取自同一条 10,021 步预测轨迹，每步 2 秒。蓝色虚线标记计划位置。该实例时域内未进入红灯区间。'],
+ P0477:['信号干道节能跟车','同一前车预测下，比较加速度指令',['归档减速指令','试用加速度上界'],'本车相对初速变化','米/秒','本次预测约 2.64 秒。前车按预测位置均值显示，信号按输入阶段切换。红灯时额外检查停车间距；两种指令的全时域目标按本实例的松弛模型计算，成本单位为模型目标值。'],
  P0479:['混合车队安全跟驰','在 432 辆自动车中切换观察位置',['队尾与人工车','车队前端','车队中段'],'相邻车辆的最小安全余量','米','在同一段 6 秒预测内切换车队位置。队尾的人工车使用位置均值和方差，安全距离加入实例指定的单侧概率裕量。'],
- P0480:['云端车队区间控制','观察两步指令如何改变首个间距预测',['归档指令','首步不干预','首步最大输入'],'首个间距预测相对目标的偏差','模型单位','本实例记录间距和速度偏差，没有绝对车速与行驶里程。以先导车为参照压缩显示间距偏差。步间补间用于慢放；两个对照在各自可达区间内选取最接近目标的状态，三种方案均经实例检查器验证。其余车辆状态偏差均为零。'],
+ P0480:['云端车队区间控制','观察两步指令如何改变首个间距预测',['归档指令','首步不干预','首步最大输入'],'首个间距预测相对目标的偏差','模型单位','本实例记录间距和速度偏差，没有绝对车速与行驶里程。以先导车为参照压缩显示间距偏差。步间补间用于慢放；两个对照在各自可达区间内选取最接近目标的状态，三种方案均经实例检查器验证。滑杆对照在输入限值内调整第一步指令，第二步输入为零，按实例的可达区间重新计算跟踪成本和控制成本。其余车辆状态偏差均为零。'],
  P0482:['联网车队反馈纠偏','微小初始扰动会被消除还是积累',['启用反馈','关闭反馈对照'],'实际位置相对标称轨迹的偏差','厘米','跟随车每 0.3 秒根据位置与速度误差更新控制。前 6 秒慢放，随后压缩至第 925 步终点。对照方案沿用相同初态并关闭误差反馈。']
 };
 const clamp=(v,a,b)=>Math.min(b,Math.max(a,v)),lerp=(a,b,f)=>a+(b-a)*f;
@@ -15,7 +15,7 @@ const fmt=(v,n=2)=>Number(v).toLocaleString('zh-CN',{maximumFractionDigits:n});
 const mix=(rows,u)=>{const j=Math.min(rows.length-2,Math.floor(u)),f=u-j;return rows[j].map((v,k)=>lerp(v,rows[j+1][k],f));};
 const car=(label,x,color='green',type='car')=>({label,x,color,type});
 const green='#176c60',blue='#376b9a',amber='#b87232',rose='#ae5357';
-function episode(id,d,mode){
+function episode(id,d,mode,view){
  if(id==='P0364'){
   const run=d.runs[mode];return f=>{
    const t=f*(run.length-1),j=Math.floor(t),r=run[j],sum=r[2].reduce((a,b)=>a+b,0);
@@ -23,10 +23,10 @@ function episode(id,d,mode){
   };
  }
  if(id==='P0442'){
-  const data=mode?d.history:d.forecast;return f=>{
+  const data=mode===2?[d.forecast[0],d.trial]:mode===1?d.history:d.forecast;return f=>{
    const u=f*(data.length-1),j=Math.min(data.length-2,Math.floor(u)),v=[0,1].map(k=>data[j][k].map((x,l)=>lerp(x,data[j+1][k][l],u-j)));
-   const [a,b]=v,t=u*d.dt,lead=d.base*t,first=lead-d.base-a[3],human=first-d.base,second=human-d.base-b[3];
-   return {t,unit:'秒',plot:a[3]*100,camera:human-3,scale:7.65,cars:[car('先导车',lead,amber),car('网联 1',first,green),car('人工 1',human,blue),car('网联 2',second,green),car('人工 2',second-d.base,blue)],radio:[2,3],ruler:[2,3,'跟驰间距 '+fmt(d.base+b[3],4)+' m'],metrics:[['网联 1 加速度',fmt(a[4],5)+' m/s²'],['网联 2 加速度',fmt(b[4],5)+' m/s²'],['人工 1 速度',fmt(d.base+a[2],4)+' m/s'],['网联 1 间距',fmt(d.base+a[3],4)+' m']]};
+   const [a,b]=v,commands=mode===1?v:data[1],t=u*d.dt,lead=d.base*t,first=lead-d.base-a[3],human=first-d.base,second=human-d.base-b[3];
+   return {t,unit:'秒',plot:v[view.focus][3]*100,camera:human-3,scale:7.65,cars:[car('先导车',lead,amber),car('网联 1',first,green),car('人工 1',human,blue),car('网联 2',second,green),car('人工 2',second-d.base,blue)],radio:[2,3],ruler:[2,3,'跟驰间距 '+fmt(d.base+b[3],4)+' m'],metrics:[['网联 1 加速度',fmt(commands[0][4],5)+' m/s²'],['网联 2 加速度',fmt(commands[1][4],5)+' m/s²'],['人工 1 速度',fmt(d.base+a[2],4)+' m/s'],['网联 1 间距',fmt(d.base+a[3],4)+' m']]};
   };
  }
  if(id==='P0476'){
@@ -36,11 +36,27 @@ function episode(id,d,mode){
    return {t,unit:'秒',plot:x-ref,camera,scale:5,cars:[car('公交车',x,green,'bus')],ghost:ref,light:d.light,red:t>=d.red[0]&&t<=d.red[1],stop,metrics:[['实际车速',fmt(v,3)+' m/s'],['时间表偏差',fmt(x-ref,3)+' m'],['距计划停靠点',fmt(stop-x,2)+' m'],['预测步',Math.round(step).toLocaleString()]]};
   };
  }
- if(id==='P0477')return f=>{
-  const u=d.count*f,t=u*d.dt,a=d.accel[mode],v=d.ego[1]+a*t,x=d.ego[0]+d.ego[1]*t+.5*a*t*t,lead=d.lead+d.slope*t,gap=lead-x;
-  const stage=d.k+Math.min(d.count-1,Math.floor(u)),red=stage>=d.red[0]&&stage<=d.red[1],head=d.jam+d.margin+d.tau*v;
-  return {t,unit:'秒',plot:v-d.ego[1],camera:d.ego[0]+12+4*t,scale:13,cars:[car('受控车',x,green),car('前车预测',lead,amber)],signal:true,red,zone:[lead-head,lead],ruler:[0,1,'两车间距 '+fmt(gap,3)+' m'],metrics:[['加速度指令',fmt(a,6)+' m/s²'],['本车速度',fmt(v,5)+' m/s'],['时距约束余量',fmt(gap-head,4)+' m'],['红灯停车余量',red?fmt(gap-d.jam-d.margin,4)+' m':'绿灯阶段']]};
- };
+ if(id==='P0477'){
+  const rows=[],mu=d.momentMean,g=d.momentWeight,constant=4*g-mu.reduce((v,m)=>v+m*m,0);
+  let [x,v]=d.ego,cost=0,choice=mode;
+  for(let j=0;j<=d.count;j++){
+   choice=view.switches.get(j)??choice;
+   const a=d.accel[choice];
+   rows.push([x,v,a]);
+   if(j===d.count)break;
+   const diff=[x+d.tau*v,v,x,v].map((state,k)=>mu[k]-2*state);
+   const product=diff.reduce((total,z,k)=>total+z*mu[k],0);
+   cost+=constant+product/2+Math.sqrt(g*diff.reduce((total,z)=>total+z*z,0)-.75*product**2);
+   x+=v*d.dt+.5*a*d.dt*d.dt;v+=a*d.dt;
+  }
+  view.cost=view.switches.size?cost:d.costs[mode];
+  return f=>{
+   const u=d.count*f,t=u*d.dt,j=Math.min(d.count-1,Math.floor(u)),within=(u-j)*d.dt;
+   const [p0,v0,a]=rows[j],x=p0+v0*within+.5*a*within**2,v=v0+a*within;
+   const lead=d.lead+d.slope*t,gap=lead-x,stage=d.k+j,red=stage>=d.red[0]&&stage<=d.red[1],head=d.jam+d.margin+d.tau*v;
+   return {t,unit:'秒',plot:v-d.ego[1],camera:d.ego[0]+12+4*t,scale:13,cars:[car('受控车',x,green),car('前车预测',lead,amber)],signal:true,red,zone:[lead-head,lead],ruler:[0,1,'两车间距 '+fmt(gap,3)+' m'],metrics:[['加速度指令',fmt(a,6)+' m/s²'],['本车速度',fmt(v,5)+' m/s'],['时距约束余量',fmt(gap-head,4)+' m'],['红灯停车余量',red?fmt(gap-d.jam-d.margin,4)+' m':'绿灯阶段']]};
+  };
+ }
  if(id==='P0479'){
   const tail=mode===0,seg=d.groups[[2,0,1][mode]],labels=tail?[430,431,432]:mode===1?[1,2,3,4]:[215,216,217,218];return f=>{
    const u=f*(seg.length-1),pos=mix(seg,u),hv=mix(d.human,u),t=u*d.dt,margin=d.z*Math.sqrt(Math.max(0,hv[1]));
@@ -50,21 +66,26 @@ function episode(id,d,mode){
   };
  }
  if(id==='P0480')return f=>{
-  const trial=d.trials[mode],states=[d.gap[0],trial[1],trial[2]],u=2*f,j=Math.min(1,Math.floor(u)),x=lerp(states[j],states[j+1],u-j),a=j===0?trial[0]:0;
+  const trial=view.trial,states=[d.gap[0],trial[1],trial[2]],u=2*f,j=Math.min(1,Math.floor(u)),x=lerp(states[j],states[j+1],u-j),a=j===0?trial[0]:0;
   // Screen positions represent deviations on a compressed linear scale, never physical kilometres.
   const front=40,ego=front-16-55*x/d.target;
   return {t:u,unit:'步',plot:x-d.target,camera:1,scale:6,compressed:true,cars:[car('先导车',front,amber),car('云控 AV',ego,green),car('人工车',ego-14,blue),car('人工车',ego-28,blue)],ghost:front-71,radio:[0,1],ruler:[1,0,'间距偏差 '+fmt(x,1)],metrics:[['当前指令',fmt(a,6)],['区间末间距偏差',fmt(states[j+1],3)],['目标偏差',fmt(d.target,0)],['两步总成本',fmt(trial[3],1)]]};
  };
- const rows=[];let [x,v]=d.actual;
+ const rows=[];let [x,v]=d.actual,setting=mode;
  for(let j=0;j<=d.steps;j++){
   const t=j*d.dt,nom=d.nominal[0]+d.nominal[1]*t,dx=x-nom,dv=v-d.nominal[1];
-  const a=mode?0:d.gain[0]*dx+d.gain[1]*dv;
-  rows.push([x,v,nom,a,dx,dv]);x+=v*d.dt+.5*a*d.dt*d.dt;v+=a*d.dt;
+  setting=view.switches.get(j)??setting;
+  const a=setting?0:d.gain[0]*dx+d.gain[1]*dv;
+  rows.push([x,v,nom,a,dx,dv,setting]);x+=v*d.dt+.5*a*d.dt*d.dt;v+=a*d.dt;
  }
  return f=>{
-  const u=f<=.7?20*f/.7:20+(d.steps-20)*(f-.7)/.3,t=u*d.dt,[x,v,nom,a,dx,dv]=mix(rows,Math.min(d.steps,u)),lead=d.leader[0]+d.leader[1]*t;
+  const u=clamp(f<=.7?20*f/.7:20+(d.steps-20)*(f-.7)/.3,0,d.steps),t=u*d.dt;
+  const tick=Math.floor(u),dt=(u-tick)*d.dt,[x0,v0,nom0,applied,,,setting]=rows[tick];
+  const x=x0+v0*dt+.5*applied*dt*dt,v=v0+applied*dt,nom=nom0+d.nominal[1]*dt;
+  const dx=x-nom,dv=v-d.nominal[1],lead=d.leader[0]+d.leader[1]*t,feedback=setting===0;
+  const errorPath=rows.slice(Math.max(0,tick-40),tick+1).map(r=>[r[4],r[5]]);
   const inside=Math.abs(2*dx+dv)<=d.widths[0]+1e-8&&Math.abs(dx+dv)<=d.widths[1]+1e-8;
-  return {t,unit:'秒',plot:dx*100,camera:(lead+x)/2,scale:12,cars:[car('跟随车',x,green),car('联网领车',lead,blue)],ghost:nom,radio:[1,0],ruler:[0,1,'间距 '+fmt(lead-x,3)+' m'],metrics:[['误差反馈指令',fmt(a,6)+' m/s²'],['位置误差',fmt(dx*100,3)+' cm'],['速度误差',fmt(dv,5)+' m/s'],['管束边界',inside?'管内':'已越界']]};
+  return {t,unit:'秒',feedback,applied,velocityError:dv,errorPath,plot:dx*100,camera:(lead+x)/2,scale:12,cars:[car('跟随车',x,green),car('联网领车',lead,blue)],ghost:nom,radio:[1,0],ruler:[0,1,'间距 '+fmt(lead-x,3)+' m'],metrics:[['误差反馈指令',fmt(applied,6)+' m/s²'+(applied<d.inputRange[0]||applied>d.inputRange[1]?' · 超出输入限值':'')],['位置误差',fmt(dx*100,3)+' cm'],['速度误差',fmt(dv,5)+' m/s'],['管束边界',inside?'管内':'已越界']]};
  };
 }
 const W=900,H=340;
@@ -184,32 +205,100 @@ function mount(host,p,pack,step){
  <section class="road-instruments"><dl></dl><div class="road-series"><span></span><output></output><canvas aria-label="指标随回放进度变化"></canvas></div></section>
  <details class="atlas-proof"><summary>实例与回放口径</summary><p></p><code></code></details></article>`;
  const q=sel=>host.querySelector(sel),map=q('.road-map'),trend=q('.road-series canvas'),renderer=surface(map);
+ const renderers={P0442:window.ORTOPIA_MIXED,P0476:window.ORTOPIA_CORRIDORS,P0477:window.ORTOPIA_CORRIDORS,P0480:window.ORTOPIA_FLEET,P0482:window.ORTOPIA_FLEET};
+ const scene=renderers[p.id],view={images:{},mode:0,focus:0,trial:null,switches:new Map()};
  const ctl=new AbortController(),on=(el,event,fn)=>el.addEventListener(event,fn,{signal:ctl.signal});
  q('.problem-ref').href='index.html#scene/'+p.sceneId;q('.problem-ref').textContent=p.sceneName;q('h1').textContent=p.title;
  q('.atlas-title small').textContent=p.sceneName+' · '+p.id+' · '+pack.sample;q('.road-type').textContent=type;q('h2').textContent=title;
- map.setAttribute('aria-label',type+'动态道路现场');q('.atlas-proof p').textContent=note;q('code').textContent=fmt(pack.variables,0)+' 个变量 · '+fmt(pack.constraints,0)+' 条约束 · instance '+pack.instance+' · solution '+pack.solution;
+ map.setAttribute('aria-label',type+'动态道路现场');q('.atlas-proof p').textContent=note+(scene?' 车辆和交通设施按实例的模型关系作示意。':'');q('code').textContent=fmt(pack.variables,0)+' 个变量 · '+fmt(pack.constraints,0)+' 条约束 · instance '+pack.instance+' · solution '+pack.solution;
  q('.road-series span').textContent=metric+'（'+unit+'）';
+ if(scene){
+  const stage=q('.atlas-stage'),anchor=document.createComment('scene position');
+  stage.before(anchor);
+  const dialog=document.createElement('dialog');dialog.className='atlas medium-world road-world road-expanded';
+  dialog.setAttribute('aria-label',type+'放大现场');host.append(dialog);
+  const button=document.createElement('button');button.type='button';button.className='road-expand';button.textContent='放大现场';
+  q('.atlas-stage-head').append(button);
+  on(button,'click',()=>{
+   if(dialog.open){dialog.close();return;}
+   dialog.append(stage);dialog.showModal();button.textContent='收起现场';
+  });
+  on(dialog,'close',()=>{anchor.after(stage);button.textContent='放大现场';button.focus();});
+ }
+
  for(let j=0;j<4;j++){const el=document.createElement('div');el.innerHTML='<dt></dt><dd></dd>';q('dl').append(el);}
  const cells=[...host.querySelectorAll('dl div')],bg=new Image(),dur=p.id==='P0364'?35:p.id==='P0442'?8:16;
  let mode=0,f=0,rate=1,playing=!matchMedia('(prefers-reduced-motion: reduce)').matches,at,values,raf=0,last=0;
  function draw(){
-  const s=at(f);renderer.draw(s,d,bg);chart(trend,values,f);
+  const s=at(f);
+  if(scene)scene.draw(map,p.id,s,d,view);else renderer.draw(s,d,bg);
+  chart(trend,values,f);
   q('.m-clock').textContent=fmt(s.t,s.unit==='步'?2:3)+' '+s.unit;q('.road-series output').textContent=fmt(s.plot,5);
   s.metrics.forEach(([k,v],j)=>{cells[j].firstChild.textContent=k;cells[j].lastChild.textContent=v;});
   q('.play').textContent=playing?'暂停':f>=1?'重新播放':'播放';q('.scrub').value=Math.round(f*1000);
  }
  function tick(now){if(!playing||document.hidden)return;f=clamp(f+Math.min(120,now-(last||now))*rate/(1000*dur),0,1);last=now;if(f>=1)playing=false;draw();if(playing)raf=requestAnimationFrame(tick);}
  function run(){cancelAnimationFrame(raf);last=0;draw();if(playing&&!document.hidden)raf=requestAnimationFrame(tick);}
- function choose(j){mode=j;at=episode(p.id,d,mode);values=Array.from({length:161},(_,k)=>at(k/160).plot);
-  host.querySelectorAll('.road-options button').forEach((el,i)=>el.setAttribute('aria-pressed',String(i===j)));run();}
+ function refresh(){at=episode(p.id,d,mode,view);
+  if(p.id==='P0477')q('.road-cost').textContent='全时域目标值 '+fmt(view.cost,2)+'　·　比归档方案增加 '+fmt(view.cost-d.costs[0],2);
+  values=Array.from({length:161},(_,k)=>at(k/160).plot);run();}
+ function choose(j){mode=j;view.mode=j;
+  view.switches.clear();
+  if(q('.road-intervene output'))q('.road-intervene output').textContent='';
+  if(p.id==='P0480'){
+   view.trial=d.trials[j];q('.cloud-input').value=view.trial[0];q('.cloud-setting').textContent=fmt(view.trial[0],6);
+  }
+  host.querySelectorAll('.road-options button').forEach((el,i)=>el.setAttribute('aria-pressed',String(i===j)));refresh();}
  modes.forEach((name,j)=>{const b=document.createElement('button');b.textContent=name;q('.road-options').append(b);
   on(b,'click',()=>{if(['P0442','P0476','P0480'].includes(p.id))f=0;choose(j);});});
+ if(p.id==='P0477'){
+  const result=document.createElement('output');result.className='road-cost road-adjust';q('.road-options').after(result);
+ }
+ if(p.id==='P0477'||p.id==='P0482'){
+  const eco=p.id==='P0477',panel=document.createElement('div');
+  panel.className='road-adjust road-intervene';
+  panel.innerHTML='<span>行驶中接管</span><output aria-live="polite"></output>';
+  const output=panel.lastChild;
+  const names=eco?['从此刻减速','从此刻加速']:['从此刻启用反馈','从此刻关闭反馈'];
+  names.forEach((name,next)=>{
+   const b=document.createElement('button');b.type='button';b.textContent=name;panel.insertBefore(b,output);
+   on(b,'click',()=>{
+    if(f>=1){f=0;view.switches.clear();}
+    const step=Math.ceil(at(f).t/d.dt-1e-9);
+    for(const key of view.switches.keys())if(key>=step)view.switches.delete(key);
+    view.switches.set(step,next);
+    output.textContent=fmt(step*d.dt,3)+' 秒起 · '+name.slice(3);
+    playing=true;refresh();
+   });
+  });
+  q('.road-options').after(panel);
+ }
+ if(p.id==='P0442'){
+  const label=document.createElement('label');label.className='road-adjust';
+  label.innerHTML='<span>跟驰镜头</span><select aria-label="选择观察车辆"><option>网联车 1</option><option>网联车 2</option></select>';
+  q('.road-options').after(label);
+  on(label.lastChild,'change',e=>{view.focus=e.target.selectedIndex;q('.road-series span').textContent='受控车 '+(view.focus+1)+' 间距偏差（厘米）';refresh();});
+ }
+ if(p.id==='P0480'){
+  const label=document.createElement('label');label.className='road-adjust';
+  label.innerHTML='<span>首步云控指令</span><input class="cloud-input" type="range" step="0.01"><output class="cloud-setting"></output>';
+  q('.road-options').after(label);
+  const input=q('.cloud-input');input.min=-d.limit;input.max=d.limit;
+  on(input,'input',()=>{
+   const a=Number(input.value),[base,widthGain,centerGain]=d.reach;
+   const first=Math.min(d.target,base+widthGain*Math.abs(a)+centerGain*a);
+   view.trial=[a,first,d.target,(first-d.target)**2+d.weight*a*a];q('.cloud-setting').textContent=fmt(a);
+   q('.road-options').querySelectorAll('button').forEach(el=>el.setAttribute('aria-pressed','false'));refresh();
+  });
+ }
  on(q('.play'),'click',()=>{if(f===1)f=0;playing=!playing;run();});on(q('.restart'),'click',()=>{f=0;playing=true;run();});
  on(q('.scrub'),'input',e=>{playing=false;f=+e.target.value/1000;run();});on(q('.rate'),'change',e=>rate=+e.target.value);
  function resize(){for(const c of [map,trend]){const r=c.getBoundingClientRect(),dpr=Math.min(2,devicePixelRatio||1);
   c.width=Math.max(1,Math.round(r.width*dpr));c.height=Math.max(1,Math.round(r.height*dpr));}draw();}
  choose(clamp((step||1)-1,0,modes.length-1));resize();const ro=new ResizeObserver(resize);ro.observe(map);ro.observe(trend);
- on(bg,'load',draw);if(p.id!=='P0364')bg.src='assets/replays/road-streetscape.webp';
+ on(bg,'load',()=>{view.images[p.id]=bg;draw();});
+ if(p.id==='P0476')bg.src='assets/replays/road-P0476.webp';else if(p.id==='P0479')bg.src='assets/replays/road-streetscape.webp';
+ if(scene?.controls)scene.controls(map,p.id,d,draw,ctl.signal);
  on(document,'visibilitychange',run);document.title=p.title+' · ORtopia';scrollTo(0,0);
  return ()=>{cancelAnimationFrame(raf);ctl.abort();ro.disconnect();};
 }
