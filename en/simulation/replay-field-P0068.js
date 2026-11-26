@@ -5,7 +5,7 @@
  const sessions=new WeakMap();
  const ink='#234743',teal='#267d73',orange='#b56733',cream='#fff8df';
  const positions=[[114,224],[342,335],[744,137],[342,137],[744,335]];
- const stationNames=["Vehicle depot","Station 1","Station 2","Station 3","Station 4"];
+ const stationNames=['Garage','Station 1','Station 2','Station 3','Station 4'];
 
  function assess(data,state){
   const {input,loads}=data;
@@ -75,7 +75,7 @@
                       [118,358],[153,81],[863,366],[890,370],[907,367],[799,382]])tree(c,x,y,.56);
   house(c,73,190,83,32,'#769390');
   for(let i=0;i<3;i++){c.fillStyle='#3f5c5c';c.fillRect(80+25*i,170,16,18);line(c,[[80+25*i,176],[96+25*i,176]],'#8caaa1',1.3);}
-  badge(c,"Dispatch garage",115,144,'#365c56',cream,15);
+  badge(c,'Dispatch garage',115,144,'#365c56',cream,15);
  });
  function rack(c,id,count,state,selected,activeDeviation){
   const [roadX,y]=positions[id],x=roadX+95,k=Number.isFinite(count)?count:state.base[id].d;
@@ -86,7 +86,7 @@
    if(i<k)bicycle(c,sx,sy,.85);else line(c,[[sx-4,sy+2],[sx,sy],[sx+4,sy+2]],'#aeb9ac',1.2);
   }
   const shade=activeDeviation?'#925034':selected?'#745733':'#2e6057';
-  badge(c,stationNames[id]+'  ·  '+k+" vehicles",x,y-86,shade,cream,15);
+  badge(c,stationNames[id]+'  ·  '+k+' vehicles',x,y-86,shade,cream,15);
  }
  function van(c,x,y,angle,load){
   c.save();c.translate(x,y);
@@ -136,10 +136,10 @@
   if(split)line(c,pathBetween(previous.id,0),'#41857999',2.5,[6,5]);
   line(c,path,blocked?'#b47a71':'#ad6533',4,[6,5]);
   for(const id of state.order)rack(c,id,counts[id],state,id===target,deviations[id]);
-  const banner=returning?"End of transportation·Return to warehouse":toDepot?"Return to warehouse for replacement":("Stop "+(index+1)+" · "+stationNames[target]);
+  const banner=returning?'End of transportation·Return to warehouse':toDepot?'Return to warehouse for replacement':('No. '+(index+1)+' Station · '+stationNames[target]);
   badge(c,banner,108,27,'#214c44',cream,16);
-  badge(c,"Demand scenario "+state.scenario+"  ·  Vehicle mounted "+(blocked?'—':load)+' / 9',748,27,blocked?'#874f40':'#315a50',cream,16);
-  if(blocked){badge(c,"This scenario cannot complete this route within the capacity and deviation range",470,368,'#894a38',cream,16);return;}
+  badge(c,'Demand scenario '+state.scenario+'  ·  Vehicle mounted '+(blocked?'—':load)+' / 9',748,27,blocked?'#874f40':'#315a50',cream,16);
+  if(blocked){badge(c,'This scenario cannot complete this route within the capacity and deviation range',470,368,'#894a38',cream,16);return;}
   van(c,vx,vy,angle,load);
   if(unload&&handled<Math.abs(delta)){
    const phase=(((transit-threshold)/(1-threshold))*Math.abs(delta))%1;
@@ -150,9 +150,9 @@
    person(c,wx,wy,t,'#bd7845',false);
    if(carrying)bicycle(c,wx+7,wy,1,'#398678');
   }
-  const caption=returning?"Transport back to the garage "+load+" vehicles":toDepot?"Last trip back to warehouse":unload
-   ?(delta>0?"Loading ":delta<0?"unload truck ":"handover ")+handled+' / '+Math.abs(delta)+" vehicles"
-   :"sail towards "+stationNames[target];
+  const caption=returning?'Transport back to the garage '+load+' vehicles':toDepot?'Last trip back to warehouse':unload
+   ?(delta>0?'Loading ':delta<0?'Unload ':'handover ')+handled+' / '+Math.abs(delta)+' vehicles'
+   :'sail towards '+stationNames[target];
   badge(c,caption,Math.max(66,Math.min(W-68,vx)),vy+22,'#fffae9',ink,13);
  }
  function mount(host,onInteract,index,onNode,replayAction){
@@ -161,23 +161,23 @@
   if(!s){
    s={order:[...data.reference],breaks:new Set(),scenario:1,base:data.input.stations};sessions.set(host,s);
   }
-  const ui=F.siteShell(host,'fp-bikes',"There are shared bicycle dispatch vehicles and four stations, which can be reassigned by clicking on the station.",
-    "This trip is reassigned to the point station, and the three demand scenarios share the line.");
+  const ui=F.siteShell(host,'fp-bikes','There are shared bicycle dispatch vehicles and four stations, which can be reassigned by clicking on the station.',
+    'This trip is reassigned to the point station, and the three demand scenarios share the line.');
   let plan;
   const legIndex=Math.min(index,s.order.length-1);
   function paint(){
    plan=assess(data,s);
    const name=s.order[legIndex],cut=s.breaks.has(name);
-   ui.control.innerHTML="<div class=\"fp-group\"><strong>access sequence</strong>"+s.order.map((id,i)=>
-    '<button type="button" data-station="'+id+'" aria-pressed="'+(legIndex===i)+"\" title=\"Assign "+id+" Change station number to current order\">"+id+" No.</button>"+
-    (i<s.order.length-1?(s.breaks.has(id)?" ↪Vehicle depot ":' → '):'')).join('')+'</div>'+
-    "<div class=\"fp-group\"><label>Demand scenario <select data-scenario>"+Object.keys(data.input.scenarios).map(k=>
+   ui.control.innerHTML='<div class="fp-group"><strong>access sequence</strong>'+s.order.map((id,i)=>
+    '<button type="button" data-station="'+id+'" aria-pressed="'+(legIndex===i)+'" title="Assign '+id+' Change station number to current order">'+id+' No.</button>'+
+    (i<s.order.length-1?(s.breaks.has(id)?' ↪Garage ':' → '):'')).join('')+'</div>'+
+    '<div class="fp-group"><label>Demand scenario <select data-scenario>'+Object.keys(data.input.scenarios).map(k=>
       '<option value="'+k+'" '+(+k===s.scenario?'selected':'')+'>'+k+'</option>').join('')+'</select></label></div>'+
-    '<button type="button" data-break '+(legIndex===s.order.length-1?'disabled':'')+' aria-pressed="'+cut+'">'+(cut?"Cancel return to warehouse midway":"Return to the database first after this site")+'</button>'+
-    "<button type=\"button\" data-alt>Change the order of trial runs</button><button type=\"button\" data-reset>Restore original solution</button>";
+    '<button type="button" data-break '+(legIndex===s.order.length-1?'disabled':'')+' aria-pressed="'+cut+'">'+(cut?'Cancel return to warehouse midway':'Return to the database first after this site')+'</button>'+
+    '<button type="button" data-alt>Change the order of trial runs</button><button type="button" data-reset>Restore original solution</button>';
    ui.result.dataset.error=String(plan.cost===null);
-   ui.result.textContent=plan.cost===null?"Scenario "+plan.blocked.join('、')+" No feasible load":
-     "travel "+plan.travel.toFixed(3)+" ＋ Expected penalty "+plan.penalty.toFixed(3)+' ＝ '+plan.cost.toFixed(3);
+   ui.result.textContent=plan.cost===null?'Scenario '+plan.blocked.join(', ')+' No feasible load':
+     'travel '+plan.travel.toFixed(3)+' ＋ Expected penalty '+plan.penalty.toFixed(3)+' ＝ '+plan.cost.toFixed(3);
   }
   function replay(at=index){paint();if(at!==index&&onNode)onNode(at);else if(replayAction)replayAction();else host.sceneFrame(0);}
   function redirect(id){
@@ -187,7 +187,7 @@
   }
   for(const id of s.order){
    const [x,y]=positions[id];
-   F.hotspot(ui.scene,"will "+id+" Change the station number to the current access sequence",x+95,y-53,()=>redirect(id),170,74);
+   F.hotspot(ui.scene,'will '+id+' Change the station number to the current access sequence',x+95,y-53,()=>redirect(id),170,74);
   }
   ui.control.onclick=e=>{
    const b=e.target.closest('button');if(!b)return;

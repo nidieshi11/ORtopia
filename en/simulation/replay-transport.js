@@ -1,13 +1,13 @@
 (() => {
 'use strict';
 const configs={
- P0094:{name:"Suburban goods yard",actors:["Trip 1","Trip 2"],origin:'0',points:{'0':[135,278],C1a:[380,145],C1b:[715,180],C2a:[410,385],C2b:[745,368]}},
- P0122:{name:"Warehouse distribution block",actors:["Route 1","Route 2"],origin:'0'},
- P0145:{name:"Neighborhood truck–drone delivery",actors:["Truck","Drone"],origin:'0',points:{'0':[100,330],'3':[320,269],'1':[470,137],'2':[645,275],'4':[815,366]}},
- P0160:{name:"Tram and neighborhood charging stations",actors:['V0','V1'],origin:'__start',points:{__start:[92,263],B0:[271,142],F0:[466,153],A0:[653,153],B1:[264,378],F1:[466,365],A1:[643,365],__end:[810,272]}},
- P0177:{name:"Trucks and delivery robots",actors:["Truck","robot"],origin:'depot'},
- P0182:{name:"Limited time delivery block",actors:["Route 1","Route 2"],origin:'depot'},
- P0449:{name:"Fleet dispatching station",points:{location_01:[190,160],location_02:[692,165],location_03:[170,388],location_04:[700,374]}}
+ P0094:{name:'Suburban goods yard',actors:['Trip 1','Trip 2'],origin:'0',points:{'0':[135,278],C1a:[380,145],C1b:[715,180],C2a:[410,385],C2b:[745,368]}},
+ P0122:{name:'Warehouse distribution block',actors:['Route 1','Route 2'],origin:'0'},
+ P0145:{name:'Vehicle-machine collaborative delivery block',actors:['Truck','Drones'],origin:'0',points:{'0':[100,330],'3':[320,269],'1':[470,137],'2':[645,275],'4':[815,366]}},
+ P0160:{name:'Tram and neighborhood charging stations',actors:['V0','V1'],origin:'__start',points:{__start:[92,263],B0:[271,142],F0:[466,153],A0:[653,153],B1:[264,378],F1:[466,365],A1:[643,365],__end:[810,272]}},
+ P0177:{name:'Trucks and delivery robots',actors:['Truck','robot'],origin:'depot'},
+ P0182:{name:'Limited time delivery block',actors:['Route 1','Route 2'],origin:'depot'},
+ P0449:{name:'Fleet dispatching station',points:{location_01:[190,160],location_02:[692,165],location_03:[170,388],location_04:[700,374]}}
 };
 const W=900,H=490,colors=['#207d75','#cf7130','#5868a1'],cache=new WeakMap();
 const esc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -100,7 +100,7 @@ function makeWorld(data,cfg){
    data.entities.forEach(a=>{coords[a.id]=[450+(a.x-(xmin+xmax)/2)*sc,267+(a.y-(ymin+ymax)/2)*sc];});
  }
  const streets=new Map();
- data.steps.forEach(st=>(st.moves||[]).forEach(m=>{if(m.label==="Drone")return;const k=[m.from,m.to].sort().join(':');if(!streets.has(k))streets.set(k,streetCurve(coords[m.from],coords[m.to]));}));
+ data.steps.forEach(st=>(st.moves||[]).forEach(m=>{if(m.label==='Drones')return;const k=[m.from,m.to].sort().join(':');if(!streets.has(k))streets.set(k,streetCurve(coords[m.from],coords[m.to]));}));
  const backdrop=document.createElement('canvas');backdrop.width=W*2;backdrop.height=H*2;
  const c=backdrop.getContext('2d');c.scale(2,2);
  const gradient=c.createLinearGradient(0,0,300,H);gradient.addColorStop(0,'#d4e3bf');gradient.addColorStop(.55,'#c1d4aa');gradient.addColorStop(1,'#b6c997');c.fillStyle=gradient;c.fillRect(0,0,W,H);
@@ -124,7 +124,7 @@ function makeWorld(data,cfg){
  const tooClose=(x,y,pts,d)=>pts.some(p=>Math.hypot(x-p[0],y-p[1])<d);
  const roof=['#a96746','#6a8b86','#bd8b59','#708b75','#af755a','#73899b'];
  for(let i=0;i<data.entities.length;i++){
-  const n=data.entities[i],[x,y]=coords[n.id],depot=/warehouse|depot|fleet|yard/i.test(n.group),ev=n.group==="charging station";
+  const n=data.entities[i],[x,y]=coords[n.id],depot=/warehouse|depot|garage|fleet/i.test(n.group),ev=n.group==='charging station';
   const w=depot?65:ev?63:43,d=depot?30:ev?30:24,h=depot?29:20+i%3*2;
   const bx=x-4,by=y-14;
   lotBounds.push([bx,by-18]);sidewalk(bx+8,by);
@@ -230,7 +230,7 @@ const eventTime=st=>{const m=String(st.time||'').match(/-?\d+(?:\.\d+)?/);return
 function legsFor(data,name){
  const legs=[];
  data.steps.forEach((st,index)=>(st.moves||[]).filter(m=>m.label===name).forEach(m=>{
-   const end=eventTime(st),duration=metric(st,"Travel time on this segment (s)")??metric(st,"Truck travel time")??metric(st,"Flight time");
+   const end=eventTime(st),duration=metric(st,'Driving seconds for this segment')??metric(st,'Truck travel time')??metric(st,'Flight time');
    const begin=duration!=null?end-Number(duration):null;
    legs.push({...m,index,begin,end});
  }));
@@ -253,15 +253,15 @@ function trackRecord(name,index,t,data,config){
 // A truck visit time is a rendezvous time. Here the truck drives immediately after launch
 // and spends the available slack waiting at recovery; the submitted plan fixes both endpoints.
 function rendezvous(data){
- const legs=data.steps.flatMap((step,index)=>(step.moves||[]).filter(move=>move.label==="Drone").map(move=>({index,move})));
- const drop=legs[0].index,land=legs[1].index;
- const lift=data.steps.slice(0,drop).findLastIndex(step=>step.active.includes(legs[0].move.from)&&step.moves.length===0);
+ const lift=data.steps.findIndex(st=>/take.off|takeoff|launch|lift.off/i.test(st.title));
+ const drop=data.steps.findIndex(st=>st.moves.some(m=>m.label==='Drones'));
+ const land=data.steps.findIndex(st=>/meet|rendezvous|rejoin/i.test(st.title));
  const airOut=data.steps[drop].moves[0],airBack=data.steps[land].moves[0];
- const groundStep=data.steps.find(st=>st.moves.some(m=>m.label==="Truck"&&m.from===airOut.from&&m.to===airBack.to));
+ const groundStep=data.steps.find(st=>st.moves.some(m=>m.label==='Truck'&&m.from===airOut.from&&m.to===airBack.to));
  const exact=window.ORTOPIA_REPLAY_LOGIC?.[data.id]?.[0]?.rendezvous;
  return {lift,drop,land,airOut,airBack,ground:groundStep.moves[0],
    ...(exact||{launch:eventTime(data.steps[lift]),delivery:eventTime(data.steps[drop]),
-     recovery:eventTime(data.steps[land]),groundDuration:Number(metric(groundStep,"Truck travel time"))})};
+     recovery:eventTime(data.steps[land]),groundDuration:Number(metric(groundStep,'Truck travel time'))})};
 }
 function syncedBranch(f,index,progress){
  const {lift,drop,land,airOut,airBack,ground,launch,delivery,recovery,groundDuration}=f;
@@ -292,7 +292,7 @@ function showBranchOnMap(c,world,branch){
   const [x,y]=coords[f.ground.to],complete=branch.now>=f.recovery;
   c.fillStyle=complete?'#255b4e':'#865b24';
   c.beginPath();c.roundRect(x-39,y+20,78,22,5);c.fill();
-  word(c,complete?"Truck–drone rendezvous":"truck waiting",x,y+36,13,'#fffdf5');
+  word(c,complete?'Car opportunity':'truck waiting',x,y+36,13,'#fffdf5');
  }
 }
 // The alternate tour is independently enumerated with all customers assigned to the truck.
@@ -325,7 +325,7 @@ function truckOnlyMap(c,world,plan,sec){
  truck(c,marker.p[0],marker.p[1]+4,marker.angle,'#784979');
  drone(c,marker.p[0],marker.p[1]-2,18,0,false);
  c.fillStyle='#4e3154';c.beginPath();c.roundRect(14,14,202,28,6);c.fill();
- word(c,"control protocol · All delivered by truck",115,34,15,'#fffaf2');
+ word(c,'control protocol · All delivered by truck',115,34,15,'#fffaf2');
 }
 function choiceLine(c,a,b,ink,dashed=false){
  if(a[0]===b[0]&&a[1]===b[1]){
@@ -369,7 +369,7 @@ function choiceMap(c,world,plan){
   plan.clients.forEach((id,j)=>choiceLine(c,coords[id],warehouse,palette[j],true));
   const bx=clamp(warehouse[0]-122,10,W-285),by=clamp(warehouse[1]+32,42,H-90);
   c.fillStyle='#faf8ed';c.fillRect(bx,by,275,66);c.strokeStyle=clr;c.lineWidth=1.4;c.strokeRect(bx,by,275,66);
-  word(c,"Warehouse loading · 1 unit of cargo per grid",bx+137,by+17,13,'#394e47');
+  word(c,'Warehouse loading · 1 unit of cargo per grid',bx+137,by+17,13,'#394e47');
   const total=plan.amounts.reduce((a,b)=>a+b,0),cell=Math.min(16,238/total);
   for(let j=0;j<total;j++){
    c.fillStyle=j>=plan.capacity?'#b14e39':j<plan.amounts[0]?palette[0]:palette[1];
@@ -377,7 +377,7 @@ function choiceMap(c,world,plan){
   }
   const limit=bx+9+plan.capacity*cell;
   line(c,[[limit,by+20],[limit,by+42]],'#532926',2);
-  word(c,"Car capacity "+plan.capacity+"   /   Order "+total,bx+137,by+56,13,'#66382f');
+  word(c,'Car capacity '+plan.capacity+'   /   Order '+total,bx+137,by+56,13,'#66382f');
   truck(c,warehouse[0],warehouse[1],0,'#57736c',true);
  }
  if(plan.kind==='energy'){
@@ -395,7 +395,7 @@ function choiceMap(c,world,plan){
  }
  if(plan.robotAboard){const [x,y]=coords[plan.robotAboard];truck(c,x,y,.1,'#744274');robot(c,x-8,y-16,.1);}
  annotation(c,plan.marks,coords,clr);
- c.font='600 15px "Microsoft YaHei",sans-serif';const title="Comparison plan · "+plan.title,w=c.measureText(title).width+20;
+ c.font='600 15px "Microsoft YaHei",sans-serif';const title='Comparison plan · '+plan.title,w=c.measureText(title).width+20;
  c.fillStyle=clr;c.beginPath();c.roundRect(12,12,w,28,4);c.fill();word(c,title,12+w/2,32,15,'#fff');
 }
 function branchPanel(f){
@@ -408,10 +408,10 @@ function branchPanel(f){
    '<i data-sync-hand style="position:absolute;top:-3px;height:14px;width:2px;background:#152f29"></i><small>'+left+' · '+right+'</small></div></div>';
  }
  return '<figure style="background:#eff3eb;margin:0;padding:.55rem .85rem;display:grid;gap:.35rem;color:#24493f;font-size:.82rem;text-align:left">'+
-  "<figcaption><b>Parallel delivery</b>　<span data-sync-clock></span></figcaption>"+
-  row("Truck",pct(f.groundDuration),"travel "+fmt(f.groundDuration),"waiting "+fmt(f.recovery-f.launch-f.groundDuration),false)+
-  row("Drone",pct(f.delivery-f.launch),"Arrive at "+fmt(f.delivery),"Recover at "+fmt(f.recovery),true)+
-  "<small>Both timelines begin at takeoff, at time "+fmt(f.launch)+". The truck departs immediately and waits at the recovery point.</small></figure>";
+  '<figcaption><b>Parallel delivery</b>　<span data-sync-clock></span></figcaption>'+
+  row('Truck',pct(f.groundDuration),'travel '+fmt(f.groundDuration),'waiting '+fmt(f.recovery-f.launch-f.groundDuration),false)+
+  row('Drones',pct(f.delivery-f.launch),'delivered '+fmt(f.delivery),'Recycle '+fmt(f.recovery),true)+
+  '<small>Two timelines starting from takeoff time '+fmt(f.launch)+' Start. The screen captures the sequence of the truck leaving immediately and waiting at the collection point.. </small></figure>';
 }
 function pointOnLeg(world,record){
  if(!record.active){return {pos:world.coords[record.pos],angle:.09};}
@@ -427,7 +427,7 @@ function names(c,data,world,st){
  const coords=world.coords;
  for(const e of data.entities){const [x,y]=coords[e.id];const title=e.label,hot=st.active.map(String).includes(e.id);
   const px=14;c.font='600 '+px+'px "Microsoft YaHei",sans-serif';
-  const w=Math.ceil(c.measureText(title).width)+13,ly=Math.max(15,y-(e.group==="charging station"?68:69));
+  const w=Math.ceil(c.measureText(title).width)+13,ly=Math.max(15,y-(e.group==='charging station'?68:69));
   c.fillStyle=hot?'#285d51ed':'#f7f5e9eb';c.beginPath();c.roundRect(x-w/2,ly-15,w,21,5);c.fill();
   word(c,title,x,ly,px,hot?'white':'#354a40');
  }
@@ -442,7 +442,7 @@ function routes(c,data,index,world,sec){
    team=branch.team;aboard=branch.aboard;showBranchOnMap(c,world,branch);
   }else{
    aboard=true;
-   if(!st.time){const last=data.steps.flatMap(step=>step.moves).filter(m=>m.label==="Truck").at(-1);team[0]={pos:last.to,active:null,frac:0};}
+   if(!st.time){const last=data.steps.flatMap(step=>step.moves).filter(m=>m.label==='Truck').at(-1);team[0]={pos:last.to,active:null,frac:0};}
    team[1]={...team[0]};
   }
  }
@@ -452,33 +452,33 @@ function routes(c,data,index,world,sec){
   // P0122 has two independent routes but no vehicle-to-vehicle ordering.
   if(data.id==='P0122'&&!st.title.startsWith(actor))return;
   if(data.id==='P0094'){
-    const first=data.steps.findIndex(s=>s.title===actor+"appear"),last=data.steps.findIndex(s=>s.title===actor+"Complete unloading");
+    const first=data.steps.findIndex(s=>s.title===actor+' appear'),last=data.steps.findIndex(s=>s.title===actor+' Complete unloading');
     if(index<first||index>last)return;
   }
-  if(active&&!branch&&!(actor==="Drone"&&aboard)){
+  if(active&&!branch&&!(actor==='Drones'&&aboard)){
    const a=world.coords[active.from],b=world.coords[active.to];
    const curve=active.air?(u=>at(a,b,u)):streetCurve(a,b);
-   hatch(c,curve,record.frac,colors[j],actor==="Drone");
+   hatch(c,curve,record.frac,colors[j],actor==='Drones');
   }
   const other=team[1-j],same=other&&!active&&!other.active&&record.pos===other.pos;
   const offset=same&&!aboard&&!branch?(j===0?-13:13):0;
-  if(actor==="Drone"){
+  if(actor==='Drones'){
    const altitude=branch?branch.altitude:18;
    const carrying=index<world.rendezvous.drop||(index===world.rendezvous.drop&&branch.now<world.rendezvous.delivery);
    moving.push({y:y+1,draw:()=>drone(c,x+offset,y-3,altitude+(!aboard?Math.sin(sec*2)*1.1:0),aboard?0:sec,carrying)});
-  }else if(actor==="robot"){moving.push({y,draw:()=>robot(c,x+offset,y+5,loc.angle)});}
+  }else if(actor==='robot'){moving.push({y,draw:()=>robot(c,x+offset,y+5,loc.angle)});}
   else{moving.push({y,draw:()=>truck(c,x+offset,y+4,loc.angle,colors[j])});}
  });
  // The staff are illustrative performers, not additional assignments in the solution.
  const servicePlace=st.moves?.[0]?.to||st.active[st.active.length-1];
  data.entities.forEach((e,j)=>{
-  const [x,y]=world.coords[e.id],working=e.id===servicePlace,charge=e.group==="charging station";
+  const [x,y]=world.coords[e.id],working=e.id===servicePlace,charge=e.group==='charging station';
   if(charge&&!working)return;
   const src=[x+17,y-10],dest=[x+10,y+7];
   if(working){
    const u=st.moves?.length?clamp((t-.62)/.33):clamp(t/.7);
    const p=at(src,dest,ease(u));ground.push({y:p[1],draw:()=>human(c,...p,sec+.6,u>0&&u<1,'#dd8a43',!charge,-1)});
-   if(data.id==='P0094'&&/unload/i.test(st.title)){
+   if(data.id==='P0094'&&/unload.*complet|complet.*unload|finish.*unload/i.test(st.title)){
     const z=at([x+5,y],[x-18,y-13],ease(clamp((t-.15)/.72)));
     ground.push({y:z[1],draw:()=>human(c,...z,sec*1.1,t>.15&&t<.87,'#55877a',true,-1)});
    }
@@ -521,13 +521,13 @@ function footer(d,i){
  return cfg.actors.map(name=>{
   const records=d.steps.slice(0,i+1).filter(s=>s.moves?.some(m=>m.label===name)),last=records.at(-1);
   let id=last?.moves.find(m=>m.label===name).to||cfg.origin;
-  if(d.id==='P0145'&&name==="Drone"){
-   const {lift:launch,land}=cache.get(d).rendezvous;
-   if(i<launch||i>land){const tr=d.steps.slice(0,i+1).flatMap(s=>s.moves||[]).filter(m=>m.label==="Truck").at(-1);id=tr?.to||cfg.origin;}
+  if(d.id==='P0145'&&name==='Drones'){
+   const launch=d.steps.findIndex(s=>/take.off|takeoff|launch|lift.off/i.test(s.title)),land=d.steps.findIndex(s=>/meet|rendezvous|rejoin/i.test(s.title));
+   if(i<launch||i>land){const tr=d.steps.slice(0,i+1).flatMap(s=>s.moves||[]).filter(m=>m.label==='Truck').at(-1);id=tr?.to||cfg.origin;}
    if(i===launch)id=d.steps[i].active[0];
   }
   let n=d.entities.find(a=>a.id===id)?.label||id;
-  if(d.id==='P0160')n+=" · Arrival of power "+(metric(last,"State of charge on arrival")??8);
+  if(d.id==='P0160')n+=' · Arrival of power '+(metric(last,'State of charge on arrival')??8);
   return '<span><b>'+esc(name)+'</b>　'+esc(n)+'</span>';
  }).join('');
 }
@@ -541,21 +541,21 @@ function render(stage,data,index){
  const option=window.ORTOPIA_REPLAY_LOGIC?.[data.id]?.[index]?.comparison;
  const mapChoice=option?.world;
  const allowAlternate=!!(mapChoice||(f?.truckOnly&&option&&(index===0||index===data.steps.length-1)));
- stage.innerHTML='<section class="tr-world" style="margin:0;background:#f7f8ef"><canvas data-step="'+index+'" width="1800" height="980" style="display:block;width:100%;height:auto" role="img" aria-label="'+esc(cfg.name+' · '+st.title)+'"></canvas>'+(showSync?branchPanel(f):'<div style="display:flex;flex-wrap:wrap;gap:4px 18px;padding:6px 12px;color:#345a49;background:#f1f4ea;font-size:.8rem"><small>'+ (data.id==='P0449'?"latest stock":"The most recent record at the end of this step")+'</small>'+footer(data,index)+'</div>')+'</section>';
+ stage.innerHTML='<section class="tr-world" style="margin:0;background:#f7f8ef"><canvas data-step="'+index+'" width="1800" height="980" style="display:block;width:100%;height:auto" role="img" aria-label="'+esc(cfg.name+' · '+st.title)+'"></canvas>'+(showSync?branchPanel(f):'<div style="display:flex;flex-wrap:wrap;gap:4px 18px;padding:6px 12px;color:#345a49;background:#f1f4ea;font-size:.8rem"><small>'+ (data.id==='P0449'?'latest stock':'The most recent record at the end of this step')+'</small>'+footer(data,index)+'</div>')+'</section>';
  const canvas=stage.querySelector('canvas'),c=canvas.getContext('2d');
  let alternate=false;
  const normalInfo=stage.querySelector('.tr-world>div');
  let legend=null;
  if(allowAlternate){
-  legend=document.createElement('div');legend.hidden=true;legend.setAttribute('aria-label',"Check route legend");
+  legend=document.createElement('div');legend.hidden=true;legend.setAttribute('aria-label','Check route legend');
   legend.style.cssText='padding:8px 12px;background:#f2edf2;color:#49374c;font-size:.85rem';
   if(mapChoice){
-   legend.innerHTML="<b>control protocol · "+esc(mapChoice.title)+'</b><br>'+esc(mapChoice.description);
+   legend.innerHTML='<b>control protocol · '+esc(mapChoice.title)+'</b><br>'+esc(mapChoice.description);
   }else{
    const alt=f.truckOnly;
-   legend.innerHTML="<b>control protocol · All truck deliveries</b>　"+alt.sequence.map(esc).join(' → ')+
-   "<br>The solid purple line indicates the comparison route, and the number indicates the delivery sequence. The gray dotted line represents the direct truck section of the original plan, and the orange dotted line represents the drone branch line of the original plan."+
-   "<br>Comparative plan ground costs "+alt.groundCost.toFixed(4)+", Total cost including late penalty "+alt.cost.toFixed(4)+".Drone follows the car throughout the journey.";
+   legend.innerHTML='<b>control protocol · All truck deliveries</b>　'+alt.sequence.map(esc).join(' → ')+
+   '<br>The solid purple line indicates the comparison route, and the number indicates the delivery sequence. The gray dotted line represents the direct truck section of the original plan, and the orange dotted line represents the drone branch line of the original plan.. '+
+   '<br>Comparative plan ground costs '+alt.groundCost.toFixed(4)+', Total cost including late penalty '+alt.cost.toFixed(4)+'. Drone follows the car throughout the journey. ';
   }
   stage.querySelector('.tr-world').append(legend);
  }
@@ -573,8 +573,8 @@ function render(stage,data,index){
   if(branch&&clock){
    const percent=clamp((branch.now-f.launch)/(f.recovery-f.launch))*100;
    markers.forEach(m=>m.style.left='calc('+percent+'% - 1px)');
-   const phase=branch.now>=f.recovery?"Rendezvous":branch.now>=f.launch+f.groundDuration?"Truck waits to recover the drone":branch.now>=f.delivery?"Drone flies to the recovery point":"Two branches begin";
-   clock.textContent="current moment "+branch.now.toFixed(3)+' · '+phase;
+   const phase=branch.now>=f.recovery?'rendezvous':branch.now>=f.launch+f.groundDuration?'Truck waiting for recycling':branch.now>=f.delivery?'Drone flies to recycling point':'Two branches begin';
+   clock.textContent='current moment '+branch.now.toFixed(3)+' · '+phase;
   }
  }
  if(allowAlternate){
@@ -582,7 +582,7 @@ function render(stage,data,index){
    if(!stage.contains(canvas))return;
    alternate=optionIndex===1;legend.hidden=!alternate;
    if(normalInfo)normalInfo.style.display=alternate?'none':'flex';
-   canvas.setAttribute('aria-label',alternate?"Comparison plan · "+(mapChoice?.title||"All truck delivery routes"):cfg.name+' · '+st.title);
+   canvas.setAttribute('aria-label',alternate?'Comparison plan · '+(mapChoice?.title||'All truck delivery routes'):cfg.name+' · '+st.title);
    draw(Math.max(0,Number(stage.sceneTime)||0));
   };
  }else{

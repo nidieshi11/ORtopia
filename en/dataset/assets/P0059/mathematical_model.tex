@@ -1,56 +1,52 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,geometry}
-\geometry{margin=22mm}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
+
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
 \begin{document}
-\section*{P59: The dynamic stochastic matching main problem, aimed at maximizing long-term average returns}
-\paragraph{Source and scope}According to pages 1, 6, 7, 8, 9, 10, 11, 20, 21, 22, and 23 of the original paper PDF, section 2, equation (1), and sections 9--10 on policy/state definitions; section 5, pages 20--21 on $R_t$ and long-term average returns; sections 21--22, paragraphs (12)--(15) used to distinguish the benchmark model.
-
-\paragraph{The main issue that remains to be addressed}
-We utilize the dynamic matching problem for maximizing long-term average returns, as described in Section 5 of the original paper. The concepts of arrival time, patience, and information structure are also applied, just as described in Section 2. Below, we describe in detail the continuous-time decision-making process, as outlined on page 10.
-
-
-\paragraph{Input and random mechanism}
-The set of types $\mathcal T=\{1,\ldots,d\}$ is finite. Participants of type $i$ arrive according to a Poisson process, while those of type $\lambda_i>0$ arrive independently. The patience of participants of each type $i$ is an independent exponential random variable with parameter $0<\mu_i<\infty$; this patience is independent of the arrival process. Participants leave immediately if they are not matched and their patience runs out. Arrival times, types, and the timing of departures can be observed, but future arrivals and the patience expiration times of those still in the system are unpredictable.
-
-The matching reward on undirected graphs is denoted as $r_{ij}=r_{ji}\in\mathbb R$, and it is a fixed value. The same-type reward $r_{ii}$ applies to two distinct participants of type $i$. The graph can be filled in with zero rewards (as mentioned on page 20 of the original text). There is no abandonment penalty or waiting cost. Participants on both sides have the specified finite patience distribution.
-
-\paragraph{States and the complete domain of actions}
-After an external event occurs and before the matching decision is made, a state of $\nu=(\nu_i)_{i\in\mathcal T}\in\mathbb Z_+^d$ indicates the number of people who can still be matched at this moment. An action of $a=(a_{ij})_{1\le i\le j\le d}$ indicates the number of unordered matches that will be performed at that point in time. The feasible region is…
+\section*{P0059 Long-run matching of impatient arrivals}
+\subsection*{Mathematical formulation}
 \begin{equation}
 \mathcal A(\nu)=\left\{a\in\mathbb Z_+^{d(d+1)/2}:\quad
 2a_{ii}+\sum_{j<i}a_{ji}+\sum_{j>i}a_{ij}\le\nu_i,
 \quad i=1,\ldots,d\right\}.\tag{A}
 \end{equation}
-Allowing an empty action $a=0$ means continuing to wait. Each participant can be matched once only; after a match is made, both parties are immediately removed from the matching pool. After a match, the remaining state and the rewards received are as follows:
+
 \begin{align}
 v_i(\nu,a)&=\nu_i-2a_{ii}-\sum_{j<i}a_{ji}-\sum_{j>i}a_{ij},\quad i\in\mathcal T,\tag{S}\\
 g(a)&=\sum_{1\le i\le j\le d}r_{ij}a_{ij}.\tag{R}
 \end{align}
-Formula (A) represents the counting form of the problem “selecting matches on the current remaining vertex-induced subgraph”. When the number of matches is an integer and satisfies the capacity constraints, it is possible to select actual participant pairs that do not overlap with each other within the complete graph of this type.
 
-\paragraph{Continuous time state transitions}
-Let the decision-making moment for the $k$th occasion be $\tau_k$. The state before making the decision is $\nu^k$. By choosing $a^k\in\mathcal A(\nu^k)$, we obtain $v^k=v(\nu^k,a^k)$ as the result. The number of people in the pool remains at $v^k$ until the next event that affects the arrival or departure of the pool. Let $e_i$ represent the $i$th unit vector.
 \[
 q(v)=\sum_{i=1}^d\lambda_i+\sum_{i=1}^d\mu_i v_i.
 \]
-Based on independent Poisson arrivals and exponential waiting times, with no memory effects, taking into account all known historical data and actions at the current moment.
+
 \begin{align}
 \tau_{k+1}-\tau_k&\sim\operatorname{Exp}(q(v^k)),\tag{T1}\\
 \Pr\{\nu^{k+1}=v^k+e_i\mid v^k\}&=\frac{\lambda_i}{q(v^k)},\quad i\in\mathcal T,\tag{T2}\\
 \Pr\{\nu^{k+1}=v^k-e_i\mid v^k\}&=\frac{\mu_i v_i^k}{q(v^k)},\quad i\in\mathcal T:v_i^k>0.\tag{T3}
 \end{align}
-If the next event is related to leaving the pool, the participant must exit immediately; they cannot be selected as a matching object after having already left the pool. If the next event is related to arrival, the new participant will only be considered for matching purposes after they enter the pool. The probability of both events occurring simultaneously is zero. Events involving leaving the pool are triggered by participants who are still in the pool. Time is indexed based on the events that cause changes in the state of the pool. The system starts with an initial empty pool $\nu^0=0,\tau_0=0,a^0=0$, which is consistent with the original approach of constructing the system starting from the first participant who arrives.
 
-\paragraph{Information constraints and unique optimization objectives}
-Let $\mathcal H_k$ represent the information generated regarding all actions such as arrival, departure, status changes, and other relevant events that have occurred up to $\tau_k$. Independent internal random numbers are allowed, but future information is not permitted. A feasible policy $\pi$ consists of a distribution of actions that depend solely on $\mathcal H_k$ for each $k$. Such policies must necessarily belong to $\mathcal A(\nu^k)$. All such policies are denoted as $\Pi$. The optimization model is…
 \begin{equation}
-\boxed{\quad\sup_{\pi\in\Pi}\ 
+\boxed{\quad\sup_{\pi\in\Pi}\space{}
 \liminf_{t\to\infty}\frac1t\,
 \mathbb E^{\pi}\!\left[
 \sum_{k:\,0<\tau_k\le t}g(a^k)
 \right]\quad}\tag{DSM-R}
 \end{equation}
-Satisfy simultaneously conditions (A), (S), (R), (T1)--(T3) and the aforementioned information constraints. The objective is to find the supremum of the policy benefits defined on pages 20--21 of the original text, denoted as $\sup_\pi r^\pi$. According to the description on page 10, under its regular conditions, the optimal deterministic steady policy can be selected. The system leader is a non-negative integer, and the policy is defined over an infinite time domain.
 
+\subsection*{Definitions and model scope}
+A matching service receives people of finitely many types. Each type has an independent Poisson arrival stream with a given strictly positive rate, and each waiting person has an independent exponentially distributed remaining patience with the given strictly positive finite departure rate for that type. Patience is independent of arrivals. Each unordered pair of types has a finite symmetric reward, which may be negative; two different people of the same type may also be paired. Missing pair rewards may be supplied as zero. There is no separate waiting charge or abandonment penalty. The service sees arrivals, types and past departures, but not future arrivals or individual patience deadlines.
+
+Immediately after each arrival or patience departure, before choosing matches, the service observes nonnegative whole-number waiting counts waiting counts $\nu_i$. It chooses a nonnegative whole-number number of pairs pair counts $a_{ij}$ for every unordered type pair. For each type, twice its same-type pair count plus all its cross-type pair counts cannot exceed its waiting count. Choosing no pairs is allowed. All chosen pairs leave immediately. The remaining count for a type is its observed waiting count less twice its same-type pair count and less all its cross-type pair counts. The immediate reward is the sum, over unordered type pairs, of reward per pair times the number paired.
+
+After these matches, the rate of the next external event is the sum of all type arrival rates plus, for each type, its patience departure rate multiplied by its remaining count. The time until that event is exponential with this total rate. Conditional on the event, a type's arrival probability is its arrival rate divided by the total rate, and its patience-departure probability is its departure rate times its remaining count divided by the total rate. An arrival increases the corresponding count by one; a departure decreases it by one and can occur only when that count is positive. This update occurs before the next matching decision. Matched people no longer contribute departure events. There is no artificial upper limit on the waiting population and no replacement of the state-dependent event rate by a fixed rate.
+
+The service starts empty at time zero with no initial matches. Each later choice may depend on the observed history of arrivals, departures, waiting counts and previous choices, and may use independent randomization, but must always respect the available people at that moment. The service seeks the greatest long-run expected reward per unit of calendar time: for each positive time horizon it takes the expectation of rewards earned at external events strictly after time zero and no later than that horizon, divides by the horizon, and then uses the lower limiting value as the horizon grows without bound. This long-run measure does not equate a single finite simulation's average reward with the achieved long-run value.
+
+\subsection*{Inline notation and relations}
+$R_t$; $\mathcal T=\{1,\ldots,d\}$; $i$; $\lambda_i>0$; $0<\mu_i<\infty$; $r_{ij}=r_{ji}\in\mathbb R$; $r_{ii}$; $\nu=(\nu_i)_{i\in\mathcal T}\in\mathbb Z_+^d$; $a=(a_{ij})_{1\le i\le j\le d}$; $a=0$; $k$; $\tau_k$; $\nu^k$; $a^k\in\mathcal A(\nu^k)$; $v^k=v(\nu^k,a^k)$; $v^k$; $e_i$; $\nu^0=0,\tau_0=0,a^0=0$; $\mathcal H_k$; $\pi$; $\mathcal A(\nu^k)$; $\Pi$; $\sup_\pi r^\pi$.
 \end{document}

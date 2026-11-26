@@ -1,20 +1,14 @@
-% Mathematical Model - 1-s2.0-S0191261521000394-main
-% Auto-generated at 2025-12-14T21:15:54.208861
-% Model Source: Directly Extracted
-% This model is directly extracted from the paper
-
-\documentclass{article}
-\usepackage{amsmath}
-\usepackage{amssymb}
-
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
+
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
 \begin{document}
-
-\section*{Problem: Combinatorial optimization problems involve the integration of location selection issues and vehicle routing problems. The paper refers to these problems as “Location-or-Routing Problems” (LoRP), and argues that they represent a generalization of Location-Routing Problems (LRP) and Set Covering Problems. This creates a family of problems with various variants, such as HMLoRP and pMLoRP. The core mathematical model involves a set covering model based on paths, and it constitutes a Mixed Integer Linear Programming (MILP) problem. Due to the exponential growth of path variables, the paper employs the Branch-and-Price algorithm for accurate solution calculations.}
-
-\textbf{Model Source}: Directly Extracted
-
-\subsection*{Decision Variables}
+\section*{P0414 Choosing Facility Capacity, Direct Service and Delivery Routes}
+\subsection*{Mathematical formulation}
 \[
 \begin{aligned}
 & x_i \in \mathbb{Z}^+ && \forall i \in I && \text{(1 if facility $i$ is open)} \\
@@ -24,12 +18,10 @@
 \end{aligned}
 \]
 
-\subsection*{Objective Function}
 \[
 \min \quad w_F \sum_{i \in I} f_i x_i + w_R \sum_{p \in P} d_p y_p + w_A \sum_{j \in J} \sum_{i \in I_j} d_{ij} z_{ij}
 \]
 
-\subsection*{Constraints}
 \[
 \begin{aligned}
 & \sum_{i \in I_j} z_{ij} + \sum_{p \in \tilde{P}_j} y_p = 1 && \forall j \in J && \text{(2)} \\
@@ -42,7 +34,6 @@
 \end{aligned}
 \]
 
-\subsection*{Complete Mathematical Model}
 \[
 \begin{aligned}
 \text{(SC)} \quad \min \quad & w_F \sum_{i \in I} f_i x_i + w_R \sum_{p \in P} d_p y_p + w_A \sum_{j \in J} \sum_{i \in I_j} d_{ij} z_{ij} \\
@@ -55,5 +46,17 @@
 & x_i, y_p, z_{ij}, v_i \ge 0 \text{ and integer} && \forall i \in I, j \in J_i, p \in P && \text{(9)}
 \end{aligned}
 \]
+
+\subsection*{Definitions and model scope}
+A service planner has given candidate facilities $I$, customers $J$ and feasible delivery paths $P$. Every facility has a given directly serviceable customer group $J_i$, and every customer has the corresponding eligible direct facilities $I_j$. Supplied path groups identify the paths serving each customer $\tilde P_j$, the paths departing each facility $P_i$ and each facility-customer associated path group $\bar P_{ij}$. Customer demand, path total demand, facility capacity and all these memberships are given.
+
+The planner chooses nonnegative integer facility amounts $x_i$, path amounts $y_p$, eligible direct-allocation amounts $z_{ij}$ and departing vehicle counts $v_i$. These quantities are not all separately restricted to zero and one; in particular a facility amount may exceed one. For each customer, add direct allocations over its eligible facilities and path amounts over the paths serving it. This total must equal one, so the customer receives exactly one direct or path-based service.
+
+For each facility, add the given customer demands $q_j$ times its direct-allocation amounts and the given path demands $q_p$ times amounts of paths departing there. This total cannot exceed the given capacity per facility unit $C_i$ times the facility amount. Each eligible direct-allocation amount cannot exceed its facility amount. In addition, for every facility and every customer, the sum of path amounts in their supplied associated path group cannot exceed that facility amount. All these groups are retained even when their sums are empty.
+
+For each facility, its vehicle count must equal the sum of amounts of paths departing there. Across facilities, total vehicle count must be at least total demand of the customers outside the union of all direct-service groups, divided by the given vehicle capacity $Q$ and rounded upward to an integer. This is a lower bound on required vehicles, not an upper bound. Other capacity or route-length rules belonging to an individual feasible path are already reflected in the supplied paths.
+
+The planner seeks the lowest weighted total cost. Multiply each facility's given unit facility charge $f_i$ by its chosen amount, add across facilities and multiply by the given facility-cost weight $w_F$. Add the sum of given path distances or costs $d_p$ times path amounts, multiplied by the given route-cost weight $w_R$. Finally add each eligible direct-service distance $d_{ij}$ times its allocation amount, sum across customers and eligible facilities, and multiply by the given allocation-cost weight $w_A$. Specific radii, fleet capacities or maximum route lengths from a sample dataset do not replace the supplied information for this task.
+
 
 \end{document}

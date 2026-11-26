@@ -1,67 +1,64 @@
-% Mathematical Model - paper
-% Auto-generated at 2026-01-12T00:33:16.128122
-% Model Source: Directly Extracted
-% This model is directly extracted from the paper
-
-\documentclass{article}
-\usepackage{amsmath}
-\usepackage{amssymb}
-
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
-\usepackage{geometry}
-\geometry{paperwidth=290mm,paperheight=297mm,hmargin=18mm,vmargin=19mm}
+
+\geometry{paperwidth=375mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
 \begin{document}
-
-\section*{Problem: Optimization Problem}
-
-\textbf{Model Source}: Directly Extracted
-
-\subsection*{Decision Variables}
+\section*{P0077 Passenger Route Recommendations during Transit Disruptions}
+\subsection*{Mathematical formulation}
 \[
 \begin{aligned}
-& p_{hkr} && \text{Path selection ratio, regarding the departure time } h \in \mathcal{H}, \text{ OD pair } k \in \mathcal{K}, \text{ Path } r \in R_k \\
-& \boldsymbol{u}_1, \boldsymbol{u}_2 && \text{Dual variables, corresponding to the upper and lower bounds of OD requirements} \\
-& \boldsymbol{v}_1, \boldsymbol{v}_2 && \text{Dual variables, representing the upper and lower bounds of the total demand during a given period.} \\
-& u_3 && \text{Dual variables, corresponding to the constraints related to total demand ratios} \\
-& \boldsymbol{y}_i && \text{Auxiliary variables are used to decompose robust uncertain sets. } i = 1, \dots, 6
+& p_{hkr} && \text{route choice share, for departure time } h \in \mathcal{H}, \text{ ODfor } k \in \mathcal{K}, \text{ route } r \in R_k \\
+& \boldsymbol{u}_1, \boldsymbol{u}_2 && \text{dual variables, corresponding toODdemand bounds} \\
+& \boldsymbol{v}_1, \boldsymbol{v}_2 && \text{dual variables, bounds on total demand per period} \\
+& u_3 && \text{dual variables, aggregate demand share constraint} \\
+& \boldsymbol{y}_i && \text{auxiliary variable, for decomposing the uncertainty set,  } i = 1, \dots, 6
 \end{aligned}
 \]
 
-\subsection*{Objective Function}
 \begin{equation}\tag{31a}
 \min_{\boldsymbol{p}, \boldsymbol{u}, \boldsymbol{v}, \boldsymbol{y}} \quad \hat{Z}(\boldsymbol{p}, \boldsymbol{u}, \boldsymbol{v}, \boldsymbol{y})_{\text{RC}} = \sum_{(h,k,r)\in \mathcal{P}} \beta_{hkr}(\tilde{\boldsymbol{f}}) \cdot (\bar{d}_{hk} \cdot p_{hkr} - \tilde{f}_{hkr}) + \rho_{1-\varepsilon} \|\boldsymbol{y}_1\|_2 + (\boldsymbol{d}^U - \bar{\boldsymbol{d}})^T \boldsymbol{u}_1 + (\bar{\boldsymbol{d}} - \boldsymbol{d}^L)^T \boldsymbol{u}_2 + (\boldsymbol{d}^U_{\mathcal{H}} - \boldsymbol{S}\bar{\boldsymbol{d}})^T \boldsymbol{v}_1 + (\boldsymbol{S}\bar{\boldsymbol{d}} - \boldsymbol{d}^L_{\mathcal{H}})^T \boldsymbol{v}_2 + (\Gamma - 1) \cdot (\boldsymbol{1}^T \bar{\boldsymbol{d}}) \cdot u_3 + Z(\tilde{\boldsymbol{f}})
 \end{equation}
 
-\subsection*{Constraints}
-\text{ (Auxiliary constraints for robust peer-to-peer conversion)}
 \[
-\begin{gathered}
 \boldsymbol{D}^T \boldsymbol{u}_1 = \boldsymbol{y}_2
-\\
--\boldsymbol{D}^T \boldsymbol{u}_2 = \boldsymbol{y}_3
-\\
-(\boldsymbol{S}\boldsymbol{D})^T \boldsymbol{v}_1 = \boldsymbol{y}_4
-\\
--(\boldsymbol{S}\boldsymbol{D})^T \boldsymbol{v}_2 = \boldsymbol{y}_5
-\\
-(\boldsymbol{1}^T \boldsymbol{D})^T u_3 = \boldsymbol{y}_6
-\end{gathered}
 \]
+
+\[
+-\boldsymbol{D}^T \boldsymbol{u}_2 = \boldsymbol{y}_3
+\]
+
+\[
+(\boldsymbol{S}\boldsymbol{D})^T \boldsymbol{v}_1 = \boldsymbol{y}_4
+\]
+
+\[
+-(\boldsymbol{S}\boldsymbol{D})^T \boldsymbol{v}_2 = \boldsymbol{y}_5
+\]
+
+\[
+(\boldsymbol{1}^T \boldsymbol{D})^T u_3 = \boldsymbol{y}_6
+\]
+
 \begin{equation}\tag{28g}
 \sum_{i=1}^{6} \boldsymbol{y}_i = (\boldsymbol{A}\boldsymbol{D})^T \boldsymbol{p}
 \end{equation}
+
 \begin{equation}\tag{28h}
 \boldsymbol{u}_1, \boldsymbol{u}_2, \boldsymbol{v}_1, \boldsymbol{v}_2, u_3 \geq \boldsymbol{0}
 \end{equation}
-\text{ (Path proportion constraints) }
+
 \begin{equation}\tag{31c}
 \sum_{r \in R_k} p_{hkr} = 1 \quad \forall h \in \mathcal{H}, k \in \mathcal{K}
 \end{equation}
+
 \begin{equation}\tag{31d}
 0 \leq p_{hkr} \leq 1 \quad \forall (h, k, r) \in \mathcal{P}
 \end{equation}
 
-\subsection*{Complete Mathematical Model}
 \[
 \begin{aligned}
 \min_{\boldsymbol{p}, \boldsymbol{u}, \boldsymbol{v}, \boldsymbol{y}} \quad & \hat{Z}(\boldsymbol{p}, \boldsymbol{u}, \boldsymbol{v}, \boldsymbol{y})_{\text{RC}} = \sum_{(h,k,r)\in \mathcal{P}} \beta_{hkr}(\tilde{\boldsymbol{f}}) \cdot (\bar{d}_{hk} \cdot p_{hkr} - \tilde{f}_{hkr}) + \rho_{1-\varepsilon} \|\boldsymbol{y}_1\|_2 + (\boldsymbol{d}^U - \bar{\boldsymbol{d}})^T \boldsymbol{u}_1 + (\bar{\boldsymbol{d}} - \boldsymbol{d}^L)^T \boldsymbol{u}_2 + (\boldsymbol{d}^U_{\mathcal{H}} - \boldsymbol{S}\bar{\boldsymbol{d}})^T \boldsymbol{v}_1 + (\boldsymbol{S}\bar{\boldsymbol{d}} - \boldsymbol{d}^L_{\mathcal{H}})^T \boldsymbol{v}_2 + (\Gamma - 1) \cdot (\boldsymbol{1}^T \bar{\boldsymbol{d}}) \cdot u_3 + Z(\tilde{\boldsymbol{f}}) \\
@@ -76,5 +73,19 @@
 & 0 \leq p_{hkr} \leq 1 \quad \forall (h, k, r) \in \mathcal{P}
 \end{aligned}
 \]
+
+\subsection*{Definitions and model scope}
+A transit operator recommends alternative routes during a long disruption. For every departure interval $\mathcal H$ and origin--destination pair $\mathcal K$, it divides passengers among the pair's available routes $R_k$. Each recommended share $p_{hkr}$ lies between zero and one, and all shares for the same departure interval and origin--destination pair sum to one. The full route-choice collection $\mathcal P$ identifies these combinations, and their shares form the route-share collection $\boldsymbol p$.
+
+The operator has a nominal demand for each departure and trip pair $\bar d_{hk}$, collectively the nominal-demand collection $\bar{\boldsymbol d}$, individual upper demand limits $\boldsymbol d^U$ and lower demand limits $\boldsymbol d^L$, and upper period-total limits $\boldsymbol d^U_{\mathcal H}$ and lower period-total limits $\boldsymbol d^L_{\mathcal H}$. A given aggregation table $\boldsymbol S$ converts individual demands to period totals. A deviation table $\boldsymbol D$, a response table $\boldsymbol A$, a total-demand factor $\Gamma$, and a confidence-related radius $\rho_{1-\varepsilon}$ are also supplied. Their entries and ordering are fixed; these tables are not chosen as part of the route recommendation.
+
+To assess demand exposure, the operator chooses nonnegative upper-demand weights $\boldsymbol u_1$ and lower-demand weights $\boldsymbol u_2$, nonnegative upper-period weights $\boldsymbol v_1$ and lower-period weights $\boldsymbol v_2$, and a nonnegative total-demand weight $u_3$. It also keeps six signed exposure collections $\boldsymbol y_i$, with no separate nonnegativity requirement on these collections. Each coordinate of the second collection $\boldsymbol y_2$ is the sum down the corresponding column of the deviation table, weighting entries by their upper-demand weights. The third collection $\boldsymbol y_3$ uses lower-demand weights and then negates that sum.
+
+First multiplying the aggregation table by the deviation table gives the period-total deviation table. For its every column, summing entries weighted by upper-period weights gives the corresponding coordinate of the fourth collection $\boldsymbol y_4$; weighting by lower-period weights and negating gives the fifth collection $\boldsymbol y_5$. The sixth collection $\boldsymbol y_6$ has each coordinate equal to the corresponding deviation-table column sum multiplied by the total-demand weight. Add all six exposure collections coordinate by coordinate. The result must equal the column-by-column weighted sums obtained by first multiplying the response table by the deviation table and then weighting its rows by the corresponding route shares. This equality determines what remains for the first exposure collection $\boldsymbol y_1$ after the other five contributions.
+
+Recommendations are evaluated around a given reference route-flow collection $\tilde{\boldsymbol f}$. Each route combination has a reference flow $\tilde f_{hkr}$ and a fixed marginal travel-cost coefficient $\beta_{hkr}(\tilde{\boldsymbol f})$ evaluated at that reference. Its contribution is the coefficient multiplied by nominal demand times recommended share minus reference flow, with the multiplication applying to the entire difference. These contributions are summed over all route combinations and added to the given reference total travel time $Z(\tilde{\boldsymbol f})$. The reference quantities are fixed, not repeatedly recalculated from each recommendation.
+
+The total assessment also includes the confidence-related radius multiplied by the square root of the sum of squares of all coordinates in the first exposure collection. For individual demands, add each upper limit minus nominal demand multiplied by its upper-demand weight, and each nominal demand minus lower limit multiplied by its lower-demand weight. For period totals, aggregate nominal demands with the aggregation table, then add each upper limit minus its nominal total multiplied by its upper-period weight and each nominal total minus lower limit multiplied by its lower-period weight. Finally add the total-demand factor minus one, multiplied by the sum of all nominal demands and by the total-demand weight. Each difference is taken before multiplication. The operator seeks the lowest possible overall travel-time assessment formed by all these contributions while respecting the share and exposure relationships.
+
 
 \end{document}

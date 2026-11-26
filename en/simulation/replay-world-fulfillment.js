@@ -113,7 +113,7 @@ function plantScenery(g,f){
  for(let j=0;j<3;j++){const p=travel([[1001+j*33,221],[1017+j*33,203],[1023+j*33,195]],phase(f,j*.11,j*.11+.54));person(g,...p,j%2?blue:red,f*30);}
  for(let j=0;j<4;j++){const x=345+26*j;block(g,x,340,19,10,7,'#a49268');}
 }
-const labbase={batch:'world20',views:["follow homework","Panorama"],duration:45};
+const labbase={batch:'world20',views:['follow homework','Overview'],duration:45};
 
 const relayBase=[590,375], shores=[[300,269],[263,173]], pads=[[908,231],[984,151]], homes=[[1085,291],[1131,100]];
 function relayFrame(d,k,f){
@@ -123,12 +123,12 @@ function relayFrame(d,k,f){
  const bike=t<1?travel(firstRoad,t):t<2?p:t<3?travel(bikeBridge,t-2):t<4?drop:travel([home,[1052,341],[868,364],[736,352],relayBase],t-4);
  const landing=travel([p,[527,p[1]-52],[756,l[1]-43],l],phase(t,2,3));
  const flight=t>=2&&t<3,focus=flight?landing:t>=4?home:bike;
- const status=t<service[0]?"The rider goes to pick up the package":t<service[1]?"The rider delivers the parcel to the drone":flight?"Package crosses river":t<service[3]?"Delivery via landing relay":"The recipient brings the package in";
- return {t,k,bike,landing,focus,status,clock:"model moment "+num(t,2)+' / 5',metrics:[["Value of this order",String(d.values[k])],["Taking orders in the same wave",String(d.accepted)],["Order status",status],["Full wave net income",String(d.gross-d.expense+d.values[k]-d.values[0])]]};
+ const status=t<service[0]?'The rider goes to pick up the package':t<service[1]?'The rider delivers the parcel to the drone':flight?'Package crosses river':t<service[3]?'Delivery via landing relay':'The recipient brings the package in';
+ return {t,k,bike,landing,focus,status,clock:'model moment '+num(t,2)+' / 5',metrics:[['Value of this order',String(d.values[k])],['Taking orders in the same wave',String(d.accepted)],['Order status',status],['Full wave net income',String(d.gross-d.expense+d.values[k]-d.values[0])]]};
 }
-labs.P0010={...labbase,title:"Order quota for cross-river relay",action:"The same group of riders and drones can only undertake one replacement order for this wave. Choose O4 at Riverbank Warehouse, or O17 at Flower Market.",choices:["Continued from O4 · Archive","Give the O4 spot to O17"],
- scope:"Two tasks with the same time parameters are exchanged in a synchronization wave of 24 orders, and the remaining resources and connections are fixed. Costs are calculated based on the execution time of the original solution rider and aircraft. The coastline, road network and people serve as handover signals.",
- chapters:()=>[chapter("Rider pickup",.17),chapter("Leave it to the drone",.385),chapter("Receiving from the other side",.59),chapter("Customer signature",.79)],frame:relayFrame,
+labs.P0010={...labbase,title:'Order quota for cross-river relay',action:'The same group of riders and drones can only undertake one replacement order for this wave. Choose O4 at Riverbank Warehouse, or O17 at Flower Market.',choices:['Continued from O4 · Archive','Give the O4 spot to O17'],
+ scope:'Two tasks with the same time parameters are exchanged in a synchronization wave of 24 orders, and the remaining resources and connections are fixed. Costs are calculated based on the execution time of the original solution rider and aircraft. The coastline, road network and people serve as handover signals.',
+ chapters:()=>[chapter('Rider pickup',.17),chapter('Leave it to the drone',.385),chapter('Receiving from the other side',.59),chapter('Customer signature',.79)],frame:relayFrame,
  draw(c,s,d,k,f,v){const g=canvasPen(c,s.focus,v,1270,390);
   water(g,[[552,-80],[580,90],[637,164],[617,300],[645,449],[700,600]],112);
   for(const [x,y,col] of [[15,137,'#c7c6ad'],[94,126,'#d5b69e'],[714,105,'#c6beac'],[813,101,'#c6d1b9'],[1180,146,'#cdb9a2']])house(g,x,y,62,62,col,'');
@@ -138,8 +138,8 @@ labs.P0010={...labbase,title:"Order quota for cross-river relay",action:"The sam
   road(g,[[846,305],[908,231],[984,151],[1131,100],[1280,139]],23);
   quayScene(g,s.t);
   g.line([[559,328],[625,320],[690,319]],'#577672',3);g.line([[569,368],[629,363],[703,361]],'#577672',3);
-  warehouse(g,183,253,107,58,"Warehouse O4");house(g,173,168,81,48,'#c19f8a',"flower market O17",'store');
-  warehouse(g,527,416,117,42,"Rider dispatch booth",1);house(g,1061,282,84,73,'#d4c09e',"east coast bookstore",'store');house(g,1092,91,85,60,'#a6c0b4',"North Street Apartment");
+  warehouse(g,183,253,107,58,'Warehouse O4');house(g,173,168,81,48,'#c19f8a','flower market O17','store');
+  warehouse(g,527,416,117,42,'Rider dispatch booth',1);house(g,1061,282,84,73,'#d4c09e','east coast bookstore','store');house(g,1092,91,85,60,'#a6c0b4','North Street Apartment');
   pads.forEach(([x,y],j)=>{g.oval(x,y+1,23,9,'#c3c3a4');g.oval(x,y,17,6,'#688e89');g.txt('H',x,y,10,cream);walk(g,[[x+18,y+5],[x+65,y+18],homes[j]],10);});
   shores.forEach(([x,y],j)=>{if(j!==k||s.t<2)carton(g,x+5,y,gold,13);});
   rider(g,...s.bike,s.t*15,s.t>=3&&s.t<4);
@@ -157,16 +157,16 @@ function factoryFrame(d,k,f){
  const loaded=travel(inbound,phase(f,.09,.51)),out=travel(returnsPath,phase(f,.7,.97));
  const forklift=travel([[1099,254],[1093,230],[1128,199],[1160,189]],phase(f,.51,.62));
  const focus=f<.51?loaded:f<.65?forklift:f<.7?lerp([1160,189],returnsPath[0],phase(f,.65,.7)):out;
- const status=f<.09?"Supplier loads material box":f<.51?k?"Private car goes directly to the delivery port":f<.29?"LTL enters the distribution station":"Carpooling to assembly plant":f<.62?"Forklift delivers parts to the line":f<.7?"Empty containers are sent to and from the platform":f<.97?"Return recycling bin":"Empty boxes returned to supplier";
- return {focus,loaded,out,forklift,status,f,k,clock:"Day 1 · "+status,metrics:[["This batch material box",d.containers+" box"],["Return empty box converted weight",num(d.empty,2)],["Daily number of LTL trucks on the entire network",String(d.plans[k][2])],["Total cost for four days",num(d.plans[k][1],3)]]};
+ const status=f<.09?'Supplier loads material box':f<.51?k?'Private car goes directly to the delivery port':f<.29?'LTL enters the distribution station':'Carpooling to assembly plant':f<.62?'Forklift delivers parts to the line':f<.7?'Empty containers are sent to and from the platform':f<.97?'Return recycling bin':'Empty boxes returned to supplier';
+ return {focus,loaded,out,forklift,status,f,k,clock:'Day 1 · '+status,metrics:[['This batch material box',d.containers+' box'],['Return empty box converted weight',num(d.empty,2)],['Daily number of LTL trucks on the entire network',String(d.plans[k][2])],['Total cost for four days',num(d.plans[k][1],3)]]};
 }
-labs.P0183={...labbase,title:"Parts arriving at the automobile assembly line and empty boxes returned",action:"Select the shipping method for supplier S6 and follow the same batch of bins to see how they enter the factory and return empty bins.",choices:["LTL distribution·Archiving","Switch to direct delivery by vehicle"],
- scope:"Restore loads, volumes and rates for S6 using the original supplier data expander. Change the supplier's four-day transportation mode and recalculate the number of LTL trucks, costs and shared capacity across the entire network. The footage shows a typical handover on the first day, with site locations and times of day as indications.",
- chapters:()=>[chapter("Supplier packing",0),chapter("Unloading into the factory",.50),chapter("Empty container handover",.66),chapter("Return to the factory gate",.94)],frame:factoryFrame,
+labs.P0183={...labbase,title:'Parts arriving at the automobile assembly line and empty boxes returned',action:'Select the shipping method for supplier S6 and follow the same batch of bins to see how they enter the factory and return empty bins.',choices:['LTL distribution·Archiving','Switch to direct delivery by vehicle'],
+ scope:'Restore loads, volumes and rates for S6 using the original supplier data expander. Change the supplier’s four-day transportation mode and recalculate the number of LTL trucks, costs and shared capacity across the entire network. The footage shows a typical handover on the first day, with site locations and times of day as indications.',
+ chapters:()=>[chapter('Supplier packing',0),chapter('Unloading into the factory',.50),chapter('Empty container handover',.66),chapter('Return to the factory gate',.94)],frame:factoryFrame,
  draw(c,s,d,k,f,v){const g=canvasPen(c,s.focus,v,1270,400);
   g.rect(0,37,1270,115,'#cbd5c3');for(let i=0;i<6;i++)warehouse(g,30+i*200,125,91,42,'',2);
-  warehouse(g,64,281,130,79,"parts factory S6");warehouse(g,400,178,156,59,"LTL distribution station");warehouse(g,973,242,165,103,"Final assembly plant entry platform");
-  g.rect(1125,150,113,56,'#7f9489');g.rect(1128,155,106,42,'#d9d4b8');for(let i=0;i<4;i++){g.oval(1139+i*26,191,7,4,'#42615e');g.rect(1132+i*26,172,16,12,blue);}g.txt("assembly line",1184,161,11);
+  warehouse(g,64,281,130,79,'parts factory S6');warehouse(g,400,178,156,59,'LTL distribution station');warehouse(g,973,242,165,103,'Final assembly plant entry platform');
+  g.rect(1125,150,113,56,'#7f9489');g.rect(1128,155,106,42,'#d9d4b8');for(let i=0;i<4;i++){g.oval(1139+i*26,191,7,4,'#42615e');g.rect(1132+i*26,172,16,12,blue);}g.txt('assembly line',1184,161,11);
   road(g,[[30,308],[171,294],[270,320],[474,305],[728,282],[945,298],[1099,254],[1290,268]],37);
   road(g,[[267,304],[376,202],[495,187],[609,221],[729,281]],24);road(g,returnsPath,29);
   plantScenery(g,f);
@@ -191,16 +191,16 @@ function palletFrame(d,k,f){
  const blocked=k&&t>=d.times[1]+d.gate-1e-8;
  const delivered=blocked?0:t<finishFirst?0:t<d.times[2]?d.qty[1]:d.qty[0]+d.qty[1];
  const pos=travel([[264,272],[318,311],[471,327],[630,298],[801,283],[936,302],[1030,267]],phase(t,30,132));
- const collection=t<10?"Waiting at the loading gate":t<20?"No. 10 enters the depths of the compartment":t<30?"No. 19 is installed on the back door.":t<132?"Two caretakers on the way":blocked?"No. 19 blocks No. 10 from deep.":t<142?"Enter the unloading port of East Station":t<finishFirst?"Remove outer No. 19":t<159?"Unload deep no. 10":"Two pallets delivered completed";
+ const collection=t<10?'Waiting at the loading gate':t<20?'No. 10 enters the depths of the compartment':t<30?'No. 19 is installed on the back door.':t<132?'Two caretakers on the way':blocked?'No. 19 blocks No. 10 from deep.':t<142?'Enter the unloading port of East Station':t<finishFirst?'Remove outer No. 19':t<159?'Unload deep no. 10':'Two pallets delivered completed';
  const onboard=(t>=20?d.qty[0]:0)+(t>=30?d.qty[1]:0)-delivered;
- return {t,pos,blocked,delivered,collection,focus:t<10?[192,251]:t<132?pos:[990,239],clock:num(t,1)+" s",metrics:[["Current vehicle capacity",onboard+' / '+d.cap],["Quantity unloaded at East Station",String(delivered)],["vehicle location",t>=132?"East Railway Station":t>30?"cross-district channel":"Departure pier"],["Homework results",blocked?"compartment door blocking":t===159?"Completed in 159 seconds":collection]]};
+ return {t,pos,blocked,delivered,collection,focus:t<10?[192,251]:t<132?pos:[990,239],clock:num(t,1)+' s',metrics:[['Current vehicle capacity',onboard+' / '+d.cap],['Quantity unloaded at East Station',String(delivered)],['vehicle location',t>=132?'East Railway Station':t>30?'cross-district channel':'Departure pier'],['Homework results',blocked?'compartment door blocking':t===159?'Completed in 159 seconds':collection]]};
 }
-labs.P0278={...labbase,title:"A car, two pallets of cargo and a back door",action:"Xiku installed No. 10 first and then No. 19. When you arrive at the east station, choose which pallet the forklift should pick up first.",choices:["Remove outer No. 19 first","Remove the inner No. 10 first"],
- scope:"Vehicle 0 in sequence number 1, first shipment batch. The archived route from h to e is 3 kilometers in total and takes 102 seconds to travel, with 10 seconds of gate time at each end. The original loading sequence is retained when switching the unloading sequence. Display the delivery volume and time of this trip.",
- endAt:(d,k)=>k?stopLifo:1,chapters:(d,k)=>[chapter("Install the first pallet",.095),chapter("Departure after closing",.285),chapter("Enter East Station",.635),chapter("Unloading begins at the back door",stopLifo-.003)],frame:palletFrame,
+labs.P0278={...labbase,title:'A car, two pallets of cargo and a back door',action:'Xiku installed No. 10 first and then No. 19. When you arrive at the east station, choose which pallet the forklift should pick up first.',choices:['Remove outer No. 19 first','Remove the inner No. 10 first'],
+ scope:'Vehicle 0 in sequence number 1, first shipment batch. The archived route from h to e is 3 kilometers in total and takes 102 seconds to travel, with 10 seconds of gate time at each end. The original loading sequence is retained when switching the unloading sequence. Display the delivery volume and time of this trip.',
+ endAt:(d,k)=>k?stopLifo:1,chapters:(d,k)=>[chapter('Install the first pallet',.095),chapter('Departure after closing',.285),chapter('Enter East Station',.635),chapter('Unloading begins at the back door',stopLifo-.003)],frame:palletFrame,
  draw(c,s,d,k,f,v){const g=canvasPen(c,s.focus,v,1270,300);
   g.rect(0,0,1270,173,'#d7dbcf');for(let j=0;j<11;j++){g.rect(42+j*119,19,10,119,'#c2c9b8');g.line([[43+j*119,44],[80+j*119,22]],'#a3b2a5',3);}
-  warehouse(g,45,226,251,94,"Xiku H·Departure gate",3);warehouse(g,912,224,278,99,"East Station E·Unloading Gate",3);
+  warehouse(g,45,226,251,94,'Xiku H·Departure gate',3);warehouse(g,912,224,278,99,'East Station E·Unloading Gate',3);
   for(let j=0;j<4;j++){block(g,682+j*31,181,28,17,9,'#a9b3a2');block(g,688+j*31,162,23,13,7,'#b2bdaf');}
   road(g,[[-25,259],[264,272],[318,311],[471,327],[630,298],[801,283],[936,302],[1030,267],[1300,272]],48);
   for(const off of [64,892]){g.rect(off,218,210,47,'#b1b7a4');for(let j=0;j<14;j++)g.line([[off+j*15,262],[off+j*15+8,255]],'#e9c16e',4);}
@@ -236,19 +236,19 @@ function robotFrame(d,k,f){
  const van=f<.30?travel(highway,phase(f,0,.30)):!k?[593,259]:f<.64?travel(vehicleLane,phase(f,.34,.62)):travel([[887,198],[917,278],[1012,270],[1117,243],[1097,173]],phase(f,.68,.92));
  const robot=f<.30?van:f<.65?travel(robotLane,phase(f,.33,.62)):travel(secondLane,phase(f,.67,.92));
  const focus=k?van:robot, delivered=f<.635?0:f<.935?1:2;
- const activity=f<.30?"Trucks transport into East District":f<.34?k?"Keep two in the car":"Put down the carrying robot":f<.62?k?"The truck detours to the first home":"The robot carries two items across the trail":f<.67?"First household handover":f<.92?"The remaining piece will be sent to the second household":"Second household reception";
- return {k,f,van,robot,focus,delivered,activity,clock:activity,metrics:[["Two households have received",delivered+' / 2'],["Network-wide robots",String(d.plans[k][1])],["Number of items delivered directly by car across the entire network",String(d.plans[k][0])],["Network-wide distribution costs",String(d.plans[k][3])]]};
+ const activity=f<.30?'Trucks transport into East District':f<.34?k?'Keep two in the car':'Put down the carrying robot':f<.62?k?'The truck detours to the first home':'The robot carries two items across the trail':f<.67?'First household handover':f<.92?'The remaining piece will be sent to the second household':'Second household reception';
+ return {k,f,van,robot,focus,delivered,activity,clock:activity,metrics:[['Two households have received',delivered+' / 2'],['Network-wide robots',String(d.plans[k][1])],['Number of items delivered directly by car across the entire network',String(d.plans[k][0])],['Network-wide distribution costs',String(d.plans[k][3])]]};
 }
-labs.P0347={...labbase,title:"After the robot rides into the community, who will deliver it to the door?",action:"East District Robot r20 can send p201 and p53 at the same time. You can also leave the robot behind and let the truck take care of the last two households.",choices:["Equipped with robots and archives","Trucks deliver directly to two households"],
- scope:"Two items of the same robot are restored by archive partitioning and matching. The difference between the east zone positions 10 and 12 is 2, which is within the upper limit of 27 distances. Keep other allocations and recalculate equipment fees, transportation fees, and shared capacity. Walking order, streets and duration are for display.",
- chapters:()=>[chapter("Shipping from Eastern District",0),chapter("Enter the unloading bay",.29),chapter("First household handover",.61),chapter("Second household handover",.91)],frame:robotFrame,
+labs.P0347={...labbase,title:'After the robot rides into the community, who will deliver it to the door?',action:'East District Robot r20 can send p201 and p53 at the same time. You can also leave the robot behind and let the truck take care of the last two households.',choices:['Equipped with robots and archives','Trucks deliver directly to two households'],
+ scope:'Two items of the same robot are restored by archive partitioning and matching. The difference between the east zone positions 10 and 12 is 2, which is within the upper limit of 27 distances. Keep other allocations and recalculate equipment fees, transportation fees, and shared capacity. Walking order, streets and duration are for display.',
+ chapters:()=>[chapter('Shipping from Eastern District',0),chapter('Enter the unloading bay',.29),chapter('First household handover',.61),chapter('Second household handover',.91)],frame:robotFrame,
  draw(c,s,d,k,f,v){const g=canvasPen(c,s.focus,v,1270,365);
-  g.rect(0,0,1270,190,'#cdddc5');warehouse(g,59,301,138,83,"Eastern District Parcel Station");house(g,295,222,100,59,'#b5bbb0','', 'store');
-  house(g,808,169,104,85,'#d2b9a7',"10 Courtyard");house(g,1048,150,94,94,'#acc3ba',"12 Apartment No.");
+  g.rect(0,0,1270,190,'#cdddc5');warehouse(g,59,301,138,83,'Eastern District Parcel Station');house(g,295,222,100,59,'#b5bbb0','', 'store');
+  house(g,808,169,104,85,'#d2b9a7','10 Courtyard');house(g,1048,150,94,94,'#acc3ba','12 Apartment No.');
   grove(g,225,366,6);grove(g,618,162,3);grove(g,766,386,8);
   road(g,[[0,337],[132,320],[241,315],[361,293],[460,308],[542,286],[593,259],[650,301],[753,337],[866,329],[917,278],[1012,270],[1117,243],[1240,267]],38);
   road(g,[[917,278],[887,198]],22);road(g,[[1117,243],[1097,173]],22);
-  walk(g,robotLane,16);walk(g,secondLane,16);g.oval(585,258,37,15,'#9eac9a');g.tag("Robot unloading pad",577,222,green,13);
+  walk(g,robotLane,16);walk(g,secondLane,16);g.oval(585,258,37,15,'#9eac9a');g.tag('Robot unloading pad',577,222,green,13);
   for(let j=0;j<5;j++){
    const xx=689+j*28;g.rect(xx,273,16,6,'#a48a60');g.line([[xx+1,278],[xx+1,283]],ink,2);g.line([[xx+14,278],[xx+14,283]],ink,2);
    tree(g,xx+6,268,.6);
@@ -291,9 +291,9 @@ function refuseFrame(d,k,f){
  const run=dayRuns(d)[k],t=f*run.time,e=run.events.find(a=>t<a.finish)||run.events[run.events.length-1];
  const drive=phase(t,e.start,e.arrival),p=phase(t,e.arrival,e.finish),x=mix(refuseX(e.from),refuseX(e.to),drive);
  const passed=e.to<76&&p>=.7,load=e.to===76&&p>=.7?0:e.load+(passed?d.quantities[e.to]:0),n=e.n+Number(passed);
- const status=drive<1?"Heading to the next stop":e.to===76?"Disposal site unloading":e.to===77?"Return to the terminal":passed?"The trash can has been collected":"Lift bin";
+ const status=drive<1?'Heading to the next stop':e.to===76?'Disposal site unloading':e.to===77?'Return to the terminal':passed?'The trash can has been collected':'Lift bin';
  return {e,t,p,x,y:streetY(x),drive,load,n,status,f,k,done:run.events.filter(a=>a.to<76&&t>=a.arrival+.7*(a.finish-a.arrival)).map(a=>a.to),
-  clock:"Day 1 · "+status,metrics:[["Collection completed",n+' / 76'],["Vehicle collection and transportation volume",load+' / '+d.capacity],["Accumulated distance",num(e.km+drive*e.dist)],["Today’s driving and operating costs",String(d.plans[k][1])]]};
+  clock:'Day 1 · '+status,metrics:[['Collection completed',n+' / 76'],['Vehicle collection and transportation volume',load+' / '+d.capacity],['Accumulated distance',num(e.km+drive*e.dist)],['Today’s driving and operating costs',String(d.plans[k][1])]]};
 }
 function refuseOverview(c,s){
  const g=canvasPen(c,[610,235],1);g.rect(0,0,1270,495,'#d5dec9');
@@ -301,12 +301,12 @@ function refuseOverview(c,s){
  const band=x=>[75+1125*x/7140,308-67*Math.sin(x/950)+17*Math.sin(x/390)];
  const pts=Array.from({length:70},(_,j)=>band(j*7140/69));road(g,pts,21);
  for(let id=0;id<76;id++){const [x,y]=band(refuseX(id));g.oval(x,y-16,3.8,3.8,s.done.includes(id)?green:gold);}
- for(const [i,label] of [[-1,"Western District Car Park"],[1,"Old street collection area"],[26,"Riverside settlements"],[52,"Eastern Shopping Street"],[76,"terminal disposal site"]]){const [x,y]=band(refuseX(i));g.tag(label,x+(i<0?5:0),y-(i===1?95:50),ink,14);}
+ for(const [i,label] of [[-1,'Western District Car Park'],[1,'Old street collection area'],[26,'Riverside settlements'],[52,'Eastern Shopping Street'],[76,'terminal disposal site']]){const [x,y]=band(refuseX(i));g.tag(label,x+(i<0?5:0),y-(i===1?95:50),ink,14);}
  const [x,y]=band(s.x);truck(g,x,y,'#658c68',s.e.to<s.e.from?-1:1);g.tag(s.status,x,y+40,green);
 }
-labs.P0497={...labbase,title:"The removal truck goes from the street garbage bin to the terminal disposal site",duration:62,action:"Choose to go to C0 or C1 from the West End Depot on the first day, and then perform the same collection and transportation tasks. Observe directed road costs and cumulative load before dumping.",choices:["First C0 then C1 · Archive","First C1 then C0"],
- scope:"Shows 76 pickup points, average pickup volume, and vehicle capacity on the first day. In the comparison, only the first two stations are exchanged, and the remaining quantities and daily operation duration are fixed. Costs are recalculated based on directed distance, duration and fixed charges, using the same-day transportation component. The shape of the blocks is schematic, and the progress varies by station.",
- chapters:(d,k)=>{const r=dayRuns(d)[k],go=i=>r.events[i].start/r.time;return [chapter("First stop selection",0),chapter("second bin",go(1)),chapter("final collection point",go(75)),chapter("Disposal site unloading",go(76))];},frame:refuseFrame,
+labs.P0497={...labbase,title:'The removal truck goes from the street garbage bin to the terminal disposal site',duration:62,action:'Choose to go to C0 or C1 from the West End Depot on the first day, and then perform the same collection and transportation tasks. Observe directed road costs and cumulative load before dumping.',choices:['First C0 then C1 · Archive','First C1 then C0'],
+ scope:'Shows 76 pickup points, average pickup volume, and vehicle capacity on the first day. In the comparison, only the first two stations are exchanged, and the remaining quantities and daily operation duration are fixed. Costs are recalculated based on directed distance, duration and fixed charges, using the same-day transportation component. The shape of the blocks is schematic, and the progress varies by station.',
+ chapters:(d,k)=>{const r=dayRuns(d)[k],go=i=>r.events[i].start/r.time;return [chapter('First stop selection',0),chapter('second bin',go(1)),chapter('final collection point',go(75)),chapter('Disposal site unloading',go(76))];},frame:refuseFrame,
  draw(c,s,d,k,f,v){if(v){refuseOverview(c,s);return;}
   const g=canvasPen(c,[s.x,s.y],0,7250,395),lo=Math.max(-1,Math.floor((g.vx-390)/82)),hi=Math.min(75,Math.ceil((g.vx+g.vw+15)/82));
   const left=g.vx-120,right=g.vx+g.vw+110,roadline=[];
@@ -315,14 +315,14 @@ labs.P0497={...labbase,title:"The removal truck goes from the street garbage bin
   const canal=roadline.map(([a,b])=>[a,b+117+Math.sin(a/117)*10]);water(g,canal,34);
   for(let id=Math.max(0,lo);id<=hi;id++){
    const x=refuseX(id),y=streetY(x),h=49+(id%3)*8;
-   if(id%7===0)house(g,x-24,y-48,54,h,'#c2b89b',id<2?"Food market along the river":'','store');
+   if(id%7===0)house(g,x-24,y-48,54,h,'#c2b89b',id<2?'Food market along the river':'','store');
    else if(id%5===0)warehouse(g,x-28,y-60,62,45,'',2);
-   else house(g,x-20,y-57,52,h,['#d1baa3','#bac4a8','#b5c8ba'][id%3],id===1?"Alley Apartment":'');
+   else house(g,x-20,y-57,52,h,['#d1baa3','#bac4a8','#b5c8ba'][id%3],id===1?'Alley Apartment':'');
    if(id%2===0)tree(g,x+34,y-47,.72);
   }
-  if(left<280)warehouse(g,36,streetY(100)-43,99,58,"Western District Car Park",2);
-  if(right>6640){warehouse(g,6755,streetY(6865)-47,167,87,"terminal disposal site",2);
-   for(let n=0;n<4;n++)block(g,6790+n*32,streetY(6865)-10,25,17,9,'#899681');warehouse(g,7104,streetY(7140)-39,95,52,"terminal",2);}
+  if(left<280)warehouse(g,36,streetY(100)-43,99,58,'Western District Car Park',2);
+  if(right>6640){warehouse(g,6755,streetY(6865)-47,167,87,'terminal disposal site',2);
+   for(let n=0;n<4;n++)block(g,6790+n*32,streetY(6865)-10,25,17,9,'#899681');warehouse(g,7104,streetY(7140)-39,95,52,'terminal',2);}
   road(g,roadline,42);
   for(let id=Math.max(0,lo);id<=hi;id++){
    const x=refuseX(id),y=streetY(x),here=s.e.to===id&&s.drive>=1,tilt=here?Math.sin(Math.PI*s.p):0,full=!s.done.includes(id);

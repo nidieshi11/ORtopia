@@ -2,7 +2,7 @@
  'use strict';
  const F=window.ORTOPIA_FIELD;
  const phases=['early','up','flat','down'];
- const phaseNames=["first issue","Upward","Smooth","Downward"];
+ const phaseNames=['first issue','Upward','Smooth','Downward'];
  const centers=[425,626,827], docks={A:147,B:258};
  const sessions=new WeakMap();
  const mint='#73dbc1', gold='#f4be66', dim='#a5b5b4';
@@ -46,14 +46,14 @@
   ellipse(c,130,y-3,3,3,remaining?tone:'#777e72');
   box(c,137,y+7,37,9,9,['#87988f','#667b74','#bac8b8']);
   for(let j=0;j<6;j++)line(c,[[140+j*5,y-2],[148+j*5,y-7]],'#627b74',1);
-  badge(c,"Supplier "+s,88,y-61,'#263d40',tone,15);
-  text(c,"left "+remaining,114,y-21,13,'#f1f0d9','center');
+  badge(c,'Supplier '+s,88,y-61,'#263d40',tone,15);
+  text(c,'left '+remaining,114,y-21,13,'#f1f0d9','center');
  }
  function serverRack(c,x,bottom,load,occupancy,early,now){
   if(!occupancy){
    poly(c,[[x,bottom],[x+29,bottom],[x+40,bottom-6],[x+11,bottom-6]],'#62736e','#c5d0b9');
    line(c,[[x,bottom-1],[x,bottom-64],[x+29,bottom-64],[x+29,bottom-1]],early?'#a0c8af':'#aab7a6',1.2,[4,4]);
-   text(c,early?"pre-built":"empty",x+15,bottom-25,11,'#c9d5bc','center');return;
+   text(c,early?'pre-built':'empty',x+15,bottom-25,11,'#c9d5bc','center');return;
   }
   box(c,x,bottom,29,66,10,['#274246','#1c3136','#8da69c']);
   for(let j=0;j<6;j++){
@@ -75,8 +75,8 @@
   line(c,[[x-61,y-12],[x+48,y-12]],'#77928a',1);
   serverRack(c,x-47,y-10,early?(known&&installed.has(known[0])?known:null):known,true,false,t);
   serverRack(c,x+4,y-10,extra&&installed.has(extra[0])?extra:null,expanded&&!early,expanded&&early,t);
-  badge(c,"Computer room L"+i,x,y-117,'#234547','#f1f0db',17);
-  badge(c,expanded?(early?"Expansion ordered":"Extension is enabled"):"Keep original seat",x,y+17,expanded?'#e0eacd':'#eee1c8',expanded?'#345843':'#6d5139',13);
+  badge(c,'Computer room L'+i,x,y-117,'#234547','#f1f0db',17);
+  badge(c,expanded?(early?'Expansion ordered':'Extension is enabled'):'Keep original seat',x,y+17,expanded?'#e0eacd':'#eee1c8',expanded?'#345843':'#6d5139',13);
  }
  function cart(c,x,y,angle,s,carrying){
   c.save();c.translate(x,y);
@@ -112,8 +112,8 @@
    deliveries.push({d,s,path,p,t0:offset,targetX});
   }
   base(c);
-  text(c,"Cloud device deployment center",126,22,19,'#ebefdf','center',680);
-  badge(c,"Current working conditions · "+phaseNames[phases.indexOf(phase)],613,37,'#263f43','#d6e9d9',14);
+  text(c,'Cloud device deployment center',126,22,19,'#ebefdf','center',680);
+  badge(c,'Current working conditions · '+phaseNames[phases.indexOf(phase)],613,37,'#263f43','#d6e9d9',14);
   for(const item of deliveries){
    line(c,item.path,'#627c7159',3);
    line(c,item.path,color(item.s),1.6,[5,5]);
@@ -137,23 +137,23 @@
   }
   // The receiving manifest describes the active scenario, including rejected orders.
   rect(c,0,304,940,110,'#263c3f');rect(c,0,304,940,3,'#66837b');
-  text(c,"Arrival list",25,333,18,'#ecedda','left',650);
-  text(c,early?"Known requests":phaseNames[phases.indexOf(phase)]+"Scenario",25,366,14,'#c2d4c9');
+  text(c,'Arrival list',25,333,18,'#ecedda','left',650);
+  text(c,early?'Known requests':phaseNames[phases.indexOf(phase)]+' Scenario',25,366,14,'#c2d4c9');
   for(let i=0;i<loads.length;i++){
    const [d,s,loc]=loads[i],x=155+i*251;
-   const st=!s?"not satisfied":installed.has(d)?"Already installed":"Rack to be installed";
+   const st=!s?'not satisfied':installed.has(d)?'Already installed':'Rack to be installed';
    rect(c,x,320,224,70,'#354f51');
    rect(c,x,320,4,70,s?color(s):'#d48d72');
    text(c,d,x+13,340,18,'#fff8df');
    text(c,st,x+206,340,14,s?'#d8e9dc':'#ffc2a6','right');
-   text(c,s?"Supplier "+s+"   → Computer room "+loc:"No equipment delivery scheduled",x+13,371,15,s?'#d6e4db':'#f8c4aa');
+   text(c,s?'Supplier '+s+'   → Computer room '+loc:'No equipment delivery scheduled',x+13,371,15,s?'#d6e4db':'#f8c4aa');
   }
  }
  function mount(host,onInteract,index,onNode,replayAction){
   const data=window.ORTOPIA_REPLAYS.P0058.lab;
   if(!sessions.has(host))sessions.set(host,{mask:[1,1,1],supplier:'B',archived:true});
   const st=sessions.get(host);st.phase=phases[index];st.data=data;
-  const ui=F.siteShell(host,'cloud-deployment',"The two suppliers deliver equipment to three computer rooms, and click on the computer room to change the later machine locations.","The first delivery location is fixed; the three later scenarios will respectively undertake the same remaining inventory.");
+  const ui=F.siteShell(host,'cloud-deployment','The two suppliers deliver equipment to three computer rooms, and click on the computer room to change the later machine locations.','The first delivery location is fixed; the three later scenarios will respectively undertake the same remaining inventory.');
   function button(attr,value,label,selected){
    return '<button type="button" data-'+attr+'="'+value+'" aria-pressed="'+selected+'">'+label+'</button>';
   }
@@ -164,15 +164,15 @@
    const current=st.plan.scenarios[st.phase];
    const loads=current?current.loads:st.plan.early;
    const missed=loads.filter(r=>!r[1]).map(r=>r[0]);
-   ui.scene.parentElement.querySelector('.fp-foot span').textContent=phaseNames[index]+" · Delivery "+(loads.length-missed.length)+'/'+loads.length+
-     (missed.length?" · Not satisfied "+missed.join('、'):'')+
-     (current?" · Cost of this scenario "+current.cost:" · New aircraft seats will be activated later")+(st.archived?" · Archive solutions":" ·Rearranged later");
-   ui.control.innerHTML="<span class=\"fp-group\"><strong>Later expansion</strong>"+
-     centers.map((x,i)=>button('site',i,'L'+i+' '+(st.mask[i]?"open":"close"),!!st.mask[i])).join('')+'</span>'+
-     "<span class=\"fp-group\"><strong>P0 Supplier</strong>"+['A','B'].map(s=>button('supplier',s,s,s===st.supplier)).join('')+'</span>'+
-     "<span class=\"fp-group\"><strong>View</strong>"+phases.map((p,i)=>button('phase',i,phaseNames[i],p===st.phase)).join('')+'</span>'+
-     "<button type=\"button\" data-reset>Recovery archive solution</button>";
-   ui.result.textContent="first issue "+st.plan.first+" ＋ later stage CVaR "+risk+' ＝ '+total+" (The lower the better)";
+   ui.scene.parentElement.querySelector('.fp-foot span').textContent=phaseNames[index]+' · Delivery '+(loads.length-missed.length)+'/'+loads.length+
+     (missed.length?' · Not satisfied '+missed.join(', '):'')+
+     (current?' · Cost of this scenario '+current.cost:' · New aircraft seats will be activated later')+(st.archived?' · Archive solutions':' ·Rearranged later');
+   ui.control.innerHTML='<span class="fp-group"><strong>Later expansion</strong>'+
+     centers.map((x,i)=>button('site',i,'L'+i+' '+(st.mask[i]?'open':'close'),!!st.mask[i])).join('')+'</span>'+
+     '<span class="fp-group"><strong>P0 Supplier</strong>'+['A','B'].map(s=>button('supplier',s,s,s===st.supplier)).join('')+'</span>'+
+     '<span class="fp-group"><strong>View</strong>'+phases.map((p,i)=>button('phase',i,phaseNames[i],p===st.phase)).join('')+'</span>'+
+     '<button type="button" data-reset>Recovery archive solution</button>';
+   ui.result.textContent='first issue '+st.plan.first+' ＋ later stage CVaR '+risk+' ＝ '+total+' (The lower the better)';
   }
   function act(site,supplier){
    if(site===null && supplier===st.supplier)return;
@@ -184,8 +184,8 @@
    if(site!==null&&index===0&&onNode)onNode(1);else replayAction?.();
    if(!replayAction)host.sceneFrame(0);
   }
-  for(let i=0;i<3;i++)F.hotspot(ui.scene,"Switch L"+i+" Later expansion",centers[i],116,()=>act(i,null),153,135);
-  for(const s of ['A','B'])F.hotspot(ui.scene,"Change to supplier "+s+" Undertake P0",85,docks[s]-24,()=>act(null,s),154,80);
+  for(let i=0;i<3;i++)F.hotspot(ui.scene,'Switch L'+i+' Later expansion',centers[i],116,()=>act(i,null),153,135);
+  for(const s of ['A','B'])F.hotspot(ui.scene,'Change to supplier '+s+' Undertake P0',85,docks[s]-24,()=>act(null,s),154,80);
   ui.control.onclick=e=>{
    const b=e.target.closest('button');if(!b)return;
    if(b.dataset.site!==undefined)act(Number(b.dataset.site),null);

@@ -6,7 +6,7 @@ window.ORTOPIA_REPLAY_LOGIC=window.ORTOPIA_REPLAY_LOGIC||{};window.ORTOPIA_REPLA
   },
   {
     "decision": "The 4 vehicles at this station are assigned as station 3 empty truck × 2, station 3 cargo category 1 x 1, and station 3 cargo category 2 x 1.",
-    "evidence": "The starting point is assigned row by row conservation. If only one \"empty train at Station 3\" is changed to \"Station 4 Cargo Category 1\", the dispatch fee for this period will change by -1.9998.",
+    "evidence": "The starting point is assigned row by row conservation. If only one ”empty train at Station 3” is changed to ”Station 4 Cargo Category 1”, the dispatch fee for this period will change by -1.9998.",
     "consequence": "Reassignment also results in a strategy continuation cost change of 3, totaling a stage cost change of 1.0002.",
     "comparison": {
       "title": "Reassigning one vehicle to Station 1 in Phase 1: How much will the relative phase cost increase?",
@@ -80,7 +80,7 @@ window.ORTOPIA_REPLAY_LOGIC=window.ORTOPIA_REPLAY_LOGIC||{};window.ORTOPIA_REPLA
   },
   {
     "decision": "Assign the 3 vehicles of this station to station 2 cargo category 1×1, station 3 cargo category 2×1, and station 4 cargo category 1×1.",
-    "evidence": "The starting point is assigned row by row conservation. If only one vehicle \"Station 4 Cargo Category 1\" is changed to \"Station 1 Cargo Category 2\", the dispatch fee for this period will change by 1.0001.",
+    "evidence": "The starting point is assigned row by row conservation. If only one vehicle ”Station 4 Cargo Category 1” is changed to ”Station 1 Cargo Category 2”, the dispatch fee for this period will change by 1.0001.",
     "consequence": "Reassignment also results in a strategy continuation cost change of 5, for a total stage cost change of 6.0001.",
     "comparison": {
       "title": "Reassigning one vehicle to Station 3 in Phase 1: How much will the relative phase cost increase?",
@@ -154,8 +154,8 @@ window.ORTOPIA_REPLAY_LOGIC=window.ORTOPIA_REPLAY_LOGIC||{};window.ORTOPIA_REPLA
   },
   {
     "decision": "Assign 1 vehicle of this station as station 4 cargo category 1×1.",
-    "evidence": "The starting point is assigned row by row conservation. If only one vehicle \"Station 4 Cargo Category 1\" is changed to \"Station 3 Cargo Category 1\", the dispatch fee for this period will change by 4.",
-    "consequence": "Reassignment also causes the strategy's continuation cost to change by 0 and the total stage cost to change by 4.",
+    "evidence": "The starting point is assigned row by row conservation. If only one vehicle ”Station 4 Cargo Category 1” is changed to ”Station 3 Cargo Category 1”, the dispatch fee for this period will change by 4.",
+    "consequence": "Reassignment also causes the strategy’s continuation cost to change by 0 and the total stage cost to change by 4.",
     "comparison": {
       "title": "Reassigning one vehicle to Station 4 in Phase 1: How much will the relative phase cost increase?",
       "options": [
@@ -233,7 +233,7 @@ window.ORTOPIA_REPLAY_LOGIC=window.ORTOPIA_REPLAY_LOGIC||{};window.ORTOPIA_REPLA
   },
   {
     "decision": "Assign 1 vehicle of this station as station 2 cargo category 2×1.",
-    "evidence": "The starting point is assigned row by row conservation. If only one vehicle \"Station 2 Cargo Category 2\" is changed to \"Station 4 Cargo Category 1\", the dispatch fee for this period will change by 8.0002.",
+    "evidence": "The starting point is assigned row by row conservation. If only one vehicle ”Station 2 Cargo Category 2” is changed to ”Station 4 Cargo Category 1”, the dispatch fee for this period will change by 8.0002.",
     "consequence": "Reassignment also changes the strategy continuation cost by -1, for a total stage cost change of 7.0002.",
     "comparison": {
       "title": "Reassigning one vehicle to Station 2 in Phase 2: How much will the relative phase cost increase?",
@@ -307,7 +307,7 @@ window.ORTOPIA_REPLAY_LOGIC=window.ORTOPIA_REPLAY_LOGIC||{};window.ORTOPIA_REPLA
   },
   {
     "decision": "Assign the 5 vehicles at this station as station 1 empty vehicle × 1, station 2 cargo type 2 × 1, station 3 cargo type 1 × 1, station 4 empty vehicle × 1, and station 4 cargo type 1 × 1.",
-    "evidence": "The starting point is assigned row by row conservation. If only one \"empty train at station 4\" is changed to \"empty train at station 2\", the dispatch fee for the period will change by -1.9998.",
+    "evidence": "The starting point is assigned row by row conservation. If only one ”empty train at station 4” is changed to ”empty train at station 2”, the dispatch fee for the period will change by -1.9998.",
     "consequence": "Reassignment also results in a strategy continuation cost change of 3, totaling a stage cost change of 1.0002.",
     "comparison": {
       "title": "Reassigning one vehicle to Station 3 in Phase 2: How much will the relative phase cost increase?",
@@ -381,8 +381,8 @@ window.ORTOPIA_REPLAY_LOGIC=window.ORTOPIA_REPLAY_LOGIC||{};window.ORTOPIA_REPLA
   },
   {
     "decision": "Assign the 2 vehicles at this station as station 3 cargo category 1×1 and station 3 cargo category 2×1.",
-    "evidence": "The starting point is assigned row by row conservation. If only one vehicle \"Station 3 Cargo Category 2\" is changed to \"Station 2 Cargo Category 2\", the dispatch fee for this period will change by 4.9998.",
-    "consequence": "Reassignment also changes the strategy's continuation cost by -3, for a total stage cost change of 1.9998.",
+    "evidence": "The starting point is assigned row by row conservation. If only one vehicle ”Station 3 Cargo Category 2” is changed to ”Station 2 Cargo Category 2”, the dispatch fee for this period will change by 4.9998.",
+    "consequence": "Reassignment also changes the strategy’s continuation cost by -3, for a total stage cost change of 1.9998.",
     "comparison": {
       "title": "Reassigning one vehicle to Station 4 in Phase 2: How much will the relative phase cost increase?",
       "options": [
@@ -460,7 +460,7 @@ window.ORTOPIA_REPLAY_LOGIC=window.ORTOPIA_REPLAY_LOGIC||{};window.ORTOPIA_REPLA
   },
   {
     "decision": "Assign 1 vehicle of this station as station 1 cargo category 1×1.",
-    "evidence": "The starting point is assigned row by row conservation. If only one vehicle \"Station 1 Cargo Category 1\" is changed to \"Station 2 Cargo Category 2\", the dispatch fee for this period will change by 3.0002.",
+    "evidence": "The starting point is assigned row by row conservation. If only one vehicle ”Station 1 Cargo Category 1” is changed to ”Station 2 Cargo Category 2”, the dispatch fee for this period will change by 3.0002.",
     "consequence": "Reassignment also results in a strategy continuation cost change of 0, for a total stage cost change of 3.0002.",
     "comparison": {
       "title": "Reassigning one vehicle to Station 1 in Phase 3: How much will the relative phase cost increase?",
@@ -534,7 +534,7 @@ window.ORTOPIA_REPLAY_LOGIC=window.ORTOPIA_REPLAY_LOGIC||{};window.ORTOPIA_REPLA
   },
   {
     "decision": "Assign the 2 vehicles at this station as station 2 cargo category 2×1 and station 4 cargo category 1×1.",
-    "evidence": "The starting point is assigned row by row conservation. If only one vehicle \"Station 2 Cargo Category 2\" is changed to \"Station 2 Cargo Category 1\", the dispatch fee for this period will change by 4.9991.",
+    "evidence": "The starting point is assigned row by row conservation. If only one vehicle ”Station 2 Cargo Category 2” is changed to ”Station 2 Cargo Category 1”, the dispatch fee for this period will change by 4.9991.",
     "consequence": "Reassignment also results in a strategy continuation cost change of 0, for a total stage cost change of 4.9991.",
     "comparison": {
       "title": "Reassigning one vehicle to Station 2 in Phase 3: How much will the relative phase cost increase?",
@@ -608,7 +608,7 @@ window.ORTOPIA_REPLAY_LOGIC=window.ORTOPIA_REPLAY_LOGIC||{};window.ORTOPIA_REPLA
   },
   {
     "decision": "Assign 3 trucks at this station as 1×1 cargo type at station 3 and 2 empty trucks at station 4.",
-    "evidence": "The starting point is assigned row by row conservation. If only one \"empty train at station 4\" is changed to \"empty train at station 1\", the dispatch fee for this period will change by 3.0003.",
+    "evidence": "The starting point is assigned row by row conservation. If only one ”empty train at station 4” is changed to ”empty train at station 1”, the dispatch fee for this period will change by 3.0003.",
     "consequence": "Reassignment also changes the strategy continuation cost by -1, for a total stage cost change of 2.0003.",
     "comparison": {
       "title": "Reassigning one vehicle to Station 3 in Phase 3: How much will the relative phase cost increase?",
@@ -682,7 +682,7 @@ window.ORTOPIA_REPLAY_LOGIC=window.ORTOPIA_REPLAY_LOGIC||{};window.ORTOPIA_REPLA
   },
   {
     "decision": "Assign the 2 vehicles at this station as station 2 cargo category 1×1 and station 3 cargo category 1×1.",
-    "evidence": "The starting point is assigned row by row conservation. If only one vehicle \"Station 3 Cargo Category 1\" is changed to \"Station 4 Cargo Category 2\", the dispatch fee for this period will change by 5.",
+    "evidence": "The starting point is assigned row by row conservation. If only one vehicle ”Station 3 Cargo Category 1” is changed to ”Station 4 Cargo Category 2”, the dispatch fee for this period will change by 5.",
     "consequence": "Reassignment also causes the strategy to have a continuation cost change of 1 and a total stage cost change of 6.",
     "comparison": {
       "title": "Reassigning one vehicle to Station 4 in Phase 3: How much will the relative phase cost increase?",

@@ -226,7 +226,7 @@ function sceneRenderer(id){
 }
 function shell(p){
  const r=data;document.title=p.id+' · Simulations · ORtopia';
- const source='../../simulation/assets/replays/'+p.id+'/';
+ const source='assets/replays/'+p.id+'/';
  const modes=[[r.layout==='map'?'map':'lanes',r.layout==='map'?'Map and routes':'Entities']];
  if(labs[p.id]||sceneRenderer(p.id))modes.unshift(['simulation',labs[p.id]?'Test a plan':'Simulation']);
  if(r.schedule?.events?.length)modes.push(['schedule','Resource schedule']);

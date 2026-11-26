@@ -1,22 +1,14 @@
-% Mathematical Model - paper
-% Auto-generated at 2026-01-12T15:04:28.992088
-% Model Source: Directly Extracted
-% This model is directly extracted from the paper
-
-\documentclass{article}
-\usepackage{amsmath}
-\usepackage{amssymb}
-
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
-\usepackage{geometry}
-\geometry{paperwidth=235mm,paperheight=297mm,hmargin=18mm,vmargin=19mm}
+
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
 \begin{document}
-
-\section*{Problem: Mixed-Integer Linear Programming (MILP), specifically a static network flow-based Vehicle Routing Problem with Pickup and Delivery and Split Deliveries (VRP with PD and SD). The model outputs vehicle and material flows, which must be parsed into specific routes. The paper proposes a Hierarchical Clustering and Routing method (HOGCR) for solution.}
-
-\textbf{Model Source}: Directly Extracted
-
-\subsection*{Decision Variables}
+\section*{P0322 Disaster-relief deliveries and casualty transportation}
+\subsection*{Mathematical formulation}
 \begin{align*}
 & UZ_{aop} \ge 0 && \forall a \in A, o, p \in C \\
 & LZ_{op} \ge 0 \text{ and integer} && \forall o, p \in C \\
@@ -26,65 +18,9 @@
 & SUP_{ao} \ge 0 && \forall a \in A, o \in CS
 \end{align*}
 
-\subsection*{Objective Function}
 \[
 \text{Minimize } \sum_{v \in V} \sum_{(o,p) \in N} d_{op} Y_{opv} \quad (0)
 \]
-
-\subsection*{Constraints}
-\begin{align}
-& \sum_{p \in C} UZ_{apo} - \sum_{p \in C} UZ_{aop} + UDEV_{ao} = uq_{ao} && \forall a \in A, o \in CD \quad (1) \\
-& -\sum_{p \in C} LZ_{po} + \sum_{p \in C} LZ_{op} + LDEV_{o} = lq_{o} && \forall o \in CD \quad (2) \\
-& -\sum_{p \in C} UZ_{apo} + \sum_{p \in C} UZ_{aop} \leq SUP_{ao} && \forall a \in A, o \in CS \quad (3) \\
-& \sum_{p \in C} LZ_{po} - \sum_{p \in C} LZ_{op} \leq lsq_{o} && \forall o \in CH \quad (4) \\
-& \sum_{o \in CD} UDEV_{ao} = \max \left\{ \sum_{o \in CD} uq_{ao} - tsup_{a}, 0 \right\} && \forall a \in A \quad (5) \\
-& \sum_{o \in CD} LDEV_{o} = \max \left\{ \sum_{o \in CD} lq_{o} - \sum_{o \in CH} lsq_{o}, 0 \right\} && \quad (6) \\
-& \sum_{o \in CS} SUP_{ao} \leq tsup_{a} && \forall a \in A \quad (7) \\
-& \sum_{a \in A} UZ_{aop} \le \sum_{v \in V} capu_{zv} Y_{opv} && \forall (o, p) \in N \quad (8a) \\
-& LZ_{op} \le \sum_{v \in V} capl_{zv} Y_{opv} && \forall (o, p) \in N \quad (8b) \\
-& \sum_{p \in C} Y_{opv} = \sum_{p \in C} Y_{pov} && \forall o \in CD, v \in V \quad (9) \\
-& \sum_{p \in C} \sum_{o \in CS \cup CH} Y_{opv} \le mv_{v} && \forall v \in V \quad (10)
-\end{align}
-
-\subsection*{Complete Mathematical Model}
-
-\begin{align*}
-& A && \text{(Set of resources or commodities of type A)} \\
-& V && \text{(Set of vehicles or transport units)} \\
-& C && \text{(Set of all nodes)} \\
-& N \subseteq C \times C && \text{(Set of traversable arcs)} \\
-& CD \subseteq C && \text{(Set of demand nodes)} \\
-& CS \subseteq C && \text{(Set of supply nodes)} \\
-& CH \subseteq C && \text{(Set of processing nodes)}
-\end{align*}
-
-
-\begin{align*}
-& d_{op} && \forall (o,p) \in N && \text{The distance or cost between points o and p} \\
-& uq_{ao} && \forall a \in A, o \in CD && \text{The demand for product a from node o} \\
-& lq_{o} && \forall o \in CD && \text{Another demand for node o} \\
-& lsq_{o} && \forall o \in CH && \text{The processing capacity of node o} \\
-& tsup_{a} && \forall a \in A && \text{The total capacity of supply for commodity A} \\
-& capu_{zv} && \forall v \in V && \text{The transport capacity of vehicle v for goods A} \\
-& capl_{zv} && \forall v \in V && \text{The transport capacity of vehicle v for another type of cargo} \\
-& mv_{v} && \forall v \in V && \text{The maximum number of trips that vehicle v can make (e.g., the number of times it can visit nodes).}
-\end{align*}
-
-
-\begin{align*}
-& UZ_{aop} \ge 0 && \forall a \in A, o, p \in C && \text{The quantity of goods a transported from node o to p} \\
-& LZ_{op} \ge 0 \text{ and integer} && \forall o, p \in C && \text{The quantity of another type of cargo transported from node o to p} \\
-& UDEV_{ao} \ge 0 && \forall a \in A, o \in CD && \text{The amount of demand for product a that node o cannot satisfy} \\
-& LDEV_{o} \ge 0 && \forall o \in CD && \text{The other requirements of node o are not satisfied.} \\
-& Y_{opv} \ge 0 \text{ and integer} && \forall (o, p) \in N, v \in V && \text{The number of times vehicle v uses the arc (o,p)} \\
-& SUP_{ao} \ge 0 && \forall a \in A, o \in CS && \text{The quantity of product A supplied by node O}
-\end{align*}
-
-
-\[
-\text{Minimize } \sum_{v \in V} \sum_{(o,p) \in N} d_{op} Y_{opv} \quad (0)
-\]
-
 
 \begin{align}
 & \sum_{p \in C} UZ_{apo} - \sum_{p \in C} UZ_{aop} + UDEV_{ao} = uq_{ao} && \forall a \in A, o \in CD \quad (1) \\
@@ -100,10 +36,65 @@
 & \sum_{p \in C} \sum_{o \in CS \cup CH} Y_{opv} \le mv_{v} && \forall v \in V \quad (10)
 \end{align}
 
-\paragraph{Explicit data definitions and arc domain.}
-$CH$ is supplied explicitly; $tsup_a$ is supplied as the aggregate available quantity of commodity $a$.
-$SUP_{ao}$ allocates this aggregate supply among supply nodes.
-Set $UZ_{aop}=LZ_{op}=0$ whenever $(o,p)\notin N$, including self-arcs.
-All sums over $Y$ use only declared arcs; other entries are zero.
-$mv_v$ bounds the number of available departures from supply/hospital nodes.
+\begin{align*}
+& A && \text{(a resource or commodityAset)} \\
+& V && \text{(set of vehicles or carriers)} \\
+& C && \text{(set of all nodes)} \\
+& N \subseteq C \times C && \text{(set of allowed arcs)} \\
+& CD \subseteq C && \text{(set of demand nodes)} \\
+& CS \subseteq C && \text{(set of supply nodes)} \\
+& CH \subseteq C && \text{(set of processing nodes)}
+\end{align*}
+
+\begin{align*}
+& d_{op} && \forall (o,p) \in N && \text{arc(o,p)distance or cost} \\
+& uq_{ao} && \forall a \in A, o \in CD && \text{nodeofor commodityademand} \\
+& lq_{o} && \forall o \in CD && \text{nodeosecond commodity demand} \\
+& lsq_{o} && \forall o \in CH && \text{nodeoprocessing capacity} \\
+& tsup_{a} && \forall a \in A && \text{commodityatotal supply capacity} \\
+& capu_{zv} && \forall v \in V && \text{vehiclevfor commodityAtransport capacity} \\
+& capl_{zv} && \forall v \in V && \text{vehiclevtransport capacity for the second commodity} \\
+& mv_{v} && \forall v \in V && \text{vehiclevmaximum number of trips(e.g. number of node visits)}
+\end{align*}
+
+\begin{align*}
+& UZ_{aop} \ge 0 && \forall a \in A, o, p \in C && \text{from nodeotopcommodity transportedaquantity} \\
+& LZ_{op} \ge 0 \text{ and integer} && \forall o, p \in C && \text{from nodeotopquantity of the second commodity transported} \\
+& UDEV_{ao} \ge 0 && \forall a \in A, o \in CD && \text{nodeofor commodityaunmet demand} \\
+& LDEV_{o} \ge 0 && \forall o \in CD && \text{nodeounmet demand for the second commodity} \\
+& Y_{opv} \ge 0 \text{ and integer} && \forall (o, p) \in N, v \in V && \text{vehiclevusing arc(o,p)number of times} \\
+& SUP_{ao} \ge 0 && \forall a \in A, o \in CS && \text{from nodeocommodity suppliedaquantity}
+\end{align*}
+
+\[
+\text{Minimize } \sum_{v \in V} \sum_{(o,p) \in N} d_{op} Y_{opv} \quad (0)
+\]
+
+\begin{align}
+& \sum_{p \in C} UZ_{apo} - \sum_{p \in C} UZ_{aop} + UDEV_{ao} = uq_{ao} && \forall a \in A, o \in CD \quad (1) \\
+& -\sum_{p \in C} LZ_{po} + \sum_{p \in C} LZ_{op} + LDEV_{o} = lq_{o} && \forall o \in CD \quad (2) \\
+& -\sum_{p \in C} UZ_{apo} + \sum_{p \in C} UZ_{aop} \leq SUP_{ao} && \forall a \in A, o \in CS \quad (3) \\
+& \sum_{p \in C} LZ_{po} - \sum_{p \in C} LZ_{op} \leq lsq_{o} && \forall o \in CH \quad (4) \\
+& \sum_{o \in CD} UDEV_{ao} = \max \left\{ \sum_{o \in CD} uq_{ao} - tsup_{a}, 0 \right\} && \forall a \in A \quad (5) \\
+& \sum_{o \in CD} LDEV_{o} = \max \left\{ \sum_{o \in CD} lq_{o} - \sum_{o \in CH} lsq_{o}, 0 \right\} && \quad (6) \\
+& \sum_{o \in CS} SUP_{ao} \leq tsup_{a} && \forall a \in A \quad (7) \\
+& \sum_{a \in A} UZ_{aop} \le \sum_{v \in V} capu_{zv} Y_{opv} && \forall (o, p) \in N \quad (8a) \\
+& LZ_{op} \le \sum_{v \in V} capl_{zv} Y_{opv} && \forall (o, p) \in N \quad (8b) \\
+& \sum_{p \in C} Y_{opv} = \sum_{p \in C} Y_{pov} && \forall o \in CD, v \in V \quad (9) \\
+& \sum_{p \in C} \sum_{o \in CS \cup CH} Y_{opv} \le mv_{v} && \forall v \in V \quad (10)
+\end{align}
+
+\subsection*{Definitions and model scope}
+A relief coordination center arranges commodity deliveries $A$ and casualty transport over given locations $C$ and usable roads $N$. Demand locations $CD$, supply locations $CS$ and hospitals or receiving locations $CH$ are explicitly supplied. Inputs give each road's distance or travel charge, commodity needs and casualties awaiting transport at demand points, hospital receiving capacities, total network supply of each commodity, commodity and casualty capacities of vehicle categories $V$, and available departures from supply or hospital locations. The center seeks the smallest sum of each vehicle category's road-use count multiplied by road distance or charge.
+
+Commodity road flows $UZ_{aop}$, unmet commodity quantities $UDEV_{ao}$, untransported casualty quantities $LDEV_o$ and allocated supply $SUP_{ao}$ are nonnegative continuous quantities. Casualties traveling on roads $LZ_{op}$ and vehicle-category road-use counts $Y_{opv}$ are nonnegative integers. Commodities and casualties cannot use unlisted roads, and self-transport is zero. Vehicle counts exist only on declared roads, with other entries treated as zero. A road count may exceed one and is not replaced by a simple used-or-unused flag.
+
+At each demand location and for each commodity, inflow less outflow plus unmet quantity exactly equals demand. For casualties, outflow less inflow plus untransported quantity exactly equals the number awaiting transport. At each supply location, commodity outflow less inflow cannot exceed allocated supply, and allocations across supply locations cannot exceed total network supply of that commodity. No separate source-specific stock cap is added. At every hospital, casualty inflow less outflow cannot exceed its supplied receiving capacity.
+
+Unmet quantities of each commodity across all demand locations sum exactly to the greater of total demand less total network supply and zero. Untransported casualties across demand locations sum exactly to the greater of total casualty demand less total hospital receiving capacity and zero. These aggregate shortfalls are fixed by inputs rather than freely increased to save travel, though their allocation across demand locations is chosen with the transport arrangement.
+
+On every usable road, total flow of all commodities cannot exceed the sum of each vehicle category's commodity capacity times its road-use count. Casualty flow cannot exceed the analogous sum using casualty capacities. These are two separate capacity checks, not a combined allowance for goods and people. At each demand location and for each vehicle category, departure count equals arrival count; this vehicle-count balance is imposed only at demand locations. Total departures of each vehicle category from the union of supply and hospital locations to all locations cannot exceed its available departure count. The result describes road-level vehicle and material movements, without an additional requirement of a single incoming and outgoing route at every location.
+
+\subsection*{Inline notation and relations}
+$CH$; $tsup_a$; $a$; $SUP_{ao}$; $UZ_{aop}=LZ_{op}=0$; $(o,p)\notin N$; $Y$; $mv_v$.
 \end{document}

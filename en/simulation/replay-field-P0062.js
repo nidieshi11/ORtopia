@@ -150,29 +150,29 @@
         arrows(ctx,WATER,-flow,(t*speed)%1,12,'#d5ffff');
         arrows(ctx,LINE,-flow,(t*speed*1.15)%1,8,'#ffdc76');
       }
-      tags(ctx,12,49,"Shangku  "+fmt(store,2));
-      tags(ctx,672,209,"market grid",'#f5e0ae','#60491e');
-      tags(ctx,702,295,"Drop into the library");
-      tags(ctx,355,284,flow>0?"water pump · pumping water":flow<0?"Water turbine · Power generation":row.clipped?"The unit is restricted and stalled":"Unit standby",flow?'#d8e9ce':'#e4e2cf');
+      tags(ctx,12,49,'Shangku  '+fmt(store,2));
+      tags(ctx,672,209,'market grid','#f5e0ae','#60491e');
+      tags(ctx,702,295,'Drop into the library');
+      tags(ctx,355,284,flow>0?'water pump · pumping water':flow<0?'Water turbine · Power generation':row.clipped?'The unit is restricted and stalled':'Unit standby',flow?'#d8e9ce':'#e4e2cf');
     };
   }
 
-  const stateName = mode => mode===1?"pump water":mode===-1?"generate electricity":"Offline";
+  const stateName = mode => mode===1?'pump water':mode===-1?'generate electricity':'Offline';
   const icon = mode => mode===1?'↗':mode===-1?'↘':'—';
   function mount(host,onInteract,index,onNode,replayAction){
     const state=host._p0062 ||= {plan:plan()};
     const app=document.createElement('section');app.className='hy6';host.replaceChildren(app);
-    app.innerHTML="<div class=\"hy6-top\"><div><b>Pumped storage power station</b><small>dispatch profile · Example small/I002</small></div><div class=\"hy6-score\"><small>Six period net income</small><strong></strong></div></div>"+
-      "<div class=\"hy6-art\"><canvas role=\"img\" aria-label=\"Operation profile of the upper reservoir, reversible turbine and lower reservoir, with blue water flow and golden transmission arrows changing direction with dispatch\"></canvas></div>"+
+    app.innerHTML='<div class="hy6-top"><div><b>Pumped storage power station</b><small>dispatch profile · Example small/I002</small></div><div class="hy6-score"><small>Six period net income</small><strong></strong></div></div>'+
+      '<div class="hy6-art"><canvas role="img" aria-label="Operation profile of the upper reservoir, reversible turbine and lower reservoir, with blue water flow and golden transmission arrows changing direction with dispatch"></canvas></div>'+
       '<div class="hy6-status"><b></b><span></span></div>'+
-      "<div class=\"hy6-controls\"><div class=\"hy6-switch\" role=\"group\" aria-label=\"Unit mode of this issue\"><button data-hmode=\"1\">↗ pumped hydro</button><button data-hmode=\"0\">— Offline</button><button data-hmode=\"-1\">↘ Release water to generate electricity</button></div><label title=\"The proportion of water transfer volume in this period to the total available storage capacity\">Water volume <input type=\"range\" min=\"0\" max=\"100\" step=\"1\"><output></output></label></div>"+
-      "<div class=\"hy6-board\" role=\"group\" aria-label=\"Six-period scheduling, select a period to change the plan\"></div>"+
-      "<div class=\"hy6-footer\"><span>Change the schedule at a certain time period, and the subsequent water level and income will change accordingly.</span><button data-reset>Restoring instance solution</button></div>";
+      '<div class="hy6-controls"><div class="hy6-switch" role="group" aria-label="Unit mode of this issue"><button data-hmode="1">↗ pumped hydro</button><button data-hmode="0">— Offline</button><button data-hmode="-1">↘ Release water to generate electricity</button></div><label title="The proportion of water transfer volume in this period to the total available storage capacity">Water volume <input type="range" min="0" max="100" step="1"><output></output></label></div>'+
+      '<div class="hy6-board" role="group" aria-label="Six-period scheduling, select a period to change the plan"></div>'+
+      '<div class="hy6-footer"><span>Change the schedule at a certain time period, and the subsequent water level and income will change accordingly.. </span><button data-reset>Restoring instance solution</button></div>';
     const find=s=>app.querySelector(s),board=find('.hy6-board'),slider=find('input');
     for(let i=0;i<6;i++){
       const button=document.createElement('button');
       button.type='button';button.dataset.slot=i;
-      button.innerHTML="<b>No. "+(i+1)+" Period</b><i></i><small>buy "+fmt(data.buy[i])+"<br>sell "+fmt(data.sell[i])+'</small>';
+      button.innerHTML='<b>No. '+(i+1)+' Period</b><i></i><small>buy '+fmt(data.buy[i])+'<br>sell '+fmt(data.sell[i])+'</small>';
       button.onclick=()=>{if(onNode)onNode(i);else {index=i;update();host.sceneFrame(6);}};
       board.append(button);
     }
@@ -182,17 +182,17 @@
       rows=settle(trial||state.plan);
       const total=rows.reduce((n,r)=>n+r.profit,0),r=rows[index];
       find('.hy6-score strong').textContent=fmt(total);
-      const limit=r.clipped ? (r.mode===1?"The warehouse is full":"reach lowest water level") : '';
-      const money=r.profit>0?"income "+fmt(r.profit):r.profit<0?"expenditure "+fmt(-r.profit):"no deal";
-      find('.hy6-status b').textContent="Period "+(index+1)+" · "+(r.buy?"Purchase electricity and pump water":r.sell?"Discharge water and sell electricity":limit||"Offline");
+      const limit=r.clipped ? (r.mode===1?'The warehouse is full':'reach lowest water level') : '';
+      const money=r.profit>0?'income '+fmt(r.profit):r.profit<0?'expenditure '+fmt(-r.profit):'no deal';
+      find('.hy6-status b').textContent='No. '+(index+1)+' Period · '+(r.buy?'Purchase electricity and pump water':r.sell?'Discharge water and sell electricity':limit||'Offline');
       find('.hy6-status span').textContent=limit && (r.buy||r.sell) ? limit+' · '+money : money;
       find('.hy6-status').classList.toggle('limited',r.clipped);
       for(const b of app.querySelectorAll('[data-hmode]'))b.setAttribute('aria-pressed',String(+b.dataset.hmode===r.mode));
       slider.value=Math.round(r.share*100);slider.disabled=!r.mode;find('output').textContent=slider.value+'%';
       for(const [i,b] of [...board.children].entries()){
         const v=rows[i];b.setAttribute('aria-pressed',String(i===index));b.className=v.clipped?'clipped':v.mode===1?'charge':v.mode===-1?'sell':'idle';
-        b.querySelector('i').textContent=(v.clipped?'!':icon(v.mode))+' '+(v.clipped?(v.buy||v.sell?"Current limiting":v.mode===1?"Full":"No margin"):stateName(v.mode));
-        b.setAttribute('aria-label',"Period "+(i+1)+", "+b.querySelector('i').textContent+", purchase price"+data.buy[i]+", selling price"+data.sell[i]);
+        b.querySelector('i').textContent=(v.clipped?'!':icon(v.mode))+' '+(v.clipped?(v.buy||v.sell?'Current limiting':v.mode===1?'Full':'No margin'):stateName(v.mode));
+        b.setAttribute('aria-label','No. '+(i+1)+' period,'+b.querySelector('i').textContent+', purchase price '+data.buy[i]+', selling price '+data.sell[i]);
       }
     }
     function edit(fn,replay=true){

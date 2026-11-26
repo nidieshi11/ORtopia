@@ -61,23 +61,23 @@ window.ORTOPIA_REPLAY_LOGIC=window.ORTOPIA_REPLAY_LOGIC||{};window.ORTOPIA_REPLA
   },
   {
     "decision": "The package is delivered by truck along warehouse → c5, then on to c1.",
-    "evidence": "The arc length is 1.6899 km, which translates to 173.8166 seconds at 35 km/h; it takes another 40 seconds at the customer's location.",
-    "consequence": "After the 1/4th customer of this line completes the service, the truck can continue at the earliest 213.8166 seconds; there are still 3 customers left in the truck's line."
+    "evidence": "The arc length is 1.6899 km, which translates to 173.8166 seconds at 35 km/h; it takes another 40 seconds at the customer’s location.",
+    "consequence": "After the 1/4th customer of this line completes the service, the truck can continue at the earliest 213.8166 seconds; there are still 3 customers left in the truck’s line."
   },
   {
     "decision": "The robot delivers the package along warehouse → c4 and then goes to the warehouse.",
-    "evidence": "Arc length 0.3627 km, converted to 163.2028 seconds at 8 km/h; another 40 seconds at the customer's location.",
+    "evidence": "Arc length 0.3627 km, converted to 163.2028 seconds at 8 km/h; another 40 seconds at the customer’s location.",
     "consequence": "After the 1/1st main line customer completes the service, the robot can continue at the earliest 223.2028 seconds; the other main line will deliver goods simultaneously."
   },
   {
     "decision": "Packages are delivered by truck along c5 → c1, then on to c2.",
-    "evidence": "The arc length is 0.2965 km, which translates to 30.4988 seconds at 35 km/h; it takes another 40 seconds at the customer's location.",
-    "consequence": "After the 2/4th customer on this line completes the service, the truck can continue at the earliest 284.3154 seconds; there are 2 customers left on the truck's line."
+    "evidence": "The arc length is 0.2965 km, which translates to 30.4988 seconds at 35 km/h; it takes another 40 seconds at the customer’s location.",
+    "consequence": "After the 2/4th customer on this line completes the service, the truck can continue at the earliest 284.3154 seconds; there are 2 customers left on the truck’s line."
   },
   {
     "decision": "The package is delivered by truck along c1 → c2, then on to c3.",
-    "evidence": "The arc length is 0.6044 km, which translates to 62.1671 seconds at 35 km/h; it takes another 40 seconds at the customer's location.",
-    "consequence": "After the 3/4th customer on this line completes the service, the truck can continue at the earliest 386.4825 seconds; there is still 1 customer left on the truck's line."
+    "evidence": "The arc length is 0.6044 km, which translates to 62.1671 seconds at 35 km/h; it takes another 40 seconds at the customer’s location.",
+    "consequence": "After the 3/4th customer on this line completes the service, the truck can continue at the earliest 386.4825 seconds; there is still 1 customer left on the truck’s line."
   },
   {
     "decision": "Let the robot complete recycling and unloading at a common end point.",
@@ -86,8 +86,8 @@ window.ORTOPIA_REPLAY_LOGIC=window.ORTOPIA_REPLAY_LOGIC||{};window.ORTOPIA_REPLA
   },
   {
     "decision": "The parcel is delivered by truck along c2 → c3 and then proceeds to the warehouse.",
-    "evidence": "The arc length is 0.5754 km, which translates into 59.1816 seconds at 35 km/h; it takes another 40 seconds at the customer's location.",
-    "consequence": "After the 4/4th customer of this line completes the service, the truck can continue at the earliest 485.6641 seconds; there are 0 customers left in the truck's line."
+    "evidence": "The arc length is 0.5754 km, which translates into 59.1816 seconds at 35 km/h; it takes another 40 seconds at the customer’s location.",
+    "consequence": "After the 4/4th customer of this line completes the service, the truck can continue at the earliest 485.6641 seconds; there are 0 customers left in the truck’s line."
   },
   {
     "decision": "The truck completes the last section of the main line and joins the robot that has returned to the warehouse.",

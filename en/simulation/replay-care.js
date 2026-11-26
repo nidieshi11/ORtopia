@@ -78,11 +78,11 @@ window.ORTOPIA_CARE=(()=>{
   const total=v.regularVisits+v.diverted,limit=v.shift+v.overtimeLimit;
   const road=v.outbound+v.inbound,allRegular=road+total*v.serviceEach;
   const timeScale=222/Math.max(limit,allRegular),limitX=184+limit*timeScale;
-  let layer="<g class=\"dispatch-board\" aria-label=\"Comparison of day&#x27;s visit assignment and shift duration\">"+
+  let layer='<g class="dispatch-board" aria-label="Comparison of day’s visit assignment and shift duration">'+
    '<rect x="25" y="83" width="490" height="356" rx="12" fill="#173e3b" stroke="#d5c29b" stroke-width="5"/>'+
-   text(48,120,trial?"Trial rehearsal · "+total+" Sub-total regular nurse":emphasizeLimit?"Shift ceiling · including allowed overtime":"same day "+total+" How visits are distributed",23,'#fff9e9','start',700)+
-   text(48,145,trial?"Transfer a visit from the on-call group to the regular group":emphasizeLimit?"The upper limit is calculated by adding the normal shifts and allowed overtime.":"Each tag represents a visit, counted by region",16,'#c2d9cb','start',400);
-  const lanes=[[181,"To be assigned"],[233,"regular nurse"],[278,"nurse on call"]];
+   text(48,120,trial?'Trial rehearsal · '+total+' Sub-total regular nurse':emphasizeLimit?'Shift ceiling · including allowed overtime':'same day '+total+' How visits are distributed',23,'#fff9e9','start',700)+
+   text(48,145,trial?'Transfer a visit from the on-call group to the regular group':emphasizeLimit?'The upper limit is calculated by adding the normal shifts and allowed overtime.':'Each tag represents a visit, counted by region',16,'#c2d9cb','start',400);
+  const lanes=[[181,'To be assigned'],[233,'regular nurse'],[278,'nurse on call']];
   for(const [y,label] of lanes){
    layer+='<rect x="43" y="'+(y-18)+'" width="449" height="37" rx="6" fill="#28504b"/>'+
    text(57,y+6,label,17,'#fbf7e6','start');
@@ -95,11 +95,11 @@ window.ORTOPIA_CARE=(()=>{
    const color=trial&&k>=v.regularVisits?'#ffae7f':regular?'#8de0b7':'#ddc5f0';
    const fill=fixedView?color:'#f8eabb';
    const change=fixedView?'':'<set attributeName="fill" to="'+color+'" begin="'+(begin+1.05)+'s" fill="freeze"/>';
-   layer+=at(fixedView?ex:sx,fixedView?ey:sy,'<g class="visit-token" data-assigned="'+(regular?'regular':'standby')+'">'+move+'<rect x="-25" y="-13" width="50" height="26" rx="13" fill="'+fill+'">'+change+'</rect>'+text(0,6,"1 time",17,'#183c36')+'</g>');
+   layer+=at(fixedView?ex:sx,fixedView?ey:sy,'<g class="visit-token" data-assigned="'+(regular?'regular':'standby')+'">'+move+'<rect x="-25" y="-13" width="50" height="26" rx="13" fill="'+fill+'">'+change+'</rect>'+text(0,6,'1 times',17,'#183c36')+'</g>');
   }
-  layer+=text(48,330,"Regular nurse hours including travel",17,'#fff9e9','start')+
-   text(492,330,"The vertical line is the upper limit "+fmt(limit),15,'#e6dfba','end',500);
-  const demands=[["regular "+v.regularVisits+" times",v.tour,'#8de0b7'],["All made of conventional",allRegular,'#edb382']];
+  layer+=text(48,330,'Regular nurse hours including travel',17,'#fff9e9','start')+
+   text(492,330,'The vertical line is the upper limit '+fmt(limit),15,'#e6dfba','end',500);
+  const demands=[['regular '+v.regularVisits+' times',v.tour,'#8de0b7'],['All made of conventional',allRegular,'#edb382']];
   demands.forEach(([label,value,color],j)=>{
    const y=358+j*37;
    layer+=text(53,y+5,label,17,'#faf7e6','start')+
@@ -108,7 +108,7 @@ window.ORTOPIA_CARE=(()=>{
   });
   layer+='<path d="M'+limitX+' 341v69" stroke="'+(emphasizeLimit?'#ffdd62':'#e5dfbb')+'" stroke-width="'+(emphasizeLimit?5:2.5)+'" stroke-dasharray="'+(emphasizeLimit?'none':'3 3')+'"/>';
   if(trial||emphasizeLimit){
-   const label=trial?"Exceeded shift limit "+fmt(allRegular-limit)+" · This trial arrangement is not feasible":"normal "+fmt(v.shift)+" ＋ overtime allowed "+fmt(v.overtimeLimit)+' ＝ '+fmt(limit);
+   const label=trial?'Exceeded shift limit '+fmt(allRegular-limit)+' · This trial arrangement is not feasible':'normal '+fmt(v.shift)+' ＋ overtime allowed '+fmt(v.overtimeLimit)+' ＝ '+fmt(limit);
    layer+='<rect x="26" y="453" width="488" height="46" rx="6" fill="'+(trial?'#803e28':'#47543e')+'"/>'+text(270,482,label,18,'#fff8e7');
   }
   return layer+'</g>';
@@ -122,11 +122,11 @@ window.ORTOPIA_CARE=(()=>{
   const scale=i===2?3.08:3.02;
   const walking=traveler(from,to,path,actor({pose:'walk',scale,facing,cycles:5}),walkTime);
   const task=at(...to,actor({pose:i===2?'hand':'clipboard',scale,facing}));
-  let room='<image href="../../simulation/assets/replays/P0452/clinic-office.webp" width="1000" height="570" preserveAspectRatio="xMidYMid slice"/>';
-  room+=tag(142,45,"Nursing Base 0 · Duty Room",'#254c42',18);
+  let room='<image href="assets/replays/P0452/clinic-office.webp" width="1000" height="570" preserveAspectRatio="xMidYMid slice"/>';
+  room+=tag(142,45,'Nursing Base 0 · Duty Room','#254c42',18);
   room+=reduced()?task:'<g>'+walking+'<set attributeName="visibility" to="hidden" begin="3.5s" fill="freeze"/></g>'+
    '<g visibility="hidden"><set attributeName="visibility" to="visible" begin="3.5s" fill="freeze"/>'+task+'</g>';
-  const note=["Reading day "+v.initialVisits+" visits","New referral · First visit ranked on day 2","regular "+v.regularVisits+" Times · On call "+v.diverted+" times"][i];
+  const note=['Reading day '+v.initialVisits+' visits','New referral · First visit ranked on day 2','regular '+v.regularVisits+' Times · On call '+v.diverted+' times'][i];
   if(i===2)room+=dispatchBoard(v);
   else room+=tag(780,522,note,'#2d6055',16);
   return svg(data.steps[i].title,room);
@@ -138,22 +138,22 @@ window.ORTOPIA_CARE=(()=>{
   const path='M0 0 Q110 50 237 54 T462 54';
   const walking=traveler(start,end,path,approach,3.4);
   const service=at(...end,actor({pose:'service',scale:2.75}));
-  let room='<image href="../../simulation/assets/replays/P0452/home-visit.webp" width="1000" height="570" preserveAspectRatio="xMidYMid slice"/>';
-  room+=tag(168,45,"Residential area 1·Home visit",'#67573f',18);
+  let room='<image href="assets/replays/P0452/home-visit.webp" width="1000" height="570" preserveAspectRatio="xMidYMid slice"/>';
+  room+=tag(168,45,'Residential area 1·Home visit','#67573f',18);
   room+=at(...patient,actor({role:'patient',pose:'hand',facing:-1,scale:2.63,coat:'#a77765',skin:'#c5987b'}));
   room+=reduced()?service:'<g>'+walking+'<set attributeName="visibility" to="hidden" begin="3.4s" fill="freeze"/></g>'+
    '<g visibility="hidden"><set attributeName="visibility" to="visible" begin="3.4s" fill="freeze"/>'+service+'</g>';
-  room+=tag(785,522,"Regular visits to this area "+data.sceneValues.regularVisits+" times",'#67573f',16);
-  return svg("Home visit action instructions",room);
+  room+=tag(785,522,'Regular visits to this area '+data.sceneValues.regularVisits+' times','#67573f',16);
+  return svg('Home visit action instructions',room);
  }
 
  function home(data,i){
   const v=data.sceneValues,B=[182,311],Z=[797,259];
-  const bg='<image href="../../simulation/assets/replays/P0452/care-scene.webp" x="0" y="0" width="1000" height="570" preserveAspectRatio="xMidYMid slice"/>';
+  const bg='<image href="assets/replays/P0452/care-scene.webp" x="0" y="0" width="1000" height="570" preserveAspectRatio="xMidYMid slice"/>';
   const back='<path d="M0 0H1000V570H0Z" fill="#c6d5b9"/>';
   const outward='M0 0 C60 16 165 -14 240 -16 S401 4 478 -17 S562 -44 615 -52';
   const inward='M0 0 C-57 9 -77 40 -137 35 S-287 35 -375 36 S-554 75 -615 52';
-  
+
   let body=back+bg,regular,standby='';
   if(i===0||i===1||i===2){
    const pose=i===2?'hand':'clipboard';
@@ -164,18 +164,18 @@ window.ORTOPIA_CARE=(()=>{
   if(i>=2)standby=at(883,310,actor({role:'standby',pose:i===4?'service':'clipboard',facing:-1,scale:.82}));
   if(i===4)body+=at(823,257,actor({role:'patient',pose:'hand',facing:-1,scale:.77,skin:'#bd8c70',coat:'#b5826c'}));
   if(i===3||i===5)body+='<path d="M182 311 C242 327 347 297 422 295 S583 315 660 294 S744 267 797 259" fill="none" stroke="#fbfae8" stroke-opacity=".7" stroke-width="5"/><path d="M182 311 C242 327 347 297 422 295 S583 315 660 294 S744 267 797 259" fill="none" stroke="#5b8e75" stroke-width="2" stroke-dasharray="7 9"/>';
-  body+=regular+standby+tag(149,197,"Nursing base 0",'#25594e',17)+tag(831,159,"residential area 1",'#516745',17);
-  if(i<=2)body+=tag(295,316,["Read the daily schedule","First visit scheduled for day 2","Regular 2 times · Transfer 1 time"][i],'#32695d',14);
-  if(i===4)body+=tag(779,302,"Routine care × "+v.regularVisits,'#32695d',14);
+  body+=regular+standby+tag(149,197,'Nursing base 0','#25594e',17)+tag(831,159,'residential area 1','#516745',17);
+  if(i<=2)body+=tag(295,316,['Read the daily schedule','First visit scheduled for day 2','Regular 2 times · Transfer 1 time'][i],'#32695d',14);
+  if(i===4)body+=tag(779,302,'Routine care × '+v.regularVisits,'#32695d',14);
   const summaries=[
-   [["Beginning of day schedule",v.initialVisits+" times"],["Add referral",v.newReferrals+" a"],["Observation time point","Beginning of the day"]],
-   [["receive referrals",v.scheduledDay2+" a"],["first visit","Day 2"],["Today's schedule",v.initialVisits+" times"]],
-   [["same day visit",v.initialVisits+" times"],["regular nurse",v.regularVisits+" times"],["nurse on call",v.diverted+" times"]],
-   [["Departure","Base 0 → Area 1"],["Trip duration",fmt(v.outbound)],["regular visit",v.regularVisits+" times"]],
-   [["Regular services",v.regularVisits+" times"],["Single duration",fmt(v.serviceEach)],["total duration",fmt(v.serviceEach*v.regularVisits)]],
-   [["Return journey time",fmt(v.inbound)],["Total shift duration",fmt(v.tour)],["Overtime hours",fmt(v.overtime)]]
+   [['Beginning of day schedule',v.initialVisits+' times'],['Add referral',v.newReferrals+' a'],['Observation time point','Beginning of the day']],
+   [['receive referrals',v.scheduledDay2+' a'],['first visit','Day 2'],['Today’s schedule',v.initialVisits+' times']],
+   [['same day visit',v.initialVisits+' times'],['regular nurse',v.regularVisits+' times'],['nurse on call',v.diverted+' times']],
+   [['Departure','Base 0 → Area 1'],['Trip duration',fmt(v.outbound)],['regular visit',v.regularVisits+' times']],
+   [['Regular services',v.regularVisits+' times'],['Single duration',fmt(v.serviceEach)],['total duration',fmt(v.serviceEach*v.regularVisits)]],
+   [['Return journey time',fmt(v.inbound)],['Total shift duration',fmt(v.tour)],['Overtime hours',fmt(v.overtime)]]
   ];
-  return [i<3?office(data,i):i===4?visitInterior(data):svg(data.steps[i].title,body),summaries[i],"People, houses, and walking actions are used to illustrate the service process; this example records the number of visits by area."];
+  return [i<3?office(data,i):i===4?visitInterior(data):svg(data.steps[i].title,body),summaries[i],'People, houses, and walking actions are used to illustrate the service process; this example records the number of visits by area.'];
  }
  function windowpane(x,y,w=63,h=44){
   return '<g transform="translate('+x+' '+y+')"><rect width="'+w+'" height="'+h+'" fill="#e8ebe0" stroke="#b9c9bd" stroke-width="3"/><rect x="3" y="3" width="'+(w-6)+'" height="'+(h-6)+'" fill="#9cbfc2"/><path d="m6 '+(h*.7)+' l'+(w*.47)+' -'+(h*.56)+' m-2 '+(h*.57)+' l'+(w*.28)+' -'+(h*.43)+'" stroke="#d7e7dd" stroke-width="3" opacity=".8"/><path d="M'+(w/2)+' 0v'+h+'" stroke="#f1f1df" stroke-width="3"/></g>';
@@ -221,20 +221,20 @@ window.ORTOPIA_CARE=(()=>{
   const events=data.schedule.events,finish=Math.max(...events.map(e=>e.end)),shift=data.sceneValues.regularEnd;
   const left=130,right=960,x=t=>left+t*(right-left)/finish;
   const colors=['#f4b48f','#b0cae3','#9cd9b8'];
-  let strip="<g class=\"room-timeline\" aria-label=\"Actual time slot scheduling for surgery and recovery\">"+
+  let strip='<g class="room-timeline" aria-label="Actual time slot scheduling for surgery and recovery">'+
    '<rect x="18" y="404" width="964" height="154" rx="9" fill="#173f3e" stroke="#a5bbae" stroke-width="2"/>'+
-   text(38,430,(data.trial?"trial arrangement":"actual")+"Schedule · Time Slot "+fmt(phase.clock),19,'#fff8e7','start',700)+
-   text(959,430,"Regular class ends "+fmt(shift)+"　｜　The white line indicates the current handover moment",16,'#d5e8da','end',500);
+   text(38,430,(data.trial?'trial arrangement':'actual')+' Schedule · Time Slot '+fmt(phase.clock),19,'#fff8e7','start',700)+
+   text(959,430,'Regular class ends '+fmt(shift)+'　｜　The white line indicates the current handover moment',16,'#d5e8da','end',500);
   const rooms=[...new Set(events.map(e=>e.resource))].sort((a,b)=>a.localeCompare(b));
   for(const [j,room] of rooms.entries()){
    const y=444+j*37;
-   strip+=text(40,y+19,room.startsWith('OR')?"Operating room":"recovery room",18,'#fff8e7','start')+
+   strip+=text(40,y+19,room.startsWith('OR')?'Operating room':'recovery room',18,'#fff8e7','start')+
     '<rect x="'+left+'" y="'+y+'" width="'+(right-left)+'" height="27" rx="3" fill="#355957"/>'+
     '<rect x="'+x(shift)+'" y="'+y+'" width="'+(right-x(shift))+'" height="27" fill="#79594a" opacity=".7"/>';
    for(const e of events.filter(event=>event.resource===room)){
     const active=e.start<=phase.clock&&phase.clock<e.end;
     const opacity=active?1:e.end<=phase.clock?.83:.65;
-    strip+='<g class="scheduled-patient" data-patient="'+esc(e.label)+'" data-occupied="'+active+'"><title>'+esc(room+'：'+e.label+", Time slot "+e.start+" to "+e.end)+'</title>'+
+    strip+='<g class="scheduled-patient" data-patient="'+esc(e.label)+'" data-occupied="'+active+'"><title>'+esc(room+': '+e.label+', Time slot '+e.start+' to '+e.end)+'</title>'+
      '<rect x="'+(x(e.start)+1)+'" y="'+y+'" width="'+(x(e.end)-x(e.start)-2)+'" height="27" rx="3" fill="'+colors[ids.indexOf(e.label)%colors.length]+'" opacity="'+opacity+'"'+(active?' stroke="#fffae4" stroke-width="2"':'')+'/>'+
      text((x(e.start)+x(e.end))/2,y+19,e.label+' · '+e.start+'–'+e.end,16,'#102e2b')+'</g>';
    }
@@ -248,9 +248,9 @@ window.ORTOPIA_CARE=(()=>{
  }
  function ward(data,i){
   const multi=data.id==='P0001',phase=getPhase(data,i),previous=i?getPhase(data,i-1):null;
-  const names=["waiting area",multi?"Clinic n1":"Operating room OR_1",multi?"Clinic n2":"Recovery room PACU_1","Leave the treatment area"];
+  const names=['waiting area',multi?'Clinic n1':'Operating room OR_1',multi?'Clinic n2':'Recovery room PACU_1','Leave the treatment area'];
   let body=hospitalBackground(names,!multi),count=0;
-  const ids=data.entities.filter(e=>e.group==="Patient").map(e=>e.id);
+  const ids=data.entities.filter(e=>e.group==='Patient').map(e=>e.id);
   const slots=(where,j)=>where===0?[119+j*40,280+j%2*15]:where===1?[337,288]:where===2?[564,288]:where===3?[793+j*35,350+j%2*20]:[95+j*36,385];
   ids.forEach((id,j)=>{
    const loc=place(phase,id,multi);
@@ -272,8 +272,8 @@ window.ORTOPIA_CARE=(()=>{
   if(!multi)body+=roomTimeline(data,phase,ids);
   if(multi&&!phase.ev.length)body+=at(177,275,actor({role:'nurse',pose:'clipboard',scale:.79}));
   return [svg(data.steps[i].title,body,sky+soil+tile),
-   [[multi?"service context":"current timeslot",multi?(phase.scenario||"common appointment form"):fmt(phase.clock)],["In service",data.steps[i].links.length+" people"],["Completed",count+' / '+ids.length+" people"]],
-   multi?"The two sets of service duration scenarios start from scratch, with rooms and characters as examples.":"Patient transfers are demonstrated according to scheduled events, and the animation duration of entering and exiting the room is compressed proportionally."];
+   [[multi?'service context':'current timeslot',multi?(phase.scenario||'common appointment form'):fmt(phase.clock)],['In service',data.steps[i].links.length+' people'],['Completed',count+' / '+ids.length+' people']],
+   multi?'The two sets of service duration scenarios start from scratch, with rooms and characters as examples.':'Patient transfers are demonstrated according to scheduled events, and the animation duration of entering and exiting the room is compressed proportionally.'];
  }
  function block(x,y,w,h,style){
   const {roof='#698b89',wall='#e0dcca',side='#acc0b4',warehouse=false,name}=style;
@@ -303,9 +303,9 @@ window.ORTOPIA_CARE=(()=>{
    '<path d="M-40 377C241 400 294 280 494 278 S851 401 1030 315" fill="none" stroke="#f1ecce" stroke-width="2" stroke-dasharray="16 13"/>'+
    '<path d="M202 254l17 91m561-64l-23 59M481 317l9 117" stroke="#ded7bd" stroke-width="31" fill="none"/>';
   for(const [x,y,k] of [[74,135,1],[54,213,.68],[947,246,1],[45,470,1.1],[918,468,1.1],[598,115,1],[476,142,.8],[358,80,.75],[652,427,.7]])b+=tree(x,y,k);
-  b+=block(74,253,230,113,{name:"Hospital area H0"})+block(651,265,237,118,{name:"Campus H1",roof:'#8a9997'})+block(408,415,155,69,{name:"On-call duty office",roof:'#768f83'});
+  b+=block(74,253,230,113,{name:'Hospital area H0'})+block(651,265,237,118,{name:'Campus H1',roof:'#8a9997'})+block(408,415,155,69,{name:'On-call duty office',roof:'#768f83'});
   b+=shrubs(68,264,75)+shrubs(822,280,68)+bench(587,444);
-  const doctorIds=data.entities.filter(d=>d.group==="anesthesiologist").map(d=>d.id);
+  const doctorIds=data.entities.filter(d=>d.group==='anesthesiologist').map(d=>d.id);
   doctorIds.forEach((id,j)=>{
    const to=st.links.find(pair=>pair[0]===id)?.[1];
    // Every alternative demand starts from the same advance staff assignment.
@@ -319,8 +319,8 @@ window.ORTOPIA_CARE=(()=>{
    b+=traveler(initial,end,route,actor({role:'doctor',pose:moving?'walk':to?'service':'clipboard',coat:['#647a9b','#638e79','#7899a3'][j],facing:dx<0?-1:1,name:id,scale:.86,cycles:4}),3.2);
   });
   const demands=st.changes.filter(c=>sites[c.id]);
-  return [svg(st.title,b,soil),[["planning time",st.time],["Hospital area H0",demands.find(c=>c.id==='H0')?.value||"Regular classes configured"],["Campus H1",demands.find(c=>c.id==='H1')?.value||"Regular classes configured"]],
-   "Each demand branch independently checks the same initial shift schedule. Site locations, character movements, and dispatch routes are for reference."];
+  return [svg(st.title,b,soil),[['planning time',st.time],['Hospital area H0',demands.find(c=>c.id==='H0')?.value||'Regular classes configured'],['Campus H1',demands.find(c=>c.id==='H1')?.value||'Regular classes configured']],
+   'Each demand branch independently checks the same initial shift schedule. Site locations, character movements, and dispatch routes are for reference.'];
  }
  function box(x,y,s=.8,water=false){
   const a=water?['#539caa','#9ac3c9','#69adb7']:['#b48653','#e0b784','#d19e67'];
@@ -336,7 +336,7 @@ window.ORTOPIA_CARE=(()=>{
   '<path d="M263 196C418 193 468 233 550 278S731 301 789 292M241 455C360 409 468 321 550 278" fill="none" stroke="#c9c4b1" stroke-width="39"/>';
   for(const [x,y,k] of [[43,66,.84],[543,75,1],[584,152,.8],[946,231,.8],[644,447,1.05],[556,481,.7],[90,528,1]])b+=tree(x,y,k);
   b+=block(66,178,172,78,{warehouse:true,roof:'#74959a',name:v.supplies[0]})+block(48,433,173,79,{warehouse:true,roof:'#779483',name:v.supplies[1]});
-  b+=tent(807,200,.85)+tent(879,227,.73)+tent(819,290,1.23)+tag(834,146,"Recipient area "+area,'#355b4d',17);
+  b+=tent(807,200,.85)+tent(879,227,.73)+tent(819,290,1.23)+tag(834,146,'Recipient area '+area,'#355b4d',17);
   const received={water:0,kits:0};
   v.supplies.forEach((src,j)=>{
    const ship=sent[j],dock=j?[175,440]:[190,181],dockEnd=[dock[0]+64,dock[1]+19];
@@ -348,33 +348,33 @@ window.ORTOPIA_CARE=(()=>{
    if(used){
     const x=dockEnd[0]+37,y=dockEnd[1]-2;
     b+=at(x,y,'<ellipse cx="0" cy="7" rx="22" ry="6" fill="#7c8e7a" opacity=".45"/><path d="M-17 -1h37v7h-37Z" fill="#b38a50"/><path d="M-17 0v-17" stroke="#4c615b" stroke-width="4"/><circle cx="-10" cy="7" r="4.5" fill="#475859"/><circle cx="13" cy="7" r="4.5" fill="#475859"/>')+box(x+2,y-2,.71,(ship.water||0)>0);
-    b+=tag(j?341:354,j?443:195,"water "+fmt(ship.water||0)+" · Package "+fmt(ship.kits||0),'#44665b',14);
+    b+=tag(j?341:354,j?443:195,'water '+fmt(ship.water||0)+' · Package '+fmt(ship.kits||0),'#44665b',14);
    }
   });
   b+=at(760,303,actor({role:'worker',pose:'hand',scale:.9,coat:'#b08455',facing:-1}))+at(818,320,actor({role:'worker',pose:'carry',scale:.87,coat:'#6e8b75',facing:-1,cycles:3}));
   if(received.water)b+=box(750,324,1.1,true);if(received.kits)b+=box(765,338,1.1);
-  return [svg(data.steps[i].title,b,soil),[["Receiving area in this step",area],["drinking water ration",fmt(received.water)],["Material package ration quantity",fmt(received.kits)]],
-  "The distribution plan for the same cycle is displayed area by area; the moving personnel, boxes and terrain only indicate loading and unloading, and do not indicate the transportation shifts or the number of boxes per box."];
+  return [svg(data.steps[i].title,b,soil),[['Receiving area in this step',area],['drinking water ration',fmt(received.water)],['Material package ration quantity',fmt(received.kits)]],
+  'The distribution plan for the same cycle is displayed area by area; the moving personnel, boxes and terrain only indicate loading and unloading, and do not indicate the transportation shifts or the number of boxes per box.'];
  }
  function trialPicture(data,current,scene){
   const step=data.steps[current];
   if(scene.kind==='surgery'){
    const alt={...data,trial:true,schedule:{...data.schedule,events:scene.events}};
    const [picture]=ward(alt,current);
-   return {picture,overlay:tag(260,51,"Trial surgery sequence　"+scene.order.join(' → '),'#7a5137',20),
-    summary:[["Trial first patient",scene.order[0]],["Operating room completed",fmt(Math.max(...scene.events.filter(e=>e.resource==='OR_1').map(e=>e.end)))],["Recovery room completed",fmt(Math.max(...scene.events.filter(e=>e.resource==='PACU_1').map(e=>e.end)))]]};
+   return {picture,overlay:tag(260,51,'Trial surgery sequence　'+scene.order.join(' → '),'#7a5137',20),
+    summary:[['Trial first patient',scene.order[0]],['Operating room completed',fmt(Math.max(...scene.events.filter(e=>e.resource==='OR_1').map(e=>e.end)))],['Recovery room completed',fmt(Math.max(...scene.events.filter(e=>e.resource==='PACU_1').map(e=>e.end)))]]};
   }
   if(scene.kind==='appointment'){
    const [picture]=ward(data,current);
    let inset='<rect x="89" y="287" width="822" height="246" rx="12" fill="#204943" stroke="#b9cbae" stroke-width="3"/>'+
-    text(121,322,"Try changing your reservation · "+scene.patient+" at "+scene.station+" Appointment postponed by one time slot",23,'#fff9e7','start',700);
-   inset+=text(127,365,"original reservation",18,'#d2dfd3','start')+tag(265,365,"Time point "+fmt(scene.oldSlot),'#52665b',20)+
-    text(367,365,'→',24,'#fff4c6')+text(459,365,"new appointment",18,'#d2dfd3','start')+
-    tag(588,365,"Time point "+fmt(scene.newSlot),'#93613f',20);
-   inset+=text(128,401,"Under the same new appointment, the service time actually occupied by this patient",17,'#cedece','start');
+    text(121,322,'Try changing your reservation · '+scene.patient+' at '+scene.station+' Appointment postponed by one time slot',23,'#fff9e7','start',700);
+   inset+=text(127,365,'original reservation',18,'#d2dfd3','start')+tag(265,365,'Time point '+fmt(scene.oldSlot),'#52665b',20)+
+    text(367,365,'→',24,'#fff4c6')+text(459,365,'new appointment',18,'#d2dfd3','start')+
+    tag(588,365,'Time point '+fmt(scene.newSlot),'#93613f',20);
+   inset+=text(128,401,'Under the same new appointment, the service time actually occupied by this patient',17,'#cedece','start');
    scene.cases.forEach((c,i)=>{
     const y=450+i*47;
-    inset+=text(129,y,"Scenario "+c.id,20,'#fff8e6','start');
+    inset+=text(129,y,'Scenario '+c.id,20,'#fff8e6','start');
     c.stations.forEach((n,j)=>{
      const x=260+j*282;
      inset+='<rect x="'+x+'" y="'+(y-24)+'" width="214" height="33" rx="7" fill="#376659"/>'+
@@ -382,7 +382,7 @@ window.ORTOPIA_CARE=(()=>{
      if(j===0)inset+=text(x+247,y,'→',22,'#eee1ab');
     });
    });
-   return {picture,overlay:inset,summary:[["trial patient",scene.patient],["change site",scene.station],["Appointment time",fmt(scene.oldSlot)+' → '+fmt(scene.newSlot)]]};
+   return {picture,overlay:inset,summary:[['trial patient',scene.patient],['change site',scene.station],['Appointment time',fmt(scene.oldSlot)+' → '+fmt(scene.newSlot)]]};
   }
   if(scene.kind==='staffing'){
    const links=data.steps[0].links.slice();
@@ -390,21 +390,21 @@ window.ORTOPIA_CARE=(()=>{
    const steps=data.steps.map((s,i)=>i===current?{...s,links}:s);
    const [picture]=campus({...data,steps},current);
    const target=scene.target==='H0'?[212,290]:scene.target==='H1'?[777,300]:[493,430];
-   const overlay=tag(230,52,"Trial rehearsal · "+scene.reserve+(scene.target?" Transferred to the hospital area "+scene.target:" stay on call"),'#785139',20)+
+   const overlay=tag(230,52,'Trial rehearsal · '+scene.reserve+(scene.target?' Transferred to the hospital area '+scene.target:' stay on call'),'#785139',20)+
     '<ellipse cx="'+target[0]+'" cy="'+target[1]+'" rx="42" ry="14" fill="none" stroke="#ac652c" stroke-width="4" stroke-dasharray="7 5"/>'+
-    tag(204,321,"supply "+fmt(scene.hours.H0)+" hours",'#43674c',16)+tag(781,331,"supply "+fmt(scene.hours.H1)+" hours",'#43674c',16);
-   return {picture,overlay,summary:[["Physician on call",scene.reserve],["Trial row destination",scene.target||"Stay on standby"],["Demand branch",step.time]]};
+    tag(204,321,'supply '+fmt(scene.hours.H0)+' hours','#43674c',16)+tag(781,331,'supply '+fmt(scene.hours.H1)+' hours','#43674c',16);
+   return {picture,overlay,summary:[['Physician on call',scene.reserve],['Trial row destination',scene.target||'Stay on standby'],['Demand branch',step.time]]};
   }
   if(scene.kind==='relief'){
    const v={...data.sceneValues,shipments:scene.shipments};
    const [picture]=relief({...data,sceneValues:v},current);
    const waterIn=a=>v.supplies.reduce((sum,src)=>sum+v.shipments[src][a].water,0);
-   const overlay=tag(282,50,"Trial fitting · "+scene.source+" redirect "+fmt(scene.quantity)+" Unit drinking water",'#79503a',20)+
+   const overlay=tag(282,50,'Trial fitting · '+scene.source+' redirect '+fmt(scene.quantity)+' Unit drinking water','#79503a',20)+
     '<path d="M260 452Q465 390 526 420T764 455" fill="none" stroke="#faf3d6" stroke-width="10"/>'+
     '<path d="M260 452Q465 390 526 420T764 455" fill="none" stroke="#935b35" stroke-width="4" stroke-dasharray="10 5"/>'+
-    '<path d="M762 448l17 7-18 5z" fill="#935b35"/>'+box(532,423,.88,true)+tag(536,467,"redirect 1 unit water",'#805136',17)+
-    tent(825,464,.8)+tag(824,488,"Recipient area "+scene.newArea,'#355b4d',17);
-   return {picture,overlay,summary:[["Shipping warehouse",scene.source],["Trial fitting "+scene.oldArea+" Drinking water",fmt(waterIn(scene.oldArea))],["Trial fitting "+scene.newArea+" Drinking water",fmt(waterIn(scene.newArea))]]};
+    '<path d="M762 448l17 7-18 5z" fill="#935b35"/>'+box(532,423,.88,true)+tag(536,467,'redirect 1 unit water','#805136',17)+
+    tent(825,464,.8)+tag(824,488,'Recipient area '+scene.newArea,'#355b4d',17);
+   return {picture,overlay,summary:[['Shipping warehouse',scene.source],['Trial fitting '+scene.oldArea+' Drinking water',fmt(waterIn(scene.oldArea))],['Trial fitting '+scene.newArea+' Drinking water',fmt(waterIn(scene.newArea))]]};
   }
  }
  function hookTrials(stage,data,current,map){
@@ -451,8 +451,8 @@ window.ORTOPIA_CARE=(()=>{
     board.outerHTML=dispatchBoard(v,optionIndex);
     const active=map.querySelector('.dispatch-board');active.dataset.comparison=String(optionIndex);
     if(optionIndex===1){
-     const hypothetical=[["Trial access",v.regularVisits+v.diverted],["Trial regular nurse",v.regularVisits+v.diverted],["Trial nurse on call",0]];
-     summary.innerHTML=hypothetical.map(([label,n])=>'<div class="cc-cell">'+label+'<b>'+fmt(n)+" times</b></div>").join('');
+     const hypothetical=[['Trial access',v.regularVisits+v.diverted],['Trial regular nurse',v.regularVisits+v.diverted],['Trial nurse on call',0]];
+     summary.innerHTML=hypothetical.map(([label,n])=>'<div class="cc-cell">'+label+'<b>'+fmt(n)+' times</b></div>').join('');
     }else summary.innerHTML=original;
     if(map.setCurrentTime)map.setCurrentTime(stage.sceneTime||0);
    };

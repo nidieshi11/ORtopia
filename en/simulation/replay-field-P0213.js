@@ -68,16 +68,16 @@ window.ORTOPIA_FIELD_P0213 = (() => {
    reference:[replay.steps[0].title,reference],
    full:[replay.steps[1].title,replay.steps[1].operatingPoint],
    pressure:[replay.steps[2].title,replay.steps[2].operatingPoint],
-   short:["Less air supply",{flow:physics.flowBounds[0],pressure:reference.pressure}]
+   short:['Less air supply',{flow:physics.flowBounds[0],pressure:reference.pressure}]
   };
-  host.innerHTML="<section class=\"gas-field\" aria-label=\"Natural gas transmission and distribution station\"><div class=\"gas-scene\">"+
-   "<canvas role=\"img\" aria-label=\"Natural gas flows through three circuits simultaneously. Four pressure tables show nodes of stress and cross-border movements.\"></canvas>"+
-   "<button type=\"button\" class=\"gas-hit gas-hit-in\" data-adjust=\"pressure\" title=\"Adjust inlet pressure\" aria-label=\"Adjust inlet pressure\"></button>"+
-   "<button type=\"button\" class=\"gas-hit gas-hit-out\" data-adjust=\"flow\" title=\"Regulate delivery flow\" aria-label=\"Regulate delivery flow\"></button></div>"+
-   '<div class="gas-ops">'+slider('pressure',"Inlet pressure",physics.inletBounds)+slider('flow',"Deliver traffic",physics.flowBounds)+
+  host.innerHTML='<section class="gas-field" aria-label="Natural gas transmission and distribution station"><div class="gas-scene">'+
+   '<canvas role="img" aria-label="Natural gas flows through three sections of series pipelines at the same time, and four pressure gauges display the pressure and boundary crossing conditions at each node."></canvas>'+
+   '<button type="button" class="gas-hit gas-hit-in" data-adjust="pressure" title="Adjust inlet pressure" aria-label="Adjust inlet pressure"></button>'+
+   '<button type="button" class="gas-hit gas-hit-out" data-adjust="flow" title="Regulate delivery flow" aria-label="Regulate delivery flow"></button></div>'+
+   '<div class="gas-ops">'+slider('pressure','Inlet pressure',physics.inletBounds)+slider('flow','Deliver traffic',physics.flowBounds)+
    '<div class="gas-status" role="status"><span class="gas-state"></span><output class="gas-result"></output><small class="gas-note"></small></div></div>'+
    '<div class="gas-actions">'+Object.entries(presets).map(([id,[title]])=>'<button data-plan="'+id+'" type="button">'+title+'</button>').join('')+
-   "<button type=\"button\" data-action=\"raise\">Maintain flow and make up pressure</button></div></section>";
+   '<button type="button" data-action="raise">Maintain flow and make up pressure</button></div></section>';
   const q=sel=>host.querySelector(sel);
   const draw=window.ORTOPIA_GAS_WORLD.create(q('canvas'));
   let current,repair;
@@ -92,15 +92,15 @@ window.ORTOPIA_FIELD_P0213 = (() => {
     const el=q('[data-setting='+key+']');el.value=s.point[key];
     q('[data-read='+key+']').textContent=fmt(s.point[key]);
    }
-   q('.gas-state').textContent=(s.name||"Manual scheduling")+' · '+(current.feasible?"Feasible":"Infeasible");
+   q('.gas-state').textContent=(s.name||'Manual scheduling')+' · '+(current.feasible?'Feasible':'Infeasible');
    q('.gas-status').dataset.valid=String(current.feasible);
-   q('.gas-result').textContent=(current.feasible?"target ":"Trial target ")+fmt(current.objective,4);
+   q('.gas-result').textContent=(current.feasible?'target ':'Trial target ')+fmt(current.objective,4);
    const pErrors=current.violations.filter(v=>v.kind==='pressure');
    const info=[];
-   if(pErrors.length)info.push(pErrors.map(v=>'P'+v.node).join('、')+" Pressure crosses the line");
+   if(pErrors.length)info.push(pErrors.map(v=>'P'+v.node).join(', ')+' Pressure crosses the line');
    if(outside(s.point.flow,physics.demand))info.push(s.point.flow<physics.demand[0]
-     ?"Pay less "+fmt(physics.demand[0]-s.point.flow):"Exceeded receiving limit "+fmt(s.point.flow-physics.demand[1]));
-   if(!info.length)info.push("The lower the goal, the better · Delivery scope "+physics.demand.map(n=>fmt(n)).join('–'));
+     ?'Pay less '+fmt(physics.demand[0]-s.point.flow):'Exceeded receiving limit '+fmt(s.point.flow-physics.demand[1]));
+   if(!info.length)info.push('The lower the goal, the better · Delivery scope '+physics.demand.map(n=>fmt(n)).join('–'));
    q('.gas-note').textContent=info.join(' · ');
    for(const [id,[,p]] of Object.entries(presets)){
     q('[data-plan='+id+']').setAttribute('aria-pressed',String(Math.abs(s.point.pressure-p.pressure)<eps&&Math.abs(s.point.flow-p.flow)<eps));
@@ -126,7 +126,7 @@ window.ORTOPIA_FIELD_P0213 = (() => {
     drag.moved=true;
     const distance=Math.max(85,Math.min(180,q('canvas').clientHeight*.55));
     const v=drag.initial+dy/distance*(bounds[1]-bounds[0]);
-    edit({...s.point,[key]:Math.round(100*Math.max(bounds[0],Math.min(bounds[1],v)))/100},"Manual scheduling");
+    edit({...s.point,[key]:Math.round(100*Math.max(bounds[0],Math.min(bounds[1],v)))/100},'Manual scheduling');
    };
    button.onpointerup=()=>{button.dataset.dragged=String(drag?.moved||false);drag=null;};
    button.onpointercancel=()=>{drag=null;};
@@ -135,12 +135,12 @@ window.ORTOPIA_FIELD_P0213 = (() => {
     e.preventDefault();
     const change=['ArrowUp','ArrowRight'].includes(e.key) ? 0.01 : -0.01;
     const v=Math.round(100*(s.point[key]+change))/100;
-    edit({...s.point,[key]:Math.max(bounds[0],Math.min(bounds[1],v))},"Manual scheduling");
+    edit({...s.point,[key]:Math.max(bounds[0],Math.min(bounds[1],v))},'Manual scheduling');
    };
   }
   q('.gas-field').oninput=e=>{
    const key=e.target.dataset.setting;if(!key)return;
-   edit({...s.point,[key]:Number(e.target.value)},"Manual scheduling");
+   edit({...s.point,[key]:Number(e.target.value)},'Manual scheduling');
   };
   q('.gas-field').onclick=e=>{
    const b=e.target.closest('button');if(!b)return;
@@ -152,7 +152,7 @@ window.ORTOPIA_FIELD_P0213 = (() => {
    }
    if(b.dataset.plan){
     const [name,p]=presets[b.dataset.plan];edit(p,name);
-   }else if(b.dataset.action==='raise'&&repair!==null)edit({...s.point,pressure:repair},"make up for pressure");
+   }else if(b.dataset.action==='raise'&&repair!==null)edit({...s.point,pressure:repair},'make up for pressure');
   };
   host.sceneFrame=t=>{
    s.time=t;

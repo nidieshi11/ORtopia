@@ -75,54 +75,54 @@ function clock(v){const m=Math.floor(v);return String(Math.floor(m/60)).padStart
 const marks=(arr)=>arr.map(([at,label])=>({at,label}));
 function hall(g){
  base(g,['#d9e9de','#bacdb9','#c8d5ac','#a7bcb2']);
- building(g,40,201,103,68,'#b8b79f',"Xicheng entrance",1);building(g,406,190,124,65,'#bead92',"Qiaoxia Shopping Mall",1);
- building(g,1245,206,146,100,'#b5bcac',"Binjiang Office Building");trees(g,170,217,5);trees(g,1000,222,6);
+ building(g,40,201,103,68,'#b8b79f','Xicheng entrance',1);building(g,406,190,124,65,'#bead92','Qiaoxia Shopping Mall',1);
+ building(g,1245,206,146,100,'#b5bcac','Binjiang Office Building');trees(g,170,217,5);trees(g,1000,222,6);
  g.rect(0,390,1440,150,'#bbd1b2');g.poly([[600,540],[710,360],[801,290],[856,230],[821,540]],'#7eb3ad');
  road(g,[[0,298],[245,301],[496,361],[734,388],[1000,354],[1440,300]],42);
  for(let x=45;x<1440;x+=100){g.rect(x,247,9,55,'#929d91');}
- g.rect(0,242,1440,10,'#b7baad');track(g,238);platform(g,135,231,153,"urban rail");platform(g,677,231,133,"transfer station");platform(g,1212,231,154,"East Railway Station");
- platform(g,135,286,118,"bus exit");platform(g,685,371,108,"connector");
+ g.rect(0,242,1440,10,'#b7baad');track(g,238);platform(g,135,231,153,'urban rail');platform(g,677,231,133,'transfer station');platform(g,1212,231,154,'East Railway Station');
+ platform(g,135,286,118,'bus exit');platform(g,685,371,108,'connector');
  g.poly([[830,445],[884,430],[924,432],[903,445]],'#537679');g.rect(869,422,29,12,'#cfa877');
  for(let j=0;j<4;j++){const x=1110+j*37;g.rect(x,388,21,14,'#af8a5c');g.poly([[x-4,387],[x+9,372],[x+24,387]],j%2?'#d29d5b':'#b16c56');}
  for(let i=0;i<16;i++){const x=677+i*4;g.rect(x,240+i*7,8,7,'#acaa96');}
- g.tag("OD 0 starting point",87,345);g.tag("riverside destination",1343,330);
+ g.tag('OD 0 starting point',87,345);g.tag('riverside destination',1343,330);
 }
 function reroute(d,k,f){
  const t=f;let a,kind;const route=[2,1,0][k],arrival=.91;
  if(route===2){
   a=lineAt(t,[[0,50,304],[.11,172,230],[.4,736,230],[.51,748,240],[.64,730,378],[.87,1238,325],[1,1331,274]]);
-  kind=t<.11?"pit stop":t<.4?"Take the rail train":t<.64?"Walk and transfer":t<.87?"Take shuttle bus":"reach destination";
+  kind=t<.11?'pit stop':t<.4?'Take the rail train':t<.64?'Walk and transfer':t<.87?'Take shuttle bus':'reach destination';
  }else if(route===1){
   a=lineAt(t,[[0,50,304],[.13,175,297],[.34,496,360],[.53,734,385],[.72,1000,353],[arrival,1250,319],[1,1331,274]]);
-  kind=t<.13?"Go to bus stop":t<arrival?"Take direct bus":"reach destination";
+  kind=t<.13?'Go to bus stop':t<arrival?'Take direct bus':'reach destination';
  }else{
-  a=lineAt(t,[[0,50,304],[.14,175,229],[.62,762,229],[.88,1265,229],[1,1331,274]]);kind=t<.14?"Walking towards the rail station":t<.88?"Take a direct train":"reach destination";
+  a=lineAt(t,[[0,50,304],[.14,175,229],[.62,762,229],[.88,1265,229],[1,1331,274]]);kind=t<.14?'Walking towards the rail station':t<.88?'Take a direct train':'reach destination';
  }
- return {t,a,route,kind,clock:"Morning rush hour · "+kind,metrics:[["OD 0 nominal demand",fmt(d.demand,3)],["Recommended path",["direct track","direct bus","Transfer"][route]],["Full instance specified solution cost",dec(d.scores[k])]]};
+ return {t,a,route,kind,clock:'Morning rush hour · '+kind,metrics:[['OD 0 nominal demand',fmt(d.demand,3)],['Recommended path',['direct track','direct bus','Transfer'][route]],['Full instance specified solution cost',dec(d.scores[k])]]};
 }
-labs.P0077={batch:'world20',title:"Three diversion channels that interrupt the hub",action:"Select the recommended path for morning peak OD 0, following this flow of passengers from the west entrance through the disturbed hub.",choices:["press archive transfer","Take direct bus instead","Change to direct rail"],views:["Follow this group of passengers","hub panorama"],duration:42,
- chapters:()=>marks([[0,"west entrance"],[.34,"Observe the first journey"],[.58,"middle section of hub"],[.87,"Arrive at Binjiang"]]),
- scope:"The morning peak OD 0 is displayed from 1,000 pairs of origin and destination points in three time periods. Under the same nominal demand and shared uncertainty ball, only the path share of the group is changed, and the cost of the specified solution is recalculated according to the original formula with the zero non-negative dual block and the corresponding norm. Station names, buildings along the route, travel time and number of figures are used to illustrate the three routes.",
+labs.P0077={batch:'world20',title:'Three diversion channels that interrupt the hub',action:'Select the recommended path for morning peak OD 0, following this flow of passengers from the west entrance through the disturbed hub.',choices:['press archive transfer','Take direct bus instead','Change to direct rail'],views:['Follow this group of passengers','hub panorama'],duration:42,
+ chapters:()=>marks([[0,'west entrance'],[.34,'Observe the first journey'],[.58,'middle section of hub'],[.87,'Arrive at Binjiang']]),
+ scope:'The morning peak OD 0 is displayed from 1,000 pairs of origin and destination points in three time periods. Under the same nominal demand and shared uncertainty ball, only the path share of the group is changed, and the cost of the specified solution is recalculated according to the original formula with the zero non-negative dual block and the corresponding norm. Station names, buildings along the route, travel time and number of figures are used to illustrate the three routes.',
  frame:reroute,draw(canvas,s,d,k,f,v){const g=viewport(canvas,hall,s,v,s.a);const [x,y]=s.a;
- if(/train|rail ride/i.test(s.kind))rail(g,x,y+7,mint,"M · Morning shift");
- else if(/(?:shuttle|direct) bus/i.test(s.kind))bus(g,x,y+2,rust,s.route===2?"connect":"direct");
+ if(/train|rail/i.test(s.kind))rail(g,x,y+7,mint,'M · Morning shift');
+ else if(/ride|riding|passenger|board|take/i.test(s.kind)&&/bus|transit/i.test(s.kind))bus(g,x,y+2,rust,s.route===2?'connect':'direct');
  else group(g,x-9,y,6,s.t);
- if(s.route===2&&s.t>=.4&&s.t<.64){rail(g,736+ratio(s.t,.4,.64)*730,237,mint,'M');bus(g,734,386,rust,"connect",true);}
- if(s.kind==="reach destination"){if(s.route===0)rail(g,lerp(1265,1538,ratio(s.t,.88,1)),237,mint,'M');else bus(g,lerp(1250,1510,ratio(s.t,s.route===2?.87:.91,1)),323,rust,"Continue");}
+ if(s.route===2&&s.t>=.4&&s.t<.64){rail(g,736+ratio(s.t,.4,.64)*730,237,mint,'M');bus(g,734,386,rust,'connect',true);}
+ if(s.kind==='reach destination'){if(s.route===0)rail(g,lerp(1265,1538,ratio(s.t,.88,1)),237,mint,'M');else bus(g,lerp(1250,1510,ratio(s.t,s.route===2?.87:.91,1)),323,rust,'Continue');}
  g.tag(s.kind,x,Math.max(90,y-72));
  }};
 function yard(g){
  base(g,['#ede4ce','#c9c3a3','#c6ccad','#b5b8a2'],[43,49,69]);
- building(g,31,202,116,66,'#c7b49a',"First stop on the west line",1);building(g,336,216,145,70,'#bbbaa0',"T224 end point");
- building(g,596,175,180,82,'#c0ae91',"CS1 charging garage",2);building(g,1024,198,152,61,'#b5b69f',"T063 departure station");building(g,1287,192,108,67,'#c8bba3',"Chengdong Terminal");
+ building(g,31,202,116,66,'#c7b49a','First stop on the west line',1);building(g,336,216,145,70,'#bbbaa0','T224 end point');
+ building(g,596,175,180,82,'#c0ae91','CS1 charging garage',2);building(g,1024,198,152,61,'#b5b69f','T063 departure station');building(g,1287,192,108,67,'#c8bba3','Chengdong Terminal');
  road(g,[[0,285],[316,271],[414,276],[501,337],[627,345],[752,327],[866,273],[1045,275],[1187,311],[1440,293]],40);
  road(g,[[525,338],[542,235],[619,216],[762,215],[823,253],[860,276]],27);
  for(let j=0;j<4;j++){const x=568+j*49;g.rect(x,199,20,22,'#537f70');g.rect(x+4,202,12,6,'#dbe9b7');g.path([[x+16,210],[x+24,210],[x+26,225],[x+21,229]],'#354f4b',2);g.text('⚡',x+10,215,10,cream);}
- platform(g,58,264,78,"Western Front");platform(g,356,255,81,"Drop-off area");platform(g,994,255,107,"Departure from East Line");trees(g,17,401,33,39);
+ platform(g,58,264,78,'Western Front');platform(g,356,255,81,'Drop-off area');platform(g,994,255,107,'Departure from East Line');trees(g,17,401,33,39);
  for(let j=0;j<4;j++){const x=582+j*42;g.poly([[x,147],[x+31,147],[x+43,137],[x+12,137]],'#587d87');g.path([[x+14,145],[x+23,138]],'#a4c5bc',1);}
- g.tag("Slow charging berth",689,251,'#6d7558');g.rect(925,251,5,40,'#535d50');g.rect(928,252,17,13,'#e8c47b');
+ g.tag('Slow charging berth',689,251,'#6d7558');g.rect(925,251,5,40,'#535d50');g.rect(928,252,17,13,'#e8c47b');
  g.poly([[738,452],[804,373],[930,353],[1045,365],[1125,440],[1440,460],[1440,540],[0,540]],'#a5bbb0');
- g.rect(1152,340,30,16,'#546d64');g.text("Eastern Front",1167,348,11,cream);
+ g.rect(1152,340,30,16,'#546d64');g.text('Eastern Front',1167,348,11,cream);
 }
 function chargeFrame(d,k,f){
  const times=d.times,e=d.energy,share=[1,0,.5][k],t=lerp(times[0],times[7],f);
@@ -133,13 +133,13 @@ function chargeFrame(d,k,f){
  const coord=lineAt(t,[[times[0],89,283],[807,225,276],[times[1],408,276],[times[2],408,276],[833,540,233],[times[3],626,216],[times[5],626,216],[880,842,266],[times[6],1041,272],[896,1187,311],[times[7],1355,300]]);
  const active=t>=times[3]&&t<lerp(times[3],times[4],share);
  const a=rejected?[1041,272]:coord;
- const stage=t<times[1]?"T224 carrying passengers":t<times[3]?"Driving into the charging station":t<times[5]?active?"charging station":share?"Charging ends":"Docked and not charging":t<times[6]?"Go to starting position T063":rejected?"Insufficient reserves · Dispatch suspended":"T063 carrying passengers";
- return {t,a,active,rejected,battery,charged,projected,stage,clock:clock(t)+' · '+stage,metrics:[["Recharged",dec(charged)+' kWh'],["Vehicle power",dec(battery)+' kWh'],["T063 Estimated power at station",dec(projected)+' kWh'],["minimum reserve",fmt(d.minimum)+' kWh']]};
+ const stage=t<times[1]?'T224 carrying passengers':t<times[3]?'Driving into the charging station':t<times[5]?active?'charging station':share?'Charging ends':'Docked and not charging':t<times[6]?'Go to starting position T063':rejected?'Insufficient reserves · Dispatch suspended':'T063 carrying passengers';
+ return {t,a,active,rejected,battery,charged,projected,stage,clock:clock(t)+' · '+stage,metrics:[['Recharged',dec(charged)+' kWh'],['Vehicle power',dec(battery)+' kWh'],['T063 Estimated power at station',dec(projected)+' kWh'],['minimum reserve',fmt(d.minimum)+' kWh']]};
 }
-labs.P0124={batch:'world20',title:"Charging connection from the end of the west line to the starting point of the east line",action:"In CS1, change the replenishing power of T224 after the shift to see if the same K7M can complete T063 with the specified reserve.",choices:["Replenish power according to archive","Skip this recharge","Only make up for half"],views:["Follow this electric bus","Panorama of garage and lines"],duration:49,chapters:d=>marks([[0,"Departure T224"],[ratio(d.times[2],d.times[0],d.times[7]),"Go through the library gate"],[ratio(d.times[3],d.times[0],d.times[7]),"Plug in the gun to charge"],[ratio(d.times[6],d.times[0],d.times[7]),"Review T063 departure"]]),
- scope:"Reproduce T224→CS1→T063 in 237 archived shifts. Driving power consumption, departure time, charging power, and minimum reserve of 40 kWh use K7M instance data. The alternative plan is to retain the original parking period and empty driving schedule. If the next train is expected to be lower than the reserve, the vehicle will be reserved on site according to the departure review rules. The remaining shifts follow the filing schedule.",frame:chargeFrame,
+labs.P0124={batch:'world20',title:'Charging connection from the end of the west line to the starting point of the east line',action:'In CS1, change the replenishing power of T224 after the shift to see if the same K7M can complete T063 with the specified reserve.',choices:['Replenish power according to archive','Skip this recharge','Only make up for half'],views:['Follow this electric bus','Panorama of garage and lines'],duration:49,chapters:d=>marks([[0,'Departure T224'],[ratio(d.times[2],d.times[0],d.times[7]),'Go through the library gate'],[ratio(d.times[3],d.times[0],d.times[7]),'Plug in the gun to charge'],[ratio(d.times[6],d.times[0],d.times[7]),'Review T063 departure']]),
+ scope:'Reproduce T224→CS1→T063 in 237 archived shifts. Driving power consumption, departure time, charging power, and minimum reserve of 40 kWh use K7M instance data. The alternative plan is to retain the original parking period and empty driving schedule. If the next train is expected to be lower than the reserve, the vehicle will be reserved on site according to the departure review rules. The remaining shifts follow the filing schedule.',frame:chargeFrame,
  draw(canvas,s,d,k,f,v){const g=viewport(canvas,yard,s,v,s.a,510);const [x,y]=s.a;bus(g,x,y,mint,'K7M',s.active||s.rejected);
- if(s.active){g.path([[618,214],[614,225],[625,233],[x+7,y-8]],gold,3);g.tag("Access CS1 · "+dec(s.charged,1)+' kWh',627,153);}
+ if(s.active){g.path([[618,214],[614,225],[625,233],[x+7,y-8]],gold,3);g.tag('Access CS1 · '+dec(s.charged,1)+' kWh',627,153);}
  else g.tag(s.stage,x,Math.max(72,y-68),s.rejected?rust:mint);
  if(s.t>826&&s.t<834){const a=lineAt(s.t,[[826,405,272],[834,366,225]]);group(g,...a,4,s.t);}
  if(s.t>870){const count=s.rejected?7:s.t<885?6:Math.max(0,6-Math.floor((s.t-885)*2));group(g,999,260,count,s.t*.24);}
@@ -149,14 +149,14 @@ labs.P0124={batch:'world20',title:"Charging connection from the end of the west 
 const railPos=idx=>92+(idx-17)*299;
 function metro(g){
  base(g,['#d7e0e5','#b8c5bd','#ced1bd','#a7b3ad'],[87,54,105,60]);
- road(g,[[0,372],[1440,372]],44);trees(g,40,426,35,40);building(g,334,212,103,79,'#c3b9a8',"city archives");building(g,667,207,96,95,'#aab9ab',"Residences along the river");
- building(g,946,210,121,84,'#b6b99c',"Return control room",2);building(g,1240,209,130,82,'#b6af99',"Eastern District Hospital");
+ road(g,[[0,372],[1440,372]],44);trees(g,40,426,35,40);building(g,334,212,103,79,'#c3b9a8','city archives');building(g,667,207,96,95,'#aab9ab','Residences along the river');
+ building(g,946,210,121,84,'#b6b99c','Return control room',2);building(g,1240,209,130,82,'#b6af99','Eastern District Hospital');
  for(let x=56;x<1440;x+=108){g.rect(x,290,13,67,'#939e95');g.poly([[x-15,290],[x+26,290],[x+12,308],[x+2,308]],'#969e93');}
  for(let x=43;x<1440;x+=137){g.rect(x,164,3,96,'#7c8a80');g.path([[x-8,175],[x+20,175],[x+5,187]],'#7f8e83',2);}
  g.path([[0,178],[1440,178]],'#849085',1);
  g.rect(0,285,1440,10,'#a6ae9e');track(g,266);track(g,288);
  g.path([[963,264],[1020,257],[1080,230],[1175,230]],'#a7a68f',10);g.path([[963,264],[1020,257],[1080,230],[1175,230]],'#737e77',3);
- for(let j=17;j<=21;j++){const x=railPos(j);platform(g,x-70,257,127,'S'+j+(j===20?" · Return station":''));g.path([[x-54,294],[x-32,344],[x+5,345]],'#b6ad93',10);}
+ for(let j=17;j<=21;j++){const x=railPos(j);platform(g,x-70,257,127,'S'+j+(j===20?' · Return station':''));g.path([[x-54,294],[x-32,344],[x+5,345]],'#b6ad93',10);}
 }
 function railFrame(d,k,f){
  const times=(r,i)=>d.trains.find(e=>e[0]===r&&e[1]===i)[2];
@@ -168,14 +168,14 @@ function railFrame(d,k,f){
  }
  const x18=trainX(18),x19=trainX(19),at=railPos(20);
  const off=t>=direct-d.dwell&&t<next&&k===0,spent=k?0:clip(t-direct,0,next-direct);
- const phase=t<direct-d.dwell?"Go to S20":k?"Continue with the original vehicle":t<next-d.dwell?"Get off the bus and wait for the entire journey":t<next?"Open the door when changing vehicles":"Continue with the entire journey";
+ const phase=t<direct-d.dwell?'Go to S20':k?'Continue with the original vehicle':t<next-d.dwell?'Get off the bus and wait for the entire journey':t<next?'Open the door when changing vehicles':'Continue with the entire journey';
  const subject=t<direct-d.dwell||k?[x18,266]:off?[at+lerp(-9,25,ratio(t,direct-d.dwell,direct)),250]:[x19,288];
- return {t,x18,x19,subject,k,off,direct,next,phase,clock:"Operation seconds "+Math.round(t),metrics:[["This batch transfer passenger flow",fmt(k?0:d.transfers,3)+" Visitors"],["Two cars waiting in the starting room",Math.round(spent)+" s"],["Minimum number of connecting trains throughout the day",d.fleet[k]+" Column"],["Vehicle group limit",d.limit+" Column"]]};
+ return {t,x18,x19,subject,k,off,direct,next,phase,clock:'Operation seconds '+Math.round(t),metrics:[['This batch transfer passenger flow',fmt(k?0:d.transfers,3)+' Visitors'],['Two cars waiting in the starting room',Math.round(spent)+' s'],['Minimum number of connecting trains throughout the day',d.fleet[k]+' Column'],['Vehicle group limit',d.limit+' Column']]};
 }
-labs.P0158={batch:'world20',title:"Short-distance passengers are handed over to the next full-distance train at S20",action:"Keep the departure time of each train and decide whether train 18 will turn back at S20 or continue to carry passengers to the end of the line.",choices:["S20 Return by archive","18 times changed to full course"],views:["Follow the flow of changing passengers","Panorama along the route"],duration:48,chapters:()=>marks([[0,"S17 uplink section"],[.49,"18 trips to the return station"],[.6,"Observe the transfer platform"],[.8,"19 pit stops"]]),
- scope:"S17–S21 for Scenario 1, Direction 1. According to the archive distribution, 27.791 passengers made 19 transfers at the short line terminus. The trial calculation retains the passenger flow and the original train schedule, changes the entire journey 18 times, and recalculates the full-day train group matching. Partial passenger flow will not be re-optimized across the entire line; the number of platforms, buildings and carriages are for reference only.",
+labs.P0158={batch:'world20',title:'Short-distance passengers are handed over to the next full-distance train at S20',action:'Keep the departure time of each train and decide whether train 18 will turn back at S20 or continue to carry passengers to the end of the line.',choices:['S20 Return by archive','18 times changed to full course'],views:['Follow the flow of changing passengers','Panorama along the route'],duration:48,chapters:()=>marks([[0,'S17 uplink section'],[.49,'18 trips to the return station'],[.6,'Observe the transfer platform'],[.8,'19 pit stops']]),
+ scope:'S17–S21 for Scenario 1, Direction 1. According to the archive distribution, 27.791 passengers made 19 transfers at the short line terminus. The trial calculation retains the passenger flow and the original train schedule, changes the entire journey 18 times, and recalculates the full-day train group matching. Partial passenger flow will not be re-optimized across the entire line; the number of platforms, buildings and carriages are for reference only.',
  frame:railFrame,draw(canvas,s,d,k,f,v){const g=viewport(canvas,metro,s,v,s.subject,558),stop=railPos(20);
- if(!k&&s.t>s.direct){const a=lineAt(s.t,[[s.direct,stop,266],[s.direct+80,stop+58,252],[s.direct+158,stop+105,232]]);rail(g,...a,'#538c80',"18 · Return to warehouse");}
+ if(!k&&s.t>s.direct){const a=lineAt(s.t,[[s.direct,stop,266],[s.direct+80,stop+58,252],[s.direct+158,stop+105,232]]);rail(g,...a,'#538c80','18 · Return to warehouse');}
  else rail(g,s.x18,266,mint,'18');
  if(s.t>=d.trains.find(e=>e[0]===19&&e[1]===17)[2]-d.dwell)rail(g,s.x19,288,'#ad7052','19');
  if(s.off){const n=s.t<s.direct?Math.max(1,Math.ceil(ratio(s.t,s.direct-d.dwell,s.direct)*8)):s.t<s.next-d.dwell?8:Math.ceil((1-ratio(s.t,s.next-d.dwell,s.next))*8);
@@ -184,11 +184,11 @@ labs.P0158={batch:'world20',title:"Short-distance passengers are handed over to 
  }};
 function cargo(g){
  base(g,['#d7e4e2','#b1c1bb','#c1c5b1','#a5b6b2']);
- for(let k=0;k<3;k++){building(g,20+k*98,220,82,58,'#b7aa8d',k===1?"A port cargo terminal":'',2);}
- building(g,568,226,113,69,'#c0b69b',"B Will give way");building(g,1172,222,160,75,'#b4b39e',"C container yard",2);
+ for(let k=0;k<3;k++){building(g,20+k*98,220,82,58,'#b7aa8d',k===1?'A port cargo terminal':'',2);}
+ building(g,568,226,113,69,'#c0b69b','B Will give way');building(g,1172,222,160,75,'#b4b39e','C container yard',2);
  for(const x of [120,1210]){g.rect(x,139,9,111,'#b48c52');g.rect(x-51,136,128,8,'#bc965d');g.path([[x-45,136],[x,110],[x+71,136]],'#927848',3);g.path([[x+48,144],[x+48,206]],'#646d63',2);}
  for(let j=0;j<4;j++)track(g,269+j*31);for(const x of [212,250,288,1230,1268,1306]){g.rect(x,347,32,15,'#92866a');g.rect(x,333,32,13,'#a7634e');}
- platform(g,52,258,105,"A port area");platform(g,620,258,100,"B intermediate station");platform(g,1230,258,100,"C unloading");
+ platform(g,52,258,105,'A port area');platform(g,620,258,100,'B intermediate station');platform(g,1230,258,100,'C unloading');
  for(const x of [245,747,1311]){g.rect(x,243,4,26,ink);g.rect(x-4,231,12,16,'#535e55');g.disk(x+2,237,3,3,'#91ab67');}
  road(g,[[0,408],[840,419],[1440,409]],25);
  g.poly([[0,457],[340,453],[530,483],[950,474],[1100,450],[1440,447],[1440,540],[0,540]],'#86b4b1');
@@ -215,19 +215,19 @@ function freightFrame(d,k,f){
  if(t<14)freight.p=lineAt(t,[[0,125,bayY],[12,125,bayY],[14,135,302]]);
  const focus=t<7?passenger:t<=11?lineAt(t,[[7,662,269],[11,125,bayY]]):freight.p;
  const target=d.trips.find(a=>a[1]==='F102')[2];
- return {t,trains,passenger,focus,chosen,rejected,cmp:other,admit,clock:"Run chart "+clock(Math.max(t,0)),
- metrics:[["14 distribution slots",chosen],["The freight rate income of this tank",String(admit[2])],["Full day plan income",String(d.objective-target+admit[2])],["Minimum interval in the same direction",d.headway+" min"]]};
+ return {t,trains,passenger,focus,chosen,rejected,cmp:other,admit,clock:'Run chart '+clock(Math.max(t,0)),
+ metrics:[['14 distribution slots',chosen],['The freight rate income of this tank',String(admit[2])],['Full day plan income',String(d.objective-target+admit[2])],['Minimum interval in the same direction',d.headway+' min']]};
 }
-labs.P0416={batch:'world20',title:"The departure slot of the port cargo train after the passenger train has passed through",action:"At the 14th minute there are two freight bookings competing for the same dispatch slot. Select a deal and follow the cargo train through the intermediate station into the C field.",choices:["Release by filing F102","Replace F91"],views:["Follow the dispatch site","MTR corridor panorama"],duration:40,chapters:()=>marks([[0,"Fixed bus departure"],[.26,"First freight train access"],[.455,"Allow competitive bookings"],[.67,"Give way to the stop"],[.903,"Arrive at C cargo yard"]]),
- scope:"Read the passenger and freight departures in the first 21 minutes according to the original operation chart. Port handling, shipping lanes and cargo appearance are used to distinguish bookings. Keep the fixed passenger cars and all other accepted freight trains, except exchange F102 and F91 with the same ideal departure time, route and stop duration. The time penalty remains zero, and the full-day income is recalculated based on the freight rates of the exchange-in and exchange-out shipments.",
+labs.P0416={batch:'world20',title:'The departure slot of the port cargo train after the passenger train has passed through',action:'At the 14th minute there are two freight bookings competing for the same dispatch slot. Select a deal and follow the cargo train through the intermediate station into the C field.',choices:['Release by filing F102','Replace F91'],views:['Follow the dispatch site','MTR corridor panorama'],duration:40,chapters:()=>marks([[0,'Fixed bus departure'],[.26,'First freight train access'],[.455,'Allow competitive bookings'],[.67,'Give way to the stop'],[.903,'Arrive at C cargo yard']]),
+ scope:'Read the passenger and freight departures in the first 21 minutes according to the original operation chart. Port handling, shipping lanes and cargo appearance are used to distinguish bookings. Keep the fixed passenger cars and all other accepted freight trains, except exchange F102 and F91 with the same ideal departure time, route and stop duration. The time penalty remains zero, and the full-day income is recalculated based on the freight rates of the exchange-in and exchange-out shipments.',
  frame:freightFrame,draw(canvas,s,d,k,f,v){const g=viewport(canvas,cargo,s,v,s.focus,575);
  if(s.t<=7.5)consist(g,...s.passenger,sea,'P',true);
  for(const a of s.trains){if(s.t<a.dep-1&&a.id!==s.chosen||s.t>a.dep+17.4)continue;consist(g,...a.p,a.color,a.id);}
  consist(g,125,k?287:355,k?mint:rust,s.rejected);
- if(s.t<14){g.tag("Ready to go · "+s.chosen,140,k?400:222);}
- else{g.tag(s.rejected+" stay",137,k?225:395,'#8d6756');}
+ if(s.t<14){g.tag('Ready to go · '+s.chosen,140,k?400:222);}
+ else{g.tag(s.rejected+' stay',137,k?225:395,'#8d6756');}
  const focusTrain=s.trains.find(a=>a.id===s.chosen);
- if(s.t>=14&&s.t<30.4)g.tag(s.chosen+" · Mid-section freight",focusTrain.p[0],245,k?rust:mint);
+ if(s.t>=14&&s.t<30.4)g.tag(s.chosen+' · Mid-section freight',focusTrain.p[0],245,k?rust:mint);
  if(s.t>29){const a=lineAt(s.t,[[29,1190,302],[30.2,1190,261],[31.3,1254,261],[32.6,1307,344],[33,1307,344]]);
   g.path([[1210,139],[a[0]+7,154],[a[0]+7,a[1]-18]],'#687677',1.4);
   g.rect(a[0]-10,a[1]-18,36,14,k?'#b68b60':mint);g.rect(a[0]+4,a[1]-18,3,14,k?'#e8cfa4':'#86b6a4');}
@@ -237,8 +237,8 @@ labs.P0416={batch:'world20',title:"The departure slot of the port cargo train af
 function transferYard(g){
  base(g,['#d1e6e6','#b5c7b5','#c9c9ad','#99b4b4'],[45,74,88]);
  road(g,[[0,341],[1440,341]],112);
- for(let j=0;j<4;j++){const x=125+j*385;platform(g,x-76,264,134,["S1 · First Station Square","S2 · Synchronous transfer island","S3 · Passenger Transport Center","S4 · Closing lot"][j]);}
- building(g,210,239,109,63,'#c7a889',"sports park");building(g,575,229,130,71,'#b4b8a1',"Transfer service hall",1);building(g,980,244,168,74,'#c6b998',"Passenger transport center",2);
+ for(let j=0;j<4;j++){const x=125+j*385;platform(g,x-76,264,134,['S1 · First Station Square','S2 · Synchronous transfer island','S3 · Passenger Transport Center','S4 · Closing lot'][j]);}
+ building(g,210,239,109,63,'#c7a889','sports park');building(g,575,229,130,71,'#b4b8a1','Transfer service hall',1);building(g,980,244,168,74,'#c6b998','Passenger transport center',2);
  trees(g,28,422,38,37);g.rect(0,449,1440,11,'#dcd5bc');g.rect(0,463,1440,6,'#a4b59c');
  for(const x of [125,510,895]){for(let j=0;j<9;j++)g.rect(x+5,277+j*11,15,6,'#e3ddbc');}
  g.rect(459,258,34,4,'#886e52');g.rect(462,261,3,7,ink);g.rect(486,261,3,7,ink);
@@ -248,10 +248,10 @@ function transferFrame(d,k,f){
  const busX=125+model*385,failed=k&&t>=1.21;
  let focus=t<.18?[lerp(82,125,t/.18),lerp(263,309,t/.18)]:t>2.05?[lerp(895,937,ratio(t,2.05,2.31)),lerp(309,256,ratio(t,2.05,2.31))]:[busX,309];
  if(k&&t>=.91)focus=lineAt(t,[[.91,518,308],[1.05,527,347],[1.21,519,279],[1.53,479,267]]);
- return {t,model,busX,focus,failed,k,clock:"hallway moment "+fmt(model,2),metrics:[["Demand for the second segment of car No. 2",(d.loads[1][1]+k)+' / '+d.capacity+" seat"],["Passenger 1",failed?"Transfer blocked":t>=2.05?"Arrived":t<.18?"Ready to get on the bus":"Follow the car"],["The passenger completed the ride",String(t<.91?0:t<2.05||failed?1:2)+' / 2']]};
+ return {t,model,busX,focus,failed,k,clock:'hallway moment '+fmt(model,2),metrics:[['Demand for the second segment of car No. 2',(d.loads[1][1]+k)+' / '+d.capacity+' seat'],['Passenger 1',failed?'Transfer blocked':t>=2.05?'Arrived':t<.18?'Ready to get on the bus':'Follow the car'],['The passenger completed the ride',String(t<.91?0:t<2.05||failed?1:2)+' / 2']]};
 }
-labs.P0112={batch:'world20',title:"Synchronous transfer island for six micro buses",action:"Decide whether passenger 1 transfers to train No. 2 at the second stop. The original seat allocations of the other 59 passengers remain fixed.",choices:["Continue riding on bus number 1","Request to switch to car No. 2"],views:["Follow passenger 1","Panorama of four stations"],duration:37,endAt:(_d,k)=>k?.66:1,chapters:(_d,k)=>marks([[0,"Get on the bus at first stop"],[.305,"Two cars arrive at the station at the same time"],[.41,"Check the second section seats"],k?[.52,"Fully loaded car leaving S2"]:[.68,"Arriving at the third stop"]]),
- scope:"The original solution is that six cars run 1→2→3→4 simultaneously, and the first two sections of each car are fully loaded with nine seats. The relevant cars No. 1 and 2 were tracked on site. Try to reserve seats for existing passengers and indicate rejection on the platform when requesting additional seats. The transfer and walking movements are slowed down and occur simultaneously in the model. There is no reassignment to other passengers and no calculation of alternative global goals.",frame:transferFrame,
+labs.P0112={batch:'world20',title:'Synchronous transfer island for six micro buses',action:'Decide whether passenger 1 transfers to train No. 2 at the second stop. The original seat allocations of the other 59 passengers remain fixed.',choices:['Continue riding on bus number 1','Request to switch to car No. 2'],views:['Follow passenger 1','Panorama of four stations'],duration:37,endAt:(_d,k)=>k?.66:1,chapters:(_d,k)=>marks([[0,'Get on the bus at first stop'],[.305,'Two cars arrive at the station at the same time'],[.41,'Check the second section seats'],k?[.52,'Fully loaded car leaving S2']:[.68,'Arriving at the third stop']]),
+ scope:'The original solution is that six cars run 1→2→3→4 simultaneously, and the first two sections of each car are fully loaded with nine seats. The relevant cars No. 1 and 2 were tracked on site. Try to reserve seats for existing passengers and indicate rejection on the platform when requesting additional seats. The transfer and walking movements are slowed down and occur simultaneously in the model. There is no reassignment to other passengers and no calculation of alternative global goals.',frame:transferFrame,
  draw(canvas,s,d,k,f,v){const g=viewport(canvas,transferYard,s,v,s.focus,500);
  const gate=s.t<.18||s.t>.91&&s.t<1.32||s.t>2.05&&s.t<2.22;
  bus(g,s.busX,310,mint,'1',gate);bus(g,s.busX+9,358,rust,'2',gate);
@@ -260,7 +260,7 @@ labs.P0112={batch:'world20',title:"Synchronous transfer island for six micro bus
  if(s.t>=2.05){const q=ratio(s.t,2.05,2.57);group(g,lerp(905,952,q),lerp(352,247,q),5,s.t);}
  const [x,y]=s.focus;if(k&&s.t>=.91)person(g,x,y,0,s.t<1.53?s.t*24:0,true);
  else if(s.t<.18||s.t>=2.05)person(g,x,y,0,s.t*16,true);
- if(s.failed){g.tag("Passenger 1 · Waiting at full capacity",x,y-41,rust);if(s.t>1.32&&s.t<2.05)g.tag("Car No. 2 · 9 seats occupied",s.busX+9,397,rust);}
- else g.tag("Passenger 1",x,y-57);
+ if(s.failed){g.tag('Passenger 1 · Waiting at full capacity',x,y-41,rust);if(s.t>1.32&&s.t<2.05)g.tag('Car No. 2 · 9 seats occupied',s.busX+9,397,rust);}
+ else g.tag('Passenger 1',x,y-57);
  }};
 })();

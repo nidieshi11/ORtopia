@@ -29,7 +29,7 @@ window.ORTOPIA_ROUTE_LAB=(()=>{
     load+=x.demand[b]||0;
     stops.push({id:b,from:a,travel:arc.travel});
    }
-   if(load>x.vehicle_capacity)errors.push("Vehicle "+(index+1)+" Loading capacity "+load+" Exceed capacity "+x.vehicle_capacity+'。');
+   if(load>x.vehicle_capacity)errors.push('Vehicle '+(index+1)+' Loading capacity '+load+' Exceed capacity '+x.vehicle_capacity+'. ');
    return {stops,load,energy};
   });
   // For each candidate even a nonselected arc imposes a time inequality relaxed by its own M.
@@ -55,20 +55,20 @@ window.ORTOPIA_ROUTE_LAB=(()=>{
     previous=stop.service;
     stop.late=Math.max(0,stop.service-x.time_upper[stop.id]);
     if(stop.late>eps){
-     const id=stop.id===x.end_depot?"Return to the parking lot":stop.id;
-     errors.push(id+" earliest arrival "+f(stop.arrival,5)+", later than the upper limit "+f(x.time_upper[stop.id],5)+", beyond "+f(stop.late,5)+'。');
+     const id=stop.id===x.end_depot?'Return to the parking lot':stop.id;
+     errors.push(id+' earliest arrival '+f(stop.arrival,5)+', later than the upper limit '+f(x.time_upper[stop.id],5)+', beyond '+f(stop.late,5)+'. ');
     }
    }
   }
-  if(cycle&&!errors.length)errors.push("The time recursion of all arcs forms a positive-length closed loop, and it is impossible to schedule a moment that satisfies all constraints at the same time.");
+  if(cycle&&!errors.length)errors.push('The time recursion of all arcs forms a positive-length closed loop, and it is impossible to schedule a moment that satisfies all constraints at the same time.');
   if(!cycle)for(const n of nodes){
-   if(t[n]>x.time_upper[n]+eps&&!errors.length)errors.push(n+" The time required to satisfy all arcs at the same time "+f(t[n],5)+" exceeds its upper limit "+f(x.time_upper[n],5)+'。');
+   if(t[n]>x.time_upper[n]+eps&&!errors.length)errors.push(n+' The time required to satisfy all arcs at the same time '+f(t[n],5)+' exceeds its upper limit '+f(x.time_upper[n],5)+'. ');
   }
   for(let mask=1;mask<2**x.customers.length;mask++){
    const ids=x.customers.filter((_,i)=>mask&(1<<i));
    const minExits=Math.ceil(ids.reduce((sum,n)=>sum+x.demand[n],0)/x.vehicle_capacity);
    const exits=[...arcs].filter(([k,a])=>active.has(k)&&ids.includes(a.from)&&!ids.includes(a.to)).length;
-   if(exits<minExits){errors.push("Customer collection "+ids.join('、')+" At least required "+minExits+" Route arcs leaving this collection.");break;}
+   if(exits<minExits){errors.push('Customer collection '+ids.join(', ')+' At least required '+minExits+' Route arcs leaving this collection.');break;}
   }
   if(!errors.length){
    for(const trip of trips)for(const stop of trip.stops){
@@ -108,7 +108,7 @@ window.ORTOPIA_ROUTE_LAB=(()=>{
   const minX=Math.min(...xs),maxX=Math.max(...xs),minY=Math.min(...ys),maxY=Math.max(...ys);
   const scale=Math.min(322/(maxX-minX),226/(maxY-minY));
   function point(n){const [a,b]=x.coordinates[n];return [204+(a-(minX+maxX)/2)*scale,140-(b-(minY+maxY)/2)*scale];}
-  let svg="<svg class=\"rl-map\" viewBox=\"0 0 408 280\" role=\"img\" aria-label=\"The driving direction of both vehicles and the actual customer location\"><defs><pattern id=\"rl-grid\" width=\"17\" height=\"17\" patternUnits=\"userSpaceOnUse\"><path d=\"M17 0H0V17\" fill=\"none\" stroke=\"#b4c5ba\" stroke-width=\".6\"/></pattern></defs><rect width=\"408\" height=\"280\" rx=\"9\" fill=\"#edf1e7\"/><rect width=\"408\" height=\"280\" fill=\"url(#rl-grid)\"/>";
+  let svg='<svg class="rl-map" viewBox="0 0 408 280" role="img" aria-label="The driving direction of both vehicles and the actual customer location"><defs><pattern id="rl-grid" width="17" height="17" patternUnits="userSpaceOnUse"><path d="M17 0H0V17" fill="none" stroke="#b4c5ba" stroke-width=".6"/></pattern></defs><rect width="408" height="280" rx="9" fill="#edf1e7"/><rect width="408" height="280" fill="url(#rl-grid)"/>';
   routes.forEach((r,k)=>{
    const seq=[x.start_depot,...r,x.end_depot];
    for(let i=1;i<seq.length;i++){
@@ -127,43 +127,43 @@ window.ORTOPIA_ROUTE_LAB=(()=>{
    }else{
     svg+='<circle cx="'+a+'" cy="'+b+'" r="7" fill="'+colors[routes.findIndex(r=>r.includes(n))]+'" stroke="white" stroke-width="2"/>';
    }
-   const label=n===x.start_depot?"Vehicle depot":n,up=n!=='v3';
+   const label=n===x.start_depot?'Vehicle depot':n,up=n!=='v3';
    svg+='<text x="'+a+'" y="'+(b+(up?-13:22))+'" text-anchor="middle" font-size="13" font-weight="700" stroke="#edf1e7" stroke-width="4" paint-order="stroke" fill="#18352c">'+escape(label)+'</text>';
   }
   return svg+'</svg>';
  }
  function routeEditor(routes){
-  return routes.map((r,k)=>'<div class="rl-route rl-car-'+k+"\"><strong>Vehicle "+(k+1)+"</strong><span class=\"rl-depot\">Vehicle depot</span><span>›</span>"+
-   r.map(n=>'<button type="button" data-stop="'+escape(n)+"\" aria-label=\"Select customer "+escape(n)+" Exchange order\" aria-pressed=\""+(n===selectedStop)+'">'+escape(n)+'</button><span>›</span>').join('')+
-   "<span class=\"rl-depot\">Vehicle depot</span></div>").join('');
+  return routes.map((r,k)=>'<div class="rl-route rl-car-'+k+'"><strong>Vehicle '+(k+1)+'</strong><span class="rl-depot">Vehicle depot</span><span>›</span>'+
+   r.map(n=>'<button type="button" data-stop="'+escape(n)+'" aria-label="Select customer '+escape(n)+' Exchange order" aria-pressed="'+(n===selectedStop)+'">'+escape(n)+'</button><span>›</span>').join('')+
+   '<span class="rl-depot">Vehicle depot</span></div>').join('');
  }
  function tripTable(x,result){
   return result.trips.map((trip,k)=>{
    const body=trip.stops.map(stop=>{
     const end=stop.id===x.end_depot;
-    return '<tr'+(stop.late>eps?' class="rl-late"':'')+'><th scope="row">'+(end?"Return":escape(stop.id))+'</th><td>'+f(stop.arrival,5)+'</td><td>'+f(stop.service,5)+'</td><td>'+f(stop.wait,5)+'</td><td>'+f(x.time_lower[stop.id],5)+' – '+f(x.time_upper[stop.id],5)+'</td></tr>';
+    return '<tr'+(stop.late>eps?' class="rl-late"':'')+'><th scope="row">'+(end?'Return':escape(stop.id))+'</th><td>'+f(stop.arrival,5)+'</td><td>'+f(stop.service,5)+'</td><td>'+f(stop.wait,5)+'</td><td>'+f(x.time_lower[stop.id],5)+' – '+f(x.time_upper[stop.id],5)+'</td></tr>';
    }).join('');
-   return '<div class="rl-trip rl-car-'+k+"\"><h4>Vehicle "+(k+1)+" <small>Loading capacity "+trip.load+' / '+x.vehicle_capacity+" · Energy consumption "+f(trip.energy,5)+"</small></h4><div class=\"rl-table-scroll\"><table><thead><tr><th>Stop</th><th>Arrives</th><th>Arrange time</th><th>waiting</th><th>time window</th></tr></thead><tbody>"+body+'</tbody></table></div></div>';
+   return '<div class="rl-trip rl-car-'+k+'"><h4>Vehicle '+(k+1)+' <small>Loading capacity '+trip.load+' / '+x.vehicle_capacity+' · Energy consumption '+f(trip.energy,5)+'</small></h4><div class="rl-table-scroll"><table><thead><tr><th>Stop</th><th>Arrives</th><th>Arrange time</th><th>waiting</th><th>time window</th></tr></thead><tbody>'+body+'</tbody></table></div></div>';
   }).join('');
  }
  async function mount(container,onInteract){
   if(!container)return;
-  try{model=model||prepare(await load());}catch(e){container.textContent="Failed to load route trial data.";console.error(e);return;}
+  try{model=model||prepare(await load());}catch(e){container.textContent='Failed to load route trial data.';console.error(e);return;}
   if(!container.isConnected)return;
   if(!selection)selection=model.recorded.map(r=>r.slice());
   const m=model,x=m.x;
   function paint(){
    const r=evaluate(x,m.arcs,selection),valid=!r.errors.length;
-   const status=!valid?"Violation of constraints":Math.abs(r.energy-m.best.energy)<eps?"Feasible · Minimum energy consumption":"Feasible";
-   const message=!valid?r.errors[0]:(Math.abs(r.energy-m.best.energy)<eps?"This allocation and access sequence achieves the lowest energy consumption of this instance.":"Current energy consumption is higher than feasible minimum "+f(r.energy-m.best.energy,5)+'。');
-   container.innerHTML="<section class=\"route-lab\" aria-label=\"Delivery route trial arrangement\"><header><div><h2>Trial delivery route</h2><p>Click on two customers to swap locations, or adjust the number of stops each of the two vehicles delivers. Both vehicles depart from and return to the same parking lot.</p></div></header>"+
-    '<div class="rl-columns"><div>'+drawMap(x,selection)+"<div class=\"rl-map-key\"><span>solid line · Vehicle 1</span><span>dashed line · Vehicle 2</span></div></div>"+
-    '<div class="rl-controls">'+routeEditor(selection)+"<label>Number of delivery stations per vehicle <select aria-label=\"Number of delivery stations per vehicle\" data-split>"+[1,2,3].map(k=>'<option value="'+k+'"'+(k===selection[0].length?' selected':'')+'>'+k+" Station / "+(4-k)+" Station</option>").join('')+'</select></label>'+
-    '<p class="rl-hint" aria-live="polite">'+(selectedStop?"Selected "+escape(selectedStop)+", select another customer to exchange.":"The order can be adjusted within the same vehicle, or customers can be exchanged across vehicles.")+'</p>'+
-    "<div class=\"rl-presets\"><button type=\"button\" data-plan=\"recorded\">Example solution</button><button type=\"button\" data-plan=\"other\">Another possible solution</button><button type=\"button\" data-plan=\"invalid\">Low energy consumption timeout example</button></div></div></div>"+
-    '<div class="rl-result '+(valid?'rl-ok':'rl-bad')+'" role="status"><strong>'+status+"</strong><b>Energy consumption "+f(r.energy,6)+'</b><span>'+escape(message)+'</span></div>'+
-    "<p class=\"rl-enum\">Swapping the numbers of two cars counts as the same plan. total "+m.count+" kind of distribution and order, among which "+m.feasibleCount+" satisfies all constraints, and the minimum energy consumption is "+f(m.best.energy,6)+'。</p>'+
-    "<details class=\"rl-detail\"><summary>Check the arrival time and capacity of the two vehicles</summary><div class=\"rl-tables\">"+tripTable(x,r)+"</div><p>A feasible solution is to calculate the arrangement time based on all arc constraints; the two vehicles share the return time, so you can wait if you arrive early. The timeout scheme marks conflicts according to the earliest arrival time of each vehicle. Time, capacity, and energy consumption all use instance units.</p></details></section>";
+   const status=!valid?'Violation of constraints':Math.abs(r.energy-m.best.energy)<eps?'Feasible · Minimum energy consumption':'Feasible';
+   const message=!valid?r.errors[0]:(Math.abs(r.energy-m.best.energy)<eps?'This allocation and access sequence achieves the lowest energy consumption of this instance.':'Current energy consumption is higher than feasible minimum '+f(r.energy-m.best.energy,5)+'. ');
+   container.innerHTML='<section class="route-lab" aria-label="Delivery route trial arrangement"><header><div><h2>Trial delivery route</h2><p>Click on two customers to swap locations, or adjust the number of stops each of the two vehicles delivers. Both vehicles depart from and return to the same parking lot. </p></div></header>'+
+    '<div class="rl-columns"><div>'+drawMap(x,selection)+'<div class="rl-map-key"><span>solid line · Vehicle 1</span><span>dashed line · Vehicle 2</span></div></div>'+
+    '<div class="rl-controls">'+routeEditor(selection)+'<label>Number of delivery stations per vehicle <select aria-label="Number of delivery stations per vehicle" data-split>'+[1,2,3].map(k=>'<option value="'+k+'"'+(k===selection[0].length?' selected':'')+'>'+k+' Station / '+(4-k)+' Station</option>').join('')+'</select></label>'+
+    '<p class="rl-hint" aria-live="polite">'+(selectedStop?'Selected '+escape(selectedStop)+', select another customer to exchange.':'The order can be adjusted within the same vehicle, or customers can be exchanged across vehicles.')+'</p>'+
+    '<div class="rl-presets"><button type="button" data-plan="recorded">Example solution</button><button type="button" data-plan="other">Another possible solution</button><button type="button" data-plan="invalid">Low energy consumption timeout example</button></div></div></div>'+
+    '<div class="rl-result '+(valid?'rl-ok':'rl-bad')+'" role="status"><strong>'+status+'</strong><b>Energy consumption '+f(r.energy,6)+'</b><span>'+escape(message)+'</span></div>'+
+    '<p class="rl-enum">Swapping the numbers of two cars counts as the same plan. total '+m.count+' kind of distribution and order, among which '+m.feasibleCount+' satisfies all constraints, and the minimum energy consumption is '+f(m.best.energy,6)+'. </p>'+
+    '<details class="rl-detail"><summary>Check the arrival time and capacity of the two vehicles</summary><div class="rl-tables">'+tripTable(x,r)+'</div><p>A feasible solution is to calculate the arrangement time based on all arc constraints; the two vehicles share the return time, so you can wait if you arrive early. The timeout scheme marks conflicts according to the earliest arrival time of each vehicle. Time, capacity, and energy consumption all use instance units.. </p></details></section>';
   }
   function edit(ev){
    const el=ev.target.closest('[data-stop],[data-plan],[data-split]');

@@ -1,22 +1,14 @@
-% Mathematical Model - 1-s2.0-S1366554521003203-main
-% Auto-generated at 2025-12-16T00:30:45.052591
-% Model Source: Directly Extracted
-% This model is directly extracted from the paper
-
-\documentclass{article}
-\usepackage{amsmath}
-\usepackage{amssymb}
-
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
-\usepackage{geometry}
-\geometry{paperwidth=310mm,paperheight=470mm,hmargin=18mm,vmargin=19mm}
+
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
 \begin{document}
-
-\section*{**Problem Type**: This is a pickup and delivery problem with synchronized transfers along the way, denoted as PDPSET. It belongs to the extended variant of the Vehicle Routing Problem (VRP). **Mathematical Model**: The problem is modeled using Mixed Integer Linear Programming (MILP), with decisions involving binary variables (path selection, assignment, transfer points) and continuous variables (time, waiting time). **Complexity**: NP-hard. The problem becomes increasingly difficult as the number of nodes, vehicles, and requests increases.}
-
-\textbf{Model Source}: Directly Extracted
-
-\subsection*{Decision Variables}
+\section*{P0112 Passenger service with synchronized transfers}
+\subsection*{Mathematical formulation}
 \[
 \begin{aligned}
 & X_{ijk} \in \{0, 1\}, && \forall (i, j) \in A, \forall k \in K \\
@@ -32,12 +24,10 @@
 \end{aligned}
 \]
 
-\subsection*{Objective Function}
 \[
 \text{Min : } \alpha \sum_{k \in K} \sum_{(i,j) \in A} c_{ij} X_{ijk} + \beta \sum_{r \in R} q_r TP_{p(r)r} + \theta \sum_{k \in K} \sum_{r \in R} \sum_{(i,j) \in A} c_{ij} q_r Y_{ijkr} + \delta \sum_{k \in K} \sum_{i \in N} U_{ik}
 \]
 
-\subsection*{Constraints}
 \[
 \begin{aligned}
 &\text{Subject to:} \\
@@ -88,7 +78,6 @@
 \end{aligned}
 \]
 
-\subsection*{Complete Mathematical Model}
 \[
 \begin{aligned}
 &\text{Min : } \alpha \sum_{k \in K} \sum_{(i,j) \in A} c_{ij} X_{ijk} + \beta \sum_{r \in R} q_r TP_{p(r)r} + \theta \sum_{k \in K} \sum_{r \in R} \sum_{(i,j) \in A} c_{ij} q_r Y_{ijkr} + \delta \sum_{k \in K} \sum_{i \in N} U_{ik} \\
@@ -139,5 +128,19 @@
 & TV_{il} - (TV_{ik} + U_{ik}) \leq (1 - F_{rikl}) M, && \forall i \in N, \forall k, l \in K, k \neq l, \forall r \in R
 \end{aligned}
 \]
+
+\subsection*{Definitions and model scope}
+A microtransit operator serves requests on an undirected road network represented by both directions of every available road. Each vehicle has a specified origin, destination and carrying capacity. Each request has a pickup, delivery and demand quantity. Road travel times and travel costs are supplied separately, together with four cost weights, a maximum dwelling duration and a finite timing allowance. The operator chooses yes-or-no vehicle travel records $X_{ijk}$ and onboard request records $Y_{ijkr}$, nonnegative vehicle and request times at each node, and nonnegative vehicle dwelling durations. It seeks the lowest weighted total of vehicle road costs, demand times pickup time, road cost times onboard demand, and vehicle dwelling time, with the four respective supplied weights.
+
+Every vehicle departs its own origin exactly once and arrives at its own destination exactly once; at every other node its departure count equals its arrival count. For every request, exactly one onboard departure across the fleet leaves its pickup and exactly one onboard arrival across the fleet reaches its delivery. At every other node, that request's onboard departures and arrivals balance across all vehicles, permitting transfers. On each directed road for each vehicle, onboard requests' demand quantities total no more than its capacity multiplied by its travel record. Each request uses at most one vehicle on a particular directed road. On all roads entering a vehicle's own destination, that vehicle carries no request, although another vehicle may carry a request to the same node.
+
+For each request and directed road, its time at the origin plus the road travel time cannot exceed its time at the destination plus the finite allowance multiplied by one minus that request's total onboard records across vehicles for that road. Each request's pickup time cannot exceed its delivery time. Every vehicle's time at its own origin is zero. Its nonnegative time at any node is at most the finite allowance multiplied by the sum of its entering and leaving travel records at that node. Thus finite bounds are retained even for roads not carrying a request or nodes not visited.
+
+Each directed road and vehicle has a nonnegative edge timing record $Z_{ijk}$ and a nonnegative departure dwelling contribution $S_{ijk}$. The edge timing records in opposite directions must be equal. Each is at most the finite allowance multiplied by the sum of the two directional travel records. For each direction separately, its edge timing record cannot exceed the vehicle time at that direction's origin plus travel time multiplied by its directional travel record plus its departure dwelling contribution. It cannot fall below that same total less the finite allowance multiplied by one minus the sum of both directional travel records. Both directions obey all these requirements. Each dwelling contribution and each vehicle dwelling duration lies between zero and the given dwelling maximum. A direction's dwelling contribution is at most its travel record times the finite allowance, at most the dwelling duration at its origin, and at least that duration less the finite allowance multiplied by one minus its directional travel record.
+
+A zero-or-one pickup vehicle record $V_{kr}$ equals the number of that vehicle's departures from the request's pickup carrying the request. For each request, pickup time is the sum over vehicles of nonnegative pickup time contributions $W_{kr}$. Each contribution is at most its pickup vehicle record times the finite allowance and at most that vehicle's time at the pickup. It is at least the vehicle's time there less the finite allowance multiplied by one minus the pickup vehicle record. These finite bounds apply also to vehicles not performing the pickup.
+
+For every request, node and ordered pair of different vehicles, a zero-or-one transfer record $F_{rikl}$ is no greater than that request's arrival count on the first vehicle and no greater than its departure count on the second. Those two counts together cannot exceed the transfer record plus one. At every node, a vehicle's dwelling duration cannot exceed the finite allowance multiplied by the sum of all request transfer records into or out of that vehicle there, counting every other vehicle. For each directed transfer record, the first vehicle's arrival time less the second vehicle's arrival time and dwelling duration cannot exceed the finite allowance times one minus the transfer record. The reversed arrival comparison, using the first vehicle's dwelling duration, obeys the same bound. An active transfer therefore requires overlapping vehicle presence, while an inactive transfer still retains the stated finite limits.
+
 
 \end{document}

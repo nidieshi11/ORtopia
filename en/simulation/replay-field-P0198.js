@@ -44,15 +44,15 @@ window.ORTOPIA_FIELD_P0198=(()=>{
   let s=stored.get(host);
   if(!s){s={};stored.set(host,s);}
   if(s.index!==index){s.index=index;s.cuts=new Set(plan.cuts);}
-  const {c,scene,control,result}=F.siteShell(host,'cluster-relay',"There are eight relay stations and seven connections, and zones can be demarcated by clicking the switches between adjacent stations.","Click on the demarcation switch on the line. Each edge the light spot passes through counts as one hop.");
+  const {c,scene,control,result}=F.siteShell(host,'cluster-relay','There are eight relay stations and seven connections, and zones can be demarcated by clicking the switches between adjacent stations.','Click on the demarcation switch on the line. Each edge the light spot passes through counts as one hop.');
   let parts=[],diameter=0,time=host.sceneTime||0;
-  control.innerHTML="<div class=\"fp-group\"><strong>Zoning scheme</strong>"+data.steps.map((v,i)=>'<button type="button" data-scheme="'+i+'">'+v.title+'</button>').join('')+'</div>';
+  control.innerHTML='<div class="fp-group"><strong>Zoning scheme</strong>'+data.steps.map((v,i)=>'<button type="button" data-scheme="'+i+'">'+v.title+'</button>').join('')+'</div>';
   function edit(next){onInteract?.();s.cuts=new Set(next);refresh();replayAction?.();}
   control.onclick=e=>{const b=e.target.closest('[data-scheme]');if(b)edit(data.steps[Number(b.dataset.scheme)].cuts);};
   const switches=[];
   for(let i=0;i<n-1;i++){
    const [x,y]=wire(i,.5);
-   switches.push(hotspot(scene,"switching station "+data.path[i]+" and "+data.path[i+1]+" demarcation between",x,y,()=>{
+   switches.push(hotspot(scene,'switching station '+data.path[i]+' and '+data.path[i+1]+' demarcation between',x,y,()=>{
     const next=new Set(s.cuts);if(next.has(i))next.delete(i);else next.add(i);edit(next);
    },57,54));
   }
@@ -64,19 +64,19 @@ window.ORTOPIA_FIELD_P0198=(()=>{
     b.setAttribute('aria-pressed',String(cuts.length===s.cuts.size&&cuts.every(i=>s.cuts.has(i))));
    });
    result.dataset.error=String(diameter>data.maxDiameter);
-   result.textContent=parts.length+" partitions · furthest "+diameter+" jump/cap "+data.maxDiameter+" hops";
+   result.textContent=parts.length+' partitions · furthest '+diameter+' jump/cap '+data.maxDiameter+' hops';
    render(time);
   }
   function render(t){
    time=t;background(c);
    const darkStrip=c.createLinearGradient(0,305,0,H);darkStrip.addColorStop(0,'#233f4100');darkStrip.addColorStop(1,'#203d40');c.fillStyle=darkStrip;c.fillRect(0,305,W,H-305);
-   badge(c,"Farthest in the area ≤ "+data.maxDiameter+" hops",99,32,dark,white,15);
-   badge(c,(diameter>data.maxDiameter?"Exceeded the hop count limit":"Interconnection between districts")+' · '+parts.length+" Zone",W-94,32,dark,diameter>data.maxDiameter?danger:'#c8ecd2',16);
+   badge(c,'Farthest in the area ≤ '+data.maxDiameter+' hops',99,32,dark,white,15);
+   badge(c,(diameter>data.maxDiameter?'Exceeded the hop count limit':'Interconnection between districts')+' · '+parts.length+' Zone',W-94,32,dark,diameter>data.maxDiameter?danger:'#c8ecd2',16);
    for(let j=0;j<parts.length;j++){
     const {start,end,hops}=parts[j],color=colors[j],left=stations[start][0]-26,right=stations[end][0]+26;
     const path=stations.slice(start,end+1).map(([x,y])=>[x,y+4]);if(path.length===1)ellipse(c,path[0][0],path[0][1],24,16,color+'47');else line(c,path,color+'47',34);
     line(c,[[left,353],[left,359],[right,359],[right,353]],color,3);
-    badge(c,(j+1)+"District · "+hops+"hops",(left+right)/2,382,dark,hops>data.maxDiameter?danger:color,13);
+    badge(c,(j+1)+' District · '+hops+' hops',(left+right)/2,382,dark,hops>data.maxDiameter?danger:color,13);
    }
    for(let i=0;i<n-1;i++){
     const cut=s.cuts.has(i),j=parts.findIndex(p=>p.end>=i),color=colors[j];

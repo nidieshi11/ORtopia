@@ -113,7 +113,7 @@ window.ORTOPIA_GAS_WORLD = (() => {
     const x=(i*7919)%1000,y=169+(i*104729)%232;
     line(c,[[x,y],[x+(i%4)+1,y-(i%2)]],i%3?'#91a39b28':'#c4be9d31',1);
    }
-   for(const [x,lbl] of [[102,"Entrance gas supply station"],[496,"Fixed resistor"],[895,"User receiving station"]]){
+   for(const [x,lbl] of [[102,'Entrance gas supply station'],[496,'Fixed resistor'],[895,'User receiving station']]){
     rect(c,x-47,8,94,24,'#e9e8d5e8',4);label(c,lbl,x,20,14,'#344f4b');
    }
  }
@@ -137,7 +137,7 @@ window.ORTOPIA_GAS_WORLD = (() => {
    rect(c,x-numberWidth/2,meterY+21,numberWidth,c.gasNarrow?29:25,'#122f33',4);
    label(c,value.toFixed(3),x,meterY+34,c.gasNarrow?22:16,accent,700);
    if(fail)rect(c,x-40,meterY-47,80,20,'#803f38',5);
-   label(c,'P'+index+(fail?(value<lo?"  low pressure":"  high pressure"):''),x,meterY-37,c.gasNarrow?17:13,fail?'#ffead8':'#e6eddf',650);
+   label(c,'P'+index+(fail?(value<lo?'  low pressure':'  high pressure'):''),x,meterY-37,c.gasNarrow?17:13,fail?'#ffead8':'#e6eddf',650);
  }
  function pipe(c,x1,x2){
    rect(c,x1,pipeY-14,x2-x1,28,gradient(c,pipeY-14,pipeY+14,[[0,'#c1c7b4'],[.18,'#88aaa6'],[.5,'#587b80'],[1,'#3a525a']]),4);
@@ -199,11 +199,11 @@ window.ORTOPIA_GAS_WORLD = (() => {
    line(c,[[x,pipeY],[x,pipeY+17],[x+(isExit?24:-24),pipeY+27]],'#8aa9a0',3);
    const left=x-61;
    rect(c,left,pipeY+29,122,36,'#152f33',5);
-   label(c,isExit?"receive":"feed in",left+11,pipeY+47,14,'#cedacc',600,'left');
+   label(c,isExit?'receive':'feed in',left+11,pipeY+47,14,'#cedacc',600,'left');
    label(c,q.toFixed(2),left+85,pipeY+47,20,shade,700,'right');
    dialWheel(c,left+104,pipeY+46,t,q);
    if(fail){
-    const s=q<demand[0]?"unmet need":"Exceeded receiving limit";
+    const s=q<demand[0]?'unmet need':'Exceeded receiving limit';
     rect(c,x-51,pipeY+69,102,20,'#704239',4);label(c,s,x,pipeY+79,13,'#ffe3d9');
    }
  }
@@ -232,7 +232,7 @@ window.ORTOPIA_GAS_WORLD = (() => {
     for(let i=0;i<3;i++){
      const x=(X[i]+X[i+1])/2;
      rect(c,x-39,pipeY+32,78,23,focus===i?'#e0dbbd':'#354f52',5);
-     label(c,'E'+i+'  '+(i===1?"Resistor":"pipe"),x,pipeY+44,13,focus===i?'#344546':'#dbe5d8',650);
+     label(c,'E'+i+'  '+(i===1?'Resistor':'pipe'),x,pipeY+44,13,focus===i?'#344546':'#dbe5d8',650);
     }
     flowMeter(c,state,X[0],false,t);flowMeter(c,state,X[3],true,t);
    };

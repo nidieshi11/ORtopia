@@ -53,9 +53,9 @@
   }
 
   labs.P0092 = {
-    title:"Victoria Line interruption and turnaround", action:"Select the return departure interval on both sides",
-    choices:["200 / 300 seconds · Archive","200 / 200 seconds","350 / 300 seconds"],
-    scope:"The picture below captures the return operation of the London Underground after disruption. Stations are arranged according to line mileage, and platform panels are updated according to departure events. Costs cover the entire solution period.",
+    title:'Victoria Line interruption and turnaround', action:'Select the return departure interval on both sides',
+    choices:['200 / 300 seconds · Archive','200 / 200 seconds','350 / 300 seconds'],
+    scope:'The picture below captures the return operation of the London Underground after disruption. Stations are arranged according to line mileage, and platform panels are updated according to departure events. Costs cover the entire solution period.',
     frame(d,k,f) {
       const plan=d.scenarios[k], t=interp(...d.bounds,f);
       const trains=[];
@@ -72,7 +72,7 @@
         const arrivals=flow.rates.reduce((n,r,j)=>{const lo=d.flowStart+60*j;return n+r*Math.max(0,Math.min(t,lo+60)-Math.max(since,lo))/60;},0);
         return {before,next,count:(before?before[3]:flow.initial)+arrivals};
       });
-      return {t,trains,platforms,clock:clock(t,18000),metrics:[["Online return train",String(trains.length)],["Passenger waiting cost for the entire journey",'£'+fixed(plan.wait,2)],["total cost",'£'+fixed(plan.cost,2)]]};
+      return {t,trains,platforms,clock:clock(t,18000),metrics:[['Online return train',String(trains.length)],['Passenger waiting cost for the entire journey','£'+fixed(plan.wait,2)],['total cost','£'+fixed(plan.cost,2)]]};
     },
     draw(canvas,s,d) {
       const c=stage(canvas,'#e7eee9'); city(c,75,'#bbd0c7',.74);
@@ -81,7 +81,7 @@
       const xs=ds.map(v=>35+829*v/ds[15]);
       round(c,xs[9]+5,91,xs[10]-xs[9]-10,110,6,'#503f41');
       for(let x=xs[9]+12;x<xs[10]-12;x+=14) line(c,x,185,x+12,169,'#946b60',3);
-      words(c,"Blocked section",(xs[9]+xs[10])/2,104,12,'#ffd6bc',650,'center');
+      words(c,'Blocked section',(xs[9]+xs[10])/2,104,12,'#ffd6bc',650,'center');
       [133,157].forEach(y=>{
         line(c,xs[0],y,xs[9],y,'#99c5b7',4);line(c,xs[10],y,xs[15],y,'#99c5b7',4);
         xs.forEach((x,i)=>{if(i<15 && i!==9) for(let q=x+8;q<xs[i+1];q+=9)line(c,q,y-4,q,y+4,'#75938d',1);});
@@ -96,7 +96,7 @@
       marker(c,'VICTORIA  LINE',18,15);
       s.platforms.forEach(({before,next,count},idx)=>{
         const x=idx?456:18,station=idx?'HAI':'KSX';
-        round(c,x,233,425,111,8,'#f9f7ee'); words(c,station+"  Return to the platform",x+14,252,15,ink,700);
+        round(c,x,233,425,111,8,'#f9f7ee'); words(c,station+'  Return to the platform',x+14,252,15,ink,700);
         const near=before && s.t-before[0]<20;
         // The close-up collapses fractional OD demand into one figure per five passenger-equivalents.
         const qty = count + (near?before[4]*(1-pos(s.t,before[0],before[0]+20)):0);
@@ -113,14 +113,14 @@
         }
         line(c,x+14,313,x+411,313,'#d9ac5e',3);
         for(let j=0;j<n;j++) silhouette(c,x+26+(j%12)*17+(near?pos(s.t,before[0],before[0]+20)*45:0),308-Math.floor(j/12)*15,.78,j%3?green:'#c17849');
-        words(c,"Waiting "+fixed(count)+" Visitors"+(before?"   · Boarding to work "+fixed(before[4]):''),x+14,329,12,muted);
-        words(c,next?("Get off work "+clock(next[0],18000)):'',x+410,252,12,green,650,'right');
+        words(c,'Waiting '+fixed(count)+' Visitors '+(before?'   · Boarding to work '+fixed(before[4]):''),x+14,329,12,muted);
+        words(c,next?('Get off work '+clock(next[0],18000)):'',x+410,252,12,green,650,'right');
       });
     }
   };
   labs.P0110 = {
-    title:"Make an appointment for bus pick-up at the station",action:"Select the first departure time",choices:["Minute 0 · Archive","Minute 2","6th minute"],
-    scope:"Observe pick-up at return stop 7 from minutes 36 to 112. Gold passengers have made reservations and green passengers are waiting on site. The number of people boarding the bus will be calculated based on the actual list when the bus departs. Comprehensive targets are calculated across the board.",
+    title:'Make an appointment for bus pick-up at the station',action:'Select the first departure time',choices:['Minute 0 · Archive','Minute 2','6th minute'],
+    scope:'Observe pick-up at return stop 7 from minutes 36 to 112. Gold passengers have made reservations and green passengers are waiting on site. The number of people boarding the bus will be calculated based on the actual list when the bus departs. Comprehensive targets are calculated across the board.',
     frame(d,k,f) {
       const a=d.scenarios[k], t=interp(36,112,f);
       const prior=a.board.filter(z=>z[2]<=t), board=prior.reduce((n,z)=>n+z[3],0), reserved=prior.reduce((n,z)=>n+z[4],0);
@@ -136,7 +136,7 @@
         const where=j&&t<r[j][1]?interp(r[j-1][0],r[j][0],pos(t,r[j-1][2],r[j][1])):r[j][0];
         return [{where,returning:j>=10,id:i+1}];
       });
-      return {t,x,ride,row,loading,queue,booked,fleet,clock:fixed(t,1)+" min",metrics:[["Waiting at the platform",queue+" people"],["Total waiting time",fixed(a.wait,1)+" Person·Min"],["Comprehensive goals",fixed(a.cost,5)]]};
+      return {t,x,ride,row,loading,queue,booked,fleet,clock:fixed(t,1)+' min',metrics:[['Waiting at the platform',queue+' people'],['Total waiting time',fixed(a.wait,1)+' Person·Min'],['Comprehensive goals',fixed(a.cost,5)]]};
     },
     draw(canvas,s,d) {
       const c=stage(canvas,'#d9edf1');city(c,96,'#a7c5c6');rect(c,0,96,900,78,'#abcbb6');
@@ -147,7 +147,7 @@
       rect(c,289,124,197,79,'#d4e5dd');line(c,341,125,341,201,'#90b3a7',2);
       rect(c,304,201,94,6,'#a9794e');[310,388].forEach(x=>rect(c,x,207,4,26,ink));rect(c,536,98,5,149,'#466867');
       round(c,521,94,36,34,5,green);words(c,'7',539,111,19,'white',700,'center');
-      marker(c,"Return platform 07",20,16);words(c,"Already booked",750,24,13,ink);circ(c,737,23,5,'#db9a37');circ(c,810,23,5,green);words(c,"On site",822,24);
+      marker(c,'Return platform 07',20,16);words(c,'Already booked',750,24,13,ink);circ(c,737,23,5,'#db9a37');circ(c,810,23,5,green);words(c,'On site',822,24);
       const n=Math.min(36,s.queue);
       for(let j=n-1;j>=0;j--) {
         const b=j<s.booked, xx=454-(j%18)*18, yy=244-Math.floor(j/18)*20;
@@ -160,10 +160,10 @@
         round(c,x+121,y+24,17,27,2,s.loading?ink:'#779f91');[29,137].forEach(dx=>{circ(c,x+dx,y+51,10,ink);circ(c,x+dx,y+51,4,'#87a09c');});
         words(c,'V'+s.row[1],x+12,y+38,10,'#fff',650);
       }
-      const msg=s.loading?"Boarding · Current class "+s.row[3]+" people among whom reservations are made "+s.row[4]+" people":"Trip "+s.ride.id+" · Scheduled departure "+fixed(s.ride.stop[2],1)+" min";
+      const msg=s.loading?'Boarding · Current class '+s.row[3]+' people among whom reservations are made '+s.row[4]+' people':'No. '+s.ride.id+' Class·Planned departure '+fixed(s.ride.stop[2],1)+' min';
       marker(c,msg,19,302);
       round(c,486,284,398,63,8,'#eef0df');
-      words(c,"All flights in transit",499,299,12,ink,650);
+      words(c,'All flights in transit',499,299,12,ink,650);
       line(c,504,321,860,321,'#a6b8a8',2);
       for(let j=0;j<10;j++){const x=504+j*356/9;circ(c,x,321,j===d.station?4:2,j===d.station?'#a37634':muted);}
       s.fleet.forEach(v=>{const x=504+v.where*356/9,y=v.returning?326:312;round(c,x-6,y-3,12,6,2,v.id===s.ride.id?'#ab772a':green);});
@@ -187,9 +187,9 @@
     c.restore();
   }
   labs.P0161 = {
-    title:"Airshare rides and boarding time limits", action:"Assignment of return trip to the trio at Field 1",
-    choices:["Take off at 24.8 minutes · Archive","Rescheduled to flight 27.6 minutes"],
-    scope:"Beginning with the first takeoff at minute 12.2, observe four aircraft performing eight flight segments in the archive. After switching the return trip of the trio, the service revenue and non-service penalty will be re-accounted according to the application time, latest departure, seat and flight list.",
+    title:'Airshare rides and boarding time limits', action:'Assignment of return trip to the trio at Field 1',
+    choices:['Take off at 24.8 minutes · Archive','Rescheduled to flight 27.6 minutes'],
+    scope:'Beginning with the first takeoff at minute 12.2, observe four aircraft performing eight flight segments in the archive. After switching the return trip of the trio, the service revenue and non-service penalty will be re-accounted according to the application time, latest departure, seat and flight list.',
     frame(d,k,f) {
       const t=interp(d.flights.reduce((first,flight)=>Math.min(first,flight[4]),d.end),d.end,f), group=d.requests[0];
       const assigned=d.requests.map((r,i)=>{
@@ -205,8 +205,8 @@
         return active?{id,fl:active,a:active[2],b:active[3],p:pos(t,active[4],active[5]),count:seats(active)}:
           {id,a:done?done[3]:flights[0][2],p:0,count:0};
       });
-      const status=t<group[2]?"Not yet reported":assigned[0]&&t>=assigned[0][5]?"Arrived":assigned[0]&&t>=assigned[0][4]?"Fly to field 0":t>group[3]?"Exceeded latest departure time":"Waiting at Airport 1";
-      return {t,fleet,status,clock:fixed(t)+" min",metrics:[["threesome",status],["Passengers delivered",taken+" people"],["Program net benefit",fixed(profit,2)]]};
+      const status=t<group[2]?'Not yet reported':assigned[0]&&t>=assigned[0][5]?'Arrived':assigned[0]&&t>=assigned[0][4]?'Fly to field 0':t>group[3]?'Exceeded latest departure time':'Waiting at Airport 1';
+      return {t,fleet,status,clock:fixed(t)+' min',metrics:[['threesome',status],['Passengers delivered',taken+' people'],['Program net benefit',fixed(profit,2)]]};
     },
     draw(canvas,s,d,k) {
       const c=stage(canvas,'#e4eee7'), map=d.nodes.map(([x,y])=>[68+x*33,242-(y-3)*29]);
@@ -216,7 +216,7 @@
         if((i+2*j)%4) {rect(c,x+8,y+8,22,20,'#b3c3bb');rect(c,x+8,y+6,22,17,'#cad3c7');}
       }
       for(let i=1;i<5;i++){const [x,y]=map[i];line(c,...map[0],x,y,'#a1b6ae',1.6);}
-      marker(c,"Urban low-altitude routes",16,13);
+      marker(c,'Urban low-altitude routes',16,13);
       d.flights.filter(fl=>fl[4]<=s.t && s.t<fl[5]).forEach(fl=>{line(c,...map[fl[2]],...map[fl[3]],fl[0]===(k?2:1)?green:'#8a9da2',3);});
       map.forEach(([x,y],i)=>{
         circ(c,x+3,y+4,18,'#bac8bf');circ(c,x,y,18,'#57766f');circ(c,x,y,13,'#e4eadb');circ(c,x,y,11,'#789187');words(c,'H',x,y,15,'#fff',700,'center');words(c,'PAD '+i,x,y+28,11,ink,650,'center');
@@ -225,46 +225,46 @@
         const a=map[v.a],b=v.fl?map[v.b]:a,offset=v.fl?0:(v.id-1.5)*8;
         const x=interp(a[0],b[0],v.p)+offset,y=interp(a[1],b[1],v.p)+(v.fl?-9:-15-(v.id%2)*6);
         aircraft(c,x,y,v.fl?Math.atan2(b[1]-a[1],b[0]-a[0]):-.1,v.count?green:'#667f90',s.t);
-        if(v.fl)words(c,'V'+v.id+' · '+v.count+"people",x,y-16,10,ink,650,'center');
+        if(v.fl)words(c,'V'+v.id+' · '+v.count+' people',x,y-16,10,ink,650,'center');
       });
-      round(c,647,17,236,327,12,'#fbf9f0');words(c,"1 departure gate",665,42,19,ink,720);
-      words(c,"Three people traveling together  ·  destination PAD 0",665,68,12,muted);
+      round(c,647,17,236,327,12,'#fbf9f0');words(c,'1 departure gate',665,42,19,ink,720);
+      words(c,'Three people traveling together  ·  destination PAD 0',665,68,12,muted);
       rect(c,663,96,204,69,'#d3e5e0');for(let j=0;j<4;j++)rect(c,663+j*56,96,3,68,'#96aca4');
       rect(c,663,165,204,8,'#365d58');round(c,679,182,78,6,3,'#b78c62');rect(c,686,188,3,12,ink);rect(c,748,188,3,12,ink);
-      if(/waiting.*airport/i.test(s.status) || (/exceed|too late/i.test(s.status) && s.t<28)){
-        for(let j=0;j<3;j++)silhouette(c,695+j*20,211,1.55,/exceed|too late/i.test(s.status)?red:green);
+      if(/lounge|wait|boarding/i.test(s.status) || (/exceed|beyond|over.limit|over capacity/i.test(s.status) && s.t<28)){
+        for(let j=0;j<3;j++)silhouette(c,695+j*20,211,1.55,/exceed|beyond|over.limit|over capacity/i.test(s.status)?red:green);
       }
-      marker(c,s.status,663,221,/exceed|too late/i.test(s.status)?red:green);
-      words(c,"16.1 points for registration and 26.1 points for deadline",665,265,13);
+      marker(c,s.status,663,221,/exceed|beyond|over.limit|over capacity/i.test(s.status)?red:green);
+      words(c,'16.1 points for registration and 26.1 points for deadline',665,265,13);
       line(c,679,292,852,292,'#c5cec6',4);
       const u=t=>interp(679,852,pos(t,16.1,30));
       line(c,u(26.1),282,u(26.1),302,red,2);circ(c,u(k?27.6:24.8),292,5,k?red:green);circ(c,u(s.t),292,3,ink);
-      words(c,"Selected return departure  "+(k?'27.6':'24.8')+" min",665,321,13,muted,600);
+      words(c,'Selected return departure  '+(k?'27.6':'24.8')+' min',665,321,13,muted,600);
     }
   };
 
   labs.P0408 = {
-    title:"Drone express delivery between cabinets",action:"Select the access sequence after completing the first cabinet area",
-    choices:["Visit the cabinet area · archive in sequence","Swap the 2nd and 3rd cabinet areas"],
-    scope:"The same work machine performs 101 moves. The main picture shows the kilometer-level air flight between areas, and the close-up view is based on the actual distance between cabinets. The first 1950 seconds are played in slow motion, then accelerated to completion.",
+    title:'Drone express delivery between cabinets',action:'Select the access sequence after completing the first cabinet area',
+    choices:['Visit the cabinet area · archive in sequence','Swap the 2nd and 3rd cabinet areas'],
+    scope:'The same work machine performs 101 moves. The main picture shows the kilometer-level air flight between areas, and the close-up view is based on the actual distance between cabinets. The first 1950 seconds are played in slow motion, then accelerated to completion.',
     frame(d,k,f) {
       const plan=d.scenarios[k],end=plan.steps[plan.steps.length-1][6],t=f<.74?interp(0,1950,f/.74):interp(1950,end,(f-.74)/.26);
       const row=plan.steps.find(r=>r[6]>t)||plan.steps[plan.steps.length-1], [a,b,id,start,dep,arr,finish]=row;
       const p=pos(t,dep,arr), x=interp(d.coords[a][0],d.coords[b][0],p), y=interp(d.coords[a][1],d.coords[b][1],p);
       const done=plan.steps.filter(s=>s[2]&&s[6]<=t).length;
-      const phase=t>=end?"Complete":!id?"Flying around":t<dep?"loading":t<arr?"cargo flight":"unloading";
+      const phase=t>=end?'Complete':!id?'Flying around':t<dep?'Load':t<arr?'cargo flight':'Unload';
       const empty=plan.steps.filter(s=>!s[2]).reduce((v,r)=>v+Math.hypot(d.coords[r[0]][0]-d.coords[r[1]][0],d.coords[r[0]][1]-d.coords[r[1]][1])*pos(t,r[4],r[5]),0);
-      return {t,a,b,id,x,y,p,phase,done,stageP:phase==="loading"?pos(t,start,dep):phase==="unloading"?pos(t,arr,finish):p,clock:clock(t),metrics:[["Moved",done+' / 101'],["Total empty flights",fixed(empty,2)+' km'],["The plan always comes up empty",fixed(plan.empty,2)+' km']]};
+      return {t,a,b,id,x,y,p,phase,done,stageP:phase==='Load'?pos(t,start,dep):phase==='Unload'?pos(t,arr,finish):p,clock:clock(t),metrics:[['Moved',done+' / 101'],['Total empty flights',fixed(empty,2)+' km'],['The plan always comes up empty',fixed(plan.empty,2)+' km']]};
     },
     draw(canvas,s,d) {
       const c=stage(canvas,'#e3ede0'), ext=d.coords[d.coords.length-1][0],sx=x=>36+829*x/ext;
-      marker(c,"Express locker corridor · Kilometer scale",16,12);
+      marker(c,'Express locker corridor · Kilometer scale',16,12);
       path(c,[[0,101],[160,66],[334,98],[490,61],[650,83],[786,49],[900,72],[900,149],[0,149]],'#b9d0b6',1,true);
       const clusters=[...new Set(d.coords.map(q=>q[0]))];line(c,35,106,866,106,'#8da79c',3);
       clusters.forEach((v,j)=>{const x=sx(v);round(c,x-3,101,7,11,1,'#65867b');if(j<4 || j%4===0)words(c,'C'+(j+1),x,129,10,muted,600,'center');});
       if(!s.id)line(c,sx(d.coords[s.a][0]),104,sx(s.x),104,'#e9a93f',4);
       aircraft(c,sx(s.x),84,0,s.id?green:gold,s.t,true);
-      rect(c,0,150,900,210,'#faf6e8');words(c,s.id?"Cabinet area enlargement · Meter scale":"Inter-regional air flight·kilometer scale",20,174,16,ink,700);
+      rect(c,0,150,900,210,'#faf6e8');words(c,s.id?'Cabinet area enlargement · Meter scale':'Inter-regional air flight·kilometer scale',20,174,16,ink,700);
       const location=d.coords[s.a][0], xx = y=>158+y*57000;
       if(s.id){
         const nodes=d.coords.map((v,i)=>[...v,i]).filter(q=>q[0]===location);
@@ -274,13 +274,13 @@
           for(let j=0;j<4;j++){rect(c,x-13+(j%2)*14,271+Math.floor(j/2)*16,12,13,'#eff0d9');rect(c,x-5+(j%2)*14,277+Math.floor(j/2)*16,2,1,ink);}
           words(c,'L'+id,x,331,11,ink,650,'center');
         });
-        const x=xx(s.y), z=s.phase==="loading"?interp(266,224,s.stageP):s.phase==="unloading"?interp(224,266,s.stageP):224;
-        aircraft(c,x,211,0,green,s.t,true);if(s.phase!=="Complete"){line(c,x,217,x,z,'#8f846b',1.6);rect(c,x-5,z,10,8,'#c78546');}
-        words(c,"Task "+s.id+'  ·  L'+s.a+' → L'+s.b,872,175,13,muted,600,'right');
+        const x=xx(s.y), z=s.phase==='Load'?interp(266,224,s.stageP):s.phase==='Unload'?interp(224,266,s.stageP):224;
+        aircraft(c,x,211,0,green,s.t,true);if(s.phase!=='Complete'){line(c,x,217,x,z,'#8f846b',1.6);rect(c,x-5,z,10,8,'#c78546');}
+        words(c,'Task '+s.id+'  ·  L'+s.a+' → L'+s.b,872,175,13,muted,600,'right');
       }else{
         const a=clusters.indexOf(d.coords[s.a][0])+1,b=clusters.indexOf(d.coords[s.b][0])+1;
         line(c,132,263,774,263,'#c5c9af',3);const x=interp(132,774,s.p),y=260-39*Math.sin(s.p*Math.PI);
-        for(const [sx,j] of [[132,a],[774,b]]){round(c,sx-30,256,60,39,3,'#7f9d8c');rect(c,sx-22,267,44,14,'#bfccb5');words(c,"Cabinet area C"+j,sx,317,13,ink,650,'center');}
+        for(const [sx,j] of [[132,a],[774,b]]){round(c,sx-30,256,60,39,3,'#7f9d8c');rect(c,sx-22,267,44,14,'#bfccb5');words(c,'Cabinet area C'+j,sx,317,13,ink,650,'center');}
         aircraft(c,x,y,0,gold,s.t,true);words(c,fixed(Math.abs(d.coords[s.a][0]-d.coords[s.b][0]),2)+' km',449,290,14,muted,600,'center');
       }
       marker(c,s.phase,765,204,s.id?green:'#aa772b');

@@ -1,44 +1,17 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,longtable}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
+
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
 \begin{document}
-\section*{P35: Current complete mathematical model (2026-10-20)}
-\section*{Basis and scope of the revision}It is necessary to retain the original quantities for each case, namely 4/64/192 periods. Additionally, certain battery/power limits should be maintained. The values for non-zero heterogeneous driving costs, 4-hour sampling intervals, and limited time-based pricing should also be preserved. Finally, a target battery capacity of 70\% should be established for the terminal. These parameters are determined based on the local scenario.
-
-
-
-
-\section*{Retained Core Model}
-According to the \texttt{tex} formulas and the PDF, the directly solvable core model is the
-linear programming reformulation on Page 20, denoted by $(R''_{\mathcal K})$. The original
-continuous-time robust problem $(R)$ on Page 13 and the intermediate robust counterpart
-$(R'_{\mathcal K})$ on Page 19 are omitted because they are intermediate non-convex or
-semi-infinite formulations. The paper proves that the original robust V2G problem is exactly
-equivalent to the linear program retained below.
-
-\paragraph{Decision variables.}
-For each period $k \in \mathcal{K}$, $x_k^b$ is the baseline charging power, $x_k^r$ is the
-regulation bid, $m_k$ is an auxiliary epigraph variable, and $z$ is the epigraph variable for
-the terminal piecewise-affine penalty. The additional variables
-$\lambda_k^+,\lambda_k^-,\theta_k^+,\theta_k^-,\Lambda_{k,l}^+,\Lambda_{k,l}^-,
-\Theta_{k,l}^+,\Theta_{k,l}^-$ are dual variables introduced by robust optimization.
-
-\paragraph{Parameters and index sets.}
-The feasible charging set is $\mathcal{X}_{\mathcal K}$. The bounds
-$\bar y_k^+,\bar y_k^-,\bar y,\underline y,\bar y_0,\underline y_0,
-\hat{\bar y}_0,\hat{\underline y}_0$ are battery and initial-state limits.
-The parameters $\eta^+,\eta^-,\Delta t,\gamma,\hat{\gamma},d_k,r_n,q_n$ are as in the paper,
-with $\Delta\eta = \frac{1}{\eta^-} - \eta^+ > 0$.
-The terminal penalty is represented by breakpoint sets
-$\mathcal{N}_+,\mathcal{N}_-,\mathcal{N}_0$.
-The horizon indices are
-$I(k,l)=\min\{k,\ l+\Gamma/\Delta t-1\}$ and
-$\hat I(K,k)=\min\{K,\ k+\hat{\Gamma}/\Delta t-1\}$.
-
-\section*{Linear Programming Reformulation}
+\section*{P0035 Vehicle Batteries Providing Reliable Frequency Regulation}
+\subsection*{Mathematical formulation}
 \begin{equation}
 \min \quad c_{\mathcal K}(\boldsymbol{x}^b,\boldsymbol{x}^r) + z
-\tag{\ensuremath{R''_{\mathcal K}}-Obj}
+\tag{$R''_{\mathcal K}$-Obj}
 \end{equation}
 
 \begin{equation}
@@ -121,9 +94,21 @@ r_n \le z
 \tag{35}
 \end{equation}
 
+\subsection*{Definitions and model scope}
+A vehicle-battery operator chooses baseline charging powers $x_k^b$ and regulation bids $x_k^r$ over the given periods $\mathcal K$ of a four-hour operating window, sampled into equal intervals of duration $\Delta t$. Each case retains its given period count, finite power and battery limits and positive, heterogeneous driving-energy rates $d_k$. Charging and discharging efficiencies, charging efficiency $\eta^+$ and discharging efficiency $\eta^-$, are both eighty-five percent in the current operating cases. The efficiency difference $\Delta\eta$ is the reciprocal of discharging efficiency minus charging efficiency and is positive. Charging schedules must belong to the specified admissible schedule collection $\mathcal X_{\mathcal K}$. The supplied admissibility rules and operating billing rule $c_{\mathcal K}$ are used in full, together with the finite limits and time-dependent prices.
 
-\section*{Current non-degradable operational data}
-Each instance retains the same number of time periods, as well as a limited battery and power range. $d_k>0$ represents the heterogeneous driving energy consumption rate, with terminal segmentation penalties set to $\max\{0,.6(y-0.7\bar y),.6(0.7\bar y-y)\}$; efficiency is denoted as $\eta^+=\eta^-=.85$. Time periods consist of 4-hour operating windows, with specific pricing, initial battery levels, and legal uncertainty ranges determined by the instance itself. Cases with zero demand are stored as historical reference data.
+In each period, regulation bid plus baseline charging cannot exceed the charging-power limit $\bar y_k^+$, while regulation bid minus baseline charging cannot exceed the discharging-power limit $\bar y_k^-$. A nonnegative loss-adjusted regulation allowance $m_k$ must be at least charging efficiency times regulation bid and at least regulation bid divided by discharging efficiency minus the efficiency difference times baseline charging. The allowance need not equal either expression. The operator also chooses nonnegative upper and lower terminal allowances $\lambda_k^+,\lambda_k^-$, nonnegative upper and lower terminal window allowances $\theta_k^+,\theta_k^-$, and corresponding nonnegative prefix allowances $\Lambda_{k,l}^+,\Lambda_{k,l}^-$ and prefix window allowances $\Theta_{k,l}^+,\Theta_{k,l}^-$ for every ordered pair of periods. A terminal charge allowance $z$ may initially have either sign and is then limited by the terminal-charge requirements.
 
+For every prefix ending at a period, form charging efficiency times baseline charging plus the upper prefix allowance minus driving-energy rate for each period, multiply that entire amount by interval duration, and add from the first period through the prefix endpoint. Add the running uncertainty budget $\gamma$ times the sum of upper prefix window allowances over the same periods. This total cannot exceed the battery upper level $\bar y$ minus the initial upper level $\bar y_0$. Separately, form charging efficiency times baseline charging minus the lower prefix allowance minus driving-energy rate, multiply that entire amount by interval duration and sum, then subtract the running uncertainty budget times lower prefix window allowances over the same prefix. This total must be at least the battery lower level $\underline y$ minus the initial lower level $\underline y_0$. Both comparisons also apply to the empty prefix: zero must be no greater than the upper-level difference and no smaller than the lower-level difference.
 
+For each prefix endpoint and each period no later than that endpoint, the upper prefix allowance plus upper prefix window allowances from that period through the running window endpoint $I(k,l)$ must be at least charging efficiency times that period's regulation bid. The analogous lower-prefix total must be at least its loss-adjusted regulation allowance. The running window endpoint is the smaller of the prefix endpoint and the window's starting-period number plus the running window duration $\Gamma$ divided by interval duration minus one. For each period, its upper terminal allowance plus upper terminal window allowances from that period through the terminal window endpoint $\hat I(K,k)$ must be at least charging efficiency times its regulation bid; the lower counterpart must be at least its loss-adjusted regulation allowance. The terminal endpoint is the smaller of the last period and the starting-period number plus the terminal window duration $\hat\Gamma$ divided by interval duration minus one. The supplied legal windows identify the discrete period endpoints used by these sums; no additional rounding rule is introduced.
+
+The final battery charge is assessed through affine charge pieces with intercepts $r_n$ and slopes $q_n$. For every piece in the positive-slope group $\mathcal N_+$, form charging efficiency times baseline charging plus upper terminal allowance minus driving-energy rate for each period, multiply that entire amount by interval duration and sum over the entire horizon, then add the terminal uncertainty budget $\hat\gamma$ times upper terminal window allowances. This total cannot exceed the terminal charge allowance minus that piece's intercept, divided by its slope, and then reduced by the terminal initial upper level $\hat{\bar y}_0$. For every piece in the negative-slope group $\mathcal N_-$, use baseline charging adjusted by efficiency minus lower terminal allowance minus driving-energy rate, multiply by interval duration and sum; subtract the terminal uncertainty budget times lower terminal window allowances. This total must be at least the difference between terminal charge allowance and intercept, divided by the negative slope, then reduced by the terminal initial lower level $\hat{\underline y}_0$. For every piece in the zero-slope group $\mathcal N_0$, its intercept cannot exceed the terminal charge allowance. The negative-slope comparison retains its stated direction.
+
+In the current operating cases, the terminal charge is the largest of zero, six-tenths times final battery charge minus seventy percent of the battery upper level, and six-tenths times seventy percent of that upper level minus final battery charge; in each of the latter two amounts, six-tenths multiplies the entire difference. Thus the desired terminal level is seventy percent of the upper battery level. The operator seeks the lowest operating charge from the supplied billing rule plus the terminal charge allowance. Initial charge levels, time-dependent prices and legitimate uncertainty windows remain those supplied for each case. The supplied charging collection and billing rule remain in force without adding power-sign restrictions, tariffs or window rounding rules.
+
+\subsection*{Inline notation and relations}
+$(R''_{\mathcal K})$; $(R)$; $(R'_{\mathcal K})$; $k \in \mathcal{K}$; $x_k^b$; $x_k^r$; $m_k$; $z$; $\lambda_k^+,\lambda_k^-,\theta_k^+,\theta_k^-,\Lambda_{k,l}^+,\Lambda_{k,l}^-,
+\Theta_{k,l}^+,\Theta_{k,l}^-$; $\mathcal{X}_{\mathcal K}$; $\bar y_k^+,\bar y_k^-,\bar y,\underline y,\bar y_0,\underline y_0,
+\hat{\bar y}_0,\hat{\underline y}_0$; $\eta^+,\eta^-,\Delta t,\gamma,\hat{\gamma},d_k,r_n,q_n$; $\Delta\eta = \frac{1}{\eta^-} - \eta^+ > 0$; $\mathcal{N}_+,\mathcal{N}_-,\mathcal{N}_0$; $I(k,l)=\min\{k,\ l+\Gamma/\Delta t-1\}$; $\hat I(K,k)=\min\{K,\ k+\hat{\Gamma}/\Delta t-1\}$; $d_k>0$; $\max\{0,.6(y-0.7\bar y),.6(0.7\bar y-y)\}$; $\eta^+=\eta^-=.85$.
 \end{document}

@@ -1,16 +1,14 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,geometry}
-\geometry{margin=22mm}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
+
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
 \begin{document}
-\section*{P82: Original multi-stage stochastic integer programming with non-forward-looking policies}
-\paragraph{Source and scope}Based on pages 1, 8, 9, and 10 of the original paper PDF, sections 2 (Formulas (1a)--(1c)) and $X_t$ definitions; assumption 1--2 on page 8; and non-prospective interpretation on page 10.
-
-\paragraph{Modeling objects and information structures}
-Retain the original multi-stage stochastic mixed integer programming (MSMIP) formulations (1a)--(1c) from Section 2 of the paper. The stage-based and non-forwarding Lagrangian duality are methods for finding the lower bound of the problem, and do not belong to another set of decision models in this document. The stage set is $\mathcal T=\{1,\ldots,T\}$. In the probability space $(\Omega,\mathcal F,\mathbb P)$, the stage random vector is $\boldsymbol\xi_t\in\mathbb R^{\ell_t}$, the history is $h_t=(\boldsymbol\xi_1,\ldots,\boldsymbol\xi_t)$, the dimension of history is $L_t=\sum_{s=1}^t\ell_s$; $\boldsymbol\xi_1=1$ is determined in the first stage. $\mathcal F_t=\sigma(h_t)$ and the distribution of the complete path and the support set $\Xi$ are both inputs. The joint distribution of the stage random vectors is given by the instance and may include inter-stage dependencies.
-
-\paragraph{Parameters}
-In stage $t$, the decision dimension is $n_t$. The first $p_t$ components are integers, while $0\le p_t\le n_t$. The number of rows for the state equation and inequalities within the stage are $m_t^s,m_t^r$. All the measurable coefficients depend solely on the known history of $h_t$:
+\section*{P0082 Staged Resource Decisions as Information Is Revealed}
+\subsection*{Mathematical formulation}
 \[
 \begin{aligned}
 &c_t(h_t)\in\mathbb R^{n_t},\qquad b_t(h_t)\in\mathbb R^{m_t^s},
@@ -20,17 +18,12 @@ B_t(h_t)\in\mathbb R^{m_t^s\times n_{t-1}},\quad
 C_t(h_t)\in\mathbb R^{m_t^r\times n_t}.
 \end{aligned}
 \]
-$c_t$ represents the cost vector, $A_t,B_t,b_t$ describes the state coupling between the current and previous periods, $C_t,d_t$ describes the resources, boundaries, and other feasibility conditions for the current period. The paper specifies $x_0(h_0)\equiv0$; non-zero initial resources and other constants must be input as part of $b_1$, the initial state is fixed by the instance.
 
-\paragraph{Variable and phase feasible regions}
-The variable is not a forward-looking policy $x_t: h_t\mapsto x_t(h_t)$. That is, $x_t$ must be $\mathcal F_t$ measurable, and the same decision should be adopted across the same history. The complete feasible region within the phase is
 \[
 X_t(h_t)=\{x\in\mathbb Z^{p_t}\times\mathbb R^{n_t-p_t}:
  C_t(h_t)x\ge d_t(h_t)\}.
 \]
-If the non-negative nature of the variables, their upper and lower limits, as well as their binary nature are required for a particular instance, these details must be explicitly specified by the instance using the $C_t,d_t$ notation.
 
-\paragraph{The only core model}
 \begin{align}
 \min_{\{x_t(\cdot)\}_{t=1}^T}\quad&
 \mathbb E_{\mathbb P}\!\left[\sum_{t=1}^T c_t(h_t)^\top x_t(h_t)\right]
@@ -44,11 +37,18 @@ If the non-negative nature of the variables, their upper and lower limits, as we
 &x_t\text{ is }\mathcal F_t\text{-measurable},
 &&t=1,\ldots,T.\tag{NA}
 \end{align}
-Among these, the ranges (1c–i) to (1c–ii) only involve expanding on the original expression for (1c). The symbol (NA) indicates that the definitions of the policy variables remain unchanged. No additional optimization problems were introduced.
 
-\paragraph{Enter applicable conditions and details regarding the limited number of instances available.}
-According to pages 8–9 of the paper, assume that relative complete remedies are possible: any feasible past decisions are also feasible in the current period. Additionally, $X_t(h_t)$ is almost always tight, and $\mathbb E[\operatorname{diam}(X_t(h_t))]<\infty$ is also true. At the same time, the expected cost should be well-defined. These conditions serve as input assumptions for this problem; they do not allow for the arbitrary addition of slack variables, penalties, or other constraints to modify individual instances.
+\subsection*{Definitions and model scope}
+An organization plans resources across stages $\mathcal T$ and evaluates expected total expenditure. Random stage information $\boldsymbol\xi_t$ follows a supplied complete joint distribution $\mathbb P$ with support $\Xi$ and is revealed progressively; stages are not presumed independent. Observed history $h_t$ contains information from the first through current stage, with dimension $L_t$ equal to the sum of stage information dimensions $\ell_t$. First-stage information is fixed at one, so that stage is deterministic.
 
-If the input is represented using a finite scenario tree, then each node represents a historical situation, and the nodes share the same decision-making processes. This is not a forward-looking description; the probability of reaching a given node must be considered as an unconditional probability. The sum of the probabilities for leaf nodes is always equal to 1. The probability for any non-leaf node is equal to the sum of the probabilities of its child nodes. If the tree fully represents the original input distribution, then it represents a finite representation of the same model. If the tree is merely a sample, then it can only represent an instance of that discrete approximate distribution. No second set of mathematical models is provided in this description.
+Stage arrangement $x_t(h_t)$ may depend only on observed history. Future branches sharing the same current history must use the same current choice, measurable with respect to its information collection $\mathcal F_t$. There are $n_t$ decision components, of which the first $p_t$ must be integers and the remainder may be real numbers; the integer count lies between zero and total component count. Real components are not automatically nonnegative, and integers are not automatically zero or one. Such restrictions and bounds must be specified by the supplied stage resource rules.
 
+Each stage resource rule weights current choices using coefficients $C_t(h_t)$ and requires the resulting row total to be at least supplied level $d_t(h_t)$. Interstage state links add current choices weighted by $A_t(h_t)$ to preceding-stage choices weighted by $B_t(h_t)$ and require each resulting row to equal state requirement $b_t(h_t)$. These requirements hold with probability one under the supplied distribution. Initial arrangement $x_0(h_0)$ is zero. Any nonzero starting inventory must already enter the first-stage state requirement, rather than being a freely chosen initial resource.
+
+Current and interstage coefficients, resource levels and cost vector $c_t(h_t)$ depend only on known history and have supplied compatible dimensions. Path expenditure sums every stage component times its corresponding cost. The organization seeks the lowest expectation of that expenditure under the joint distribution. The expectation must be defined; costs across histories cannot simply be summed without probability weighting.
+
+Inputs assume every feasible past arrangement permits a feasible current arrangement at each reachable history. The permissible stage arrangement set $X_t(h_t)$ is compact with probability one and has finite expected diameter. These are input conditions, not permission to add penalties, relax business requirements or truncate bounds. A finite branching tree represents each history by one node with shared choices and unconditional probability of reaching that node. Leaf probabilities sum to one, and every nonleaf probability equals the sum of its children. Only a tree representing the complete supplied joint distribution describes the same problem; a sampled tree describes its adopted discrete approximation.
+
+\subsection*{Inline notation and relations}
+$X_t$; $\mathcal T=\{1,\ldots,T\}$; $(\Omega,\mathcal F,\mathbb P)$; $\boldsymbol\xi_t\in\mathbb R^{\ell_t}$; $h_t=(\boldsymbol\xi_1,\ldots,\boldsymbol\xi_t)$; $L_t=\sum_{s=1}^t\ell_s$; $\boldsymbol\xi_1=1$; $\mathcal F_t=\sigma(h_t)$; $\Xi$; $t$; $n_t$; $p_t$; $0\le p_t\le n_t$; $m_t^s,m_t^r$; $h_t$; $c_t$; $A_t,B_t,b_t$; $C_t,d_t$; $x_0(h_0)\equiv0$; $b_1$; $x_t: h_t\mapsto x_t(h_t)$; $x_t$; $\mathcal F_t$; $X_t(h_t)$; $\mathbb E[\operatorname{diam}(X_t(h_t))]<\infty$.
 \end{document}

@@ -1,14 +1,14 @@
-\documentclass{article}
-\usepackage{amsmath,amssymb}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
-\usepackage{geometry}
-\geometry{paperwidth=235mm,paperheight=297mm,hmargin=18mm,vmargin=19mm}
-\begin{document}
-\section*{Truck and delivery robot collaborative path planning: A complete operational model}
-Correct the extraction errors in old version 02 at pages 4--5 of the original paper (sections (1)--(10)). The node sets: $V=\{v_0\}\cup C$ and $v_0$ represent warehouses, with each customer having one package. The truck and the robot both start and return from the warehouse together. The coordinate unit is km, the speed is km/h, and all operation times are in seconds; $d^T_{ab}=3600D_{ab}/v_T$ and $d^R_{ab}=3600D_{ab}/v_R$. The input complete distance matrix is obtained from the Euclidean distances of the existing coordinates. The customer service time is $t_s$, while the warehouse does not have customer service. The loading and unloading robots take time at rates of $t_l,t_u$ respectively, and the robot can carry up to $p$ items.
 
-\subsection*{Feasibility and cost estimates}
-An operation $o=(s_o,H_o,J_o,e_o)$ involves a common starting point and repeated nodes. It also includes an ordered sequence of internal customers: $H_o$ for trucks, and $J_o$ for robots. The internal customers are distinct and do not overlap with each other. Additionally, $|J_o|\le p$ is also involved. When the robot is empty, it travels along with the vehicle. The set of operations $O$ includes all valid such operations, and is not limited to those explicitly listed in the algorithm. Let $P^T_o=(s_o,H_o,e_o)$ and $P^R_o=(s_o,J_o,e_o)$ be…
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
+\begin{document}
+\section*{P0177 Truck and Delivery Robot Rendezvous Planning}
+\subsection*{Mathematical formulation}
 \[
  T_o=\sum_{(a,b)\in P^T_o}d^T_{ab}
        +t_s(|H_o|+\mathbf1_{\{e_o\ne v_0\}}),\qquad
@@ -17,10 +17,7 @@ An operation $o=(s_o,H_o,J_o,e_o)$ involves a common starting point and repeated
  0,&J_o=\varnothing,
  \end{cases}\quad c_o=\max(T_o,R_o).
 \]
-The summation here is performed based on the adjacent arcs along the path. At the end point, customer services are recorded in the previous operation, to avoid duplicate billing due to consecutive operations. The absence of services in the warehouse represents a data boundary.
 
-\subsection*{Decisions and constraints}
-$x_o$ represents the selection operation, while $y_v$ indicates a common node serving as the boundary of operations. $O(v)$ includes the operation that accesses $v$; $O^-(v)$ starts from $v$, and $O^+(v)$ ends at $v$. $O^+(S)$ is the operation that transitions from $V\setminus S$ to $S$.
 \begin{align*}
 \min\quad &\sum_{o\in O}c_ox_o\\
 \text{s.t.}\quad
@@ -32,8 +29,16 @@ $x_o$ represents the selection operation, while $y_v$ indicates a common node se
 &\sum_{o\in O^+(v_0)}x_o\ge1,\qquad y_{v_0}=1,\\
 &x_o,y_v\in\{0,1\}.
 \end{align*}
-Coverage for old version 02: $\le1$, connectivity at the right endpoint: $\sum_{v\in S}y_v$, along with several equal signs. This does not match the original text. Therefore, corrections are necessary based on the original text. The client was involved in the process only once, so the requirement of “at least one coverage” is also satisfied.
 
-\subsection*{Algorithms and certificates}
-The code first builds a closed truck route through all customers, then applies 2-opt and dynamic programming over local operations. The search spans at most 7 route positions and uses nearest-neighbor ordering for long robot sequences. These search rules generate candidate operation sequences. The delivered sequence is a single closed chain with no repeated operation-boundary nodes, so it satisfies all connectivity cuts without enumerating exponentially many sets. Customer coverage, capacity, costs, and endpoint continuity are checked separately. Each instance has a budget of 3600 seconds; a feasible upper bound is returned, without any proof of optimality being provided.
+\subsection*{Definitions and model scope}
+A truck and one delivery robot leave a depot $v_0$ together, deliver parcels to customers $C$, and return together. Each customer has one parcel. The node set $V$ contains the depot and customers. Complete distances $D_{ab}$ are Euclidean distances from the given coordinates in kilometers. Truck and robot travel times in seconds are distance divided by their respective speeds $v_T,v_R$ in kilometers per hour, then multiplied by 3600. A customer requires service time $t_s$, while the depot has no customer service. Robot loading and unloading take times $t_l,t_u$, and the robot can carry at most parcel capacity $p$.
+
+A joint operation $o$ has a common departure node $s_o$ and reunion node $e_o$, an ordered internal truck customer sequence $H_o$, and an ordered robot customer sequence $J_o$. Internal customers do not repeat or overlap between these two sequences, and the robot sequence does not exceed parcel capacity. All legal such operations belong to the available operation collection $O$. With no robot customers, the robot rides on the truck. Truck duration sums travel along consecutive links from departure through internal truck customers to reunion, plus customer service for each internal customer and for the reunion when it is a customer. Robot duration is zero for an empty robot sequence; otherwise it sums travel through its sequence to reunion, service for its own customers, and loading and unloading. The operation duration $c_o$ is the larger of truck and robot durations. Reunion customer service belongs to the arriving operation.
+
+Zero-or-one operation choices $x_o$ and zero-or-one common-node records $y_v$ describe the plan. Every node, including the depot, must be visited by at least one selected operation; this is a coverage lower bound and does not impose exactly one visit across operations. For every node, the number of selected operations starting there cannot exceed its common-node record, and equals the number ending there. At least one selected operation ends at the depot and its common-node record is one. Therefore selected boundary operations balance at each node, with at most one starting there.
+
+For every nonempty collection of nodes excluding the depot, and for each node within that collection, the number of selected operations entering the collection from outside must be at least that node's common-node record. This prevents an active group of boundary nodes from being isolated from the depot. The operator seeks the smallest sum of selected operation durations, each counted once. No arbitrary limit on the length of a forward customer sequence or on the set of available operations is imposed.
+
+\subsection*{Inline notation and relations}
+$V=\{v_0\}\cup C$; $v_0$; $d^T_{ab}=3600D_{ab}/v_T$; $d^R_{ab}=3600D_{ab}/v_R$; $t_s$; $t_l,t_u$; $p$; $o=(s_o,H_o,J_o,e_o)$; $H_o$; $J_o$; $|J_o|\le p$; $O$; $P^T_o=(s_o,H_o,e_o)$; $P^R_o=(s_o,J_o,e_o)$; $x_o$; $y_v$; $O(v)$; $v$; $O^-(v)$; $O^+(v)$; $O^+(S)$; $V\setminus S$; $S$; $\le1$; $\sum_{v\in S}y_v$.
 \end{document}

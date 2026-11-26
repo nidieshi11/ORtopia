@@ -1,37 +1,14 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,longtable}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
+
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
 \begin{document}
-\section*{P24: Current complete mathematical model (2026-10-20)}
-\section*{Basis and scope of the revision}Restoring the conservation of energy throughout the entire network by taking into account the inflow and outflow values on page 21 of the original text. This approach also helps to address issues related to limited procurement/transportation capabilities, as well as limitations in the training domain of the predictor. The local nutrition distribution model provides a framework for managing limited business boundaries.
-
-
-
-
-\section*{Retained Core Model}
-The World Food Programme food-basket model on page 21 embeds a learned nutritional constraint in a mixed-integer optimization problem. It is directly solvable \emph{after} the
-predictive function $\hat h(\boldsymbol{x})$ is instantiated by any trained MIO-representable
-learner supported by the paper (e.g., linear model, tree, forest, or ReLU network).
-
-\paragraph{Decision variables.}
-$x_k$ denotes the quantity of food item $k$, $F_{ijk}$ is the commodity flow variable on the
-supply/transportation network, and $y$ is the predicted palatability score (or predicted learned
-constraint output) produced by the embedded model $\hat h(\boldsymbol{x})$.
-
-\paragraph{Sets and parameters.}
-$\mathcal N_{\mathcal S}$, $\mathcal N_{\mathcal T}$, and $\mathcal N_{\mathcal D}$ are source,
-transshipment, and demand-node sets. $\mathcal K$ is the commodity set and $\mathcal L$ is the
-nutrient set. The costs $p_{ik}^P$ and $p_{ijk}^T$ are procurement and transportation costs,
-$\gamma$ is a conversion factor, $d_i$ is daily demand, $days$ is the number of planning days,
-$Nutval_{kl}$ is the nutrient content of food $k$ for nutrient $l$, $Nutreq_l$ is the required
-amount of nutrient $l$, and $t$ is the minimum acceptable learned-score threshold. To make the
-retained model fully solvable, we instantiate the learned mapping $\hat h(\boldsymbol{x})$ with a
-trained ReLU network, which is one of the MIO-representable learners explicitly supported by the
-paper. Let $\mathcal R_\ell$ be the neuron
-set of hidden layer $\ell=1,\dots,H$, with trained weights $W_{rq}^{(\ell)}$, biases
-$b_r^{(\ell)}$, and valid pre-activation bounds $L_r^{(\ell)} \le s_r^{(\ell)} \le U_r^{(\ell)}$.
-
-\section*{Application-Level Core Formulation}
+\section*{P0024 Food Basket Procurement and Delivery with Nutrition and Palatability}
+\subsection*{Mathematical formulation}
 \begin{equation}
 \min_{\boldsymbol{x},\, y,\, \boldsymbol{F}}
 \sum_{i \in \mathcal{N}_{\mathcal S}}
@@ -91,7 +68,6 @@ F_{ijk},\, x_k \ge 0
 \tag{6i}
 \end{equation}
 
-\section*{Explicit MIO Embedding of $\hat h(\boldsymbol{x})$}
 \begin{equation}
 a_k^{(0)} = x_k
 \quad \forall k \in \mathcal K
@@ -141,21 +117,23 @@ y =
 \tag{Emb-h}
 \end{equation}
 
-\section*{Interpretation}
-The application-level model on Page 21 becomes a complete standalone MIO once constraint
-(6h) is replaced by the explicit predictor embedding above. The paper supports other
-MIO-representable learners as well, but the trained ReLU network is a fully specified retained
-instantiation and therefore closes the previously missing learned-constraint block.
-
-
-
-\section*{Limited business data domain}
-The instance provides information such as directed transportation arcs, prices, nutritional characteristics of foods, demand levels, maximum procurement quantities $Cap^P$, maximum arc capacity $Cap^T$, maximum quantities of certain foods $U$, as well as the set of categories $K_g$ and the upper and lower limits of those categories $L_g,U_g$.
 \[
 \sum_jF_{ijk}\le Cap^P_{ik}\ (i\in N_S),\quad
 \sum_kF_{ijk}\le Cap^T_{ij},\quad0\le x_k\le U_k,\quad
 L_g\le\sum_{k\in K_g}x_k\le U_g.
 \]
-These parameters determine the effective input range for limited procurement capabilities, transportation capacities, and learning agents. The weights, biases, and threshold values of the ReLU activation function are specified layer by layer based on individual instances; all the embedding constraints mentioned above must also be satisfied simultaneously.
 
+\subsection*{Definitions and model scope}
+A food-aid organization must supply the same daily food basket to demand locations and arrange its procurement and delivery at minimum combined procurement and transport cost. The network nodes $\mathcal N$ comprise sources $\mathcal N_{\mathcal S}$, transfer locations $\mathcal N_{\mathcal T}$ and demand locations $\mathcal N_{\mathcal D}$, with foods in $\mathcal K$ and nutrients in $\mathcal L$. Daily food quantities $x_k$ and directed shipment quantities $F_{ijk}$ may be any nonnegative real amounts. Procurement is charged on food leaving each source for transfer or demand locations at the source food price $p_{ik}^P$. Transport is charged at $p_{ijk}^T$ on shipments from sources or transfer locations to transfer or demand locations.
+
+At each transfer location, total outflow of each food must equal its total inflow. At each demand location, incoming food multiplied by the conversion factor $\gamma$ must exactly equal the product of daily demand $d_i$, that food's daily basket quantity and the planning duration $days$. Total dispatch of a food from a source cannot exceed its procurement capacity $Cap^P_{ik}$, and total food tonnage on each transport arc cannot exceed $Cap^T_{ij}$.
+
+For every nutrient, the sum of each food's nutrient content $Nutval_{kl}$ multiplied by its daily quantity must reach at least the requirement $Nutreq_l$. The daily salt quantity $x_{\mathrm{salt}}$ is fixed at five and the sugar quantity $x_{\mathrm{sugar}}$ at twenty, in the basket's stated units. Each food must also remain below its individual upper limit $U_k$. For every food category $K_g$, the combined daily quantities of its foods must lie between $L_g$ and $U_g$.
+
+The basket's palatability score $y$ must reach the threshold $t$ and is determined by the already trained predictor $\hat h(\boldsymbol{x})$; procurement planning does not retrain it. Food quantities enter as $a_k^{(0)}$ and pass through $H$ hidden layers, each with processing units $\mathcal R_\ell$. A unit multiplies previous-layer outputs $a_q^{(\ell-1)}$ by trained weights $W_{rq}^{(\ell)}$, sums them and adds bias $b_r^{(\ell)}$ to obtain its raw response $s_r^{(\ell)}$. Its output $a_r^{(\ell)}$ is the larger of that response and zero. Raw responses remain within valid lower and upper bounds $L_r^{(\ell)}$ and $U_r^{(\ell)}$.
+
+Each processing unit is either active or inactive, recorded by $\delta_r^{(\ell)}$ taking one or zero. Its output must be nonnegative and no smaller than the raw response, while not exceeding the raw response minus the lower bound multiplied by the inactive indicator, or the upper bound multiplied by the active indicator. The final score is the last-layer outputs weighted by $W_q^{(H+1)}$, plus output bias $b^{(H+1)}$. Foods, nutrition information, demand, costs, capacities and the trained predictor are fixed beforehand. If delivery, nutritional, quantity-range and palatability requirements cannot all be met, no implementable basket and delivery arrangement exists.
+
+\subsection*{Inline notation and relations}
+$\hat h(\boldsymbol{x})$; $x_k$; $k$; $F_{ijk}$; $y$; $\mathcal N_{\mathcal S}$; $\mathcal N_{\mathcal T}$; $\mathcal N_{\mathcal D}$; $\mathcal K$; $\mathcal L$; $p_{ik}^P$; $p_{ijk}^T$; $\gamma$; $d_i$; $days$; $Nutval_{kl}$; $l$; $Nutreq_l$; $t$; $\mathcal R_\ell$; $\ell=1,\dots,H$; $W_{rq}^{(\ell)}$; $b_r^{(\ell)}$; $L_r^{(\ell)} \le s_r^{(\ell)} \le U_r^{(\ell)}$; $Cap^P$; $Cap^T$; $U$; $K_g$; $L_g,U_g$.
 \end{document}

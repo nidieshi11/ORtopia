@@ -78,31 +78,31 @@
    }
    for(const train of positions.filter(v=>v.direction===direction&&v.position))coach(c,xAt(train.position.s,direction),y-3,direction,train.id,train.type==='through');
   }
-  badge(c,"Operating "+Math.floor(now/60)+"min "+String(Math.floor(now%60)).padStart(2,'0')+"s",112,28,'#274741','#f3f6e6',16);
-  badge(c,"Interval in the same direction "+gap+" s",W-109,28,'#edf2e4','#244b45',16);
-  if(conflict)badge(c,"The vehicle behind enters the protected area in advance",W/2,335,'#973f33','#fff4df',18);
+  badge(c,'Operating '+Math.floor(now/60)+' min '+String(Math.floor(now%60)).padStart(2,'0')+' s',112,28,'#274741','#f3f6e6',16);
+  badge(c,'Interval in the same direction '+gap+' s',W-109,28,'#edf2e4','#244b45',16);
+  if(conflict)badge(c,'The vehicle behind enters the protected area in advance',W/2,335,'#973f33','#fff4df',18);
  }
  function mount(host,onInteract,index,onNode,replayAction){
   const model=window.ORTOPIA_REPLAYS.P0154.field;
   let state=sessions.get(host);if(!state){state={gap:model.archived};sessions.set(host,state);}
   state.inspect=null;
-  const ui=F.siteShell(host,'metro-grid',"The actual operation process of the six-train two-way commuter subway","The signal lights in the solid line interval indicate fixed block occupancy, and the red track indicates guard time conflicts.");
-  ui.control.innerHTML="<label class=\"fp-group\"><strong>Heading interval</strong><input aria-label=\"Interval (seconds))\" type=\"range\" min=\"240\" max=\"333\" step=\"1\"><output></output></label><div class=\"fp-group\"><button data-gap=\"240\">Close start</button><button data-gap=\""+model.best+"\">shortest feasible interval</button><button data-gap=\""+model.archived+"\">restore archive</button></div>";
+  const ui=F.siteShell(host,'metro-grid','The actual operation process of the six-train two-way commuter subway','The signal lights in the solid line interval indicate fixed block occupancy, and the red track indicates guard time conflicts.');
+  ui.control.innerHTML='<label class="fp-group"><strong>Heading interval</strong><input aria-label="Departure interval (seconds)" type="range" min="240" max="333" step="1"><output></output></label><div class="fp-group"><button data-gap="240">Close start</button><button data-gap="'+model.best+'">shortest feasible interval</button><button data-gap="'+model.archived+'">restore archive</button></div>';
   const slider=ui.control.querySelector('input');
   function refresh(){
    const r=model.plans[state.gap];
-   slider.value=state.gap;ui.control.querySelector('output').textContent=state.gap+" s";
+   slider.value=state.gap;ui.control.querySelector('output').textContent=state.gap+' s';
    ui.result.dataset.error=String(!r.valid);
    const fixed=r.errors.fixed_block;
    const braking=Object.entries(r.errors).filter(([k])=>k.startsWith('safety')).map(([,v])=>v);
-   ui.result.textContent=(r.valid?"Feasible":fixed?"Fixed occlusion protection "+fixed.toFixed(0)+" s":"Braking safety margin is insufficient "+Math.max(...braking).toFixed(2)+" s")+' · '+(r.valid?"Final total ":"Trial row final total ")+r.total+" s";
+   ui.result.textContent=(r.valid?'Feasible':fixed?'Fixed occlusion protection '+fixed.toFixed(0)+' s':'Braking safety margin is insufficient '+Math.max(...braking).toFixed(2)+' s')+' · '+(r.valid?'Final total ':'Trial row final total ')+r.total+' s';
    for(const b of ui.control.querySelectorAll('[data-gap]'))b.setAttribute('aria-pressed',String(+b.dataset.gap===state.gap));
   }
   function change(gap){onInteract?.();state.gap=gap;state.inspect=[480+gap-45,480+Math.max(gap,320)+45];refresh();replayAction?.();host.sceneFrame(0);}
   slider.oninput=()=>change(+slider.value);
   ui.control.onclick=e=>{const b=e.target.closest('button[data-gap]');if(b)change(+b.dataset.gap);};
-  F.hotspot(ui.scene,"Shorten the interval between departures in the same direction",left,202,()=>change(240),70,82);
-  F.hotspot(ui.scene,"Schedule by shortest feasible interval",right,289,()=>change(model.best),70,72);
+  F.hotspot(ui.scene,'Shorten the interval between departures in the same direction',left,202,()=>change(240),70,82);
+  F.hotspot(ui.scene,'Schedule by shortest feasible interval',right,289,()=>change(model.best),70,72);
   host.sceneFrame=t=>render(ui,model,state,index,t);
   host.previewDecision=i=>{state.gap=i?240:model.archived;state.inspect=i?[675,840]:null;refresh();host.sceneFrame(host.sceneTime||0);};
   refresh();host.sceneFrame(host.sceneTime||0);

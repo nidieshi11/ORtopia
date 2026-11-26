@@ -3,7 +3,7 @@
 const F=window.ORTOPIA_FIELD;
 const {W,H,clamp,poly,line,ellipse,box,text,badge,tree,terrain,road,along,truck,person}=F;
 const raw={"scenario_ids":["s0","s1","s2","s3"],"scenario_weights":[0.25,0.25,0.25,0.25],"scenario_maintenance_costs":[[7.268499339845507,10.36474216518254,11.0556206843059,10.584559594494872,7.468131132624268,10.7776645837207,12.288566127661896,7.487230695077961,9.15628147513884],[10.960426947545018,12.089657408899207,9.38256155000747,8.563638024068066,5.534198293463975,5.549849141145844,10.30911300789557,8.699491996146374,9.379140479124569],[11.065786863089581,5.214831234787483,11.116607930964967,10.412153292451613,6.55486953495873,5.064135324695243,6.451293286158642,10.938624341550975,10.076556282975705],[13.85973507375256,7.769578797424861,8.342199315154112,8.654026530254214,7.919919037615773,9.234016432739738,9.872428563434262,11.39242644087058,7.556311307709136]],"scenario_recourse_lower_bounds":[11.767351835703074,12.279171735096739,19.689391605699427,14.313833152656295],"optimality_cut_assignment_coefficients":[[2.761254564693901,0.0,0.0,0.0,2.761254564693901,0.0,2.761254564693901,0.0,0.0],[4.029983179974438,0.0,0.0,0.0,4.029983179974438,0.0,4.029983179974438,0.0,0.0],[3.8062176215429013,0.0,0.0,0.0,3.8062176215429013,0.0,3.8062176215429013,0.0,0.0],[3.8005438778309686,0.0,0.0,0.0,3.8005438778309686,0.0,3.8005438778309686,0.0,0.0]],"optimality_cut_rhs":[6.244842706315272,4.2192053751478635,12.076956362613625,6.712745396994358],"reliability_infeasible_schedules":[[{"h":"G1","t":1},{"h":"G2","t":1},{"h":"L1","t":2}],[{"h":"G1","t":1},{"h":"G2","t":1},{"h":"L1","t":3}],[{"h":"G1","t":1},{"h":"G2","t":2},{"h":"L1","t":2}],[{"h":"G1","t":1},{"h":"G2","t":2},{"h":"L1","t":3}],[{"h":"G1","t":1},{"h":"G2","t":3},{"h":"L1","t":2}],[{"h":"G1","t":1},{"h":"G2","t":3},{"h":"L1","t":3}],[{"h":"G1","t":2},{"h":"G2","t":1},{"h":"L1","t":1}],[{"h":"G1","t":2},{"h":"G2","t":1},{"h":"L1","t":2}],[{"h":"G1","t":2},{"h":"G2","t":1},{"h":"L1","t":3}],[{"h":"G1","t":2},{"h":"G2","t":2},{"h":"L1","t":1}],[{"h":"G1","t":2},{"h":"G2","t":2},{"h":"L1","t":2}],[{"h":"G1","t":2},{"h":"G2","t":2},{"h":"L1","t":3}],[{"h":"G1","t":2},{"h":"G2","t":3},{"h":"L1","t":1}],[{"h":"G1","t":2},{"h":"G2","t":3},{"h":"L1","t":2}],[{"h":"G1","t":2},{"h":"G2","t":3},{"h":"L1","t":3}],[{"h":"G1","t":3},{"h":"G2","t":1},{"h":"L1","t":1}],[{"h":"G1","t":3},{"h":"G2","t":1},{"h":"L1","t":2}],[{"h":"G1","t":3},{"h":"G2","t":1},{"h":"L1","t":3}],[{"h":"G1","t":3},{"h":"G2","t":2},{"h":"L1","t":1}],[{"h":"G1","t":3},{"h":"G2","t":2},{"h":"L1","t":2}],[{"h":"G1","t":3},{"h":"G2","t":2},{"h":"L1","t":3}],[{"h":"G1","t":3},{"h":"G2","t":3},{"h":"L1","t":1}],[{"h":"G1","t":3},{"h":"G2","t":3},{"h":"L1","t":2}],[{"h":"G1","t":3},{"h":"G2","t":3},{"h":"L1","t":3}]]};
-const assets=['G1','G2','L1'],names=["Unit 1","Unit 2","power lines"],reference=[1,3,1];
+const assets=['G1','G2','L1'],names=['Unit 1','Unit 2','power lines'],reference=[1,3,1];
 const invalid=new Set(raw.reliability_infeasible_schedules.map(row=>assets.map(h=>row.find(v=>v.h===h).t).join('')));
 const states=new WeakMap();
 const sites=[[305,159],[608,149],[775,282]];
@@ -110,27 +110,27 @@ function workFrame(c,state,step,sec){
   }else{const p=routes[i][0];truck(c,p[0]-14,p[1]+2,0,'#bd9265',0,true)}
   if(!result.valid&&i!==1&&state.plan[i]!==1){
    c.strokeStyle='#af5542';c.lineWidth=2.5;c.setLineDash([7,5]);c.beginPath();c.ellipse(x,y+10,i===2?43:67,19,0,0,Math.PI*2);c.stroke();c.setLineDash([]);
-   badge(c,"Missed the first phase of maintenance",x,y+(i===2?-110:-74),'#974a39','#fff9dd',13);
+   badge(c,'Missed the first phase of maintenance',x,y+(i===2?-110:-74),'#974a39','#fff9dd',13);
   }
-  const label=names[i]+' '+assets[i]+'  ·  '+(state.plan[i]===3?"Suspended":"Period "+state.plan[i]+"");
+  const label=names[i]+' '+assets[i]+'  ·  '+(state.plan[i]===3?'Suspended':'No. '+state.plan[i]+' Period');
   badge(c,label,x+(i===2?7:0),y+(i===2?65:55),state.asset===i?'#254d45':'#fbfbed',state.asset===i?'#fffde9':ink);
  }
- badge(c,"Maintenance team",98,372,'#f6f7e9',ink);
- const sub=step>=3?"  · Cost Scenarios"+(step-3):'';
- badge(c,"Period "+half+""+sub,step>=3?108:63,24,'#274f49','#fffff4',16);
- badge(c,!result.valid?"Reliability check failed":q<.43&&state.plan.includes(half)?"Team departure":q<.57&&state.plan.includes(half)?"On-site shutdown":"Maintenance in this period "+state.plan.filter(v=>v===half).length+" item",W-104,24,!result.valid?'#913d32':'#fdf9e8',!result.valid?'#fff6dc':ink,15);
+ badge(c,'Maintenance team',98,372,'#f6f7e9',ink);
+ const sub=step>=3?'  · Cost Scenarios'+(step-3):'';
+ badge(c,'No. '+half+' Period '+sub,step>=3?108:63,24,'#274f49','#fffff4',16);
+ badge(c,!result.valid?'Reliability check failed':q<.43&&state.plan.includes(half)?'Team departure':q<.57&&state.plan.includes(half)?'On-site shutdown':'Maintenance in this period '+state.plan.filter(v=>v===half).length+' item',W-104,24,!result.valid?'#913d32':'#fdf9e8',!result.valid?'#fff6dc':ink,15);
 }
 function mount(host,onInteract,index,onNode,replayAction){
  let state=states.get(host);if(!state){state={plan:[...reference],asset:0};states.set(host,state)}
  state.focusPeriod=null;
- const ui=F.siteShell(host,'fp-maint',"Joint maintenance site. You can click on the device to select the maintenance cycle.","Click on the field equipment and then select the construction period.");
+ const ui=F.siteShell(host,'fp-maint','Joint maintenance site. You can click on the device to select the maintenance cycle.','Click on the field equipment and then select the construction period.');
  const refresh=()=>{
-  ui.control.innerHTML="<div class=\"fp-group\"><strong>Select equipment</strong>"+assets.map((a,i)=>'<button data-asset="'+i+'" aria-pressed="'+(state.asset===i)+'">'+a+'</button>').join('')+"</div><div class=\"fp-group\"><strong>arrange</strong>"+["Period 1","Period 2","Suspended during the period"].map((s,i)=>'<button data-period="'+(i+1)+'" aria-pressed="'+(state.plan[state.asset]===i+1)+'">'+s+'</button>').join('')+"</div><button data-reset>Restore original solution</button>";
+  ui.control.innerHTML='<div class="fp-group"><strong>Select equipment</strong>'+assets.map((a,i)=>'<button data-asset="'+i+'" aria-pressed="'+(state.asset===i)+'">'+a+'</button>').join('')+'</div><div class="fp-group"><strong>arrange</strong>'+['Issue 1','Issue 2','Suspended during the period'].map((s,i)=>'<button data-period="'+(i+1)+'" aria-pressed="'+(state.plan[state.asset]===i+1)+'">'+s+'</button>').join('')+'</div><button data-reset>Restore original solution</button>';
   const r=schedule(state.plan);
-  ui.result.dataset.error=String(!r.valid);ui.result.textContent=r.valid?"Feasible·Expected cost "+r.cost.toFixed(3):"Does not meet instance reliability requirements";
+  ui.result.dataset.error=String(!r.valid);ui.result.textContent=r.valid?'Feasible·Expected cost '+r.cost.toFixed(3):'Does not meet instance reliability requirements';
  };
  function pick(i){onInteract?.();state.asset=i;refresh();host.sceneFrame(host.sceneTime||0)}
- sites.forEach(([x,y],i)=>F.hotspot(ui.scene,"Choose"+names[i],x,y-10,()=>pick(i),130,100));
+ sites.forEach(([x,y],i)=>F.hotspot(ui.scene,'Choose '+names[i],x,y-10,()=>pick(i),130,100));
  ui.control.onclick=e=>{let b=e.target.closest('button');if(!b)return;
   if(b.hasAttribute('data-asset')){pick(+b.dataset.asset);return}
   if(b.hasAttribute('data-reset'))state.plan=[...reference];else state.plan[state.asset]=+b.dataset.period;

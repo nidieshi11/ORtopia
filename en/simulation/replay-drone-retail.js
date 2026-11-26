@@ -3,9 +3,9 @@
 'use strict';
 const TAU = 2 * Math.PI;
 const customers = [
-  {name:"Residents in nearby areas", side:-1, position:.24, color:'#337c95'},
-  {name:"Residents in Central District", side:1, position:.61, color:'#96621b'},
-  {name:"Marginal residents", side:-1, position:.95, color:'#9d4655'}
+  {name:'Residents in nearby areas', side:-1, position:.24, color:'#337c95'},
+  {name:'Residents in Central District', side:1, position:.61, color:'#96621b'},
+  {name:'Marginal residents', side:-1, position:.95, color:'#9d4655'}
 ];
 const fmt = (value, digits=3) => value.toLocaleString('en-US', {
   minimumFractionDigits:digits, maximumFractionDigits:digits
@@ -95,14 +95,14 @@ function paint(canvas, state) {
       const u=j===active?handoff:1;
       rect(x+(hx+8-x)*u-3,y+(hy-y)*u-4,6,6,'#b57b3d');
     }
-    const label=s.name+(served.has(j)?' ✓':s.reachable?'':" · not covered");
+    const label=s.name+(served.has(j)?' ✓':s.reachable?'':' · not covered');
     caption(label,hx,hy+(side>0?-30:24),s.reachable?s.color:'#726f63');
   }
   const [cx,cy]=at(0);
   block(cx-31,cy+46,52,19,21,'#41685b','#a39b82');
   rect(cx-15,cy+32,12,12,'#48605c');rect(cx+2,cy+31,12,12,'#48605c');
   for(let i=0;i<3;i++)rect(cx+26+i*5,cy+34-i*2,5,6,'#b58047');
-  caption("retail distribution center",cx,cy+73,'#203f39');
+  caption('retail distribution center',cx,cy+73,'#203f39');
   // The inset uses a fixed scale, so changing centre density changes the
   // absolute length of the representative service arc on the whole market.
   rect(651,8,176,64,'#f8f6ed');
@@ -110,8 +110,8 @@ function paint(canvas, state) {
   ctx.strokeStyle='#366e59';ctx.lineWidth=6;ctx.beginPath();ctx.arc(683,40,22,-Math.PI/2-beta,-Math.PI/2+beta);ctx.stroke();
   dot(683,18,3,'#233f39');
   ctx.font='bold 13px system-ui';ctx.fillStyle='#294e43';ctx.textAlign='left';
-  ctx.fillText("Whole market · single center",716,33);
-  ctx.font='13px system-ui';ctx.fillText("service arc "+fmt(2*beta),716,54);
+  ctx.fillText('Whole market · single center',716,33);
+  ctx.font='13px system-ui';ctx.fillText('service arc '+fmt(2*beta),716,54);
   const s=stops[active];
   if(s.reachable){
     const f=Math.min(1,elapsed/s.travel);
@@ -132,25 +132,25 @@ function mount(host,p,pack,step){
   const model=economics(pack.parameters), ref=pack.reference, M=pack.parameters.M;
   host.innerHTML=`<article class="wrap atlas medium-world drone-world">
     <div class="replay-breadcrumb"><a href="index.html">Simulations</a> / <a class="problem-ref"></a></div>
-    <header class="atlas-title"><div><small>Drone · P0039 · medium / I001</small><h1>Drone delivery network operation in circular market</h1></div></header>
+    <header class="atlas-title"><div><small>Drones · P0039 · medium / I001</small><h1>Drone delivery network operation in circular market</h1></div></header>
     <section class="atlas-stage"><div class="atlas-stage-head"><div><small>representative center · ring market part</small><h2>Flying from retail centers to residents</h2></div><output class="m-clock"></output></div>
     <div class="atlas-window"><canvas aria-label="Residents on both sides of the center, serviceable arcs, and delivery drones"></canvas></div>
     <div class="m-status"></div><div class="atlas-control"><button class="play"></button><input type="range" class="scrub" min="0" max="1000" aria-label="Order demo progress"><button class="restart">Play from the beginning</button></div>
     <div class="dr-actions"><div class="dr-stops" aria-label="Select example household"></div><button class="fast-trial">test flight · Increased speed 50%</button><output class="fast-result"></output></div></section>
     <div class="m-deck dr-deck"><section><h3>Trial delivery network</h3><div class="dr-controls"></div><button class="restore">Recovery archive plan</button></section>
     <section><h3>Market-wide operating results</h3><dl class="dr-metrics"></dl><p class="dr-delta"></p></section></div>
-    <details class="atlas-proof"><summary>Examples and Demonstration Caliber</summary><p>The example distributes customers evenly on the unit circle. Distribution center size is a continuous variable, with each side of each center having 10,000 time-limited partition. The figure shows a center and three representative households. Households are selected according to their relative positions in the center&#x27;s jurisdiction. The track and clock are calculated based on the model distance and angular velocity, and the three sample deliveries are played in sequence. The model uses continuous demand rates, and households and exit sequences are drawn for demonstration purposes.</p><p>The promised time for each zone is the time it takes to fly to the outer boundary of the zone. The marginal revenue of goods and flight costs of the whole market are summed over all partitions, and the center operating cost increases with the square of the network size. Time and profit are both in instance units.</p><code class="binding"></code></details></article>`;
+    <details class="atlas-proof"><summary>Examples and Demonstration Caliber</summary><p>The example distributes customers evenly on the unit circle. Distribution center size is a continuous variable, with each side of each center having 10,000 time-limited partition. The figure shows a center and three representative households. Households are selected according to their relative positions in the center’s jurisdiction. The track and clock are calculated based on the model distance and angular velocity, and the three sample deliveries are played in sequence. The model uses continuous demand rates, and households and exit sequences are drawn for demonstration purposes.. </p><p>The promised time for each zone is the time it takes to fly to the outer boundary of the zone. The marginal revenue of goods and flight costs of the whole market are summed over all partitions, and the center operating cost increases with the square of the network size. Time and profit are both in instance units. </p><code class="binding"></code></details></article>`;
   const q=s=>host.querySelector(s),canvas=q('canvas'), ctl=new AbortController();
   const on=(el,type,fn)=>el.addEventListener(type,fn,{signal:ctl.signal});
   q('.problem-ref').href='index.html#scene/'+encodeURIComponent(p.sceneId);q('.problem-ref').textContent=p.sceneName;
-  q('.binding').textContent="10,003 decision variables · 10,001 constraints · instance "+pack.instance+' · solution '+pack.solution;
+  q('.binding').textContent='10,003 decision variables · 10,001 constraints · instance '+pack.instance+' · solution '+pack.solution;
   let n=ref.n,omega=ref.omega,frac=ref.n*ref.beta/Math.PI;
   let t=0, raf=0,last=0,playing=!matchMedia('(prefers-reduced-motion: reduce)').matches;
   let stops=[],duration=0,beta=0;
   const controls=[
-    ["Center size", 'n', 3, 14, ()=>n, v=>n=v],
-    ["flight angular speed",'omega', .5, 2.5, ()=>omega, v=>omega=v],
-    ["Jurisdictional coverage ratio",'coverage', .25, 1, ()=>frac, v=>frac=v]
+    ['Center size', 'n', 3, 14, ()=>n, v=>n=v],
+    ['flight angular speed','omega', .5, 2.5, ()=>omega, v=>omega=v],
+    ['Jurisdictional coverage ratio','coverage', .25, 1, ()=>frac, v=>frac=v]
   ];
   for(const [label,key,min,max,get,set] of controls){
     const row=document.createElement('label');
@@ -158,7 +158,7 @@ function mount(host,p,pack,step){
     q('.dr-controls').append(row);
     on(row.querySelector('input'),'input',e=>{set(Number(e.target.value));update();});
   }
-  const metricNames=["Marginal revenue of goods","flight cost","Center operating costs","internet profit"];
+  const metricNames=['Marginal revenue of goods','flight cost','Center operating costs','internet profit'];
   for(const label of metricNames){const dt=document.createElement('dt');dt.textContent=label;q('.dr-metrics').append(dt,document.createElement('dd'));}
   for(const [index,c] of customers.entries()){
     const button=document.createElement('button');button.textContent=c.name;button.type='button';
@@ -180,19 +180,19 @@ function mount(host,p,pack,step){
     }
     const v=model(n,omega,beta), cells=host.querySelectorAll('dd');
     [v.sales,v.flights,v.centers,v.profit].forEach((x,i)=>cells[i].textContent=fmt(x));
-    q('.fast-result').textContent="Total market profit "+fmt(v.profit);
-    q('.dr-delta').textContent="Archive profits "+fmt(ref.profit)+"　·Current balance "+fmt(v.profit-ref.profit);
+    q('.fast-result').textContent='Total market profit '+fmt(v.profit);
+    q('.dr-delta').textContent='Archive profits '+fmt(ref.profit)+'　·Current balance '+fmt(v.profit-ref.profit);
     t=0;last=0;draw();
   }
   function draw(){
     const active=stops.findLastIndex(c=>c.start<=t),c=stops[active],elapsed=t-c.start;
     const served=new Set(stops.flatMap((s,j)=>s.reachable && t>=s.start+s.travel?[j]:[]));
     paint(canvas,{n,beta,customers:stops,active,elapsed,served});
-    q('.m-clock').textContent="Time for this order "+fmt(c.reachable?Math.min(elapsed,c.travel):0);
+    q('.m-clock').textContent='Time for this order '+fmt(c.reachable?Math.min(elapsed,c.travel):0);
     q('.m-status').textContent=c.name+'　'+(c.reachable?
-      (served.has(active)?"Delivered":"Delivering")+" · No. "+c.zone.toLocaleString('en-US')+" District · Commitment "+fmt(c.promise,5)+" ·Demand rate per unit arc length "+fmt(pack.parameters.lambda/Math.sqrt(c.promise),2)
-      :"This order is beyond the service scope and cannot be accepted.");
-    q('.play').textContent=playing?"pause":t>=duration?"replay":"play";
+      (served.has(active)?'Delivered':'Delivering')+' · No. '+c.zone.toLocaleString('en-US')+' District · Commitment '+fmt(c.promise,5)+' ·Demand rate per unit arc length '+fmt(pack.parameters.lambda/Math.sqrt(c.promise),2)
+      :'This order is beyond the service scope and cannot be accepted.');
+    q('.play').textContent=playing?'Pause':t>=duration?'Restart':'Play';
     q('.scrub').value=t/duration*1000;
     host.querySelectorAll('.dr-stops button').forEach((el,j)=>el.setAttribute('aria-pressed',String(active===j)));
   }

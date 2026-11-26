@@ -1,14 +1,14 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,geometry}
-\geometry{margin=22mm}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
-\begin{document}
-\section*{P49: Enhanced Linear Integer Model for Quantum Bit Configurations with Noise Perception}
-\paragraph{Source and scope}According to pages 1, 2, 3, 4, 10, 11, 12, 13, 14, 15, and 16 of the original paper’s PDF file, specifically section 3, equations (1b)–(1k) and (12)–(17). Crosstalk effects are modeled using the same type of McCormick linearization as described in equation (2).
 
-\subsection*{Collections, parameters, and variables}
-$Q$ represents a collection of logical quantum bits; $H=(V,A_H)$ represents a connected directed graph of hardware components. $|V|\ge|Q|$ indicates that the set of arcs is symmetric. $N\in\mathbb Z_{++}$ denotes the number of circuit layers. $L^t\subseteq Q\times Q$ refers to the dual-bit gates in the $t$th layer, where no two gates share the same logical quantum bit. $d_H(i,j)$ represents the shortest path distance in the hardware graph. $\lambda\in[0,1]$ indicates a given trade-off coefficient. $E_i\ge0$ represents the cost associated with single-bit gates/reading noise. $E_{i,j}\ge0$ represents the noise cost associated with directed dual-bit gates. These costs must be specified for each hardware component used in the system. Let $N_H(i)=\{j:(i,j)\in A_H\}$ and $N((i,j))=(N_H(i)\setminus\{j\})\cup(N_H(j)\setminus\{i\})$ represent certain parameters. Given a measured error rate ratio of $r_{(i,j)}^k\ge0$, the crosstalk coefficient is $E_{(i,j),k}=\max\{0,(r_{(i,j)}^k-1)E_k\}$. The variable $w_{q,i}^t$ indicates that the logical bit $q$ in layer $t$ occupies a hardware bit $i$. $x_{q,i,j}^t$ indicates that $q$ is transferred from $i$ to $j$ between adjacent layers. $z_{(p,q),(i,j)}^t$ indicates that the logical gate $(p,q)$ is executed via the hardware arc $(i,j)$. $u_{q,(r,s),(i,j),k}^t$ is a linearization variable of $w_{q,k}^tz_{(r,s),(i,j)}^t$. The complete index domain of $u$ is $1\le t\le N,(r,s)\in L^t,(i,j)\in A_H,k\in N((i,j)),q\in Q$. The initial layout is optimized automatically by the model, and all layers use the same hardware subgraphs. The following numbers, such as $1a$, are used in this documentation. The sources of these numbers are mentioned in the original text (1), (12)–(17).
-\subsection*{The complete linear integer formulation of noise-aware TAP}
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
+\begin{document}
+\section*{P0049 Placing Quantum Bits While Accounting for Noise}
+\subsection*{Mathematical formulation}
 \begin{equation}
 \min \;
 (1-\lambda)c_{\mathrm{swap}} + \lambda c_{\mathrm{noise}}
@@ -68,8 +68,6 @@ w_{q,i}^{t+1} = \sum_{j\in V} x_{q,j,i}^t,
 \forall 1 \le t \le N,\ \forall (p,q) \in L^t
 \tag{1h}
 \end{equation}
-
-
 
 \begin{equation}
 \sum_{q\in Q} w_{q,i}^t = \sum_{q\in Q} w_{q,i}^1,
@@ -141,5 +139,17 @@ u_{q,(r,s),(i,j),k}^t \in \{0,1\},
 \tag{3d}
 \end{equation}
 
+\subsection*{Definitions and model scope}
+A quantum-computing operator assigns the given logical quantum bits $Q$ to a connected directed hardware graph $H$ with hardware locations $V$ and hardware connections $A_H$. There are at least as many hardware locations as logical bits, and every hardware connection has its reverse. The circuit has a positive integer layer count $N$; the given two-bit gates $L^t$ in any layer share no logical bit. In every layer, each logical bit occupies exactly one hardware location, recorded by a yes-or-no placement choice $w_{q,i}^t$, and each hardware location holds at most one logical bit. The first layer's placement is chosen freely. At every hardware location, its total occupancy in each later layer must equal its occupancy in the first, so all layers use the same set of hardware locations.
 
+Between each consecutive pair of layers, a yes-or-no transfer choice $x_{q,i,j}^t$ records whether a particular logical bit moves from one hardware location to another. Such choices exist for every ordered pair of hardware locations, including staying in the same location. For every logical bit and departure location, its transfer choices to all destinations sum exactly to its placement there in the earlier layer. For every destination location, its transfer choices from all origins sum exactly to its placement there in the next layer. The movement total $c_{\mathrm{swap}}$ adds the hardware shortest-path distance $d_H(i,j)$ times the transfer choice over all logical bits, all ordered location pairs and every layer transition. This measures movement distance; it does not itself prescribe a complete sequence of physical exchange gates.
+
+Every two-bit gate in every layer must be assigned to exactly one directed hardware connection through a yes-or-no gate assignment $z_{(p,q),(i,j)}^t$. For that gate, assignments on connections leaving a particular location must sum to the first logical bit's placement at that location; assignments on connections entering a particular location must sum to the second logical bit's placement there. Thus both gate endpoints match their ordered logical-bit placements and the gate uses a hardware connection. A connection's noise cost is given for its actual direction; reverse-direction costs are not presumed equal.
+
+The given single-bit and readout costs $E_i$ and directed two-bit gate costs $E_{i,j}$ are nonnegative. For a hardware connection, take each endpoint's hardware neighbours $N_H(i)$, remove the other endpoint from each collection, and unite them as its nearby spectator locations $N((i,j))$. At every such spectator location, the supplied measured error-rate ratio $r_{(i,j)}^k$ is nonnegative. The crosstalk cost $E_{(i,j),k}$ is the larger of zero and the measured ratio minus one multiplied by that spectator location's single-bit cost; the entire ratio-minus-one difference is multiplied by the cost. For each layer, each gate of that layer, each hardware connection, each of its spectator locations and every logical bit, a yes-or-no joint exposure record $u_{q,(r,s),(i,j),k}^t$ cannot exceed the logical bit's placement at the spectator or the gate assignment on the connection, and must be at least their sum minus one. It is therefore one exactly when both events occur.
+
+The total noise charge $c_{\mathrm{noise}}$ first sums each hardware location's single-bit cost for every logical bit placed there in every layer, irrespective of whether that bit participates in a two-bit gate. It then adds each directed connection's two-bit cost for every gate assigned there in every layer. Finally it adds each connection-spectator crosstalk cost for every joint exposure record, over all layers, gates, spectators and logical bits in their stated ranges. The operator seeks the lowest combined charge: the movement total multiplied by the difference between one and the given trade-off weight $\lambda$, plus that weight times the noise charge. The weight lies between zero and one, including both endpoints. Placement, transfer, gate assignment and exposure records all take only zero or one. Hardware distances and all applicable noise measurements must be supplied, and missing costs are not treated as zero.
+
+\subsection*{Inline notation and relations}
+$Q$; $H=(V,A_H)$; $|V|\ge|Q|$; $N\in\mathbb Z_{++}$; $L^t\subseteq Q\times Q$; $t$; $d_H(i,j)$; $\lambda\in[0,1]$; $E_i\ge0$; $E_{i,j}\ge0$; $N_H(i)=\{j:(i,j)\in A_H\}$; $N((i,j))=(N_H(i)\setminus\{j\})\cup(N_H(j)\setminus\{i\})$; $r_{(i,j)}^k\ge0$; $E_{(i,j),k}=\max\{0,(r_{(i,j)}^k-1)E_k\}$; $w_{q,i}^t$; $q$; $i$; $x_{q,i,j}^t$; $j$; $z_{(p,q),(i,j)}^t$; $(p,q)$; $(i,j)$; $u_{q,(r,s),(i,j),k}^t$; $w_{q,k}^tz_{(r,s),(i,j)}^t$; $u$; $1\le t\le N,(r,s)\in L^t,(i,j)\in A_H,k\in N((i,j)),q\in Q$; $1a$.
 \end{document}

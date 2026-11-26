@@ -99,31 +99,31 @@
      line(c,[[x+48+phase*42,y+7],[x+58+phase*48,y+10]],'#c4e1d3',1.4);}
    }
    ship(c,x,y,shipId ? .96 : 1.05,shipId,75-unloaded);
-   badge(c,(shipId+1)+"ship · "+Math.ceil(Math.max(0,75-unloaded))+" To be unloaded",x,y+23,'#244b50','#f7f0d8',14);
+   badge(c,(shipId+1)+' ship · '+Math.ceil(Math.max(0,75-unloaded))+' To be unloaded',x,y+23,'#244b50','#f7f0d8',14);
   }
   for(let b=0;b<2;b++){
    const x=berthX[b];
    // Each visible lift is illustrative, while remaining cargo follows exact per-period throughput.
    const count=cranes[b];for(let n=0;n<count;n++)gantry(c,x-90+46*n,t*1.2+n*.18,true);
    for(let i=0;i<Math.floor(finished[b]/5);i++)container(c,x+87+(i%5)*15,158-Math.floor(i/5)*7,13,6,cargoColors[i%4]);
-   if(connected[b]){line(c,[[x+75,169],[x+81,178],[x+73,190],[x+56,202]],'#41c79b',4);badge(c,"shore power access",x+114,200,'#215e51','#e1ffdd',13);}
-   badge(c,(b+1)+" Berth · "+(b?"regular":"shore power"),x,67,b===state.berth?'#27574d':'#65766b','#fff7df',16);
+   if(connected[b]){line(c,[[x+75,169],[x+81,178],[x+73,190],[x+56,202]],'#41c79b',4);badge(c,'shore power access',x+114,200,'#215e51','#e1ffdd',13);}
+   badge(c,(b+1)+' Berth · '+(b?'regular':'shore power'),x,67,b===state.berth?'#27574d':'#65766b','#fff7df',16);
   }
   const idle=3-cranes[0]-cranes[1];for(let k=0;k<idle;k++)gantry(c,390+34*k,0,false);
-  badge(c,"port time "+now.toFixed(1),105,28,'#254548','#fff5d7',16);
-  badge(c,"Quayside crane operation "+(3-idle)+' / 3',816,28,'#edf0db','#33554d',16);
-  badge(c,"2 No. ship · Leaving a mooring "+v.departure+" / Delivery date 6",470,380,plan.total?'#894d38':'#255455','#f8f2d8',16);
+  badge(c,'port time '+now.toFixed(1),105,28,'#254548','#fff5d7',16);
+  badge(c,'Quayside crane operation '+(3-idle)+' / 3',816,28,'#edf0db','#33554d',16);
+  badge(c,'2 No. ship · Leaving a mooring '+v.departure+' / Delivery date 6',470,380,plan.total?'#894d38':'#255455','#f8f2d8',16);
  }
  function key(s){return s.berth+'/'+s.cranes+'/'+s.start;}
  function mount(host,onInteract,index,onNode,replayAction){
   const data=window.ORTOPIA_REPLAYS.P0204.field;
   let s=sessions.get(host);if(!s){s={berth:0,cranes:2,start:3};sessions.set(host,s);}
   s.inspect=null;
-  const ui=F.siteShell(host,'container-terminal',"Two ships entering port, shore bridge loading and unloading and shore power connection","The point berth designates the docking location of vessel No. 2. Each quay crane can unload 25 units per period.");
+  const ui=F.siteShell(host,'container-terminal','Two ships entering port, shore bridge loading and unloading and shore power connection','The point berth designates the docking location of vessel No. 2. Each quay crane can unload 25 units per period.');
   const group=(name,title,opts)=>'<div class="fp-group"><strong>'+title+'</strong>'+opts.map(([v,n])=>'<button data-control="'+name+'" data-value="'+v+'">'+n+'</button>').join('')+'</div>';
-  ui.control.innerHTML=group('berth',"Ship No. 2",[[0,"shore power berth"],[1,"Regular berth"]])+group('cranes',"Most bridges",[[1,"1 unit"],[2,"2 units"]])+group('start',"Start time",[[3,'3'],[4,'4'],[5,'5']])+"<button data-reset>restore archive</button>";
+  ui.control.innerHTML=group('berth','Ship No. 2',[[0,'shore power berth'],[1,'Regular berth']])+group('cranes','Most bridges',[[1,'1 unit'],[2,'2 units']])+group('start','Start time',[[3,'3'],[4,'4'],[5,'5']])+'<button data-reset>restore archive</button>';
   function refresh(){const plan=data.plans[key(s)];
-   ui.result.dataset.error='false';ui.result.textContent="Feasible · Late target "+plan.total.toFixed(2)+" · Total cost of two ships "+plan.cost.toFixed(2);
+   ui.result.dataset.error='false';ui.result.textContent='Feasible · Late target '+plan.total.toFixed(2)+' · Total cost of two ships '+plan.cost.toFixed(2);
    for(const b of ui.control.querySelectorAll('[data-control]'))b.setAttribute('aria-pressed',String(+b.dataset.value===s[b.dataset.control]));
   }
   function edit(name,value){
@@ -132,7 +132,7 @@
    refresh();replayAction?.();host.sceneFrame(0);
   }
   ui.control.onclick=e=>{const b=e.target.closest('button');if(b)edit(b.dataset.control,+b.dataset.value);};
-  berthX.forEach((x,i)=>F.hotspot(ui.scene,"Boat No. 2 "+(i+1)+" Berth No.",x,158,()=>edit('berth',i),245,123));
+  berthX.forEach((x,i)=>F.hotspot(ui.scene,'Boat No. 2 '+(i+1)+' Berth No.',x,158,()=>edit('berth',i),245,123));
   host.sceneFrame=t=>draw(ui,data,s,index,t);
   host.previewDecision=i=>{Object.assign(s,i?{berth:0,cranes:1,start:5}:{berth:0,cranes:2,start:3});s.inspect=i?[4.4,8.2]:null;refresh();host.sceneFrame(host.sceneTime||0);};
   refresh();host.sceneFrame(host.sceneTime||0);

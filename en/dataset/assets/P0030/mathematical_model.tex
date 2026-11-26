@@ -1,24 +1,18 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,geometry}
-\geometry{margin=22mm}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
-\geometry{paperwidth=235mm,paperheight=297mm,hmargin=18mm,vmargin=19mm}
+
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
 \begin{document}
-\section*{P30: Two-stage stochastic production and distribution model, version 2-BF}
-\paragraph{Source and scope}According to pages 1, 4, 5, 6, 7, and 8 of the original paper PDF, items (1)–(19) are as follows:
-\subsection*{Ranges, sets, and parameters}
-It is recommended to choose the 2-BF stochastic production and distribution model for this paper. In the first stage, production schedules and vehicle routes are determined before the demand is known. In the second stage, production volumes, distribution quantities, inventory levels, and any unmet demand requirements are determined after the entire demand scenario is known. Since these calculations can rely on the entire demand profile, no additional constraints related to unforeseen situations are required in this document.
-
-Node $N=\{0,1,\ldots,n\}$, factory 0, customer $N_c=N\setminus\{0\}$; $E=\{(i,j):i,j\in N,i<j\}$ represents a completely undirected edge set, $\delta(i)$ represents associated edges, and $E(S)$ represents edges that connect both ends of the edge in $S$. Period $T=\{1,\ldots,\ell\}$; homogeneous vehicles $K=\{1,\ldots,m\}$. Limited demand scenarios $\Omega$, along with probabilities $\rho_\omega\geq0$ and $\sum_\omega\rho_\omega=1$.
-
-Parameters include scenario requirements $d_{it\omega}\geq0$, production capacity per period $C$, vehicle capacity $Q$, storage capacity $L_i$, initial common inventory $I_i^0$, unit production cost $u$, production activation cost per period $f$, driving cost $c_{ij}$, inventory cost $h_i$, and unmet demand penalty $\sigma_i$. All costs are non-negative. Definition.
+\section*{P0030 Production and Delivery Before and After Demand Is Revealed}
+\subsection*{Mathematical formulation}
 \[
 M_{t\omega}=\min\{C,\sum_{s=t}^{\ell}\sum_{i\in N_c}d_{is\omega}\},\qquad
 M'_{it\omega}=\min\{L_i,Q,\sum_{s=t}^{\ell}d_{is\omega}\}.
 \]
-\subsection*{Variables}
-$y_t$ indicates production activation; $z_{ikt}$ represents the vehicle $k$ visiting node $i$ on period $t$ (where $z_{0kt}$ indicates the use of the vehicle); $x_{ijkt}$ represents the number of traversals of the vehicle without edges. In the second phase, $p_{t\omega}$ represents output, $I_{it\omega}$ represents ending inventory, $q_{ikt\omega}$ represents the delivery volume to customer $i$, and $e_{it\omega}$ represents the demand gap; $q,e$ applies only to customer definitions. The gap is penalized over time and does not accumulate to the next period. Given $I_{i0\omega}=I_i^0$.
-\subsection*{The only complete model available}
 
 \begin{align}
 \min\quad &
@@ -88,5 +82,19 @@ d_{it\omega} + I_{it\omega}
 && \forall j \in N_c,\forall k \in K,\forall t \in T
 \end{align}
 
+\subsection*{Definitions and model scope}
+A manufacturer supplies customers from one factory over given periods. The nodes $N$ comprise factory zero and customers $N_c$ numbered consecutively. Every distinct pair has an undirected edge $E$; incident edges $\delta(i)$ meet a specified node, and internal edges $E(S)$ have both endpoints in a specified customer group. The periods $T$ and identical vehicles $K$ are fixed. Before demand becomes known, the manufacturer chooses each period's production activation $y_t$, each vehicle's node visits $z_{ikt}$ and edge traversal counts $x_{ijkt}$. A factory visit records use of that vehicle. Activations and visits are yes-or-no choices; a customer-to-customer edge is used zero or one times by a vehicle in a period, while a factory-to-customer edge can be used zero, one or two times. These decisions are shared by every demand situation.
 
+The possible demand situations $\Omega$ have nonnegative probabilities $\rho_\omega$ summing to one and nonnegative customer demands $d_{it\omega}$ for every period. After the entire demand situation is revealed, the manufacturer chooses nonnegative continuous production quantities $p_{t\omega}$, ending inventories $I_{it\omega}$, customer deliveries $q_{ikt\omega}$ and demand shortfalls $e_{it\omega}$. These choices can use demand information from the entire horizon. Deliveries and shortfalls exist only for customers. Initial inventories are the given common initial stocks $I_i^0$ in every situation. In each period and situation, previous factory stock plus production equals all customer deliveries by all vehicles plus ending factory stock. For each customer, previous stock plus deliveries by all vehicles plus shortfall equals current demand plus ending stock. Shortfall is charged in that period and is not carried forward as backlog. Ending factory stock cannot exceed its storage capacity; each customer's ending stock plus its current demand cannot exceed its storage capacity $L_i$, even when some demand is unserved.
+
+Production has the per-period capacity $C$. Its situation-specific upper allowance $M_{t\omega}$ is the smaller of that capacity and all remaining customer demands from the current period through the last period. Production cannot exceed this allowance times the activation choice. For each vehicle, period and situation, deliveries to all customers cannot exceed the vehicle capacity $Q$ times that vehicle's factory-visit choice. A delivery to a customer cannot exceed its delivery allowance $M'_{it\omega}$ times that vehicle's visit to that customer. This allowance is the smallest of customer storage capacity, vehicle capacity and that customer's total remaining demand, including the current period. An inactive production period and an unvisited customer therefore permit no corresponding production or delivery.
+
+In each period, every customer can be visited by at most one vehicle. For each node and vehicle, the number of traversals on its incident edges equals twice its visit choice. For every customer group containing at least two customers, every designated customer in that group, every vehicle and every period, internal edge traversals cannot exceed the number of visited customers in the group minus the designated customer's visit choice. This requirement applies to every such group and designated customer. A vehicle can visit a customer only if that vehicle is used at the factory. On each customer-to-customer edge, its traversal count cannot exceed either endpoint's visit choice.
+
+Vehicles retain their given numbering. In every period a vehicle's factory-use choice must be at least that of the next vehicle. In addition, for every customer-number prefix and every consecutive pair of vehicles, the earlier vehicle's weighted visit sum over that prefix must be at least the later vehicle's. Within a prefix, the last customer's weight is one; moving backward by one customer doubles the weight each time. These comparisons are imposed for every prefix, not only for the complete customer list. They do not introduce extra visits or require every vehicle to operate.
+
+The manufacturer seeks the lowest combined cost. Each production activation incurs its setup cost $f$, and every vehicle's traversal of each edge incurs its given edge cost $c_{ij}$ times the traversal count, summed across all periods and vehicles. In each period and situation, production is charged at the unit production rate $u$, ending stock at every node at its holding rate $h_i$, and each customer's shortfall at its shortfall rate $\sigma_i$. The sum of these situation-dependent charges is multiplied by the situation probability and added over all periods and situations to the setup and travel costs. All cost rates are nonnegative. The first choices are made before information arrives, while the later quantities adapt to the full revealed situation; no additional requirement limits them to information revealed period by period.
+
+\subsection*{Inline notation and relations}
+$N=\{0,1,\ldots,n\}$; $N_c=N\setminus\{0\}$; $E=\{(i,j):i,j\in N,i<j\}$; $\delta(i)$; $E(S)$; $S$; $T=\{1,\ldots,\ell\}$; $K=\{1,\ldots,m\}$; $\Omega$; $\rho_\omega\geq0$; $\sum_\omega\rho_\omega=1$; $d_{it\omega}\geq0$; $C$; $Q$; $L_i$; $I_i^0$; $u$; $f$; $c_{ij}$; $h_i$; $\sigma_i$; $y_t$; $z_{ikt}$; $k$; $t$; $i$; $z_{0kt}$; $x_{ijkt}$; $p_{t\omega}$; $I_{it\omega}$; $q_{ikt\omega}$; $e_{it\omega}$; $q,e$; $I_{i0\omega}=I_i^0$.
 \end{document}

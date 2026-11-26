@@ -73,7 +73,7 @@ const featuredScenes=[...featuredByDomain.values()];
 const sceneRotationMs=15000;
 let featuredIndex=0, rotationChoice=null, closeCarousel=null;
 function setNav(n){for(const k of ['domains','library'])E('nav-'+k).classList.toggle('active',k===n)}
-function crumb(items){return '<div class="crumb" aria-label="Breadcrumb"><a href="../../?lang=en">Home</a>'+items.map(([t,u])=>'<i>/</i>'+(u?'<a href="'+param(u)+'">'+esc(t)+'</a>':'<strong>'+esc(t)+'</strong>')).join('')+'</div>'}
+function crumb(items){return '<div class="crumb" aria-label="Breadcrumb"><a href="../../">Home</a>'+items.map(([t,u])=>'<i>/</i>'+(u?'<a href="'+param(u)+'">'+esc(t)+'</a>':'<strong>'+esc(t)+'</strong>')).join('')+'</div>'}
 function has(q,p){const hay=[p.id,p.title,p.paperTitle,p.domain,p.topic,p.journal,p.year,p.journalShort,...groupOf(p)].map(s).join(' ').toLowerCase(); return q.toLowerCase().trim().split(/\s+/).every(v=>hay.includes(v))}
 function listItem(p){return '<a class="result" href="'+param(detail(p))+'"><span class="serial">'+esc(p.id)+'</span><span class="result-body"><strong>'+esc(p.title)+'</strong><span class="catalog-topic">'+esc(p.topic)+'</span><small>'+esc(p.paperTitle)+'</small><small>'+esc([p.domain,p.journalShort||p.journal,p.year].filter(Boolean).join(' · '))+'</small></span><span class="chev"></span></a>'}
 function paperReference(p){
@@ -179,7 +179,7 @@ function shelves(){
  const selectBy=k=>probs.filter(p=>k==='other'?!groupOf(p).some(v=>seriesNames[v]):groupOf(p).includes(k));
  const filtered=selectBy(series), journals=new Map;
  for(const p of filtered){const name=p.journal||p.journalShort||'Other journals';if(!journals.has(name))journals.set(name,[]);journals.get(name).push(p)}
- container.innerHTML='<div class="tabs" role="group" aria-label="Journal groups">'+groups.map(([k,n])=>'<button type="button" data-series="'+k+'" aria-pressed="'+(series===k)+'" class="'+(series===k?'active':'')+'">'+esc(n)+' <em>'+selectBy(k).length+'</em></button>').join('')+'</div><div class="journals">'+[...journals.entries()].sort(([a],[b])=>sortNames(a,b)).map(([name,rows],i)=>'<details class="journal"'+(i===0?' open':'')+'><summary>'+ico('book')+'<span>'+esc(name)+'</span><span class="pill">'+rows.length+'</span><span class="chev"></span></summary>'+rows.sort((a,b)=>Number(b.year)-Number(a.year)||sortNames(a.paperTitle,b.paperTitle)).map(p=>'<div class="paper-row"><div class="pdf-mark">PDF</div><div><a class="paper-title" href="'+param(detail(p))+'">'+esc(p.paperTitle)+'</a><div class="paper-info">'+esc([p.year,p.id,p.title].filter(Boolean).join(' · '))+'</div></div><div class="paper-actions"><a href="'+param(detail(p))+'">Problem details</a><a href="'+param(p.pdf)+'" download="'+esc(p.pdfName||s(p.paperTitle)+'.pdf')+'">Download PDF</a></div></div>').join('')+'</details>').join('')+(journals.size?'':'<div class="empty">No papers in this group.</div>')+'</div>';
+ container.innerHTML='<div class="tabs" role="group" aria-label="Journal groups">'+groups.map(([k,n])=>'<button type="button" data-series="'+k+'" aria-pressed="'+(series===k)+'" class="'+(series===k?'active':'')+'">'+esc(n)+' <em>'+selectBy(k).length+'</em></button>').join('')+'</div><div class="journals">'+[...journals.entries()].sort(([a],[b])=>sortNames(a,b)).map(([name,rows],i)=>'<details class="journal"'+(i===0?' open':'')+'><summary>'+ico('book')+'<span>'+esc(name)+'</span><span class="pill">'+rows.length+'</span><span class="chev"></span></summary>'+rows.sort((a,b)=>Number(b.year)-Number(a.year)||sortNames(a.paperTitle,b.paperTitle)).map(p=>'<div class="paper-row"><div class="pdf-mark">PDF</div><div><a class="paper-title" href="'+param(detail(p))+'">'+esc(p.paperTitle)+'</a><div class="paper-info">'+esc([p.year,p.id,p.title].filter(Boolean).join(' · '))+'</div></div><div class="paper-actions"><a href="'+param(detail(p))+'">Problem details</a><a href="'+param('../../dataset/'+p.pdf)+'" download="'+esc(p.pdfName||s(p.paperTitle)+'.pdf')+'">Download PDF</a></div></div>').join('')+'</details>').join('')+(journals.size?'':'<div class="empty">No papers in this group.</div>')+'</div>';
  container.querySelectorAll('[data-series]').forEach(b=>b.onclick=()=>{series=b.dataset.series;shelves();container.querySelector('[data-series="'+series+'"]').focus({preventScroll:true})});
 }
 function domainPage(id,topicLabel){
@@ -245,20 +245,96 @@ function descriptionMode(mode){
 }
 function panel(title,k,action,body){return '<section class="panel"><div class="panel-head"><div class="panel-title">'+ico(k)+'<h2>'+title+'</h2></div>'+action+'</div>'+body+'</section>'}
 function zoomBtn(kind){return '<button class="panel-ctl" data-view="'+kind+'" aria-label="Enlarge '+({scene:'Scenario diagram',math:'Mathematical model'}[kind])+'">'+ico('full')+'Enlarge</button>'}
+function pdfFile(u){return /\.pdf(?:[?#]|$)/i.test(u)}
+// Pages share identical glyph outlines on disk. Rebuild standalone SVGs for image rendering.
+const sharedGlyphTables = new Map();
+let modelSession = null;
+async function readModelAsset(url, signal) {
+ const response = await fetch(url, {signal});
+ if (!response.ok) throw new Error('Model asset unavailable');
+ const bytes = new Uint8Array(await response.arrayBuffer());
+ if (bytes[0] !== 31 || bytes[1] !== 139) return new TextDecoder().decode(bytes);
+ if (typeof DecompressionStream === 'function') {
+  const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
+  return new Response(stream).text();
+ }
+ const {gunzipSync, strFromU8} = await import('./vendor/fflate/browser.js');
+ return strFromU8(gunzipSync(bytes));
+}
+function glyphTable(url) {
+ if (!sharedGlyphTables.has(url)) {
+  const request = readModelAsset(url).then(svg => {
+   const paths = new Map();
+   for (const match of svg.matchAll(/<path id="(m[0-9a-f]+)" d="([^"]+)"\/>/g)) paths.set(match[1], match[2]);
+   if (!paths.size) throw new Error('Empty model glyph table');
+   return paths;
+  }).catch(error => { sharedGlyphTables.delete(url); throw error; });
+  sharedGlyphTables.set(url, request);
+ }
+ return sharedGlyphTables.get(url);
+}
+function releaseModelPages() {
+ if (!modelSession) return;
+ modelSession.controller.abort();
+ for (const url of modelSession.urls) URL.revokeObjectURL(url);
+ modelSession = null;
+}
+function modelImageSource(url) {
+ return url.endsWith('.svg.gz') ? 'data-model-src="'+param(url)+'"' : 'src="'+param(url)+'"';
+}
+async function loadModelImage(img) {
+ const file = new URL(img.dataset.modelSrc, document.baseURI);
+ modelSession ??= {controller:new AbortController(), pages:new Map(), urls:[]};
+ const session = modelSession;
+ if (!session.pages.has(file.href)) {
+  const promise = (async () => {
+   let svg = await readModelAsset(file, session.controller.signal);
+   const ref = /<use id="([a-zA-Z0-9_.-]+)" xlink:href="(\.\.\/glyphs-[0-9a-f]{12}\.svg\.gz)#(m[0-9a-f]+)"\s*\/>/g;
+   const sample = ref.exec(svg);
+   if (sample) {
+    const table = await glyphTable(new URL(sample[2], file).href);
+    svg = svg.replace(ref, (_, id, path, glyph) => {
+     if (path !== sample[2] || !table.has(glyph)) throw new Error('Missing model glyph');
+     return '<path id="'+id+'" d="'+table.get(glyph)+'"/>';
+    });
+   }
+   if (session.controller.signal.aborted) return null;
+   const blob = URL.createObjectURL(new Blob([svg], {type:'image/svg+xml'}));
+   session.urls.push(blob);
+   return blob;
+  })();
+  session.pages.set(file.href, promise);
+ }
+ try {
+  const url = await session.pages.get(file.href);
+  if (url && img.isConnected && session === modelSession) img.src = url;
+ } catch {
+  session.pages.delete(file.href);
+  if (!img.isConnected || session !== modelSession) return;
+  img.alt = 'This model page could not be loaded. Reopen it to try again.';
+  const panel = img.closest('.panel-math');
+  if (panel && currentProblem?.tex && !panel.querySelector('a[download]')) {
+   const link = document.createElement('a');
+   link.href = currentProblem.tex;
+   link.download = '';
+   link.className = 'tool';
+   link.textContent = 'Download LaTeX model';
+   panel.append(link);
+  }
+ }
+}
+function mathList(p){return (Array.isArray(p.mathPages)?p.mathPages:[]).map(v=>typeof v==='string'?v:v.url||v.src).filter(Boolean)}
 function picBox(kind,url,desc){return url?'<button class="image-frame panel-'+kind+'" data-view="'+kind+'" aria-label="Enlarge '+desc+'"><img src="'+param(url)+'" alt="'+esc(desc)+'" decoding="async"></button>':'<div class="empty">Unavailable: '+desc+'.</div>'}
 function detailPage(id){
- const p=byId.get(id);if(!p)return miss();currentProblem=p;document.title=p.title+' · ORtopia';
+ const p=byId.get(id);if(!p)return miss();currentProblem=p;document.title=p.title+' · ORtopia';const mp=mathList(p);
  const switcher='<div class="desc-switch" role="group" aria-label="Description format"><button data-description="symbolic" aria-pressed="true">With notation</button><button data-description="plain" aria-pressed="false">Plain language</button></div>';
- const modelTitle=esc(p.id+' · '+p.title+' · Mathematical model');
- const math='<iframe class="model-document" title="'+modelTitle+'" src="'+param(p.modelPreview)+'"></iframe>';
- const modelActions='<span class="model-actions"><a class="panel-ctl" href="'+param(p.tex)+'" download="'+esc(p.id)+'-model.tex">Download TeX</a>'+
-  '<a class="panel-ctl" href="'+param(p.modelPreview)+'" target="_blank" rel="noopener" aria-label="Open full mathematical model">'+ico('full')+'Enlarge</a></span>';
+ const math=mp.length?mp.map((u,i)=>pdfFile(u)?'<object aria-label="Mathematical model PDF" type="application/pdf" data="'+param(u)+'"><a class="route-link" href="'+param(u)+'" target="_blank" rel="noopener">Open model PDF</a></object>':'<button class="math-img" data-view="math" data-page="'+i+'" aria-label="Enlarge model page '+(i+1)+'"><img '+modelImageSource(u)+' loading="lazy" alt="Model, page '+(i+1)+'"></button>').join(''):'<div class="empty">No model illustration available.'+(p.tex?'<a class="route-link" href="'+param(p.tex)+'" download>Download LaTeX source</a>':'')+'</div>';
  const trail=[['Domains','#/domains'],[p.domain,route('domain',p.domainId)],[p.topic,topicLink(p.domainId,p.topic)]];
  const headings=crumb([...trail,[p.id]]);
  const replay=replayIds.has(p.id)
    ? '<a class="primary replay-entry" href="../simulation/replay.html#'+param(p.id)+'">Open simulation <span aria-hidden="true">→</span></a>' : '';
  const paper=p.pdf
-   ? '<a class="tool" href="'+param(p.pdf)+'" target="_blank" rel="noopener">'+ico('pdf')+'View PDF</a>' : '';
+   ? '<a class="tool" href="'+param('../../dataset/'+p.pdf)+'" target="_blank" rel="noopener">'+ico('pdf')+'View PDF</a>' : '';
  const publisher=p.doiUrl?'<a class="tool" href="'+param(p.doiUrl)+'" target="_blank" rel="noopener">Publisher</a>':'';
  const source=p.sourceUrl?'<a class="tool" href="'+param(p.sourceUrl)+'" target="_blank" rel="noopener" title="Private repository requiring GitHub access">Problem on GitHub</a>':'';
  const metadata='<strong>'+esc(p.journal||p.journalShort)+'</strong><span>'+esc(p.year)+'</span>'+
@@ -269,13 +345,17 @@ function detailPage(id){
    '<div class="bar"><div class="pmeta">'+metadata+'</div><div class="doc-actions">'+replay+paper+publisher+source+'</div></div></header>'+
    '<div class="case-grid">'+
    panel('Scenario diagram','image',p.scene?zoomBtn('scene'):'',picBox('scene',sceneUrl(p),p.title+' scenario diagram'))+
-   panel('Mathematical model','math',modelActions,'<div class="panel-math">'+math+'</div>')+
+   panel('Mathematical model','math',mp.length?zoomBtn('math'):'','<div class="panel-math">'+math+'</div>')+
    panel('Problem description','text',switcher,'<div class="descpanel" id="description-text"></div>')+'</div>'+
    '<div class="case-nav"><a href="'+param(route('domain',p.domainId))+'">Back to '+esc(p.domain)+'</a></div>'+paperReference(p)+'</div>';
+ main.querySelectorAll('img[data-model-src]').forEach(loadModelImage);
  descriptionMode('symbolic');
 }
 function miss(){currentProblem=null;main.innerHTML='<div class="wrap page"><h1>Entry not found</h1><a class="route-link" href="#/">Back to Dataset</a></div>'}
 function render(scroll=true){
+ if(E('viewer').open)E('viewer').close();
+ E('viewer-body').replaceChildren();
+ releaseModelPages();
  if(closeCarousel){closeCarousel();closeCarousel=null;}
  const [kind,id,groupKey]=location.hash.replace(/^#\/?/,'').split('/').map(v=>{try{return decodeURIComponent(v)}catch{return v}});currentProblem=null;document.title='ORtopia';
  if(!probs.length){main.innerHTML='<div class="wrap page"><h1>Dataset unavailable</h1><p>Check that the data files are available alongside the website.</p></div>';return}
@@ -290,16 +370,30 @@ function render(scroll=true){
 }
 function search(){if(!E('search-modal').open)E('search-modal').showModal();E('lookup').focus();lookup()}
 function lookup(){const q=E('lookup').value.trim(),rs=probs.filter(p=>!q||has(q,p));const max=q?60:8;E('hits').innerHTML='<p style="padding:0 15px 8px;color:var(--sub);font-size:.85rem">'+(q?countLabel(rs.length,'problem')+(rs.length>max?', showing the first '+max+'':''):'Browse problems')+'</p>'+(rs.length?rs.slice(0,max).map(listItem).join(''):'<p class="no-hits">No matches. Try a paper title, problem ID or journal.</p>')}
-function view(kind){
- if(!currentProblem||kind!=='scene')return;
- const url=sceneUrl(currentProblem);if(!url)return;
- const dialog=E('viewer'),body=E('viewer-body');
- dialog.classList.add('scene-viewer');
- E('viewer-title').textContent=currentProblem.id+' · Scenario diagram';
- body.innerHTML='<img src="'+param(url)+'" alt="'+esc(currentProblem.title+' scenario diagram')+'">';
- zoom=1;dialog.showModal();body.scrollTo(0,0);applyZoom();
- const img=body.querySelector('img');
- if(!img.complete)img.addEventListener('load',applyZoom,{once:true});
+function view(kind,index=0){
+ if(!currentProblem || !['scene','math'].includes(kind))return;
+ const items=kind==='scene'?[sceneUrl(currentProblem)].filter(Boolean):mathList(currentProblem);
+ if(!items.length)return;
+ const title=kind==='scene'?'Scenario diagram':'Mathematical model';
+ const dialog=E('viewer'), body=E('viewer-body');
+ dialog.classList.toggle('scene-viewer',kind==='scene');
+ E('viewer-title').textContent=currentProblem.id+' · '+title;
+ body.innerHTML=items.map((url,i)=>pdfFile(url)
+   ? '<iframe title="Mathematical model PDF" src="'+param(url)+'"></iframe>'
+   : '<img '+modelImageSource(url)+' alt="'+esc(kind==='scene'?currentProblem.title+' scenario diagram':title+', page '+(i+1))+'" data-view-index="'+i+'">').join('');
+ zoom=1;
+ dialog.showModal();
+ const modelLoads=[...body.querySelectorAll('img')].map(img=>img.dataset.modelSrc?loadModelImage(img):Promise.resolve());
+ body.scrollTo(0,0);
+ applyZoom();
+ if(kind==='scene'){
+   const img=body.querySelector('img');
+   if(img && !img.complete)img.addEventListener('load',applyZoom,{once:true});
+ }else if(index>0){
+   const page=body.querySelector('[data-view-index="'+index+'"]');
+   if(page)Promise.all([...body.querySelectorAll('img')].slice(0,index+1).map((img,i)=>modelLoads[i].then(()=>img.decode()).catch(()=>{})))
+     .then(()=>{if(page.isConnected && dialog.open)body.scrollTop=page.offsetTop-body.offsetTop});
+ }
 }
 function applyZoom(){
  const body=E('viewer-body');

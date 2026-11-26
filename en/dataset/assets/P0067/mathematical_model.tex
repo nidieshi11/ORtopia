@@ -1,48 +1,32 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,geometry}
-\geometry{margin=22mm}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
+
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
 \begin{document}
-\section*{P67: The complete path representation of the AJRP approximate joint dispatch and path model, denoted as F1}
-\paragraph{Source and scope}According to pages 1, 7, 8, 9, 10, 11, 12, 14, 15, 16, 18, 21, 33, 34, 38, 39, 40 of the original paper PDF, section 5.1 F1 equations (14)--(22); section 4 equations (11)--(13); and the route definitions in section 3 and Appendix C/F along with equations (43)--(44).
-
-\paragraph{Core form and scope}
-The model retains F1 from Section 5.1, the complete path formulation of the authors' approximate joint routing and dispatching policy (AJRP). It is equivalent to the current-period decision problem in equations (11)--(13) of Section 4. It uses estimated future costs to approximate the original stochastic dynamic JDR, so its objective value is that of the approximate dispatching model. For a fixed current epoch $t_n$, optimize current routes together with the estimated driver dispatch in the remaining periods.
-
-\paragraph{Combining with known data}
-The period in question is $1,\ldots,N$, and the decision-making point is $t_1<\cdots<t_N$. The currently available delivery locations are $\mathcal I^n$, and the delivery stores correspond to the nodes $0$. Each $i\in\mathcal I^n$ has demands associated with $q_i^n\in\mathbb Z_{>0}$ and $q_i^n\le Q$. $Q>0$ represents the capacity of each vehicle for each route. The total number of drivers is an integer, $\bar K$. All vehicles and drivers are of the same type. $\zeta_p^n\in\{0,\ldots,\bar K\}$ refers to the number of drivers that are still occupied in $t_n$ due to previous dispatch efforts, namely $t_p$ drivers. $p=n,\ldots,N$
-
-The travel time $d_{ij}^n\ge0$ varies depending on the specific value of $i,j\in\{0\}\cup\mathcal I^n$. It corresponds to the original value $t_{ij}^n$; symbols are used to distinguish it from the decision-making point $t_n$. The service time for each customer is $s\ge0$; store-based service times are set to 0. All orders are prepared by $t_n$ (the original text uses “preparation time” $t_p=0$). The maximum time from preparation to delivery is $L_{\max}$.
-
-For the future $p=n+1,\ldots,N$ and the number of drivers $k=0,\ldots,\bar K$, given the offline estimated one-period delivery cost $h_p(k)$. This means the original $\mathbb E_{\mathbb Q^p}[\mathcal H^s(k,\mathcal I^p,\mathbf q^p)]$, where $\mathbb Q^p$ represents the distribution of orders and demand for that period; in this core model, $h_p(k)$ is the input coefficient. If a certain number of drivers is deemed infeasible resulting in a cost of $+\infty$, then $\mathcal K_p=\{k:h_p(k)<+\infty\}$ is set, while fixing the remaining $x_k^p=0$ to avoid multiplying an infinite coefficient by zero.
-
-Given $\omega_m^p(k)\ge0$, it represents the estimated number of drivers still occupied by $k$ drivers from the future $m$ periods until the $p\ge m$ period. $\omega_m^m(k)=k$ and $\omega_m^p(0)=0$ are estimated based on historical data or offline simulations, and are used to estimate service capabilities for subsequent periods.
-
-\paragraph{Complete set of feasible routes and corresponding coefficients}
-$\mathcal R^n$ is the set of all non-empty elementary store routes $r=(0,i_1,\ldots,i_h,0)$, where $i_1,\ldots,i_h\in\mathcal I^n$ is pairwise different. Each route starts from $t_n$, and ends by returning to the store without reassigning at any point along the way. Define the delivery time (relative to $t_n$) and return time for the $\ell$th customer.
+\section*{P0067 Current delivery routes and future driver dispatch}
+\subsection*{Mathematical formulation}
 \begin{align}
 a_{r,i_1}&=d_{0i_1}^n,\nonumber\\
 a_{r,i_\ell}&=a_{r,i_{\ell-1}}+s+d_{i_{\ell-1}i_\ell}^n,
 &&\ell=2,\ldots,h,\tag{D1}\\
 \ell_r&=a_{r,i_h}+s+d_{i_h0}^n.\tag{D2}
 \end{align}
-Only those routes that meet the following conditions should be included in $\mathcal R^n$:
+
 \begin{equation}
 \sum_{\ell=1}^h q_{i_\ell}^n\le Q,\qquad
  a_{r,i_\ell}\le L_{\max}\quad(\ell=1,\ldots,h).\tag{D3}
 \end{equation}
-The model does not additionally require the return time to be less than $L_{\max}$. This limit applies to order delivery times. A fixed coefficient is assigned to each possible delivery route.
+
 \begin{equation}
 c_r=\sum_{\ell=1}^h a_{r,i_\ell},\qquad
 \alpha_{i,r}=\mathbf1\{i\in r\},\qquad
 \beta_{p,r}=\mathbf1\{\ell_r>t_p-t_n\},\quad p>n.\tag{D4}
 \end{equation}
-The driver who returns exactly at $t_p$ can be used for that period of dispatching. Therefore, the inequality should be strictly greater than. (D1)--(D4) Expand pages 8--9 of the paper, Appendix C, and Equation (43)--(44) that define routes and delivery costs. These calculations provide the coefficients for the route list.
 
-\paragraph{Decision variables}
-$\theta_r\in\{0,1\}$ indicates whether an available driver will be assigned to route $r$ for the current period. $x_k^p\in\{0,1\}$ indicates that in the future period $p$, $k$ drivers are planned to be assigned. $z_k^p\in\{0,1\}$ specifies the number of drivers required for the current route to continue being occupied in period $p$. Select an integer capacity limit $k$. According to formula (18), it is an upper-bound linkage, so $k$ can be equal to or greater than the actual number of drivers occupied. This condition uses the aforementioned inequality.
-
-\paragraph{The only core model: F1}
 \begin{align}
 \min\quad&\sum_{r\in\mathcal R^n}c_r\theta_r+
 \sum_{p=n+1}^N\sum_{k\in\mathcal K_p}h_p(k)x_k^p\tag{14}\\
@@ -65,9 +49,18 @@ $\theta_r\in\{0,1\}$ indicates whether an available driver will be assigned to r
 &\theta_r\in\{0,1\},&&r\in\mathcal R^n,\tag{22}\\
 &x_k^p=0,&&p>n,\ k\notin\mathcal K_p.\tag{finite}
 \end{align}
-Equation (15) takes into account both the expected occupancy due to future deliveries, the known occupancy from previous deliveries, and the actual occupancy during this particular route. All these factors are considered within the same maximum capacity limit for the driver. Equation (20) ensures that all current orders are fully processed without any splitting or postponement to the next batch.
 
-\paragraph{Text translation and boundary settings}
-In the original PDF formula (15), the subscript $\zeta$ is replaced by $\zeta_n^{p}$. This is determined according to the status defined on page 8. Formulas (12) and Appendix A are unified as $\zeta_p^n$, which represents the number of drivers already known to be occupied in the future period. When $n=N$ is applied, the sum over future periods is empty, and the model naturally retains the current optimal routing choices. When $\mathcal I^n=\varnothing$ is applied, there are no active routes for drivers to assign passengers to; the number of drivers in the future can be zero, provided that the input costs allow it. There is no obligation to assign at least one driver per period. This model uses all feasible elementary routes. Using just a small portion of these routes would result in a restricted model, and its optimal value corresponds to the restricted model formed by the listed routes.
+\subsection*{Definitions and model scope}
+A delivery store is at a given dispatch time in a sequence of dispatch periods. All current orders are ready, their customer locations and strictly positive whole-number demands are known, and every demand fits one vehicle. The store has a given number of identical drivers and vehicles of a given capacity. For each current or later dispatch time it already knows how many drivers sent earlier will still be occupied. Distinct-location travel times, a common customer service duration and a maximum time from readiness to delivery are given. The store chooses current routes and plans future dispatch counts using given estimated future delivery costs and estimated driver occupation from future dispatches. Those estimates describe an approximate operating plan, and its best value is not claimed to be the exact best value of the underlying stochastic dynamic service.
 
+Every available current route starts at the store now, visits a nonempty sequence of distinct current customers and returns to the store without an intermediate return for redispatch. The first delivery's elapsed time is travel time from the store; each later delivery's elapsed time adds the previous customer's service duration and the travel time from that customer. Return duration adds the final customer's service duration and travel back to the store. Total demand on the route cannot exceed vehicle capacity, and each delivery must occur within the delivery-time limit. Return itself need not meet that delivery limit. All routes meeting these requirements are eligible, not just a selected shortlist. A route's cost is the sum of its customer delivery elapsed times. It continues occupying a driver at a later dispatch time only if its return duration is strictly greater than the elapsed time to that dispatch; returning exactly then makes the driver available.
+
+Each current route has a yes-or-no route dispatch record $\theta_r$. Each future period selects exactly one planned dispatch count between zero and total drivers using yes-or-no dispatch-count records $x_k^p$. Counts whose given future delivery cost is infinite are unavailable and their records are fixed off; only finite costs enter the total. Each future period also selects exactly one whole-number reservation between zero and total drivers using yes-or-no reservation records $z_k^p$. The reservation is at least the number of selected current routes still away at that future dispatch. It may exceed the actual number still away and is not required to equal it.
+
+The number of current selected routes cannot exceed total drivers less the drivers already occupied at the current time. Each current customer belongs to exactly one selected route, with no splitting or postponement. At each future dispatch time, add the given estimated still-occupied drivers from every future dispatch between the next period and that time, using the count selected for each originating dispatch. This total cannot exceed fleet size less the already-known occupation from earlier dispatches and less the reservation for current routes at that future time. An originating future dispatch uses its selected driver count immediately; selecting zero contributes zero occupation. The estimates may otherwise be nonnegative real amounts.
+
+The store seeks the lowest total of selected current route delivery-time costs and the supplied future delivery cost for each selected future dispatch count. No extra current-period estimate or vehicle penalty is added. At the last period there are no future choices or future-cost terms. If no current orders exist, no nonempty current route exists and no driver need be dispatched now. Future zero dispatch remains available precisely when its supplied delivery cost is finite.
+
+\subsection*{Inline notation and relations}
+$t_n$; $1,\ldots,N$; $t_1<\cdots<t_N$; $\mathcal I^n$; $0$; $i\in\mathcal I^n$; $q_i^n\in\mathbb Z_{>0}$; $q_i^n\le Q$; $Q>0$; $\bar K$; $\zeta_p^n\in\{0,\ldots,\bar K\}$; $t_p$; $p=n,\ldots,N$; $d_{ij}^n\ge0$; $i,j\in\{0\}\cup\mathcal I^n$; $t_{ij}^n$; $s\ge0$; $t_p=0$; $L_{\max}$; $p=n+1,\ldots,N$; $k=0,\ldots,\bar K$; $h_p(k)$; $\mathbb E_{\mathbb Q^p}[\mathcal H^s(k,\mathcal I^p,\mathbf q^p)]$; $\mathbb Q^p$; $+\infty$; $\mathcal K_p=\{k:h_p(k)<+\infty\}$; $x_k^p=0$; $\omega_m^p(k)\ge0$; $m$; $k$; $p\ge m$; $\omega_m^m(k)=k$; $\omega_m^p(0)=0$; $\mathcal R^n$; $r=(0,i_1,\ldots,i_h,0)$; $i_1,\ldots,i_h\in\mathcal I^n$; $\ell$; $\theta_r\in\{0,1\}$; $r$; $x_k^p\in\{0,1\}$; $p$; $z_k^p\in\{0,1\}$; $\zeta$; $\zeta_n^{p}$; $\zeta_p^n$; $n=N$; $\mathcal I^n=\varnothing$.
 \end{document}

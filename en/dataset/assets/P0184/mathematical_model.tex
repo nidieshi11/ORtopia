@@ -1,32 +1,14 @@
-% Mathematical Model - 1-s2.0-S1366554515001295-main
-% Auto-generated at 2025-12-14T04:25:44.845666
-% Model Source: Directly Extracted
-% This model is directly extracted from the paper
-
-\documentclass{article}
-\usepackage{amsmath}
-\usepackage{amssymb}
-
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
-\usepackage{geometry}
-\geometry{paperwidth=310mm,paperheight=470mm,hmargin=18mm,vmargin=19mm}
+
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
 \begin{document}
-
-\section*{Problem: **Mixed Integer Linear Programming (MILP)** - Involves binary variables (location selection, production capacity options, price levels) and continuous variables (flow rates, output quantities, inventory levels). - Characterized by multiple periods, multiple products, and integration of capacity planning with pricing decisions. It represents a dynamic supply chain network design problem.}
-
-\textbf{Model Source}: Directly Extracted
-
-\subsection*{Time sets and supplied initial constants}
-Let $T=\{0,1,\ldots,NT\}$ and $N=\{1,\ldots,|N|\}$, with $NT\ge1$ and $|N|\ge1$.
-The quantities $X_{i,0}=X_i^0\in\{0,1\}$ for $i\in P$,
-$Y_{i,0}=Y_i^0\in\{0,1\}$ for $i\in W$, and
-$H_{i,m,0,|N|}=H^0_{i,m}\ge0$ for $i\in W,m\in M$ are supplied fixed
-initial conditions.
-They correspond to the input arrays X0, Y0 and H0 already used by the current solver.
-Historical installation sums include only $t'\in T\setminus\{0\}$ with $t'\le t$.
-Shipment arcs connect distinct warehouses.
-
-\subsection*{Decision Variables}
+\section*{P0184 Facilities, capacity, pricing and finance in a multi-period supply chain}
+\subsection*{Mathematical formulation}
 \[
 \begin{aligned}
 & X_{it} \in \{0,1\} & i \in P, t \in T \setminus \{0\} \\
@@ -43,7 +25,6 @@ Shipment arcs connect distinct warehouses.
 \end{aligned}
 \]
 
-\subsection*{Objective Function}
 \[
 \begin{aligned}
 \max \quad & \sum_{t \in T \setminus \{0\}} \sum_{n \in N} \left[ \sum_{i \in C} \sum_{m \in M} \sum_{l \in L} PR_{m,l,t,n} D_{i,m,l,t,n} D_{l,m,t,n} - \sum_{i \in C} \sum_{m \in M} \sum_{l \in L} PR_{m,l,t,n} U_{i,m,l,t,n} \right] \\
@@ -56,7 +37,6 @@ Shipment arcs connect distinct warehouses.
 \end{aligned}
 \]
 
-\subsection*{Constraints}
 \[
 \begin{aligned}
 & (2) \quad Q_{i,m,t,n} = \sum_{j \in W} S_{i,j,m,t,n}, \quad i \in P, m \in M, t \in T \setminus \{0\}, n \in N. \\
@@ -86,7 +66,6 @@ Shipment arcs connect distinct warehouses.
 \end{aligned}
 \]
 
-\subsection*{Complete Mathematical Model}
 \[
 \begin{aligned}
 \max \quad & \sum_{t \in T \setminus \{0\}} \sum_{n \in N} \left[ \sum_{i \in C} \sum_{m \in M} \sum_{l \in L} PR_{m,l,t,n} D_{i,m,l,t,n} D_{l,m,t,n} - \sum_{i \in C} \sum_{m \in M} \sum_{l \in L} PR_{m,l,t,n} U_{i,m,l,t,n} \right] \\
@@ -125,4 +104,23 @@ Shipment arcs connect distinct warehouses.
 \end{aligned}
 \]
 
+\subsection*{Definitions and model scope}
+A company builds and operates plants $P$ and warehouses $W$ over planning periods $T$ to supply products $M$ to customer regions $C$. Each period contains replenishment subperiods $N$, and period zero supports initial-state links. Initial plant and warehouse opening states are supplied zero-or-one constants, and initial warehouse-product stocks are supplied nonnegative constants; none is adjustable or implicitly set to zero. Plants have manufacturing processes $O$ and capacity-installation options $E$, while products have price levels $L$. Customer demand at each price level and the corresponding selling price are given. Inputs also supply shipping frequencies, manufacturing, holding, shortage and transport costs, facility opening and upkeep charges, installation and annual capacity charges, flow and space conversion factors, processing and capacity limits, period budgets and budget carryover multipliers. The company arranges facility use, capacity installation, production, shipments, inventories, prices and remaining funds together.
+
+Plant opening $X_{it}$, warehouse opening $Y_{it}$, process-capacity installation $Z_{i,e,o,t}$ and product-subperiod price selections $D_{l,m,t,n}$ take only zero or one. Production $Q_{i,m,t,n}$, inventory $H_{i,m,t,n}$, shipments $S_{i,j,m,t,n}$, cumulative capacity $G_{i,o,t}$, unserved demand $U_{i,m,l,t,n}$, capital spending $Nc_t$ and remaining budget $w_t$ are nonnegative continuous quantities. Shipments are defined only from plants to warehouses, between distinct warehouses and from warehouses to customers. A product's selected price is shared across customers within a subperiod, and exactly one level is chosen. Unserved demand for each customer and price level cannot exceed that level's demand times its selection. Receipts from all warehouses plus unserved demand over all price levels exactly equal demand at the selected level.
+
+Each plant's production of a product equals its total shipments to warehouses. For every warehouse, product and subperiod, preceding inventory plus receipts from plants and other warehouses equals current inventory plus shipments to customers and other warehouses. The first subperiod uses the preceding period's final inventory, including the reference to period-zero stock at the first planning period. Once a plant or warehouse opens, it remains open: its current status cannot be below its previous-period status, including the period-zero boundary.
+
+For each plant-to-warehouse or distinct-warehouse shipping relation, total product shipments weighted by flow conversion factors cannot exceed the sending node's supplied flow cap times receiving-warehouse opening. Warehouse-to-customer shipments use the same weighted total bounded by the sending warehouse's flow cap. For each warehouse and subperiod, take each product's inventory plus all inbound shipments individually divided by their shipping frequencies, multiply by its storage conversion and sum across products. This cannot exceed warehouse space times opening. Outgoing shipments to customers and other warehouses, weighted by product handling conversions and summed, cannot exceed the sending warehouse's handling capacity times its opening.
+
+At each plant, process and period, the number of selected capacity options cannot exceed plant opening, allowing at most one installation. Cumulative capacity equals all installation selections from the first actual planning period through the current period multiplied by their capacity increments, with no separate existing capacity added. For each plant, process and subperiod, all product quantities weighted by that process's usage coefficients cannot exceed its supplied utilization limit times cumulative capacity. Each plant's capacities across processes, weighted by overall-capacity conversions, cannot exceed its total capacity limit times plant opening.
+
+Capital spending in each nonterminal period equals next-period increases in plant opening times next-period opening charges, plus corresponding warehouse opening increases and charges, plus all next-period capacity-installation selections times their capital costs. In period zero, capital spending plus remaining budget equals the initial budget. In intermediate periods, spending plus remaining budget equals current budget plus previous remaining budget times the previous carryover multiplier. Terminal remaining budget equals only previous remaining budget times that multiplier, without new terminal investment or an additional terminal budget.
+
+The company seeks the greatest operating net revenue plus terminal fund value. Across actual periods, subperiods, customers, products and price levels, selected-level demand times price creates revenue. Unserved demand is deducted at that same price and separately charged at the customer-product shortage rate. Production expense is each plant-product quantity times the sum of manufacturing costs over all of its processes. Holding expense uses warehouse product inventory plus inbound quantities from plants and other warehouses individually divided by twice their shipping frequencies, multiplied by the holding rate. Holding uses twice the frequency, while space use uses the frequency itself. Transport expense sums product quantities times rates over plant-to-warehouse, distinct-warehouse and warehouse-to-customer categories.
+
+Facility expense is charged in each actual period. It includes every capacity option installed from the first actual planning period through the current period multiplied by its annual charge for the current period, plus upkeep of currently open plants and warehouses. Capital spending acts through budget accounting and is not deducted again here. Finally, terminal remaining budget times the terminal carryover multiplier is added to operating revenue after all these expenses.
+
+\subsection*{Inline notation and relations}
+$T=\{0,1,\ldots,NT\}$; $N=\{1,\ldots,|N|\}$; $NT\ge1$; $|N|\ge1$; $X_{i,0}=X_i^0\in\{0,1\}$; $i\in P$; $Y_{i,0}=Y_i^0\in\{0,1\}$; $i\in W$; $H_{i,m,0,|N|}=H^0_{i,m}\ge0$; $i\in W,m\in M$; $t'\in T\setminus\{0\}$; $t'\le t$.
 \end{document}

@@ -1,12 +1,14 @@
-\documentclass{article}
-\usepackage{amsmath,amssymb}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
-\begin{document}
-\section*{Two-stage stochastic programming for fixed routes and demand-responsive transportation}
-This document fully defines the probability model for the given scenario selected in the old 02 version. The title of the paper includes “DRO”, but the objective of the old 02 version is actually “$\sum_w\rho_w OBJ_w$”. This weighted objective defines the stochastic planning process under the given demand conditions. Please refer to pages 9–12 of the original text for corrections regarding the starting time, the integer domain of groups, and the total passenger flow in this scenario.
 
-\subsection*{Enter the time of the first stage and the stops.}
-Station $U=\{0,\ldots,S-1\}$ and trains $I$ are numbered according to the planned sequence of arrival times. Time intervals $\mathcal T=\{1,\ldots,T_{\max}\}$ are measured in minutes, while $\Delta=1$ represents other time-related parameters. The passenger group $p\in P_w$ includes information such as the starting point $O_p$, destination $D_p>O_p$, arrival time $AT_p\ge1$, and number of passengers $n_p$. The probabilities of various scenarios are non-negative and sum to 1. Module capacity $C$ and the maximum number of trains per formation $M_f$ are also important considerations. Initial modules at intermediate stations $N_u^0$ and storage capacity $\widehat N_u$ are limited. The arrival time at the first station $\bar a_i$ is separate from the decision-making process $a_{i0}$.
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
+\begin{document}
+\section*{P0123 Coordinating fixed-line and demand-responsive transit}
+\subsection*{Mathematical formulation}
 \begin{align*}
  a_{i0}&=\bar a_i+\iota_i,&\underline\iota_i\le\iota_i&\le\bar\iota_i,\\
  d_{iu}&=a_{iu}+s_{iu},&
@@ -16,28 +18,21 @@ Station $U=\{0,\ldots,S-1\}$ and trains $I$ are numbered according to the planne
             -r^{acc}_{iu}(1-y_{iu})-r^{dec}_{i,u+1}(1-y_{i,u+1}),\\
  d_{i+1,u}-d_{iu}&\ge h,& y_{i0}=y_{i,S-1}&=1.
 \end{align*}
-$a,d,s$ represents non-negative integer minutes; $y$ represents a binary variable indicating whether there is a stop at a certain station. $e_{iut}=\mathbf1_{\{t<a_{iu}\}}$, $z_{iut}=\mathbf1_{\{t<d_{iu}\}}$, $g_{iut}=\mathbf1_{\{t=a_{iu}\}}$, $h_{iut}=\mathbf1_{\{t=d_{iu}\}}$. Therefore, $e,z$ remains unchanged with respect to $t$; $g_{iu1}=1-e_{iu1}$, $g_{iut}=e_{iu,t-1}-e_{iut}$, and $h$ follow the same pattern. $a_{iu}=1+\sum_te_{iut}$, $d_{iu}=1+\sum_tz_{iut}$. The current input $\underline s=\bar s=$ indicates the duration of each stop, with the running time along the route being constant. The unavailable deceleration and acceleration savings from skipping a station are set to 0. The algorithm assumes that all stations are visited; however, the complete model still allows skipping some stations along the way. The time domain is chosen to be an explicit, finite integer interval that covers all possible stops and the end of the journey.
 
-\subsection*{Second stage: service selection and capacity allocation}
-The FLS group consists of $x_{iu}^w=\sum_{m=1}^{M_f}m q_{ium}^w$, $\sum_mq_{ium}^w=1$, and $q$. Therefore, $x\in\{1,\ldots,M_f\}$ is also included. The DRT variable $\pi_{uvtm}^w$ represents a binary value, while $\eta_{uvt}^w=\sum_m\pi_{uvtm}^w\in\{0,1\}$ represents another binary value. The DRT travel time is $\widehat r_{uvt}>0$; the current value is $(v-u)r$. The available services for group $p$ include those related to its starting and ending points, as well as the FLS provided by $d_{i,O_p}\ge AT_p$, and the DRT offered by $\eta_{O_p,D_p,t}^w=1,\ t\ge AT_p$. There must be at least one available service for each group. Each group is assigned to the earliest departing service. Following the old 02 strict selection criteria, if there are multiple candidates with the same earliest departure time, then no such candidate can be selected. Let $\varphi_{pk}^w$ represent this candidate; otherwise…
 \[
 \sum_{k\in A_p^w}\varphi_{pk}^w=1,\quad
 WT_p^w=\min_{k\in A_p^w}(\operatorname{dep}_k-AT_p),\quad
 \varphi_{pk}^w=1\Longrightarrow
  \operatorname{dep}_k-AT_p=WT_p^w,
 \]
-Moreover, the waiting time for all unavailable services is significantly longer (at least 1 integer minute longer). $TP_p^w=\sum_k\varphi_{pk}^w\operatorname{ride}_{pk}$, FLS travel time: $a_{i,D_p}-d_{i,O_p}$; DRT: $\widehat r_{O_p,D_p,t}$. For services that are not used, the candidate waiting time is set to a sufficiently large value, as specified in $M$. This corresponds to the auxiliary variable associated with old version 02.
+
 \[
  b^w_{iu}=\sum_{p:O_p=u}n_p\varphi_{pi}^w,\quad
  l^w_{iu}=\sum_{p:D_p=u}n_p\varphi_{pi}^w,\quad
  o^w_{iu}=\sum_{p:O_p\le u<D_p}n_p\varphi_{pi}^w
  \le Cx^w_{iu}.
 \]
-The passenger capacity of the last station is 0. Number of DRT members: $b^w_{uvt}=\sum_{p:(O_p,D_p)=(u,v)}n_p\varphi^w_{p,uvt}
-\le C\sum_m m\pi^w_{uvtm}$.
 
-\subsection*{Limited vehicle inventory}
-At each intermediate station $1\le u\le S-2$, all events are merged based on their net changes at the same time:
 \begin{align*}
  N^w_{ut}&=N^w_{u,t-1}+AV^w_{ut}-DV^w_{ut},&
  0\le N^w_{ut}&\le\widehat N_u,\qquad N^w_{u0}=N_u^0,\\
@@ -45,14 +40,30 @@ At each intermediate station $1\le u\le S-2$, all events are merged based on the
  +\sum_{\substack{v,\tau,m:\\\tau+\widehat r_{vu\tau}=t}}m\pi^w_{vu\tau m},\\
  DV^w_{ut}&=\sum_i x^w_{iu}h_{iut}+\sum_{v,m}m\pi^w_{uvtm}.
 \end{align*}
-Always use the travel time corresponding to $\tau$ as a reference. This helps to avoid issues caused by the backward time indexing used in the old system (02). The departure variable is set to 0 in this case. According to the old system (02), inventory restrictions apply only at intermediate stations. The supply at both ends of the journey is not limited by the capacity of intermediate stations.
 
-\subsection*{Objectives and algorithms}
 \[
 \min\sum_w\rho_w\left\{
 \zeta_{pa}\varphi_T\sum_{p\in P_w}n_p(\xi_1WT_p^w+\xi_2TP_p^w)
 +\zeta_{op}\left[\sum_{i,u,m}\varphi_{u,u+1,m}q^w_{ium}
 +\sum_{u,v,t,m}\varphi_{uvm}\pi^w_{uvtm}\right]\right\}.
 \]
-Currently, the completion cost is set at $\varphi_{uvm}=(0.55+0.35m)\widehat r_{uv}$. The time value is 0.25 per minute, with a waiting/time-charging ratio of 2/1. All values are based on the values retained by the instances. The code selects a schedule where all stops are completed simultaneously. For each scenario, feasible candidates are generated first, and then improvements to the DRT are proposed. The candidate generation method uses the same train formation for the entire journey. The results provide the actual weighted costs and all possible passenger flow/capacity scenarios, with the upper bound for SP being determined accordingly. The results are recorded as the upper bounds for SP. The actual budget for each instance is 3600 seconds; all instances will be rerun from the current entry point.
+
+\subsection*{Definitions and model scope}
+A transit operator coordinates scheduled line services and direct demand-responsive trips along an ordered station corridor. Given demand scenarios have nonnegative probabilities adding to one. Each passenger group belongs to one scenario and has an origin, a later destination, an arrival minute of at least one and a group size. The operator chooses one timetable and stop pattern before the scenario is known, then chooses vehicle-module formations and direct trips separately for each scenario. Supplied data include module capacity, a positive maximum formation size, scheduled first-station reference arrivals, allowed timetable shifts, dwell bounds, time-dependent travel durations, headway, intermediate-station initial module stocks and storage limits, and passenger and operating cost weights. This uses the supplied scenario probabilities directly.
+
+For every scheduled service, actual first-station arrival equals its reference arrival plus a shift within its given bounds. Departure from every station equals arrival plus dwell. Dwell lies between the station's lower and upper durations multiplied by its yes-or-no stop choice, and both corridor endpoints must be stops. Arrival at the next station equals current departure plus running time. Running time equals the travel duration supplied for the chosen departure minute, less the acceleration saving when the current stop is skipped and less the deceleration saving when the next stop is skipped. Successive services in input order must have departures at least the given headway apart at each station. Arrivals, departures and dwell are nonnegative whole minutes in the supplied finite time range.
+
+Minute-by-minute records state whether each minute is strictly before arrival or departure and whether it equals arrival or departure. Before-time records never increase as minutes advance. At minute one, the exact-arrival record is one minus the before-arrival record; at every later minute it is the previous before-arrival record less the current one. Exact-departure records follow the same rule. Arrival equals one plus the sum of before-arrival records, and departure is reconstructed likewise. The exact-departure records weight the supplied travel-duration table. Thus the calendar records and timetable refer to the same minutes.
+
+In each scenario, every scheduled service at each station selects exactly one formation size from one through the formation maximum, using yes-or-no formation choices $q_{ium}^w$. Its module count is the selected size. Each direct origin-destination-minute trip has yes-or-no size-specific trip choices $\pi_{uvtm}^w$ whose sum over sizes is zero or one. For a passenger group, an available line service must stop at both its origin and destination and depart the origin no earlier than the group's arrival. An available direct trip must be operated on its exact origin-destination pair and depart no earlier than arrival. At least one available service must exist. The entire group must use the uniquely earliest departing available service; if earliest departures tie, that candidate arrangement is not allowed. Waiting is that earliest departure less arrival, and every unchosen available service must imply at least one minute more waiting. An unavailable candidate receives the supplied sufficiently large waiting value. Ride time is line arrival at the destination less departure from the origin, or the supplied direct-trip duration.
+
+For each scenario and line service, boarding at a station sums the sizes of groups assigned to that service with that origin, and alighting sums assigned groups with that destination. Occupancy on a segment sums assigned groups whose origins are no later than that segment's origin and whose destinations are later. It cannot exceed module capacity times the selected module count, and occupancy at the terminal station is zero. Each direct trip's assigned group sizes total no more than module capacity times its selected formation size. Groups are neither divided nor allocated to later services merely to avoid the earliest-departure rule.
+
+At every intermediate station and every minute in each scenario, available modules equal previous stock plus arriving modules less departing modules. All events at the same minute are combined through their net change before checking that stock lies between zero and station storage capacity; initial stock is given. Arrivals include line-service incoming formations at their arrival minutes and direct-trip formations whose actual departure minute plus the travel duration for that departure reaches the current minute. Departures include line-service outgoing formations at their departure minutes and direct-trip formations starting now. Nonexistent trip choices count as zero. These stock bounds apply only to intermediate stations; endpoint supply is not restricted by a claimed network-wide fixed fleet.
+
+The operator seeks the lowest probability-weighted total cost. Within each scenario, passenger cost equals the passenger-cost weight times the time value times the sum of group size multiplied by waiting-weight times waiting plus ride-weight times ride duration. Operating cost equals its separate weight times the sum of selected size-specific line-segment operating charges and selected size-specific direct-trip charges. Each scenario's passenger sum uses only that scenario's groups. Intermediate stops may be skipped and line formations may vary by station; restricting an operational search to all-stop services or constant formations does not change the full scope of these choices.
+
+\subsection*{Inline notation and relations}
+$\sum_w\rho_w OBJ_w$; $U=\{0,\ldots,S-1\}$; $I$; $\mathcal T=\{1,\ldots,T_{\max}\}$; $\Delta=1$; $p\in P_w$; $O_p$; $D_p>O_p$; $AT_p\ge1$; $n_p$; $C$; $M_f$; $N_u^0$; $\widehat N_u$; $\bar a_i$; $a_{i0}$; $a,d,s$; $y$; $e_{iut}=\mathbf1_{\{t<a_{iu}\}}$; $z_{iut}=\mathbf1_{\{t<d_{iu}\}}$; $g_{iut}=\mathbf1_{\{t=a_{iu}\}}$; $h_{iut}=\mathbf1_{\{t=d_{iu}\}}$; $e,z$; $t$; $g_{iu1}=1-e_{iu1}$; $g_{iut}=e_{iu,t-1}-e_{iut}$; $h$; $a_{iu}=1+\sum_te_{iut}$; $d_{iu}=1+\sum_tz_{iut}$; $\underline s=\bar s=$; $x_{iu}^w=\sum_{m=1}^{M_f}m q_{ium}^w$; $\sum_mq_{ium}^w=1$; $q$; $x\in\{1,\ldots,M_f\}$; $\pi_{uvtm}^w$; $\eta_{uvt}^w=\sum_m\pi_{uvtm}^w\in\{0,1\}$; $\widehat r_{uvt}>0$; $(v-u)r$; $p$; $d_{i,O_p}\ge AT_p$; $\eta_{O_p,D_p,t}^w=1,\ t\ge AT_p$; $\varphi_{pk}^w$; $TP_p^w=\sum_k\varphi_{pk}^w\operatorname{ride}_{pk}$; $a_{i,D_p}-d_{i,O_p}$; $\widehat r_{O_p,D_p,t}$; $M$; $b^w_{uvt}=\sum_{p:(O_p,D_p)=(u,v)}n_p\varphi^w_{p,uvt}
+\le C\sum_m m\pi^w_{uvtm}$; $1\le u\le S-2$; $\tau$; $\varphi_{uvm}=(0.55+0.35m)\widehat r_{uv}$.
 \end{document}

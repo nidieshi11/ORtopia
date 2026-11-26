@@ -1,48 +1,58 @@
-\documentclass{article}
-\usepackage{amsmath,amssymb}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
+
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
 \begin{document}
-\section*{Regional coordinated traffic signal control: A complete definition of the current problem.}
-This problem involves optimizing regional coordinated traffic signal control strategies, using the given intermediate road network, vehicle demands, and signal phases as input parameters.
-
-\subsection*{Environment and status}
-The directed road network and agent regions are provided as input. The road segment $e$ has a maximum storage capacity of $C_e$, number of lanes $n_e$, length $L_e$, free driving time $\tau_e$, and green light phase number. The phases are predefined as four mutually exclusive directions. The complete environmental state $X_t$ includes information such as the FIFO queues of vehicles at each road segment, vehicles in motion, remaining driving time, the vehicle’s shortest possible path, path location, queues at starting points outside the network, current phase, start time of the green light, countdown timer for yellow/red lights, and the clock. This complete state includes Markov transition probabilities. The following observations represent a compressed representation of the complete state.
-
-The starting point $o$ generates Poisson arrivals per second, with a rate of
+\section*{P0364 Coordinating Regional Traffic Signals Under Finite Road Storage}
+\subsection*{Mathematical formulation}
 \[
 \lambda_o(t)=\lambda_0m_o
 \frac{1+0.23\sin(2\pi t/H+0.27o)+0.13\sin(4\pi t/H+0.6)}
 {H^{-1}\sum_{u=0}^{H-1}[1+0.23\sin(2\pi u/H+0.27o)+0.13\sin(4\pi u/H+0.6)]}.
 \]
-Destinations are drawn uniformly from the remaining nodes, and each route follows a shortest path by link length. Vehicles unable to enter the network remain in the origin FIFO queue. Each second, the system generates demand, admits vehicles subject to first-link capacity, places vehicles that finish traversing a link in that link's FIFO queue, updates the signals, and processes intersection departures in rotating order $(t+j)\bmod |V|$. A green link discharges at most one vehicle per lane every two seconds. Vehicles are held when downstream storage is insufficient. A vehicle released from a link either enters the next link and travels for $\tau_e$ seconds or completes its trip. The following conditions must hold throughout:
+
 \[
 0\le O_e(t)\le C_e,\quad O_e(t)=Q_e(t)+M_e(t),\qquad
 G(t)=D(t)+\sum_eO_e(t)+B(t).
 \]
-$Q,M,O$ represent the number of vehicles in queue, in transit, and occupied, while $G,D,B$ represents the cumulative number of trips generated, completed, and backlog at the starting point. All unfinished trips and backlog at the starting point should be reported.
 
-\subsection*{Strategies and feasibility of signals}
-Every $\delta$ seconds, select action $a_i\in\{0,1\}$ for each area. Action 0 operates according to $\arg\max_{e\in\operatorname{in}(v)}O_e/(L_en_e)$, selecting the preset green light phase. This corresponds to the density and preset phase options defined in Algorithm 1. Action 1 rotates through the phases sequentially over time. The switch only occurs when the current green light duration reaches its minimum value; when the maximum green light duration is reached, it must be switched to another phase. Yellow lights and full red lights remain activated for a specified number of seconds, during which no vehicles are allowed to pass. After this period, the new green light starts counting from zero again. The last segment of the green light at the end of the simulation can be shorter than the minimum duration, but must not exceed the maximum duration.
-
-The observations of the agent $i$ consist of six items: the total number of queues, categorized by level 3 thresholds (5, 10), the IDs of the two most congested intersections, information about the classification of the two intersections, and the result of the previous action taken. These observations are combined with those of neighboring agents, based on their distance from the region’s center. The average action of neighboring agents $\bar a_i=|\mathcal N_i|^{-1}\sum_{j\in\mathcal N_i}a_j$ is used in the implementation; the sum of actions from neighboring agents serves as an equivalent index, since the number of neighbors per region is fixed. The selection of candidate strategies is based on the current observations and historical action signals.
-
-\subsection*{Objectives and solving algorithms}
-For the actually evaluated $E$ independent demand sample trajectories, the goal is to…
 \[
 \min_\pi J_E(\pi)=\frac1{EAT}\sum_{e=1}^E\sum_{t=1}^T
 \sum_{i=1}^A\sum_{v\in G_i}\sum_{l\in\operatorname{in}(v)}Q_l^{e,t}.
 \]
-This represents the actual average number of waiting passengers along the route, based on recorded data. Waiting time at the starting point, which is not part of this metric, will be reported separately. The solution employs Q-learning as a heuristic method to find feasible strategies. The reward mechanism is as follows:
+
 \[
 f_i^t=\frac1{|G_i|}\sum_{v\in G_i}
 \frac{\sum_{l\in\operatorname{in}(v)}M_l^t v_l}{\sum_{l\in\operatorname{in}(v)}L_ln_l},
 \quad r_i^t=\operatorname{sgn}(f_i^t-f_i^{t-1})
 +\sum_{j\in\mathcal N_i}\frac{\operatorname{sgn}(f_j^t-f_j^{t-1})}{d_{ij}}.
 \]
+
 \[
 Q_i\leftarrow(1-\alpha)Q_i+\alpha
 \left[r_i+\gamma\max_{a'}Q_i(X',a',\bar a_i')\right],\qquad
 \pi_i(a)\propto\exp(+\beta Q_i(a)).
 \]
-The “termination step” removes any future-related items; the positive sign corresponds to the direction that maximizes rewards. This approach ensures that the logit values for two actions are limited to $[-60,60]$ to avoid floating-point overflow issues. Actual probabilities are determined based on these limited values. Each scenario has a budget of 3600 seconds, and time limits are checked according to the control steps. The number of training iterations and evaluation sessions are determined by the parameters set for the algorithm. The output includes feasible control strategies and their corresponding trajectory objectives.
+
+\subsection*{Definitions and model scope}
+A traffic authority chooses a signal-control policy for a supplied directed road network divided into given regions. Each road has a given vehicle storage capacity $C_e$, lane count $n_e$, length $L_e$, free travel time $\tau_e$ and assigned green phase among four preset mutually exclusive movement phases. The complete environment state $X_t$ includes first-in-first-out road queues, travelling vehicles and remaining travel times, each vehicle's fixed route and progress, origin admission queues, current phases, green start times, yellow and all-red timers and the clock. The present completed networks are distinct supplied cases; their city labels do not establish that they reproduce observed urban road maps.
+
+Each origin generates Poisson arrivals every second. Its given base demand rate $\lambda_0$ is multiplied by its origin multiplier $m_o$ and a time profile. For that profile, start with one, add 0.23 times a sine whose angle is twice pi times current time divided by the given demand horizon $H$, plus 0.27 times the origin index. Then add 0.13 times a sine whose angle is four times pi times time divided by the horizon, plus 0.6. Divide by the average of this same profile over integer seconds from zero through one less than the horizon. The resulting rate is the origin arrival rate $\lambda_o(t)$. Destinations are drawn uniformly from other nodes, and routes are fixed shortest-distance paths. Vehicles unable to enter their first road remain in the origin's first-in-first-out queue.
+
+Every second, generate demand, admit vehicles according to remaining first-road storage, join vehicles completing travel to road queues, update signals and process junction releases in the rotating order obtained by adding time to junction index and taking the remainder by the junction count. A green road releases at most one vehicle per lane every two seconds. Full downstream storage blocks release. A released vehicle either completes its trip or enters the next road and waits that road's free travel time. Road occupancy $O_e(t)$ equals its queued vehicles $Q_e(t)$ plus its travelling vehicles $M_e(t)$ and remains between zero and capacity. Cumulative generated demand $G(t)$ equals completed trips $D(t)$ plus all road occupancies plus origin backlog $B(t)$, so blocked demand is retained.
+
+Every given control interval $\delta$, each region chooses a zero-or-one control action $a_i$. Action zero selects the preset phase associated with an incoming road having greatest occupancy divided by its length and lane count; action one rotates phases in their preset cyclic order. A switch is allowed only after the current green reaches its given minimum duration, and reaching the maximum requires changing to a different phase. A change includes the given yellow and all-red durations with no releases, after which the new green timer starts at zero. Only the last green truncated by the simulation end may be shorter than the minimum; it still cannot exceed the maximum.
+
+Each region's observation has six components: a three-level classification of its total queue using thresholds five and ten, the identifiers of its two most queued junctions, those junctions' queue classifications and the previous action. It receives these observations from the given neighbors chosen by distances between regional centers as well. The policy uses the neighbor average action $\bar a_i$; with fixed neighbor count, the sum of neighbor actions carries the same information. The same candidate policy may depend only on observations and past actions, not future demand samples. These compressed observations are not asserted to provide the full memoryless environment state.
+
+The authority seeks the smallest average in-road queue over the actual evaluated sample paths. Add queued vehicles on incoming roads at every junction in every region, at each evaluation time and on each of the given independent evaluation paths $E$. Divide that total by the number of evaluation paths, the given region count $A$ and the given number of evaluation times $T$. This is the average observed in-road queue, not a separate average per junction or a proven best population expectation. Origin waiting is outside this measure and must be reported separately, together with every unfinished trip and all vehicles remaining at the end.
+
+The current learning procedure uses an additional regional traffic-flow score and changes in that score to guide its search. At each junction, it adds travelling-vehicle counts times their given road speeds and divides by total incoming road length times lane count, then averages across junctions in the region. Its regional reward is the sign of the change in its own score plus neighboring score-change signs weighted by inverse center distance. This search reward does not replace the evaluated average queue. The chosen control actions must still follow all signal, storage, vehicle-accounting and information rules, regardless of how the candidate policy is obtained.
+
+\subsection*{Inline notation and relations}
+$e$; $C_e$; $n_e$; $L_e$; $\tau_e$; $X_t$; $o$; $(t+j)\bmod |V|$; $Q,M,O$; $G,D,B$; $\delta$; $a_i\in\{0,1\}$; $\arg\max_{e\in\operatorname{in}(v)}O_e/(L_en_e)$; $i$; $\bar a_i=|\mathcal N_i|^{-1}\sum_{j\in\mathcal N_i}a_j$; $E$; $[-60,60]$.
 \end{document}

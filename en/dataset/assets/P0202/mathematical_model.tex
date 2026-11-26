@@ -1,35 +1,34 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,longtable}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
-\usepackage{geometry}
-\geometry{paperwidth=235mm,paperheight=297mm,hmargin=18mm,vmargin=19mm}
-\begin{document}
-\section*{P202: Current complete mathematical model (as of 2026-10-20)}
-\section*{Basis and scope of the revision}The model specifies the legal start-time domain for the complete planning horizon, t+h-1 \ensuremath{\leq} H, and retains the profile, shared-berth, two-tier quay-crane, scenario recovery and yard constraints. The shared-yard variables remain continuous as specified in the selected model in file 02. The alternative rounded formulation from the paper is outside this model.
 
-\section*{Two-stage planning and the complete spectrum}
-Ship $i$, berth $b$, integer period $t=1,\ldots,H$, scenario $\omega$. Optional complete quay bridge type for the ship $p$. The duration is given as $h_{ip}$, with quay bridges for both upper and lower levels per period $q^1_{ipa},q^2_{ipa}$. Phase $w=-1$ is the base plan, and $w\in\Omega$ is for restoration. Legal choices $(i,p,b,t,w)$ satisfy $t\ge a_i^w$ and $t+h_{ip}-1\le H$; The base plan also ensures that the completion does not occur later than $b_i^f$. Restoration $a_i^w=\max(a_i^f,a_{i\omega})$. Binary $\eta_{ipbtw}$, cross-scenario berths $\alpha_{ib}$, integer-specific storage yards $\sigma_i\ge s_i^{min}$.
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
+\begin{document}
+\section*{P0202 Berth, Quay-Crane and Yard Planning for a Two-Level Container Port}
+\subsection*{Mathematical formulation}
 \[
 \sum_b\alpha_{ib}=1,\quad\sum_{pbt}\eta_{ipbtw}=1,\quad
 \sum_{pt}\eta_{ipbtw}=\alpha_{ib},\quad\sum_i\sigma_i\le S.
 \]
-$s_{iw}=\sum t\eta$, $e_{iw}=\sum(t+h_{ip}-1)\eta$. The total number of items occupied per berth, as denoted by $\eta$, shall not exceed 1 per period. The cumulative total of such items corresponds to $Q^1_{wt},Q^2_{wt}$.
+
 \[
 Q^1_{wt}+Q^2_{wt}\le\min(Q^{total},P_t),\quad
 |Q^1_{wt}-Q^2_{wt}|\le\bar Q^{gap}.
 \]
-The base values of $\psi_i\ge a_i^e-s_{i,-1}$ and $\chi_i\ge e_{i,-1}-b_i^e$ must be non-negative. Also, the recovery delay values of $\rho_{i\omega}\ge e_{i\omega}-e_{i,-1}$ and $\rho\ge0$ must also be non-negative.
-\section*{Linearization of complete storage facility costs}
-For each scenario, the following parameters are provided: installation cost $L_{i\omega}$, removal cost $U_{i\omega}$, probability $p_\omega$, and capacity of each block $z$. Additionally, parameters $\pi_{i\omega}\in\{0,1\}$, $\tau_{i\omega}\ge0$, and shared blocks $s_{i\omega}\ge0$ also need to be considered.
+
 \[
 M(\pi-1)\le L-z\sigma\le M\pi,\quad
 0\le\tau\le M\pi,\quad\tau\le\sigma,\quad\tau\ge\sigma+M(\pi-1),
 \]
+
 \[
 s_{i\omega}-1\le(L_{i\omega}-z\sigma_i)/z\le s_{i\omega},
 \qquad\sum_i s_{i\omega}\le S-\sum_i\sigma_i.
 \]
-Shared blocks use continuous variable domains.
+
 \[
 \min\sum_i[c_i^P(\psi_i+\chi_i)+c^E\sigma_i]
 +\sum_\omega p_\omega\sum_i[
@@ -37,6 +36,22 @@ c_i^D\rho_{i\omega}+(d^{LE}-d^{LS})z\tau_{i\omega}
 +(d^{LS}-d^{LE})L_{i\omega}\pi_{i\omega}
 +d^{LE}L_{i\omega}+d^UU_{i\omega}+c^Ss_{i\omega}].
 \]
-Select all valid values for variables: types, positions, and start times. No truncation of the solution is allowed. Completing the planning process within the specified period is essential to define clear boundaries for the business.
 
+\subsection*{Definitions and model scope}
+A container-port operator coordinates ships, berths, quay cranes on two levels and yard space over a fixed planning horizon $H$ of integer periods. For each ship, all complete crane-use profiles $p$ are supplied, with duration $h_{ip}$ and per-profile-period upper-level crane counts $q^1_{ipa}$ and lower-level crane counts $q^2_{ipa}$. The operator chooses one profile, berth and integer start for each ship in the base plan and in every recovery scenario. The zero-or-one schedule-selection record $\eta_{ipbtw}$ covers every allowed combination; the profile list and legal start choices are not truncated.
+
+A selected start cannot precede the ship's applicable arrival time, and start plus profile duration minus one cannot exceed the planning horizon. In the base plan, completion also cannot exceed the given latest permitted base completion $b_i^f$, and arrival uses the given base arrival $a_i^f$. In a recovery scenario, arrival is the larger of base arrival and the given scenario arrival $a_{i\omega}$. The shared berth-assignment record $\alpha_{ib}$ assigns each ship exactly one berth, and the selected profile-start records on that berth must sum to its assignment record in every plan. A ship therefore keeps its berth across scenarios while its profile and start may change.
+
+Each ship's start time $s_{iw}$ is the selected start, and its completion time $e_{iw}$ is selected start plus duration minus one. At every berth and period in each plan, the selected profiles occupying that berth cannot total more than one. Summing the profiles' level-specific crane requirements gives upper-level use $Q^1_{wt}$ and lower-level use $Q^2_{wt}$. Their sum cannot exceed the smaller of the given total crane allowance $Q^{total}$ and period allowance $P_t$, while the absolute difference between the two levels cannot exceed the given level imbalance allowance $\bar Q^{gap}$.
+
+The operator assigns each ship an integer dedicated-yard block count $\sigma_i$ no lower than its given minimum requirement $s_i^{min}$. Dedicated blocks across ships cannot exceed the given total yard blocks $S$. The nonnegative base early-start deviation $\psi_i$ must cover the given expected start $a_i^e$ minus the base start, and the nonnegative base late-finish deviation $\chi_i$ must cover base completion minus the given expected completion $b_i^e$. In each recovery scenario, a nonnegative recovery delay $\rho_{i\omega}$ must cover recovery completion minus base completion. These records are lower-bounded amounts, not separately forced to equal the positive differences in every permissible arrangement.
+
+For every ship and scenario, loaded and unloaded container amounts are the given loading quantity $L_{i\omega}$ and unloading quantity $U_{i\omega}$, with given capacity per yard block $z$. Subtract block capacity times dedicated blocks from loading quantity. This difference must lie between the given finite allowance $M$ times one less than a zero-or-one loading-side record $\pi_{i\omega}$, and that allowance times the record. Thus the record selects a nonpositive or nonnegative difference, with either state possible at equality and the finite difference bounds retained.
+
+A nonnegative activated dedicated-block amount $\tau_{i\omega}$ cannot exceed the allowance times the loading-side record or the dedicated-block count, and must be at least the dedicated-block count plus the allowance times one less than that record. A continuous nonnegative shared-block amount $s_{i\omega}$ is also chosen. Loading quantity minus dedicated block capacity, divided by capacity per block, must lie between the shared-block amount minus one and the shared-block amount. This is a continuous interval requirement; it is not replaced by rounding upward or by an integer shared-block count. It also retains the lower side when dedicated capacity exceeds loading quantity. In each scenario, total shared blocks cannot exceed total yard blocks minus all dedicated blocks.
+
+The operator seeks the lowest sum of base costs and probability-weighted recovery costs. For each ship, its given plan deviation rate $c_i^P$ multiplies the sum of the two base deviations, and the given dedicated-block charge $c^E$ multiplies its dedicated blocks. For each scenario with given probability $p_\omega$, add across ships: the delay rate $c_i^D$ times recovery delay; the difference between the dedicated loading rate $d^{LE}$ and shared loading rate $d^{LS}$, times block capacity and activated dedicated blocks; the opposite rate difference, times loading quantity and the loading-side record; dedicated loading rate times loading quantity; the unloading rate $d^U$ times unloading quantity; and the shared-block charge $c^S$ times shared blocks. Weight that entire scenario sum by its probability before combining scenarios. All ships must complete within the stated horizon in every plan.
+
+\subsection*{Inline notation and relations}
+$i$; $b$; $t=1,\ldots,H$; $\omega$; $p$; $h_{ip}$; $q^1_{ipa},q^2_{ipa}$; $w=-1$; $w\in\Omega$; $(i,p,b,t,w)$; $t\ge a_i^w$; $t+h_{ip}-1\le H$; $b_i^f$; $a_i^w=\max(a_i^f,a_{i\omega})$; $\eta_{ipbtw}$; $\alpha_{ib}$; $\sigma_i\ge s_i^{min}$; $s_{iw}=\sum t\eta$; $e_{iw}=\sum(t+h_{ip}-1)\eta$; $\eta$; $Q^1_{wt},Q^2_{wt}$; $\psi_i\ge a_i^e-s_{i,-1}$; $\chi_i\ge e_{i,-1}-b_i^e$; $\rho_{i\omega}\ge e_{i\omega}-e_{i,-1}$; $\rho\ge0$; $L_{i\omega}$; $U_{i\omega}$; $p_\omega$; $z$; $\pi_{i\omega}\in\{0,1\}$; $\tau_{i\omega}\ge0$; $s_{i\omega}\ge0$.
 \end{document}

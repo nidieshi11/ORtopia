@@ -1,25 +1,40 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,longtable}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
-\begin{document}
-\section*{P415: Current complete mathematical model (2026-10-20)}
-\section*{Basis and scope of the revision}Complete the source and destination station times and the entire FIFO travel function; fix the departure time 0, traverse all feasible request sequences using finite state labels, integer route selection is equivalent to a complete repair model, and there is no heuristic label truncation.
 
-\section*{Complete time-varying routing model}
-Request set $R$. Pickup $i$ and delivery $i+|R|$; source and destination $0,2|R|+1$; up to $K$ carts available. Each cart is used for one journey from source to destination. No loops are allowed, and the same customer cannot be served more than once. The departure time is set to 0. Requests can be rejected. If accepted, goods will be picked up first and delivered later, and this can only happen once. Service begins at $s_i\in[e_i,l_i]$, ends at $d_i=s_i+\sigma_i$, and reaches $s_j\ge d_i+\tau_{ij}(d_i)$. All selected arcs include both source and destination arcs, and all requirements must be met. The load starts at 0. Pickup increases by $q_i$, while delivery decreases by $q_i$. The entire process must take place within $[0,Q]$, and the cart must return without any load. The travel duration varies dynamically, but must always meet certain conditions.
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
+\begin{document}
+\section*{P0415 Choosing Pickup-and-Delivery Routes with Time-Varying Travel Speeds}
+\subsection*{Mathematical formulation}
 \[
 \int_t^{t+\tau_{ij}(t)}v(u)\,du=dist_{ij}.
 \]
-$v(u)>0$ represents the speed of the instance across 7 different time zones. This value is obtained through continuous integration across various time zones. Ultimately, this speed continues to be utilized during the planned period. Therefore, the FIFO mechanism is effectively implemented.
+
 \[
-\max \sum_{i\text{served}}profit_i-c_t\sum_{k\text{used}}return_k-Z\,\#\{\text{vehicles used}\}.
+\max \sum_{i\text{served}}profit_i-c_t\sum_{k\text{using}}return_k-Z\,\#\{\text{using vehicle}\}.
 \]
-\section*{Form of equivalent finite route selection}
-For each feasible service subset $A$, enumerate all possible delivery sequences, and select the one with the earliest return time $T_A$. The labels refer to the “already delivered set”, “already sent set”, and “last node”. Only those with later departure times will be removed from the list. Since waiting is allowed, FIFO principles apply, and non-negative time costs are considered. Thus, the “early label” can effectively prioritize all subsequent actions. This approach ensures precise control over the process.
+
 \[
 z_A\in\{0,1\},\quad\sum_Az_A\le K,\quad\sum_{A\ni i}z_A\le1,\quad
 \max\sum_A\left(\sum_{i\in A}profit_i-c_tT_A-Z\right)z_A.
 \]
-Heuristic truncation is applied to the number of unlabeled data points and routes. All 4 sets of data are processed independently, considering 5 different speed scenarios. The results are not combined across different instances.
 
+\subsection*{Definitions and model scope}
+A transport operator may accept or reject requests from a given request collection $R$. Every request has one pickup and its paired delivery, with a departure depot and a separate return depot. At most the given number of vehicles $K$ may be used. Each used route leaves the departure depot at time zero, finishes at the return depot, contains no self-connection and visits no customer twice. An accepted request is picked up and delivered exactly once by the same vehicle, with pickup before delivery; rejected requests earn no service revenue.
+
+At each visited location, the service start $s_i$ lies between the given earliest service time $e_i$ and latest service time $l_i$. The departure time $d_i$ is service start plus the given service duration $\sigma_i$. For every selected connection, including connections at the two depots, the next service start cannot precede the previous departure plus the travel duration applicable to that departure. Waiting is allowed, and depot timing requirements remain part of the route checks.
+
+The given travel distance $dist_{ij}$ and strictly positive time-dependent speed $v(u)$ determine travel duration. Starting at departure time, accumulate distance travelled by integrating speed through each time interval until the connection's distance is reached; the elapsed time is the uniquely determined travel duration $\tau_{ij}(t)$. Speed information covers seven complete time zones, and the final speed continues to cover the planning period. A trip crossing a speed-change boundary is integrated through that boundary, rather than applying only the departure-time speed to the whole trip. Earlier departure cannot produce later arrival than a later departure on the same connection.
+
+Vehicle load starts at zero. Picking up a request increases load by its given quantity $q_i$, delivering it decreases load by that same quantity, and load must remain between zero and the given capacity $Q$ throughout. The vehicle returns empty. These load checks apply along the chosen visit sequence together with precedence, service windows and time-dependent travel.
+
+The operator seeks the highest total earned request revenue $profit_i$, less the nonnegative time-cost rate $c_t$ times the sum of used vehicles' return times, and less the fixed vehicle charge $Z$ for each used vehicle. Because vehicles depart at zero, the charged return time includes service and waiting as well as travel. The fleet allowance is an upper limit; vehicles that are not used do not pay the fixed charge.
+
+Equivalently, for each feasible served-request subset $A$, consider all permissible pickup and delivery orders and record its earliest return time $T_A$. Choose a zero-or-one subset-route selection $z_A$ for each such subset, with no more selected subsets than the fleet allowance and no request appearing in more than one selected subset. Each selected subset contributes the revenues of its requests, less time-cost rate times its earliest return, less one fixed vehicle charge. The full feasible choice is retained, without a shortened route list. With waiting allowed, the stated arrival-order property and nonnegative time cost, an earlier feasible departure can reproduce the continuation of a later one, which supports using the earliest-return choice for each subset.
+
+\subsection*{Inline notation and relations}
+$R$; $i$; $i+|R|$; $0,2|R|+1$; $K$; $s_i\in[e_i,l_i]$; $d_i=s_i+\sigma_i$; $s_j\ge d_i+\tau_{ij}(d_i)$; $q_i$; $[0,Q]$; $v(u)>0$; $A$; $T_A$.
 \end{document}

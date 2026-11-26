@@ -1,26 +1,20 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,longtable}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
-\usepackage{geometry}
-\geometry{paperwidth=235mm,paperheight=297mm,hmargin=18mm,vmargin=19mm}
+
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
 \begin{document}
-\section*{P78: Current complete mathematical model (2026-10-20)}
-\section*{Basis and scope of the revision}The current issue involves the original selection of 24 periods for the SCUC model. All original records have been mapped into 16 separate 24-period instances, with each instance having its own initial state, objectives, and results. There is no claim of continuity across different days, and the model for a single 24-period period has not been simplified by eliminating certain days from the calculation.
-
-
-
-
-This file retains the complete Appendix A SCUC MILP, which is the directly solvable core formulation used in the paper. The compact summary in the main text is omitted because it suppresses essential unit-commitment constraints and auxiliary variables.
-
-\section{Security-Constrained Unit Commitment}
-
+\section*{P0078 Daily Security-Constrained Unit Commitment for a Grid Control Center}
+\subsection*{Mathematical formulation}
 \begin{equation}
 \min \quad \sum_{g\in G} \sum_{t\in T} \left[c_g^S z_{gt} + c_g^0 x_{gt} + \sum_{k\in K} c_g^k y_{gt}^k\right]
 \tag{11}
 \end{equation}
 
-\begin{equation*}
-\begin{aligned}
+\begin{align*}
 \text{s.t.}\quad
 & \sum_{g\in G} y_{gt} = \sum_{b\in B} d_{bt}
 && \forall t\in T, \\
@@ -60,16 +54,23 @@ This file retains the complete Appendix A SCUC MILP, which is the directly solva
 && \forall g\in G,\ \forall t\in T, \\
 & r_{gt},\ y_{gt},\ y_{gt}^k \ge 0
 && \forall k\in K,\ \forall g\in G,\ \forall t\in T.
-\end{aligned}
-\end{equation*}
+\end{align*}
 
+\subsection*{Definitions and model scope}
+A grid control center must schedule generation hour by hour for one independent operating day while meeting demand and transmission security requirements at minimum operating cost. Each day contains exactly 24 ordered hours. The data identify generators \(G\), buses \(B\), lines \(L\), generation cost segments \(K\), and the generators \(G_b\) connected to each bus. Hourly bus demands \(d_{bt}\) and system reserve requirements \(R_t\) are supplied, together with generator minimum and maximum outputs, upward and downward capabilities, positive integer minimum up and down times measured in hours, segment capacities, and costs. An input file may contain several independent days, each with its own initial operating decisions. The inherited first-hour commitment \(x_{g1}\) and output \(y_{g1}\) are decisions for that day, while \(z_{g1}=w_{g1}=0\). There is no supplied hour-zero state and no transfer of commitments or residual minimum up or down times between days.
 
-\section*{Instance boundaries}
-The currently selected model consists of exactly 24 sequential hours. Multiple day objects in the input represent independent 24-period instances, each retaining the initial state rules of this model, with goals and optimality values recorded separately. The optimal values for each day correspond to their respective independent plans. All original hour mappings and missing hour completions are recorded item by item in the repair \_ manifest.
+For generator \(g\) and hour \(t\), the schedule chooses binary commitment \(x_{gt}\), startup \(z_{gt}\), and shutdown \(w_{gt}\), together with nonnegative continuous total output \(y_{gt}\), reserve \(r_{gt}\), and segment outputs \(y^k_{gt}\). Every segment output is bounded above by its supplied capacity \(P_g^k\), and total output must satisfy \(y_{gt}=P_g^{\min}x_{gt}+\sum_k y^k_{gt}\). Segments are separately bounded output quantities; no additional requirement forces one segment to be filled before the next can be used. These domains and relationships apply to every generator in all 24 hours.
 
+In every hour, total generation must equal total bus demand exactly, \(\sum_g y_{gt}=\sum_b d_{bt}\); there is no load-shedding or surplus-disposal decision that can offset this balance. Total scheduled reserve must be at least \(R_t\). Reserve and incremental generation share available generator capability and therefore enter the same capacity inequalities. Reserve is not an accounting quantity that can be assigned without using that capability.
 
+Available capability depends on a startup in the current hour and a shutdown in the next hour. For a generator with minimum up time \(UT_g>1\), each of the first 23 hours must satisfy \(\sum_k y^k_{gt}+r_{gt}\le(P_g^{\max}-P_g^{\min})x_{gt}-(P_g^{\max}-RU_g)z_{gt}-(P_g^{\max}-RD_g)w_{g,t+1}\). For a generator with \(UT_g=1\), the same left side must satisfy both upper bounds \( (P_g^{\max}-P_g^{\min})x_{gt}-(P_g^{\max}-RU_g)z_{gt}-\max\{RU_g-RD_g,0\}w_{g,t+1}\) and \( (P_g^{\max}-P_g^{\min})x_{gt}-(P_g^{\max}-RD_g)w_{g,t+1}-\max\{RD_g-RU_g,0\}z_{gt}\). In hour 24, every generator instead uses the upper bound \( (P_g^{\max}-P_g^{\min})x_{g,24}-(P_g^{\max}-RU_g)z_{g,24}\), with no hour-25 shutdown term. From hour 2 through hour 24, total output also obeys \(y_{g,t-1}-RD_g\le y_{gt}\le y_{g,t-1}+RU_g\). These ramp limits apply directly to total output.
 
-\section*{Source text correction: 21 corrections for initial closure.}
-On page 31 of the source PDF, the left side of form (21) contains the startup variable $z_{gi}$; the right side contains $1-x_{g,\max(1,t-DT_g)}$, with no errors in the original text. This historical startup state expression, along with state recursion, limits premature restarts after a shutdown. If the previously extracted file mistakenly changed the left side to $w$, it will incorrectly prohibit normal shutdowns. Each independent day does not have a default state for the 0th period; the initial state for the starting day is the decision variable $x_{g1},y_{g1}$. The initial startup/stop variable is taken as $z_{g1}=w_{g1}=0$. $z_{g1}=0$ is already implied by the original (20)+(21) and does not participate in any valid constraints or costs. $w_{g1}$, which does not involve any costs, can be normalized to 0 without loss. Each 24-day period uses the independent initial state of this model and network security constraints. The residual minimum startup/stop time required for day-to-day transitions needs to be determined separately.
+Starting in hour 2, each change in commitment must be explained by that hour's startup and shutdown indicators: \(x_{gt}-x_{g,t-1}=z_{gt}-w_{gt}\). In every hour, the sum of startups from \(\max\{1,t-UT_g+1\}\) through the current hour cannot exceed the current commitment \(x_{gt}\). The minimum down-time rule uses a historical commitment: the sum of startups from \(\max\{1,t-DT_g+1\}\) through the current hour cannot exceed \(1-x_{g,\max\{1,t-DT_g\}}\). Both windows count startups \(z\); the second one does not count shutdowns. Both windows and the historical anchor are truncated at the first hour of the day. Together with commitment transitions, these rules constrain continued operation and restarting without adding decisions outside the day or commitments across days.
 
+Transmission security is calculated from bus net injections, each equal to generation connected to that bus minus its demand. In each hour and for every line \(l\), the base-case flow \(\sum_b\delta^0_{lb}(\sum_{g\in G_b}y_{gt}-d_{bt})\) must be between \(-F_l^0\) and \(F_l^0\). For every supplied line contingency \(c\in L\), all line flows are recalculated using that contingency's coefficients \(\delta^c_{lb}\) and must lie within \([-F_l^c,F_l^c]\). These requirements cover every contingency, line, and hour, retaining every supplied combination. The same scheduled generator outputs are used in all security cases; there is no separate contingency dispatch decision.
+
+The control center selects the feasible plan minimizing \(\sum_{g,t}(c_g^S z_{gt}+c_g^0x_{gt}+\sum_k c_g^k y^k_{gt})\). This comprises startup costs, fixed hourly commitment costs, and segment generation costs, with no additional reserve revenue, shutdown cost, or terminal value. The resulting plan reports hourly commitment and switching decisions, segment and total generation, and reserve, together with a separate cost and solution status for each independent day. Results for several independent days do not constitute a jointly optimal schedule with continuity constraints between days.
+
+\subsection*{Inline notation and relations}
+$z_{gi}$; $1-x_{g,\max(1,t-DT_g)}$; $w$; $x_{g1},y_{g1}$; $z_{g1}=w_{g1}=0$; $z_{g1}=0$; $w_{g1}$.
 \end{document}

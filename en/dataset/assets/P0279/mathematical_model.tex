@@ -1,10 +1,14 @@
-\documentclass{article}
-\usepackage{amsmath,amssymb}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
-\begin{document}
-\section*{Public transportation freight transportation strategy planning: Path flow model}
 
-This document uses the path-based representation for describing the selected models. Site flows and line status flows are represented separately, and they are not combined into a single model along with the path-based representation. The symbols used in the representation are based on pages 5, 6, and 8 of the original paper. $F,L,S,K$ represents teams, lines, sites, and products; $f(\ell)$ represents the team to which the line belongs; $L_f=\{\ell:f(\ell)=f\}$ and $L_s=\{\ell:s\in S_\ell\}$ represent other relevant elements. For each directed line, $S_\ell^{in}$ occurs before $S_\ell^{out}$ on the path. Neither of these two elements intersects with each other. $S_{\ell k}^{in}=S_\ell^{in}\cap S_k^{in}$ and $S_{\ell k}^{out}=S_\ell^{out}\cap S_k^{out}$ represent additional elements related to the line. $\mathcal W=\{(k,\ell,s,t):s\in S_{\ell k}^{in},t\in S_{\ell k}^{out}\}$ is defined as such. The variable $x_s,y_\ell,z_f$ ranges from 0 to 1. $w_{k\ell st}\in\mathbb Z_{\ge0}$ is only defined in relation to $\mathcal W$. Values outside the summation range are treated as 0.
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
+\begin{document}
+\section*{P0279 Selecting Transit Fleets, Lines and Stops for Parcel Delivery}
+\subsection*{Mathematical formulation}
 \begin{align*}
 \max\quad &\sum_{(k,\ell,s,t)\in\mathcal W}w_{k\ell st}\\
 \text{s.t.}\quad&
@@ -21,6 +25,18 @@ y_\ell\le\sum_{s\in S_\ell^{out}}x_s&&(\ell\in L),\\
 &\sum_{(k,\ell,u,v)\in\mathcal W}
 (\mathbf1_{\{u=s\}}+\mathbf1_{\{v=s\}})w_{k\ell uv}\le C_sx_s&&(s\in S).
 \end{align*}
-The completed instance retains the order of stations along the route, as well as information regarding requirements, capacity, and budget. For those routes where certain stations are not covered, each route’s first half of stations will be designated as “loading stations”, while the second half will be designated as “unloading stations”. This provides clear operational data for reference. Station roles are defined based on the above data. It is prohibited to load or unload goods at the same station, or to transport goods in reverse order. The maximum coverage model allows for some goods to not be covered at all.
 
+\subsection*{Definitions and model scope}
+A city logistics planner selects transit fleets $F$, lines $L$ and stops $S$ to carry parcel categories $K$. Every line belongs to one given fleet $f(\ell)$. Its permitted loading stops all occur before its permitted unloading stops along the directed line, and those two stop groups do not overlap. Each parcel category also has given acceptable loading and unloading stops. A permitted transport choice uses one line, one stop in the intersection of its loading stops and the category's acceptable loading stops, and one stop in the corresponding unloading intersection. Only these permitted choices $\mathcal W$ can carry freight; other combinations carry zero.
+
+The planner chooses zero-or-one stop-opening states $x_s$, line-use states $y_\ell$ and fleet-use states $z_f$. The sum of selected stops' stop costs $V_s$, selected lines' line costs $V_\ell$ and selected fleets' fleet costs $V_f$ cannot exceed the given budget $B$. The respective selection counts cannot exceed the given stop limit $\mathrm{maxstops}$, line limit $\mathrm{maxlines}$ and fleet limit $\mathrm{maxfleets}$.
+
+Using a line requires its fleet to be selected. Every selected stop must belong to at least one selected line serving that stop. Every selected line must have at least one selected stop from its loading group and at least one from its unloading group, and every selected fleet must have at least one of its own lines selected. These requirements link the same stop, line and fleet choices without forcing every stop or line of a selected fleet to be used.
+
+For each permitted category-line-loading-stop-unloading-stop choice, the planner chooses a nonnegative integer parcel quantity $w_{k\ell st}$. For each category, total transported quantity over all its choices cannot exceed its given available demand $P_k$. For each line, total transported quantity over all categories and stop pairs cannot exceed the given line capacity $C_\ell$ times its use state. This checks the line's total package traffic, not a separate changing load on each segment.
+
+For every stop, add all quantities loaded there and all quantities unloaded there. This combined handling amount cannot exceed the given stop capacity $C_s$ times its opening state. Each transported parcel therefore contributes at its loading stop and at its different unloading stop. The planner seeks the largest total transported parcel quantity over all permitted choices. Partial demand coverage is allowed; a parcel travels on one directed line without changing lines, loading and unloading at the same stop, or travelling against the stated stop order.
+
+\subsection*{Inline notation and relations}
+$F,L,S,K$; $f(\ell)$; $L_f=\{\ell:f(\ell)=f\}$; $L_s=\{\ell:s\in S_\ell\}$; $S_\ell^{in}$; $S_\ell^{out}$; $S_{\ell k}^{in}=S_\ell^{in}\cap S_k^{in}$; $S_{\ell k}^{out}=S_\ell^{out}\cap S_k^{out}$; $\mathcal W=\{(k,\ell,s,t):s\in S_{\ell k}^{in},t\in S_{\ell k}^{out}\}$; $x_s,y_\ell,z_f$; $w_{k\ell st}\in\mathbb Z_{\ge0}$; $\mathcal W$.
 \end{document}

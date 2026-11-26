@@ -1,8 +1,8 @@
 window.ORTOPIA_REPLAY_LOGIC=window.ORTOPIA_REPLAY_LOGIC||{};window.ORTOPIA_REPLAY_LOGIC["P0122"]=[
   {
     "decision": "Assign customers 1 and 4 to route 1.",
-    "evidence": "Demand 7＋3＝10; All requirements 20, only 2 vehicles, capacity of each vehicle 10.",
-    "consequence": "Both cars must be fully loaded. If you put 1 and 3 If combined, it will be overloaded. 5.",
+    "evidence": "Demand 7＋3＝10; All requirements 20, only 2 vehicles, capacity of each vehicle 10. ",
+    "consequence": "Both cars must be fully loaded. If you put 1 and 3 If combined, it will be overloaded. 5. ",
     "comparison": {
       "title": "How much capacity will be occupied when two orders are placed in the same vehicle? Upper limit 10",
       "options": [
@@ -10,13 +10,13 @@ window.ORTOPIA_REPLAY_LOGIC=window.ORTOPIA_REPLAY_LOGIC||{};window.ORTOPIA_REPLA
           "label": "Customer 1＋4",
           "value": 10,
           "unit": "cargo unit",
-          "note": "This route happens to be fully loaded, and another car has two remaining orders."
+          "note": "This route happens to be fully loaded, and another car has two remaining orders.. "
         },
         {
           "label": "Customer 1＋3",
           "value": 15,
           "unit": "cargo unit",
-          "note": "Just replacing the customer mix exceeds the bike capacity 5, This set of allocations cannot be used."
+          "note": "Just replacing the customer mix exceeds the bike capacity 5, This set of allocations cannot be used. "
         }
       ],
       "world": {
@@ -65,8 +65,8 @@ window.ORTOPIA_REPLAY_LOGIC=window.ORTOPIA_REPLAY_LOGIC||{};window.ORTOPIA_REPLA
   },
   {
     "decision": "Assign customers 2 and 3 to route 2.",
-    "evidence": "Demand 2＋8＝10; All requirements 20, only 2 vehicles, capacity of each vehicle 10.",
-    "consequence": "Both cars must be fully loaded. If you put 3 and 1 If combined, it will be overloaded. 5.",
+    "evidence": "Demand 2＋8＝10; All requirements 20, only 2 vehicles, capacity of each vehicle 10. ",
+    "consequence": "Both cars must be fully loaded. If you put 3 and 1 If combined, it will be overloaded. 5. ",
     "comparison": {
       "title": "How much capacity will be occupied when two orders are placed in the same vehicle? Upper limit 10",
       "options": [
@@ -74,13 +74,13 @@ window.ORTOPIA_REPLAY_LOGIC=window.ORTOPIA_REPLAY_LOGIC||{};window.ORTOPIA_REPLA
           "label": "Customer 2＋3",
           "value": 10,
           "unit": "cargo unit",
-          "note": "This route happens to be fully loaded, and another car has two remaining orders."
+          "note": "This route happens to be fully loaded, and another car has two remaining orders.. "
         },
         {
           "label": "Customer 3＋1",
           "value": 15,
           "unit": "cargo unit",
-          "note": "Just replacing the customer mix exceeds the bike capacity 5, This set of allocations cannot be used."
+          "note": "Just replacing the customer mix exceeds the bike capacity 5, This set of allocations cannot be used. "
         }
       ],
       "world": {

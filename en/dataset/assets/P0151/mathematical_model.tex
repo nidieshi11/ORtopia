@@ -1,47 +1,64 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,longtable}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
-\begin{document}
-\section*{P151: Current complete mathematical model (as of 2026-10-20)}
-\section*{Basis and scope of the revision}On pages 6, 11, 27–28 of the source text, the meanings of “passenger flow” and “inventory” are defined. The system uses the total accumulated points and previous waiting time information to determine the optimal departure time. Currently, the value of source\_horizon\_branch corresponds only to the original time limit; there are no additional nominal departure windows. All 10 cases have been thoroughly analyzed, and the optimal solutions have been verified independently.
 
-\section*{Collection and Decision-making}
-Each train $k$ has a complete ordered set of sections $E_k$ and an ordered set of stations $U_k$. The formation size $n\in\mathcal N$, section travel time $D_{ke}(n)$, shared resources, origin-destination arrival rates $r^{uv}_p$, cycle length $\Delta$, vehicle inventory $F_d$, coupling $T_c$, uncoupling $T_d$, short turning $\hat T$, dwell times $T_w$, and the finite horizon $H$ are specified by the instance. $z_{kn}\in\{0,1\}$, $s_k=\sum_nn z_{kn}$, and $t_{ke}\in\{1,\ldots,H\}$.
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
+\begin{document}
+\section*{P0151 Train Platoon Scheduling with Fleet Reuse and Passenger Queues}
+\subsection*{Mathematical formulation}
 \[
 \sum_nz_{kn}=1,\quad D_{ke}=\sum_nD_{ke}(n)z_{kn},\quad
 t_{k,e+1}=t_{ke}+D_{ke},\quad t_{ke}+D_{ke}\le H.
 \]
-Each pair of different train segments that occupy the same resources should be uniquely ordered using the binary value $o$.
+
 \[
 t_{jf}\ge t_{ie}+D_{ie}+h-M(1-o),\quad
 t_{ie}\ge t_{jf}+D_{jf}+h-Mo.
 \]
-\section*{Inventory and turnover}
-The binary relationship between train$i,j$departing from the same depot and$\omega_{ij}$ satisfies$t_{j0}\ge t_{i0}+1-M(1-\omega_{ij})$, $t_{i0}\ge t_{j0}+1-M\omega_{ij}$, $\omega_{ji}=1-\omega_{ij}$. For trains arriving at depot$j$and leaving depot$i$is$g_{ij}=t_{j,last}+T_d(s_j-1)+\hat T+T_c(s_i-1)-t_{i0}$.
+
 \[
 -My_{ij}\le g_{ij}\le M(1-y_{ij}),\qquad
-s_i\le F_d-\sum_{j\ne i}\omega_{ji}s_j+\sum_{j\text{arriving at the depot}}y_{ij}s_j.
+s_i\le F_d-\sum_{j\ne i}\omega_{ji}s_j+\sum_{j\text{depot arrival}}y_{ij}s_j.
 \]
-For $y$ and $\omega$, the product of these values and the group ID is precisely linearized using $v\le y,v\le z,v\ge y+z-1,v\ge0$. Isocronous returns available inventory; if $g=0$ is selected, $y=0$ is a conservative but feasible option, resulting in no additional vehicles being generated.
-\section*{Time-varying passenger flow and complete targets}
-The arrival time of the train corresponds to the start time of the corresponding section. This defines the total cumulative number of arrivals.
+
 \[
 A_{uv}(t)=\sum_p r^{uv}_p\min\{\Delta,\max(0,t-p\Delta)\}.
 \]
-The binary periodic selection $a_{kup}$ and the integer period offset $c_{kup}$ are used to precisely represent: $\sum_pa=1$, $0\le c_{kup}\le\Delta a_{kup}$, $t_{ku}+T_w=\sum_p(p\Delta a_{kup}+c_{kup})$, $A_{uv}(t_{ku}+T_w)=\sum_p[(\sum_{q<p}r_q^{uv})\Delta a_{kup}+r_p^{uv}c_{kup}]$. The train sequence for each OD is determined by the input service identifier, and adjacent services $t_{ku}\ge t_{ju}+1$ are constrained.
+
 \[
 W_{1uv}=A_{uv}(t_{1u}+T_w),\quad
 W_{kuv}=W_{juv}-B_{juv}+A_{uv}(t_{ku}+T_w)-A_{uv}(t_{ju}+T_w),
 \quad0\le B_{kuv}\le W_{kuv}.
 \]
+
 \[
 C_{ku}=c_0s_k-\sum_{a\prec u}\sum_{v\succ u}B_{kav}\ge0,\quad
 \sum_{v\succ u}B_{kuv}\le C_{ku},\quad
 P^{out}_{ku}=\sum_{a\prec u}B_{kau}.
 \]
+
 \[
 \min\sum_{k,u,v}(W_{kuv}-B_{kuv}).
 \]
-The nominal time stamp only includes the initial values of MIP and the service number; no nominal departure windows are provided. The complete current model corresponds to the source \_ horizon \_ branch.
 
+\subsection*{Definitions and model scope}
+A rail operator chooses a platoon size and timetable for each train. A train has a complete ordered section collection $E_k$ and station collection $U_k$. Exactly one size from the given size choices $\mathcal N$ is selected with zero-or-one size records $z_{kn}$. The resulting platoon size $s_k$ is the sum of sizes times their records, and each section duration $D_{ke}$ is the corresponding selected value from the given size-dependent durations $D_{ke}(n)$. Every section start $t_{ke}$ is an integer from one through the finite horizon $H$. The next section starts exactly when the current section finishes, and every section must finish by the horizon.
+
+For each pair of sections of different trains sharing a resource, a zero-or-one order record $o$ selects their order. The second section cannot start before the first start plus its duration and the given separation $h$, reduced by the timing allowance $M$ times one minus the order record. The reverse requirement reduces the first start's lower limit by the allowance times the order record. Both finite limits remain, so one order is enforced without discarding the unchosen direction's reduced limit.
+
+Trains departing from the same depot also have zero-or-one departure-order records $\omega_{ij}$. The second departure must be at least the first departure plus one minus the allowance times one minus its order record; the first departure must be at least the second plus one minus the allowance times that record. The reverse record is one minus the forward record. Thus same-depot departures are strictly separated by at least one time unit and have a consistent pairwise before-and-after order.
+
+For a departing train and a train returning to its depot, the return-readiness difference $g_{ij}$ is the return train's last recorded time plus the uncoupling time $T_d$ multiplied by returning size minus one, plus turnaround time $\hat T$, plus coupling time $T_c$ multiplied by departing size minus one, minus the departing train's departure time. A zero-or-one available-return record $y_{ij}$ requires this difference to lie between negative allowance times that record and allowance times one minus it. Negative difference forces an available return, positive difference forces an unavailable return, and zero allows either record. The departing size cannot exceed the depot's initial vehicle inventory $F_d$ minus sizes of all earlier departures, determined by their order records, plus sizes of returns counted as available for this departure. Returned vehicles exactly ready at departure may be counted; declining to count them cannot create extra vehicles.
+
+Where a return or departure-order record is combined with a size-selection record, its joint accounting record $v$ is nonnegative, no greater than either record, and at least their sum minus one. It therefore counts that size only when both records are one. This preserves the exact size-weighted inventory totals. A train's station time is the start time of its corresponding section, and no extra departure window around a nominal timetable is imposed.
+
+Passenger arrivals for an origin and destination have given period rates $r_p^{uv}$ and period length $\Delta$. The cumulative arrivals by a time $A_{uv}(t)$ sum each rate multiplied by the smaller of period length and the larger of zero and time minus that period's start. For each train and station, exactly one zero-or-one arrival-period record $a_{kup}$ is chosen. Each nonnegative integer within-period offset $c_{kup}$ cannot exceed period length times that record. Station time plus dwell time $T_w$ equals the sum of period start times multiplied by their records plus their offsets. Cumulative arrivals then equal all previous full-period arrivals times the chosen record plus the chosen period rate times its offset, summed over periods. This retains all earlier arrival periods, not just the current one.
+
+For each origin--destination pair, the service order is given, and each successor train's station time must be at least its predecessor's time plus one. The first train's waiting quantity $W_{1uv}$ equals cumulative arrivals through its station time plus dwell. A later train's waiting quantity $W_{kuv}$ equals its predecessor's waiting quantity minus predecessor boardings, plus the difference in cumulative arrivals between the two station times including dwell. Nonnegative boardings $B_{kuv}$ cannot exceed the waiting quantity. The remaining capacity at a station $C_{ku}$ equals capacity per vehicle $c_0$ times platoon size minus earlier-origin boardings whose destinations are still beyond this station, and must be nonnegative. Boardings from the present station to all later destinations cannot exceed that remaining capacity. Alighting passengers $P^{out}_{ku}$ equal earlier-origin boardings destined for this station. The operator seeks the lowest sum, over all trains and origin--destination records, of waiting quantities minus boardings; repeated observations of an unserved queue are each included.
+
+\subsection*{Inline notation and relations}
+$k$; $E_k$; $U_k$; $n\in\mathcal N$; $D_{ke}(n)$; $r^{uv}_p$; $\Delta$; $F_d$; $T_c$; $T_d$; $\hat T$; $T_w$; $H$; $z_{kn}\in\{0,1\}$; $s_k=\sum_nn z_{kn}$; $t_{ke}\in\{1,\ldots,H\}$; $o$; $i,j$; $\omega_{ij}$; $t_{j0}\ge t_{i0}+1-M(1-\omega_{ij})$; $t_{i0}\ge t_{j0}+1-M\omega_{ij}$; $\omega_{ji}=1-\omega_{ij}$; $j$; $i$; $g_{ij}=t_{j,last}+T_d(s_j-1)+\hat T+T_c(s_i-1)-t_{i0}$; $y$; $\omega$; $v\le y,v\le z,v\ge y+z-1,v\ge0$; $g=0$; $y=0$; $a_{kup}$; $c_{kup}$; $\sum_pa=1$; $0\le c_{kup}\le\Delta a_{kup}$; $t_{ku}+T_w=\sum_p(p\Delta a_{kup}+c_{kup})$; $A_{uv}(t_{ku}+T_w)=\sum_p[(\sum_{q<p}r_q^{uv})\Delta a_{kup}+r_p^{uv}c_{kup}]$; $t_{ku}\ge t_{ju}+1$.
 \end{document}

@@ -1,67 +1,73 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,longtable}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
+
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
 \begin{document}
-\section*{P79: Current complete mathematical model (2026-10-20)}
-\section*{Basis and scope of the revision}The current model is defined by the physical occupancy of non-preemptive processing, denoted as \(T_{tij}=\{t'\colon t'\leq t<t'+p_{ij}\}\). Results from the old printing interval are reserved for diagnosis, and the current target value is only taken from the actually solved active \_processing \_interval branch.
-
-
-
-\section*{Deterministic-Equivalent MILP for the Minimum-Makespan Case}
-The paper is primarily algorithmic. The directly solvable core model is the deterministic-equivalent
-MILP used for the minimum-makespan two-stage stochastic planning and scheduling problem.
-
+\section*{P0079 Machine Assignment and Scheduling with Uncertain Processing Times}
+\subsection*{Mathematical formulation}
 \begin{equation}
 \min \quad \sum_{\omega \in \Omega} \pi_\omega \beta_\omega
 \tag{M1}
 \end{equation}
 
-subject to
 \begin{equation}
 \sum_{i \in I} x_{ij} = 1,
 \qquad \forall j \in J,
 \tag{M2}
 \end{equation}
+
 \begin{equation}
 \beta_\omega \ge \beta_{i\omega},
 \qquad \forall i \in I,\ \forall \omega \in \Omega,
 \tag{M3}
 \end{equation}
+
 \begin{equation}
 \beta_\omega \ge \sum_{t \in T} (t + p_{ij}^{\omega}) z_{ijt}^{\omega},
 \qquad \forall i \in I,\ \forall j \in J,\ \forall \omega \in \Omega,
 \tag{M4}
 \end{equation}
+
 \begin{equation}
 z_{ijt}^{\omega} \le x_{ij},
 \qquad \forall i \in I,\ \forall j \in J,\ \forall t \in T,\ \forall \omega \in \Omega,
 \tag{M5}
 \end{equation}
+
 \begin{equation}
 \sum_{i \in I} \sum_{t \in T} z_{ijt}^{\omega} = 1,
 \qquad \forall j \in J,\ \forall \omega \in \Omega,
 \tag{M6}
 \end{equation}
+
 \begin{equation}
 \sum_{j \in J} \sum_{t' \in T_{tij}^{\omega}} c_{ij} z_{ijt'}^{\omega} \le K_i,
 \qquad \forall i \in I,\ \forall t \in T,\ \forall \omega \in \Omega,
 \tag{M7}
 \end{equation}
+
 \begin{equation}
 z_{ijt}^{\omega} = 0,
 \qquad \forall i \in I,\ \forall j \in J,\ \forall \omega \in \Omega,\ \forall t<r_j,
 \tag{M8}
 \end{equation}
+
 \begin{equation}
 x_{ij} \in \{0,1\},
 \qquad \forall i \in I,\ \forall j \in J,
 \tag{M9}
 \end{equation}
+
 \begin{equation}
 z_{ijt}^{\omega} \in \{0,1\},
 \qquad \forall i \in I,\ \forall j \in J,\ \forall t \in T,\ \forall \omega \in \Omega,
 \tag{M10}
 \end{equation}
+
 \begin{equation}
 \beta_\omega \ge 0,
 \qquad
@@ -70,13 +76,21 @@ z_{ijt}^{\omega} \in \{0,1\},
 \tag{M11}
 \end{equation}
 
-
-\section*{Processing Allocation Collection}
-For each machine $i$, job $j$, scenario $\omega$, and integer time point $t$,
 \[
 T_{tij}^{\omega}=\{t'\in T:t'\le t<t'+p_{ij}^{\omega}\}.
 \]
-This is the set of tasks that are still being processed in $t$. It’s not a collection of tasks that have already been completed. Each scenario has its own set of tasks, which start processing at different times. Processing time, resource consumption, and capacity are limited. Machines are allocated to $x$ for use across different scenarios. The code returns two possible interpretations of this situation; currently, only active tasks like \_ and \_ are considered for processing.
 
+\subsection*{Definitions and model scope}
+A production planner assigns each job $J$ to a machine $I$ before the processing-time scenario $\Omega$ is known. Every scenario has a given weight $\pi_\omega$ and positive processing time $p_{ij}^{\omega}$ for each machine--job combination. Possible start times belong to a given finite collection of integer times $T$. Each job also has a release time $r_j$. The assignment record $x_{ij}$ is zero or one, exactly one machine is selected for each job, and that assignment is common to all scenarios.
 
+Once a scenario is known, the planner chooses zero-or-one start records $z_{ijt}^{\omega}$ over machines and listed times. Each job has exactly one selected start in each scenario. Each start record cannot exceed the corresponding assignment record, so a job can start only on its previously assigned machine. A start before the job's release time must be zero. The job runs continuously for its stated processing time after starting; interruption and restarting are not alternative ways of completing it.
+
+At every listed time, for each machine and scenario separately, count jobs that have already started but have not yet completed. The active-start collection $T_{tij}^{\omega}$ for a job includes precisely starts no later than the current time whose start plus processing time is strictly later than the current time. A job occupies the machine at its start, but no longer occupies it at its completion. Its resource requirement $c_{ij}$ contributes for every such active start. These contributions over all jobs must not exceed the machine's capacity $K_i$. This checks simultaneous resource consumption rather than simply limiting a machine to one job.
+
+For each scenario, the planner keeps a nonnegative completion allowance $\beta_\omega$. For every machine--job pair it must be at least the sum over listed times of start time plus processing time multiplied by the start record. The multiplication applies to the full start-plus-duration sum. Thus it covers each actual job completion; an unselected machine--job pair contributes zero. Start times must be listed, but completion times are not separately required to lie inside the start-time collection.
+
+There is also a nonnegative machine-level allowance $\beta_{i\omega}$ for every machine and scenario, which cannot exceed that scenario's completion allowance. No further equality connects this machine-level record to its jobs' completion times. The planner wants the sum of scenario completion allowances, each multiplied by its scenario weight, to be as low as possible, while meeting the common assignment and every scenario's start and capacity requirements.
+
+\subsection*{Inline notation and relations}
+$i$; $j$; $\omega$; $t$; $x$.
 \end{document}

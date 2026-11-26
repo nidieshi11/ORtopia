@@ -1,51 +1,69 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,longtable}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
-\usepackage{geometry}
-\geometry{paperwidth=235mm,paperheight=297mm,hmargin=18mm,vmargin=19mm}
-\begin{document}
-\section*{P148: Current complete mathematical model (2026-10-20)}
-\section*{Basis and scope of the revision}Activate charging and stop driving based on actual conditions. Keep all constraints related to vehicle models, parking lots, shifts, SOC values, and degradation levels. The historical data for literal\_energy\_definition is considered invalid for diagnosis purposes. The current model involves complete physical-based repairs; therefore, only the results from executed conditional\_energy\_repair will be considered.
 
-\section*{Sets, arcs, and variables}
-Shifts: $I=\{1,\ldots,n\}$, sorted by time. Parking lots: $W$, vehicle types: $K$. Source location: $0,n+1$. Allowable arcs: $(0,j),(i,n+1),(i,j):i<j$. $x_{wkij}\in\{0,1\}$; $e^-_{wki},e^+_{wki}\in[\underline s_kE_k,\bar s_kE_k]$. Continued charging amount: $c_{wkij}\ge0$, charging duration: $t_{wkij}\ge0$, billing amount: $\delta_{wkij}\ge0$.
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
+\begin{document}
+\section*{P0148 Electric Bus Trip Chains with Charging and Battery Wear}
+\subsection*{Mathematical formulation}
 \[
 \sum_jx_{wk0j}\le f_{wk},\quad\sum_ix_{wki,n+1}\le f_{wk},\quad
 v_{wki}:=\sum_{j>i}x_{wkij}=\sum_{j<i}x_{wkji},\quad
 \sum_{wk}\sum_{i<j}x_{wkij}=1\quad(j\in I).
 \]
+
 \[
 |(\bar s_kE_k-e^-_{wki})-E^{start}_{wki}|\le M(1-x_{wk0i}),\quad
 e^-_{wki}-e^+_{wki}=E^{trip}_{ki}v_{wki}.
 \]
-For each instance where $i<j$ is followed by $a=x_{wkij}$, record the energy consumption during idling as $D_{kij}$, along with the time spent in idling state as $\tau_{ij}$:
+
 \[
 b_j-a_i-\theta-\tau_{ij}-t_{wkij}\ge M_t(a-1),
 \]
+
 \[
 -M(1-a)\le e^-_{wkj}-e^+_{wki}-\sigma t_{wkij}+aD_{kij}\le M(1-a),
 \]
+
 \[
 c_{wkij}=\sigma t_{wkij},\quad
 -M(1-a)\le c_{wkij}-e^-_{wkj}+e^+_{wki}-aD_{kij}\le M(1-a),
 \]
+
 \[
 0\le c_{wkij}\le Ma,\quad
 0\le\delta_{wkij}\le c_{wkij},\quad
 \delta_{wkij}\ge c_{wkij}-M(1-a).
 \]
-Specify the vehicle types for each shift, setting the prohibited routes from off-peak hours to peak hours to zero. All SOC limits will be retained for the shift variables within the original domain.
-\section*{A complete definition of piecewise degeneration}
-Each energy process is represented by $\mathcal B(Q,U,L,\chi)$, which indicates a set of newly added continuous values. Additionally, there are $s_h\ge0$ and $f_h$ binary values, along with various constraints. $[l_h,u_h]$ and costs $c_h$ are determined based on the given SOC range.
+
 \[
 \sum_hs_h=Q,\quad s_h\le(u_h-l_h)f_h,\quad
 s_h\le U-l_h+1-f_h,\quad s_h\le u_h-L+1-f_h.
 \]
-If activating $\chi$ is required, then $f_h\le\chi$ must also be activated. The cost of this process is $E_k\sum_hc_hs_h$. The shift usage is managed through $(Q,U,L)=((e^-_i-e^+_i)/E_k,e^-_i/E_k,e^+_i/E_k)$. Each subsequent charging session requires $(c/E_k,(e^-_j+D)/E_k,e^+_i/E_k,a)$; empty trips require $(aD/E_k,(e^-_j+D)/E_k,e^-_j/E_k,a)$. The initial empty trip costs are $(x_{wk0i}E^{start}_{wki}/E_k,\bar s_k,e^-_i/E_k,x_{wk0i})$. The auxiliary constraints remain in place, but the initial degradation costs are not calculated based on the selected targets.
+
 \[
 \min\sum_{wki}F_kx_{wk0i}+\beta\sum_{wkij}\delta_{wkij}
-+\sum_{\text{scheduled services, charging, and connecting deadhead trips}}E_k\sum_hc_hs_h.
++\sum_{\text{trip, charging, connecting deadhead leg}}E_k\sum_hc_hs_h.
 \]
-When the arc is selected, the charging and degradation mechanisms are activated. If no arc is selected, the value will be set to $c=t=0$. All records where the old branch is not valid are considered as evidence of model defects. The current value represents the fully activated state after repairs have been made.
 
+\subsection*{Definitions and model scope}
+A bus operator allocates time-ordered trips $I$ among depots $W$ and vehicle types $K$. A zero-or-one arc selection $x_{wkij}$ joins a depot source to a trip, a trip to the depot sink, or an earlier trip to a later trip. For each depot and type, both the number of source departures and the number of sink returns cannot exceed the given fleet count $f_{wk}$. At every trip, incoming and outgoing arc counts for the same depot and type are equal, giving its use record $v_{wki}$. Across all depots and types, every trip has exactly one incoming arc. Specified type-dependent forbidden connections from off-peak to peak service are set to zero.
+
+Every trip has a battery energy before service $e^-_{wki}$ and battery energy after service $e^+_{wki}$ for each depot and type, both between minimum charge fraction $\underline s_k$ times battery capacity $E_k$ and maximum charge fraction $\bar s_k$ times capacity, including when that depot and type do not serve the trip. Before-service energy minus after-service energy equals the given trip energy use $E^{trip}_{ki}$ multiplied by its use record. For a selected source departure, maximum permitted battery energy minus before-service energy equals the given initial empty-running energy $E^{start}_{wki}$. In general the absolute difference between those two quantities cannot exceed the energy allowance $M$ times one minus the source-arc selection.
+
+For each earlier-to-later connection, use its selection status $a$, given empty-running energy $D_{kij}$ and empty-running duration $\tau_{ij}$. Later given trip time $b_j$ minus earlier given trip time $a_i$, minus the given time margin $\theta$, minus empty-running duration, minus nonnegative charging time $t_{wkij}$ must be at least the time allowance $M_t$ multiplied by selection status minus one. Nonnegative charging energy $c_{wkij}$ equals the charging rate $\sigma$ times charging time and cannot exceed energy allowance times selection status. An unselected connection has no charging time or energy.
+
+The difference consisting of later before-service energy minus earlier after-service energy, minus charging rate times charging time, plus selected empty-running energy must lie between the negative and positive of energy allowance times one minus selection status. The difference consisting of charging energy minus later before-service energy plus earlier after-service energy minus selected empty-running energy has the same two-sided limits. Thus a selected connection balances charging and empty-running consumption exactly; unselected connections retain the finite bounds rather than forcing unrelated trip energies equal. A nonnegative billed charging amount $\delta_{wkij}$ cannot exceed charging energy and must be at least charging energy minus energy allowance times one minus selection status, so it equals charging energy on selected arcs and is zero on unselected arcs.
+
+Battery wear is recorded separately for each energy process using given normalized charge bands $[l_h,u_h]$ and band wear charges $c_h$. For a process with total normalized energy $Q$, upper endpoint $U$, and lower endpoint $L$, nonnegative band amounts $s_h$ must sum to the total. Each amount cannot exceed band width times a zero-or-one band flag $f_h$, cannot exceed upper endpoint minus band lower boundary plus one minus the flag, and cannot exceed band upper boundary minus lower endpoint plus one minus the flag. Where an activation record $\chi$ is supplied, each band flag cannot exceed it. Flags are not additionally forced to one exactly when their amounts are positive. A charged process contributes battery capacity times the sum of band charges multiplied by band amounts.
+
+For a service trip, total normalized energy is before-service minus after-service energy divided by battery capacity, and the endpoints are the corresponding before- and after-service energies divided by capacity. For connection charging, total is charging energy divided by capacity, upper endpoint is later before-service energy plus the full given empty-running energy divided by capacity, and lower endpoint is earlier after-service energy divided by capacity; its activation is connection selection. For connection empty running, total is selected empty-running energy divided by capacity, with the same upper endpoint and later before-service energy divided by capacity as lower endpoint; it has the same activation. The full empty-running energy remains in those upper endpoints even for unselected connections.
+
+Initial empty running also uses band records: total is source-arc selection times initial empty-running energy divided by capacity, upper endpoint is the maximum charge fraction, lower endpoint is trip before-service energy divided by capacity, and activation is source-arc selection. These band requirements remain in effect, but initial empty-running wear is not added to the bill. The operator seeks the lowest total of each vehicle-type deployment charge $F_k$ times selected source departures, the electricity charge $\beta$ times all billed charging amounts, and the band wear charges for service, connection charging, and connection empty-running processes.
+
+\subsection*{Inline notation and relations}
+$I=\{1,\ldots,n\}$; $W$; $K$; $0,n+1$; $(0,j),(i,n+1),(i,j):i<j$; $x_{wkij}\in\{0,1\}$; $e^-_{wki},e^+_{wki}\in[\underline s_kE_k,\bar s_kE_k]$; $c_{wkij}\ge0$; $t_{wkij}\ge0$; $\delta_{wkij}\ge0$; $i<j$; $a=x_{wkij}$; $D_{kij}$; $\tau_{ij}$; $\mathcal B(Q,U,L,\chi)$; $s_h\ge0$; $f_h$; $[l_h,u_h]$; $c_h$; $\chi$; $f_h\le\chi$; $E_k\sum_hc_hs_h$; $(Q,U,L)=((e^-_i-e^+_i)/E_k,e^-_i/E_k,e^+_i/E_k)$; $(c/E_k,(e^-_j+D)/E_k,e^+_i/E_k,a)$; $(aD/E_k,(e^-_j+D)/E_k,e^-_j/E_k,a)$; $(x_{wk0i}E^{start}_{wki}/E_k,\bar s_k,e^-_i/E_k,x_{wk0i})$; $c=t=0$.
 \end{document}

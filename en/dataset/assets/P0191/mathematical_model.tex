@@ -1,66 +1,38 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,geometry}
-\geometry{margin=22mm}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
-\geometry{paperwidth=370mm,paperheight=650mm,hmargin=18mm,vmargin=19mm}
+
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
 \begin{document}
-
-\section*{P191: complete stop-indexed collaborative truck/drone MILP}
-Input node set $\mathcal V$ contains depot $0$, every original customer
-$\mathcal C$, all finite candidate flexible stops, and a distinct terminal
-$v_{\rm end}=i_{N+F+1}$. The terminal shares depot coordinates but remains
-a distinct label. Customers partition into truck-only $\mathcal C_T$ and
-drone-eligible $\mathcal C_U$.
-Drone set $\mathcal U$ and consecutive stop positions
-$\mathcal S=\{0,\ldots,S_{\max}\}$ retain original fleet/scale.
-The final position denoted $s_{\hat S+1}$ below is $S_{\max}$;
-$s_{\hat S}=S_{\max}-1$ and $s_0=0$.
-
-Finite input arrays are truck road times $R^T_{ij}$, complete drone trip
-times $R^U_{ijku}$, endurance limits $E_{ijku}$,
-truck/drone customer service times $V^T_i,V^U_i$,
-launch/recovery durations $H_j,G_j$ and valid big-$M$.
-The code's functions $H(s),G(s)$ are respectively
-$\sum_j H_jy_{js}$ and $\sum_jG_jy_{js}$.
-Let $X_{is}=\sum_u x_{ius}$ and define $X_{i,-1}=0$ only where needed
-to describe the initial boundary.
-
-Binary $y_{is}$ assigns a truck location to a stop;
-binary $x_{ius}$ assigns a customer's drone service to the interval
-from stop $s$ to $s+1$. Binary $w_{ijs}$ orders active tasks at stop $s$.
-Their implemented domains are $y:\mathcal V\times\mathcal S$,
-$x:\mathcal C\times\mathcal U\times\mathcal S$,
-$w:\mathcal C\times\mathcal C\times\mathcal S$.
-All time variables and completion $\hat t$ are nonnegative.
-$b_i,e_i$ mean the start/end of truck service at customer $i$;
-the extracted table's superscripted $b_i^U,e_i^U$ is a naming inconsistency,
-using the same variable family.
-\subsection*{Objective Function}
+\section*{P0191 A truck and multiple drones with flexible stops}
+\subsection*{Mathematical formulation}
 \[\min\ \hat t\]
 
-\subsection*{Constraints}
 \[\begin{aligned}
-&\text{1. Definition of completion time:} \\
+&\text{1. completion time:} \\
 &\hat{t} \ge a^T_s \quad \forall s \in \{s_{\hat{S}+1}\} \subseteq \mathcal{S} \\
 &\hat{t} \ge a^U_i + \sum_{u \in \mathcal{U}} G_j x_{ius} \quad \forall i \in \mathcal{C}, j \in \{j_{N+F+1}\} \subseteq \mathcal{V}, s \in \{s_{\hat{S}}\} \subseteq \mathcal{S} \\
 \\
-&\text{2. Path-based scheduling and node allocation constraints:} \\
+&\text{2. route flow and node assignment:} \\
 &y_{is} = 1 \quad \forall i \in \{i_0\} \subseteq \mathcal{V}, s \in \{s_0\} \subseteq \mathcal{S} \\
 &y_{is} = 1 \quad \forall i \in \{i_{N+F+1}\} \subseteq \mathcal{V}, s \in \{s_{\hat{S}+1}\} \subseteq \mathcal{S} \\
 &\sum_{i \in \mathcal{V}} y_{is} = 1 \quad \forall s \in \mathcal{S} \\
 &\sum_{s \in \mathcal{S}} y_{is} \le 1 \quad \forall i \in \mathcal{V} \setminus \{i_{N+F+1}\} \\
 &y_{is} \le y_{i,s+1} \quad \forall i \in \{i_{N+F+1}\} \subseteq \mathcal{V}, s \in \mathcal{S} \setminus \{s_{\hat{S}+1}\} \\
 \\
-&\text{3. Constraints on customer service allocation:} \\
+&\text{3. customer service assignment:} \\
 &\sum_{s \in \mathcal{S}} y_{is} = 1 \quad \forall i \in \mathcal{C}_T \\
 &\sum_{u \in \mathcal{U}} \sum_{s \in \mathcal{S} \setminus \{s_{\hat{S}+1}\}} x_{ius} + \sum_{s \in \mathcal{S}} y_{is} = 1 \quad \forall i \in \mathcal{C}_U \\
 &\sum_{i \in \mathcal{C}} x_{ius} \le 1 \quad \forall u \in \mathcal{U}, s \in \mathcal{S} \\
 \\
-&\text{4. Constraints on truck timing and path continuity:} \\
+&\text{4. truck timing and route continuity:} \\
 &a^T_{s+1} \ge d^T_s + R^T_{ij} - M(2 - y_{is} - y_{j,s+1}) \quad \forall i, j \in \mathcal{V}, s \in \mathcal{S} \setminus \{s_{\hat{S}+1}\} \\
 &d^T_s \ge a^T_s \quad \forall s \in \mathcal{S} \\
 \\
-&\text{5. Constraints on the synchronization between trucks and drones:} \\
+&\text{5. truck-coordinated drone timing:} \\
 &d^T_s \ge a^U_i + \sum_{j \in \mathcal{V}} G_j y_{js} - M\left(1 - \sum_{u \in \mathcal{U}} x_{iu,s-1}\right) \quad \forall i \in \mathcal{C}, s \in \mathcal{S} \setminus \{s_0\} \\
 &d^T_s \ge d^U_i - M\left(1 - \sum_{u \in \mathcal{U}} x_{ius}\right) \quad \forall i \in \mathcal{C}, s \in \mathcal{S} \\
 &d^T_s \ge e_i - M(1 - y_{is}) \quad \forall i \in \mathcal{C}, s \in \mathcal{S} \setminus \{s_0\} \\
@@ -69,20 +41,20 @@ using the same variable family.
 &a^U_j \ge d^U_j + \sum_{u \in \mathcal{U}} R^U_{ijku} x_{jus} + V^U_j - M\left(3 - \sum_{u \in \mathcal{U}} x_{jus} - y_{is} - y_{k,s+1}\right) \quad \forall i, k \in \mathcal{V}, j \in \mathcal{C}, s \in \mathcal{S} \setminus \{s_{\hat{S}+1}\} \\
 &a^U_i \ge a^T_{s+1} - M\left(1 - \sum_{u \in \mathcal{U}} x_{ius}\right) \quad \forall i \in \mathcal{C}, s \in \mathcal{S} \setminus \{s_{\hat{S}+1}\} \\
 \\
-&\text{6. UAV endurance constraints:} \\
+&\text{6. drone endurance:} \\
 &a^U_j - d^U_j \le \sum_{u \in \mathcal{U}} E_{ijku} x_{jus} + M\left(3 - \sum_{u \in \mathcal{U}} x_{jus} - y_{is} - y_{k,s+1}\right) \quad \forall i, k \in \mathcal{V}, j \in \mathcal{C}, s \in \mathcal{S} \setminus \{s_{\hat{S}+1}\} \\
 \\
-&\text{7. Timing constraints for truck service customers:} \\
+&\text{7. truck service timing:} \\
 &b_i \ge a^T_s - M(1 - y_{is}) \quad \forall i \in \mathcal{C}, s \in \mathcal{S} \\
 &e_i \ge b_i + V^T_i - M\left(1 - \sum_{s \in \mathcal{S}} y_{is}\right) \quad \forall i \in \mathcal{C} \\
 &b_i \le M \sum_{s \in \mathcal{S}} y_{is} \quad \forall i \in \mathcal{C} \\
 &e_i \le M \sum_{s \in \mathcal{S}} y_{is} \quad \forall i \in \mathcal{C} \\
 \\
-&\text{8. Resource conflicts and sorting constraints:} \\
+&\text{8. resource conflicts and sequencing:} \\
 &w_{ijs} + w_{jis} \ge \sum_{u \in \mathcal{U}} x_{ius} + \sum_{u \in \mathcal{U}} x_{jus} + \sum_{u \in \mathcal{U}} x_{iu,s-1} + \sum_{u \in \mathcal{U}} x_{ju,s-1} + y_{is} + y_{js} - 1 \quad \forall i, j \in \mathcal{C}, s \in \mathcal{S} \setminus \{s_0\}, i > j \\
 &w_{ijs} + w_{jis} \ge \sum_{u \in \mathcal{U}} x_{ius} + \sum_{u \in \mathcal{U}} x_{jus}-1 \quad \forall i, j \in \mathcal{C}, s=s_0,\ i > j \\
 \\
-&\text{9. Time-order constraints based on sorting:} \\
+&\text{9. sequence-dependent timing:} \\
 &a^U_i \ge a^U_j + \sum_{k \in \mathcal{V}} G_k y_{ks} - M\left(3 - w_{jis} - \sum_{u \in \mathcal{U}} x_{iu,s-1} - \sum_{u \in \mathcal{U}} x_{ju,s-1}\right) \quad \forall i, j \in \mathcal{C}, s \in \mathcal{S} \setminus \{s_0\} \\
 &d^U_i \ge d^U_j + \sum_{k \in \mathcal{V}} H_k y_{ks} - M\left(3 - w_{jis} - \sum_{u \in \mathcal{U}} x_{ius} - \sum_{u \in \mathcal{U}} x_{jus}\right) \quad \forall i, j \in \mathcal{C}, s \in \mathcal{S} \\
 &a^U_j \ge d^U_i - M\left(2 + w_{jis} - \sum_{u \in \mathcal{U}} x_{ju,s-1} - \sum_{u \in \mathcal{U}} x_{ius}\right) \quad \forall i, j \in \mathcal{C}, s \in \mathcal{S} \setminus \{s_0\} \\
@@ -93,28 +65,23 @@ using the same variable family.
 &d^U_i \ge e_j + \sum_{k \in \mathcal{V}} H_k y_{ks} - M\left(3 - w_{jis} - \sum_{u \in \mathcal{U}} x_{ius} - y_{js}\right) \quad \forall i, j \in \mathcal{C}, s \in \mathcal{S}
 \end{aligned}\]
 
+\subsection*{Definitions and model scope}
+A delivery team has one truck, a given fleet of drones, all customer locations and a finite collection of flexible stopping locations. The depot and final terminal have the same coordinates but distinct labels. Customers are either truck-only or drone-eligible. The truck has a fixed finite sequence of stop positions, starting at the depot and ending at the terminal. Given data include truck road times, drone trip times and endurance for every launch-location, customer, recovery-location and drone combination, truck and drone customer-service durations, location-dependent launch and recovery durations and a finite timing allowance. The team chooses yes-or-no stop-location records $y_{is}$, drone service assignments $x_{ius}$ and task-order records $w_{ijs}$. All truck and drone times, truck service starts and ends, and completion time are nonnegative.
 
-\paragraph{Explicit boundary/domain completion.}
-Set $a^T_0=0$, $x_{iu,S_{\max}}=0$ for every customer/drone and
-$x_{ius}=0$ for every truck-only customer.
-The initial ordering row is
-$w_{ij0}+w_{ji0}\ge X_{i0}+X_{j0}-1$, as in source Eq.(29).
-Launches require a defined predecessor position.
-The terminal is absorbing, and completion includes final drone recovery.
-Every node/customer and finite input coefficient is retained.
-The preceding equations together with these boundaries are the full implemented
-MILP.
+Every stop position has exactly one location. The first is the depot and the last is the terminal. Each location except the terminal may be used at most once; once a position is the terminal, every later position is also the terminal. Truck-only customers are visited exactly once and have every drone assignment fixed off. Each drone-eligible customer is either visited once by the truck or assigned exactly once to a drone in a nonfinal stop interval. Each drone handles at most one customer per interval. All assignments at the final position are zero. A customer's launch count at a stop is its assignments summed over all drones there; its recovery count at a noninitial stop is the corresponding sum at the previous position. No previous-position launch exists at the initial boundary.
 
-\paragraph{Verification and interpretation.}
-The unchanged08 solver instantiates all source constraint families, with
-explicit customer and terminal domains above. Its all-truck construction is
-only a warm start; drone and flexible-stop decisions remain free.
+Truck arrival at the first stop is zero. Departure at every stop is no earlier than arrival. For every pair of possible locations at consecutive positions, next arrival is at least current departure plus their truck road time less the finite allowance multiplied by two minus the two location records. Launch duration at a stop is the sum of location launch durations weighted by its location records; recovery duration is defined likewise. At every noninitial stop and customer, truck departure is at least that customer's drone return time plus stop recovery duration, less the finite allowance times one minus its recovery count. At every stop, truck departure is at least customer drone launch-completion time less the allowance times one minus its launch count. At noninitial stops it is also at least truck customer-service end less the allowance times one minus that customer's stop-location record.
 
-Generic execution evidence checks every row, domain and objective.
-An additional replay reconstructed launch intervals
-$[d_i^U-H(s),d_i^U]$, recovery intervals $[a_i^U,a_i^U+G(s)]$
-and truck-service intervals $[b_i,e_i]$ at every selected stop,
-confirming no overlap and containment in $[a_s^T,d_s^T]$ in all nineteen
-incumbents. The result records the solver termination status.
+For every customer and stop, drone launch-completion time is at least truck arrival plus stop launch duration less the allowance times one minus its launch count. For every two customers, drone and nonfinal stop, the second customer's launch-completion time is at least the first customer's drone return time plus both recovery and launch durations at that earlier stop, less the allowance times two minus the first customer's assignment to that drone at that stop and the second customer's assignment to the same drone at the next stop. These durations use the earlier stop exactly as specified. For each customer, each possible launch and recovery location and each nonfinal stop, return time is at least launch-completion time plus drone trip times weighted by that customer's drone assignments plus its drone service duration, less the allowance times three minus launch count minus the two location records. Return time is also at least next truck arrival less the allowance times one minus launch count. Return time less launch-completion time cannot exceed endurance values weighted by drone assignments plus the allowance times the same three-minus-counts quantity.
 
+Each customer's truck service start is at least truck arrival at each stop less the allowance times one minus its location record there. Its service end is at least service start plus its truck service duration less the allowance times one minus its total truck visit count. Both start and end cannot exceed the allowance times that total visit count, so both are zero when it is not truck-served. Completion time must be at least truck arrival at the final position and, for every customer, at least its drone return time plus terminal recovery duration times its launch count at the penultimate position. This latter bound still contains the customer's return time when that launch count is zero. The team seeks the earliest completion time.
+
+For every distinct customer pair in a fixed index order and each noninitial stop, the two opposite task-order records must sum to at least both customers' launch counts, both recovery counts and both truck-location records, less one. At the initial stop the right-hand total includes only the two launch counts less one. No extra upper bound of one on the pair's order-record sum is imposed. The timing comparisons below apply to all customer pairs, including equal customer indices, with the order record meaning that the second customer's task precedes the first customer's task.
+
+At every noninitial stop, the first customer's return time is at least the second customer's return time plus recovery duration, less the allowance multiplied by three minus the second-before-first order record and both recovery counts. At every stop, the first customer's launch-completion time is at least the second customer's launch-completion time plus launch duration, less the allowance multiplied by three minus that order record and both launch counts. At noninitial stops, the second customer's return time is at least the first customer's launch-completion time less the allowance multiplied by two plus that order record minus the second customer's recovery count minus the first customer's launch count. Also, the first customer's launch-completion time is at least the second customer's return time plus recovery and launch durations, less the allowance multiplied by three minus that order record minus those same recovery and launch counts.
+
+At every noninitial stop, the first customer's return time is at least the second customer's truck-service end, less the allowance multiplied by three minus the second-before-first order record, the first customer's recovery count and the second customer's truck-location record. The first customer's truck-service start is at least the second customer's return time plus recovery duration, less the allowance multiplied by three minus that order record, the second customer's recovery count and the first customer's truck-location record. At every stop, the first customer's truck-service start is at least the second customer's launch-completion time, less the allowance multiplied by three minus that order record, the first customer's truck-location record and the second customer's launch count. The first customer's launch-completion time is at least the second customer's truck-service end plus launch duration, less the allowance multiplied by three minus that order record, the first customer's launch count and the second customer's truck-location record. All these allowances multiply the entire stated difference and remain finite even when tasks are inactive.
+
+\subsection*{Inline notation and relations}
+$\mathcal V$; $0$; $\mathcal C$; $v_{\rm end}=i_{N+F+1}$; $\mathcal C_T$; $\mathcal C_U$; $\mathcal U$; $\mathcal S=\{0,\ldots,S_{\max}\}$; $s_{\hat S+1}$; $S_{\max}$; $s_{\hat S}=S_{\max}-1$; $s_0=0$; $R^T_{ij}$; $R^U_{ijku}$; $E_{ijku}$; $V^T_i,V^U_i$; $H_j,G_j$; $M$; $H(s),G(s)$; $\sum_j H_jy_{js}$; $\sum_jG_jy_{js}$; $X_{is}=\sum_u x_{ius}$; $X_{i,-1}=0$; $y_{is}$; $x_{ius}$; $s$; $s+1$; $w_{ijs}$; $y:\mathcal V\times\mathcal S$; $x:\mathcal C\times\mathcal U\times\mathcal S$; $w:\mathcal C\times\mathcal C\times\mathcal S$; $\hat t$; $b_i,e_i$; $i$; $b_i^U,e_i^U$; $a^T_0=0$; $x_{iu,S_{\max}}=0$; $x_{ius}=0$; $w_{ij0}+w_{ji0}\ge X_{i0}+X_{j0}-1$; $[d_i^U-H(s),d_i^U]$; $[a_i^U,a_i^U+G(s)]$; $[b_i,e_i]$; $[a_s^T,d_s^T]$.
 \end{document}

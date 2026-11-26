@@ -1,21 +1,20 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,mathtools,geometry}
-\geometry{a4paper,margin=20mm}\allowdisplaybreaks
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
+
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
 \begin{document}
-\section*{Scheduling of electric bus trips under time-of-use electricity pricing system, along with combined charging models}
-
-\paragraph{Source} Pages 3–5 of the PDF document, section 2.2, equations (1)–(13). The conditions and relationships related to time indices are explained in detail within the text.
-\subsection*{Collections, parameters, and variables}
-$V$ Refers to bus schedules with a fixed start time $a_i$, end time $b_i$, and task power consumption $u_i$. $R$ Represents copies of visits to a single charging station. $o,e$ Represents copies of departures and returns from the same parking lot. $A$ Includes the allowed $o\to V$, $V\to V$, $V\to R$, $R\to V$, and $V\to e$ arcs; does not include self-arcs or arcs between charging stations. The number of copies must be sufficient for the next charge for each schedule. $t_{ij},d_{ij}$ Represents the travel time and power consumption of an arc. The battery capacity is $Q$,the daily fixed cost of the vehicle is $c_f$,the charging rate is $g>0$(power/country),and the maximum number of vehicles is $N_{\rm EB}$. $h_i$ Represents the original safety limit for energy consumption from the end of schedule $i$ until at the charging station or parking lot. $E(t)$ Is the charging cost rate \emph{ in the integral formula (1)}. If the input is the unit price of power $p(t)$,$E(t)=g p(t)$ should be provided first to make the integral unit monetary. Table 2 refers to it as electricity price, but formula (1) directly integrates by time. The costs are calculated based on the electricity price for each period and the above unit conversion.
-
-$x_{ij}\in\{0,1\}$ represents a connecting arc; $q_i\in[0,Q]$ represents the battery level at the arrival at the shift/charging station; $\tau^a_{ij},\tau^b_{ij}\ge0$ is the start/end time of the charging copy $j$ after the shift $i$. The cost of unselected charging arcs is zero, as are their two-time points.
-\subsection*{Complete core model}
+\section*{P0348 Scheduling Electric Bus Trips and Full Recharges at Time-Varying Prices}
+\subsection*{Mathematical formulation}
 \[
 \min\ c_f\sum_{j\in V}x_{oj}
  +\sum_{i\in V,j\in R:(i,j)\in A}
   x_{ij}\int_{\tau^a_{ij}}^{\tau^b_{ij}}E(t)\,dt.\tag{1}
 \]
+
 \begin{align}
 \sum_{j:(i,j)\in A}x_{ij}&=1 &&i\in V,\tag{2}\\
 \sum_{j:(i,j)\in A}x_{ij}&\le1 &&i\in R,\tag{3}\\
@@ -23,7 +22,7 @@ $x_{ij}\in\{0,1\}$ represents a connecting arc; $q_i\in[0,Q]$ represents the bat
 &&j\in V\cup R,\tag{4}\\
 \sum_{j\in V}x_{oj}&=\sum_{i\in V}x_{ie}\le N_{\rm EB}.\tag{12}
 \end{align}
-The following time/energy relationships only apply to the actually selected arcs. This converts the original text’s ambiguous logic into a clear, unambiguous conditional form:
+
 \begin{align}
 x_{ij}=1&\Longrightarrow b_i+t_{ij}\le a_j &&i,j\in V,\tag{5}\\
 x_{ij}=1&\Longrightarrow \tau^a_{ij}=b_i+t_{ij} &&i\in V,\ j\in R,\tag{6}\\
@@ -41,8 +40,18 @@ x_{ie}=1&\Longrightarrow q_i-u_i-d_{ie}\ge0 &&i\in V,\tag{11c}\\
 x_{ij}&\in\{0,1\},\quad 0\le q_i\le Q,\quad
 0\le\tau^a_{ij}\le\tau^b_{ij}.\tag{13}
 \end{align}
-Equation (11c) clearly indicates the energy required for returning to the station. If $h_i$ already covers the power consumption associated with station operations, then it can be considered redundant. Only connections between shifts from $o$ to $e$ are allowed. Fixed trips are connected in strict time order, which rules out cycles when travel or charging time is positive. For inputs with zero duration, standard connectivity constraints must be applied. Cycles disconnected from the depot are forbidden.
-\paragraph{Original form and explanatory notes}
-Equation (5) originally had the subscript marked as $j\in R$. However, this equation and its terms represent two consecutive periods, so it has been changed to $j\in V$. Equation (8) becomes effective when both the charging arc and subsequent arcs are selected. For equations (9) to (10), the $Q$ option for those arcs that are not selected still remains active. This option is still denoted as $u_i$. Here, the terms “consecutive periods/charging arcs” are used to clarify the conditions, thereby avoiding incorrect constraints on energy levels due to the selection of certain arcs. The energy status is determined using the upper bound relationships provided in the original formula. In the old LaTeX format, the reverse integration and multiplication operations were denoted as $g$. These have been corrected in the PDF version to represent integration from start to end, along with division by $g$.
 
+\subsection*{Definitions and model scope}
+A bus operator must cover given scheduled trips $V$, each with fixed start time $a_i$, end time $b_i$ and trip energy use $u_i$. There is one physical charging station, represented by enough distinct charging-visit copies $R$ to permit one recharge after every trip, and separate departure depot $o$ and return depot $e$ copies of the same depot. The supplied allowed connections $A$ go from departure depot to trips, between trips, from trips to charging copies, from charging copies to trips and from trips to return depot. No self-connection or connection between charging copies is allowed. Each connection has given travel time $t_{ij}$ and travel energy use $d_{ij}$.
+
+Choose zero-or-one connection selections $x_{ij}$. Every trip has exactly one selected outgoing connection, every charging copy has at most one, and every trip or charging copy has equal selected incoming and outgoing counts. The number of selected connections leaving the departure depot equals the number entering the return depot and cannot exceed the given electric-bus allowance $N_{\rm EB}$. All trips must belong to connected chains from departure depot to return depot, including when degenerate zero-duration inputs would otherwise permit a closed chain disconnected from the depot.
+
+Choose a continuous arrival energy $q_i$ at each trip or charging copy between zero and the given battery capacity $Q$. At every trip, arrival energy must be at least that trip's energy use plus its given post-trip safety energy $h_i$. On a selected connection between trips, or from a trip to a charging copy, the destination arrival energy cannot exceed the origin arrival energy less origin trip energy use and connection travel energy use. On a selected depot-to-trip connection, arrival energy cannot exceed battery capacity less connection energy use. On a selected charging-to-trip connection, it cannot exceed that same full-battery remainder. A selected trip-to-return-depot connection requires origin arrival energy less trip use and return travel use to be nonnegative. These are upper and lower energy requirements, not equalities forcing each reported arrival energy to its physical upper limit.
+
+A selected direct trip-to-trip connection requires the first trip's fixed end plus travel time to be no later than the next trip's fixed start. For each trip-to-charging connection, choose nonnegative charging start $\tau^a_{ij}$ and charging end $\tau^b_{ij}$ with start no later than end. Both are zero if the connection is unselected. If selected, charging starts exactly at the first trip's end plus travel time and ends after battery capacity less arrival energy at that charging copy, divided by the strictly positive charging rate $g$. When both that charging connection and its successor connection to another trip are selected, charging end plus successor travel time cannot exceed the successor trip's fixed start.
+
+The operator seeks the smallest daily vehicle charge plus actual charging expense. Charge the given daily vehicle fee $c_f$ for each selected depot departure. For each selected trip-to-charging connection, integrate the given time-varying charging cost rate $E(t)$ from charging start to charging end, then add across these connections. The rate is currency per unit time: if the input is a per-energy price, first multiply it by charging rate to obtain the cost rate. A recharge spanning several price intervals pays each interval's actual rate; an unselected charging event costs zero. Waiting to deliberately delay charging after station arrival and partial charging are not added as alternatives.
+
+\subsection*{Inline notation and relations}
+$V$; $a_i$; $b_i$; $u_i$; $R$; $o,e$; $A$; $o\to V$; $V\to V$; $V\to R$; $R\to V$; $V\to e$; $t_{ij},d_{ij}$; $Q$; $c_f$; $g>0$; $N_{\rm EB}$; $h_i$; $i$; $E(t)$; $p(t)$; $E(t)=g p(t)$; $x_{ij}\in\{0,1\}$; $q_i\in[0,Q]$; $\tau^a_{ij},\tau^b_{ij}\ge0$; $j$; $o$; $e$; $j\in R$; $j\in V$; $g$.
 \end{document}

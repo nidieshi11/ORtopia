@@ -1,20 +1,14 @@
-
-
-
-
-
-\documentclass{article}
-\usepackage{amsmath}
-\usepackage{amssymb}
-
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
+
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
 \begin{document}
-
-\section*{This is a **integrated optimization problem** that combines two components: – **Tail Assignment Problem** (TAP) – **Cargo Routing Problem** (CRP) The problem is modeled as a **mixed integer linear programming problem** (MILP). The paper proposes two models: a connection-based model and a route-based model.}
-
-\textbf{ Model source:}: Derived from calculations
-
-\subsection*{Decision variables}
+\section*{P0411 Assigning Air Cargo to Given Paths and Recording Unmet Demand}
+\subsection*{Mathematical formulation}
 \[
 \begin{aligned}
 & z_{bp} \in \mathbb{Z}^+, && \forall b \in B, \forall p \in P \\
@@ -22,12 +16,10 @@
 \end{aligned}
 \]
 
-\subsection*{Objective function}
 \[
 \max \quad \sum_{b \in B} \sum_{p \in P} (q_b - c_{bp}) z_{bp} - \sum_{b \in B} c_b v_b
 \]
 
-\subsection*{Constraints}
 \[
 \begin{aligned}
 &\sum_{p \in P} z_{bp} + v_b = D_b, && \forall b \in B \\
@@ -35,7 +27,6 @@
 \end{aligned}
 \]
 
-\subsection*{Complete mathematical model}
 \[
 \begin{aligned}
 \max \quad & \sum_{b \in B} \sum_{p \in P} (q_b - c_{bp}) z_{bp} - \sum_{b \in B} c_b v_b \\
@@ -44,5 +35,15 @@
 & z_{bp}, v_b \in \mathbb{Z}^+, && \forall b \in B, \forall p \in P
 \end{aligned}
 \]
+
+\subsection*{Definitions and model scope}
+An air-cargo planner allocates given orders $B$ over a common supplied path collection $P$ using given flight legs $L$. Each order has a given demand quantity $D_b$, a given unit revenue $q_b$, a given unit path cost $c_{bp}$ on every path and a given unit unmet-demand penalty $c_b$. Every flight leg has a fixed cargo capacity $Cap_i$ and a supplied group of paths using that leg $P_i$. These capacities and paths are inputs, not choices of aircraft tail or flight operation.
+
+For every order and every path in the common collection, the planner chooses a nonnegative integer transported quantity $z_{bp}$. It also chooses a nonnegative integer unmet quantity $v_b$ for every order. Total transported quantity across all paths plus unmet quantity must equal the order's demand. An order may therefore be split across several paths or left partly or wholly unserved. The common path collection is not independently reduced to a shorter order-specific collection.
+
+For each flight leg, add the transported quantities of all orders on every path in that leg's supplied path group. This total cannot exceed the leg's cargo capacity. A path's traffic consequently counts on each flight leg whose group contains that path. There is no separate aircraft-flow, tail-assignment or through-connection choice in this allocation.
+
+The planner seeks the greatest net return. For every order-path pair, subtract its unit path cost from the order's unit revenue and multiply by the transported quantity; add these margins across all pairs. Then subtract each order's unit unmet-demand penalty times its unmet quantity. Unit revenue does not change with the selected path, and it is not multiplied by total order demand a second time.
+
 
 \end{document}

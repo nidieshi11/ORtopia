@@ -1,13 +1,13 @@
 window.ORTOPIA_REPLAY_LOGIC=window.ORTOPIA_REPLAY_LOGIC||{};window.ORTOPIA_REPLAY_LOGIC["P0145"]=[
   {
     "decision": "The truck will deliver 3 and 2, the drone will deliver 1, and the three orders will be loaded together.",
-    "evidence": "The total load is 5.8828, equal to the truck capacity; customer 2 is not on the airlift list and 3's demand of 2.5586 exceeds the drone capacity of 2.4306.",
-    "consequence": "The coordinated truck–drone plan costs 2.029 less than the cheapest truck-only plan.",
+    "evidence": "The total load is 5.8828, equal to the truck capacity; customer 2 is not on the airlift list and 3’s demand of 2.5586 exceeds the drone capacity of 2.4306.",
+    "consequence": "This car-to-machine plan is 2.029 less than the lowest cost of all ground transportation in the same car.",
     "comparison": {
       "title": "If the same team completes all orders, should drones be used to deliver them?",
       "options": [
         {
-          "label": "Coordinated truck–drone delivery",
+          "label": "Vehicle-machine collaboration",
           "value": 15.755025,
           "unit": "Cost",
           "note": "Truck 0 → 3 → 2 → 4; Drone 3 → 1 → 2, the costs of driving, flying, lateness and order rejection are calculated according to the original model."
@@ -52,7 +52,7 @@ window.ORTOPIA_REPLAY_LOGIC=window.ORTOPIA_REPLAY_LOGIC||{};window.ORTOPIA_REPLA
   {
     "decision": "Select mission 3 → 1 → 2.",
     "evidence": "Package 2.1815 ≤ load 2.4306, two-stage flight time 3.2643 ≤ endurance 8.0.",
-    "consequence": "The flight uses the only drone on board. It rejoins the truck when the truck recovers it at node 2."
+    "consequence": "This flight occupies the only onboard drone, and it cannot be re-acquired until 2 recoveries."
   },
   {
     "decision": "1’s order is fulfilled by a drone while the truck drives to 2.",
@@ -66,8 +66,8 @@ window.ORTOPIA_REPLAY_LOGIC=window.ORTOPIA_REPLAY_LOGIC||{};window.ORTOPIA_REPLA
   },
   {
     "decision": "Have the drone fly at the end of 2 that the truck has visited.",
-    "evidence": "take off 6.4313＋Round trip segment 3.2643＝Recycle 9.6957.",
-    "consequence": "The two branches are connected at the same node, and the remaining road sections 2 → 4 Can be completed with the car."
+    "evidence": "take off 6.4313＋Round trip segment 3.2643＝Recycle 9.6957. ",
+    "consequence": "The two branches are connected at the same node, and the remaining road sections 2 → 4 Can be completed with the car. "
   },
   {
     "decision": "Drive from 2 to end 4 and bring back the drone.",
@@ -76,13 +76,13 @@ window.ORTOPIA_REPLAY_LOGIC=window.ORTOPIA_REPLAY_LOGIC||{};window.ORTOPIA_REPLA
   },
   {
     "decision": "Aggregate costs for truck arcs and drone missions separately.",
-    "evidence": "truck cost 14.1229＋drone cost 1.6322, Late and rejected order fees are 0.",
-    "consequence": "total cost 15.755, The comparison fee for all ground delivery is 17.7841.",
+    "evidence": "truck cost 14.1229＋drone cost 1.6322, Late and rejected order fees are 0. ",
+    "consequence": "total cost 15.755, The comparison fee for all ground delivery is 17.7841. ",
     "comparison": {
       "title": "If the same team completes all orders, should drones be used to deliver them?",
       "options": [
         {
-          "label": "Coordinated truck–drone delivery",
+          "label": "Vehicle-machine collaboration",
           "value": 15.755025,
           "unit": "Cost",
           "note": "Truck 0 → 3 → 2 → 4; Drone 3 → 1 → 2, the costs of driving, flying, lateness and order rejection are calculated according to the original model."

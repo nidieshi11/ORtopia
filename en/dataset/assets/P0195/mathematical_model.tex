@@ -1,46 +1,36 @@
-% Mathematical Model - paper
-% Auto-generated at 2026-01-12T01:24:00.484170
-% Model Source: Directly Extracted
-% This model is directly extracted from the paper
-
-\documentclass{article}
-\usepackage{amsmath}
-\usepackage{amssymb}
-
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
+
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
 \begin{document}
-
-\section*{Problem: Optimization Problem}
-
-\textbf{Model Source}: Directly Extracted
-
-\subsection*{Decision Variables}
-\[
-\begin{aligned}
-&\text{Stage 1 decision variables:} \\
+\section*{P0195 High-speed rail parcel capacity and assignment}
+\subsection*{Mathematical formulation}
+\begin{align*}
+&\text{first-stage variables:} \\
 &\quad \alpha_k \geq 0, \text{ integer} && \forall k \in K_2 \\
 &\quad \mu_k \in \{0, 1\} && \forall k \in K_2 \\
 &\quad \beta_k \in \{0, 1\} && \forall k \in K_3 \\
-&\text{Second-stage decision variables:} \\
+&\text{second-stage variables:} \\
 &\quad \gamma^w_{k,i} \geq 0, \text{ integer} && \forall w \in W, k \in K, i \in I \\
 &\quad \theta^w_i \geq 0, \text{ integer} && \forall w \in W, i \in I \\
 &\quad \lambda^w_{k,s} \geq 0, \text{ integer} && \forall w \in W, k \in K, s \in S_k
-\end{aligned}
-\]
+\end{align*}
 
-\subsection*{Objective Function}
 \begin{equation}\tag{1}
 \text{Maximize} \quad \sum_{w \in W} p_w y(w, \alpha_k, \beta_k, \mu_k) - \sum_{k \in K_2} F1_k \alpha_k - \sum_{k \in K_3} F2_k \beta_k
 \end{equation}
 
-\subsection*{Constraints}
-\begin{align}
-&\text{Phase 1 constraints:} \\
+\begin{align*}
+&\text{first-stage constraints:} \\
 &\quad \mu_k \le \alpha_k \le N \mu_k && \forall k \in K_2 \tag{2} \\
 &\quad \alpha_k \geq 0, \text{ integer} && \forall k \in K_2 \tag{3} \\
 &\quad \mu_k \in \{0, 1\} && \forall k \in K_2 \tag{4} \\
 &\quad \beta_k \in \{0, 1\} && \forall k \in K_3 \tag{5} \\
-&\text{Phase II constraints:} \\
+&\text{second-stage constraints:} \\
 &\quad \sum_{k \in K} \gamma^w_{k,i} + \theta^w_i = n^w_i && \forall w \in W, i \in I \tag{7} \\
 &\quad \sum_{i \in I} \gamma^w_{k,i} \le c_1 && \forall w \in W, k \in K_1 \tag{8} \\
 &\quad \sum_{i \in I} \gamma^w_{k,i} \le u^w_k (1 - \mu_k) + c_2 \alpha_k && \forall w \in W, k \in K_2 \tag{9} \\
@@ -49,10 +39,9 @@
 &\quad \lambda^w_{k,s} \le c_3 \beta_k && \forall w \in W, k \in K_3, s \in S_k \tag{12} \\
 &\quad \sum_{i \in I} (g^1_{i,s} + g^2_{i,s}) \gamma^w_{k,i} \le Q_{k,s} && \forall w \in W, k \in K, s \in S \tag{13} \\
 &\quad \lambda^w_{k,s}, \gamma^w_{k,i}, \theta^w_i \ge 0, \text{ integer} && \forall w \in W, k \in K, i \in I \tag{14}
-\end{align}
+\end{align*}
 
-\subsection*{Complete Mathematical Model}
-\begin{align}
+\begin{align*}
 \text{[M0] Maximize} \quad & \sum_{w \in W} p_w y(w, \alpha_k, \beta_k, \mu_k) - \sum_{k \in K_2} F1_k \alpha_k - \sum_{k \in K_3} F2_k \beta_k \tag{1} \\
 \text{Subject to:} \quad & \mu_k \le \alpha_k \le N \mu_k && \forall k \in K_2 \tag{2} \\
 & \alpha_k \geq 0, \text{ integer} && \forall k \in K_2 \tag{3} \\
@@ -67,6 +56,18 @@
 & \lambda^w_{k,s} \le c_3 \beta_k && \forall w \in W, k \in K_3, s \in S_k \tag{12} \\
 & \sum_{i \in I} (g^1_{i,s} + g^2_{i,s}) \gamma^w_{k,i} \le Q_{k,s} && \forall w \in W, k \in K, s \in S \tag{13} \\
 & \lambda^w_{k,s}, \gamma^w_{k,i}, \theta^w_i \ge 0, \text{ integer} && \forall w \in W, k \in K, i \in I \tag{14}
-\end{align}
+\end{align*}
+
+\subsection*{Definitions and model scope}
+A rail express operator faces given scenarios of parcel demand and remaining passenger-train capacity. Available trains fall into confirmed services, services with reservable compartments, and candidate freight services. Each origin-destination order has scenario demand, revenue per parcel, a given train-specific delivery-delay charge and a rejection penalty. Each class has a common capacity specification: a confirmed train's total assignment limit, capacity per reserved compartment, and a freight train's onboard limit. Reservation and freight launch prices, the reservation-count limit, train route positions, boarding and alighting records, transition coefficients between route positions, and scenario-independent handling limits for every train and global station position are supplied.
+
+Before the scenario is known, the operator chooses a nonnegative whole-number reserved compartment count $\alpha_k$ and a yes-or-no reservation record $\mu_k$ for each reservable train, and a yes-or-no freight launch record $\beta_k$ for each freight candidate. Reserved count is at least the reservation record and at most the common reservation limit times that record. Once a scenario is realized, nonnegative whole-number assigned parcels $\gamma^w_{k,i}$ and rejected parcels $\theta_i^w$ are chosen. For every order and scenario, assignments across all trains plus rejections equal demand.
+
+In each scenario, total assigned parcels across all orders on each confirmed train cannot exceed the confirmed-class limit. On a reservable train, that total cannot exceed scenario remaining capacity times one minus its reservation record plus compartment capacity times reserved count. Reserving compartments therefore replaces, rather than adds to, unreserved remaining capacity. For each freight train and each position on its route, nonnegative whole-number onboard parcels $\lambda^w_{k,s}$ cannot exceed freight-class capacity times its launch record.
+
+A train's onboard count at its first route position equals assigned order quantities weighted by whether each order boards there. At every later route position, onboard count equals the sum of all route-position onboard counts weighted by the supplied predecessor-transition coefficients, plus assigned parcels weighted by boarding record less alighting record at the current position. For every train, scenario and position in the full global station collection, handling workload equals assigned parcels weighted by boarding plus alighting records and cannot exceed that train-position handling limit. This handling requirement is not restricted only to positions on that train's own route.
+
+The operator seeks the greatest expected net profit. Within each scenario, revenue less train-specific delivery-delay charge per parcel is multiplied by assigned quantities and totaled over trains and orders, then rejection penalties times rejected quantities are subtracted. These scenario profits are weighted by the supplied probabilities. Finally subtract reservation price times reserved compartments and freight launch price times launch records, each paid once before scenarios are known. No probability renormalization or additional order-eligibility condition is introduced beyond the given boarding, alighting, flow and capacity requirements.
+
 
 \end{document}

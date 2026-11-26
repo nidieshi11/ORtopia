@@ -1,32 +1,22 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,geometry}
-\geometry{margin=22mm}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
-\begin{document}
-\section*{P10: The arc-shaped main model M1, where drones and delivery workers work together to achieve efficient delivery.}
-\paragraph{Source and scope}According to pages 1, 3, 4, 5, 6, 7, 8, 9, and 10 of the original paper’s PDF file, the text ranges from (1.1) to (1.26).
-\subsection*{Core scope and collection}
-Retain the arc-based MILP description for $M1$: It determines which orders to accept in a arrived order batch, through which pick-up and delivery stations, and which delivery staff will relay with the drones and at what times. Each drone can handle at most one order per batch; delivery staff complete the pick-up/delivery arcs in sequence, and cannot carry multiple orders at the same time. The transportation time is fixed, and orders are generated in batches every five minutes. The completion time for each order is determined by the instance.
 
-$O,R,D$ refer to orders, delivery workers, and drones. The optional delivery arc $A_o^P$ of order $o$ connects from its starting point to the candidate delivery station, while the optional delivery arc $A_o^L$ connects from the candidate distribution station to the destination. $A^P=\bigcup_oA_o^P,A^L=\bigcup_oA_o^L,A=A^P\cup A^L$ assigns unique numbers to arcs for different orders and types. $F=\bigcup_o(A_o^P\times A_o^L)$ represent pairs of orders with same pick and deliver arcs. $s_r,e_r$ represents the virtual starting and ending arcs for delivery workers, and $s_d$ represents the virtual starting arc for drones. Delivery workers can use connection sets.
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
+\begin{document}
+\section*{P0010 Order Acceptance and Relay Delivery by Couriers and Drones}
+\subsection*{Mathematical formulation}
 \[
 E_r=\{(a,b):a\in A\cup\{s_r\},\ b\in A\cup\{e_r\},a\ne b\}.
 \]
-The non-existent connection variable is always set to 0; the connection to $(s_r,e_r)$ allows the delivery person to not serve this batch of orders.
-\subsection*{Parameters and variables}
-$v_o\geq0$ represents the revenue from each order, while $c_r^C,c_d^D\geq0$ represents the cost per unit of driving time. $t_r^C,t_d^D\geq0$ indicates the known time points at which tasks can be released after completion. $L_r^C,L_d^D$ represents the maximum cumulative driving/flying time. This value reflects the remaining battery capacity. The cumulative time is calculated separately for driving and flying scenarios.
 
-$w_a\geq0$ represents the driving time for the deliveryman to execute pick-up/send-off arcs $a$. $h_{ab}^C\geq0$ denotes the travel time from the end point of arc $a$ to the starting point of arc $b$. $h_{d,a}^D$ refers to the flight time for the drone from the current location to the pick-up station at the end point of arc $a$. $h_{ab}^D$ represents the flight time from the pick-up station to the delivery station. In the original text, point symbols are used in (1.7) and double point symbols in (1.8), but both denote the same flight between stations. This document uniformly refers to this as $h_{ab}^D$. The virtual arc itself is denoted as $w_{s_r}=0$. The idle connection driving time is 0, and the time for other terminated connections is defined according to the instance.
-
-$l_a\geq0$ represents the latest departure time for the delivery driver from point $a$. If $a$ refers to the delivery arc, then the deadline for delivery is $l_a+w_a$. The travel time for actual delivery arcs is positive, thus subcircuits that involve negative travel times can be excluded from the calculation.
-
-$\beta_a\in\{0,1\}$ Select the delivery arc; $\gamma^C_{r,ab}\in\{0,1\}$ Choose the adjacent connections between delivery agents; $\gamma^D_{d,ab}\in\{0,1\}$ Determine when the drone should fly between different stations. $\tau_a^C$ This represents the time at which the delivery agent starts from the starting point of the delivery arc. $\tau_a^D$ This indicates the time when the drone departs from the pick-up station. $\tau_a^D$ This refers to the time when the drone reaches the delivery station. $\varepsilon_r^C,\varepsilon_d^D$ This represents the total travel time.
-
-Set it to $H=\max_{a\in A}l_a$. Values $M_{ra}^C=t_r^C+h_{s_ra}^C$, $M_{ab}^C=l_a+w_a+h_{ab}^C$, and $M_{ab}^D=H+h_{ab}^D$ are acceptable. The time limit for drones is set to $0\leq\tau_a^D\leq H$, which does not exclude any valid flight that meets the final delivery deadline. This also makes the large constants related to unactivated time intervals valid. When there is no work to be done, the value should be 0.
-\subsection*{The only complete model available}
 \begin{equation}
 \max\quad \sum_{o\in O}v_o\sum_{a\in A_o^P}\beta_a-\sum_{r\in R}c_r^C\varepsilon_r^C-\sum_{d\in D}c_d^D\varepsilon_d^D.
 \end{equation}
+
 \begin{align}
 \sum_{a\in A_o^P}\beta_a&\leq1&&o\in O,\\
 \sum_{a\in A_o^P}\beta_a&=\sum_{b\in A_o^L}\beta_b&&o\in O,\\
@@ -37,6 +27,7 @@ Set it to $H=\max_{a\in A}l_a$. Values $M_{ra}^C=t_r^C+h_{s_ra}^C$, $M_{ab}^C=l_
 \varepsilon_d^D&=\sum_{(a,b)\in F}(h_{d,a}^D+h_{ab}^D)\gamma^D_{d,ab}&&d\in D,\\
 0\leq\varepsilon_d^D&\leq L_d^D&&d\in D.
 \end{align}
+
 \begin{align}
 \beta_a&=\sum_{r\in R}\sum_{b:(a,b)\in E_r}\gamma^C_{r,ab}&&a\in A,\\
 \sum_{b:(s_r,b)\in E_r}\gamma^C_{r,s_rb}&=1,\quad\sum_{a:(a,e_r)\in E_r}\gamma^C_{r,ae_r}=1&&r\in R,\\
@@ -52,6 +43,20 @@ Set it to $H=\max_{a\in A}l_a$. Values $M_{ra}^C=t_r^C+h_{s_ra}^C$, $M_{ab}^C=l_
 0\leq\tau_a^D&\leq H&&a\in A,\\
 \beta_a,\gamma^C_{r,ab},\gamma^D_{d,ab}&\in\{0,1\}&&\text{all defined indices}.
 \end{align}
-The time sequence is listed one by one, according to the deliveryman’s $r$ coordinates. This corresponds to the summation of actual arcs in the original text, while avoiding the use of virtual endpoints interchangeably. In the original formula (1.10), the virtual starting point is combined with $\beta_a$ subscripts. This document only applies this formula to actual arcs; virtual starting points are handled separately through departure constraints. The lower limit for drone assignments from the original text is retained. Under non-negative costs, unnecessary drone flights can be eliminated, without generating any additional benefits. $l_a$ represents the time limit for the deliveryman to reach the order’s starting point. The takeoff time of the drones is determined by the moment when the package is picked up and any connecting constraints that apply.
 
+\subsection*{Definitions and model scope}
+A delivery platform decides which orders in an already arrived batch $O$ to accept and coordinates couriers $R$ and drones $D$ for relay delivery. For order $o$, a pickup operation in $A_o^P$ leads from its sender to a candidate pickup station, a drone carries it to a candidate delivery station, and a delivery operation in $A_o^L$ leads to its recipient. All pickup operations form $A^P$, all delivery operations form $A^L$, and together they form $A$, with distinct identifiers for different orders and operation types. Every pairing of pickup and delivery operations for the same order belongs to $F$. Binary state $\beta_a$ is one when operation $a$ is chosen and zero otherwise. Each order has at most one chosen pickup and equally many chosen pickups and deliveries, so it is rejected or receives exactly one of each. Travel times are deterministic, station congestion imposes no waiting requirement, and the five-minute batching interval is not a common completion deadline.
+
+Courier $r$ has a virtual start $s_r$ and end $e_r$, and drone $d$ has a virtual start $s_d$, representing resource locations and starting or ending states. A courier's possible connections $E_r$ lead from a real operation or its virtual start to a real operation or its virtual end, never back to the same operation. A direct start-to-end connection means the courier does no work in this batch; connections not listed cannot be used. Binary connection state $\gamma^C_{r,ab}$ records whether that courier performs operation $b$ immediately after $a$. Each courier leaves its virtual start exactly once and enters its virtual end exactly once. At every real operation, that courier's incoming and outgoing counts are equal and at most one, while all couriers' combined outgoing count equals the operation's selection state. Thus each chosen operation has exactly one courier, and couriers complete operations sequentially without carrying several orders simultaneously.
+
+Real operations have strictly positive travel time $w_a$, whereas virtual-start duration $w_{s_r}$ is zero. Repositioning time $h_{ab}^C$ is nonnegative, the idle start-to-end connection takes zero time, and other end connections use their actual travel times. Courier release time $t_r^C$ and each operation's latest departure $l_a$ are nonnegative. A real operation starts at $\tau_a^C$, between zero and its latest departure times its selection state, so an unchosen operation starts at zero. Virtual-end time $\tau_{e_r}^C$ need only be nonnegative. When a first-operation connection is chosen, that operation cannot start before courier release plus repositioning to it; otherwise this lower bound is reduced by $M_{ra}^C$, the sum of those two times. Every connection leaving a real operation requires the next start to follow the preceding start, travel and repositioning times; when unchosen, the lower bound is reduced by $M_{ab}^C$, the preceding operation's latest departure plus its travel time and the connection's repositioning time. Positive real-operation durations prevent cycles of operations.
+
+Binary relay state $\gamma^D_{d,ab}$ is one when drone $d$ handles a same-order pickup-delivery pair and zero otherwise; each drone handles at most one pair in the batch. The number of drones assigned to each pair is at least the sum of its two operation-selection states minus one. Thus two chosen operations require at least one drone, but dispatch is not separately restricted to chosen operations and this lower bound does not require a unique drone. Nonnegative release time $t_d^D$ is known, flying from the drone's current location to the pickup station takes $h_{d,a}^D$, and flying between stations takes $h_{ab}^D$. At a pickup operation, $\tau_a^D$ records departure from its station; at a delivery operation it records arrival at its station. These continuous times lie between zero and $H$, the largest latest departure among real operations. When there are no real operations, this common time ceiling is zero. Whenever a drone handles a pickup, station departure cannot precede its release plus travel to that station; otherwise that drone's corresponding lower bound is zero.
+
+For every same-order pair, drone arrival at the delivery station must be at least pickup-station departure plus interstation flight time, less $M_{ab}^D$ multiplied by one minus the number of drones assigned to that pair. The allowance $M_{ab}^D$ equals $H$ plus that interstation flight time. One assigned drone therefore requires the full flight interval, none uses the relaxed lower bound, and more than one strengthens this stated requirement. At every pickup operation, drone departure must follow courier start plus that operation's travel time multiplied by its selection state. At every delivery operation, drone arrival cannot follow courier start. A pickup operation's latest departure limits only the courier leaving the sender; the drone can depart the station after the courier finishes that pickup travel. A delivery operation's recipient deadline is its latest departure plus its travel duration.
+
+Courier travel total $\varepsilon_r^C$ adds preceding-operation duration and repositioning time over every chosen connection and lies between zero and travel budget $L_r^C$. Drone flight total $\varepsilon_d^D$ adds travel to the pickup station and interstation flight over its assigned pairs and lies between zero and budget $L_d^D$, reflecting remaining battery energy. Waiting does not count toward these budgets or travel charges. The platform seeks the highest revenue less transport cost: each accepted order earns nonnegative revenue $v_o$, and courier and drone travel totals incur nonnegative rates $c_r^C$ and $c_d^D$, respectively. Unnecessary drone flights earn no extra revenue and can be removed. All selection and connection states are zero or one, while timing and travel totals use the continuous ranges described above.
+
+\subsection*{Inline notation and relations}
+$M1$; $O,R,D$; $o$; $A_o^P$; $A_o^L$; $A^P=\bigcup_oA_o^P,A^L=\bigcup_oA_o^L,A=A^P\cup A^L$; $F=\bigcup_o(A_o^P\times A_o^L)$; $s_r,e_r$; $s_d$; $(s_r,e_r)$; $v_o\geq0$; $c_r^C,c_d^D\geq0$; $t_r^C,t_d^D\geq0$; $L_r^C,L_d^D$; $w_a\geq0$; $a$; $h_{ab}^C\geq0$; $b$; $h_{d,a}^D$; $h_{ab}^D$; $w_{s_r}=0$; $l_a\geq0$; $l_a+w_a$; $\beta_a\in\{0,1\}$; $\gamma^C_{r,ab}\in\{0,1\}$; $\gamma^D_{d,ab}\in\{0,1\}$; $\tau_a^C$; $\tau_a^D$; $\varepsilon_r^C,\varepsilon_d^D$; $H=\max_{a\in A}l_a$; $M_{ra}^C=t_r^C+h_{s_ra}^C$; $M_{ab}^C=l_a+w_a+h_{ab}^C$; $M_{ab}^D=H+h_{ab}^D$; $0\leq\tau_a^D\leq H$; $r$; $\beta_a$; $l_a$.
 \end{document}

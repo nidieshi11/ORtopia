@@ -1,44 +1,14 @@
-% Mathematical Model - The Bike sharing Rebalancing Problem with Stochastic Demands
-% Auto-generated at 2025-12-20T11:56:38.278088
-% Model Source: Directly Extracted
-% This model is directly extracted from the paper
-
-\documentclass{article}
-\usepackage{amsmath}
-\usepackage{amssymb}
-
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
+
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
 \begin{document}
-
-\section*{Problem: **Type of problem**: Stochastic Programming (Two-Stage Stochastic Integer Programming) **Specific classification**: This problem belongs to the category of Stochastic Ride-Sharing Rebalancing Problems (BRPSD). It is a variant of Stochastic Vehicle Routing Problems (SVRP). More precisely, it can be considered as a stochastic version of the “Single Product, Multiple-to-Multiple Delivery Vehicle Routing Problem”.}
-
-\textbf{Model Source}: Directly Extracted
-
-% \subsection*{Decision Variables}
-% x_{ij} \in \{0, 1\}, \quad \forall (i, j) \in A
-% f_{ij}^{\omega} \ge 0, \quad \forall (i, j) \in A, \omega \in \Omega
-% s_{j}^{\omega-} \ge 0, \quad \forall j \in V_0, \omega \in \Omega
-% s_{j}^{\omega+} \ge 0, \quad \forall j \in V_0, \omega \in \Omega
-% \eta \ge 0
-% \eta^{\omega} \ge 0, \quad \forall \omega \in \Omega
-
-% \subsection*{Objective Function}
-% \text{(DEP) } \min \quad \sum_{(i,j) \in A} c_{ij} x_{ij} + \varepsilon \cdot c_{\min} \sum_{\omega \in \Omega} p^{\omega} \sum_{j \in V_0} (s_{j}^{\omega-} + s_{j}^{\omega+})
-
-% \subsection*{Constraints}
-% \sum_{i \in V, i \neq j} x_{ij} = 1, \quad \forall j \in V_0
-% \sum_{i \in V, i \neq j} x_{ji} = 1, \quad \forall j \in V_0
-% \sum_{i \in S} \sum_{j \in S} x_{ij} \le |S| - 1, \quad \forall S \subseteq V_0, S \neq \emptyset, |S| > 2
-% x_{ij} + x_{ji} \le 1, \quad \forall i, j \in V_0, i \neq j
-% f_{ij}^{\omega} \le Q x_{ij}, \quad \forall (i, j) \in A, \omega \in \Omega
-% \sum_{i \in V, i \neq j} f_{ji}^{\omega} - \sum_{i \in V, i \neq j} f_{ij}^{\omega} = q_j^{\omega} + s_{j}^{\omega-} - s_{j}^{\omega+}, \quad \forall j \in V_0, \omega \in \Omega
-% s_{j}^{\omega-} \le \min\{\lceil \delta H_j \rceil, d_j\}, \quad \forall j \in V_0, \omega \in \Omega
-% s_{j}^{\omega+} \le \min\{\lceil \delta H_j \rceil, H_j - d_j\}, \quad \forall j \in V_0, \omega \in \Omega
-% s_{j}^{\omega+}, s_{j}^{\omega-} \ge 0, \quad \forall j \in V_0, \omega \in \Omega
-% f_{ij}^{\omega} \ge 0, \quad \forall (i, j) \in A, \omega \in \Omega
-% x_{ij} \in \{0, 1\}, \quad \forall (i, j) \in A
-
-\subsection*{Complete Mathematical Model}
+\section*{P0068 Shared-bicycle rebalancing with uncertain demand}
+\subsection*{Mathematical formulation}
 \begin{align*}
 \text{(DEP)} \quad \min \quad & \sum_{(i,j) \in A} c_{ij} x_{ij} + \varepsilon \cdot c_{\min} \sum_{\omega \in \Omega} p^{\omega} \sum_{j \in V_0} (s_{j}^{\omega-} + s_{j}^{\omega+}) \\
 \text{s.t.} \quad & \sum_{i \in V, i \neq j} x_{ij} = 1, && \forall j \in V_0 \\
@@ -53,5 +23,15 @@
 & f_{ij}^{\omega} \ge 0, && \forall (i, j) \in A, \omega \in \Omega \\
 & x_{ij} \in \{0, 1\}, && \forall (i, j) \in A \\
 \end{align*}
+
+\subsection*{Definitions and model scope}
+A bike-sharing operator redistributes bicycles between stations through a depot before demand is known. Given information includes all directed connections between distinct locations, their travel costs, vehicle carrying capacity, each station's docking capacity and current bicycle count, a tolerance fraction, and demand scenarios with probabilities. Each scenario specifies a station's target net outward bicycle flow, positive for collection and negative for delivery. The operator first selects yes-or-no travel connections $x_{ij}$ shared by all scenarios. It then chooses nonnegative, continuously divisible carried bicycle amounts $f_{ij}^{\omega}$ and two nonnegative deviation records at each station separately for each scenario.
+
+Every station has exactly one chosen incoming connection and exactly one chosen outgoing connection to another location, including the depot. For every collection of more than two stations, the number of chosen connections with both ends in that collection cannot exceed its number of stations less one. Between each two distinct stations, at most one of the two opposite directions may be chosen. Depot arrival and departure counts are not fixed at one, and no fixed fleet-count cap is added, so several depot-based tours are allowed.
+
+For each connection in every scenario, the carried amount cannot exceed vehicle capacity times its travel choice and is nonnegative. At each station in each scenario, total carried amount leaving toward all other locations less total amount arriving from all other locations must equal the given target net outward flow plus the upward outward-flow deviation $s_j^{\omega-}$ less the downward outward-flow deviation $s_j^{\omega+}$. This direction of adjustment is retained even though the superscripts' signs might suggest a different interpretation. No independent requirement to balance bicycle flow at the depot is added.
+
+Each upward outward-flow deviation is at most the smaller of the station's current bicycle count and the tolerance fraction times its dock capacity rounded upward to the nearest integer. Each downward outward-flow deviation is at most the smaller of the currently empty docks and that same rounded tolerance. Both records may take any nonnegative real values within these bounds. The operator seeks the lowest chosen-connection travel cost plus a penalty: for each scenario add both deviations over all stations, weight by its probability, then multiply the total by the given small positive penalty scale and the smallest connection travel cost.
+
 
 \end{document}

@@ -1,22 +1,38 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,longtable}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
-\begin{document}
-\section*{P416: Current complete mathematical model (as of 2026-10-20)}
-\section*{Basis and scope of the revision}Retain 24 cargo trains and all 4 passenger trains. The conflicted train P2 will be postponed by 45 minutes and will remain at the original time; the limited route is expanded into a state graph based on the frequency of occurrences. The complete minute schedule and all reverse safety interval models explicitly allow this limited route expansion.
 
-\section*{Limited routes, precise timing, and safety considerations}
-Each cargo column $j$ has a limited number of allowed routes $r$ (with repeated stations expanded according to their occurrence), as well as binary $y_{jr}$ and $\sum_ry_{jr}\le1$. The passage time $e$ for each interval on each candidate route has integer arrival times $d_{jre},a_{jre}\in[0,H]$ and $H=1440$.
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
+\begin{document}
+\section*{P0416 Scheduling Extra Freight Trains Around Fixed Passenger Services}
+\subsection*{Mathematical formulation}
 \[
 0\le d_{jre}\le Hy_{jr},\quad a_{jre}=d_{jre}+t_e y_{jr}.
 \]
-The first departure time $d_{jr1}$ lies in $[\max(0,I_j-S_j)y_{jr},\min(H,I_j+S_j)y_{jr}]$. There is an offset of $\delta_{jr}\ge\pm(d_{jr1}-I_jy_{jr})$ and $0\le\delta_{jr}\le S_jy_{jr}$ between these two points. The intermediate stops are represented by the integer $w_e\in[m_ey_{jr},(m_e+\bar w_e)y_{jr}]$. Additionally, $d_{jre}=a_{jr,e-1}+w_e$ is involved. A binary variable selects the order of trains traversing the same physical track. For same-direction movements, both departure and arrival order agree, with gaps of at least $g_d$ at departure and $g_a$ at arrival. For opposite-direction movements, the later departure is at least the earlier arrival plus $g_o$. These constraints apply only when both routes are selected. The per-section times of fixed passenger trains are constants and obey the same mutual-exclusion rules.
+
 \[
 \max\sum_{jr}\left[
 \Pi_jy_{jr}-c^\delta_j\delta_{jr}
 -c^w_j\sum_{e>1}(w_e-m_ey_{jr})
 -c^r_j(\sum_{e\in r}t_e-T_j^{ideal})y_{jr}\right].
 \]
-All durations are the sum of the original data durations; no error-based aggregation values are used. The P2 column is shifted by 45 minutes to resolve input conflicts, while the original values remain intact. The circular physical route is transformed into a finite-state path, maintaining all 24 cargo columns and 4 fixed passenger columns. Site feasibility is determined by the aforementioned capacity and scheduling constraints.
 
+\subsection*{Definitions and model scope}
+A railway dispatcher considers a given finite collection of permitted routes for each requested freight train. It chooses a zero-or-one route selection $y_{jr}$, with at most one route selected for each train; a request may be left unscheduled. A physical station repeated on a route is represented by a separate occurrence each time, preserving that finite route and its successive track traversals. The planning horizon day length $H$ is 1440 minutes. The current repaired case retains all 24 freight requests and four fixed passenger trains. Its second passenger train has already been shifted as a whole by 45 minutes to resolve an input conflict, with original times retained separately; that shift is fixed input rather than a new scheduling choice.
+
+Every traversal of each candidate freight route has an integer departure minute $d_{jre}$ and integer arrival minute $a_{jre}$, both between zero and the day length. Departure cannot exceed day length times that route's selection. Arrival equals departure plus the given section running time $t_e$ times selection. Thus all such times are zero on an unselected route, and both departure and arrival remain within the day on a selected route. Running times are taken from the original section data, added where required, rather than from an inconsistent summary.
+
+The first departure must lie between the greater of zero and the given preferred departure $I_j$ less its allowed shift $S_j$, and the lesser of day length and preferred departure plus allowed shift, with both endpoints multiplied by route selection. Choose a nonnegative continuous departure-shift allowance $\delta_{jr}$ no larger than allowed shift times selection. It must be at least both the first departure minus preferred departure times selection and the negative of that difference. This retains both sides of the absolute-deviation requirement without separately forcing equality.
+
+At every intermediate station occurrence, choose an integer station dwell $w_e$. Its lower limit is the given minimum dwell $m_e$ times route selection. For its upper limit, first add minimum dwell and the given extra-dwell allowance $\bar w_e$, then multiply that sum by route selection. Departure on the next section must equal arrival from the previous section plus this dwell. Waiting therefore follows the route's actual occurrence order, including routes that revisit a physical station.
+
+Whenever traversals of different trains use the same physical track, a zero-or-one precedence choice determines which comes first. For same-direction traversals, the later departure must follow the earlier departure by at least the given departure headway $g_d$, and the later arrival must follow the earlier arrival by at least the given arrival headway $g_a$, using the same order at both ends. For opposing directions, the later departure must follow the earlier arrival by at least the given opposing-direction clearance $g_o$. These checks apply when both freight routes are selected. Each fixed passenger traversal participates in the same mutual-exclusion checks using its constant times. Extra station-capacity metadata is not added as another operating limit.
+
+The dispatcher seeks the greatest total scheduled freight revenue $\Pi_j$ less three charges, summed over every train and candidate route. Revenue is multiplied by selection. Charge the given departure-shift rate $c^\delta_j$ times the departure-shift allowance, and the given extra-dwell rate $c^w_j$ times the total dwell beyond selected minimum dwell at all intermediate occurrences. Finally charge the given route-detour rate $c^r_j$ times the difference between total running time along that candidate route and the given ideal running time $T_j^{ideal}$, multiplied by selection. This last difference is used as written, without replacing it by a nonnegative truncation.
+
+\subsection*{Inline notation and relations}
+$j$; $r$; $y_{jr}$; $\sum_ry_{jr}\le1$; $e$; $d_{jre},a_{jre}\in[0,H]$; $H=1440$; $d_{jr1}$; $[\max(0,I_j-S_j)y_{jr},\min(H,I_j+S_j)y_{jr}]$; $\delta_{jr}\ge\pm(d_{jr1}-I_jy_{jr})$; $0\le\delta_{jr}\le S_jy_{jr}$; $w_e\in[m_ey_{jr},(m_e+\bar w_e)y_{jr}]$; $d_{jre}=a_{jr,e-1}+w_e$; $g_d$; $g_a$; $g_o$.
 \end{document}

@@ -1,22 +1,19 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,mathtools,geometry}
-\geometry{a4paper,margin=20mm}\allowdisplaybreaks
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
+
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
 \begin{document}
-\section*{Path planning and charging model for heterogeneous electric vehicles with minimal energy consumption}
-
-\paragraph{Source} Pages 5–8 of the PDF document, sections 2.1–2.2. Energy consumption formulas (1), constraints (3)–(21). The expressions from (5) to (8) should be written as recursive formulas that only take effect when certain arcs are selected. This prevents unselected arcs from being forced to have a value of zero.
-\subsection*{Enter and access the replica.}
-$W$ represents heterogeneous fleets, $V$ represents customers who require guaranteed service, while $D$ represents routes that involve detours to charging stations. Separate start and end locations are used in $o,e$; sufficient copies of the charging stations and storage facilities are provided for multiple visits. These should be distinguished from the destination charging stations, which require a maximum of one visit per customer. The set of copies is denoted as $F$. $A$ represents all self-looping arcs allowed on $\{o\}\cup V\cup F\cup\{e\}$. These arcs neither enter $o$ nor leave $e$. The fleet can use the empty route $(o,e)$, which has zero time/distance/energy consumption. The number of copies must cover all possible visits within the specified time range. If there is a limit on the number of copies, then this model only considers instances within that limit.
-
-The mapping from a time to its travel period is $H(t)$. The travel time, estimated energy consumption, and distance in period $h$ are given by $\tau_{hij},e_{hij},d_{hij}$, respectively. $\tau_i^s,q_i$ gives service time and customer demand, both zero at non-customer nodes. For vehicle $v$, the departure time $\underline T^v$, depot return deadline $\overline T^v$, post-return charging deadline $\overline T_c^v$, battery bounds $\underline B^v,\overline B^v$, initial and terminal battery levels $B_{\rm ini}^v,B_{\rm ter}^v$, payload limit $\overline Q^v$, and charging power $P_c^v$ are given. The charging power at a node is $P_n^i$, with effective power $p_i^v=\min(P_c^v,P_n^i)$. Charging time is undefined at nodes without charging, where $C_i^v=E_i^v=0$ is enforced. $\tau_f$ is the charging setup time. There is no queueing, and all times use a common time coordinate.
-\subsection*{Variables}
-$x_{ij}^v,C_i^v\in\{0,1\}$ Used for selecting arcs and initiating charging processes. $T_i^v,B_i^v,D_i^v,Q_i^v$ Displays information regarding arrival time, battery status, total distance traveled, and total number of tasks completed. $E_i^v\ge0$ Used for replenishing battery power. $b_{ij}^v\ge0$ Used for tracking power consumption during driving. $a_i^v=\sum_jx_{ij}^v$ Used as a pointer to related functions. The status of the vehicle when it’s empty is the same as when it’s loaded with cargo.
-\subsection*{Complete core model}
+\section*{P0160 Energy-Conserving Routes and Charging for Different Electric Vehicles}
+\subsection*{Mathematical formulation}
 \[
 \min\ J_E=\sum_{v\in W}\left(B_o^v-B_e^v+
  \sum_{i\in\{o\}\cup V\cup F}E_i^v\right).\tag{1}
 \]
+
 \begin{align}
 \sum_{v\in W,j:(i,j)\in A}x_{ij}^v&=1 &&i\in V,\\
 \sum_{j:(o,j)\in A}x_{oj}^v&=1,\quad \sum_{i:(i,e)\in A}x_{ie}^v=1 &&v\in W,\\
@@ -24,7 +21,7 @@ $x_{ij}^v,C_i^v\in\{0,1\}$ Used for selecting arcs and initiating charging proce
 &&v\in W,\ i\in V\cup F,\\
 C_i^v&\le a_i^v,\qquad E_i^v\ge0 &&v\in W,\ i\ne e.
 \end{align}
-For each selected arc $(i,j)$, the following conditional constraints are applied (no constraints for unselected arcs):
+
 \begin{align}
 x_{ij}^v=1&\ \Longrightarrow\
 T_j^v=T_i^v+\tau_i^s+\tau_{H(T_i^v),ij}+E_i^v/p_i^v+\tau_f C_i^v,\tag{5}\\
@@ -34,12 +31,12 @@ x_{ij}^v=1&\ \Longrightarrow\ Q_j^v=Q_i^v+q_i,\tag{8}\\
 x_{ij}^v=1&\ \Longrightarrow\ b_{ij}^v\ge e_{H(T_i^v),ij},
 \qquad x_{ij}^v=0\Longrightarrow b_{ij}^v=0.\tag{9}
 \end{align}
-The $E_i^v/p_i^v$ item on non-rechargeable nodes is defined as zero; therefore, $0/0$ is not calculated. The time required to complete the entire journey, without any charging steps, as well as the predicted power consumption, are also not calculated.
+
 \[
 A_v=\sum_{(k,j)\in A}x_{kj}^v(\tau_k^s+\tau_{H(T_k^v),kj}),\qquad
 L_v=\sum_{(k,j)\in A}x_{kj}^v e_{H(T_k^v),kj}.
 \]
-For each rechargeable node $i\ne e$:
+
 \begin{align}
 0\le E_i^v&\le C_i^vp_i^v
 \left[\overline T^v-\underline T^v-A_v
@@ -48,7 +45,7 @@ E_i^v&\le C_i^v(\overline B^v-B_i^v),\tag{11}\\
 E_i^v&\le C_i^v\max\left\{0,\max(\underline B^v,B_{\rm ter}^v)
 -B_{\rm ini}^v+L_v-\sum_{q\ne i,\ q\ne e}E_q^v\right\}.\tag{12}
 \end{align}
-Equation (10) is expressed in terms of the total duration of the process. This means that the time origin of the original equation is shifted to the moment of departure. Equation (5), on the other hand, is still considered as part of the charging preparation time.
+
 \begin{align}
 T_o^v&=\underline T^v,\quad B_o^v=B_{\rm ini}^v,\quad Q_o^v=D_o^v=0,\tag{13--16}\\
 T_e^v&\le\overline T^v,\tag{17}\\
@@ -58,13 +55,29 @@ B_{\rm ter}^v-B_e^v&\le
 0\le Q_i^v\le\overline Q^v,\quad D_i^v\ge0,\quad T_i^v\ge0,\tag{19--20}\\
 x_{ij}^v,C_i^v&\in\{0,1\}.\tag{21}
 \end{align}
-All non-empty routes must be connected from $o$ to $e$. Connectivity cuts can be explicitly applied here.
+
 \[
 \sum_{i\in U,j\notin U:(i,j)\in A}x_{ij}^v\ge a_k^v
 \quad(\varnothing\ne U\subseteq V\cup F,\ k\in U,\ v\in W).
 \]
-The above-mentioned relationship defines a closed journey that starts from the warehouse and returns to the warehouse.
-\paragraph{Transcription and clarification}
-(17) The printout reads "by the latest arrival time"; this should be interpreted as a deadline inequality. (4) The cross-vehicle aggregated flow is calculated per vehicle to ensure that each vehicle path is considered; all these modifications are based on the physical routes defined in §2.1. The goal of energy conservation should not be replaced by the shortest time objective.
 
+\subsection*{Definitions and model scope}
+An operator routes its vehicle fleet $W$ to serve every customer $V$ and may visit detour charging stations $D$. Separate departure depot $o$ and return depot $e$ represent the trip's endpoints. Charging sites that may be revisited have distinct visit copies $F$; customer-site charging remains part of the customer's single visit. The allowed arcs $A$ have no self-loops, never enter the departure depot, and never leave the return depot. A direct empty route has zero travel time, distance, and energy, with return state equal to departure state. A finite copy collection covers only the visits it represents unless its sufficiency for all possible visits has been established.
+
+Zero-or-one arc selections $x_{ij}^v$ must give every customer exactly one outgoing visit across the fleet. Each vehicle has exactly one departure-depot outgoing arc and one return-depot incoming arc. At every customer or copy, its incoming and outgoing counts for a vehicle are equal and at most one, giving the visit record $a_i^v$. Every nonempty route must connect departure to return: for every nonempty subset of customers and copies and each visited member, the selected arcs leaving that subset must number at least that member's visit record. This excludes detached service cycles.
+
+Every vehicle and node have nonnegative arrival time $T_i^v$, accumulated distance $D_i^v$, and already-served demand $Q_i^v$. Demand served cannot exceed the vehicle's load limit $\overline Q^v$, and arrival battery energy $B_i^v$ stays between its lower battery limit $\underline B^v$ and upper battery limit $\overline B^v$. At departure, time equals the fixed departure time $\underline T^v$, battery equals initial energy $B_{\rm ini}^v$, and distance and served demand are zero. Return time cannot exceed the return deadline $\overline T^v$. These node ranges remain in force even at unvisited nodes.
+
+A zero-or-one charging-start record $C_i^v$ cannot exceed the visit record at nodes before return. Its nonnegative added energy $E_i^v$ uses an effective charging power $p_i^v$ equal to the smaller of the vehicle's charging power $P_c^v$ and the node's charging power $P_n^i$. Noncharging nodes have zero charging record and zero added energy, with charging duration defined as zero rather than dividing zero by zero. For a selected arc, the next arrival time equals current arrival time, plus node service duration $\tau_i^s$, plus travel time $\tau_{hij}$, added energy divided by effective power, and charging preparation time $\tau_f$ times the charging record. The given time-to-period rule $H(t)$ selects the travel period using arrival at the arc's origin, before service and charging. There is no separate queue waiting.
+
+Along a selected arc, next battery equals current battery minus nonnegative recorded travel consumption $b_{ij}^v$ plus current added energy. Recorded consumption must be at least the period's predicted energy $e_{hij}$, without an added equality. Next accumulated distance equals current distance plus period distance $d_{hij}$, and next served demand equals current served demand plus origin customer demand $q_i$, which is zero at noncustomers. Unselected arcs have zero recorded consumption and impose none of these state recurrences.
+
+The route time excluding charging $A_v$ is the sum over selected arcs of origin service plus time-dependent travel, and predicted route consumption $L_v$ is the corresponding sum of predicted energy. At every chargeable node before return, added energy cannot exceed charging record times effective power times the return deadline minus departure time, minus route time excluding charging, minus all other pre-return charging durations and preparations. This whole remaining-time difference is multiplied by charging record and power; the present charge's own preparation is not subtracted in this particular limit, but remains in its arrival-time recurrence. Added energy also cannot exceed charging record times upper battery limit minus current battery, with multiplication applying to the full energy gap.
+
+A further charging limit is charging record times the larger of zero and the following amount: the larger of lower battery limit and terminal energy requirement $B_{\rm ter}^v$, minus initial energy, plus predicted route consumption, minus added energy at all other nodes before return. Charging cannot exceed this entire nonnegative amount. After return, terminal energy requirement minus return battery cannot exceed the smaller of vehicle power and depot charging power $P_n^{\rm depot}$, multiplied by post-return charging deadline $\overline T_c^v$ minus return time. This uses the stated signed energy gap and signed remaining time rather than imposing terminal battery at arrival directly.
+
+The operator wants the lowest total route energy use $J_E$, calculated over vehicles as departure battery minus return battery plus all energy added at departure, customers, and charging copies before return. Post-return charging is not added to that expression. Time, battery, demand, and distance recurrences hold only on selected arcs, while all charging limits and visit requirements remain in force; the route-energy assessment is not replaced by a shortest-time preference.
+
+\subsection*{Inline notation and relations}
+$W$; $V$; $D$; $o,e$; $F$; $A$; $\{o\}\cup V\cup F\cup\{e\}$; $o$; $e$; $(o,e)$; $H(t)$; $\tau_{hij},e_{hij},d_{hij}$; $h$; $\tau_i^s,q_i$; $v$; $\underline T^v$; $\overline T^v$; $\overline T_c^v$; $\underline B^v,\overline B^v$; $B_{\rm ini}^v,B_{\rm ter}^v$; $\overline Q^v$; $P_c^v$; $P_n^i$; $p_i^v=\min(P_c^v,P_n^i)$; $C_i^v=E_i^v=0$; $\tau_f$; $x_{ij}^v,C_i^v\in\{0,1\}$; $T_i^v,B_i^v,D_i^v,Q_i^v$; $E_i^v\ge0$; $b_{ij}^v\ge0$; $a_i^v=\sum_jx_{ij}^v$; $(i,j)$; $E_i^v/p_i^v$; $0/0$; $i\ne e$.
 \end{document}

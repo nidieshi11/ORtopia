@@ -1,28 +1,19 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,longtable}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
-\usepackage{geometry}
-\geometry{paperwidth=450mm,paperheight=890mm,hmargin=18mm,vmargin=19mm}
+
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
 \begin{document}
-\section*{P206: Current complete mathematical model (as of 2026-10-20)}
-\section*{Basis and scope of the revision}On page 6 of the source document, the physical compartment numbers start from 1. The values $L_{k0}=0$ and $\pi=0$ represent boundary conditions beyond certain limits. Equation 54 thus becomes a finite convolution. The parameter P is clearly defined as the number of discrete segments along the shoreline, maintaining all the constraints from 2 to 63.
-
-
-\section*{Problem: **Mixed Integer Linear Programming Problem**, integrating: - Pier allocation problem - Shorebridge allocation and scheduling problem - Worker allocation problem - Cashier deployment problem It belongs to the complex category of **Resource Allocation and Scheduling Problems**.}
-
-
-
-\subsection*{Adjacent-section and adjacent-slot index sets}
-As defined on page 6 of the source paper,
+\section*{P0206 Berthing Ships with Cranes, Workers, and Yard Trucks}
+\subsection*{Mathematical formulation}
 \[
 SP=\{1,\ldots,P\},\quad SP_1=SP\setminus\{1\},\qquad
 ST=\{1,\ldots,T\},\quad ST_1=ST\setminus\{1\},\quad ST_2=ST\setminus\{T\}.
 \]
-Thus $SP_1$ indexes every shore section after the first; $ST_1$ indexes every
-time slot after the first; $ST_2$ indexes every time slot before the last.
-The corresponding subsets are empty when $P=1$ or $T=1$.
 
-\subsection*{Decision Variables}
 \begin{align*}
 & \text{Binary variables:} \\
 & \quad \pi_{kp} \in \{0, 1\} && \forall k \in SV, \forall p \in SP \\
@@ -48,10 +39,8 @@ The corresponding subsets are empty when $P=1$ or $T=1$.
 & \quad \theta_{jg} \ge 0 && \forall j \in ST, \forall g \in SC
 \end{align*}
 
-\subsection*{Objective Function}
 \[\text{Minimize} \quad \sum_{k=1}^{V} c_k\]
 
-\subsection*{Constraints}
 \begin{align*}
 & \text{Berth allocation constraints:} \\
 & \quad (2) \quad x_{lk} + x_{kl} + y_{lk} + y_{kl} \ge 1 && \forall k, l \in SV, k < l \\
@@ -125,9 +114,25 @@ The corresponding subsets are empty when $P=1$ or $T=1$.
 & \quad (63) \quad \lambda_{jpg}, t_k, c_k, b_k, \Gamma_{kp} \ge 0 && \forall j \in ST; \forall g \in SC; \forall p \in SP; \forall k \in SV
 \end{align*}
 
+\subsection*{Definitions and model scope}
+A container terminal schedules ships $SV$ along shore segments $SP$ during time slots $ST$, numbered from one through the given horizon $T$. It has quay cranes $SC$ and workers $SI$. Each ship has a release time $R_k$, a length in segments $H_k$, and physical-bay workloads $L_{kq}$. The terminal chooses nonnegative berthing position $b_k$, start time $t_k$, and completion time $c_k$, with start no earlier than release and position no greater than the shore segment count $P$ minus ship length. It seeks the lowest sum of ship completion times.
 
-\section*{The complete definition of convolution and its domain}
-Physical berths: $q=1,\ldots,H_k$, $N=\max_kH_k$. Definitions for $L_{k0}=0$, $L_{kq}=0$ are provided if $q>H_k$ or $\pi_{kp}=0$ is also true, and $p\notin\{1,\ldots,P\}$ if necessary. Thus, equation 54 represents the finite convolution of $\Gamma_{kp}=\sum_{q=1}^{H_k}L_{kq}\pi_{k,p-q+1}$. All terms have been defined. $P$ represents the number of discrete segments along the shoreline, rather than the number of physical berths. $ST=\{1,\ldots,T\}$… Information regarding workers, trucks, shore cranes, workload per berth, effective productivity, and finite-time scenarios is provided for each complete instance. The letter indices in equations 59–63 are standardized to match the actual domain used in each formula ($\omega_{jg},\theta_{jg}$).
+Zero-or-one starting-segment records $\pi_{kp}$ choose exactly one segment per ship, and berth position equals its segment number. Zero-or-one occupied-segment records $\sigma_{kp}$ total exactly ship length. At every segment, its start record cannot exceed current occupation. On the set of shore segments from the second through the last $SP_1$, it is also at least current occupation minus previous occupation and at most one minus previous occupation. At the first segment, start and occupation are equal. The first segment uses the separate boundary requirement just stated. For each ordered pair of different ships, a zero-or-one spatial order record $y_{kl}$, plus the first ship's starting records from the larger of one and the other ship's segment number minus first ship length plus one through the end of the shore, plus the other ship's starting record at that segment, cannot exceed two. This requirement applies separately at every segment.
 
+Zero-or-one time-order records $x_{kl}$ and spatial order records are paired: for every unordered ship pair, at least one of the two time directions or two spatial directions is selected, while no more than one direction of either kind is selected. Zero-or-one start-slot records $\alpha_{kj}$ select exactly one start slot, and start time equals its slot number. Zero-or-one active-slot records $\beta_{kj}$ are used with start records: each start record cannot exceed current activity. On the set of slots from the second through the last $ST_1$, it is also at least current activity minus preceding activity and at most one minus preceding activity. In the first slot it equals activity. Completion is at least each active slot number plus one. For any ordered ship pair and any two slots where the first ship's slot is at least the second ship's slot minus one, the time-order record plus the two activity records cannot exceed two. Selecting that time order therefore leaves at least one unused slot between the first ship's last active slot and the second ship's first active slot.
 
+Zero-or-one last-active-slot records $\gamma_{kj}$ sum to one. Every last-slot record cannot exceed current activity. On the set of slots from the first through the next-to-last $ST_2$, it is also at least current activity minus next activity and at most one minus next activity. At the final slot it equals activity. Completion equals the sum of slot number plus one weighted by these last-slot records, and is also at least start time plus the number of active slots. All these time and occupation requirements remain simultaneous.
+
+Each crane has exactly one zero-or-one location record $S_{gpj}$ per slot, and no segment holds more than one crane. For each crane and segment, the total location records of lower-numbered cranes at higher-numbered segments cannot exceed crane count times shore segment count times one minus that location record. Thus crane order is maintained. A zero-or-one working record $Q_{gpj}$ cannot exceed the given crane availability limit $B_{gj}$ times its location record. Zero-or-one worker assignments $X_{igj}$ for a crane total at most that availability limit. Each assigned worker requires some working record on that crane, and every working record requires at least one assigned worker. For every worker and slot, assignments across cranes cannot exceed the given worker availability limit $A_{ij}$.
+
+A zero-or-one ship--segment--slot record $Z_{kpj}$ is at most the ship's occupied-segment record and its active-slot record, and at least their sum minus one. For each such combination, ship start time is at most slot number times this record plus horizon times one minus the record; completion is at least slot number plus one multiplied by the record. A nonnegative continuous yard-truck allocation $\omega_{jg}$ to a crane lies between its total working records and the given per-crane truck limit $U$ times that total. Across cranes these allocations cannot exceed available yard trucks $\Omega_j$ in that slot. Truck allocations are not required to be whole numbers.
+
+Nonnegative effective crane productivity $\theta_{jg}$ cannot exceed the sum of assigned workers' productivities $E_i$, nor truck allocation times the given truck productivity $d$. It may be below both limits. Nonnegative crane productivity at a segment $\lambda_{jpg}$ cannot exceed effective crane productivity or the given productivity allowance $\eta$ times the working record, and is at least effective crane productivity minus that allowance times one minus the working record. Consequently it equals effective productivity while working and is zero otherwise, with the finite bound on effective productivity retained even while not working.
+
+Nonnegative work credited to a ship at a segment and slot $\mu_{kpj}$ cannot exceed total crane productivity at that segment or the productivity allowance times the ship--segment--slot record; it is at least total segment crane productivity minus the allowance times one minus that record. Thus it equals total segment productivity when the ship occupies and is active there, and is zero otherwise; inactive combinations still bound that total productivity by the allowance. Nonnegative workload located at each shore segment $\Gamma_{kp}$ is computed by summing each physical bay workload times the ship-start record at shore segment number minus bay number plus one. Physical bays run from one through ship length; bay zero and bays beyond ship length have zero workload, and out-of-shore start records are zero.
+
+Total credited work over all slots at a ship's shore segment must be at least its located workload. Nonnegative remaining work before a slot $\delta_{kpj}$ equals the located workload in the first slot. On the set of slots from the second through the last, it equals that workload minus all earlier slots' credited work; thus every slot has its corresponding remaining-work equality. For every segment and slot, total crane working records cannot exceed the sum of all ships' remaining work there. This is a numerical bound on working crane count by remaining workload, not merely permission whenever remaining work is positive. The nonnegative remaining records limit cumulative work at slots covered by those equalities, while the total-work requirement is a lower bound; last-slot work is not separately capped by the remaining amount.
+
+\subsection*{Inline notation and relations}
+$L_{k0}=0$; $\pi=0$; $SP_1$; $ST_1$; $ST_2$; $P=1$; $T=1$; $q=1,\ldots,H_k$; $N=\max_kH_k$; $L_{kq}=0$; $q>H_k$; $\pi_{kp}=0$; $p\notin\{1,\ldots,P\}$; $\Gamma_{kp}=\sum_{q=1}^{H_k}L_{kq}\pi_{k,p-q+1}$; $P$; $ST=\{1,\ldots,T\}$; $\omega_{jg},\theta_{jg}$.
 \end{document}

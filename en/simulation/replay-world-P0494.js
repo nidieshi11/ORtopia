@@ -31,13 +31,13 @@
   }
   function state(d,choice,f){
     const t=clockAt(d,f), tour=d.stops, pivot=tour[8], ninth=tour[10][0], opened=d.windows[ninth-1][0];
-    let x=0,load=0,done=0,distance=0,site=0,target=0,from=0,leg=0,phase="Warehouse loading",progress=0,dir=1;
+    let x=0,load=0,done=0,distance=0,site=0,target=0,from=0,leg=0,phase='Warehouse loading',progress=0,dir=1;
     if(choice && t>=pivot[2]){
       from=pivot[0];target=ninth;dir=-1;
       const gap=d.positions[from]-d.positions[target],arrival=pivot[2]+gap;
       progress=frac(t,pivot[2],arrival);x=mix(d.positions[from],d.positions[target],progress);
       distance=d.positions[from]+gap*progress;load=d.capacity;done=8;leg=1;
-      site=t<arrival?null:target;phase=t<arrival?"Heading to the ninth stop":t<opened?"waiting service window":"The ninth order exceeds capacity";
+      site=t<arrival?null:target;phase=t<arrival?'Heading to the ninth stop':t<opened?'Waiting for service window':'Order 9 exceeds capacity';
     }else{
       for(let j=0;j<tour.length;j++){
         const [id,arr,dep,used]=tour[j];
@@ -45,27 +45,27 @@
         from=prev[0];target=id;dir=id===0&&j>0?-1:1;leg=j<9?0:j===9?1:2;
         if(t<arr){
           site=null;progress=frac(t,prev[2],arr);x=mix(d.positions[from],d.positions[id],progress);
-          distance+=gap*progress;phase=id?"Drive to service point":"Return to warehouse";break;
+          distance+=gap*progress;phase=id?'Drive to service point':'Return to warehouse';break;
         }
         x=d.positions[id];distance+=gap;site=id;
-        if(t<dep){progress=frac(t,arr,dep);phase=id?"Deliver package":j?"Return to warehouse for replenishment":"Warehouse loading";break;}
+        if(t<dep){progress=frac(t,arr,dep);phase=id?'Deliver package':j?'Return to restock':'Warehouse loading';break;}
         load=used;if(id)done++;
-        progress=1;phase=id?"complete delivery":"Replenishment completed";
+        progress=1;phase=id?'Delivery complete':'Replenishment completed';
       }
     }
     return {t,x,load,done,distance,site,target,from,leg,dir,phase,progress,choice,
-      clock:"Operating "+Math.floor(t+.00001)+" min",
-      metrics:[["Served",done+" Single"],["Used capacity this round",load+' / '+d.capacity],["Operation status",phase],["Accumulated travel",Number(distance.toFixed(1))+' km']]};
+      clock:'Operating '+Math.floor(t+.00001)+' min',
+      metrics:[['Served',done+' orders'],['Capacity used this trip',load+' / '+d.capacity],['Operating status',phase],['Distance traveled',Number(distance.toFixed(1))+' km']]};
   }
 
   const INK='#243d41',TEAL='#087969',AMBER='#f5ba57',MILK='#fff5dc',BAD='#a63f37';
   const rnd=n=>{const v=Math.sin(n*127.1+41.7)*18671.713;return v-Math.floor(v);};
   const roadY=x=>248+49*Math.sin(x/520)+38*Math.sin(x/910-.6)+13*Math.cos(x/141);
   const roadX=km=>km*21;
-  const districts=["Distribution station","Riverside Industrial Area","west shore farm","old town neighborhood","riverfront community","Nancheng residential area","Rongshu Commercial Street"];
-  const landmarkNames={36:"community clinic",44:"Banyan Tree Market",48:"corner bookstore",51:"station square"};
+  const districts=['Distribution station','Riverside works','West Bank Farm','Old Town','Riverside','Southside','Banyan Street'];
+  const landmarkNames={36:'community clinic',44:'Banyan Tree Market',48:'corner bookstore',51:'station square'};
   const region=id=>id===0?0:id<8?1:id<19?2:id<28?3:id<36?4:id<44?5:6;
-  const pointName=id=>id?'S'+id:"Distribution warehouse";
+  const pointName=id=>id?'S'+id:'Distribution warehouse';
   function brush(canvas){
     const ctx=canvas.getContext('2d'),H=540,W=H*canvas.width/canvas.height;
     ctx.setTransform(canvas.height/H,0,0,canvas.height/H,0,0);
@@ -98,7 +98,7 @@
     rect(x,y-h,w,h,front);shape([[x+w,y-h],[x+w+D,y-h-D*.53],[x+w+D,y-D*.53],[x+w,y]],side);
     shape([[x,y-h],[x+D,y-h-D*.53],[x+w+D,y-h-D*.53],[x+w,y-h]],roof);
   }
-  const shops=["bookstore","Community post office","coffee","bakery","small market","flower shop","convenience store","fruits and vegetables"];
+  const shops=['bookstore','Post office','coffee','bakery','Market','flower shop','Corner shop','fruits and vegetables'];
   const paint=[
     ['#eaceaa','#b49777','#e8d7b3'],['#bdc9bb','#96a899','#dddfc7'],
     ['#cca58e','#ab8773','#e2bf9f'],['#e4d5ad','#b4aa89','#f4e5bf'],['#abc1be','#8da5a1','#d2d8c5']
@@ -139,7 +139,7 @@
       shape([[a,y-69],[a+46,y-94],[a+102,y-107],[a+56,y-83]],'#aec0b5');
     }
     for(let i=0;i<2;i++){const a=x-76+i*76;rect(a,y-43,52,44,'#4d6862');rect(a+3,y-40,46,8,'#90a59a');for(let k=0;k<3;k++){rect(a+3+k*13,y-12,12,12,'#b98e5f');rect(a+7+k*13,y-12,2,12,'#e3c090');}}
-    rect(x-93,y-64,96,17,TEAL);txt("Intercity distribution center",x-45,y-55,10,'#fff9df','center',700);
+    rect(x-93,y-64,96,17,TEAL);txt('Regional depot',x-45,y-55,10,'#fff9df','center',700);
     line([[x+100,y-24],[x+100,y-85]],'#778b80',2);shape([[x+101,y-84],[x+124,y-80],[x+101,y-73]],'#dd9866');
     oval(x+74,y+13,15,3,'#48574c30');
   }
@@ -150,7 +150,7 @@
       solid(g,x-38,y-61,64,20,17,'#c9ded3','#9eafa3','#ebedda');
       windows(g,x-30,y-75,52,1,4);rect(x-5,y-30,30,30,'#85a6a3');
       rect(x-42,y-42,28,29,'#a1b9ad');rect(x-32,y-38,6,20,TEAL);rect(x-39,y-31,20,6,TEAL);
-      rect(x-3,y-47,40,12,'#36887b');txt("community clinic",x+16,y-41,8,'#fffde8','center');
+      rect(x-3,y-47,40,12,'#36887b');txt('community clinic',x+16,y-41,8,'#fffde8','center');
     }else if(id===44){
       // A market hall with an open front, baskets, and two freestanding stalls.
       solid(g,x-46,y-6,86,37,19,'#c99b74','#a78065','#e1b385');
@@ -165,7 +165,7 @@
         const bx=x-42+27*j;rect(bx,y-15,23,10,'#b68e5e');
         for(let k=0;k<4;k++)oval(bx+3+k*5,y-15+(k%2),3,2.7,['#be674a','#98a060','#d6a34e'][j]);
       }
-      rect(x-26,y-57,57,12,'#8a6147');txt("Banyan Tree Market",x+2,y-51,8,'#fff4cf','center');
+      rect(x-26,y-57,57,12,'#8a6147');txt('Banyan Tree Market',x+2,y-51,8,'#fff4cf','center');
     }else if(id===48){
       solid(g,x-42,y,77,62,21,'#e4c59e','#ada185','#c5d0b4');
       windows(g,x-35,y-54,50,1,3);rect(x-35,y-31,57,30,'#ac8a68');
@@ -176,7 +176,7 @@
       shape([[x-33,y-62],[x-33,y-77],[x-10,y-82],[x-3,y-76],[x+20,y-81],[x+20,y-64],[x-4,y-59]],'#336f68');
       shape([[x-29,y-74],[x-11,y-78],[x-5,y-73],[x-5,y-62],[x-11,y-66],[x-29,y-62]],'#f4dfad');
       shape([[x-2,y-73],[x+15,y-77],[x+15,y-65],[x-2,y-62]],'#edd198');
-      rect(x-39,y-41,78,10,'#447a71');txt("corner bookstore",x,y-36,8,'#fff4d7','center');
+      rect(x-39,y-41,78,10,'#447a71');txt('corner bookstore',x,y-36,8,'#fff4d7','center');
     }else if(id===51){
       solid(g,x-51,y,90,42,23,'#ded5b6','#a2967c','#e9daba');
       for(let j=0;j<4;j++){rect(x-44+j*23,y-30,16,30,'#82928a');oval(x-36+j*23,y-29,8,8,'#82928a');}
@@ -184,7 +184,7 @@
       oval(x+3,y-74,10,10,'#fff1cf');line([[x+3,y-81],[x+3,y-74],[x+8,y-70]],'#476560',1.8);
       shape([[x-17,y-92],[x+22,y-92],[x+3,y-115]],'#617c73');
       shape([[x+3,y-115],[x+20,y-122],[x+39,y-100],[x+22,y-92]],'#526f68');
-      rect(x-36,y-43,67,10,'#607f73');txt("station square",x-2,y-38,8,'#fff8df','center');
+      rect(x-36,y-43,67,10,'#607f73');txt('station square',x-2,y-38,8,'#fff8df','center');
     }
   }
   function recipient(g,s,d,id){
@@ -292,10 +292,10 @@
     }
     for(const [x,y,col,sign] of traffic)if(sign<0)car(g,x,y,col,sign,.72);
     // The spot at each stop is shared by the van and the customer, with no screen-space reset.
-    const vx=roadX(s.x),isServing=s.phase==="Deliver package",stow=s.site===0;
+    const vx=roadX(s.x),isServing=s.phase==='Deliver package',stow=s.site===0;
     const lane=s.site===null?Math.min(1,Math.sin(s.progress*Math.PI)*4):0;
     const vy=roadY(vx)-4+lane*(s.dir>0?17:1);
-    const avail=stow&&s.phase==="Return to warehouse for replenishment"?Math.round(d.capacity*s.progress):stow&&s.phase==="Warehouse loading"?Math.round(d.capacity*s.progress):d.capacity-s.load;
+    const avail=stow&&s.phase==='Return to restock'?Math.round(d.capacity*s.progress):stow&&s.phase==='Warehouse loading'?Math.round(d.capacity*s.progress):d.capacity-s.load;
     parcelVan(g,vx,vy,s.dir,avail,isServing&&s.progress>.22&&s.progress<.86);
     for(const id of queue)recipient(g,s,d,id);
     if(stow&&s.progress<1){
@@ -324,13 +324,13 @@
     txt(place?district+' / '+place:district,m+13,y+15,12,'#b6d5c2');txt(s.site!==null?pointName(s.site)+' · '+s.phase:pointName(s.from)+' → '+pointName(s.target),m+13,y+34,16,'#fff4d9','left',700);
     const h=46,w=178;
     panel(16,g.H-h-14,w,h,'#fff8e9ed');
-    txt("Vehicle 01",27,g.H-43,12,INK);txt("Available for service "+(cap-s.load)+' / '+cap,27,g.H-24,14,TEAL);
+    txt('Vehicle 01',27,g.H-43,12,INK);txt('Available for service '+(cap-s.load)+' / '+cap,27,g.H-24,14,TEAL);
     for(let j=0;j<cap;j++)rect(110+(j%4)*14,g.H-49+Math.floor(j/4)*10,11,7,j<cap-s.load?'#cb9649':'#b7c3b4');
-    if(s.phase==="The ninth order exceeds capacity"){
-      const bw=Math.min(W-225,215);panel(W-bw-15,g.H-59,bw,44,'#9c443a');txt("S36 No quota remaining",W-bw/2-15,g.H-37,16,'#fff5df','center',700);
-    }else if(s.phase==="waiting service window"){
+    if(s.phase==='Order 9 exceeds capacity'){
+      const bw=Math.min(W-225,215);panel(W-bw-15,g.H-59,bw,44,'#9c443a');txt('S36 No quota remaining',W-bw/2-15,g.H-37,16,'#fff5df','center',700);
+    }else if(s.phase==='Waiting for service window'){
       const bw=Math.min(W-210,227);panel(W-bw-15,g.H-59,bw,44,'#6d6044');
-      txt("distance S36 open window "+Math.ceil(d.windows[s.target-1][0]-s.t)+" min",W-bw/2-15,g.H-37,15,'#fff5df','center');
+      txt('distance S36 open window '+Math.ceil(d.windows[s.target-1][0]-s.t)+' min',W-bw/2-15,g.H-37,15,'#fff5df','center');
     }
   }
   function street(g,s,d){
@@ -366,16 +366,16 @@
     const startKm=d.positions[s.from],actual=s.x,a=Math.min(startKm,actual),b=Math.max(startKm,actual);
     if(s.site===null){const trace=Array.from({length:45},(_,j)=>pt(mix(a,b,j/44)));line(trace,TEAL,5);}
     d.positions.forEach((km,id)=>{const [x,y]=pt(km);oval(x,y,id===s.site?5:2.8,id===s.site?5:2.8,id>=36?TEAL:'#657c6c');});
-    const [dx,dy]=pt(0);solid(g,dx-20,dy-9,35,24,14,'#bdba9c','#939780','#ddd0ab');rect(dx-12,dy-24,15,13,'#70867b');txt("Distribution warehouse",dx,dy+25,14,INK,'center');
-    const show=[{id:16,label:"farm"}, {id:30,label:"river bank"}, {id:36,label:"S36–43 Settlement"}, {id:51,label:"S44–51 Shopping Street"}];
+    const [dx,dy]=pt(0);solid(g,dx-20,dy-9,35,24,14,'#bdba9c','#939780','#ddd0ab');rect(dx-12,dy-24,15,13,'#70867b');txt('Distribution warehouse',dx,dy+25,14,INK,'center');
+    const show=[{id:16,label:'farm'}, {id:30,label:'river bank'}, {id:36,label:'S36–43 Settlement'}, {id:51,label:'S44–51 Shopping Street'}];
     show.forEach(({id,label},j)=>{const [x,y]=pt(d.positions[id]),off=j===2?50:-62,px=clamp(x,52,W-65),py=y+off;
       line([[x,y+(off>0?7:-7)],[px,py+(off>0?-11:11)]],'#728771',1.5);
       if(j<2){tree(g,px-14,py-6,11,j===0?0:1);tree(g,px+8,py-6,14);}
       else{solid(g,px-15,py-12,19,j===2?20:10,8,'#c6bda2','#9f9f88','#e5d4b0');solid(g,px+9,py-11,15,15,7,'#b89b81','#958574','#dfc3a2');}
       txt(label,px,py+6,13,INK,'center',700);
     });
-    const [xx,yy]=pt(s.x);parcelVan(g,xx,yy-12,s.dir,d.capacity-s.load,s.phase==="Deliver package",.55);
-    txt("Away from the warehouse "+Number(s.x.toFixed(1))+' km',clamp(xx,64,W-65),yy-55,14,INK,'center',750);
+    const [xx,yy]=pt(s.x);parcelVan(g,xx,yy-12,s.dir,d.capacity-s.load,s.phase==='Deliver package',.55);
+    txt('Away from the warehouse '+Number(s.x.toFixed(1))+' km',clamp(xx,64,W-65),yy-55,14,INK,'center',750);
     hud(g,s,d);
   }
   function compare(g,d,f){
@@ -386,30 +386,30 @@
     for(const [k,y] of [[0,H*.31],[1,H*.68]]){
       const s=state(d,k,f),roadTop=y+22,col=k?BAD:TEAL;
       const cap=d.capacity-s.load;
-      txt(k?"Go directly to stop nine":"Return to warehouse for loading",28,y-77,19,col,'left',750);
+      txt(k?'Go directly to stop nine':'Return to warehouse for loading',28,y-77,19,col,'left',750);
       txt(s.phase+'  ·  '+Math.round(s.distance)+' km',28,y-51,16,INK);
       line([[x(0),roadTop],[x(horizon),roadTop]],'#8b9b89',12);
-      for(const [label,id,dy] of [["Warehouse",depot,31],['S'+next,next,30],['S'+fork,fork,53]]){
+      for(const [label,id,dy] of [['Warehouse',depot,31],['S'+next,next,30],['S'+fork,fork,53]]){
         oval(x(d.positions[id]),roadTop,4,4,col);txt(label,x(d.positions[id]),roadTop+dy,13,INK,'center');
       }
       const active=s.site===null&&s.from!==s.target;
       if(active)line([[x(d.positions[s.from]),roadTop+7],[x(s.x),roadTop+7]],col,3);
-      parcelVan(g,x(s.x),roadTop-6,s.dir,cap,s.phase==="Deliver package",.65);
-      const cx=clamp(x(s.x),92,W-94);txt("Available for service "+cap+" grid",cx,roadTop-41,15,col,'center',750);
-      if(k&&s.phase==="The ninth order exceeds capacity"){person(g,x(d.positions[next])+8,roadTop+7,'#ae694d',0,false);}
+      parcelVan(g,x(s.x),roadTop-6,s.dir,cap,s.phase==='Deliver package',.65);
+      const cx=clamp(x(s.x),92,W-94);txt('Available for service '+cap+' grid',cx,roadTop-41,15,col,'center',750);
+      if(k&&s.phase==='Order 9 exceeds capacity'){person(g,x(d.positions[next])+8,roadTop+7,'#ae694d',0,false);}
     }
-    const archived=state(d,0,f);txt("Same model moment · "+Math.floor(archived.t)+" min",W/2,H-26,16,INK,'center');
+    const archived=state(d,0,f);txt('Same model moment · '+Math.floor(archived.t)+' min',W/2,H-26,16,INK,'center');
   }
   window.ORTOPIA_LABS.P0494={
-    title:"Two-trip neighborhood delivery with mobile parcel locker",action:"Select the driving instructions after the first eight orders have been delivered. See if the car returns to the warehouse to make up eight spaces, and then observe the ninth picker.",
-    choices:["Return to warehouse for replenishment · Archive","Go directly to the next service point"],duration:84,
-    views:["Follow Parcel Locker","Route panorama","Compare the two routes at the same time"],
+    title:'Two-trip neighborhood delivery with mobile parcel locker',action:'Select the driving instructions after the first eight orders have been delivered. See if the car returns to the warehouse to make up eight spaces, and then observe the ninth picker.',
+    choices:['Return to warehouse for replenishment · Archive','Go directly to the next service point'],duration:84,
+    views:['Follow Parcel Locker','Route panorama','Compare the two routes at the same time'],
     endAt(d,k){return k?clockAt(d,d.windows[d.stops[10][0]-1][0],true):1;},
-    scope:"Play back the first two deliveries of car No. 1. In the original instance, 51 stations are on the same line as the warehouse, and the vehicle location, mileage, stops, time window and eight-cell capacity are all taken from the instance. Block buildings, curves, residents and background traffic are shown as illustrations. The screen changes speed according to events, fast for long distance driving, and slow for deliveries and loading.",
+    scope:'Play back the first two deliveries of car No. 1. In the original instance, 51 stations are on the same line as the warehouse, and the vehicle location, mileage, stops, time window and eight-cell capacity are all taken from the instance. Block buildings, curves, residents and background traffic are shown as illustrations. The screen changes speed according to events, fast for long distance driving, and slow for deliveries and loading.',
     chapters(d,k){
       const tour=d.stops,arrival=tour[8][2]+d.positions[tour[8][0]]-d.positions[tour[10][0]];
-      return [[0,"Outbound loading"],[tour[1][1]-.6,"first stop delivery"],[tour[8][1]-.5,"The eighth order and the return position diverge"],
-        [k?arrival-.5:tour[9][1]-.6,k?"Arrive early S36":"Return to warehouse for loading"],[tour[10][1]-.5,"Ninth single window opening"]].map(([t,label])=>({label,at:clockAt(d,t,true)}));
+      return [[0,'Outbound loading'],[tour[1][1]-.6,'first stop delivery'],[tour[8][1]-.5,'The eighth order and the return position diverge'],
+        [k?arrival-.5:tour[9][1]-.6,k?'Arrive early S36':'Return to warehouse for loading'],[tour[10][1]-.5,'Ninth single window opening']].map(([t,label])=>({label,at:clockAt(d,t,true)}));
     },
     frame:state,draw(canvas,s,d,k,f,view=0){const g=brush(canvas);if(view===2)compare(g,d,f);else if(view===1)atlas(g,s,d);else street(g,s,d);}
   };

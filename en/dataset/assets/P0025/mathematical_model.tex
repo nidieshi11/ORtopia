@@ -1,26 +1,22 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,geometry}
-\geometry{margin=22mm}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
+
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
 \begin{document}
-\section*{P25: Three-stage robust staffing planning for anesthesiologists across multiple hospitals – SPP}
-\paragraph{Source and scope}According to pages 1, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, and 17 of the original paper's PDF file, (1)–(7).
-\subsection*{Ranges, sets, and parameters}
-The selected paper describes a three-stage robust personnel allocation method called SPP(7). Using the surgical day $t$ as an example, the personnel allocation for each day is optimized accordingly. $I$ represents the list of anesthesiologists, while $S$ represents the list of hospital locations.
-
-$u_{i,t}\in\{0,1\}$ indicates availability on that day, $v_{i,s}\in\{0,1\}$ represents the regularly allocated feasible locations; $r_{i,j,t}\in\{0,1\}$ indicates that the duty sequence requires physician $i$ to enter standby and be called before $j$. $t_r,t_q\geq0$ represents the available service hours for regular and standby shifts, respectively; $c_L,c_N,c_O,c_I\geq0$ represents standby calls, uncalled periods, unit overtime, and unit idle costs. Regular wages are fixed costs for the day's plan and are not included in the comparison objective. The binary sorting constraint is sufficient with $M=1$.
-
-The hospital reported a personnel requirement vector $D=(D_s)_{s\in S}$ three days before the operation, which comes from a given non-empty finite set.
+\section*{P0025 Regular and On-Call Anesthesiologist Staffing Across Hospitals}
+\subsection*{Mathematical formulation}
 \[
 \mathcal D_t=\left\{D\in\mathbb Z_+^{|S|}:D_s=\bar D_{s,t}+f_s\widehat D_{s,t},\ |f_s|\leq1,\ \sum_{s\in S}|f_s|\leq\tau\right\}.
 \]
-$\bar D_{s,t}\geq0$ represents the prediction, $\widehat D_{s,t}\geq0$ represents the maximum deviation, while $\tau\in[0,|S|]$ controls the combined uncertainty budget. After determining $D$, the final bill for labor hours will be $B=(B_s)_{s\in S}$.
+
 \[
 \mathcal B_t(D)=\prod_{s\in S}[\beta_{1,L}D_s+\beta_{0,s,t}^{L},\ \beta_{1,U}D_s+\beta_{0,s,t}^{U}],
 \]
-All intervals must be non-empty and non-negative. $\beta$ represents the parameters obtained through fitting external historical data.
-\subsection*{Decision-making, information, and feasible domains}
-Six weeks before the surgery, $x_{i,s,t}\in\{0,1\}$ indicates that the patient has been assigned to a regular treatment location, while $p_{i,t}\in\{0,1\}$ indicates that the patient is on the waiting list. The complete set of feasible outcomes is defined by the following formula: $X_t$
+
 \begin{align}
 x_{i,s,t}&\leq u_{i,t}v_{i,s}&&i\in I,s\in S,\\
 p_{i,t}&\leq\sum_{s\in S}u_{i,t}v_{i,s}&&i\in I,\\
@@ -28,23 +24,36 @@ p_{j,t}&\leq p_{i,t}+1-r_{i,j,t}&&i,j\in I,\\
 p_{i,t}+\sum_{s\in S}x_{i,s,t}&\leq1&&i\in I,\\
 x_{i,s,t},p_{i,t}&\in\{0,1\}&&i\in I,s\in S.
 \end{align}
-In the second stage, after $D$ is revealed but before $B$ is revealed, selecting $q_{i,s,t}(D)\in\{0,1\}$ means summoning a doctor from the waiting list to the location $s$. This can rely on the complete requirement vector $D$, but cannot rely on any unobserved elements in $B$. When $p$ is provided, the feasible range becomes $P_t(p)$.
+
 \begin{align}
 q_{i,s,t}(D)&\leq p_{i,t}&&i\in I,s\in S,\\
 q_{j,s,t}(D)&\leq q_{i,s,t}(D)+1-r_{i,j,t}&&i,j\in I,s\in S,\\
 \sum_{s\in S}q_{i,s,t}(D)&\leq1&&i\in I,\\
 q_{i,s,t}(D)&\in\{0,1\}&&i\in I,s\in S.
 \end{align}
-The feasible region for scheduling is defined based on the constraints outlined in papers (5b)–(5e). Regular assignments and scheduling arrangements are determined using the corresponding location constraints.
-\subsection*{The only complete and robust model available}
-For $[z]^+=\max\{z,0\}$, the provided man-hours are as follows. For $H_s(x,q)=\sum_{i\in I}(t_rx_{i,s,t}+t_qq_{i,s,t})$, the following two costs are defined by expressions alone:
+
 \begin{align*}
 C_t(p,q)&=c_L\sum_{i\in I,s\in S}q_{i,s,t}+c_N\sum_{i\in I}\left(p_{i,t}-\sum_{s\in S}q_{i,s,t}\right),\\
 U_t(B,x,q)&=\sum_{s\in S}\left(c_O[B_s-H_s(x,q)]^++c_I[H_s(x,q)-B_s]^+\right).
 \end{align*}
+
 \begin{equation}
 \boxed{V_t=\min_{(x,p)\in X_t}\ \max_{D\in\mathcal D_t}\ \min_{q\in P_t(p)}\left\{C_t(p,q)+\max_{B\in\mathcal B_t(D)}U_t(B,x,q)\right\}.}
 \end{equation}
-The aforementioned nested sequence is an indivisible three-stage application model: preconfiguration, call after requirement revelation, and final cost settlement. $X_t,P_t,\mathcal D_t,\mathcal B_t$ defines the decision-making domains for each stage and the complete set of uncertain requirements. The optimal values correspond to the three-stage nested problem described above.
 
+\subsection*{Definitions and model scope}
+A healthcare system must allocate anesthesiologists in $I$ across hospitals in $S$ for a fixed surgery day $t$. Six weeks before surgery it chooses regular assignments $x_{i,s,t}$ and an on-call roster $p_{i,t}$, each taking zero or one to indicate an assignment or roster membership. Three days before surgery, after hospital staffing demand $D$ becomes known, it chooses call-outs $q_{i,s,t}(D)$, taking one when a rostered physician is sent to that hospital and zero otherwise. Call-outs may use the entire demand vector but cannot anticipate final billed hours $B$, which are revealed later. Different surgery days are planned independently, without links between days.
+
+A regular assignment requires both day availability $u_{i,t}$ and site eligibility $v_{i,s}$. Only an available physician with at least one eligible regular site may join the on-call roster. Each physician may hold at most one regular assignment or one on-call position. When the rotation indicator $r_{i,j,t}$ is one, physician $j$ can join the roster only if physician $i$ also joins; when it is zero, this precedence does not apply. These regular and roster arrangements form $X_t$; the allowance $M$ for relaxing an inactive precedence requirement is one.
+
+Possible demands belong to the nonempty finite collection $\mathcal D_t$. Each hospital's nonnegative integer demand $D_s$ equals its forecast $\bar D_{s,t}$ plus deviation magnitude $\widehat D_{s,t}$ multiplied by a deviation fraction $f_s$. Each fraction has absolute value at most one, and the sum of their absolute values across hospitals cannot exceed budget $\tau$, which lies between zero and the number of hospitals. Forecasts and deviation magnitudes are nonnegative, and every integer demand vector meeting these requirements must be considered.
+
+After demand is revealed, only rostered physicians can be called out, and each can go to at most one hospital. If the rotation order places physician $i$ before $j$, calling out $j$ to any hospital requires also calling out $i$ to that same hospital. Such call-outs form $P_t(p)$. Regular-site eligibility does not restrict a call-out destination, and call-out headcounts need not directly match reported staffing demand; demand affects costs through the subsequent range of billed hours.
+
+For a given demand, final hours may take any combination in $\mathcal B_t(D)$. A hospital's lower limit is $\beta_{1,L}$ times its demand plus $\beta_{0,s,t}^{L}$, and its upper limit is $\beta_{1,U}$ times demand plus $\beta_{0,s,t}^{U}$. These historically fitted coefficients give nonempty nonnegative intervals, within which hospitals' hours may vary independently. A regular physician provides $t_r$ hours and a called-out physician $t_q$ hours, both nonnegative; their total at a hospital is available time $H_s(x,q)$. The positive excess of billed over available hours incurs nonnegative overtime rate $c_O$, and the reverse positive excess incurs idle-time rate $c_I$. The notation $[z]^+$ means the larger of a difference and zero, and the combined settlement cost is $U_t(B,x,q)$.
+
+Call-out cost $C_t(p,q)$ pays $c_L$ per called-out physician and $c_N$ per rostered physician not called out, both at nonnegative rates. The system seeks the lowest worst-case total cost $V_t$: choose regular assignments and a roster first, face the most adverse demand in the entire demand collection, and then choose the least-cost permissible call-outs for that demand, adding their cost to the settlement cost under the most adverse final hours for that demand. Regular salaries are fixed across that day's arrangements and are excluded from the comparison. If the circumstances prevent these staffing requirements from being met together, no implementable staffing plan exists.
+
+\subsection*{Inline notation and relations}
+$t$; $I$; $S$; $u_{i,t}\in\{0,1\}$; $v_{i,s}\in\{0,1\}$; $r_{i,j,t}\in\{0,1\}$; $i$; $j$; $t_r,t_q\geq0$; $c_L,c_N,c_O,c_I\geq0$; $M=1$; $D=(D_s)_{s\in S}$; $\bar D_{s,t}\geq0$; $\widehat D_{s,t}\geq0$; $\tau\in[0,|S|]$; $D$; $B=(B_s)_{s\in S}$; $\beta$; $x_{i,s,t}\in\{0,1\}$; $p_{i,t}\in\{0,1\}$; $X_t$; $B$; $q_{i,s,t}(D)\in\{0,1\}$; $s$; $p$; $P_t(p)$; $[z]^+=\max\{z,0\}$; $H_s(x,q)=\sum_{i\in I}(t_rx_{i,s,t}+t_qq_{i,s,t})$; $X_t,P_t,\mathcal D_t,\mathcal B_t$.
 \end{document}

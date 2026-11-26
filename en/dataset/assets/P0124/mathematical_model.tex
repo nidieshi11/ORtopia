@@ -1,17 +1,14 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,longtable}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
-\usepackage{geometry}
-\geometry{paperwidth=235mm,paperheight=297mm,hmargin=18mm,vmargin=19mm}
+
+\geometry{paperwidth=275mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
 \begin{document}
-\section*{P124: Current complete mathematical model (2026-10-20)}
-\section*{Basis and scope of the revision}According to the expanded semantics on page 7 of the source text, the charging duration is described as energy/power, clearly indicating the actual hourly usage, integer limited plugs, and daily costs of infrastructure; 237 completed services and all SOC/continuation constraints are retained.
-
-
-\section*{The current issue relates to the input boundaries.}
-The current solution involves determining the locations of charging stations, assigning limited number of plugs to each vehicle, and managing hourly usage of parking spaces. Time, energy consumption, and costs are all specified by the instances, thereby forming a deterministic scheduling model. According to Table 1 on page 6 of the paper, the parking lot numbers $C'\subseteq C$, $c$, and charging station $c$ use the same numbering system. $s_c,f_c$ represents both the departure and return nodes. In existing instances, $C'=C$ is used as the parking lot number for each station. Charging requirements during returns are denoted as $Y_{ic}\ge X^k_{if_c}$ under this common numbering system. $T$ represents the set of all service trips. The bitwise sum of the usage times in equation (21) is calculated using $T$. The residual variable $H$, which is not involved in this model, has been removed from the description.
-
-\subsection*{Decision Variables}
+\section*{P0124 Multi-Depot Electric Bus Connections and Charging Infrastructure}
+\subsection*{Mathematical formulation}
 \begin{align*}
 & X^k_{ij} \in \{0, 1\}, && \forall i \in T_s, j \in T_f, k \in K \\
 & Y_{ic} \in \{0, 1\}, && \forall i \in T, c \in C \\
@@ -25,103 +22,136 @@ The current solution involves determining the locations of charging stations, as
 & A_c \ge 0 \text{ (integer)}, && \forall c \in C
 \end{align*}
 
-\subsection*{Objective Function}
 \begin{equation}
 \min \sum_{j \in T} \sum_{k \in K} \sum_{c \in C'} l_k X^k_{s_c j} + \sum_{i \in T} \sum_{c \in C} \Omega Y_{ic} + \sum_{i \in T} \sum_{c \in C} \sum_{n \in N} p_{nc} G_{inc} + \sum_{i \in T} \sum_{k \in K} \sum_{n \in N} h_{kn} \left( \sum_{j \in T_i} T_{ijk} + \sum_{j \in T^f_i} d_i X^k_{ij} + \sum_{c \in C'} t_{s_i c} X^k_{s_c i} + \sum_{c \in C'} t_{e_i c} X^k_{i f_c} \right) \tag{1}
 \end{equation}
 
-\subsection*{Constraints}
-\paragraph{Network flow constraints}
 \begin{equation}
 \sum_{i \in T'_j} \sum_{k \in K_j} X^k_{ij} = 1 \quad \forall j \in T \tag{2}
 \end{equation}
+
 \begin{equation}
 \sum_{j \in T^f_i} \sum_{k \in K_i} X^k_{ij} = 1 \quad \forall i \in T \tag{3}
 \end{equation}
+
 \begin{equation}
 \sum_{i \in T'_j} X^k_{ij} - \sum_{i \in T^f_j} X^k_{ji} = 0 \quad \forall j \in T, k \in K \tag{4}
 \end{equation}
+
 \begin{equation}
 \sum_{i \in T} X^k_{s_c i} - \sum_{i \in T} X^k_{i f_c} = 0 \quad \forall k \in K, c \in C' \tag{5}
 \end{equation}
+
 \begin{equation}
 b_i - b_j + d_i + T_{ijk} + \sum_{c \in C} \sum_{n \in N} \frac{1}{\sigma_k} G_{inc} + \sum_{c \in C} \lambda Y_{ic} \le M(1 - X^k_{ij}) \quad \forall i \in T, j \in T_i, k \in K \tag{6}
 \end{equation}
+
 \begin{equation}
 T_{ijk} - \sum_{c \in C} \left( \tau_{ic} + (t_{e_i c} + t_{s_j c}) Y_{ic} \right) + u_{ij} \left( \sum_{c \in C} Y_{ic} - 1 \right) \ge M(X^k_{ij} - 1) \quad \forall i \in T, j \in T_i, k \in K \tag{7}
 \end{equation}
-\paragraph{Battery capacity and energy consumption constraints}
+
 \begin{equation}
 B_i \le \sum_{j \in T'_i} \sum_{k \in K} a^{\text{upp}} D_k X^k_{ji} \quad \forall i \in T \tag{8}
 \end{equation}
+
 \begin{equation}
 B_i - e_{d_{ik}} - \sum_{c \in C} e_{e_{ic k}} Y_{ic} \ge \sum_{j \in T^f_i} a^{\text{low}} D_k X^k_{ij} \quad \forall i \in T, k \in K \tag{9}
 \end{equation}
+
 \begin{equation}
 B_i - a^{\text{upp}} D_k - e_{d_{ik}} + \sum_{c \in C} \sum_{n \in N} G_{inc} - \sum_{c \in C} e_{e_{ic k}} Y_{ic} \ge M \left( \sum_{f_c \in F} X^k_{i f_c} - 1 \right) \quad \forall i \in T, k \in K \tag{10}
 \end{equation}
+
 \begin{equation}
 B_i - B_j - e_{d_{ik}} - \sum_{c \in C} (e_{e_{ic k}} + e_{s_{j c k}}) Y_{ic} - e_{u_{ij k}} \left( 1 - \sum_{c \in C} Y_{ic} \right) + \sum_{c \in C} \sum_{n \in N} G_{inc} \ge M(X^k_{ij} - 1) \quad \forall i \in T, j \in T_i, k \in K \tag{11}
 \end{equation}
+
 \begin{equation}
 \sum_{n \in N} G_{inc} \le D^{\max} Y_{ic} \quad \forall i \in T, c \in C \tag{12}
 \end{equation}
-\paragraph{Charging time constraints}
+
 \begin{equation}
 \sum_{n \in N} W_{inc} q_n \le \tau_{ic} + (b_i + d_i + t_{e_i c} + \lambda) Y_{ic} \le \sum_{n \in N} W_{inc} q_{(n+1)} \quad \forall i \in T, c \in C \tag{13}
 \end{equation}
+
 \begin{equation}
 \sum_{c \in C} G_{inc} \le D^{\max} \sum_{c \in C} W_{inc} \quad \forall i \in T, n \in N \tag{14}
 \end{equation}
+
 \begin{equation}
 \sum_{n \in N} \sum_{c \in C} W_{inc} \le 1 \quad \forall i \in T \tag{15}
 \end{equation}
-\paragraph{Variable type constraints}
+
 \begin{equation}
 \boldsymbol{X}, \boldsymbol{Y}, \boldsymbol{W} \in \{0, 1\} \tag{16}
 \end{equation}
+
 \begin{equation}
 \boldsymbol{T}, \boldsymbol{G}, \boldsymbol{B} \ge \boldsymbol{0} \tag{17}
 \end{equation}
-\paragraph{Extended model: Constraints on the location of charging stations and the number of charging piles required}
+
 \begin{equation}
 \sum_{i \in T} Y_{ic} \le M Z_c \quad \forall c \in C \tag{19}
 \end{equation}
+
 \begin{equation}
 \sum_{i \in T} V_{inc} \le A_c \quad \forall n \in N, c \in C \tag{21}
 \end{equation}
+
 \begin{equation}
 \boldsymbol{V}, \boldsymbol{Z} \in \{0, 1\} \tag{22}
 \end{equation}
+
 \begin{equation}
 \boldsymbol{A}\in\mathbb Z_+ \tag{23}
 \end{equation}
 
-
-\section*{The fully enabled infrastructure and available resources currently available.}
-It serves as a component of the current model. $X$ is defined only for certain consecutive arcs and compatible vehicle models; its capacity cannot be zero. Let $u_{ik}=\sum_{j\in T'_i}X^k_{ji}$, $g_{ic}=\sum_nG_{inc}$, and $t^c_{ic}=\tau_{ic}+(b_i+d_i+t_{e_i c}+\lambda)Y_{ic}$ represent their respective values.
 \[
 0\le T_{ijk}\le MX^k_{ij},\quad
 \sum_nW_{inc}=Y_{ic},\quad
 0\le A_c\le \overline A_cZ_c,\quad A_c\in\mathbb Z_+.
 \]
+
 \[
 \sum_iV_{inc}\le A_c,\quad V_{inc}\le\sum_{n_0\le n}W_{in_0c},\quad
 \sum_iY_{ic}\le|T|Z_c.
 \]
-If it is $q_{n+1}<b_i+d_i+t_{e_ic}+\lambda$, then it becomes $W_{inc}=0$. For each $k,n'\ge n$,
+
 \[
 t^c_{ic}+G_{inc}/\sigma_k
 \le q_{n'}+M(V_{in'c}-W_{inc}+2-u_{ik}).
 \]
-This process involves the allocation of time for forced charging at every hour, including periods during which charging occurs across different time intervals. It also counts the total number of such charging events.
+
 \[
 B_i\le D_k-e_{s_ic k}+M(1-X^k_{s_ci}),\quad Y_{ic}\ge X^k_{if_c},
 \]
+
 \[
 B_i-e_{d_{ik}}-e_{e_ic k}+g_{ic}\le D_k+M(2-u_{ik}-Y_{ic}),\quad
 t^c_{ic}+g_{ic}/\sigma_k\le1440+M(1-u_{ik}),\quad0\le\tau_{ic}\le1440.
 \]
-The goal is to reduce the infrastructure costs by $\sum_c(r_{1c}Z_c+r_{2c}A_c)$ days, in addition to achieving the aforementioned operational goals. The data includes a complete definition of 237 trips, compatible with various types and formats; the hourly unit price is calculated based on the energy/power consumption per minute.
 
+\subsection*{Definitions and model scope}
+An operator connects a supplied set of two hundred thirty-seven service trips $T$ using compatible vehicle classes $K$ and chooses charging stations $C$ and plug counts. Depots $C'$ have start nodes $s_c$ and finish nodes $f_c$. Allowed predecessors $T'_j$, successors $T_i^f$, service-only successors $T_i$ and compatible classes $K_i$ are supplied. Zero-or-one connection records $X_{ij}^k$ exist only for allowed arcs and compatible classes; others are zero. Each service has exactly one incoming and outgoing connection over eligible predecessors, successors and classes. Class-specific flow balances at every service, and starts equal returns at every depot. Each depot is a charging station and shares its station identifier; in this planning case every charging station is also a depot.
+
+Trip start $b_i$, duration $d_i$, direct connection time $u_{ij}$, service-end-to-station time $t_{e_i c}$ and station-to-next-service time $t_{s_j c}$ are given. Nonnegative connection-time record $T_{ijk}$ cannot exceed valid allowance $M$ times its connection record. For every allowed service connection and class, preceding start minus next start, plus preceding duration, connection time, all charging energy divided by class power $\sigma_k$ and fixed charging handling time $\lambda$ times charging choices $Y_{ic}$, cannot exceed the allowance times one minus connection.
+
+The same connection-time record must reach at least the sum over stations of waiting $\tau_{ic}$ plus the two detour travel times times station charging choice, minus direct travel time multiplied by total charging choices minus one, plus allowance multiplied by connection choice minus one. Charging choices are zero or one. Waiting lies between zero and one thousand four hundred forty minutes. Powers and durations use compatible units; charging energy itself is not a number of charging minutes.
+
+Nonnegative service-start energy $B_i$ cannot exceed incoming class battery capacity $D_k$ times upper charge proportion $a^{\mathrm{upp}}$, weighted by incoming connections and summed. For every service and every class, start energy minus service consumption $e_{d_{ik}}$ and station-bound consumption $e_{e_{ic k}}$ weighted by charging choices must reach at least all outgoing connections of that class times lower charge proportion $a^{\mathrm{low}}$ and capacity. This per-class requirement remains even for an unassigned class.
+
+For return energy, start energy minus upper proportion times class capacity, minus service consumption, plus all charging energy, minus station-bound consumption weighted by charging choices, must reach at least allowance times total class-specific depot returns minus one. On every service connection, preceding energy minus succeeding energy, minus service consumption, minus station-detour consumptions $e_{e_{ic k}}$ and $e_{s_{j c k}}$ weighted by choices, minus direct consumption $e_{u_{ij k}}$ times one minus total charging choices, plus all charging energy, must reach at least allowance times connection choice minus one.
+
+Nonnegative charging energy $G_{inc}$ by hour $N$ and station sums to service-station energy $g_{ic}$, which cannot exceed supplied total charge limit $D^{\max}$ times charging choice. Zero-or-one starting-hour records $W_{inc}$ sum over hours to that station choice and sum over all stations and hours to at most one. Energy across stations in any hour cannot exceed the charge limit times starting-hour records across stations. Charging start $t_{ic}^c$ is waiting plus the sum of service start, duration, station-bound travel and handling multiplied by charging choice. It lies between starting-hour records weighted by hour boundaries $q_n$ and by next-hour boundaries. A start record is zero if its hour ends before arrival and preparation could finish without waiting.
+
+Station activation $Z_c$ and service-hour-station occupancy $V_{inc}$ are zero or one. Plug count $A_c$ is a nonnegative integer no greater than finite installation ceiling $\overline A_c$ times activation. Charging choices at a station cannot exceed either allowance times activation or total trip count times activation. Occupancy at each station-hour cannot exceed plug count. A service's occupancy in an hour cannot exceed its starting records in that hour and all previous hours.
+
+Class indicator $u_{ik}$ totals incoming connections of that class. For every start hour, every hour no earlier than it and every class, charging start plus energy in that start hour divided by class power cannot exceed the checked hour's starting boundary plus allowance multiplied by occupancy in that hour minus starting-hour record plus two minus class indicator. Charging that extends across hours therefore occupies every intervening hour rather than only its starting hour.
+
+For every depot-to-service connection, service-start energy cannot exceed capacity minus depot-to-service consumption $e_{s_i c k}$ plus allowance times one minus connection. A service returning to a depot must choose charging at its corresponding station. For every service, station and class, start energy minus service and station-bound consumption plus station charging energy cannot exceed capacity plus allowance times two minus class indicator minus charging choice. Charging start plus total station energy divided by class power cannot exceed one thousand four hundred forty minutes plus allowance times one minus class indicator.
+
+Operating cost should be as low as possible. Depot departures incur class fixed charge $l_k$, charging events incur fixed charge $\Omega$, and hourly station energy incurs price $p_{nc}$. For every service, class and supplied time interval, time price $h_{kn}$ multiplies the sum of service-to-service connection times, service duration times all successor choices, depot-to-service travel $t_{s_i c}$ times corresponding start connections and service-to-depot travel $t_{e_i c}$ times return connections. Sum over every stated interval without silently removing repeated interval charges. Add daily station cost $r_{1c}$ times activation and per-plug daily cost $r_{2c}$ times plug count. Travel times, energy, power and connection conditions use their supplied values; the plan is not required to remain valid under other realizations of these inputs.
+
+\subsection*{Inline notation and relations}
+$C'\subseteq C$; $c$; $s_c,f_c$; $C'=C$; $Y_{ic}\ge X^k_{if_c}$; $T$; $H$; $X$; $u_{ik}=\sum_{j\in T'_i}X^k_{ji}$; $g_{ic}=\sum_nG_{inc}$; $t^c_{ic}=\tau_{ic}+(b_i+d_i+t_{e_i c}+\lambda)Y_{ic}$; $q_{n+1}<b_i+d_i+t_{e_ic}+\lambda$; $W_{inc}=0$; $k,n'\ge n$; $\sum_c(r_{1c}Z_c+r_{2c}A_c)$.
 \end{document}

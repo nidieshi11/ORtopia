@@ -1,19 +1,18 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,geometry}
-\geometry{margin=22mm}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
-\begin{document}
-\section*{P48: Cluster-based Vehicle Routing Problem Model (CluVRP2)}
-\paragraph{Source and scope}According to pages 1, 2, 3, 4, 5, 7, and 8 of the original paper’s PDF file, section 2 contains equations (8)–(15); section 4.2 contains equations (34)–(39). These equations are used to identify the pricing subproblem that needs to be solved.
 
-\subsection*{Data and preprocessing results}
-$G=(V,E)$ is the complete undirected graph, $0\in V$ denotes the depot, and $V_c=V\setminus\{0\}$ is the set of customers. $\mathcal C$ is a partition of $V_c$ into disjoint, nonempty clusters, and $\kappa(i)$ is the cluster containing customer $i$. Customer demands are $d_i>0$ and cluster demands are $d_C=\sum_{i\in C}d_i\le Q$. There are $m$ identical vehicles with capacity $Q>0$. The edges joining customers from different clusters or joining the depot to a customer form $\bar E$, and the within-cluster edges form $\hat E=E\setminus\bar E$. We have $\delta(S)=\{\{i,j\}\in E:i\in S,j\notin S\}$ and $E(S)=\{\{i,j\}\in E:i,j\in S\}$. The original edge costs $c_{ij}$ are given. For each $C\in\mathcal C$ satisfying $|C|\ge2$ and each distinct pair of endpoints $i,j\in C$, the model is given the cost $\hat c_{ij}$ of a shortest Hamiltonian path visiting every customer in $C$, along with one such path. Let
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
+\begin{document}
+\section*{P0048 Vehicle Deliveries with Consecutive Service Within Customer Clusters}
+\subsection*{Mathematical formulation}
 \[
  c'_{ij}=\begin{cases}c_{ij},&\{i,j\}\in\bar E,\\\hat c_{ij},&\{i,j\}\in\hat E.\end{cases}
 \]
-The preprocessed Hamilton path costs are used as model parameters. For any non-empty subset of clusters $\mathcal R\subseteq\mathcal C$, let $S_{\mathcal R}=\bigcup_{C\in\mathcal R}C$ and $r(\mathcal R)=\lceil\sum_{C\in\mathcal R}d_C/Q\rceil$ be other subsets of clusters.
-\subsection*{Complete CluVRP2 model}
-The variable $x_{ij}=x_{ji}$ represents the number of times the edges between clusters are used; edges within a cluster represent the pairs of endpoints of the selected Hamilton paths.
+
 \begin{align}
 \min\quad &\sum_{\{i,j\}\in E}c'_{ij}x_{ij},\tag{8}\\
 \text{s.t.}\quad&\sum_{j:\{i,j\}\in E(\kappa(i))}x_{ij}=\sum_{j:\{i,j\}\in\delta(\kappa(i))}x_{ij} &&i\in V_c:|\kappa(i)|>1,\tag{9}\\
@@ -24,6 +23,18 @@ The variable $x_{ij}=x_{ji}$ represents the number of times the edges between cl
 &x_{0j}\in\{0,1,2\} &&j\in V_c:|\kappa(j)|=1,\tag{14}\\
 &x_{ij}\ge0 &&\{i,j\}\in\hat E,\tag{15}
 \end{align}
-Among them, $E_{0,1}=\{\{0,j\}:j\in V_c,|\kappa(j)|=1\}$. The variables within each cluster remain continuous and non-negative as originally defined. When there are edges between given integer clusters, equations (9) and (10) determine which pair of endpoints to choose. By expanding the preprocessed Hamilton paths corresponding to each pair of endpoints, we can obtain a vehicle route that allows continuous access to all customers in each cluster.
 
+\subsection*{Definitions and model scope}
+A depot arranges deliveries by identical vehicles on a complete undirected network $G$ with nodes $V$. Customers $V_c$ are all nodes except depot $0$. They form disjoint nonempty clusters $\mathcal C$, with a customer's cluster denoted $\kappa(i)$. Each customer demand $d_i$ is strictly positive. Cluster demand $d_C$ sums its customer demands and does not exceed vehicle capacity $Q$. There are a specified number of vehicles $m$ with strictly positive capacity. A vehicle entering a cluster serves all its customers consecutively before leaving.
+
+Connections between different clusters or between depot and customers are external edges $\bar E$; remaining within-cluster edges form $\hat E$. External connections use supplied travel costs $c_{ij}$. For every cluster with at least two customers and every pair of distinct entry and exit customers, a shortest path visiting every customer in that cluster and its cost $\hat c_{ij}$ are supplied beforehand. A selected within-cluster connection represents that whole path, rather than only direct travel between its endpoints. Accounting cost $c'_{ij}$ uses the original edge cost externally and the complete precomputed path cost internally.
+
+Connection record $x_{ij}$ has no directional distinction. For every customer in a multi-customer cluster, its total within-cluster endpoint-pair records must equal its total connections crossing out of that cluster. Every cluster has exactly two crossing-connection records in total, and all depot-to-customer records sum to twice the vehicle count. Crossing edges $\delta(S)$ have exactly one endpoint in a considered customer collection, while internal edges $E(S)$ have both endpoints in it.
+
+For every nonempty collection of clusters $\mathcal R$, take its union of customers $S_{\mathcal R}$. Divide their combined demand by vehicle capacity and round upward to obtain required-vehicle lower bound $r(\mathcal R)$. Connections crossing out of that union must total at least twice that lower bound. This applies to every nonempty cluster collection, rather than only individual clusters.
+
+Except for special depot edges $E_{0,1}$ leading to single-customer clusters, external connections are selected zero or one times. A depot connection to a single-customer cluster can be used zero, one or two times, allowing a dedicated return journey. Within-cluster endpoint-pair records remain nonnegative continuous quantities, with no added integer requirement. Once external connections are integral, endpoint balances and the two crossings per cluster determine its endpoint pair. Expanding the supplied path for that pair gives consecutive service of the entire cluster. Total cost, obtained by summing each edge's accounting cost times its record, should be as low as possible.
+
+\subsection*{Inline notation and relations}
+$G=(V,E)$; $0\in V$; $V_c=V\setminus\{0\}$; $\mathcal C$; $V_c$; $\kappa(i)$; $i$; $d_i>0$; $d_C=\sum_{i\in C}d_i\le Q$; $m$; $Q>0$; $\bar E$; $\hat E=E\setminus\bar E$; $\delta(S)=\{\{i,j\}\in E:i\in S,j\notin S\}$; $E(S)=\{\{i,j\}\in E:i,j\in S\}$; $c_{ij}$; $C\in\mathcal C$; $|C|\ge2$; $i,j\in C$; $C$; $\hat c_{ij}$; $\mathcal R\subseteq\mathcal C$; $S_{\mathcal R}=\bigcup_{C\in\mathcal R}C$; $r(\mathcal R)=\lceil\sum_{C\in\mathcal R}d_C/Q\rceil$; $x_{ij}=x_{ji}$; $E_{0,1}=\{\{0,j\}:j\in V_c,|\kappa(j)|=1\}$.
 \end{document}

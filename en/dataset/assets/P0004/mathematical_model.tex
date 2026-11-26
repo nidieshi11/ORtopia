@@ -1,30 +1,27 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,geometry}
-\geometry{margin=22mm}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
-\begin{document}
-\section*{P4: The robust upper bound approximation model used in the main analysis of the paper (given the operational scale parameters)}
-\paragraph{Source and scope}According to pages 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 of the original paper’s PDF file, sections 2 and (7), (8)–(13) are used to explain the sources of information. Section 2.4, item (14), remains intact.
 
-\paragraph{The form that is retained}
-Retain section 2.4 formula (14): When given a batch size $q$ and the number of drivers to participate $N$, a robust upper bound programming for the crowdsourcing ratio and rush hour wages is selected. This model is a robust upper bound approximation of formula (7) in the original text.
-\subsection*{Enter the necessary definitions.}
-$m$ represents the number of delivery batches; $q$ indicates the number of orders per batch; $N$ refers to the number of drivers involved in delivery; $m=N\tau$ and $m,q,N,\tau\in\mathbb Z_{++}$ are related parameters. The customer involved in the $j$th batch is $B_j=\{(j-1)q+1,\ldots,jq\}$, and the delivery speed is $v_j>0$. The average and standard deviation of order arrival intervals and on-site service times are $\mu_i^a>0,\sigma_i^a\ge0,\mu_i^s\ge0,\sigma_i^s\ge0$. $\beta\ge0$ represents the length coefficient obtained by combining geographic density and the upper bound of TSP; $t_j=\beta\sqrt{q+1}/v_j$ is related to this coefficient. $\alpha>0$ denotes the promised delivery deadline; $0<\epsilon<1$ represents the safety margin for utilization rate; $c_T\ge0$ indicates the third-party delivery fee per order. $\gamma^a,\gamma^s,\gamma^k\ge0$ indicates the level of conservatism regarding arrival time, service time, and opportunity costs. $\mu_{(r)}^k$ lists the $N$ lowest values of the average driver opportunity cost; $\sigma^k\ge0$ represents the common standard deviation. Driver $h$’s service batch index is $J_h=\{j_{h1},\ldots,j_{h\tau}\}$. Each batch is selected from every $J_h$ of the $N$th batch, and all $J_h$ divisions cover all $m$ batches. This results in $D_h=\bigcup_{j\in J_h}B_j$. A fixed coefficient is defined accordingly.
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
+\begin{document}
+\section*{P0004 Order Allocation and Busy-Time Pay for Crowdsourced Last-Mile Delivery}
+\subsection*{Mathematical formulation}
 \[
  C=\frac{\sum_{j=1}^m t_j+\sum_{h=1}^N\left(\sum_{i\in D_h}\mu_i^s+\gamma^s\sqrt{\sum_{i\in D_h}(\sigma_i^s)^2}\right)}{mq},\quad
  R=\frac{\sum_{i=1}^{mq}\mu_i^s+\sum_{j=1}^m t_j}{N\sum_{i=1}^{mq}\mu_i^a},\quad
  K_N=\frac{\sum_{r=1}^N\mu_{(r)}^k+\gamma^k\sqrt N\sigma^k}{N}.
 \]
-For $j>N$, $a_j=\lfloor(j-1)/N\rfloor$. For $1\le i\le a_j$, $A_{ji}=\{(j-iN)q+1,\ldots,(j-1)q+1\}$, $D_{ji}=\bigcup_{\ell=0}^{i}B_{j-\ell N}$. The upper limit of service hours is defined by the following expression.
+
 \begin{align*}
 G_j(P)&=\frac{\sum_{r=(j-1)q+2}^{jq}\mu_r^a+\gamma^a\sqrt{\sum_{r=(j-1)q+2}^{jq}(\sigma_r^a)^2}}{P}
 +\sum_{r\in B_j}\mu_r^s+\gamma^s\sqrt{\sum_{r\in B_j}(\sigma_r^s)^2}+t_j,\\
 F_{ji}(P)&=\frac{-\sum_{r\in A_{ji}}\mu_r^a+\gamma^a\sqrt{\sum_{r\in A_{ji}}(\sigma_r^a)^2}}{P}
 +\sum_{r\in D_{ji}}\mu_r^s+\gamma^s\sqrt{\sum_{r\in D_{ji}}(\sigma_r^s)^2}+\sum_{\ell=0}^{i}t_{j-\ell N}.
 \end{align*}
-The sum of the empty values is zero. This is especially true for the $q=1$ case, where there are no waiting items.
-\subsection*{The only core planning element}
-The decision parameter $P$ represents the proportion of orders assigned to crowdsourcing, while $w$ represents the salary per unit of working time for each driver.
+
 \begin{align}
 \min_{P,w}\quad &CPw+(1-P)c_T,\tag{14a}\\
 \text{s.t.}\quad&G_j(P)\le\alpha &&j=1,\ldots,m,\tag{14b}\\
@@ -33,6 +30,18 @@ The decision parameter $P$ represents the proportion of orders assigned to crowd
 &RPw\ge K_N,\tag{14e}\\
 &0<P\le1,\quad w>0.\tag{14f}
 \end{align}
-Each item $F_{ji}\le\alpha$ is equivalent to the original formula after taking the maximum value of $i$. $q,N$ is the given operating scale parameter.
 
+\subsection*{Definitions and model scope}
+A delivery platform allocates orders between crowdsourced drivers and a third-party carrier and sets drivers' pay for travel and on-site service time only. Operating scale is fixed: there are $m$ batches of $q$ orders, and $N$ drivers each handle $\tau$ batches, so the number of batches equals the number of drivers times the batches per driver; all four counts are positive integers. Batch $j$ contains the consecutive $q$ orders in $B_j$, ending at order $jq$. Driver $h$ handles the batches $J_h$, listed as $j_{h1}$ through $j_{h\tau}$, with one batch from each successive round of $N$ batches; drivers' batch sets partition all batches. The orders $D_h$ are exactly the union of that driver's batches. These assignments and counts are fixed. The platform chooses only the crowdsourced order share $P$, which is strictly positive and at most one, and pay per unit of busy time $w$, which is strictly positive.
+
+For each order, the platform knows the positive mean arrival interval $\mu_i^a$ and nonnegative standard deviation $\sigma_i^a$, together with the nonnegative mean on-site service time $\mu_i^s$ and standard deviation $\sigma_i^s$. Nonnegative conservatism coefficients $\gamma^a$, $\gamma^s$ and $\gamma^k$ apply to arrivals, service and driver opportunity cost. Batch $j$ travels at strictly positive speed $v_j$, and its travel time $t_j$ is the nonnegative length coefficient $\beta$ multiplied by the square root of the sum of batch size and one and divided by that speed. The promised deadline $\alpha$ is strictly positive, the utilization safety margin $\epsilon$ lies strictly between zero and one, and third-party cost per order $c_T$ is nonnegative. Driver opportunity-cost means are ordered increasingly, with $\mu_{(r)}^k$ the item of rank $r$ among the lowest $N$ means. Their common standard deviation $\sigma^k$ is nonnegative. The participation threshold $K_N$ is the sum of those means plus the product of opportunity-cost conservatism, the square root of the driver count and the common standard deviation, all divided by the driver count.
+
+The platform assesses wage expenditure using conservative busy time per order $C$. It adds all batch travel times and, for each driver, the mean service times of all that driver's orders plus service conservatism times the square root of the sum of their service-time variances, then divides by the total order count. The utilization coefficient $R$ is the sum of all mean service times and batch travel times divided by the driver count times the sum of all mean arrival intervals. The crowdsourced share times this coefficient cannot exceed one minus the safety margin; multiplying that utilization by busy-time pay must reach the driver participation threshold. The platform seeks the lowest upper bound on total cost per order: conservative busy time per order times the crowdsourced share times busy-time pay, plus the share assigned outside crowdsourcing times third-party cost per order.
+
+For every batch $j$, the platform checks a service-time upper bound $G_j(P)$ against the promised deadline. It adds mean arrival intervals from the batch's second order through its last, adds arrival conservatism times the square root of the sum of those interval variances, and divides by the crowdsourced share. It then adds the mean service times of all orders in that batch, service conservatism times the square root of their total service-time variance, and the batch travel time. The result cannot exceed the deadline. When a batch contains one order, its arrival term for waiting to form a batch is zero; any other sum with no members is also zero.
+
+From the second round onward, accumulated waiting must also be checked. For batch $j$, the available lookback count $a_j$ is obtained by subtracting one from the current batch index, dividing the result by the driver count, and rounding down to an integer. For each lookback length $i$ from one through that count, $A_{ji}$ contains consecutive order indices from the order immediately after the last order of the batch located $i$ rounds earlier through the current batch's first order. The orders $D_{ji}$ comprise the current batch and the $i$ preceding batches reached by stepping backward $N$ batches at a time. The upper bound $F_{ji}(P)$ starts with the negative of the total mean arrival intervals in the first group, adds arrival conservatism times the square root of their total variance, and divides by the crowdsourced share. It then adds all mean service times in the second group, service conservatism times the square root of their total variance, and all travel times on that lookback chain. Every such upper bound must meet the deadline. The platform uses these conservative time and cost bounds without treating them as the exact worst system time; fixed batch size and driver count do not change with this choice, and zero cannot replace strictly positive pay.
+
+\subsection*{Inline notation and relations}
+$q$; $N$; $m$; $m=N\tau$; $m,q,N,\tau\in\mathbb Z_{++}$; $j$; $B_j=\{(j-1)q+1,\ldots,jq\}$; $v_j>0$; $\mu_i^a>0,\sigma_i^a\ge0,\mu_i^s\ge0,\sigma_i^s\ge0$; $\beta\ge0$; $t_j=\beta\sqrt{q+1}/v_j$; $\alpha>0$; $0<\epsilon<1$; $c_T\ge0$; $\gamma^a,\gamma^s,\gamma^k\ge0$; $\mu_{(r)}^k$; $\sigma^k\ge0$; $h$; $J_h=\{j_{h1},\ldots,j_{h\tau}\}$; $J_h$; $D_h=\bigcup_{j\in J_h}B_j$; $j>N$; $a_j=\lfloor(j-1)/N\rfloor$; $1\le i\le a_j$; $A_{ji}=\{(j-iN)q+1,\ldots,(j-1)q+1\}$; $D_{ji}=\bigcup_{\ell=0}^{i}B_{j-\ell N}$; $q=1$; $P$; $w$; $F_{ji}\le\alpha$; $i$; $q,N$.
 \end{document}

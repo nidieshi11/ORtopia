@@ -2,13 +2,13 @@
 (() => {
 'use strict';
 const cfg={
- P0364:["Road network signal joint control","Same batch of vehicles, two timing strategies",["Archiving Collaboration Strategy","fixed phase rotation"],"Total number of regional queues","vehicles","8 intersections, 4 zones. The two playbacks use the same random requirements and the original environment to execute second by second, and the queuing vehicles are arranged in order in their respective road sections."],
- P0442:["Mixed traffic following","How two groups of vehicles share the speed prediction of the vehicle in front",["Archive forecast","Historical road test · 8 seconds","First car test acceleration +0.5"],"Controlled car 1 spacing deviation","cm","The online solution has only a 0.25 second prediction step. The first vehicle test acceleration plan fixes the control command of connected vehicle 1 at +0.5 m/s², and other decisions are resolved according to the original goals. Both groups include a connected vehicle and a manual vehicle; the historical fragments are taken from the offline data of the same instance. The leading vehicle and manual vehicle are integrated according to the sample speed, and the connected vehicle is positioned according to the following distance. Slowly decompose observations, share predictions, and execute instructions in a single step."],
- P0476:["Speed planning between bus stops","Drive according to the timetable and park at the end",["drive through traffic lights","Speed adjustment on the way","pit stop"],"Position deviation relative to timetable","meters","Three clips are taken from the same 10,021-step predicted trajectory, with each step being 2 seconds. The blue dashed line marks the planned location. This instance did not enter the red light interval in the time domain."],
- P0477:["Energy-saving car following on signal arterial roads","Under the same prediction of the vehicle ahead, compare acceleration commands",["Archive deceleration instructions","Trial acceleration upper bound"],"Changes in relative initial speed of the vehicle","meters/second","This prediction is about 2.64 seconds. The vehicle in front is displayed according to the average predicted position, and the signal is switched according to the input stage. The parking distance is additionally checked when the light is red; the full-time domain targets of the two instructions are calculated according to the relaxed model of this example, and the cost unit is the model target value."],
- P0479:["Mixed fleet safety following","Switch viewing positions among 432 autonomous vehicles",["The tail of the team and the manual car","fleet front end","middle section of convoy"],"Minimum safety margin for adjacent vehicles","meters","Switch fleet positions within the same 6-second forecast. The artificial car at the end of the team uses the position mean and variance, and the safety distance is added to the one-sided probability margin specified by the instance."],
- P0480:["Cloud fleet section control","Observe how the two-step instruction changes the first pitch prediction",["Archiving instructions","No intervention in the first step","Maximum input in first step"],"Deviation of first pitch prediction relative to target","model unit","This example records the distance and speed deviation, without absolute vehicle speed and mileage. Using the leading vehicle as a reference, the display spacing deviation is compressed. Inter-step tweening is used for slow playback; the two controls select the state closest to the target within their respective reachable intervals. All three solutions have been verified by the instance checker. The slider control adjusts the first step instruction within the input limit, the second step input is zero, and the tracking cost and control cost are recalculated according to the reachable interval of the instance. The remaining vehicle state deviations are all zero."],
- P0482:["Networked fleet feedback and correction","Will small initial perturbations be eliminated or accumulated?",["Enable feedback","Turn off feedback control"],"Deviation of actual position from nominal trajectory","cm","The following vehicle updates its control based on position and speed errors every 0.3 seconds. The first 6 seconds are slowed down, then compressed to the end of step 925. The control scheme uses the same initial state and turns off error feedback."]
+ P0364:['Road network signal joint control','Same batch of vehicles, two timing strategies',['Archiving Collaboration Strategy','fixed phase rotation'],'Total number of regional queues','vehicles','8 intersections, 4 zones. The two playbacks use the same random requirements and the original environment to execute second by second, and the queuing vehicles are arranged in order in their respective road sections.'],
+ P0442:['Car-following in mixed traffic','How two groups of vehicles share the speed prediction of the vehicle in front',['Archive forecast','Historical road test · 8 seconds','First car test acceleration +0.5'],'Controlled car 1 spacing deviation','cm','The online solution has only a 0.25 second prediction step. The first vehicle test acceleration plan fixes the control command of connected vehicle 1 at +0.5 m/s², and other decisions are resolved according to the original goals. Both groups include a connected vehicle and a manual vehicle; the historical fragments are taken from the offline data of the same instance. The leading vehicle and manual vehicle are integrated according to the sample speed, and the connected vehicle is positioned according to the following distance. Slowly decompose observations, share predictions, and execute instructions in a single step.'],
+ P0476:['Bus speed planning between stops','Drive according to the timetable and park at the end',['drive through traffic lights','Speed adjustment on the way','pit stop'],'Position deviation relative to timetable','meters','Three clips are taken from the same 10,021-step predicted trajectory, with each step being 2 seconds. The blue dashed line marks the planned location. This instance did not enter the red light interval in the time domain.'],
+ P0477:['Eco-driving along a signalized arterial','Under the same prediction of the vehicle ahead, compare acceleration commands',['Archive deceleration instructions','Trial acceleration upper bound'],'Change from initial speed','meters/second','This prediction is about 2.64 seconds. The vehicle in front is displayed according to the average predicted position, and the signal is switched according to the input stage. The parking distance is additionally checked when the light is red; the full-time domain targets of the two instructions are calculated according to the relaxed model of this example, and the cost unit is the model target value.'],
+ P0479:['Safe following in mixed platoons','Switch viewing positions among 432 autonomous vehicles',['The tail of the team and the manual car','fleet front end','middle section of convoy'],'Minimum safety margin for adjacent vehicles','meters','Switch fleet positions within the same 6-second forecast. The artificial car at the end of the team uses the position mean and variance, and the safety distance is added to the one-sided probability margin specified by the instance.'],
+ P0480:['Cloud-based platoon spacing control','Observe how the two-step instruction changes the first pitch prediction',['Archiving instructions','No intervention in the first step','Maximum input in first step'],'First predicted gap error','model unit','This example records the distance and speed deviation, without absolute vehicle speed and mileage. Using the leading vehicle as a reference, the display spacing deviation is compressed. Inter-step tweening is used for slow playback; the two controls select the state closest to the target within their respective reachable intervals. All three solutions have been verified by the instance checker. The slider control adjusts the first step instruction within the input limit, the second step input is zero, and the tracking cost and control cost are recalculated according to the reachable interval of the instance. The remaining vehicle state deviations are all zero.'],
+ P0482:['Feedback control for a connected platoon','Will small initial perturbations be eliminated or accumulated?',['Enable feedback','Disable feedback'],'Deviation of actual position from nominal trajectory','cm','The following vehicle updates its control based on position and speed errors every 0.3 seconds. The first 6 seconds are slowed down, then compressed to the end of step 925. The control scheme uses the same initial state and turns off error feedback.']
 };
 const clamp=(v,a,b)=>Math.min(b,Math.max(a,v)),lerp=(a,b,f)=>a+(b-a)*f;
 const fmt=(v,n=2)=>Number(v).toLocaleString('en-US',{maximumFractionDigits:n});
@@ -19,21 +19,21 @@ function episode(id,d,mode,view){
  if(id==='P0364'){
   const run=d.runs[mode];return f=>{
    const t=f*(run.length-1),j=Math.floor(t),r=run[j],sum=r[2].reduce((a,b)=>a+b,0);
-   return {t,unit:"s",plot:sum,network:[r,run[Math.min(j+1,run.length-1)],t-j],metrics:[["Queuing on the road",sum+" vehicles"],["Trip completed",r[3]+" vehicles"],["Starting point backlog",r[4]+" vehicles"],["Downstream full load blocking",r[5]+" times"]]};
+   return {t,unit:'s',plot:sum,network:[r,run[Math.min(j+1,run.length-1)],t-j],metrics:[['Queuing on the road',sum+' vehicles'],['Trip completed',r[3]+' vehicles'],['Starting point backlog',r[4]+' vehicles'],['Downstream full load blocking',r[5]+' times']]};
   };
  }
  if(id==='P0442'){
   const data=mode===2?[d.forecast[0],d.trial]:mode===1?d.history:d.forecast;return f=>{
    const u=f*(data.length-1),j=Math.min(data.length-2,Math.floor(u)),v=[0,1].map(k=>data[j][k].map((x,l)=>lerp(x,data[j+1][k][l],u-j)));
    const [a,b]=v,commands=mode===1?v:data[1],t=u*d.dt,lead=d.base*t,first=lead-d.base-a[3],human=first-d.base,second=human-d.base-b[3];
-   return {t,unit:"s",plot:v[view.focus][3]*100,camera:human-3,scale:7.65,cars:[car("Pilot car",lead,amber),car("Netlink 1",first,green),car("Manual 1",human,blue),car("Internet connection 2",second,green),car("Artificial 2",second-d.base,blue)],radio:[2,3],ruler:[2,3,"Following distance "+fmt(d.base+b[3],4)+' m'],metrics:[["Internet connection 1 acceleration",fmt(commands[0][4],5)+' m/s²'],["Internet connection 2 acceleration",fmt(commands[1][4],5)+' m/s²'],["Manual 1 speed",fmt(d.base+a[2],4)+' m/s'],["Network 1 spacing",fmt(d.base+a[3],4)+' m']]};
+   return {t,unit:'s',plot:v[view.focus][3]*100,camera:human-3,scale:7.65,cars:[car('Pilot car',lead,amber),car('Netlink 1',first,green),car('Manual 1',human,blue),car('Internet connection 2',second,green),car('Artificial 2',second-d.base,blue)],radio:[2,3],ruler:[2,3,'Following distance '+fmt(d.base+b[3],4)+' m'],metrics:[['Connected vehicle 1 acceleration',fmt(commands[0][4],5)+' m/s²'],['Connected vehicle 2 acceleration',fmt(commands[1][4],5)+' m/s²'],['Human-driven vehicle 1 speed',fmt(d.base+a[2],4)+' m/s'],['Connected vehicle 1 gap',fmt(d.base+a[3],4)+' m']]};
   };
  }
  if(id==='P0476'){
   const rows=d.windows[mode];return f=>{
    const u=f*(rows.length-1),r=mix(rows,u),[step,x,ref,v]=r,t=step*d.dt;
    const camera=x+9,stop=d.terminal[0];
-   return {t,unit:"s",plot:x-ref,camera,scale:5,cars:[car("bus",x,green,'bus')],ghost:ref,light:d.light,red:t>=d.red[0]&&t<=d.red[1],stop,metrics:[["Actual speed",fmt(v,3)+' m/s'],["schedule deviation",fmt(x-ref,3)+' m'],["distance from planned stop",fmt(stop-x,2)+' m'],["prediction step",Math.round(step).toLocaleString()]]};
+   return {t,unit:'s',plot:x-ref,camera,scale:5,cars:[car('bus',x,green,'bus')],ghost:ref,light:d.light,red:t>=d.red[0]&&t<=d.red[1],stop,metrics:[['Actual speed',fmt(v,3)+' m/s'],['schedule deviation',fmt(x-ref,3)+' m'],['distance from planned stop',fmt(stop-x,2)+' m'],['prediction step',Math.round(step).toLocaleString()]]};
   };
  }
  if(id==='P0477'){
@@ -54,22 +54,22 @@ function episode(id,d,mode,view){
    const u=d.count*f,t=u*d.dt,j=Math.min(d.count-1,Math.floor(u)),within=(u-j)*d.dt;
    const [p0,v0,a]=rows[j],x=p0+v0*within+.5*a*within**2,v=v0+a*within;
    const lead=d.lead+d.slope*t,gap=lead-x,stage=d.k+j,red=stage>=d.red[0]&&stage<=d.red[1],head=d.jam+d.margin+d.tau*v;
-   return {t,unit:"s",plot:v-d.ego[1],camera:d.ego[0]+12+4*t,scale:13,cars:[car("controlled car",x,green),car("Forecast",lead,amber)],signal:true,red,zone:[lead-head,lead],ruler:[0,1,"Distance between two cars "+fmt(gap,3)+' m'],metrics:[["Acceleration command",fmt(a,6)+' m/s²'],["own vehicle speed",fmt(v,5)+' m/s'],["distance constraint margin",fmt(gap-head,4)+' m'],["red light parking margin",red?fmt(gap-d.jam-d.margin,4)+' m':"Green light stage"]]};
+   return {t,unit:'s',plot:v-d.ego[1],camera:d.ego[0]+12+4*t,scale:13,cars:[car('controlled car',x,green),car('Forecast',lead,amber)],signal:true,red,zone:[lead-head,lead],ruler:[0,1,'Distance between two cars '+fmt(gap,3)+' m'],metrics:[['Acceleration command',fmt(a,6)+' m/s²'],['own vehicle speed',fmt(v,5)+' m/s'],['distance constraint margin',fmt(gap-head,4)+' m'],['red light parking margin',red?fmt(gap-d.jam-d.margin,4)+' m':'Green light stage']]};
   };
  }
  if(id==='P0479'){
   const tail=mode===0,seg=d.groups[[2,0,1][mode]],labels=tail?[430,431,432]:mode===1?[1,2,3,4]:[215,216,217,218];return f=>{
    const u=f*(seg.length-1),pos=mix(seg,u),hv=mix(d.human,u),t=u*d.dt,margin=d.z*Math.sqrt(Math.max(0,hv[1]));
-   const cars=pos.map((x,j)=>car('AV '+labels[j],x,green));if(tail)cars.push(car("Manual car",hv[0],amber));
+   const cars=pos.map((x,j)=>car('AV '+labels[j],x,green));if(tail)cars.push(car('Manual car',hv[0],amber));
    const last=cars.length-1,gaps=cars.slice(1).map((v,j)=>cars[j].x-v.x),required=d.safe+(tail?margin:0),min=Math.min(...gaps.map((g,j)=>g-d.safe-(tail&&j===last-1?margin:0)));
-   return {t,unit:"s",plot:min,camera:(cars[0].x+cars[last].x)/2,scale:5.3,cars,zone:[cars[last].x,cars[last].x+required],ruler:[last,last-1,"actual "+fmt(gaps.at(-1))+' m'],metrics:[["Observe vehicles",tail?"Tail 3 AV + 1 HV":labels[0]+' – '+labels.at(-1)],["Required spacing",fmt(required,3)+' m'],["minimum safety margin",fmt(min,3)+' m'],[tail?"Standard deviation of manual vehicle position":"Leading reference speed",tail?fmt(Math.sqrt(hv[1]),4)+' m':fmt(d.reference[Math.min(d.reference.length-1,Math.floor(u))],3)+' m/s']]};
+   return {t,unit:'s',plot:min,camera:(cars[0].x+cars[last].x)/2,scale:5.3,cars,zone:[cars[last].x,cars[last].x+required],ruler:[last,last-1,'actual '+fmt(gaps.at(-1))+' m'],metrics:[['Observe vehicles',tail?'Rear: 3 AVs + 1 HV':labels[0]+' – '+labels.at(-1)],['Required spacing',fmt(required,3)+' m'],['minimum safety margin',fmt(min,3)+' m'],[tail?'Human-driven vehicle position SD':'Leading reference speed',tail?fmt(Math.sqrt(hv[1]),4)+' m':fmt(d.reference[Math.min(d.reference.length-1,Math.floor(u))],3)+' m/s']]};
   };
  }
  if(id==='P0480')return f=>{
   const trial=view.trial,states=[d.gap[0],trial[1],trial[2]],u=2*f,j=Math.min(1,Math.floor(u)),x=lerp(states[j],states[j+1],u-j),a=j===0?trial[0]:0;
   // Screen positions represent deviations on a compressed linear scale, never physical kilometres.
   const front=40,ego=front-16-55*x/d.target;
-  return {t:u,unit:"step",plot:x-d.target,camera:1,scale:6,compressed:true,cars:[car("Pilot car",front,amber),car("Cloud Control AV",ego,green),car("Manual car",ego-14,blue),car("Manual car",ego-28,blue)],ghost:front-71,radio:[0,1],ruler:[1,0,"Spacing deviation "+fmt(x,1)],metrics:[["current command",fmt(a,6)],["Interval end spacing deviation",fmt(states[j+1],3)],["target deviation",fmt(d.target,0)],["Two-step total cost",fmt(trial[3],1)]]};
+  return {t:u,unit:'step',plot:x-d.target,camera:1,scale:6,compressed:true,cars:[car('Pilot car',front,amber),car('Cloud Control AV',ego,green),car('Manual car',ego-14,blue),car('Manual car',ego-28,blue)],ghost:front-71,radio:[0,1],ruler:[1,0,'Spacing deviation '+fmt(x,1)],metrics:[['current command',fmt(a,6)],['Final gap error',fmt(states[j+1],3)],['target deviation',fmt(d.target,0)],['Two-step total cost',fmt(trial[3],1)]]};
  };
  const rows=[];let [x,v]=d.actual,setting=mode;
  for(let j=0;j<=d.steps;j++){
@@ -85,7 +85,7 @@ function episode(id,d,mode,view){
   const dx=x-nom,dv=v-d.nominal[1],lead=d.leader[0]+d.leader[1]*t,feedback=setting===0;
   const errorPath=rows.slice(Math.max(0,tick-40),tick+1).map(r=>[r[4],r[5]]);
   const inside=Math.abs(2*dx+dv)<=d.widths[0]+1e-8&&Math.abs(dx+dv)<=d.widths[1]+1e-8;
-  return {t,unit:"s",feedback,applied,velocityError:dv,errorPath,plot:dx*100,camera:(lead+x)/2,scale:12,cars:[car("Follow the car",x,green),car("Get a car online",lead,blue)],ghost:nom,radio:[1,0],ruler:[0,1,"spacing "+fmt(lead-x,3)+' m'],metrics:[["Error feedback command",fmt(applied,6)+' m/s²'+(applied<d.inputRange[0]||applied>d.inputRange[1]?" · Input limit exceeded":'')],["position error",fmt(dx*100,3)+' cm'],["speed error",fmt(dv,5)+' m/s'],["restraint boundary",inside?"inside the tube":"has crossed the line"]]};
+  return {t,unit:'s',feedback,applied,velocityError:dv,errorPath,plot:dx*100,camera:(lead+x)/2,scale:12,cars:[car('Follow the car',x,green),car('Get a car online',lead,blue)],ghost:nom,radio:[1,0],ruler:[0,1,'Gap '+fmt(lead-x,3)+' m'],metrics:[['Error feedback command',fmt(applied,6)+' m/s²'+(applied<d.inputRange[0]||applied>d.inputRange[1]?' · Input limit exceeded':'')],['position error',fmt(dx*100,3)+' cm'],['speed error',fmt(dv,5)+' m/s'],['restraint boundary',inside?'inside the tube':'has crossed the line']]};
  };
 }
 const W=900,H=340;
@@ -141,13 +141,13 @@ function surface(canvas){
   const phase=((s.camera*s.scale)%85+85)%85;
   for(let x=-phase;x<W;x+=85)box(x,271,42,3,'#e2e3ce');
   if(s.stop!=null && sx(s.stop)>-70 && sx(s.stop)<W+70){
-   const x=sx(s.stop);box(x-22,161,3,41,'#435a58');box(x+26,161,3,41,'#435a58');box(x-25,156,58,6,'#304f50');box(x-20,165,44,27,'#c6dfdaa8');tag("next stop",x,146);}
+   const x=sx(s.stop);box(x-22,161,3,41,'#435a58');box(x+26,161,3,41,'#435a58');box(x-25,156,58,6,'#304f50');box(x-20,165,44,27,'#c6dfdaa8');tag('next stop',x,146);}
   if(s.signal||s.light!=null){
    const x=s.signal?W-100:sx(s.light);
    if(x>0&&x<W){
     if(!s.signal){box(x,156,4,49,'#424d4d');box(x+4,213,4,46,'#f2f2d9');}
     box(x-20,130,42,17,'#253d42');disc(x-10,138,5,s.red?'#fb665c':'#614944');disc(x+11,138,5,s.red?'#365a48':'#76d79a');
-    tag(s.signal?"prediction signal":"intersection",x,118);
+    tag(s.signal?'prediction signal':'intersection',x,118);
    }
   }
   if(s.zone){const x=sx(s.zone[0]),w=sx(s.zone[1])-x;box(x,246,w,15,'#efbd5a99');for(let j=x+10;j<x+w;j+=12)line(j,246,j-8,260,'#a56d30');}
@@ -182,8 +182,8 @@ function surface(canvas){
    c.save();c.translate(x,y);c.rotate(f<.5?a[2]:b[2]);box(-3.6,-2.2,7.2,4.4,queued?'#ecc066':['#95d6dc','#b0dbc4','#a1c1e1'][id%3]);box(0,-1.6,1.5,3.2,'#526c72');c.restore();
   }
   for(let j=0;j<4;j++){
-   const node=d.region.indexOf(j),[x]=xy(node);tag("Zone "+(j+1)+" · Queuing "+r[2][j],x,32);
-   tag(r[6][j]?"rotation timing":"Crowded priority",x,307,r[6][j]?'#495f75':'#526e50');
+   const node=d.region.indexOf(j),[x]=xy(node);tag('Zone '+(j+1)+' · Queuing '+r[2][j],x,32);
+   tag(r[6][j]?'rotation timing':'Crowded priority',x,307,r[6][j]?'#495f75':'#526e50');
   }
  }
  return {draw(s,d,bg){c.setTransform(canvas.width/W,0,0,canvas.height/H,0,0);if(s.network)network(s,d);else road(s,bg);}};
@@ -200,9 +200,9 @@ function mount(host,p,pack,step){
  host.innerHTML=`<article class="wrap atlas medium-world road-world"><div class="replay-breadcrumb"><a href="index.html">Simulations</a> / <a class="problem-ref"></a></div>
  <header class="atlas-title"><div><small></small><h1></h1></div></header>
  <section class="atlas-stage"><div class="atlas-stage-head"><div><small class="road-type"></small><h2></h2></div><output class="m-clock"></output></div>
- <div class="atlas-window"><canvas class="road-map"></canvas></div><div class="road-options" aria-label="Simulation plan and observation location"></div>
- <div class="atlas-control"><button class="play"></button><input class="scrub" type="range" min="0" max="1000" aria-label="Playback progress"><select class="rate" aria-label="play speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select><button class="restart">replay</button></div></section>
- <section class="road-instruments"><dl></dl><div class="road-series"><span></span><output></output><canvas aria-label="Indicators change as playback progresses"></canvas></div></section>
+ <div class="atlas-window"><canvas class="road-map"></canvas></div><div class="road-options" aria-label="Simulation plan and viewpoint"></div>
+ <div class="atlas-control"><button class="play"></button><input class="scrub" type="range" min="0" max="1000" aria-label="Playback progress"><select class="rate" aria-label="play speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select><button class="restart">Restart</button></div></section>
+ <section class="road-instruments"><dl></dl><div class="road-series"><span></span><output></output><canvas aria-label="Metrics update during playback"></canvas></div></section>
  <details class="atlas-proof"><summary>Examples and playback caliber</summary><p></p><code></code></details></article>`;
  const q=sel=>host.querySelector(sel),map=q('.road-map'),trend=q('.road-series canvas'),renderer=surface(map);
  const renderers={P0442:window.ORTOPIA_MIXED,P0476:window.ORTOPIA_CORRIDORS,P0477:window.ORTOPIA_CORRIDORS,P0480:window.ORTOPIA_FLEET,P0482:window.ORTOPIA_FLEET};
@@ -210,20 +210,20 @@ function mount(host,p,pack,step){
  const ctl=new AbortController(),on=(el,event,fn)=>el.addEventListener(event,fn,{signal:ctl.signal});
  q('.problem-ref').href='index.html#scene/'+p.sceneId;q('.problem-ref').textContent=p.sceneName;q('h1').textContent=p.title;
  q('.atlas-title small').textContent=p.sceneName+' · '+p.id+' · '+pack.sample;q('.road-type').textContent=type;q('h2').textContent=title;
- map.setAttribute('aria-label',type+"Dynamic road scene");q('.atlas-proof p').textContent=note+(scene?" Vehicles and transportation facilities are illustrated according to the model relationships of the instances.":'');q('code').textContent=fmt(pack.variables,0)+" variables · "+fmt(pack.constraints,0)+" constraint · instance "+pack.instance+' · solution '+pack.solution;
- q('.road-series span').textContent=metric+'（'+unit+'）';
+ map.setAttribute('aria-label',type+' Dynamic road scene');q('.atlas-proof p').textContent=note+(scene?' Vehicles and transportation facilities are illustrated according to the model relationships of the instances.':'');q('code').textContent=fmt(pack.variables,0)+' variables · '+fmt(pack.constraints,0)+' constraint · instance '+pack.instance+' · solution '+pack.solution;
+ q('.road-series span').textContent=metric+' ('+unit+')';
  if(scene){
   const stage=q('.atlas-stage'),anchor=document.createComment('scene position');
   stage.before(anchor);
   const dialog=document.createElement('dialog');dialog.className='atlas medium-world road-world road-expanded';
-  dialog.setAttribute('aria-label',type+"Zoom in on the scene");host.append(dialog);
-  const button=document.createElement('button');button.type='button';button.className='road-expand';button.textContent="Zoom in on the scene";
+  dialog.setAttribute('aria-label',type+' Zoom in on the scene');host.append(dialog);
+  const button=document.createElement('button');button.type='button';button.className='road-expand';button.textContent='Zoom in on the scene';
   q('.atlas-stage-head').append(button);
   on(button,'click',()=>{
    if(dialog.open){dialog.close();return;}
-   dialog.append(stage);dialog.showModal();button.textContent="Close the scene";
+   dialog.append(stage);dialog.showModal();button.textContent='Close the scene';
   });
-  on(dialog,'close',()=>{anchor.after(stage);button.textContent="Zoom in on the scene";button.focus();});
+  on(dialog,'close',()=>{anchor.after(stage);button.textContent='Zoom in on the scene';button.focus();});
  }
 
  for(let j=0;j<4;j++){const el=document.createElement('div');el.innerHTML='<dt></dt><dd></dd>';q('dl').append(el);}
@@ -233,14 +233,14 @@ function mount(host,p,pack,step){
   const s=at(f);
   if(scene)scene.draw(map,p.id,s,d,view);else renderer.draw(s,d,bg);
   chart(trend,values,f);
-  q('.m-clock').textContent=fmt(s.t,s.unit==="step"?2:3)+' '+s.unit;q('.road-series output').textContent=fmt(s.plot,5);
+  q('.m-clock').textContent=fmt(s.t,s.unit==='step'?2:3)+' '+s.unit;q('.road-series output').textContent=fmt(s.plot,5);
   s.metrics.forEach(([k,v],j)=>{cells[j].firstChild.textContent=k;cells[j].lastChild.textContent=v;});
-  q('.play').textContent=playing?"pause":f>=1?"Replay":"play";q('.scrub').value=Math.round(f*1000);
+  q('.play').textContent=playing?'Pause':f>=1?'Replay':'Play';q('.scrub').value=Math.round(f*1000);
  }
  function tick(now){if(!playing||document.hidden)return;f=clamp(f+Math.min(120,now-(last||now))*rate/(1000*dur),0,1);last=now;if(f>=1)playing=false;draw();if(playing)raf=requestAnimationFrame(tick);}
  function run(){cancelAnimationFrame(raf);last=0;draw();if(playing&&!document.hidden)raf=requestAnimationFrame(tick);}
  function refresh(){at=episode(p.id,d,mode,view);
-  if(p.id==='P0477')q('.road-cost').textContent="Full time domain target value "+fmt(view.cost,2)+"　· Increased compared to archiving plan "+fmt(view.cost-d.costs[0],2);
+  if(p.id==='P0477')q('.road-cost').textContent='Full time domain target value '+fmt(view.cost,2)+'　· Increased compared to archiving plan '+fmt(view.cost-d.costs[0],2);
   values=Array.from({length:161},(_,k)=>at(k/160).plot);run();}
  function choose(j){mode=j;view.mode=j;
   view.switches.clear();
@@ -257,9 +257,9 @@ function mount(host,p,pack,step){
  if(p.id==='P0477'||p.id==='P0482'){
   const eco=p.id==='P0477',panel=document.createElement('div');
   panel.className='road-adjust road-intervene';
-  panel.innerHTML="<span>Taking over while driving</span><output aria-live=\"polite\"></output>";
+  panel.innerHTML='<span>Taking over while driving</span><output aria-live="polite"></output>';
   const output=panel.lastChild;
-  const names=eco?["Slow down from now on","Accelerate from now on"]:["Enable feedback from now on","Turn off feedback from now on"];
+  const names=eco?['Slow down from now on','Accelerate from now on']:['Enable feedback from now on','Turn off feedback from now on'];
   names.forEach((name,next)=>{
    const b=document.createElement('button');b.type='button';b.textContent=name;panel.insertBefore(b,output);
    on(b,'click',()=>{
@@ -267,7 +267,7 @@ function mount(host,p,pack,step){
     const step=Math.ceil(at(f).t/d.dt-1e-9);
     for(const key of view.switches.keys())if(key>=step)view.switches.delete(key);
     view.switches.set(step,next);
-    output.textContent=fmt(step*d.dt,3)+" From seconds · "+name.slice(3);
+    output.textContent=fmt(step*d.dt,3)+' From seconds · '+name.slice(3);
     playing=true;refresh();
    });
   });
@@ -275,13 +275,13 @@ function mount(host,p,pack,step){
  }
  if(p.id==='P0442'){
   const label=document.createElement('label');label.className='road-adjust';
-  label.innerHTML="<span>Follow camera</span><select aria-label=\"Select vehicle to observe\"><option>Connected car 1</option><option>Connected car 2</option></select>";
+  label.innerHTML='<span>Follow camera</span><select aria-label="Select vehicle to observe"><option>Connected car 1</option><option>Connected car 2</option></select>';
   q('.road-options').after(label);
-  on(label.lastChild,'change',e=>{view.focus=e.target.selectedIndex;q('.road-series span').textContent="controlled car "+(view.focus+1)+" Spacing deviation (cm)";refresh();});
+  on(label.lastChild,'change',e=>{view.focus=e.target.selectedIndex;q('.road-series span').textContent='controlled car '+(view.focus+1)+' Spacing deviation (cm)';refresh();});
  }
  if(p.id==='P0480'){
   const label=document.createElement('label');label.className='road-adjust';
-  label.innerHTML="<span>The first step of cloud control instructions</span><input class=\"cloud-input\" type=\"range\" step=\"0.01\"><output class=\"cloud-setting\"></output>";
+  label.innerHTML='<span>The first step of cloud control instructions</span><input class="cloud-input" type="range" step="0.01"><output class="cloud-setting"></output>';
   q('.road-options').after(label);
   const input=q('.cloud-input');input.min=-d.limit;input.max=d.limit;
   on(input,'input',()=>{
@@ -297,7 +297,7 @@ function mount(host,p,pack,step){
   c.width=Math.max(1,Math.round(r.width*dpr));c.height=Math.max(1,Math.round(r.height*dpr));}draw();}
  choose(clamp((step||1)-1,0,modes.length-1));resize();const ro=new ResizeObserver(resize);ro.observe(map);ro.observe(trend);
  on(bg,'load',()=>{view.images[p.id]=bg;draw();});
- if(p.id==='P0476')bg.src='../../simulation/assets/replays/road-P0476.webp';else if(p.id==='P0479')bg.src='../../simulation/assets/replays/road-streetscape.webp';
+ if(p.id==='P0476')bg.src='assets/replays/road-P0476.webp';else if(p.id==='P0479')bg.src='assets/replays/road-streetscape.webp';
  if(scene?.controls)scene.controls(map,p.id,d,draw,ctl.signal);
  on(document,'visibilitychange',run);document.title=p.title+' · ORtopia';scrollTo(0,0);
  return ()=>{cancelAnimationFrame(raf);ctl.abort();ro.disconnect();};

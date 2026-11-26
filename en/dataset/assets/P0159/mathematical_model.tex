@@ -1,18 +1,14 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,longtable}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
-\usepackage{geometry}
-\geometry{paperwidth=450mm,paperheight=890mm,hmargin=18mm,vmargin=19mm}
+
+\geometry{paperwidth=275mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
 \begin{document}
-\section*{P159: Current complete mathematical model (as of 2026-10-20)}
-\section*{Basis and scope of the revision}According to pages 6 and 8–9 of the source document, the summation and integer domain issues need to be resolved. The new requirement for plugs is defined as max(0, total required plugs – existing plugs), allowing for the retention of existing facilities that are not in use. All original budget branches, candidate stations, limited capabilities, and objectives remain unchanged.
-
-
-\section*{Problem: It involves integer linear programming problems. The paper transforms a complex nonlinear optimization problem from previous studies (Opt-Fast-Char) into an efficient integer linear programming model, under the reasonable assumption that the number of feasible charging points is limited—for example, only those located at endpoints of routes. This problem is a comprehensive network design issue, incorporating aspects such as fleet composition and allocation, facility location (charging stations, substations), resource coordination (charging equipment and electricity supply), as well as scenario-based charging scheme selection. The core innovation of the model lies in introducing the concept of “feasible charging scenarios” to linearize the charging logic.}
-
-
-
-\subsection*{Decision Variables}
+\section*{P0159 Bus Fleet and Fast-Charging Infrastructure Design}
+\subsection*{Mathematical formulation}
 \begin{align*}
 & n_{brbc} \in [0, u_{brb}] && \text{number of new $b$-type electric buses assigned to route $r$ and charged at a $c$-type charger} \\
 & y_{rbc} \in \{0, 1\} && \text{binary indicator equal to 1 iff a new $b$-type electric bus is assigned to route $r$ and charged at a $c$-type charger} \\
@@ -37,12 +33,10 @@
 & \xi_{jrc}, \xi_{jrbc} \in \{0, 1\} && \text{auxiliary binary variables for linearization of max function}
 \end{align*}
 
-\subsection*{Objective Function}
 \[
 \max \quad \sum_{r \in R} \left( Z_r - \frac{\sum_{b \in V_r} nv_{rb} cap_b}{dem_r} \right) - \frac{\sum_{j \in N} \sum_{c \in C} nc_{jc}}{|N| \sum_{c \in C} u_{cc}} - \frac{\sum_{j \in N} \sum_{c \in C} np_{jc}}{\sum_{j \in N} u_{pj}} - \frac{\sum_{t \in T \setminus T^O} \beta_t}{|T|} - \frac{\sum_{j \in N \setminus N^O} \sum_{t \in T_j} \gamma_{tj}}{|N||T|}
 \]
 
-\subsection*{Constraints}
 \begin{align*}
 &\text{Capital cost:} \\
 & \sum_{j \in N} csta_j ns_j + \sum_{j\in N}\sum_{c \in C} ccp_c np_{jc} + \sum_{r \in R} \sum_{b \in B_r} \left( cbus_b * \sum_{c \in C_b} n_{brbc} \right) + \sum_{t \in T \setminus T^O} ccpst \beta_t + \sum_{t \in T \setminus T^O} \sum_{j \in N \setminus N^O} cl_{tj} \gamma_{tj} \leq cc \tag{2} \\
@@ -137,9 +131,35 @@
 & y^{(s)}_{rbc} \in \{0, 1\}, \quad r \in R, b \in B_r, s = 1, \dots, n_{rbc}, c \in C_b \tag{66}
 \end{align*}
 
+\subsection*{Definitions and model scope}
+A transport authority chooses electric buses and charging infrastructure for routes $R$, candidate sites $N$, and depots $D$. Existing sites are existing charging locations $N^O$. Each route has eligible electric types $B_r$ and remaining conventional types $V_r$; electric types belong to all electric types $B$, with existing types $B^O$ distinguished. Each electric type has compatible charger types $C_b$ within all charger types $C$. Route-specific compatibility groups compatible electric types $B_{rc}$ and routes using a site and charger type $R_{jc}$, route stops stops along a route $\pi_r$, and finite power-station sites $T$ with existing power stations $T^O$ and site-specific power candidates $T_j$ are supplied.
 
-\section*{Domain and physical completion}
-$n_{brbc},nv_{rb},nc_{jc},np_{jc},nc^{(ct)}_{jrc},nc^{(b)}_{jrc},nc_{jrc}$All values are non-negative integers and satisfy the finite upper bound mentioned above (integer description on page 9 of the source text). The $u_tp_t$in Equation 4 represents a single power supply parameter, and no omitted products are allowed. The example provides exclusive limited power supply options for each station, as well as all existing stations/old vehicles/old plugs. Old facilities can be left unused without being deleted. The maximum non-negative value for new plugs is defined by the repair process; negative "new construction quantities" are prohibited to offset investment costs. Each budget is independently and completely solved; the constant operational terms in Equation 3 are retained according to the selected model, without arbitrarily adding decision variables.
+The nonnegative integer new bus count $n_{brbc}$ on a route with an electric type and charger type cannot exceed its given bus-count limit $u_{brb}$ times the zero-or-one use record $y_{rbc}$ and cannot be less than that record. A zero-or-one route-and-type record $y_{rb}$ equals the sum of use records over compatible chargers, allowing at most one charger type for that route and bus type. For an existing bus type, the sum of its use records over chargers cannot exceed its record for the preexisting charger type $c_{ob}$. For a new bus type, a zero-or-one fleetwide charger record $y_{bc}$ cannot exceed the sum of its route use records, and the number of routes times that record cannot be less than this sum. At most one fleetwide charger type is selected per new bus type.
 
+A zero-or-one electric-route record $y_r$ cannot exceed the sum of its electric use records, and the number of eligible electric types times this route record must cover that sum. Nonnegative integer remaining conventional buses $nv_{rb}$ cannot exceed their initial number $nv^0_{rb}$. New electric buses and remaining conventional buses, each multiplied by their passenger capacity $cap_b$, must together cover the reference demand $dem_r^0$ times the electric-route record. A nonnegative electric passenger contribution $Z_r$ cannot exceed the demand bound $dem_r$, total new electric passenger capacity, or reference demand times the route record. Existing electric buses are not added to these particular capacity sums.
 
+For service intervals, count new electric buses across chargers, add the given existing electric counts $n_{obrb}$, and add remaining conventional buses. The route-cycle quantity $L_r$ times its electric-route record must lie between this total count multiplied by the lower interval limit $lt_r$ and the same total multiplied by the upper interval limit $ut_r$. These bounds apply even when the route record is zero; no conventional fleet is automatically preserved outside them.
+
+Each route, bus type, and charger type has a given number of feasible charging scenarios $n_{rbc}$. Its use record cannot exceed the sum of zero-or-one scenario selections $y_{rbc}^{(s)}$. Each scenario has eligible charging stops $S_{rbc}^{(s)}$ and a required number of stops $l_{rbc}^{(s)}$. Zero-or-one scenario-stop records $y_{jrbc}^{(s)}$ are zero outside those stops, and their sum inside equals the required count times scenario selection. A zero-or-one stop charging record $y_{jrbc}$ equals the sum of its scenario-stop records. Thus scenario choices cannot duplicate that stop record, but there is no separate exactly-one-scenario requirement or reverse rule forbidding every scenario when the bus-use record is zero.
+
+At a nondepot site, a route's bus-based plug count $nc_{jrc}^{(b)}$ is the integer sum of new buses plus given existing bus-and-charger counts $n_{obrbc}$ over compatible bus types. Its integer time-based plug count $nc_{jrc}^{(ct)}$ lies from zero to the given time-based count limit $nc_{jrc}^{(max)}$. For each compatible bus type it must be at least the given charging duration $ctr_{jbc}$ times stop charging record divided by the route's lower interval limit. It must also be at least the given existing time-based requirement $noc_{jrc}^{(ct)}$.
+
+Exactly one zero-or-one existing-requirement selector $\xi_{jrc}$ or bus-type requirement selector $\xi_{jrbc}$ is chosen for that site, route, and charger type. Time-based plug count cannot exceed any corresponding requirement plus its time-based count limit multiplied by one minus that requirement's selector. Together with the lower limits, this fixes it to the largest stated requirement without rounding that requirement up. Because the count is integer, incompatible fractional requirements may leave no permissible count.
+
+The nonnegative integer route plug count $nc_{jrc}$ cannot exceed either time-based plug count or bus-based plug count. It must also be at least time-based count minus site point limit times plugs per charging point $u_{cc}$ times one minus a zero-or-one time-count selector $\eta_{jrc1}$, and at least bus-based count minus that same allowance times one minus a zero-or-one bus-count selector $\eta_{jrc2}$. Exactly one of those selectors is chosen. Both lower limits remain, including the reduced unchosen one. Route plug count cannot exceed the smaller of site point limit times plugs per point and the time-based count limit; bus-based count cannot exceed the sum over eligible route types of bus-count limits plus existing electric counts.
+
+At a nondepot site, nonnegative integer new plugs $nc_{jc}$ equal the larger of zero and the sum of route plug counts over its compatible routes minus existing plugs $n_{odjc}$. Existing plugs can remain idle and are not removed to make a negative new count. New plugs cannot exceed site charging-point limit $u_{pj}$ times plugs per point minus existing plugs. Nonnegative integer new charging points $np_{jc}$ must be at least total new and existing plugs divided by plugs per point minus existing charging points $n_{opjc}$, and cannot exceed site point limit minus existing charging points. At every site, new and existing points summed over charger types cannot exceed the site point limit.
+
+At a depot outside the existing-site group, a zero-or-one depot charger activation $\alpha_{jc}$ cannot exceed the sum of electric-route records in its compatible routes, and the number of those routes times activation must cover that sum. The zero-or-one new charging-point record must be at least activation. New plugs must be at least plugs per point times activation and at most plugs per point minus existing plugs. At each site outside the existing-site group, its zero-or-one station-opening record $ns_j$ cannot exceed the total new and existing point count, while site point limit times opening must cover that count. These requirements do not delete existing facilities.
+
+Every power-station site has a zero-or-one use record $\beta_t$ and zero-or-one site-link records $\gamma_{tj}$. Its use record equals the sum of links to sites, so an active power station has exactly one counted site link. Existing power stations must remain active and all given existing links $T_{Oj}$ to existing sites must remain selected. At each charging site, sum new and existing plugs times their charger power $p_c$. This must not exceed the sum, over its given power candidates, of their available supply quantity $u_t p_t$ times power-station use. The supplied quantity is the stated power input; it is not replaced by site-link selection.
+
+Total capital expense cannot exceed the investment budget $cc$. It adds station construction charges $csta_j$ times station opening, charging-point construction charges $ccp_c$ times new charging points, and electric-bus purchase charges $cbus_b$ times new bus counts across compatible chargers. It also adds new power-station charges $ccpst$ for active power stations outside the existing group, and link construction charges $cl_{tj}$ only for selected links whose power station and charging site are both outside their existing groups.
+
+Total running expense cannot exceed the operating budget $uoc$. It adds station running charges $vcc_j$ times station opening and point running charges $vcp_c$ times new charging points, plus the given route-and-type operating amounts $vc_{brb}$ summed over every route and eligible electric type. Those last amounts are retained as supplied constants, without multiplying by selected buses or use records.
+
+The authority wants a high combined score. For each route, add its electric passenger contribution minus the passenger capacity of remaining conventional buses divided by its demand bound. Subtract total new plugs divided by the number of sites times the sum of plugs-per-point limits across charger types; subtract total new charging points divided by the sum of site point limits. Also subtract active new power-station count divided by the number of power-station sites, and selected links from sites outside the existing group to their power candidates divided by the product of site count and power-station-site count. Only the conventional-capacity part of the first contribution is divided by route demand; the electric passenger contribution is not. All finite count bounds, charging choices, infrastructure rules, and both budgets must hold together.
+
+\subsection*{Inline notation and relations}
+$n_{brbc},nv_{rb},nc_{jc},np_{jc},nc^{(ct)}_{jrc},nc^{(b)}_{jrc},nc_{jrc}$; $u_tp_t$.
 \end{document}

@@ -79,8 +79,8 @@
     const row=rows[index];
     const taken=Math.min(row.parcels,Math.max(0,Math.floor((phase-saleTime(0)+1e-9)/.08)+1));
     const shelf=phase<loadingEnd?0:row.parcels-taken;
-    return {t,index,phase,rows,shelf,loss,sales,clock:"Period "+(index+1)+' / '+n+"",metrics:[
-      ["Orders in transit for last period",fmt(row.pipe)],["Available for delivery in this period",fmt(row.received)],["Accumulated transactions",fmt(sales)],["Cumulative loss cost",fmt(loss*data.penalty)]
+    return {t,index,phase,rows,shelf,loss,sales,clock:'No. '+(index+1)+' / '+n+' Period',metrics:[
+      ['Outstanding order',fmt(row.pipe)],['Available this period',fmt(row.received)],['Units sold to date',fmt(sales)],['Lost-sales cost to date',fmt(loss*data.penalty)]
     ]};
   }
   function pen(c){
@@ -156,7 +156,7 @@
     block(g,973,295,47,3,9,'#638178','#435c59','#9aa99a');
     [976,1017].forEach(x=>rect(x,298,2.6,37,'#526965'));
     rect(983,319,25,6,'#b98f64');rect(987,325,2,6,'#796e5c');rect(1004,325,2,6,'#796e5c');
-    label(g,"east bank bus station",969,288,'#496e67',11);
+    label(g,'East Bank bus stop',969,288,'#496e67',11);
     for(const [x,y] of [[966,257],[1026,274],[1090,253],[1146,266],[1052,326],[1117,346],[1165,357]])tree(g,x,y,1);
     block(g,1043,254,53,49,15,'#b69c81','#958970','#ceb991');
     rect(1050,276,25,27,'#446d68');polygon([[1040,269],[1098,269],[1106,275],[1037,275]],'#6c9284');
@@ -168,7 +168,7 @@
     polygon([[14,118],[27,99],[49,102],[59,89],[82,93],[95,79],[119,85],[130,74],[158,81],[176,86],[176,118]],'#bd9168');
     for(let i=0;i<3;i++){const x=35+i*45;rect(x,148,31,44,'#5c655b');rect(x+3,153,25,36,'#384f4d');rect(x,145,31,5,'#cbbba0');}
     for(let i=0;i<17;i++)line([[21+i*9,124],[21+i*9,142]],'#a57d60',1);
-    label(g,"riverbank supply warehouse",31,133,'#485b50',14);
+    label(g,'Riverside warehouse',31,133,'#485b50',14);
     for(let i=0;i<4;i++)box(g,19+i*9,195+(i%2)*2,7);
     for(let i=0;i<12;i++)box(g,184+(i%4)*9,173+Math.floor(i/4)*6,8);
     for(let i=0;i<3;i++){rect(18+i*40,108-i*3,7,9,'#818373');rect(16+i*40,107-i*3,11,3,'#aaa48f');}
@@ -178,7 +178,7 @@
     polygon([[541,143],[715,143],[726,153],[537,153]],'#b76249');
     for(let i=0;i<13;i++)polygon([[544+i*13,143],[551+i*13,143],[552+i*13,153],[544+i*13,153]],'#eee0bb');
     for(let i=0;i<3;i++)rect(551+i*78,153,3,39,'#9b7655');
-    label(g,"Riverside Community Market",570,132,'#285f58',14);
+    label(g,'Riverside market',570,132,'#285f58',14);
     for(const x of [555,597,657]){rect(x,178,16,9,'#aa8c62');for(let i=0;i<4;i++)oval(x+2+i*3.5,177,2.3,2.1,x%3?'#c69e58':'#739875');}
     polygon([[548,194],[716,194],[756,209],[732,231],[601,222],[558,217]],'#e3d8bd');
     const rackX=670;rect(rackX-15,213,55,5,'#885e42');rect(rackX-12,218,4,7,'#7c6c56');rect(rackX+32,218,4,7,'#7c6c56');
@@ -193,7 +193,7 @@
     line([[309,252],[334,250],[450,218]],'#719490',2);
     for(let i=0;i<7;i++)line([[502+i*3.8,217],[498+i*3.8,246]],'#d7d6bf',1.7);
     for(let i=0;i<7;i++)line([[849+i*4,221],[856+i*4,250]],'#d7d6bf',1.7);
-    txt("Duqiao Road",251,287,11,'#4e6864');txt("community trails",856,200,11,'#627565');
+    txt('Duqiao Road',251,287,11,'#4e6864');txt('community trails',856,200,11,'#627565');
     // East-bank plaza, with a sheltered exit through which customers can leave the scene.
     line([[512,254],[519,291],[534,318],[558,341]],'#c8bda2',18);
     line([[512,254],[519,291],[534,318],[558,341]],'#e8dbc1',13);
@@ -278,8 +278,8 @@
     }
     for(let k=0;k<s.shelf;k++)box(g,667+k*9,213,7.6);
     person(g,703,214,'#608165',0,false,1.23);
-    const inbound=s.phase<.11?"Trucks coming into the station":"Unloading goods on shelves";
-    const status=s.phase<loadingEnd?(r.pipe?inbound:s.index?"There are no orders in transit this period":"Waiting for the first shipment"):s.shelf?"on the shelf "+fmt(s.shelf*.25):"Shelves are empty";
+    const inbound=s.phase<.11?'Trucks coming into the station':'Unload and stock shelves';
+    const status=s.phase<loadingEnd?(r.pipe?inbound:s.index?'There are no orders in transit this period':'Waiting for the first shipment'):s.shelf?'On shelf '+fmt(s.shelf*.25):'Shelves are empty';
     label(g,status,647,175,s.shelf?'#36796a':'#8d6654',11);
   }
   function cityBus(g,t,id){
@@ -292,7 +292,7 @@
     for(let k=0;k<5;k++)rect(x-23+k*8,y-17,6,7,'#b6cbc1');
     rect(x+13,y-18,7,15,age>=0&&age<.19?'#42625f':'#839e90');rect(x+20,y-14,5,10,'#c9a276');
     for(const dx of [-17,15]){oval(x+dx,y-3,4,4,'#344b4c');oval(x+dx,y-3,1.8,1.8,'#a9b5a2');}
-    txt("east coast",x-7,y-5.1,6.1,'#fff1cc','center');
+    txt('east coast',x-7,y-5.1,6.1,'#fff1cc','center');
   }
   function neighborhoodTraffic(g,t){
     // Local residents walk from separate entrances to destinations on the same bank.
@@ -381,7 +381,7 @@
       c.restore();
       if(age<1.39){
         const next=s.rows[j+1];
-        const note=age<.14?"Vehicle assignment "+fmt(row.order):age<1||!next?"On the way "+fmt(row.order):"Arrival "+fmt(next.received);
+        const note=age<.14?'Dispatch '+fmt(row.order):age<1||!next?'In transit '+fmt(row.order):'Arrival '+fmt(next.received);
         label(g,note,at[0]-29,at[1]-33,'#345955',11);
       }
     }
@@ -392,8 +392,8 @@
     if(compare){
       const {actual,baseline,j,k}=compare,b=footprints(g,baseline,s.t,k,'#75858e'),a=footprints(g,actual,s.t,k,'#a67435');
       const same=actual.sold===baseline.sold;
-      if(!same){g.oval(b[0],b[1]-2,5,2,'#748695');label(g,"Archive · "+(baseline.sold?"Pick up the goods":"Out of stock"),b[0]-21,b[1]-31,'#607a84',10);}
-      g.oval(a[0],a[1],6,2,'#a97737');label(g,(j+1)+" Period · Customer "+(k+1)+' · '+(actual.sold?"Pick up the goods":"Out of stock"),a[0]-20,a[1]-14,'#966633',10);
+      if(!same){g.oval(b[0],b[1]-2,5,2,'#748695');label(g,'Reference · '+(baseline.sold?'Collected':'Out of stock'),b[0]-21,b[1]-31,'#607a84',10);}
+      g.oval(a[0],a[1],6,2,'#a97737');label(g,(j+1)+' Period · Customer '+(k+1)+' · '+(actual.sold?'Collected':'Out of stock'),a[0]-20,a[1]-14,'#966633',10);
     }
     if(view===0){
       const selected=s.t>=6.74?[6,3]:s.t>=2.50&&s.t<5.20?[2,0]:null;
@@ -402,17 +402,17 @@
         if(s.t<trip.end){
           const [x,y]=afterCheckout(trip,s.t,k),color=trip.sold?'#286c5e':'#9c614a';
           g.oval(x,y+1,6,1.5,color);g.line([[x+3,y-14],[x+8,y-22],[x+11,y-22]],color,.9);
-          label(g,"Period "+(j+1)+" · "+(trip.sold?"Take goods home":"out of stock leave"),x+11,y-24,color,10);
+          label(g,'No. '+(j+1)+' Period · '+(trip.sold?'Taking purchase home':'Leaving empty-handed'),x+11,y-24,color,10);
         }
       }
     }
   }
   window.ORTOPIA_LABS.P0488={
-    title:"Riverbank Supply Warehouse and Community Market",action:"Select the order quantity for each subsequent period. Orders are placed at the beginning of each period, and orders from the previous period continue to be shipped. The arrival volume depends on the supply of this period. Each small box corresponds to 0.25 units of demand.",
-    choices:["Order by archive quantity","Change order to half quantity","Stop ordering"],live:true,duration:72,
-    views:["Observe along the line","Neighborhood panorama","A closer look at the market","Customer destination comparison"],
-    chapters:d=>[{label:"The first cars cross the bridge",at:.69/d.path.length},{label:"First batch arrival and sales",at:1.15/d.path.length},{label:"Follow the third phase of customers",at:2.50/d.path.length},{label:"The seventh phase of supply reduction",at:6.70/d.path.length},{label:"Depart by car from the East Coast",at:8.60/d.path.length}],
-    scope:"Archive the first 12 issues of Witness Path 1. The arrival of goods is limited by the supply of the current period and the orders of the previous period, and the unmet demand is lost in the current period. Represents 0.25 units per case and per customer. Neighborhoods, walking home and driving away are used to track the sales direction, while traffic and duration of actions during the period are used as indicators. The expected cost to archive a complete 65,536 issues is 28,672.625.",
+    title:'Riverside warehouse and neighborhood market',action:'Select the order quantity for each subsequent period. Orders are placed at the beginning of each period, and orders from the previous period continue to be shipped. The arrival volume depends on the supply of this period. Each small box corresponds to 0.25 units of demand.',
+    choices:['Order reference quantity','Change order to half quantity','Stop ordering'],live:true,duration:72,
+    views:['Follow route','Neighborhood overview','A closer look at the market','Customer destination comparison'],
+    chapters:d=>[{label:'The first cars cross the bridge',at:.69/d.path.length},{label:'First batch arrival and sales',at:1.15/d.path.length},{label:'Follow the third phase of customers',at:2.50/d.path.length},{label:'The seventh phase of supply reduction',at:6.70/d.path.length},{label:'Depart by car from the East Coast',at:8.60/d.path.length}],
+    scope:'Archive the first 12 issues of Witness Path 1. The arrival of goods is limited by the supply of the current period and the orders of the previous period, and the unmet demand is lost in the current period. Represents 0.25 units per case and per customer. Neighborhoods, walking home and driving away are used to track the sales direction, while traffic and duration of actions during the period are used as indicators. The expected cost to archive a complete 65,536 issues is 28,672.625.',
     frame,draw
   };
 })();

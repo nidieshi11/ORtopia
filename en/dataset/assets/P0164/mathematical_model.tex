@@ -1,14 +1,14 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,mathtools,geometry}
-\geometry{a4paper,margin=20mm}\allowdisplaybreaks
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
-\begin{document}
-\section*{Design of UAV network for relay charging stations using complete linear arc models}
 
-\paragraph{Source} Pages 6–9 of the PDF document, section 4, equations (8)–(20). The target method involves linearizing the product of equations (18)–(20).
-\subsection*{Collections, parameters, and variables}
-$S$ represents existing warehouses/hub stations. $I$ indicates candidate charging stations. $N$ refers to locations where charging is needed. $S\cap I=\varnothing$… $\Gamma=S\cup I$. $E$ represents feasible directed flight paths: from the hub to candidate stations, between candidate stations. The length of each segment is $l_e\le2R$. Paths that include obstacles are not allowed; paths that do not involve entering the hub or self-loops are also not allowed. $c_{in}=1$ When the distance between the candidate station $i$ and the destination point $n$ does not exceed $R$, then it is set to zero. $\theta\in[0,1]$ represents the weight of the path. $\beta_1,\beta_2>0$ represents the given normalization constant. $\delta^+(k),\delta^-(k)$ Each represents a path with $k$ as the starting/ending point. $x_k$ Indicates that the candidate station is available for use. $u_{si}$ Indicates that the terminal station $i$ is connected to the hub $s$. $y_e^{si}$ Indicates that the connection path uses the arc $e$, $z_e^{si}=y_e^{si}u_{si}$. All of these variables are binary in nature.
-\subsection*{Complete model}
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
+\begin{document}
+\section*{P0164 Drone charging-relay network design}
+\subsection*{Mathematical formulation}
 \begin{align}
 \min\quad&
 \frac{\theta}{\beta_1}\sum_{s\in S,i\in I,e\in E}l_e z_e^{si}
@@ -26,8 +26,16 @@ z_e^{si}&\le y_e^{si},\qquad z_e^{si}\le u_{si}
 z_e^{si}&\ge y_e^{si}+u_{si}-1 &&s\in S,\ i\in I,\ e\in E,\\
 x_k,u_{si},y_e^{si},z_e^{si}&\in\{0,1\}. &&
 \end{align}
-The feasible region is defined by the aforementioned set of complete arcs and various constraints. Candidate stations that have not been accessed can be disabled; all actual relay stations or terminal nodes must be enabled.
-\paragraph{Original text indexing clarified}
-The original formula (14) is represented as $\sum_{s,e}y_e^{si}\le Mx_i$. Only terminal index $i$ is used. However, the description on page 9 clearly requires that every candidate node reachable through this path be considered. The above formula expands this relationship between nodes into $y_e^{si}\le x_k$, thereby avoiding any oversight of relay stations. Flow conservation is explicitly enforced at all hubs/candidate nodes. It is prohibited for any commodity to steal flow from other hubs. The indices are derived from the aforementioned network nodes and commodity sets.
 
+\subsection*{Definitions and model scope}
+A drone operator has existing hubs, a separate collection of candidate charging stations and customer demand locations. Available directed flight connections go from hubs to candidate stations or between different candidate stations; no connection enters a hub or returns to its own origin. Every connection has already passed obstacle screening and has length no greater than twice the given flight radius. A candidate station covers a demand location exactly when its distance to that location does not exceed the flight radius. The operator chooses yes-or-no station openings $x_k$ and hub-to-terminal connections $u_{si}$, together with yes-or-no flight-connection records $y_e^{si}$ separately for every hub and terminal pair.
+
+For each hub-terminal pair, outgoing flight records less incoming flight records equal its hub-to-terminal connection choice at that hub, the negative of that choice at the terminal, and zero at every other hub and candidate station. At most one flight connection for that pair leaves its own hub. Every flight record is at most the pair's connection choice, so none are used for an unconnected pair. Each candidate terminal is connected to at most one hub. Every demand location must be covered by at least one connected terminal, counting all hub-terminal pairs whose terminal lies within the coverage radius.
+
+For every hub-terminal pair and every flight connection entering a candidate station, that flight record is at most the candidate station's opening record. Thus both intermediate charging stations and terminal stations entered by selected flights must be open. A station not entered may remain closed; opening alone does not make it a covering connected terminal. The design uses the full available connection network and adds no separately imposed restriction to a preselected finite list of routes.
+
+Each pair and connection also has a yes-or-no charged flight record $z_e^{si}$. It cannot exceed either the flight record or the hub-to-terminal choice, and it must be at least their sum less one, making it precisely their simultaneous use. The operator seeks the lowest total of connection lengths weighted by these charged flight records, multiplied by the given tradeoff weight and divided by the first positive normalization constant, plus the number of opened stations multiplied by one minus the tradeoff weight and divided by the second positive normalization constant. The tradeoff weight is between zero and one. Length is counted separately for each hub-terminal pair that uses a connection.
+
+\subsection*{Inline notation and relations}
+$S$; $I$; $N$; $S\cap I=\varnothing$; $\Gamma=S\cup I$; $E$; $l_e\le2R$; $c_{in}=1$; $i$; $n$; $R$; $\theta\in[0,1]$; $\beta_1,\beta_2>0$; $\delta^+(k),\delta^-(k)$; $k$; $x_k$; $u_{si}$; $s$; $y_e^{si}$; $e$; $z_e^{si}=y_e^{si}u_{si}$; $\sum_{s,e}y_e^{si}\le Mx_i$; $y_e^{si}\le x_k$.
 \end{document}

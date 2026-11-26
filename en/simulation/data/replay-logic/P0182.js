@@ -2,12 +2,12 @@ window.ORTOPIA_REPLAY_LOGIC=window.ORTOPIA_REPLAY_LOGIC||{};window.ORTOPIA_REPLA
   {
     "decision": "Split the 15 unit requirement into two batches of 8 and 7.",
     "evidence": "Maximum of 12 per vehicle, minimum of 2 required, exactly equal to fleet limit of 2.",
-    "consequence": "The number of vehicles has been fixed, and the energy consumption can still be changed through grouping, sorting and arc selection, but each arrival must fall within the customer's time window."
+    "consequence": "The number of vehicles has been fixed, and the energy consumption can still be changed through grouping, sorting and arc selection, but each arrival must fall within the customer’s time window."
   },
   {
     "decision": "In route 1 go to v1 first and then v0.",
-    "evidence": "The last stop time plus waiting and driving are 0.0929, Visit this solution 0.0929, time window [0, 0.0929].",
-    "consequence": "Going in the opposite direction will be at least late in the time window 0.2382.",
+    "evidence": "The last stop time plus waiting and driving are 0.0929, Visit this solution 0.0929, time window [0, 0.0929]. ",
+    "consequence": "Going in the opposite direction will be at least late in the time window 0.2382. ",
     "comparison": {
       "title": "If you just change the order of two orders on the same car, how late will you be at least?",
       "options": [
@@ -49,13 +49,13 @@ window.ORTOPIA_REPLAY_LOGIC=window.ORTOPIA_REPLAY_LOGIC||{};window.ORTOPIA_REPLA
   },
   {
     "decision": "From v1 to v0 in route 1, complete the last order.",
-    "evidence": "The last stop time plus waiting and driving are 0.1887, Visit this solution 0.235, time window [0, 0.2887].",
-    "consequence": "The arc energy consumption cost 0.5857, Remaining stock after delivery 0, Can be returned to warehouse."
+    "evidence": "The last stop time plus waiting and driving are 0.1887, Visit this solution 0.235, time window [0, 0.2887]. ",
+    "consequence": "The arc energy consumption cost 0.5857, Remaining stock after delivery 0, Can be returned to warehouse. "
   },
   {
     "decision": "In route 2 go to v2 then v3.",
-    "evidence": "The last stop time plus waiting and driving are 0.2677, Visit this solution 0.3677, time window [0.0677, 0.3677].",
-    "consequence": "The reverse sequence also satisfies the time window, but the energy consumption of the entire route becomes 3.0021, The original order is 2.7567.",
+    "evidence": "The last stop time plus waiting and driving are 0.2677, Visit this solution 0.3677, time window [0.0677, 0.3677]. ",
+    "consequence": "The reverse sequence also satisfies the time window, but the energy consumption of the entire route becomes 3.0021, The original order is 2.7567. ",
     "comparison": {
       "title": "Both access orders satisfy the time window, and the energy consumption of the entire route for the same customer group is compared.",
       "options": [
@@ -98,16 +98,16 @@ window.ORTOPIA_REPLAY_LOGIC=window.ORTOPIA_REPLAY_LOGIC||{};window.ORTOPIA_REPLA
   },
   {
     "decision": "Go from v2 to v3 in route 2 and complete the last move.",
-    "evidence": "The last stop time plus waiting and driving are 0.4174, Visit this solution 0.4757, time window [0.2295, 0.5295].",
-    "consequence": "The arc energy consumption cost 0.2581, Remaining stock after delivery 0, Can be returned to warehouse."
+    "evidence": "The last stop time plus waiting and driving are 0.4174, Visit this solution 0.4757, time window [0.2295, 0.5295]. ",
+    "consequence": "The arc energy consumption cost 0.2581, Remaining stock after delivery 0, Can be returned to warehouse. "
   },
   {
-    "decision": "Close route 1. All customer freight has been delivered.",
+    "decision": "The first line is closed and all the customer’s goods have been delivered.",
     "evidence": "The energy consumption cost of returning to the warehouse at the last station is 1.0531; the energy consumption cost of this route is 2.0219.",
     "consequence": "The two lines use the same terminal time variable of 0.8192, and the sum of all selected arcs is 4.7787."
   },
   {
-    "decision": "The 2nd line is closed and all the customer's goods have been delivered.",
+    "decision": "The 2nd line is closed and all the customer’s goods have been delivered.",
     "evidence": "The energy consumption cost of returning to the warehouse at the last station is 1.145; the energy consumption cost of this route is 2.7567.",
     "consequence": "The two lines use the same terminal time variable of 0.8192, and the sum of all selected arcs is 4.7787."
   }

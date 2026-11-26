@@ -1,49 +1,60 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,longtable}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
-\usepackage{geometry}
-\geometry{paperwidth=235mm,paperheight=297mm,hmargin=18mm,vmargin=19mm}
-\begin{document}
-\section*{P173: Current complete mathematical model (as of 2026-10-20)}
-\section*{Basis and scope of the revision}On page 9 of the recovery source document, the upper and lower limits are specified in minutes and hours. All details regarding line connections, terminal/garage charging, scenario-specific PV/BES calculations, and radial linear power grids are listed clearly. The initial and final battery levels are considered as real-day operational boundaries, and no attempt is made to replicate the original text word for word.
 
-\section*{Collection, domain, and public transportation connectivity}
-$S$ refers to all fixed services. $A=\{(i,j):i\ne j,e_i+t^{dh}_{ij}\le b_j\}$… $N$ represents terminals; garages are denoted as 0. $K$ indicates the type of stake. $T=\{0,\ldots,H-1\}$ stands for minutes. $\Delta=1/60$ represents hours. $x_{ij},s_i,f_i,z_n\in\{0,1\}$; $q_i,q^d_i\in[\underline a Q,\bar a Q]$.
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
+\begin{document}
+\section*{P0173 Electric bus duties, charging and local energy investment}
+\subsection*{Mathematical formulation}
 \[
 s_i+\sum_jx_{ji}=1,\quad f_i+\sum_jx_{ij}=1,\quad
 s_i=1\Rightarrow q_i\le\bar aQ-e_i^{start}-e_i^{trip},
 \quad f_i=1\Rightarrow q_i^d\le q_i-e_i^{end}.
 \]
-All counts $n_{nk},n_{0k}$ are integers of $0,\ldots,|S|$, $\sum_kn_{nk}\le|S|z_n$ and $\sum_kn_{nk}P_k\le Cap_n$; garage $\sum_kn_{0k}P_k\le Cap_0$.
-\section*{Charging at terminals and in garages}
-For each feasible sequence $i,j$, only the binary $\ell_{ijt}$ and power $p_{ijt}$ are defined at $[e_i+t^{dh}_{ij},b_j)$. $\ell\le x,\ell\le z_{n(i)},0\le p\le P^{bus}\ell$. Every station per minute $\sum\ell\le\sum_kn_{nk}$ and $\sum p\le\sum_kn_{nk}P_k$. This constraint represents the total power capacity of the charging terminals.
+
 \[
 x_{ij}=1\Rightarrow
 q_j\le q_i+\Delta\sum_tp_{ijt}-e^{dh}_{ij}-e_j^{trip},\qquad
 q_i+\Delta\sum_tp_{ijt}\le\bar aQ.
 \]
-After returning to the warehouse, define $\ell^d_{ikt}\in\{0,1\}$ and $p^d_{ikt}\ge0$ within $H$, as well as $\sum_k\ell^d_{ikt}\le f_i$ and $p^d_{ikt}\le\min(P^{bus},P_k)\ell^d_{ikt}$; for each type and each time, there is $\sum_i\ell^d_{ikt}\le n_{0k}$. $f_i=1\Rightarrow q_i^d+\Delta\sum_{kt}p^d_{ikt}\ge\bar aQ$.
-\section*{PV, energy storage, and the power grid}
-$D_{bt}$ represents the sum of the charging capacities for all terminals/garages mentioned above. Three equally likely weather scenarios are considered: $w$, which involves sharing all vehicles/charging decisions among them. Site attributes include $R_b$, $0\le P_b^{PV}\le\overline P^{PV}R_b$, and $0\le E_b^{BES}\le\overline E^{BES}R_b$. For each scenario, the following metrics are considered: non-negative electricity purchases $g$, total PV generation $v$, direct supply $p$, charging $c$, discharging $d$, and battery state $e$.
+
 \[
 v_{bwt}\le\rho_{wt}P_b^{PV},\quad v=p+c,\quad p+d+g\ge D_{bt},\quad0\le g\le\bar g_b,
 \]
+
 \[
 e_{bwt}=e_{bw,t-1}+\Delta\eta_c c_{bwt}-\Delta d_{bwt}/\eta_d,\quad
 .1E_b^{BES}\le e\le.9E_b^{BES},\quad c,d\le.5E_b^{BES}.
 \]
-Binary $u$ makes $c\le.5\bar E^{BES}u,d\le.5\bar E^{BES}(1-u)$; $e_{bw,-1}=.5E_b^{BES}$ and $e_{bw,H-1}\ge.5E_b^{BES}$. Reactive power compensation $0\le Q^c_{bt}\le\bar Q_b$ is a shared variable for scenarios. Each radial blade:
+
 \[
 F_{bwt}=-L_{bt}+p_{bwt}+d_{bwt}-D_{bt},\quad
 G_{bwt}=-.33L_{bt}+Q^c_{bt},\quad
 1=V_{bwt}-(r_bF_{bwt}+x_bG_{bwt}),\quad .9\le V\le1.05.
 \]
-$F,G\in[-\bar g_b,\bar g_b]$. Route $r_b,x_b$ represents a given resistance/reactance value; $R_b$ refers to the binary decision made at each station.
+
 \[
 \min PVF[c^{bus}\sum_is_i+\sum_kc_k(n_{0k}+\sum_nn_{nk})+
 c^{PV}\sum_bP_b^{PV}+c^{BES}\sum_bE_b^{BES}]
 +\Delta\sum_{bwt}\tfrac13c_tg_{bwt}.
 \]
-For daily operations, the SOC closure conditions are met at the end of each day, and the initial storage capacity is restored at the end of the day.
 
+\subsection*{Definitions and model scope}
+A bus operator must cover all fixed services, each with a scheduled start and finish. A service can precede another only when it finishes early enough to complete the given empty travel before the next start. The day is divided into minute intervals, with one minute equal to one sixtieth of an hour. Terminals, a depot, charger types and their power ratings, site power limits, bus charging limit, battery capacity and allowable charge fractions are given. The operator chooses yes-or-no service continuations $x_{ij}$, duty starts and finishes $s_i,f_i$ and terminal openings $z_n$. Every service has exactly one predecessor continuation or duty start, and exactly one successor continuation or duty finish. End-of-service energy and returned-depot energy each lie between the supplied lower and upper fractions of battery capacity. A duty start limits end-of-service energy to the upper battery level less initial empty-travel energy and that service's travel energy. A duty finish limits returned-depot energy to end-of-service energy less return travel energy.
+
+The number of chargers of each type at each terminal and at the depot is a whole number from zero through the number of services. At a terminal, total charger count cannot exceed the number of services times its opening record, and total rated charger power cannot exceed the site's power limit. Depot total rated charger power cannot exceed its depot limit. For every feasible service continuation, terminal charging can occur only from completion of its empty travel until, but not including, the next service start. Every minute's yes-or-no charging record is at most both the continuation choice and the originating terminal's opening record. Nonnegative charging power is at most the bus charging limit times that record. At every terminal and minute, active charging counts and total powers cannot exceed total installed charger count and total installed rated power respectively; no assignment of each bus to a particular terminal charger type is required.
+
+When a continuation is selected, the next service's end energy is at most the preceding service's end energy plus the sum of intervening charging powers divided by sixty, less empty-travel energy and the next service's travel energy. For each feasible continuation, preceding end energy plus its charging energy cannot exceed the upper battery level. After a finishing service returns to the depot and before the day ends, each minute may use at most one depot charger type, and only if that service finishes a duty. Power for a chosen type is nonnegative and cannot exceed the smaller of the bus and charger-type power ratings times that type's yes-or-no record. At each minute, use of each type across services cannot exceed its installed count. For a finishing duty, returned-depot energy plus all depot charging power summed over types and minutes and divided by sixty must reach at least the upper battery level.
+
+All vehicle and charging choices are shared by three equally likely weather scenarios. Total bus charging at each electrical site and minute is the sum of its terminal and depot charging powers. Each site has a yes-or-no energy-site opening $R_b$; nonnegative photovoltaic capacity and battery-storage capacity cannot exceed their respective given maxima times this opening. For each scenario, site and minute, nonnegative solar generation cannot exceed weather availability times installed photovoltaic capacity. Solar generation equals direct solar supply plus storage charging. Direct solar supply, storage discharge and purchased electricity together must be at least bus charging demand; purchased power lies between zero and its site limit. Thus storage charging in this arrangement is supplied through the solar split.
+
+Scenario-specific storage energy equals previous energy plus one sixtieth of charging efficiency times charging power, less one sixtieth of discharging power divided by discharge efficiency. Energy lies between ten and ninety percent of installed storage capacity. Charge and discharge powers each cannot exceed half installed capacity. A yes-or-no operating-mode record also limits charging to half the given maximum storage capacity times that record, and discharging to half that maximum times one minus the record. Initial energy is half installed capacity and final energy must be at least half installed capacity. Nonnegative reactive compensation at each site and minute is shared across weather scenarios and cannot exceed its given limit.
+
+For every radial-network leaf, minute and scenario, signed active flow is direct solar supply plus storage discharge less bus charging demand and less the given background load. Signed reactive flow is compensation less 0.33 times background load. Voltage less the sum of line resistance times active flow and line reactance times reactive flow equals one. Voltage lies between 0.9 and 1.05, and both flows lie between the negative and positive site grid limit. Line resistance and reactance are given physical data and are distinct from site opening choices. The operator seeks the lowest given present-value factor times the sum of bus cost per duty start, installed charger costs, photovoltaic capacity costs and storage capacity costs, plus electricity price times purchased power summed over sites, minutes and scenarios, with each scenario weighted one third and minute power charges divided by sixty.
+
+\subsection*{Inline notation and relations}
+$S$; $A=\{(i,j):i\ne j,e_i+t^{dh}_{ij}\le b_j\}$; $N$; $K$; $T=\{0,\ldots,H-1\}$; $\Delta=1/60$; $x_{ij},s_i,f_i,z_n\in\{0,1\}$; $q_i,q^d_i\in[\underline a Q,\bar a Q]$; $n_{nk},n_{0k}$; $0,\ldots,|S|$; $\sum_kn_{nk}\le|S|z_n$; $\sum_kn_{nk}P_k\le Cap_n$; $\sum_kn_{0k}P_k\le Cap_0$; $i,j$; $[e_i+t^{dh}_{ij},b_j)$; $\ell_{ijt}$; $p_{ijt}$; $\ell\le x,\ell\le z_{n(i)},0\le p\le P^{bus}\ell$; $\sum\ell\le\sum_kn_{nk}$; $\sum p\le\sum_kn_{nk}P_k$; $H$; $\ell^d_{ikt}\in\{0,1\}$; $p^d_{ikt}\ge0$; $\sum_k\ell^d_{ikt}\le f_i$; $p^d_{ikt}\le\min(P^{bus},P_k)\ell^d_{ikt}$; $\sum_i\ell^d_{ikt}\le n_{0k}$; $f_i=1\Rightarrow q_i^d+\Delta\sum_{kt}p^d_{ikt}\ge\bar aQ$; $D_{bt}$; $w$; $R_b$; $0\le P_b^{PV}\le\overline P^{PV}R_b$; $0\le E_b^{BES}\le\overline E^{BES}R_b$; $g$; $v$; $p$; $c$; $d$; $e$; $u$; $c\le.5\bar E^{BES}u,d\le.5\bar E^{BES}(1-u)$; $e_{bw,-1}=.5E_b^{BES}$; $e_{bw,H-1}\ge.5E_b^{BES}$; $0\le Q^c_{bt}\le\bar Q_b$; $F,G\in[-\bar g_b,\bar g_b]$; $r_b,x_b$.
 \end{document}

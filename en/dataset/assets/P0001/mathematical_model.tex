@@ -1,18 +1,18 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,geometry}
-\geometry{margin=22mm}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
+
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
 \begin{document}
-\section*{P1: Sample-average mixed-binary linear model for tandem clinic appointments}
-\paragraph{Source and scope} Original paper, PDF pages 1, 6, 7, 8, 9, 10, 11, and 12, equations (4)--(9), Remark 1, and Proposition 2, equations (11)--(25).
-\subsection*{Sets, parameters, and scope}
-Each patient $k=1,\ldots,K$ visits every single-server station $n=1,\ldots,N$ in the same fixed order, and all patients attend. $\Omega$ is a given finite, equally weighted sample of service-duration scenarios. $\delta_k^n(\omega)\in\mathbb Z_+$ is the number of time slots, with service times allowed to be correlated across patients and stations. $T^n\in\mathbb Z_+$ is the regular working time at the station. The cost inequalities $0\leq C_{L,k}\leq C_{W,k}$, $0\leq C_R^n\leq C_I^n$, and $C_O^n\geq0$ correspond to leisure and regular waiting, usable and regular idle time, and overtime, respectively. A valid big-M value is
+\section*{P0001 Patient Appointment and Service Timing across Clinical Stations}
+\subsection*{Mathematical formulation}
 \[
 M=\max\{1,\max_nT^n+\max_{\omega\in\Omega}\sum_{k=1}^K\sum_{n=1}^N\delta_k^n(\omega)\}.
 \]
-This file uses the sample-average mixed-binary linear formulation in Proposition 2. Appointment times $a_k^n$ are continuous. Remark 1 permits relaxing time-slot integrality, and Proposition 2 uses a continuous domain. The objective is average cost over the given sample of service durations.
-\subsection*{Variables and complete model}
-$a$ is the appointment schedule chosen in advance. In each scenario, $r$ is the patient-ready time, $v$ is the provider-ready time, $s$ is the actual service start time, and $f$ is the provider's finish time. The binary variables $y,z$ select the branches of the maximum relationships. $\Gamma_W,\Gamma_L,\Gamma_I,\Gamma_R,\Gamma_O$ are the total durations of regular waiting, leisure waiting, regular idle time, usable idle time, and overtime, respectively. Boundary variables $y,z$ that do not apply may be omitted.
+
 \begin{equation}
 \min
 \frac{1}{|\Omega|} \sum_{\omega \in \Omega}
@@ -179,5 +179,17 @@ z_k^n(\omega),\ y_k^n(\omega) \in \{0,1\},
 \tag{26c}
 \end{equation}
 
+\subsection*{Definitions and model scope}
+A hospital must set appointments for $K$ patients visiting $N$ clinical stations before service durations become known. Each station has one server, every patient attends and visits every station, and all stations follow the same fixed patient order. The hospital evaluates the schedule over the finite, equally weighted set of duration scenarios $\Omega$. In scenario $\omega$, patient $k$ spends $\delta_k^n(\omega)$ nonnegative integer time slots in service at station $n$; durations may be correlated across patients and stations. The station's regular working horizon $T^n$ is also a nonnegative integer, whereas the appointment time $a_k^n$ may be continuous and is shared across all scenarios.
 
+The first patient's appointment at the first station is at time zero. Each appointment lies between zero and the end of that station's regular working horizon. Appointments cannot move earlier along the patient order at a station or along the station order for a patient. Patient readiness, server availability, actual service start and end of work are recorded by the nonnegative continuous times $r_k^n(\omega)$, $v_k^n(\omega)$, $s_k^n(\omega)$ and $f^n(\omega)$. A patient's readiness at the first station equals the appointment there, and the server's availability for the first patient at each station equals that patient's appointment at that station.
+
+At every later station, a patient becomes ready at the later of the appointment and completion of service at the preceding station. When the binary record $z_k^n(\omega)$ is one, readiness equals the appointment and cannot exceed preceding completion plus $M$; when the record is zero, readiness equals preceding completion and cannot exceed the appointment plus $M$. From the second patient onward, server availability is the later of the current appointment and the preceding patient's completion at the same station. When the binary record $y_k^n(\omega)$ is one, availability equals the appointment and cannot exceed preceding completion plus $M$; when the record is zero, availability equals preceding completion and cannot exceed the appointment plus $M$. The common time allowance $M$ is the larger of one and the longest regular working horizon plus the largest, across scenarios, total service duration over all patients and stations. These binary records are unnecessary for first-station readiness and first-patient server availability.
+
+Actual service cannot start before either patient readiness or server availability, but a later start remains possible. A station cannot end work before its regular horizon or before its last patient's service is complete; its end of work need not equal the later of those times. For each patient, total ordinary waiting $\Gamma_{W,k}(\omega)$ adds service start minus readiness across stations, whereas total leisure waiting $\Gamma_{L,k}(\omega)$ adds readiness minus preceding-station completion from the second station onward. For each station, total ordinary idle time $\Gamma_I^n(\omega)$ adds service start minus server availability across patients; total usable idle time $\Gamma_R^n(\omega)$ adds server availability minus the preceding patient's completion from the second patient onward. Total overtime $\Gamma_O^n(\omega)$ is end of work minus the regular horizon. All five totals are nonnegative continuous amounts, and a total with no contributing patient or station terms is zero.
+
+The hospital seeks the lowest arithmetic mean of these five time costs across the finite scenarios. Ordinary and leisure waiting for a patient cost $C_{W,k}$ and $C_{L,k}$ per unit of time, respectively; both are nonnegative and leisure waiting is no more expensive than ordinary waiting. A station's ordinary idle time, usable idle time and overtime cost $C_I^n$, $C_R^n$ and $C_O^n$ per unit of time, respectively; all are nonnegative and usable idle time is no more expensive than ordinary idle time. Each scenario's bill includes both waiting costs for every patient and all three staff-time costs for every station before equal averaging across scenarios. The hospital chooses appointments and scenario timing arrangements meeting these requirements; this finite-scenario average does not establish the exact mean cost of the unknown population of service durations.
+
+\subsection*{Inline notation and relations}
+$k=1,\ldots,K$; $n=1,\ldots,N$; $\Omega$; $\delta_k^n(\omega)\in\mathbb Z_+$; $T^n\in\mathbb Z_+$; $0\leq C_{L,k}\leq C_{W,k}$; $0\leq C_R^n\leq C_I^n$; $C_O^n\geq0$; $a_k^n$; $a$; $r$; $v$; $s$; $f$; $y,z$; $\Gamma_W,\Gamma_L,\Gamma_I,\Gamma_R,\Gamma_O$.
 \end{document}

@@ -8,7 +8,7 @@ window.ORTOPIA_SYSTEMS=(()=>{
   const s=d.steps[i], changes=new Map((s.changes||[]).map(c=>[c.id,c.value]));
   if(d.id==='P0045'){
    const rows=d.steps.slice(0,i+1);
-   stage.innerHTML="<div class=\"allocation\"><div class=\"allocation-key\"><b>marketing activity share</b><span>Email</span><span>Push notification</span><span>Coupon</span></div>"+rows.map((t,k)=>{
+   stage.innerHTML='<div class="allocation"><div class="allocation-key"><b>marketing activity share</b><span>Email</span><span>Push notification</span><span>Coupon</span></div>'+rows.map((t,k)=>{
     const m=Object.fromEntries(t.changes.map(v=>[v.id,v.value])),person=t.changes.find(c=>!['mail','push','voucher'].includes(c.id));
     return '<div class="alloc-row '+(k===i?'current':'')+'"><b>'+esc(person?.value||t.title)+'</b><div>'+['mail','push','voucher'].map((a,j)=>{
      const v=parseFloat(m[a]);return v>0?'<span class="alloc-'+j+'" style="width:'+v+'%" title="'+esc(a+' '+m[a])+'">'+(v>9?esc(m[a]):'')+'</span>':'';
@@ -20,7 +20,7 @@ window.ORTOPIA_SYSTEMS=(()=>{
    const min=d.minCapacity??0,max=d.capacity,pct=Number.isFinite(max)&&left!=null?Math.min(100,Math.max(0,100*(left-min)/(max-min))):null;
    const grid=changes.get('grid')||changes.get('sale'),device=changes.get('plant')||changes.get('bat');
    const direction=bat?(s.links[0]?.[0]==='bat'?'→':s.links.length?'←':'—'):'→';
-   stage.innerHTML='<div class="power-stage"><div class="power-machine"><div class="machine-figure">'+(bat?'▥':'⚙')+'</div><strong>'+esc(bat?"energy storage device":"Thermal power unit")+'</strong><div>'+esc(device)+'</div></div><div class="energy-arrow">'+direction+"</div><div class=\"power-machine\"><div class=\"machine-figure grid-symbol\">ϟ</div><strong>electricity market</strong><div>"+esc(grid)+'</div></div></div><div class="stock"><header><b>'+esc(bat?"Ending energy stock":"remaining fuel limit")+'</b><span>'+esc(Number.isFinite(left)?left.toLocaleString('en-US',{maximumFractionDigits:3}):'')+(Number.isFinite(max)?' / '+esc(Number(max).toLocaleString('en-US',{maximumFractionDigits:3})): '')+'</span></header>'+(pct!==null?'<div class="gauge"><i style="width:'+pct+'%"></i></div>':'')+'</div>';return;
+   stage.innerHTML='<div class="power-stage"><div class="power-machine"><div class="machine-figure">'+(bat?'▥':'⚙')+'</div><strong>'+esc(bat?'energy storage device':'Thermal power unit')+'</strong><div>'+esc(device)+'</div></div><div class="energy-arrow">'+direction+'</div><div class="power-machine"><div class="machine-figure grid-symbol">ϟ</div><strong>electricity market</strong><div>'+esc(grid)+'</div></div></div><div class="stock"><header><b>'+esc(bat?'Ending energy stock':'remaining fuel limit')+'</b><span>'+esc(Number.isFinite(left)?left.toLocaleString('en-US',{maximumFractionDigits:3}):'')+(Number.isFinite(max)?' / '+esc(Number(max).toLocaleString('en-US',{maximumFractionDigits:3})): '')+'</span></header>'+(pct!==null?'<div class="gauge"><i style="width:'+pct+'%"></i></div>':'')+'</div>';return;
   }
   const pos=new Map(),ents=d.entities,allLinks=new Map();
   d.steps.flatMap(v=>v.links).forEach(([a,b])=>allLinks.set(JSON.stringify([a,b]),[a,b]));

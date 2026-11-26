@@ -1,20 +1,19 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,mathtools,geometry}
-\geometry{a4paper,margin=20mm}\allowdisplaybreaks
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
-\begin{document}
-\section*{Single-phase two-level packaging cabinets combined with opportunistic delivery agents for distribution modeling}
 
-\paragraph{Source} Pages 6–9 of the PDF document, section 3, equations (1)–(24). The system takes single-period known orders as input.
-\subsection*{Enter}
-$o$ represents the warehouse. $L$ stands for the parcel cabinets. $C_D$ refers to customers who prefer to pick up their items at the store. $C_L$ denotes customers who prefer to pick up their items themselves (can be used as occasional delivery agents). $q_c>0$ represents requests. $a_k\in L\cup\{o\}$ indicates the selected pick-up location for customers who prefer to pick up their items themselves. $S_k\subseteq C_D$ refers to a group of customers who are willing to have their items delivered additionally. $p_{ck}$ represents compensation measures. Professional fleet capacity: $Q$; cabinets available for delivery: $Q^L$. Number of cabinets: $l$. Local fleet capacity: $Q_l$. Cabinet capacity: $W_l$. Corresponding arc costs: $c_{ij},c^L_{ij},c^l_{ij}\ge0$. The total number of routes for the fleet is not limited. PF, cabinets, and individual cabinets are all operated separately. Definitions: $B^0=\{o\}\cup C_D,\ B^L=\{o\}\cup L,\ B^l=\{l\}\cup C_D$. Each arc area: $A^a=\{(i,j)\in B^a\times B^a:i\ne j\}$.
-\subsection*{Variables and derived quantities}
-$x^a_{ij}\in\{0,1\}$ represents the selection of corresponding fleet arcs, $y^a_{ij}\ge0$ represents the cargo loading on the arcs, $a\in\{0,L\}\cup L$, where the label $L$ indicates the supply cabinet fleet, distinct from the individual element labels of cabinets. $z_c,z_c^l,z_l^L\in\{0,1\}$ represent PF services, $l$ represent LF services for cabinets, and supply cabinets access cabinets; $w_{ck}\in\{0,1\}$ represents opportunistic deliveries. It defines the cabinet supply requirements.
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
+\begin{document}
+\section*{P0331 Coordinating Locker Supply, Home Delivery and Occasional Couriers}
+\subsection*{Mathematical formulation}
 \[
 d_l=\sum_{k\in C_L:a_k=l}\left(q_k+\sum_{c\in S_k}q_cw_{ck}\right)
        +\sum_{c\in C_D}q_cz_c^l .
 \]
-\subsection*{Complete model}
+
 \begin{align}
 \min\quad&
 \sum_{(i,j)\in A^L}c^L_{ij}x^L_{ij}
@@ -25,7 +24,7 @@ z_c+\sum_{k:c\in S_k}w_{ck}+\sum_{l\in L}z_c^l&=1 &&c\in C_D,\tag{2}\\
 \sum_{c\in S_k}w_{ck}&\le1 &&k\in C_L,\tag{3}\\
 d_l&\le W_lz_l^L &&l\in L.\tag{4}
 \end{align}
-To list the three isomorphic flow constraints completely and compactly, define the fleet index $a\in\mathcal A=\{0,\mathrm{sup}\}\cup L$:
+
 \[
 (b_a,J_a,Q_a,z_i^a,d_i^a)=
 \begin{cases}
@@ -34,7 +33,7 @@ To list the three isomorphic flow constraints completely and compactly, define t
 (l,C_D,Q_l,z_i^l,q_i z_i^l),&a=l\in L.
 \end{cases}
 \]
-Where $x^{\mathrm{sup}}=x^L,\ y^{\mathrm{sup}}=y^L$, All fleet arcs are on $\{b_a\}\cup J_a$ with no self-looping directed arcs. Apply to each $a\in\mathcal A$ simultaneously.
+
 \begin{align}
 \sum_{j\in J_a\cup\{b_a\}:j\ne i}x^a_{ij}
 &=\sum_{j\in J_a\cup\{b_a\}:j\ne i}x^a_{ji}=z_i^a &&i\in J_a,\tag{5/11/17}\\
@@ -46,7 +45,20 @@ Where $x^{\mathrm{sup}}=x^L,\ y^{\mathrm{sup}}=y^L$, All fleet arcs are on $\{b_
 0\le y^a_{ij}&\le Q_ax^a_{ij} &&(i,j)\in A^a,\tag{9/15/21}\\
 y^a_{ib_a}&=0 &&i\in J_a.\tag{10/16/22}
 \end{align}
-All the aforementioned $x,z,w$ values are binary, while all $y$ values are non-negative. A common constraint template can be instantiated for both PF and LF systems.
 
+\subsection*{Definitions and model scope}
+A parcel operator serves known orders in one period using a given warehouse $o$, locker sites $L$, home-delivery customers $C_D$ and self-pickup customers $C_L$. Every customer has positive demand $q_c$. Each self-pickup customer has a fixed collection point $a_k$, which may be a locker or the warehouse, a given willingly served home-customer group $S_k$ and a given compensation $p_{ck}$ for each permitted additional delivery. A warehouse-based professional fleet, a warehouse-based locker-supply fleet and a separate local fleet at each locker have given capacities and their own nonnegative directed travel costs. No total number of routes is prescribed.
 
+Choose zero-or-one professional delivery states $z_c$, zero-or-one local delivery states $z_c^l$ and zero-or-one occasional-delivery assignments $w_{ck}$ for permitted customer pairs. Every home-delivery customer must be assigned exactly once in total across professional service, all local fleets and willing self-pickup couriers. Each self-pickup courier may deliver to at most one additional customer. All these orders are known; unexpected nonappearance and later-period rearrangements are outside this single-period task.
+
+For each locker, its required replenishment $d_l$ equals the demands of self-pickup customers collecting there, plus demands of the additional customers those couriers are assigned to serve, plus demands assigned to that locker's local fleet. Choose a zero-or-one locker supply-visit state $z_l^L$. Required replenishment cannot exceed the given locker capacity $W_l$ times this state. A self-pickup courier collecting at the warehouse does not contribute to any locker's replenishment. A zero-demand locker is not independently forbidden from being visited.
+
+For each fleet, choose zero-or-one directed travel selections $x^a_{ij}$ and nonnegative continuous on-connection cargo quantities $y^a_{ij}$ on all directed non-self connections among its base and service nodes. The professional fleet's base is the warehouse, its nodes are home customers and delivered quantities are customer demand times professional-service state. The supply fleet's base is the warehouse, its nodes are lockers and delivered quantities are their required replenishments. Each local fleet's base is its locker, its nodes are home customers and delivered quantities are customer demand times that locker's local-service state.
+
+Apply the following same rules to every fleet separately. At each service node, selected outgoing connections and selected incoming connections must each total its service or visit state. At the base, outgoing and incoming selected counts must be equal. At every service node, incoming cargo minus outgoing cargo equals its delivered quantity. At the base, incoming cargo minus outgoing cargo equals the negative of all that fleet's delivered quantities. Cargo on a connection lies between zero and fleet capacity times its travel selection, and cargo returning directly to the base must be zero. The three fleet types retain their own travel selections and cargo accounting; they are not collapsed into one vehicle.
+
+The operator seeks the smallest total locker-supply travel cost, professional travel cost, local-fleet travel cost and occasional-delivery compensation. Each selected directed connection pays the cost for its own fleet, and each chosen occasional-delivery assignment pays its given compensation. Self-pickup demand is supplied at its predetermined collection point, without introducing a separate charge for changing that point or an additional vehicle-count limit.
+
+\subsection*{Inline notation and relations}
+$o$; $L$; $C_D$; $C_L$; $q_c>0$; $a_k\in L\cup\{o\}$; $S_k\subseteq C_D$; $p_{ck}$; $Q$; $Q^L$; $l$; $Q_l$; $W_l$; $c_{ij},c^L_{ij},c^l_{ij}\ge0$; $B^0=\{o\}\cup C_D,\ B^L=\{o\}\cup L,\ B^l=\{l\}\cup C_D$; $A^a=\{(i,j)\in B^a\times B^a:i\ne j\}$; $x^a_{ij}\in\{0,1\}$; $y^a_{ij}\ge0$; $a\in\{0,L\}\cup L$; $z_c,z_c^l,z_l^L\in\{0,1\}$; $w_{ck}\in\{0,1\}$; $a\in\mathcal A=\{0,\mathrm{sup}\}\cup L$; $x^{\mathrm{sup}}=x^L,\ y^{\mathrm{sup}}=y^L$; $\{b_a\}\cup J_a$; $a\in\mathcal A$; $x,z,w$; $y$.
 \end{document}

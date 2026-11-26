@@ -43,8 +43,8 @@ window.ORTOPIA_STUDIO=(()=>{
   const x=598,y=30,w=376,rowH=24,inks=['#388068','#ba7243','#69638c'];
   c.save();c.fillStyle='rgba(249,249,233,.98)';c.beginPath();c.roundRect(x,y,w,373,10);c.fill();
   c.fillStyle='#23463a';c.textAlign='left';c.font='700 18px "Microsoft YaHei",sans-serif';
-  c.fillText("Whole group allocation · One customer per line",x+18,y+30);
-  ["Email","Push notification","Coupon"].forEach((label,k)=>{
+  c.fillText('Whole group allocation · One customer per line',x+18,y+30);
+  ['Email','Push notification','Coupon'].forEach((label,k)=>{
    c.fillStyle=inks[k];c.fillRect(x+19+106*k,y+43,12,10);
    c.fillStyle='#365748';c.font='13px "Microsoft YaHei",sans-serif';c.fillText(label,x+37+106*k,y+53);
   });
@@ -66,7 +66,7 @@ window.ORTOPIA_STUDIO=(()=>{
  function render(stage,data,index){
   const step=data.steps[index],m=Object.fromEntries(step.changes.map(c=>[c.id,c.value]));
   const personId=step.changes.find(c=>!['mail','push','voucher'].includes(c.id)).value;
-  stage.innerHTML='<figure class="studio-world"><canvas class="studio-canvas" width="1600" height="900" role="img" aria-label="'+safe(step.title)+"Marketing Studio Demo\"></canvas><figcaption>Expand verified activity allocation according to customers, with studio and personnel actions as a guide.</figcaption></figure>";
+  stage.innerHTML='<figure class="studio-world"><canvas class="studio-canvas" width="1600" height="900" role="img" aria-label="'+safe(step.title)+' Marketing Studio Demo"></canvas><figcaption>Expand verified activity allocation according to customers, with studio and personnel actions as a guide. </figcaption></figure>';
   const canvas=stage.querySelector('canvas'),c=canvas.getContext('2d');
   let alternate=null,choiceTitle='';
   function draw(time){
@@ -78,12 +78,12 @@ window.ORTOPIA_STUDIO=(()=>{
    const x=139+k*328,y=413-k*20;
    person(c,798,389,1.04,-1,time*2.1,0,.55+.28*Math.sin(time*2),true);
    person(c,x,y,1.26,time>4.2?-1:1,time*9.3,travel?Math.min(1,12*Math.abs(k),12*Math.abs(1-k)):0,busy,false);
-   note(c,x,y-151,"Customer "+personId+" · Programmer");
+   note(c,x,y-151,'Customer '+personId+' · Programmer');
    ledger(c,data.steps,index,alternate);
-   if(alternate)note(c,785,422,"Compare · "+personId+' '+choiceTitle);
+   if(alternate)note(c,785,422,'Compare · '+personId+' '+choiceTitle);
    const left=195,width=610,top=486;
    c.fillStyle='rgba(255,251,236,.96)';c.beginPath();c.roundRect(left,top,width,51,9);c.fill();
-   const channels=[['mail',"Email",'#507f6a'],['push',"Push notification",'#9d663f'],['voucher',"Coupon",'#626a88']];
+   const channels=[['mail','Email','#507f6a'],['push','Push notification','#9d663f'],['voucher','Coupon','#626a88']];
    channels.forEach(([key,name,ink],i)=>{
     const cx=left+16+i*199,pc=parseFloat((alternate||m)[key])||0;
     c.fillStyle='#25493b';c.textAlign='left';c.font='600 14px "Microsoft YaHei",sans-serif';c.fillText(name+'  '+(alternate||m)[key],cx,top+20);
@@ -101,7 +101,7 @@ window.ORTOPIA_STUDIO=(()=>{
    draw(stage.sceneTime||0);
   };
   draw(stage.sceneTime||0);
-  if(!requested){requested=true;sprite.src='../../simulation/assets/replays/P0045/studio.webp';}
+  if(!requested){requested=true;sprite.src='assets/replays/P0045/studio.webp';}
   if(!sprite.complete)sprite.addEventListener('load',()=>{if(canvas.isConnected)draw(stage.sceneTime||0);},{once:true});
  }
  return {supports:id=>id==='P0045',render};

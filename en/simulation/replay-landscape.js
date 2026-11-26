@@ -12,9 +12,9 @@ const palettes={
 const defaultKinds=['depot','plant','street','rail','port','air','power','market','clinic','relief','cloud','network'];
 function sceneType(p){
  const s=p.title;
- if(/\b(?:train|rail(?:way|road)?|metro|subway)s?\b/i.test(s))return 'rail';
- if(/\b(?:port|dock|terminal|container|maritime|ship(?:ping)?|vessel)s?\b/i.test(s))return 'port';
- if(/drone|flight|airport|aviation/i.test(s))return 'air';
+ if(/train|rail|metro|subway/i.test(s))return 'rail';
+ if(/port|terminal|container|maritime|vessel|ship/i.test(s))return 'port';
+ if(/drone|UAV|flight|airport|aviation/i.test(s))return 'air';
  return defaultKinds[Number(p.domainId.slice(0,2))-1]||'network';
 }
 function frame(canvas,p,track,index,progress,overlay,custom){
@@ -67,11 +67,11 @@ function frame(canvas,p,track,index,progress,overlay,custom){
  }
  function actor(x,y,direction,phase,unit=''){
   ctx.save();ctx.translate(x,y);ctx.scale(direction<0?-1:1,1);oval(0,3,18,4,'#345e6238');
-  const rail=k==='rail',drone=(unit.includes("Drone")||/drone|flight|flying/i.test(track.title))&&!/truck/i.test(track.title),flight=/flight|air leg/i.test(track.title);
+  const rail=k==='rail',drone=(/drone|UAV/i.test(unit)||/drone|flight|flying|UAV/i.test(track.title))&&!/truck|lorry/i.test(track.title),flight=/flight|air leg/i.test(track.title);
   if(drone){line([[-10,-12],[10,-19]],'#445f68',3);line([[10,-12],[-10,-19]],'#445f68',3);for(const xx of [-11,11])oval(xx,-17,7,2,'#627d81');box(0,-9,10,5,3,'#d89f53','#8b7249','#f1c67f');}
   else if(flight){poly([[-22,-8],[-5,-8],[-10,-20],[-4,-20],[6,-9],[21,-7],[24,-4],[6,-3],[-6,7],[-11,7],[-6,-3],[-20,-2]],'#e5eee9','#62828c');}
-  else if(k==='port'&&/vessel|ship|boat/i.test(track.title)){poly([[-23,-7],[23,-7],[14,2],[-15,2]],'#376c79');box(1,-7,16,8,5,'#f4e6c6','#c1c6ad','#dae4c4');}
-  else{const passenger=rail||/bus|passenger|pick.?up|shuttle|service|trip/i.test(track.title);box(-3,-3,passenger?42:26,13,5,rail?'#3c7085':'#cc7942','#946b51','#ffe0a0');if(passenger){for(let j=0;j<5;j++)rect(-19+j*7,-14,5,5,'#d6e6dc');}else{rect(11,-11,11,9,'#527e80');rect(13,-10,6,4,'#d9e8df');}for(const n of [-12,12]){oval(n,-1,3.4,3.4,'#374f52');oval(n,-1,1.3,1.3,'#d6d8c3');}}
+  else if(k==='port'&&/ship|boat|vessel/i.test(track.title)){poly([[-23,-7],[23,-7],[14,2],[-15,2]],'#376c79');box(1,-7,16,8,5,'#f4e6c6','#c1c6ad','#dae4c4');}
+  else{const passenger=rail||/bus|passenger|shuttle|trip|transit/i.test(track.title);box(-3,-3,passenger?42:26,13,5,rail?'#3c7085':'#cc7942','#946b51','#ffe0a0');if(passenger){for(let j=0;j<5;j++)rect(-19+j*7,-14,5,5,'#d6e6dc');}else{rect(11,-11,11,9,'#527e80');rect(13,-10,6,4,'#d9e8df');}for(const n of [-12,12]){oval(n,-1,3.4,3.4,'#374f52');oval(n,-1,1.3,1.3,'#d6d8c3');}}
   ctx.restore();
  }
  function person(x,y,phase){const walk=Math.sin(phase*6)*2;oval(x,y+1,5,1.6,'#426b6333');line([[x,y-7],[x-2-walk,y],[x-2-walk,y]],'#475e64',1.8);line([[x,y-7],[x+2+walk,y]],'#475e64',1.8);rect(x-2,y-13,5,7,'#ae7146');oval(x+.5,y-16,2.8,3,'#bd906d');}
@@ -87,14 +87,14 @@ function frame(canvas,p,track,index,progress,overlay,custom){
    const f=clamp((time-r[3])/(r[4]-r[3])),meters=Number(r[1])+(Number(r[2])-Number(r[1]))*f;
    actor(pos(meters),224,1,f);chip(id,pos(meters),195,true);locations.push(meters);}
   const gaps=locations.slice(1).map((v,j)=>locations[j]-v);
-  return {done:0,active:locations.length,text:"instance time "+fmt(time)+" Seconds · Display vehicle "+locations.length+" vehicles · minimum adjacent distance "+fmt(Math.min(...gaps))+" meters"};
+  return {done:0,active:locations.length,text:'instance time '+fmt(time)+' Seconds · Display vehicle '+locations.length+' vehicles · minimum adjacent distance '+fmt(Math.min(...gaps))+' meters'};
  }
  if(p.id==='P0488'){
   const j=Math.min(rows.length-1,Math.floor(time)),f=clamp(time-j);building(150,223,1.9,true);building(740,223,1.9,true);
   line([[162,236],[724,236]],'#849b8c',12);line([[162,236],[724,236]],'#d9ddc6',6);
-  actor(183+515*f,234,1,f);chip("Issue this issue "+fmt(rows[j][1]),175,268,true);chip("Previous order "+(j?fmt(rows[j-1][1]):'—'),732,268,true);
+  actor(183+515*f,234,1,f);chip('Issue this issue '+fmt(rows[j][1]),175,268,true);chip('Previous order '+(j?fmt(rows[j-1][1]):'—'),732,268,true);
   for(let h=0;h<Math.min(36,j);h++)box(560+(h%12)*13,317-Math.floor(h/12)*10,11,10,3,'#b99868','#9f815b','#e6cda0');
-  return {done:j,active:1,text:"Period "+(j+1)+" · Order lead time: 1 period · Boxes show orders whose lead time has elapsed"};
+  return {done:j,active:1,text:'No. '+(j+1)+' Period · Order lead time 1 period · Box records orders that have completed the lead time'};
  }
  if(p.id==='P0181'){
   let active=0,finished=0;
@@ -103,19 +103,19 @@ function frame(canvas,p,track,index,progress,overlay,custom){
    box(x,279,100,9,8,'#b5c7bf','#93a99e','#e4ede1');if(!omitted){
     person(x-45+15*phase,266,phase);rect(x-44,292,89*phase,7,'#31947c');if(time>=u)finished++;else if(time>=t)active++;
    }
-   chip(id+' · '+(omitted?"Suspended":time>=u?"Completed":time<t?"wait":"In progress"),x,322,!omitted&&time>=t);
+   chip(id+' · '+(omitted?'Suspended':time>=u?'Completed':time<t?'wait':'In progress'),x,322,!omitted&&time>=t);
   }
-  return {done:finished,active,text:"Surgery in progress "+active+" units · Completed "+finished+" units"};
+  return {done:finished,active,text:'Surgery in progress '+active+' Taiwan · Completed '+finished+' Taiwan'};
  }
  if(p.id==='P0079'){
   const lanes=[...new Set(rows.map(r=>r[1]))];let done=0,working=0;
   for(let j=0;j<lanes.length;j++){
    const y=172+j*100;box(445,y,85,36,12,'#658b85','#476b68','#acc2ac');line([[135,y+10],[763,y+10]],'#6a7b74',9);
-   for(let k=0;k<18;k++)oval(140+35*k,y+11,3,3,'#b2bfb0');chip(lanes[j].replace("Awaiting processing","machine"),445,y-52,true);
+   for(let k=0;k<18;k++)oval(140+35*k,y+11,3,3,'#b2bfb0');chip(lanes[j].replace('Awaiting processing','machine'),445,y-52,true);
    for(const [id,a,b,t,u] of rows.filter(e=>e[1]===lanes[j]&&e[0]!==omit)){const h=rows.findIndex(e=>e[0]===id),started=time>=t,finished=time>=u;const x=finished?670+h*20:started?386+105*clamp((time-t)/(u-t)):146+h*32;
     box(x,y+4,22,19,5,finished?'#69a087':'#c78e56','#806f59','#ebce8b');chip(id,x,y+31,started&&!finished);if(finished)done++;else if(started)working++;}
   }
-  return {done,active:working,text:"In process "+working+" Piece · Completed "+done+" items"};
+  return {done,active:working,text:'In process '+working+' Piece · Completed '+done+' items'};
  }
  if(p.id==='P0006'||p.id==='P0029'||p.id==='P0036'||p.id==='P0493'){
   const production=p.id==='P0006',bins=p.id==='P0029',stations=p.id==='P0493',col=r=>production?Number(r[0].slice(-1)):bins?String(r[1]):stations?Math.floor(r[2]*4/Math.max(1,track.total)):r[2]%4;
@@ -124,12 +124,12 @@ function frame(canvas,p,track,index,progress,overlay,custom){
   const sum=[...tallies.values()].reduce((a,b)=>a+b,0),maximum=Math.max(1,...rows.map(r=>Math.abs(Number(r[1])||1)))*Math.max(1,rows.length/shown.length);
   shown.forEach((g,j)=>{const x=shown.length===1?500:172+j%4*(565/Math.max(1,Math.min(shown.length,4)-1)),y=j<4?219:313;
    building(x,y-18,1.15,true);const amount=tallies.get(g);
-   chip((production?"Plant ":bins?"box ":stations?"site group ":"Product group ")+g,x,y+9,col(cur)===g);
+   chip((production?'Plant ':bins?'box ':stations?'site group ':'Product group ')+g,x,y+9,col(cur)===g);
    rect(x-40,y+24,80,8,'#aebdac');rect(x-40,y+24,80*clamp(amount/maximum),8,'#3d806d');label(fmt(amount),x,y+50);
    if(col(cur)===g&&cur[0]!==omit&&time<rows.length){const xx=65+(x-65)*frac,yy=y+5-26*Math.sin(Math.PI*frac);
     if(bins||production||!stations)box(xx,yy,14,13,5,'#bd8a51','#887050','#eed095');else{person(xx,yy,frac);box(xx+10,yy,6,12,3,'#628e89','#50726f','#d3dfc4');}}
   });
-  return {done:Math.floor(time),active:1,text:(production?"Sample cumulative production ":bins?"Boxed items ":stations?"Sample site cumulative configuration ":"Cumulative purchase quantity of samples ")+fmt(sum)};
+  return {done:Math.floor(time),active:1,text:(production?'Sample cumulative production ':bins?'Boxed items ':stations?'Sample site cumulative configuration ':'Cumulative purchase quantity of samples ')+fmt(sum)};
  }
  if(p.id==='P0478'){
   let done=0;rows.forEach(([id,a,b,t,u],j)=>{const x=190+(j%6)*106,y=192+Math.floor(j/6)*88;if(y>350)return;
@@ -137,7 +137,7 @@ function frame(canvas,p,track,index,progress,overlay,custom){
    rect(x-13,y-22,26,11,'#475d58');rect(x-11,y-20,22*f,7,'#95c666');chip(b,x,y+18,f===1);
    if(f>0&&f<1){person(x-64+60*f,y+2,f);line([[x-23,y-2],[x-14,y-12]],'#9a875d',2);}
    if(f===1)done++;});
-  return {done,active:0,text:"Completed "+done+" Item component update"};
+  return {done,active:0,text:'Completed '+done+' Item component update'};
  }
 
 
@@ -162,22 +162,22 @@ function frame(canvas,p,track,index,progress,overlay,custom){
     const a=pos.get(aa),b=pos.get(bb),f=clamp((time-t)/(u-t)),x=a[0]+(b[0]-a[0])*f,y=a[1]+(b[1]-a[1])*f,shade=color[ids.indexOf(id)%color.length];
     if(active.length){moving++;line([a,[x,y]],shade,4);}
     if(track.kind==='coverage'){oval(x,y,7,7,shade);if(v!=null)chip(fmt(v),x,y-17,true);continue;}
-    if(unit.includes("Courier"))person(x,y,f);else actor(x,y,b[0]-a[0],f,unit);if(ids.length<=8)chip(id+(v!=null?' · '+fmt(v):''),x,y-30,true);
+    if(/courier|delivery worker|rider/i.test(unit))person(x,y,f);else actor(x,y,b[0]-a[0],f,unit);if(ids.length<=8)chip(id+(v!=null?' · '+fmt(v):''),x,y-30,true);
    }
   }
-  return {done:rows.filter(r=>r[0]!==omit&&r[4]<=time).length,active:moving,text:"Arrived "+seen.size+" endpoints"};
+  return {done:rows.filter(r=>r[0]!==omit&&r[4]<=time).length,active:moving,text:'Arrived '+seen.size+' endpoints'};
  }
  const n=rows.length, f=clamp(time/n),completed=Math.floor(time),idx=Math.min(n-1,completed),phase=clamp(time-idx),active=rows[idx];
  if(track.kind==='allocation'){
   const share=custom.share??rows[0][1],total=50,placed=Math.floor(f*total),left=Math.round(placed*share);
-  for(const [j,title,nr] of [[0,"Crowdsourced drivers",left],[1,"third party carrier",placed-left]]){
+  for(const [j,title,nr] of [[0,'Crowdsourced drivers',left],[1,'third party carrier',placed-left]]){
    const x=j?680:225;building(x,220,1.8,true);chip(title,x,247,true);
    line([[449,158],[x,218]],'#b0c1af',9);
    for(let h=0;h<nr;h++)box(x-57+(h%11)*11,277+Math.floor(h/11)*12,9,7,3,'#c99d62','#946f47','#f5cd89');
   }
   if(placed<total){const l=Math.round((placed+1)*share)>left,x=l?225:680,t=(f*total)%1;actor(450+(x-450)*t,158+60*t,x-450,t);}
-  building(450,156,1.3,true);chip("Order pool",450,182,true);
-  return {done:placed,active:total-placed,text:"Crowdsourcing "+left+" copies · third parties "+(placed-left)+" servings (50 equivalent servings are indicated)"};
+  building(450,156,1.3,true);chip('Order pool',450,182,true);
+  return {done:placed,active:total-placed,text:'Crowdsourcing '+left+' copies · third parties '+(placed-left)+' servings (50 equivalent servings are indicated)'};
  }
  const vals=rows.map(r=>Number(r[1])).filter(Number.isFinite),mx=Math.max(...vals,0),mn=Math.min(...vals,0),range=mx-mn||1;
  if(track.kind==='series'){
@@ -187,10 +187,10 @@ function frame(canvas,p,track,index,progress,overlay,custom){
   const cursor=[last[0]+(x(next)-last[0])*phase,last[1]+(y(rows[next][1])-last[1])*phase];
   line([...pts,cursor],pal[2],4);oval(...cursor,7,7,'#c1683d');chip(fmt(active[1]),cursor[0],cursor[1]-17,true);
   if(p.id==='P0476'){const xx=80+720*(Number(active[1])-mn)/range;line([[70,342],[830,342]],'#9eafa5',7);actor(xx,341,1,phase);}
-  legend(track.title,80,125);return {done:idx+1,active:1,text:"original record "+active[0]+' · '+fmt(active[1])};
+  legend(track.title,80,125);return {done:idx+1,active:1,text:'original record '+active[0]+' · '+fmt(active[1])};
  }
  const panels={
-  depot:["dispatch console","Orders and shipping capacity"],plant:["Production console","Job configuration"],street:["traffic dispatch desk","Vehicles and flights"],rail:["Driving control room","Trains and times"],port:["Port and shipping dispatch desk","transportation operations"],air:["flight dispatch desk","mission"],power:["System dispatch console","Run settings"],market:["Business decision-making desk","Products and Strategies"],clinic:["Service dispatch desk","Service configuration"],relief:["emergency dispatch desk","Material allocation"],cloud:["Compute console","Resource allocation"],network:["Network console","Solution configuration"]
+  depot:['dispatch console','Orders and shipping capacity'],plant:['Production console','Job configuration'],street:['traffic dispatch desk','Vehicles and flights'],rail:['Driving control room','Trains and times'],port:['Port and shipping dispatch desk','transportation operations'],air:['flight dispatch desk','mission'],power:['System dispatch console','Run settings'],market:['Business decision-making desk','Products and Strategies'],clinic:['Service dispatch desk','Service configuration'],relief:['emergency dispatch desk','Material allocation'],cloud:['Compute console','Resource allocation'],network:['Network console','Solution configuration']
  };
  const [desk,unit]=panels[k],phaseNow=clamp(time-Math.floor(time)),iNow=Math.min(rows.length-1,Math.floor(time)),current=rows[iNow],complete=rows.slice(0,Math.floor(time)).filter(r=>r[0]!==omit),v=Number(current[1]),all=rows.map(r=>Number(r[1])).filter(Number.isFinite),scale=Math.max(1e-9,...all.map(Math.abs)),binary=all.length===rows.length&&all.every(x=>x===1||x===0),selected=current[0]!==omit,ink=pal[2];
  // The field desk stages an archived assignment. The ledger below persists as the plan is assembled.
@@ -218,13 +218,13 @@ function frame(canvas,p,track,index,progress,overlay,custom){
   }else{
    for(let z=0;z<4;z++){const bx=x-33+z*20;line([[x,183],[bx,218]],'#a7bdb0',3);oval(bx,218,5,5,reveal>z/4?ink2:'#afbbb1');}oval(x,183,8,8,ink2);
   }
-  chip(String(record[0]).slice(-22),x,254,active);if(active)chip(selected?fmt(record[1]):"Suspended",x,148,true);
+  chip(String(record[0]).slice(-22),x,254,active);if(active)chip(selected?fmt(record[1]):'Suspended',x,148,true);
  }
  const total=rows.length,x0=55,y0=315,w=785/total;
  for(let j=0;j<total;j++){const r=rows[j],h=Number.isFinite(Number(r[1]))?5+Math.min(1,Math.abs(Number(r[1]))/scale)*26:16;rect(x0+j*w,y0+28-h,Math.max(2,w-2),h,j<time&&r[0]!==omit?ink:'#c1cebd');}
  line([[x0+Math.min(784,time*w),y0-4],[x0+Math.min(784,time*w),y0+30]],'#b76b3c',2);
  legend(unit+'　'+current[0]+'　'+fmt(current[1]),54,371);
- return {done:complete.length,active:selected?1:0,text:"Executed "+complete.length+' / '+total+" Item display configuration"+(binary?" · Enabled "+complete.filter(r=>r[1]===1).length+" item":'')+(omit?" · Suspension "+omit:'')};
+ return {done:complete.length,active:selected?1:0,text:'Executed '+complete.length+' / '+total+' Item display configuration '+(binary?' · Enabled '+complete.filter(r=>r[1]===1).length+' item':'')+(omit?' · Suspension '+omit:'')};
 
 
 }

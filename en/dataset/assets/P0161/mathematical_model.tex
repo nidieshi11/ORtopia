@@ -1,33 +1,47 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,longtable}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
-\begin{document}
-\section*{P161: Current complete mathematical model (as of 2026-10-20)}
-\section*{Basis and scope of the revision}Please fill in the details regarding direct/co-located trips, total battery capacity, and limited landing/route capacity by referring to pages 14–15 of the source document, as well as the definitions of physical services. The upper limit on time slots is determined based on the shortest possible flight times and turnaround times. The set of requests is provided in full by the instances themselves.
 
-\section*{Data, time, and flight}
-Node $V=V_P\cup V_S$, Aircraft $N$, Passenger Group $A$, Base $b_n$, Flight Duration $r_{ij}$, Energy Consumption $e_{ij}$, Cost $c_{ij}$, Time Domain $H$, Turnaround Time $t_e$. The capacity of seats, landing strips, and flight paths are all instance parameters. The time units used are precise minutes (currently 0.1 minutes). Both flight duration and time domain values are represented as integer scales. The maximum number of valid flight slots is determined by $S=\min\{S^{input},\lfloor H/(t_e+\min r_{ij})\rfloor\}$. Each segment requires at least a certain amount of turnaround time and shortest flight duration. Binary values $X_{ijmnt}$ indicate that aircraft $n$’s $m$ segment departs from $t$ at $x_{ijmn}=\sum_tX_{ijmnt}$ and $h_{mn}=\sum_{ij}x_{ijmn}$. Only takeoff times for $i\ne j$ and $mt_e+(m-1)\min r\le t\le H-r_{ij}$ are considered valid. There must be at least a return time after leaving the base. The first segment starts from the base and ends back at the base.
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
+\begin{document}
+\section*{P0161 Shared urban air mobility with vertiport and charging schedules}
+\subsection*{Mathematical formulation}
 \[
 h_{1n}=1,\quad h_{mn}\le1,\quad h_{mn}\ge h_{m+1,n},\quad
 \sum_ix_{ijmn}\ge\sum_ix_{ji,m+1,n},
 \quad\sum_{m,j}x_{b_njmn}=\sum_{m,i}x_{ib_nmn}.
 \]
-The route for virtual slot 0 has no passengers, hence its capacity is zero. $a_{0n}=d_{0n}=0$. The active slot is $a_{mn}=\sum_{ijt}(t+r_{ij})X_{ijmnt}$; The inactive slots are $a_{mn}=a_{m-1,n}$. All slots: $a_{mn}\ge a_{m-1,n}+t_eh_{mn}+\sum_{ij}r_{ij}x_{ijmn}$, $d_{mn}=a_{mn}-\sum_{ij}r_{ij}x_{ijmn}$, $a,d\in[0,H]$.
-\section*{Batteries and Charging}
-$u_{0n}=\bar E$, $u_{mn}\in[\underline E,\bar E]$, $q_{mn}\ge0$, 
+
 \[
 u_{mn}=u_{m-1,n}+q_{mn}-\sum_{ij}e_{ij}x_{ijmn},\quad
 u_{m-1,n}+q_{mn}\le\bar E,\quad q_{mn}\le\bar Eh_{mn}.
 \]
-$q_{1n}=0$; followed by $q_{mn}\le\bar E\sum_{i\in V_P,j}x_{ijmn}$, $q_{mn}\le rate\cdot tick\cdot(d_{mn}-a_{m-1,n})$.
-\section*{Complete passenger itinerary}
-Each group of $a$ can only include one direct route to $(o_a,d_a,m,n)$, or two routes allowed in total. $(o_a,h,m,n),(h,d_a,m+1,n)$ (different from $h$ in terms of starting and ending points) corresponds to a binary value of $z$, which is less than that of each individual route $x$. The first segment is preceded by an arrival at $a_{m-1,n}\le request_a$; the first flight is conducted via $[request_a,\min(latest_a,request_a+w)]$, and the intervals between intermediate stops are equal to $t_e$. Each flight slot can accommodate a maximum of 2 groups, with the total number of passengers not exceeding the capacity of the seats available; each group must consist of a maximum of $\sum z\le1$ passengers.
-\section*{Real-time space occupancy}
-Flying $X$ requires the use of all integer scales $t+1,\ldots,t+r_{ij}$. The number of aircraft that can be stationed at each node cannot exceed the limit set by $cap_{flt}$. The number of aircraft that can be parked at a node is determined by the initial capacity of that node, plus the number of incoming flights whose arrival times are strictly less than the current scale, minus the number of outgoing flights whose departure times are strictly less than the current scale. This value is specified in $[0,1]$. The total number of aircraft that can be parked at each node cannot exceed the capacity of that node. This applies to the entire time domain and all transfers, not just takeoff operations.
+
 \[
 \max\sum_a[(fare_a+penalty_a)\sum z_a-penalty_a]
 -\sum_{ijmn}c_{ij}x_{ijmn}.
 \]
-$fare_a$ The system will select the appropriate fare based on the acceptable transfer options provided. Even if the passenger ultimately chooses to take a direct flight, the same fare will still apply. All requests will be clearly marked as either accepted or rejected.
 
+\subsection*{Definitions and model scope}
+An urban air mobility operator schedules aircraft $N$ within a fixed operating horizon to serve passenger groups $A$ by direct trips or permitted one-transfer trips. Nodes include charging vertiports $V_P$ and other vertistops $V_S$. Aircraft home bases, flight times, energy use, flight costs, battery capacities and minimum remaining energy, charging rates, seats, parking capacities and simultaneous airborne capacities on directed routes are given. Each passenger group has an origin, destination, group size, request time, latest departure, maximum wait, fare, rejection loss and accepted transfer category. Times use integer ticks of one tenth of a minute, with flight and turnaround durations expressed on the same grid.
+
+Each aircraft has ordered flight positions $m$. Their number cannot exceed the supplied upper limit or the operating horizon divided by turnaround time plus the shortest flight time, rounded down. A selection record $X_{ijmnt}$ states whether an aircraft flies between two nodes at a particular position and departure tick and takes only zero or one. Summing its departure-time selections gives route use $x_{ijmn}$; summing over all routes gives the position-use record $h_{mn}$. Every aircraft must fly at its first position, each position contains at most one flight, and used positions form an uninterrupted prefix. Flights from a node to itself are forbidden.
+
+The earliest departure at a flight position equals its position number times turnaround duration plus one less than that number times the shortest flight duration. Each candidate departure is also no later than the horizon end less its flight duration. An aircraft away from its base must retain at least the shortest return time; its first flight leaves its base, and its final used position returns there. For each node and consecutive positions, arrivals at the current position must be at least departures from that node at the next position. Total departures from the base equal total returns to it across the flight sequence.
+
+The initial position has zero arrival and departure times and no flights or passenger service. At a used position, arrival time $a_{mn}$ is the sum of departure tick plus flight duration multiplied by each selected flight record. At an unused position, arrival equals the previous position's arrival. Every arrival is at least previous arrival plus turnaround duration times position use plus the total selected flight duration. Departure time $d_{mn}$ equals arrival less that flight-duration total. All times lie between the beginning and end of the operating horizon.
+
+Every aircraft starts fully charged, and its energy $u_{mn}$ after each position lies between the minimum allowed level and battery capacity. Nonnegative charging $q_{mn}$ plus previous energy less selected flight energy equals current energy, and previous energy plus charging cannot exceed capacity. Charging cannot exceed capacity times position use, and no charging is allowed before the first flight. At later positions it is available only on departures from charging vertiports: it cannot exceed capacity times the total use of such departing routes, or charging rate times minutes per tick times departure less previous arrival.
+
+Each passenger group can select at most one service $z$: either one direct origin-to-destination flight or a permitted one-transfer combination. A transfer node differs from both endpoints, and the two legs use consecutive positions of the same aircraft. Each service selection is zero or one and cannot exceed any of its constituent flight-use records. The aircraft's arrival at the position preceding the first service leg cannot be later than the passenger request time. First-leg departure lies between request time and the earlier of latest departure and request time plus maximum wait. A transfer's second departure less first arrival equals the prescribed turnaround duration exactly. Each aircraft flight position carries at most two groups, and their combined passenger count cannot exceed seats.
+
+A flight departing at a tick occupies its directed route from the following tick through its arrival tick, inclusive. Airborne aircraft on each directed route at each tick cannot exceed route capacity. An aircraft's parking record at a node and tick equals its initial presence there plus arrivals strictly earlier than that tick less departures strictly earlier than that tick. This record lies between zero and one. Summing all aircraft parking records at each node and every operating tick cannot exceed node parking capacity. Ground occupancy at an arrival or departure tick therefore still follows the strictly-earlier convention.
+
+The operator seeks the largest fares less rejection losses and flight costs. For each group, its fare plus rejection loss is multiplied by its selected-service count, then one rejection loss is subtracted. These amounts are summed over all groups, and the given costs of all flown routes are subtracted. Fares use the input value associated with the group's accepted transfer category, even if a transfer-accepting group actually travels directly.
+
+\subsection*{Inline notation and relations}
+$V=V_P\cup V_S$; $N$; $A$; $b_n$; $r_{ij}$; $e_{ij}$; $c_{ij}$; $H$; $t_e$; $S=\min\{S^{input},\lfloor H/(t_e+\min r_{ij})\rfloor\}$; $X_{ijmnt}$; $n$; $m$; $t$; $x_{ijmn}=\sum_tX_{ijmnt}$; $h_{mn}=\sum_{ij}x_{ijmn}$; $i\ne j$; $mt_e+(m-1)\min r\le t\le H-r_{ij}$; $a_{0n}=d_{0n}=0$; $a_{mn}=\sum_{ijt}(t+r_{ij})X_{ijmnt}$; $a_{mn}=a_{m-1,n}$; $a_{mn}\ge a_{m-1,n}+t_eh_{mn}+\sum_{ij}r_{ij}x_{ijmn}$; $d_{mn}=a_{mn}-\sum_{ij}r_{ij}x_{ijmn}$; $a,d\in[0,H]$; $u_{0n}=\bar E$; $u_{mn}\in[\underline E,\bar E]$; $q_{mn}\ge0$; $q_{1n}=0$; $q_{mn}\le\bar E\sum_{i\in V_P,j}x_{ijmn}$; $q_{mn}\le rate\cdot tick\cdot(d_{mn}-a_{m-1,n})$; $a$; $(o_a,d_a,m,n)$; $(o_a,h,m,n),(h,d_a,m+1,n)$; $h$; $z$; $x$; $a_{m-1,n}\le request_a$; $[request_a,\min(latest_a,request_a+w)]$; $\sum z\le1$; $X$; $t+1,\ldots,t+r_{ij}$; $cap_{flt}$; $[0,1]$; $fare_a$.
 \end{document}

@@ -1,22 +1,19 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,longtable}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
+
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
 \begin{document}
-\section*{P11: Current complete mathematical model (as of 2026-10-20)}
-\section*{Basis and scope of the revision}According to the definitions on pages 4–7 of the source text, where each task is performed once per vehicle, and all tasks are carried out together, the condition i=j should be excluded. Additionally, the equation relating access to vehicles should be added, along with a prohibition on self-looping. The constraints related to energy consumption, payload capacity, time constraints, and queueing should also be retained. This modification is intended to clarify the business logic; it does not aim to maintain exact equivalence to the original text.
-
-
-
-
-\section{Formulations on Page 5}
-
-\subsection{Objective Function}
+\section*{P0011 Electric Vehicle Pickup and Delivery with Shared-Station Queues}
+\subsection*{Mathematical formulation}
 \begin{equation}
     \label{eq:1}
     \min \lambda_1 \sum_{(i,j) \in \mathbb{A}} d_{ij}x_{ij} + \lambda_2 \sum_{i \in \mathbb{O} \cup \mathbb{F}} (\tau_i^* - \tau_i). \tag{1}
 \end{equation}
 
-\subsection{Constraints}
 \begin{equation}
     \label{eq:2}
     \sum_{j \in \mathbb{O} \cup \mathbb{F} \cup \{2n+1\}} x_{ij} = 1, \forall i \in \mathbb{O}, \tag{2}
@@ -32,11 +29,6 @@
     \sum_{j \in \mathbb{O} \cup \mathbb{F} \cup \{2n+1\}} x_{ij} \le 1, \forall i \in \mathbb{F}. \tag{4}
 \end{equation}
 
-\newpage
-
-\section{Formulations on Page 6}
-
-\subsection{Constraints}
 \begin{equation}
     \label{eq:5}
     \sum_{i \in \{0\} \cup \mathbb{O} \cup \mathbb{F}} x_{ij} = \sum_{i \in \mathbb{O} \cup \mathbb{F} \cup \{2n+1\}} x_{ji}, \forall j \in \mathbb{F}, \tag{5}
@@ -132,11 +124,6 @@
     \tau_j \le \tau_i^* + (Q^E - y_i)g + t_{ij} + M(1 - x_{ij}), \forall i \in \mathbb{F}, j \in \mathbb{O} \cup \mathbb{F}. \tag{23}
 \end{equation}
 
-\newpage
-
-\section{Formulations on Page 7}
-
-\subsection{Constraints}
 \begin{equation}
     \label{eq:24}
     \tau_j - \tau_i \le M w_{ij}, \forall i, j \in \{0, 2n + 1\} \cup \mathbb{O} \cup \mathbb{F}, \tag{24}
@@ -167,17 +154,34 @@
     y_i, \tau_i, \tau_i^*, u_i \ge 0, \forall i \in \{0, 2n + 1\} \cup \mathbb{O} \cup \mathbb{F}, \tag{29}
 \end{equation}
 
-
-
-\section*{Collections, belonging, and complete domains}
-$N=\{0,2n+1\}\cup O\cup F$, $I=\{0\}\cup O\cup F$, $J=O\cup F\cup\{2n+1\}$. $P$ refers to the pickup operations, while the delivery pairing is $i+n$. $K$ represents the vehicles used for transportation. The example includes all physical service groups and charging stations located at the same location.
 \[
 x_{ij}\in\{0,1\}\ (i\in I,j\in J),\quad
 w_{ij}\in\{0,1\}\ (i,j\in N),\quad z_{ik}\in\{0,1\}\ (i\in N,k\in K).
 \]
+
 \[
 \sum_kz_{ik}=\sum_{j\in J}x_{ij}\quad(i\in O\cup F),\qquad x_{ii}=0.
 \]
-Formula 9 is applicable only for different instances of $i,j$. Parameters such as service duration, distance, energy consumption during travel, charging rate, limited capacity, time constraints, and common physical locations all serve as instance parameters. All non-negative continuous variables remain within the aforementioned range; $0\le y_i\le Q^E$.
 
+\subsection*{Definitions and model scope}
+An electric vehicle operator plans pickup and delivery visits, charging visits, and service times. Operation nodes belong to $\mathbb O$, also written $O$, and charging-visit nodes to $\mathbb F$, also written $F$. The pickup nodes $\mathbb P$, or $P$, have paired delivery nodes $i+n$, where $n$ is the number of requests. Available vehicles belong to $\mathbb K$, or $K$. The starting depot is labeled $0$ and the ending depot $2n+1$. All nodes together form $N$; possible departure nodes form $I$, comprising the starting depot, operations, and charging visits, while possible destination nodes form $J$, comprising operations, charging visits, and the ending depot. Customer stations belong to $\mathbb C$, with colocated operations $\mathbb S^C(c)$ at station $c$; physical charging stations belong to $\mathbb F^0$, with charging-visit nodes $\mathbb S^F(f)$ at station $f$. These physical groups are supplied in full.
+
+The one-or-zero record $x_{ij}$ selects direct travel between a departure and destination node. Every operation must have exactly one incoming and one outgoing trip. Each charging-visit node has at most one outgoing trip and equally many incoming trips; it may be unused. Direct travel from a node to itself is forbidden. The one-or-zero record $z_{ik}$ assigns a node to a vehicle, including depot assignments. At every operation or charging visit, the total vehicle assignments equal its outgoing-trip count and cannot exceed one. Any vehicle serving an operation must also be assigned to the starting depot. Two different operations or charging visits reached directly from the starting depot cannot be assigned to the same vehicle. For every possible departure-destination pair, the total vehicle assignments across both endpoints must be at least twice its direct-travel record. At consecutive operations or charging visits on a selected trip, a vehicle assigned to the first must also be assigned to the second. Each pickup and its paired delivery have identical vehicle assignments.
+
+The recorded load $u_i$ at every node is nonnegative. At operations and charging visits it cannot exceed load capacity $Q^L$. For every departure-destination pair, the destination load must be at least the departure load plus the given load change $q_i$, reduced by $Q^L$ if the direct trip is not selected and unreduced if it is selected. This is a lower bound on load progression, not an equality; the capacity upper bound is stated for operations and charging visits, not additionally for the depot loads.
+
+Arrival battery energy $y_i$ is nonnegative and cannot exceed battery capacity $Q^E$ at any node. For a departure from the starting depot or an operation, destination energy cannot exceed departure energy minus the trip's given consumption $\gamma_{ij}$, with the given allowance $M$ added to this upper limit when that direct trip is not selected. For a departure from the starting depot or a charging visit, destination energy cannot exceed full battery capacity minus that consumption, again with $M$ added when the trip is not selected. Both limits apply to a departure from the starting depot. These are upper limits, not energy equalities, and starting-depot energy is not separately fixed to full capacity.
+
+Arrival time $\tau_i$ and service start $\tau_i^*$ are nonnegative at every node. At operations and charging visits, service cannot start before arrival. At all nodes, including both depots, service must start between the given earliest time $b_i$ and latest time $e_i$. A pickup's service start plus its given service duration $s_i$ must be no later than arrival at its paired delivery. Distance $d_{ij}$ and travel time $t_{ij}$ are given for each relevant trip. The charging-time coefficient $g$ is time per unit of restored energy, so a charging visit takes the difference between full capacity and its arrival energy, multiplied by $g$.
+
+For every departure from the starting depot or an operation, add its service start, service duration, and trip travel time. Destination arrival must be at least this total, reduced by $M$ when the direct trip is not selected. If the destination is an operation or charging visit, arrival must also be at most that total, increased by $M$ when the trip is not selected. For every charging-visit departure, instead add its charging start, the difference between full battery capacity and arrival energy multiplied by $g$, and trip travel time. Destination arrival must be at least this charging total, reduced by $M$ when the trip is not selected, and at an operation or charging destination must also be at most it, increased by $M$ when the trip is not selected. Thus selected trips determine exact arrival times at operation and charging destinations, whereas the ending depot has the lower arrival limit only. All these finite allowances still apply to unselected trips.
+
+For every ordered pair of nodes, the one-or-zero arrival-order record $w_{ij}$ requires destination arrival minus first-node arrival to be no greater than $M$ times that record. For every pair of distinct nodes, the two opposite order records must sum to one; equal arrival times may take either order. Accordingly, choosing the order from the first node to the second places the first no later than the second, and the two arrival times cannot differ by more than $M$. For distinct operations sharing a physical customer station, the second service start must be at least the first service start plus the first service duration, reduced by $M$ when this arrival order is not chosen. These requirements apply to every pair in each supplied customer-station group.
+
+For distinct charging visits sharing a physical charging station, the second charging start must be at least the first charging start plus the difference between full battery capacity and the first visit's arrival energy multiplied by $g$. This lower limit is reduced by $M$ when the arrival order from the first visit to the second is not chosen. These requirements apply to every pair in each supplied charging-station group, including charging-visit nodes that are unused; the time windows, ordering requirements, and recorded states of unused nodes are not automatically removed.
+
+The operator seeks the lowest single weighted total of travel distance and waiting time. Over the given travel arcs $\mathbb A$, each distance $d_{ij}$ is counted when its direct trip is selected, and the distance sum is multiplied by $\lambda_1$. Over all operation and charging-visit nodes, service start minus arrival is added as waiting time, and that sum is multiplied by $\lambda_2$. The two weighted amounts are added. Travel, vehicle assignment, and arrival-order records each take only zero or one; loads, energy, arrivals, and service starts are nonnegative quantities that need not be whole numbers. The given times, distances, consumptions, capacities, service groups, weights, and allowances remain fixed.
+
+\subsection*{Inline notation and relations}
+$N=\{0,2n+1\}\cup O\cup F$; $I=\{0\}\cup O\cup F$; $J=O\cup F\cup\{2n+1\}$; $P$; $i+n$; $K$; $i,j$; $0\le y_i\le Q^E$.
 \end{document}

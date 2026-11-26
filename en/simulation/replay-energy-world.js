@@ -110,7 +110,7 @@ window.ORTOPIA_ENERGY_WORLD=(()=>{
  }
  function create(element){
   const canvas=document.createElement('canvas');canvas.width=W*1.5;canvas.height=H*1.5;
-  canvas.setAttribute('role','img');canvas.setAttribute('aria-label',"Fans, thermal electric furnaces, energy storage batteries and grid-connected substations. The flow arrow indicates the power direction and magnitude of the current node.");
+  canvas.setAttribute('role','img');canvas.setAttribute('aria-label','Fans, thermal electric furnaces, energy storage batteries and grid-connected substations. The flow arrow indicates the power direction and magnitude of the current node.');
   element.prepend(canvas);
   const c=canvas.getContext('2d');c.scale(1.5,1.5);
   return (d,previous,t,capacity)=>{

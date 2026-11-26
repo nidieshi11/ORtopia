@@ -1,27 +1,18 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,geometry}
-\geometry{margin=22mm}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
+
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
 \begin{document}
-\section*{P8: A flexible scheduling model for the entire transportation process of Sample 8 during the diagnostic phase.}
-\paragraph{Source and scope}According to pages 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 1, 26, and 27 of the original paper, the logical relationships in (1)–(5) and (16)–(32) are established. The logical sequence is completed with (2)–(3).
-\subsection*{Application scope and parameters}
-Select the "Flexible OST Scheduling and Routing MIP" option for the paper. This approach involves optimizing daily paths and sample transfer processes within a given limited planning period $\mathcal T=\{1,\ldots,T\}$.
-
-Among the locations $V=\{1,\ldots,n+1\}$, 1 is the district hub, $2,\ldots,n$ is the set of other health facilities, and $L=n+1$ is the set of molecular laboratories. The specimen sources are $I=\{1,\ldots,n\}$. The arcs are directed, as specified in $A=\{(i,j):i,j\in V,i\ne j\}$, with symmetric travel distances $D_{ij}=D_{ji}\geq0$ and $D_{ii}=0$. Parameters $c_t,H_t,R_t$ denote the number of couriers per day, the maximum number of non-hub stops per route, and maximum mileage per route, respectively. The full-horizon and first-week mileage budgets are $B,B_1$ and $\mathcal W_1=\{1,\ldots,\min(7,T)\}$, respectively. Let $V_t=\{1\}\cup\{i\in V\setminus\{1\}:2D_{1i}\leq R_t\}$ denote the serviceable locations for the day. All arcs incident to $V\setminus V_t$ and all visits to those locations are fixed to zero. The auxiliary sequence and distance variables are defined only for $V_t\setminus\{1\}$. The waiting cost accounts for all specimen inventory and transfers at the sources in $I$, including inventory at sources inaccessible that day. Both $H_t\ge1$ and $c_t\ge0$ are integers. This daily node screening explicitly implements the necessary service-radius condition in the original equation (26). To retain the distance constraints in equations (26)--(27), which use $R_t$ as the activation constant, the input must also satisfy $D_{ij}\leq D_{i1}+D_{1j}$, the triangle inequality via the hub. Euclidean distances and shortest-path distances in the same undirected network satisfy this condition. The synthetic experiment on page 25 uses Euclidean distances, while page 33 notes that the operational distance matrix was adjusted using courier records. This $R_t$ formulation applies to distances satisfying the stated triangle inequality.
-
-
-$u_i(t)$ represents the known daily arrival of samples. $\bar s_{ik}\geq0$ indicates the inventory levels of various sources at the beginning of the planning period, during phase $k=1,\ldots,7$. $\rho_k\geq0$ refers to the inventory penalties at the end of the period. In phase 1, it represents samples waiting to be collected by institutions; in phase 2, it represents samples waiting to be registered at hubs. In phase 3, it represents samples that have been registered by hubs. In phase 4, it represents samples waiting to be tested in laboratories. In phase 5, it represents samples for which results have already been obtained from laboratories. In phase 6, it represents results waiting to be registered by hubs. In phase 7, it represents results that have been registered by hubs. Phase 8 indicates samples that have been returned to institutions, and they do not incur any waiting costs.
-
-For the processing steps $k\in\{3,5,7\}$ and $\alpha_k(\tau,t)\in[0,1]$, the percentage of batches that enter the next stage on day $\tau$ and are completed by day $t$ is reported. The values $\alpha_k(\tau,t)=0$ and $t<\tau$ are used to determine this percentage. If $\alpha_k(t,t)>0$ is set, it indicates that the batch is completed on that day. The total completion percentage for a batch should not exceed 1. $b_{ik}(t)\geq0$ represents the planned completion amount of the inventory at the start of processing, on day $t$. This amount is determined by the previous batches and the same processing schedule, and must meet the requirements of $\sum_t b_{ik}(t)\leq\bar s_{i,k-1}$. When the system is initially empty, this parameter takes value 0. This parameter indicates the historical traffic levels indicated by $\tau\leq0$ in paper format (31), as well as the planned completion amount of the empty initial queue.
-
-Take the upper bound of the sample size $M\geq\max_i[\sum_{k=1}^7\bar s_{ik}+\sum_tu_i(t)]$. Each coefficient is given by the instances.
-\subsection*{Variables}
-$x_{ij}(t)$ represents the selected arc, $y_i(t)$ represents the location access indicator; $h_i(t),g_i(t)$ represents the path order and distance auxiliary quantity for non-hub points, $d(t)$ represents the total daily mileage. $s_{ik}(t)$ represents the stock at the end stage, $f_{ik}(t)$ represents the traffic entering stage $k=1,\ldots,8$ on that day. The traffic is continuous and non-negative, and the path and access variables are binary.
-\subsection*{The only complete model available}
+\section*{P0008 Daily Transport and Processing of Diagnostic Samples and Results}
+\subsection*{Mathematical formulation}
 \begin{equation}
 \min\quad \frac1T\sum_{t=1}^T\sum_{i\in I}\sum_{k=1}^7s_{ik}(t)+\sum_{i\in I}\sum_{k=1}^7\rho_k s_{ik}(T).
 \end{equation}
+
 \begin{align}
 d(t)&=\sum_{(i,j)\in A}D_{ij}x_{ij}(t) && t\in\mathcal T,\\
 \sum_{t\in\mathcal T}d(t)&\leq B,&\sum_{t\in\mathcal W_1}d(t)&\leq B_1,\\
@@ -34,14 +25,13 @@ h_j(t)-h_i(t)&\geq1-H_t(1-x_{ij}(t))&& i,j\in V_t\setminus\{1\},i\ne j,t\in\math
 D_{i1}\leq g_i(t)&\leq R_t-D_{1i}&& i\in V_t\setminus\{1\},t\in\mathcal T,\\
 g_j(t)-g_i(t)&\geq D_{ij}-R_t(1-x_{ij}(t))&&i,j\in V_t\setminus\{1\},i\ne j,t\in\mathcal T.
 \end{align}
-The access instructions are defined according to the definition on page 13, $y_i=\max_jx_{ij}$. Non-hub locations can be accessed at most once a day, as clearly stated on page 18. The source hub $i=1$ uses the same access definition, and its samples are included in the targets and flows.
 
-Let the trigger access level be $z_{ik}(t)=y_i(t)$ for $k\in\{2,8\}$, and $z_{ik}(t)=y_L(t)$ for $k\in\{4,6\}$. These are simply abbreviations of expressions. For all $i\in I,t\in\mathcal T,k\in\{2,4,6,8\}$, write down the complete linearization of $f_{ik}(t)=z_{ik}(t)s_{i,k-1}(t-1)$:
 \begin{align}
 0\leq f_{ik}(t)&\leq M z_{ik}(t),\\
 f_{ik}(t)&\leq s_{i,k-1}(t-1),\\
 f_{ik}(t)&\geq s_{i,k-1}(t-1)-M(1-z_{ik}(t)).
 \end{align}
+
 \begin{align}
 s_{ik}(0)&=\bar s_{ik} && i\in I,k=1,\ldots,7,\\
 f_{i1}(t)&=u_i(t) &&i\in I,t\in\mathcal T,\\
@@ -49,6 +39,20 @@ f_{ik}(t)&=b_{ik}(t)+\sum_{\tau=1}^{t}\alpha_k(\tau,t)f_{i,k-1}(\tau)&&i\in I,k\
 s_{ik}(t)&=s_{ik}(t-1)+f_{ik}(t)-f_{i,k+1}(t)&&i\in I,k=1,\ldots,7,t\in\mathcal T,\\
 s_{ik}(t),f_{ik}(t),d(t)&\geq0,\quad x_{ij}(t),y_i(t)\in\{0,1\}&&\text{all defined indices}.
 \end{align}
-The inequalities on both sides of the equations printed in sections (29) to (30) do not guarantee zero traffic when not accessed. This document complements the logic based on the explicit definition of the product (2) to (3). Other optional access frequency policies are not enabled by default: they are additional restrictions imposed by specific operators and are not necessary conditions for the basic (32) model. This model is a finite-term deterministic plan, and it does not promise that its single-optimal solution is the optimal strategy for indefinite random control.
 
+\subsection*{Definitions and model scope}
+A health-service manager plans courier movements over a finite horizon of $T$ days to send diagnostic samples to a laboratory and return results to their originating facilities. The days $\mathcal T$ run from one through $T$, and locations $V$ run from one through $n+1$: location one is the district hub, locations two through $n$ are other health facilities, and the last location $L$ is the molecular laboratory. The origins $I$, numbered one through $n$, include the hub itself; its samples also undergo transport, processing and waiting-cost accounting. Directed connections $A$ join every pair of distinct locations. Distances $D_{ij}$ are nonnegative and symmetric, self-distances are zero, and a direct distance cannot exceed the two-leg distance through the hub. Each day's courier count $c_t$, maximum non-hub stops per route $H_t$ and maximum route mileage $R_t$ are fixed. A location whose round trip from the hub exceeds that day's route-mileage limit cannot be served that day.
+
+The manager uses binary states $x_{ij}(t)$ to choose daily connections and $y_i(t)$ to record visits, with one meaning used or visited and zero meaning otherwise. Departures from the hub equal returns and cannot exceed the day's courier count. At each non-hub location, both the number of arrivals and the number of departures equal its visit state, so it can be visited at most once per day. The hub is marked visited exactly when at least one route departs; it cannot be marked visited without a route or left unmarked when a route departs. Travel in either direction between the laboratory and non-hub health facilities is forbidden, so laboratory trips run separately through the hub. Nonnegative daily mileage $d(t)$ equals the sum of the distances of chosen connections. Total mileage cannot exceed $B$ over the full horizon or $B_1$ over the first-week days $\mathcal W_1$, which cover the shorter of the first seven days and the horizon.
+
+Each non-hub location within that day's service radius has a continuous order mark $h_i(t)$ between zero and the maximum stop count minus one. For any two distinct such locations, the destination mark minus the origin mark must be at least one on a chosen connection and at least one minus the maximum stop count on an unchosen connection. This limits stops on each route and prevents cycles disconnected from the hub. A continuous distance mark $g_i(t)$ lies between the distance from that location to the hub and the daily route-mileage limit minus the distance from the hub to that location. A chosen non-hub connection requires the destination mark to exceed the origin mark by at least its distance; for an unchosen connection, that required increase is reduced by the daily route-mileage limit. These ranges and pairwise checks remain in force for unvisited locations within the service radius, including connections forbidden by the laboratory rule. Locations beyond the daily radius have no order or distance marks that day, and all their visits and incoming and outgoing connections are zero. Their samples and results still remain in the stage-flow and waiting-cost accounts; any transport requiring their own visit moves nothing that day.
+
+Samples and results pass through eight stages: awaiting collection at a facility, awaiting registration at the hub, registered at the hub, awaiting testing at the laboratory, results available at the laboratory, results awaiting registration at the hub, registered results at the hub, and results returned to the facility. Stage eight incurs no further waiting. For origin $i$ and stage $k$, end-of-day stock $s_{ik}(t)$ and the amount entering that stage $f_{ik}(t)$ may be nonnegative continuous quantities. Stocks are tracked for the first seven stages and entries for all eight. Initial stocks $\bar s_{ik}$ are nonnegative, and daily entry into stage one equals the known arrivals $u_i(t)$. At each of the first seven stages, closing stock equals previous-day stock plus today's entries minus today's entries into the next stage and cannot be negative.
+
+Entries into stages two, four, six and eight require transport. The visit trigger $z_{ik}(t)$ equals the origin's visit state for stages two and eight and the laboratory's visit state for stages four and six. A triggered visit moves exactly all previous-day stock at the preceding stage; without a visit it moves nothing, so stock newly made ready that day is not moved along with it. A common quantity bound $M$ is at least the largest, over origins, sum of initial stocks across seven stages and arrivals across the horizon. Every transported amount is nonnegative, at most this bound times the visit trigger, and at most previous-day preceding-stage stock; it is also at least that stock minus this bound times the no-visit state.
+
+Stages three, five and seven are entered upon processing completion. The fraction $\alpha_k(\tau,t)$ specifies how much of a batch entering the preceding stage on day $\tau$ completes on day $t$. It lies between zero and one, is zero before entry, totals at most one over the horizon for each batch, and may permit completion on the entry day. Today's entry into the processed stage equals the sum of preceding-stage entries on days one through today times their corresponding completion fractions, plus the scheduled completion $b_{ik}(t)$ from stock already being processed at the start. This nonnegative quantity follows the same processing calendar for pre-horizon batches and totals no more than the origin's initial preceding-stage stock. It is zero for an initially empty system but cannot be ignored for a nonempty one. The manager seeks the lowest total of closing stocks for all origins across the first seven stages and all days, divided by the horizon length, plus terminal stocks weighted by their nonnegative stage penalties $\rho_k$. Arrivals, processing calendars, initial stocks and scheduled historical completions are fixed in advance; closing stocks result from the chosen transport and the stage flows described above. Visits have no additional frequency requirement, routes are not restricted to a preselected menu, and this finite-horizon arrangement does not represent the best policy for indefinite stochastic operation.
+
+\subsection*{Inline notation and relations}
+$\mathcal T=\{1,\ldots,T\}$; $V=\{1,\ldots,n+1\}$; $2,\ldots,n$; $L=n+1$; $I=\{1,\ldots,n\}$; $A=\{(i,j):i,j\in V,i\ne j\}$; $D_{ij}=D_{ji}\geq0$; $D_{ii}=0$; $c_t,H_t,R_t$; $B,B_1$; $\mathcal W_1=\{1,\ldots,\min(7,T)\}$; $V_t=\{1\}\cup\{i\in V\setminus\{1\}:2D_{1i}\leq R_t\}$; $V\setminus V_t$; $V_t\setminus\{1\}$; $I$; $H_t\ge1$; $c_t\ge0$; $R_t$; $D_{ij}\leq D_{i1}+D_{1j}$; $u_i(t)$; $\bar s_{ik}\geq0$; $k=1,\ldots,7$; $\rho_k\geq0$; $k\in\{3,5,7\}$; $\alpha_k(\tau,t)\in[0,1]$; $\tau$; $t$; $\alpha_k(\tau,t)=0$; $t<\tau$; $\alpha_k(t,t)>0$; $b_{ik}(t)\geq0$; $\sum_t b_{ik}(t)\leq\bar s_{i,k-1}$; $\tau\leq0$; $M\geq\max_i[\sum_{k=1}^7\bar s_{ik}+\sum_tu_i(t)]$; $x_{ij}(t)$; $y_i(t)$; $h_i(t),g_i(t)$; $d(t)$; $s_{ik}(t)$; $f_{ik}(t)$; $k=1,\ldots,8$; $y_i=\max_jx_{ij}$; $i=1$; $z_{ik}(t)=y_i(t)$; $k\in\{2,8\}$; $z_{ik}(t)=y_L(t)$; $k\in\{4,6\}$; $i\in I,t\in\mathcal T,k\in\{2,4,6,8\}$; $f_{ik}(t)=z_{ik}(t)s_{i,k-1}(t-1)$.
 \end{document}

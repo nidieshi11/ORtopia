@@ -1,17 +1,14 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,mathtools,geometry}
-\geometry{a4paper,margin=20mm}\allowdisplaybreaks
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
+
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
 \begin{document}
-\section*{Multiple trucks and drones working together for collaborative delivery; linearized M2 model}
-
-\paragraph{Source} Pages 4–7 of the PDF document: M2 models (33), (31)–(32); as well as all constraints shared by M1, namely (2)–(30).
-\subsection*{Collections, parameters, and variables}
-$K$ Refer to the truck group. Each group is equipped with drones from the set of IDs $D$. $O=\{0,1,\ldots,o,o+1\}$ Represent roads that are accessible to trucks. Here, $0,o+1$ refers to the departure/return copies within the same warehouse. $O_-=O\setminus\{o+1\}$, $O_+=O\setminus\{0\}$, $O_0=O\setminus\{0,o+1\}$… $C$ Refer to customers who only receive services provided by drones. $N=O\cup C$ All arcs are excluded from loops; undefined/non-existent arcs have variable values set to zero. $t^K_{ij}$ Represents the travel time on roads. $t^D_{ic}=t^D_{ci}$ Represents the flight time between road nodes and customers. $s^G,s^K,s^D,s^T\ge0$ Represents costs associated with driving, flying, and delayed arrivals. $q_c$ Represents demand. $m^K$ Represents truck capacity. $e_c$ Represents the expected latest arrival time for customers. $M$ Is a constant that has been verified to be sufficiently large relative to the time limit. Under the assumptions outlined in this document, the batteries are sufficient to support one-way flights for each customer. Battery charging times are ignored; this model does not optimize battery levels separately.
-
-$\alpha_{ijk}$ represents the arc of the truck; $\beta_{ijdk}$ refers to the arc of the drone (used for routes where the vehicle carries the drone along with it). $\varepsilon_k$ indicates that the truck group is enabled. $\delta_{ik}\ge0$ represents the synchronization moment of the group at a specific node. $\mu_{ik},\varphi_{idk}$ is the integer indicating the order of access. $\tau_{ck}^{1+},\tau_{ck}^{1-}\ge0$ represents the amount of linearization for late/early arrivals. For groups that aren’t used, $0\to o+1$ represents a virtual arc with zero time consumption and zero cost.
-\subsection*{Complete M2}
-
+\section*{P0189 Coordinated deliveries by multiple trucks and drones}
+\subsection*{Mathematical formulation}
 \begin{align}
 \min\quad&\sum_{k\in K}s^G\varepsilon_k+
 \sum_{k\in K,i\in O_-,j\in O_+}s^Kt^K_{ij}\alpha_{ijk}\notag\\
@@ -19,6 +16,7 @@ $\alpha_{ijk}$ represents the arc of the truck; $\beta_{ijdk}$ refers to the arc
 +\sum_{k\in K,d\in D,j\in O_+,c\in C}s^Dt^D_{jc}\beta_{cjdk}
 +\sum_{k\in K,c\in C}s^T\tau_{ck}^{1+}.\tag{33}
 \end{align}
+
 \begin{align}
 & \sum_{j \in O_+} \alpha_{0jk} = 1 \quad k \in K \\
 & \sum_{i \in O_-} \alpha_{i(o+1)k} = 1 \quad k \in K \\
@@ -59,10 +57,23 @@ $\alpha_{ijk}$ represents the arc of the truck; $\beta_{ijdk}$ refers to the arc
 & \tau_{ck}^{1+}, \tau_{ck}^{1-} \ge 0 \quad c \in C, k \in K
 \end{align}
 
-
 \[
 \mu_{ik}\in\mathbb Z_{\ge0},\qquad \varphi_{idk}\in\mathbb Z_{\ge0}.
 \]
-All the arc indices in the above formula only consider those pairs of nodes that are allowed to be traversed. The remaining elements in the matrix are treated as zero variables. M2 is equivalent to M1, with the positive penalty component. Here, we only provide a complete model for M2.
 
+\subsection*{Definitions and model scope}
+A logistics company schedules truck groups $K$ between road nodes $O$, with a given set of drones $D$ in each group. Departure and return depot records refer to the same physical depot. Customers $C$ are separate from road nodes and are served only by drones. Road travel times, symmetric flight times between road nodes and customers, customer demands, truck capacity, desired latest customer arrivals and nonnegative activation, driving, flying and lateness rates are given. Batteries already support every permitted single-customer flight and battery replacement takes negligible time, so charge levels are not separately scheduled. Truck roads $\alpha_{ijk}$, drone roads or flights $\beta_{ijdk}$ and group activation $\varepsilon_k$ take only zero or one. Drone travel between road nodes denotes riding on the truck, while travel between road nodes and customers denotes flying. Self-routes and unspecified routes are forbidden.
+
+Each truck group selects exactly one road leaving the departure depot and one entering the return depot. At every intermediate road node, arrivals equal departures and are at most one. Each drone also leaves the departure depot once and enters the return depot once; at intermediate road nodes and customers, arrivals equal departures and are at most one. Every customer has exactly one inbound flight across all groups, drones and road departure nodes, and exactly one outbound flight across all recovery nodes. Drones cannot fly directly between customers. Each drone launches at most one customer flight from a road node and receives at most one customer-return flight at a road node.
+
+Each group has a nonnegative synchronization time $\delta_{ik}$ at every node, with departure-depot time zero. On a selected truck road, destination time is at least origin time plus road travel time. The same holds for a drone's selected ride on a road. For a drone flight to a customer, customer time is at least launch-node time plus flight time. On a return flight, recovery time is at least customer time plus return flight time. Each unused route reduces the corresponding lower requirement by the given valid large time bound. For every launch node, customer, recovery node and drone, recovery time must additionally be at least launch time, with an allowance equal to the large bound multiplied by two minus the outbound-flight selection minus the return-flight selection. These finite time requirements remain in force when the flights are not both selected.
+
+A drone's road-ride selection cannot exceed its truck's selection of the same road. Launching from a road node cannot exceed the group's truck-departure count there; recovery at a road node cannot exceed its truck-arrival count there. For every group, all road-to-customer flight selections over its drones, weighted by customer demand, cannot exceed truck capacity. Selection of the direct virtual road from departure to return depot equals one minus group activation; that road has zero time and cost. For every customer and drone, group activation is at least the total selections of flights from road origins to that customer.
+
+Truck visit-order records $\mu_{ik}$ and drone visit-order records $\varphi_{idk}$ are nonnegative integers. Truck records are no larger than the road-node count and drone records no larger than road-node count plus customer count. On every allowed directed truck road, origin order less destination order cannot exceed road-node count times one minus road selection, less one. For every drone route, the corresponding difference cannot exceed total road-node and customer count times one minus route selection, less one. Selected routes thus advance order by at least one, while unused routes retain the specified finite order-difference limits.
+
+Each customer and group has nonnegative lateness $\tau_{ck}^{1+}$ and earliness $\tau_{ck}^{1-}$ records. Customer synchronization time less desired latest arrival multiplied by the group's road-to-customer flight count across its drones must equal lateness less earliness. This relationship also remains when the group does not serve the customer. It fixes the difference without forbidding both records from being positive. The company seeks the lowest total expense: a fixed charge per active group, selected truck-road times times the driving rate, outbound and return drone-flight times times the flying rate, and all customer-group lateness records times the lateness rate.
+
+\subsection*{Inline notation and relations}
+$K$; $D$; $O=\{0,1,\ldots,o,o+1\}$; $0,o+1$; $O_-=O\setminus\{o+1\}$; $O_+=O\setminus\{0\}$; $O_0=O\setminus\{0,o+1\}$; $C$; $N=O\cup C$; $t^K_{ij}$; $t^D_{ic}=t^D_{ci}$; $s^G,s^K,s^D,s^T\ge0$; $q_c$; $m^K$; $e_c$; $M$; $\alpha_{ijk}$; $\beta_{ijdk}$; $\varepsilon_k$; $\delta_{ik}\ge0$; $\mu_{ik},\varphi_{idk}$; $\tau_{ck}^{1+},\tau_{ck}^{1-}\ge0$; $0\to o+1$.
 \end{document}

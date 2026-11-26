@@ -1,19 +1,19 @@
 (() => {
 'use strict';
 const questions = {
- P0058:"Which computer room should be expanded and how to cope with subsequent server demand?", P0068:"Which station should I go to first to shunt trains? How to reduce the shunting cost?",
- P0154:"How to arrange the departure intervals of commuter trains?", P0198:"How many two-hop interconnection zones can eight sites be divided into at least?",
- P0204:"Which berth should the ship park at and how many quay cranes should be equipped to load and unload in time?",
- P0001:"If two patients go to two clinics, how can they stagger their appointments?", P0012:"How to connect the operating room and recovery room to reduce overtime?",
- P0013:"Which unit start-stop combination should be chosen, and how to allocate thermal power and energy storage?", P0020:"There are two first-in, first-out lanes, which car should be let through first?",
- P0025:"Arrange regular classes first, and then how to deal with the changing needs of the two campuses?", P0045:"Can all marketing shares be given to the channel with the highest revenue?",
- P0057:"Which electricity sales periods should be reserved for limited fuel quota?", P0062:"During what periods should energy storage be purchased, generated and waited?",
- P0075:"There is a sequence of processes. How can machines and technicians be in place at the same time?", P0094:"How do vehicles pick up goods in separate trips, taking into account time windows and unloading?",
- P0122:"How many orders can be loaded into the same vehicle and how to arrange the order of delivery?", P0145:"Which order will be delivered by drone, and where will the truck pick it up?",
- P0160:"How much power do I need to replenish on the way to complete the rest of the delivery?", P0177:"If a robot is used to deliver an order, how early will the fleet finish work?",
- P0182:"How can four customers divide their vehicles and arrange them in order so that they can be on time and save energy?", P0213:"How to match the air supply volume and inlet pressure to ensure that the entire line is compliant?",
- P0214:"When will the three pieces of equipment be inspected and which combinations can meet the reliability requirements?", P0310:"Supplies are limited, how will removing one unit of drinking water change the total score?",
- P0449:"Where will a vehicle from this station be sent, and how will it affect subsequent transportation capacity?", P0452:"How to distribute the three home visits so as not to exceed the nurse's working hour limit?"
+ P0058:'Which server room should expand to accommodate future demand?', P0068:'Which bike-sharing station should the rebalancing truck visit first to cut costs?',
+ P0154:'How far apart should commuter trains depart?', P0198:'What is the fewest number of zones needed if every pair of sites in a zone must be within two hops?',
+ P0204:'Which berth and how many quay cranes does each ship need to finish on time?',
+ P0001:'How should two patients stagger their appointments across two clinics?', P0012:'How should surgery and recovery be scheduled to reduce overtime?',
+ P0013:'Which generators should run, and how should thermal generation and storage share the load?', P0020:'Which vehicle should leave the two FIFO lanes first?',
+ P0025:'How should regular shifts and on-call staff cover varying demand across two hospitals?', P0045:'Can all marketing effort go to the highest-return channel?',
+ P0057:'In which trading periods should the generator use its limited fuel?', P0062:'When should the storage plant charge, discharge or idle?',
+ P0075:'How can machines and technicians be available together when each operation is ready?', P0094:'How should pickups be split into trips to meet time windows and allow for unloading?',
+ P0122:'Which orders fit on the same vehicle, and in what order should they be delivered?', P0145:'Which order should the drone deliver, and where should it rejoin the truck?',
+ P0160:'How much should the vehicle recharge en route to complete its remaining deliveries?', P0177:'How much sooner can the fleet finish if a robot takes one delivery?',
+ P0182:'How should four customers be assigned and sequenced to save energy and deliver on time?', P0213:'What gas supply and inlet pressure will keep the whole pipeline within its operating limits?',
+ P0214:'When should three assets undergo maintenance to meet the reliability requirement?', P0310:'How does reallocating one unit of drinking water change the total relief score?',
+ P0449:'Where should this station send a vehicle, and how will that affect future capacity?', P0452:'How should three home visits be assigned within the nurses’ working-hour limits?'
 };
 const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const number=new Intl.NumberFormat('en-US',{maximumFractionDigits:6});
@@ -28,8 +28,8 @@ function rowLabels(c,index) {
 }
 function comparison(c,index){
  const o=c.options[index],diff=o.value-c.options[0].value;
- const delta=index===0?'':("<span class=\"choice-delta\">relatively「"+esc(c.options[0].label)+'」 '+(diff>0?'+':'')+number.format(diff)+' '+esc(o.unit)+'</span>');
- return '<section class="choice-box"><div class="choice-intro"><h3>'+esc(c.title)+'</h3><small>'+esc(o.unit)+"</small></div><div class=\"choice-list\" aria-label=\"Compare values of the same indicator\">"+rowLabels(c,index)+'</div><p class="choice-note" aria-live="polite"><b>'+esc(o.label)+'</b>　'+esc(o.note)+' '+delta+'</p></section>';
+ const delta=index===0?'':('<span class="choice-delta">relatively「'+esc(c.options[0].label)+'」 '+(diff>0?'+':'')+number.format(diff)+' '+esc(o.unit)+'</span>');
+ return '<section class="choice-box"><div class="choice-intro"><h3>'+esc(c.title)+'</h3><small>'+esc(o.unit)+'</small></div><div class="choice-list" aria-label="Compare values of the same indicator">'+rowLabels(c,index)+'</div><p class="choice-note" aria-live="polite"><b>'+esc(o.label)+'</b>　'+esc(o.note)+' '+delta+'</p></section>';
 }
 function panel(target,rows,step,st,opt=0){
  const entry=rows[step];
@@ -38,9 +38,9 @@ function panel(target,rows,step,st,opt=0){
  if(entry.comparison)branch=comparison(entry.comparison,opt);
  else if(checkpoints.length){
   const next=checkpoints.find(i=>i>step)??checkpoints[0];
-  branch='<button type="button" class="jump-choice" data-compare-step="'+next+"\">Compare step "+(next+1)+" <span>"+esc(rows[next].comparison.title)+' →</span></button>';
+  branch='<button type="button" class="jump-choice" data-compare-step="'+next+'">Look at the first '+(next+1)+' comparison of steps <span>'+esc(rows[next].comparison.title)+' →</span></button>';
  }
- target.innerHTML="<header class=\"decision-heading\"><span>No. "+(step+1)+' / '+rows.length+" step</span><h2>"+esc(st.title)+'</h2></header><p class="decision-action">'+esc(entry.decision)+"</p><dl class=\"reason-lines\"><div><dt>Basis</dt><dd>"+esc(entry.evidence)+"</dd></div><div><dt>influence</dt><dd>"+esc(entry.consequence)+'</dd></div></dl>'+branch;
+ target.innerHTML='<header class="decision-heading"><span>No. '+(step+1)+' / '+rows.length+' step</span><h2>'+esc(st.title)+'</h2></header><p class="decision-action">'+esc(entry.decision)+'</p><dl class="reason-lines"><div><dt>Basis</dt><dd>'+esc(entry.evidence)+'</dd></div><div><dt>influence</dt><dd>'+esc(entry.consequence)+'</dd></div></dl>'+branch;
 }
 window.ORTOPIA_DECISIONS={questions,panel};
 })();

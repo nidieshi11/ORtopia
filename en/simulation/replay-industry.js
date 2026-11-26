@@ -113,66 +113,66 @@ window.ORTOPIA_INDUSTRY = (() => {
   const s=d.steps[i];let scene=outside(), annotations='';
   if(d.id==='P0213'){
    const points=[[104,268],[306,226],[500,298],[688,246]];
-   scene+=house(34,202,87,41,20,"entrance station")+house(654,197,93,38,18,"exit station")+tank(85,260,68,39)+tank(708,243,64,39);
+   scene+=house(34,202,87,41,20,'entrance station')+house(654,197,93,38,18,'exit station')+tank(85,260,68,39)+tank(708,243,64,39);
    const anchors=points.map(([x,y])=>[x,y]);
    for(let j=0;j<3;j++){const [x,y]=anchors[j],[a,b]=anchors[j+1];
     const k='M'+x+' '+y+' L'+((x+a)/2)+' '+((y+b)/2+12)+' L'+a+' '+b;
     scene+=pipe(k,true);
-    if(i===j)annotations+=placard((x+a)/2,(y+b)/2-27,["Pipe E0","Resistor E1","Pipe E2"][j],trial?"traffic "+n(trial.flow):metric(s,"traffic")?"traffic "+metric(s,"traffic"):'');
+    if(i===j)annotations+=placard((x+a)/2,(y+b)/2-27,['Pipe E0','Resistor E1','Pipe E2'][j],trial?'traffic '+n(trial.flow):metric(s,'traffic')?'traffic '+metric(s,'traffic'):'');
    }
    points.forEach(([x,y],k)=>{
     scene+=group(x,y,ellipse(2,4,18,5,'#67867b55')+rect(-8,-16,16,20,'url(#iw-metal)',3)+rect(-12,-17,24,5,'#6e8982',2)+line('M0 -17v-11','#426764',3)+ellipse(0,-30,10,3,'#ae6c4d')+circle(8,-9,5,'#e9e7cf')+line('M8 -9l2 -3','#526968',1));
-    annotations+=placard(x,y+31,"Node "+k,trial?"Pressure "+n(trial.pressures[k]):val(s,'v'+k));
+    annotations+=placard(x,y+31,'Node '+k,trial?'Pressure '+n(trial.pressures[k]):val(s,'v'+k));
    });
    scene+=inspector(270,334,'M0 0l32 -8 -32 8');
   }else if(d.id==='P0214'){
-   const selected=new Set(s.changes.filter(c=>c.value==="Schedule maintenance").map(c=>c.id));
-   const scenario=s.time?.startsWith("Scenario");
+   const selected=new Set(s.changes.filter(c=>c.value==='Schedule maintenance').map(c=>c.id));
+   const scenario=/^(?:scenario|scene)/i.test(s.time ?? '');
    const maintenance=new Map();
-   for(const frame of d.steps)for(const c of frame.changes)if(c.value==="Schedule maintenance")maintenance.set(c.id,frame.time+"Overhaul");
+   for(const frame of d.steps)for(const c of frame.changes)if(c.value==='Schedule maintenance')maintenance.set(c.id,frame.time+' Overhaul');
    if(trial){
     selected.clear();maintenance.clear();
     for(const [asset,period] of Object.entries(trial.periodByAsset)){
-     if(period<=2)maintenance.set(asset,"Maintenance in period "+period+"");
+     if(period<=2)maintenance.set(asset,'No. '+period+' Periodic maintenance');
      if(!scenario && i+1===period && period<=2)selected.add(asset);
     }
    }
-   scene+=pole(686,223,1.08)+pole(778,193,.78)+cable('M686 142Q735 169 778 137',false)+generator(124,225,false)+generator(387,244,false)+substation(650,291)+house(43,319,83,31,19,"Duty room");
+   scene+=pole(686,223,1.08)+pole(778,193,.78)+cable('M686 142Q735 169 778 137',false)+generator(124,225,false)+generator(387,244,false)+substation(650,291)+house(43,319,83,31,19,'Duty room');
    const sites={G1:[186,244],G2:[451,262],L1:[690,294]};
    for(const [id,[x,y]] of Object.entries(sites)){
     const work=selected.has(id);
     if(work){scene+=worker(x+38,y+7,{work:true,jacket:'#d68643',scale:.96});scene+=group(x+18,y+6,rect(-12,-11,26,10,'#c2a05a',1)+rect(-12,-10,26,8,'url(#iw-hatch)')+line('M-9 -1v5m20-5v5','#6d7162',2));}
-    annotations+=placard(x,y+38,id,work?"Maintenance in this period":trial?(maintenance.get(id)||"No maintenance this period"):scenario?(maintenance.get(id)||"No maintenance this period"):s.time==="No maintenance during the planning period"?(s.active.includes(id)?"No maintenance this period":''):"No maintenance in this issue");}
+    annotations+=placard(x,y+38,id,work?'Maintenance in this period':trial?(maintenance.get(id)||'No maintenance this period'):scenario?(maintenance.get(id)||'No maintenance this period'):s.time==='No maintenance during the planning period'?(s.active.includes(id)?'No maintenance this period':''):'No maintenance in this issue');}
    scene+=inspector(214,319,'M0 0l38 8 -38 -8',.98);
    if(scenario)scene+=worker(132,328,{work:true,jacket:'#588a78'});
   }else if(d.id==='P0013'){
-   const charge=/storage charge ([\d.]+)/i.exec(s.detail), discharge=/discharge ([\d.]+)/i.exec(s.detail);
+   const charge=/Storage charge ([\d.]+)/.exec(s.detail), discharge=/discharge ([\d.]+)/.exec(s.detail);
    const charging=Number(charge?.[1])>0, discharging=Number(discharge?.[1])>0;
-   const windMW=/wind power ([\d.]+) MW/i.exec(s.detail)?.[1],thermalMW=trial?trial.thermal:/thermal power ([\d.]+) MW/i.exec(s.detail)?.[1];
+   const windMW=/Wind power ([\d.]+) MW/.exec(s.detail)?.[1],thermalMW=trial?trial.thermal:/thermal generation ([\d.]+) MW/.exec(s.detail)?.[1];
    scene+=wind(112,219,.77,Number(windMW)>0)+wind(180,227,.58,Number(windMW)>0)+pole(694,204,1)+pole(781,178,.70)+cable('M696 129Q738 157 781 125',true)+generator(268,242,Number(thermalMW)>0)+
     cable('M179 227Q246 258 315 253T418 264',Number(windMW)>0)+cable('M372 242Q395 255 418 264',Number(thermalMW)>0)+
     cable('M418 264Q525 272 626 258',true)+cable('M418 264L399 278L438 295',charging||discharging,discharging)+
     circle(418,264,4,'#d6bc74')+substation(626,268)+storage(425,321,null)+inspector(222,302,'M0 0l26 7 -26 -7');
-   annotations+=placard(138,265,"Wind power",windMW+' MW')+placard(333,272,"Thermal power",thermalMW+' MW')+placard(491,351,"energy storage",charging?"charge "+charge[1]+' MW':discharging?"Release "+discharge[1]+' MW':"standby")+placard(686,295,"Electricity sold",trial?"net electricity sales "+n(trial.sold)+' MW':val(s,s.active[0]));
+   annotations+=placard(138,265,'Wind power',windMW+' MW')+placard(333,272,'Thermal generation',thermalMW+' MW')+placard(491,351,'energy storage',charging?'charge '+charge[1]+' MW':discharging?'Release '+discharge[1]+' MW':'standby')+placard(686,295,'Electricity sold',trial?'net electricity sales '+n(trial.sold)+' MW':val(s,s.active[0]));
   }else if(d.id==='P0057'){
    const power=trial?trial.power:d.trend.points[i].value,on=power>1e-6;
-   scene+=pole(699,210,1.09)+pole(780,181,.73)+cable('M698 130Q743 160 780 126',on)+house(51,197,93,38,24,"Measuring room")+
+   scene+=pole(699,210,1.09)+pole(780,181,.73)+cable('M698 130Q743 160 780 126',on)+house(51,197,93,38,24,'Measuring room')+
     tank(124,260,76,60)+tank(183,237,62,50)+pipe('M151 262L223 273L257 251L324 266',on)+generator(320,275,on)+
     substation(607,268)+cable('M450 266Q513 283 558 261T637 260',on)+worker(513,299,{work:on,scale:.88})+worker(100,308,{jacket:'#4b8094',scale:.85});
-   annotations+=placard(147,304,"Remaining fuel amount",n(trial?trial.remaining:s.level))+placard(386,309,"Thermal power unit",n(power)+' MW')+placard(662,300,"Market",val(s,'sale'));
+   annotations+=placard(147,304,'Remaining fuel amount',n(trial?trial.remaining:s.level))+placard(386,309,'Thermal power unit',n(power)+' MW')+placard(662,300,'Market',val(s,'sale'));
   }else{
    const charged=trial?trial.charge>0:s.links.some(([from,to])=>from==='grid'&&to==='bat'),discharged=trial?trial.discharge>0:s.links.some(([from,to])=>from==='bat'&&to==='grid');
    const energy=trial?trial.energy:s.level;
    const ratio=Math.max(0,Math.min(1,(energy-d.minCapacity)/(d.capacity-d.minCapacity))); // range above the modeled minimum
-   scene+=pole(582,214,1.12)+pole(735,189,.85)+cable('M582 132Q655 173 735 126',charged||discharged,charged)+house(70,205,91,39,23,"control room")+
-    house(362,208,84,33,17,"inverter")+substation(577,271)+storage(150,283,ratio)+
+   scene+=pole(582,214,1.12)+pole(735,189,.85)+cable('M582 132Q655 173 735 126',charged||discharged,charged)+house(70,205,91,39,23,'control room')+
+    house(362,208,84,33,17,'inverter')+substation(577,271)+storage(150,283,ratio)+
     cable('M258 270L322 287L390 259L425 266L503 244L588 257',charged||discharged,charged)+inspector(347,312,'M0 0l26 -6 -26 6');
-   annotations+=placard(211,313,"energy storage device","Stock "+n(energy))+placard(635,300,"power grid",trial?(charged?"Charging "+n(trial.charge):discharged?"generate electricity "+n(trial.discharge):"No power exchange"):val(s,'grid'))+caption(397,345,charged?"Grid power transmission · charging":discharged?"Energy storage supplies power to the grid":"No power exchange in this period");
+   annotations+=placard(211,313,'energy storage device','Stock '+n(energy))+placard(635,300,'power grid',trial?(charged?'Charging '+n(trial.charge):discharged?'generate electricity '+n(trial.discharge):'No power exchange'):val(s,'grid'))+caption(397,345,charged?'Grid power transmission · charging':discharged?'Energy storage supplies power to the grid':'No power exchange in this period');
   }
   return scene+annotations+fore();
  }
  function machine(x,y,id,job){
-  const active=job&&job!=="Idle";
+  const active=job&&job!=='Idle';
   const shell=ellipse(12,5,73,13,'#4562542a')+block(-56,1,103,41,23,'#658f87','#c1d4bc','#48746f')+block(-54,-35,89,19,23,'#aac1b5','#d7e0c9','#789e96')+
     rect(-42,-39,55,25,'#344f53',4)+rect(-39,-37,48,19,'url(#iw-glass)',2)+line('M-16 -37v19','#638786',2)+rect(19,-35,16,19,'#3d5959',2)+rect(21,-33,12,6,active?'#b1dfa7':'#79968c')+circle(24,-21,2,'#dfb85d')+circle(31,-21,2,'#a8d193')+
     '<g transform="translate(-20 -24)">'+(active?'<g>'+travel('M-10 0H9H-10',1.3,'indefinite')+line('M0 -11v8','#587476',4)+circle(0,-1,3,'#f2c16e')+'</g>':'')+'</g>'+
@@ -191,7 +191,7 @@ window.ORTOPIA_INDUSTRY = (() => {
    const col=depth(op),row=rows.get(col)||0;rows.set(col,row+1);
    position.set(op.id,[19+col*146,26+row*35]);
   }
-  let content=rect(0,0,447,103,'#173c39f7',6)+word(18,17,"Process precursor relationship",13,'#e2ecde','start',700);
+  let content=rect(0,0,447,103,'#173c39f7',6)+word(18,17,'Process precursor relationship',13,'#e2ecde','start',700);
   for(const op of ops)for(const pred of op.predecessors){
    const [x,y]=position.get(pred),[tx,ty]=position.get(op.id);
    const ready=byId.get(pred).end<=now,color=ready?'#add09c':'#718987';
@@ -200,10 +200,10 @@ window.ORTOPIA_INDUSTRY = (() => {
   }
   for(const op of ops){
    const [x,y]=position.get(op.id);
-   const state=now>=op.end?"Completed":now>=op.start?"In process":op.predecessors.every(id=>byId.get(id).end<=now)?"Can start work":"Waiting for the precursor";
-   const fill=state==="In process"?'#f4d48c':state==="Completed"?'#c6dfc0':state==="Can start work"?'#b1dfe2':'#546d6b';
-   content+='<g data-operation="'+esc(op.id)+'" data-status="'+esc(state)+'"><title>'+esc(op.id+' · '+state+" · precursor "+(op.predecessors.join('、')||"None"))+'</title>'+
-    rect(x,y,108,26,fill,3)+word(x+54,y+17,op.id+' '+state,12,state==="Waiting for the precursor"?'#f5faf3':'#254440')+'</g>';
+   const state=now>=op.end?'Completed':now>=op.start?'In process':op.predecessors.every(id=>byId.get(id).end<=now)?'Can start work':'Waiting for the precursor';
+   const fill=state==='In process'?'#f4d48c':state==='Completed'?'#c6dfc0':state==='Can start work'?'#b1dfe2':'#546d6b';
+   content+='<g data-operation="'+esc(op.id)+'" data-status="'+esc(state)+'"><title>'+esc(op.id+' · '+state+' · precursor '+(op.predecessors.join(', ')||'None'))+'</title>'+
+    rect(x,y,108,26,fill,3)+word(x+54,y+17,op.id+' '+state,12,state==='Waiting for the precursor'?'#f5faf3':'#254440')+'</g>';
   }
   return group(349,14,content);
  }
@@ -212,14 +212,14 @@ window.ORTOPIA_INDUSTRY = (() => {
   let s=actual;
   if(trial?.batch){
    const assignments=new Map(trial.batch.flatMap(b=>[[b.machine,b.op],[b.technician,b.op]]));
-   s={...actual,links:trial.batch.map(b=>[b.machine,b.technician]),changes:d.entities.map(r=>({id:r.id,value:assignments.get(r.id)||"Idle"}))};
+   s={...actual,links:trial.batch.map(b=>[b.machine,b.technician]),changes:d.entities.map(r=>({id:r.id,value:assignments.get(r.id)||'Idle'}))};
   }
   const m={M1:[151,259],M2:[400,228],M3:[647,267]},idle={T1:[190,338],T2:[385,342],T3:[575,350]};
   function at(step,id){
    const pair=step?.links.find(l=>l[1]===id);
    if(!pair)return idle[id];const [x,y]=m[pair[0]];return [x+48,y+17];
   }
-  let body=factoryHall()+house(630,158,113,30,14,"tool room")+many(3,k=>rect(290+k*29,149,21,18,'#a9a78b',1));
+  let body=factoryHall()+house(630,158,113,30,14,'tool room')+many(3,k=>rect(290+k*29,149,21,18,'#a9a78b',1));
   const original=window.ORTOPIA_REPLAY_LOGIC?.[d.id]?.[0]?.operations||[];
   const ops=original.map(op=>({...op,...trial?.batch?.find(b=>b.op===op.id)}));
   for(const [id,[x,y]] of Object.entries(m)){
@@ -236,7 +236,7 @@ window.ORTOPIA_INDUSTRY = (() => {
    body+=placard(x,y+31,active?id+' + '+active.technician:id,active?active.id:val(s,id));
   }
   body+=ops.length?precedenceBoard(ops,s.clock):'';
-  const note=trial?.blocked||trial?.bound||(trial?.batch?"This batch of construction will start at the same time, and the final completion time will be "+n(Math.max(...trial.batch.map(b=>b.end))):'');
+  const note=trial?.blocked||trial?.bound||(trial?.batch?'This batch of construction will start at the same time, and the final completion time will be '+n(Math.max(...trial.batch.map(b=>b.end))):'');
   if(note)body+=group(190,379,rect(0,0,440,32,trial.blocked?'#784b37':'#27575b',4)+word(220,21,note,15,'#fff7db'));
   return body;
  }
@@ -250,8 +250,8 @@ window.ORTOPIA_INDUSTRY = (() => {
  }
  function car(x,y,c,route,mark){
   const col=c.colour==='2'?['#d0835e','#efb48b','#9b5a45']:['#5b91a4','#a4c9cf','#487184'];
-  const marker=mark?'<ellipse cx="1" cy="3" rx="36" ry="9" fill="none" stroke="'+(mark==="release"?'#197660':'#b06a20')+'" stroke-width="3"/>'+
-   group(0,-45,rect(-22,0,44,17,mark==="release"?'#17634d':'#7d501e',3)+word(0,13,mark,11,'#fffbee','middle',700)):'';
+  const marker=mark?'<ellipse cx="1" cy="3" rx="36" ry="9" fill="none" stroke="'+(mark==='release'?'#197660':'#b06a20')+'" stroke-width="3"/>'+
+   group(0,-45,rect(-22,0,44,17,mark==='release'?'#17634d':'#7d501e',3)+word(0,13,mark,11,'#fffbee','middle',700)):'';
   const body=marker+ellipse(3,1,30,6,'#4c5a542e')+many(2,k=>group(-15+32*k,-2,ellipse(0,0,5,6,'#405351')+circle(0,0,2,'#bdbeb0')))+path('M-28 -8L-22 -14L-8 -16L-1 -22L14 -21L23 -14L30 -10V-4L25 -2H-27Z',col[0])+
    path('M-22 -14l9-4 10 -1 7 -7 14 1 7 8 -2 3 -8 -7 -14 -1 -7 6Z',col[1])+path('M0 -21l12 1 7 6 -23 -1Z','#b4d8d6')+line('M6 -21v7','#506f76',1.6)+rect(-27,-8,5,2,'#eac686',1)+rect(25,-9,4,2,'#fff2bf',1)+word(6,-4,String(c.id),10,'#fffdeb','middle',750);
   return group(x,y,'<g data-car="'+c.id+'">'+(route?travel(route,4.7):'')+body+'</g>');
@@ -274,7 +274,7 @@ window.ORTOPIA_INDUSTRY = (() => {
    if(frame.queues[c.lane]?.includes(c.id))return middle(c.lane);
    return incoming(c.id-1);
   }
-  let body=factoryHall()+house(18,145,107,34,15,"Painting section")+house(636,146,119,35,14,"Final assembly section")+
+  let body=factoryHall()+house(18,145,107,34,15,'Painting section')+house(636,146,119,35,14,'Final assembly section')+
    line('M134 349L176 349L176 185L202 185M176 210H211M176 284H211M535 210h42v143h48M535 284h42','#afb49e',15)+line('M134 349L176 349L176 185L202 185M176 210H211M176 284H211M535 210h42v143h48M535 284h42','#ebd68f',1.5,'stroke-dasharray="9 7"')+
    rail(83,182,124,348,45)+rail(201,210,544,210,45)+rail(201,284,544,284,45)+rail(621,185,725,350,48)+arm(274,202,fr.arrival!=null)+arm(492,280,fr.departure!=null)+worker(185,326,{work:true,jacket:'#5b8d9c'})+worker(585,311,{work:fr.departure!=null,jacket:'#be8050'});
   for(const c of f.cars){
@@ -285,34 +285,34 @@ window.ORTOPIA_INDUSTRY = (() => {
     if(c.id===fr.departure){const mid=middle(c.lane);pts.push([540,mid[1]],[575,t[1]]);}
     pts.push(t);route=pts.map(([x,y],k)=>(k?'L':'M')+(x-t[0])+' '+(y-t[1])).join(' ');
    }
-   const mark=c.id===fr.departure?"release":fr.queues[c.lane]?.[0]===c.id?"Leave a car":'';
+   const mark=c.id===fr.departure?'release':fr.queues[c.lane]?.[0]===c.id?'Leave a car':'';
    body+=car(...t,c,route,mark);
   }
   const incomingCar=f.cars.find(c=>c.id===fr.arrival);
   for(const lane of f.lanes){
    const atGate=[...prev.queues[lane],...(incomingCar?.lane===lane?[fr.arrival]:[])];
    const head=atGate[0],chosen=head!=null&&head===fr.departure;
-   const label=head==null?"empty":("Vehicle "+head+(chosen?" release":" Leave a car"));
+   const label=head==null?'empty':('Vehicle '+head+(chosen?' release':' Leave a car'));
    const y=middle(lane)[1];
-   body+=group(208,y-42,rect(0,0,151,22,chosen?'#17634d':'#44574e',4)+word(75,15,"Tao "+lane+" leader · "+label,13,'#fffbed','middle',700));
+   body+=group(208,y-42,rect(0,0,151,22,chosen?'#17634d':'#44574e',4)+word(75,15,'Tao '+lane+' leader · '+label,13,'#fffbed','middle',700));
   }
   const slots=f.cars.map((_,j)=>{
    const id=fr.discharged[j],isNew=id!=null&&id===fr.departure;
-   return group(95+j*69,0,rect(0,0,61,24,isNew?'#ebce87':id!=null?'#c5dfc0':'#546b65',3)+word(30,17,id!=null?"Vehicle "+id:'—',13,id!=null?'#27483e':'#dae4d9','middle',700));
+   return group(95+j*69,0,rect(0,0,61,24,isNew?'#ebce87':id!=null?'#c5dfc0':'#546b65',3)+word(30,17,id!=null?'Vehicle '+id:'—',13,id!=null?'#27483e':'#dae4d9','middle',700));
   }).join('');
-  body+=group(198,396,rect(0,-5,450,34,'#173c39f7',5)+word(48,16,"Final assembly sequence",15,'#f3f3df','middle',700)+slots);
-  if(direct)body+=group(528,19,rect(0,0,255,34,'#204b50',4)+word(125,22,"Comparison: Send directly to final assembly in the order of arrival.",15,'#f6f4e4'));
-  return body+placard(110,381,"Painting export")+placard(703,379,"Final assembly entrance",fr.discharged.length+' / '+f.cars.length);
+  body+=group(198,396,rect(0,-5,450,34,'#173c39f7',5)+word(48,16,'Final assembly sequence',15,'#f3f3df','middle',700)+slots);
+  if(direct)body+=group(528,19,rect(0,0,255,34,'#204b50',4)+word(125,22,'Comparison: Send directly to final assembly in the order of arrival.',15,'#f6f4e4'));
+  return body+placard(110,381,'Painting export')+placard(703,379,'Final assembly entrance',fr.discharged.length+' / '+f.cars.length);
  }
- const headers={P0013:"Combined wind, thermal and storage power station",P0057:"thermal power plant",P0062:"Energy storage power station",P0075:"Multi-resource processing workshop",P0213:"Steady state pipe network",P0214:"Joint maintenance site",P0020:"Body cushioning and assembly workshop"};
- const notes={P0013:"Each frame independently displays the joint scheduling of a scenario tree node.",P0213:"The three sections of pipeline maintain the same steady-state flow rate and can be viewed in order by connection.",P0214:"The four cost scenarios share the same maintenance plan.",P0075:"Technicians and machines are paired according to actual occupation of the process.",P0020:"The vehicle number, warehousing lane and assembly sequence are from the example solution.",P0062:"The battery bright grid displays the position of the ending stock in the allowable range.",P0057:"The limit is taken from the remaining model fuel limit at the end of the current period."};
+ const headers={P0013:'Combined wind, thermal and storage power station',P0057:'thermal power plant',P0062:'Energy storage power station',P0075:'Multi-resource processing workshop',P0213:'Steady state pipe network',P0214:'Joint maintenance site',P0020:'Body cushioning and assembly workshop'};
+ const notes={P0013:'Each frame independently displays the joint scheduling of a scenario tree node.',P0213:'The three sections of pipeline maintain the same steady-state flow rate and can be viewed in order by connection.',P0214:'The four cost scenarios share the same maintenance plan.',P0075:'Technicians and machines are paired according to actual occupation of the process.',P0020:'The vehicle number, warehousing lane and assembly sequence are from the example solution.',P0062:'The battery bright grid displays the position of the ending stock in the allowable range.',P0057:'The limit is taken from the remaining model fuel limit at the end of the current period.'};
  function render(stage,d,i){
   const s=d.steps[i],isAssembly=d.id==='P0020';
   const baseBody=isAssembly?'<g data-fifo-view="selected">'+assembly(d,i)+'</g><g data-fifo-view="direct" display="none">'+assembly(d,i,true)+'</g>':d.id==='P0075'?workshop(d,i):outdoors(d,i);
   const body=isAssembly?baseBody:'<g data-industry-original="">'+baseBody+'</g><g data-industry-trial="" display="none"></g>';
   const heading=s.time||s.title;
   stage.innerHTML='<figure class="industry-world" style="margin:0;background:#253c36"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 440" width="100%" role="img" aria-label="'+esc(headers[d.id]+' · '+s.title)+'" style="width:100%;height:auto;display:block;font-family:Microsoft YaHei,Segoe UI,sans-serif">'+defs()+'<g clip-path="url(#iw-film)">'+body+
-   group(18,15,rect(0,0,Math.max(154,[...heading].length*12+27),45,'#fdfbf0ec',5)+word(9,17,headers[d.id],14,'#2d584a','start',700)+word(9,34,heading,11,'#687e6d','start',500))+'</g></svg><figcaption style="background:#f4f6ed;color:#536b5a;padding:5px 12px;font-size:.76rem">'+esc(notes[d.id])+" Layout and personnel action instructions.</figcaption></figure>";
+   group(18,15,rect(0,0,Math.max(154,[...heading].length*12+27),45,'#fdfbf0ec',5)+word(9,17,headers[d.id],14,'#2d584a','start',700)+word(9,34,heading,11,'#687e6d','start',500))+'</g></svg><figcaption style="background:#f4f6ed;color:#536b5a;padding:5px 12px;font-size:.76rem">'+esc(notes[d.id])+' Layout and personnel action instructions. </figcaption></figure>';
   if(isAssembly){
    stage.previewDecision=optionIndex=>{
     const direct=Number(optionIndex)===1;
@@ -327,7 +327,7 @@ window.ORTOPIA_INDUSTRY = (() => {
     selected.setAttribute('display',trial?'none':'inline');alternative.setAttribute('display',trial?'inline':'none');
     if(!trial)return;
     const option=logic.comparison.options[choice];
-    const name="Compare · "+option.label;
+    const name='Compare · '+option.label;
     alternative.innerHTML=(d.id==='P0075'?workshop(d,i,trial):outdoors(d,i,trial))+
      group(18,68,rect(0,0,Math.max(154,[...name].length*14+18),26,'#235357',3)+word(9,18,name,13,'#fff8d9','start',700));
     if(matchMedia('(prefers-reduced-motion: reduce)').matches)for(const a of alternative.querySelectorAll('animate,animateMotion,animateTransform'))a.remove();
@@ -346,7 +346,7 @@ window.ORTOPIA_INDUSTRY = (() => {
    wind(103,219,.88,true)+wind(174,225,.61,true)+generator(267,241,on)+storage(421,320,Math.max(0,Math.min(1,stored/capacity)))+
    substation(620,263)+pole(690,205,1)+pole(781,178,.70)+wire('M692 130Q736 156 781 125',sale>1e-7)+
    circle(409,265,5,'#efbf60')+inspector(251,304,'M0 0l42 4 -42 -4')+worker(574,270,{work:true,jacket:'#508887',scale:.76});
-  return "<svg class=\"el-physical\" viewBox=\"22 88 779 294\" role=\"img\" aria-label=\"Power flow between wind farms, thermal power units, energy storage stations and power grids\">"+defs()+drawing+'</svg>';
+  return '<svg class="el-physical" viewBox="22 88 779 294" role="img" aria-label="Power flow between wind farms, thermal power units, energy storage stations and power grids">'+defs()+drawing+'</svg>';
  }
  return {supports:id=>ids.has(id),render,dispatchScene};
 })();

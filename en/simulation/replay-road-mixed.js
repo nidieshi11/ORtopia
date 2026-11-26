@@ -2,9 +2,9 @@
 (() => {
 'use strict';
 const W = 900, H = 340;
-const lead = {label:"Pilot car",base:'#a5612d',light:'#efd1a4',dark:'#65391c'};
-const cav = {label:"Connected car",base:'#156558',light:'#bef0d1',dark:'#11463e'};
-const human = {label:"Manual car",base:'#45658d',light:'#cbdceb',dark:'#263d57'};
+const lead = {label:'Pilot car',base:'#a5612d',light:'#efd1a4',dark:'#65391c'};
+const cav = {label:'Connected car',base:'#156558',light:'#bef0d1',dark:'#11463e'};
+const human = {label:'Manual car',base:'#45658d',light:'#cbdceb',dark:'#263d57'};
 const clamp = (x,a,b) => Math.max(a, Math.min(b,x));
 const lerp = (a,b,f) => a+(b-a)*f;
 const signed = (x,n) => (x>0?'+':'')+x.toFixed(n);
@@ -157,14 +157,14 @@ function draw(canvas,id,s,d,context={}){
   // Hold the camera for the short online prediction and track long road tests.
   const shift=mode===1?Math.min(travel*.7,4):travel;
   const xs=points.map(x=>W/2+(x-travel+2*d.base+shift)*zoom);
-  const selected=1+2*focus, colors=[lead,cav,human,cav,human], names=["Pilot car","Netlink 1","Manual 1","Internet connection 2","Artificial 2"];
+  const selected=1+2*focus, colors=[lead,cav,human,cav,human], names=['Pilot car','Netlink 1','Manual 1','Internet connection 2','Artificial 2'];
   c.save();c.setTransform(canvas.width/W,0,0,canvas.height/H,0,0);
   road(c,(travel-shift)*zoom,y,s.t);
   const phase=mode===1?0:Math.min(2,Math.floor(index*3));
   if(mode!==1){
-    const titles=["Observe the speed of your own vehicle and the vehicle ahead","Two sets of synchronization speed predictions","Send the acceleration of this step"];
+    const titles=['Observe the speed of your own vehicle and the vehicle ahead','Two sets of synchronization speed predictions','Send the acceleration of this step'];
     capsule(c,12,12,162,42,8,'#153c36ed');
-    label(c,"Single step process slow playback",22,29,'#bad4bc',11,550);
+    label(c,'Single step process slow playback',22,29,'#bad4bc',11,550);
     label(c,titles[phase],22,47,'#f7f6df',14,650);
     for(let k=0;k<3;k++)capsule(c,131+11*k,20,7,4,2,k<=phase?'#b3dc91':'#4c685e');
     // Faded silhouettes identify the starting pose of the same five vehicles.
@@ -217,14 +217,14 @@ function draw(canvas,id,s,d,context={}){
   capsule(c,mid-40,gy-23,80,20,6,'#12352fe8');label(c,gap.toFixed(4)+' m',mid,gy-9,'#eff8e7',13,650,'center');
   const wx=(tx+rx)/2;
   capsule(c,wx-86,y+42,172,20,6,'#2c3329e8');
-  label(c,"Sharing the speed of the vehicle in front "+(d.base+values[0][2]).toFixed(3)+' m/s',wx,y+56,'#ffe6a7',12.5,550,'center');
+  label(c,'Sharing the speed of the vehicle in front '+(d.base+values[0][2]).toFixed(3)+' m/s',wx,y+56,'#ffe6a7',12.5,550,'center');
   c.fillStyle='#152a2bf5';c.fillRect(0,252,W,88);
-  instrument(c,22,"Netlink "+(focus+1)+(mode===1?" · Drive test control":" · Selected acceleration"),
-    signed(goal[4],5)+' m/s²',mode===1?"0.25 second sample": "Acts on a single 0.25 second prediction step",235,'#d7f2b6');
+  instrument(c,22,'Netlink '+(focus+1)+(mode===1?' · Drive test control':' · Selected acceleration'),
+    signed(goal[4],5)+' m/s²',mode===1?'0.25 second sample': 'Acts on a single 0.25 second prediction step',235,'#d7f2b6');
   // A micro scale shows the genuine centimetre-scale gap error, without
   // visually inflating the physical spacing between vehicle bodies.
   const gapCm=group[3]*100,gx=408,gw=128,r=mode===1?5:2;
-  label(c,"Relative to 20 m equilibrium spacing",280,276,'#aec2bc',13,550);
+  label(c,'Relative to 20 m equilibrium spacing',280,276,'#aec2bc',13,550);
   label(c,signed(gapCm,3)+' cm',280,303,'#f4eedf',19,650);
   const cy=317;line(c,gx-gw,cy,gx+gw,cy,'#6b8e86',2);
   for(let t=-2;t<=2;t++)line(c,gx+t*gw/2,cy-3,gx+t*gw/2,cy+3,t===0?'#eef5d2':'#829c92');
@@ -233,17 +233,17 @@ function draw(canvas,id,s,d,context={}){
   label(c,'−'+r,gx-gw,335,'#c6d8ce',11,500,'center');label(c,'0',gx,335,'#c6d8ce',11,500,'center');label(c,'+'+r,gx+gw,335,'#c6d8ce',11,500,'center');
   line(c,570,267,570,326,'#405659');
   if(mode===1){
-    instrument(c,598,"Measured samples",Math.min(Math.floor(index)+1,records.length)+' / '+records.length,"Offline historical fragments · For observation only",0,'#ffdda3');
+    instrument(c,598,'Measured samples',Math.min(Math.floor(index)+1,records.length)+' / '+records.length,'Offline historical fragments · For observation only',0,'#ffdda3');
   }else{
     const objective=d.costs[mode===2?1:0], plan=records.at(-1);
     const effort=plan.reduce((total,row)=>total+row[4]*row[4],0);
-    label(c,"Two groups of vehicles · Predicted target values",598,276,'#aec2bc',13,550);
+    label(c,'Two groups of vehicles · Predicted target values',598,276,'#aec2bc',13,550);
     label(c,objective.toFixed(6),598,302,'#ffdda3',22,650);
     const px=598,py=310,bw=267,bh=5;
     capsule(c,px,py,bw,bh,2,'#365353');
     c.fillStyle='#86b0ae';c.fillRect(px,py,bw*(objective-effort)/d.costs[1],bh);
     c.fillStyle='#efa964';c.fillRect(px+bw*(objective-effort)/d.costs[1],py,bw*effort/d.costs[1],bh);
-    label(c,"acceleration cost "+effort.toFixed(5)+"  · Archive total value "+d.costs[0].toFixed(5),px,332,'#dae1d6',12,500);
+    label(c,'acceleration cost '+effort.toFixed(5)+'  · Archive total value '+d.costs[0].toFixed(5),px,332,'#dae1d6',12,500);
   }
   c.restore();
 }

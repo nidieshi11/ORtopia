@@ -1,13 +1,14 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,mathtools,geometry}
-\geometry{a4paper,margin=20mm}\allowdisplaybreaks
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
-\begin{document}
-\section*{A model for allocating supplies to disaster areas, taking into account emergency priorities}
 
-\paragraph{Source and scope} Pages 10–12 of the PDF document, section 3.4, equations (17)–(25). A fixed decision-making cycle is defined as $t$. Demand forecasting, regional grouping, urgency levels, and inventory levels from the previous period are all known inputs for this optimization. Supply allocation in the next stage is not part of this model.
-\subsection*{Collections, parameters, and variables}
-$L$ represents the type of supplies; $M$ represents the collection of distribution centers; $G$ represents the groups of affected areas; $I_g$ represents the regions to which the groups belong; $g$ represents the collection of regions. $V$ represents the type of transport vehicles. The values for $I_g$ are not provided. $D_i^l(t)\ge0$ represents the demand, while $Q_m^l(t-1|t-1)\ge0$ represents the initial inventory at the center. $UNV^l$ represents the volume per unit of supplies; $UNL_v$ represents the capacity of the vehicle; $NV_v^m(t)$ represents the number of available trains for this period. $CS_m^l$ and $CT_{mi}^l$ represent the settings for units and transportation costs, respectively. $u_i^1(t)$ represents the time elapsed since the last supply arrived. $\Omega_g(t)$ represents the emergency rating value of the input groups (originally denoted as $X_g(t)$; here, $\Omega_g(t)$ is used instead). It is assumed that the normalization conditions satisfy $\overline F_g^j>\underline F_g^j$ and $j=1,2$. $\omega_r,\omega_c\ge0$ and $\omega_r+\omega_c=1$ are also assumed to hold true. Only those groups with valid total demand $D_g=\sum_{l\in L,i\in I_g}D_i^l(t)>0$ will be optimized. For groups with zero demand, the output is fixed to zero due to demand constraints. $\sum_g\Omega_g(t)\ne0$ is required. Emergency weights and target components are defined as follows:
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
+\begin{document}
+\section*{P0310 Allocating Relief Supplies Using Regional Urgency}
+\subsection*{Mathematical formulation}
 \begin{align}
 \gamma_g(t)&=\frac{\Omega_g(t)}{\sum_{h\in G}\Omega_h(t)},\\
 F_g^1(X)&=\frac{\sum_{l\in L,m\in M,i\in I_g}X_{mi}^l(t)}{D_g},\\
@@ -16,8 +17,7 @@ F_g^2(X)&=\sum_{l\in L,m\in M,i\in I_g}
 F_g(X)&=\omega_r\frac{F_g^1(X)-\underline F_g^1}{\overline F_g^1-\underline F_g^1}
 -\omega_c\frac{F_g^2(X)-\underline F_g^2}{\overline F_g^2-\underline F_g^2}.
 \end{align}
-The unique decision family $X_{mi}^l(t)\ge0$ refers to the quantity of materials $l$ allocated from the center $m$ to the region $i$.
-\subsection*{Complete optimization of the model}
+
 \begin{align}
 \max_X\quad &\sum_{g\in G}\gamma_g(t)F_g(X)\tag{20}\\
 \text{s.t.}\quad
@@ -29,6 +29,20 @@ The unique decision family $X_{mi}^l(t)\ge0$ refers to the quantity of materials
 \le\sum_{v\in V}UNL_vNV_v^m(t) &&m\in M,\tag{24}\\
 &X_{mi}^l(t)\ge0 &&m\in M,\ g\in G,\ i\in I_g,\ l\in L.\tag{25}
 \end{align}
-After fixing $t$, this is a linear programming. The output is for subsequent supply allocation and inventory updates, but the subsequent objectives do not reverse the current allocation. The old transcription (24) wrote both vehicle types and periods as $t$; here, the vehicle types are uniformly written as $v$; the original PDF used different font styles for the vehicle type index.
 
+\subsection*{Definitions and model scope}
+For one fixed decision period, a relief coordinator allocates several supply types $L$ from given distribution centres $M$ to affected regions. Given regional groups $G$ contain disjoint region memberships $I_g$. Demand forecasts, regional grouping and urgency assessments are already available; they are not decisions in this allocation. Each region and supply type has a nonnegative demand $D_i^l(t)$, and each centre has nonnegative beginning stock $Q_m^l(t-1|t-1)$ for each supply type. The coordinator chooses continuous nonnegative shipment quantities $X_{mi}^l(t)$ from every centre to every region for every supply type.
+
+For each region and supply type, add shipments from all centres; the total cannot exceed that region's demand. For each centre and supply type, add shipments to all regional groups and their members; the total cannot exceed that centre's beginning stock. Thus supplies cannot exceed the recorded local demand or be taken from stock that is not available. A group with zero total demand receives no shipment and is not assigned a demand-fulfilment ratio requiring division by zero.
+
+Each supply type has a given volume per unit $UNV^l$. At each centre, multiply every shipment by its supply's unit volume and add over all supplies and destination regions. The total cannot exceed the sum, over the given vehicle types $V$, of each type's vehicle capacity $UNL_v$ times its available trips at that centre $NV_v^m(t)$. These trip counts are supplied for the current period; the coordinator does not separately build vehicle routes or decide which vehicle carries an individual shipment.
+
+For each group with positive total demand $D_g$, its fulfilment measure $F_g^1(X)$ is the sum of shipments of all supply types from all centres to all regions in the group, divided by the sum of that group's demands over supplies and regions. Its delivery cost $F_g^2(X)$ is calculated shipment by shipment: multiply the given unit setup-cost coefficient $CS_m^l$ by the region's given time since the last arrival of supplies $u_i^1(t)$, add the given unit transport cost $CT_{mi}^l$, and multiply this whole unit amount by the shipment quantity. Add across the group's supplies, centres and regions; the setup-cost coefficient here is not a fixed charge merely for opening a route.
+
+For each group and for each of its two measures, given lower reference levels $\underline F_g^j$ and upper reference levels $\overline F_g^j$ have the upper level strictly above the lower. Normalize each measure by subtracting its lower reference level and dividing by the difference between its upper and lower levels. The group's combined score $F_g(X)$ is the normalized fulfilment multiplied by the nonnegative fulfilment weight $\omega_r$, minus normalized cost multiplied by the nonnegative cost weight $\omega_c$. These two weights sum to one; reference levels normalize the score and do not separately impose new shipment bounds.
+
+The given group urgency assessment $\Omega_g(t)$ is divided by the sum of the assessments over the given groups to obtain its urgency weight $\gamma_g(t)$; that denominator must be nonzero. The coordinator seeks the greatest sum of urgency weight times combined score over the participating groups. All forecasts, urgency assessments, normalization limits, costs, stocks and available transport capacities remain fixed during this choice. Later supplier replenishment or inventory updates may use the resulting shipments, but their separate aims do not alter this single-period allocation.
+
+\subsection*{Inline notation and relations}
+$t$; $L$; $M$; $G$; $I_g$; $g$; $V$; $D_i^l(t)\ge0$; $Q_m^l(t-1|t-1)\ge0$; $UNV^l$; $UNL_v$; $NV_v^m(t)$; $CS_m^l$; $CT_{mi}^l$; $u_i^1(t)$; $\Omega_g(t)$; $X_g(t)$; $\overline F_g^j>\underline F_g^j$; $j=1,2$; $\omega_r,\omega_c\ge0$; $\omega_r+\omega_c=1$; $D_g=\sum_{l\in L,i\in I_g}D_i^l(t)>0$; $\sum_g\Omega_g(t)\ne0$; $X_{mi}^l(t)\ge0$; $m$; $i$; $l$; $v$.
 \end{document}

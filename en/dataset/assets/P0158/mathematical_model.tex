@@ -1,52 +1,64 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,longtable}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
-\usepackage{geometry}
-\geometry{paperwidth=235mm,paperheight=297mm,hmargin=18mm,vmargin=19mm}
-\begin{document}
-\section*{P158: Current complete mathematical model (2026-10-20)}
-\section*{Basis and scope of the revision}The complete model uses OD conservation to fill in the gaps in the aggregation process. The number of passengers allowed to board the vehicle must be sufficient to meet the requirements for queue/capacity allocation. Proportional allocation and limited neighborhoods are only used as algorithms for finding feasible solutions. We independently evaluate the 11 existing heuristic solutions; a global optimal solution is not required. The heuristic values should not be considered as optimal values.
 
-\section*{Joint plans and schedules}
-Direction $x\in\{0,1\}$, Local Station Order $i=0,\ldots,n-1$, Service $r$, Scenario $\psi$, and Probability $E_\psi$. Short Route Range $[\alpha^x,\beta^x]$, Driving $c_i^x$, Stops $\phi_i^x$, Under Vehicle $R$, Capacity $C$, Arrival Rate $\lambda_{ij}^x(t,\psi)$. The weights and normalization are all complete instance data. Decision-making $d^x_{r0}$, Short Route Binary $\eta^x_r$, U-turn Binary $\kappa$, and the passenger flow for all scenarios.
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
+\begin{document}
+\section*{P0158 Full-length and short-turn train service planning}
+\subsection*{Mathematical formulation}
 \[
 L_r^x\le d_{r0}^x\le U_r^x,\quad
 d_{ri}^x=d_{r0}^x+\sum_{j<i}c_j^x+\sum_{1\le j\le i}\phi_j^x,\quad
 a_{ri}^x=d_{ri}^x-\phi_i^x,\quad
 h_{\min}\le d_{ri}^x-d_{r-1,i}^x\le h_{\max}.
 \]
-Each service can have at most one predecessor and one successor. $\kappa=1$ can only connect to services that are in the same direction, belong to the same service type, and are located at the same physical endpoint. The interval between retries is specified in $[z_{\min},z_{\max}]$. The mapping of physical station numbers between two directions is denoted as $i\leftrightarrow n-1-i$.
+
 \[
 RSN=|R^0|+|R^1|-\sum\kappa\le R.
 \]
-If the starting point of the short route has no preceding vehicle and it is not a parking lot, then the empty journey starts from 0. Similarly, if the ending point has no following vehicle and it is not a parking lot, then the empty journey continues until reaching $n-1$. Empty journeys that do not carry passengers still count as complete sections. Returns must comply with the interval requirements at the physical end/start points.
-\section*{Complete OD conservation and selection}
-Each OD has three types of non-negative queues that can be indexed purposefully: direct queues, queues waiting to be processed in longer transactions, and queues willing to switch to shorter transactions. The initial state is all zero. Services for $r$ are processed before services for $i$.
+
 \[
 G^x_{rij}(\psi)=\int_{d^x_{r-1,i}}^{d^x_{ri}}\lambda^x_{ij}(t,\psi)\,dt,\qquad
 d^x_{-1,i}=0.
 \]
-The arrival rate of segmented constants is zero outside the data domain. $\alpha\le i<j\le\beta$ represents direct types, while the rest represent II types. When transitioning from a short path $r$ to the next long path $r'$ within a short period of time,
+
 \[
 \xi^x_{ri}={\varkappa_2\over1+\exp[\varkappa_1(\theta^0_{ri}-\theta^0_{r'i})]}.
 \]
-$\theta^0_{ri}=V^0_{ri}/C$ is the load factor at the current station after alighting and before boarding. $\theta^0_{r'i}$ has the same meaning for subsequent full-length services. Divide the input origin-destination passenger count for each interval by its duration to obtain the per-minute arrival rate $\lambda$. If there is no subsequent full-length service, or this station or train does not satisfy the condition, then $\xi=0$. Add new class-II demand to the full-length waiting or transfer class as prescribed by $1-\xi,\xi$. Add direct external demand to the direct queue. Passengers who reach their destination alight and leave the system. At $\beta$, short-turn trains require passengers with farther destinations to alight and join the local full-length service queue with their original destination. Each of them joins the queue only once. All other passengers onboard retain their original destinations. A full-length service can board all three classes. At $[\alpha,\beta)$, a short-turn service boards only direct and transfer passengers. It boards no passengers at other stations. Let $Q^c_{rij}$ be the number waiting by class and destination after adding external arrivals and transfers, and $V^0_{ri}$ be the onboard count after alighting.
+
 \[
 B_{ri}=\min\{C-V^0_{ri},\sum_{c,j\text{eligible}}Q^c_{rij}\},\quad
 0\le B^c_{rij}\le Q^c_{rij},\quad
 \sum_{c,j\text{eligible}}B^c_{rij}=B_{ri}.
 \]
-The unqualified category $B^c=0$ and the remaining queue $Q^c-B^c$ will be retained until the following vehicle; The on-board flow is increased by the original destination, hence $V_{ri}=V^0_{ri}+B_{ri}\le C$. Those who did not board and those who arrived after the last train will be retained in the final queue, without being deleted or falsely claimed to have completed the journey. These constraints allow for the allocation of all feasible categories. \emph and { do not require proportional allocation. } is not required.
-\section*{Complete objectives and properties of solution}
+
 \[
 Z_1(\psi)=\sum_{x,r,i<n-1}[\max(0,V_{ri}/C-\bar\Phi)
 +\delta'\max(0,\underline\Phi-V_{ri}/C)],
 \quad Z_2(\psi)=\sum_{x,r,i<n-1}(\sum_{\text{eligible}c,j}Q^c_{rij}-B_{ri}),\quad Z_3=RSN.
 \]
+
 \[
 \min\sum_\psi E_\psi\,
 {\delta_1Z_1/J_1+\delta_2Z_2/J_2+\delta_3Z_3/J_3\over\delta_1+\delta_2+\delta_3}.
 \]
-All scenarios share the same time intervals, routes, and vehicle cycles. The complete model does not rely on fixed-end routes, nor does it impose any restrictions on the number of iterations or neighboring regions involved in the simulation process. Existing algorithms use proportional boarding and limited neighboring regions to create feasible solutions for this model. The 11 resulting solutions are merely heuristic solutions that have passed the verification phase. In reality, these solutions are feasible solutions that satisfy the physical conservation laws outlined by ODE.
 
+\subsection*{Definitions and model scope}
+A railway operator plans both travel directions under given passenger-demand scenarios and probabilities. Each direction has ordered local stations, a designated short-turn interval, travel and dwell durations, departure windows, lower and upper headways, a fleet limit and train capacity. Inputs also supply time-dependent origin-destination arrivals, passenger-choice coefficients, desired occupancy thresholds, performance weights and normalization values. The operator chooses shared initial departure times initial service departures $d_{r0}^x$, yes-or-no short-turn choices $\eta_r^x$ and yes-or-no vehicle continuation choices $\kappa$, together with scenario-specific passenger movements. Timetables and vehicle continuations are common to all scenarios.
+
+Each service's initial departure lies in its given window. Departure at any station equals initial departure plus travel durations on all earlier segments and dwell durations at stations after the first through the current station. Arrival equals that departure less the current station's dwell. Consecutive services' departures at each station differ by an amount between the given minimum and maximum headways. Each service has at most one predecessor and one successor. A continuation can connect only opposite directions, the same service type and the same physical ending and starting station, with turn time between its lower and upper limits. Opposite directions' station orders are physically reversed. The number of trainsets required is the total service count in both directions less all selected continuations, and cannot exceed the fleet limit. A short-turn service without a predecessor deadheads from the first station when its starting endpoint is not a depot; without a successor it deadheads to the last station when its ending endpoint is not a depot. Deadheads carry no passengers, and times keep the full-corridor offsets and the actual physical turning points.
+
+For every origin-destination pair, three nonnegative queues preserve destinations: direct travelers, travelers waiting specifically for a full-length train, and travelers willing to transfer after a short-turn train. All queues start empty. New arrivals before a service equal the integral of the supplied rate from the preceding service's departure at that station through the current departure, with the preceding boundary for the first service set to zero. Piecewise constant rates are zero outside the supplied data horizon; counts supplied for a time block must be divided by the block duration to obtain rates. Trips whose origin and destination both fall within the short-turn interval are direct travelers; the other trips form the second category of arrivals.
+
+When a short-turn service at a station inside its operating interval has a later full-length service, the share of the second category willing to transfer is the supplied scale divided by one plus the exponential of the supplied sensitivity multiplied by the current short-turn train's occupancy ratio less that later full-length train's occupancy ratio. Each ratio uses onboard passengers after alighting and before boarding, divided by capacity. If there is no later full-length service or the station and service do not meet this condition, the transfer share is zero. The willing share of new second-category arrivals joins the transfer queue and the remaining share joins the full-length-only queue; direct arrivals join the direct queue.
+
+Passengers reaching their destinations alight and leave. At the short-turn ending station, passengers destined farther along must alight into that station's full-length-only queue, preserving their original destinations and entering it only once. Other onboard passengers retain their destinations. Full-length trains may board all three classes; a short-turn train may board only direct and willing-to-transfer passengers at stations from its starting endpoint up to but excluding its ending endpoint, and carries no boarding passengers at other stations. The total boarded must be exactly the smaller of capacity remaining after alighting and all eligible waiting passengers. Each class-destination boarded amount is nonnegative and no greater than its waiting amount, their sum equals total boarding, and ineligible boarding is zero. Any allocation satisfying these requirements is allowed, with no proportional split imposed. Unboarded people remain queued for later trains; boarded people add to onboard counts by original destination, keeping total onboard no greater than capacity. People left after the last train and later arrivals remain in end-of-horizon queues.
+
+For each scenario, an occupancy penalty sums over both directions, all services and all stations except the last: the positive excess of onboard occupancy ratio above its upper desired threshold, plus the given lower-occupancy weight times the positive shortfall below its lower desired threshold. A second measure sums eligible waiting people less total boarded over the same directions, services and nonfinal stations. The third measure is required trainsets. Multiply each measure by its own weight and divide by its own normalization value, add the three, and divide by the sum of the three weights. The operator seeks the lowest scenario-probability-weighted total of these values. The last train is not forced to be full-length, and limits on a particular search's neighborhood or iterations are not service requirements.
+
+\subsection*{Inline notation and relations}
+$x\in\{0,1\}$; $i=0,\ldots,n-1$; $r$; $\psi$; $E_\psi$; $[\alpha^x,\beta^x]$; $c_i^x$; $\phi_i^x$; $R$; $C$; $\lambda_{ij}^x(t,\psi)$; $d^x_{r0}$; $\eta^x_r$; $\kappa$; $\kappa=1$; $[z_{\min},z_{\max}]$; $i\leftrightarrow n-1-i$; $n-1$; $i$; $\alpha\le i<j\le\beta$; $r'$; $\theta^0_{ri}=V^0_{ri}/C$; $\theta^0_{r'i}$; $\lambda$; $\xi=0$; $1-\xi,\xi$; $\beta$; $[\alpha,\beta)$; $Q^c_{rij}$; $V^0_{ri}$; $B^c=0$; $Q^c-B^c$; $V_{ri}=V^0_{ri}+B_{ri}\le C$.
 \end{document}

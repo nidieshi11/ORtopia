@@ -1,15 +1,14 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,mathtools,geometry}
-\geometry{a4paper,margin=20mm}\allowdisplaybreaks
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
+
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
 \begin{document}
-\section*{Joint crowdsourced and dedicated parcel delivery using complete feasible route sets}
-
-\paragraph{Source} PDF pages 6--10, the problem definition in Section 3, and Formulation 2, equations (20)--(26).
-\subsection*{Inputs and complete route sets}
-$P$ is the set of parcel orders. Order $p$ is delivered to $n_p$, has earliest pickup time $T_p^d$ at the common pickup depot $o$, and has latest delivery time $T_p^a$. $S$ is the set of participating private vehicles, and $D$ is the set of dedicated delivery vehicles. Private vehicle $s$ has a personal origin and a personal destination $n_s$, an earliest depot arrival $T_s^d$, a latest destination arrival $T_s^a$, and capacity $q_s$ orders. Dedicated vehicle $d$ starts at depot $o$ and returns to its copy $h$, has capacity $q_d$, and finishes by $T^D$. Arc travel times $\tau_{ij}\ge0$ and arc costs $c^s_{ij},c^d_{ij}$ are given. $c_s^o$ is the cost from the private origin to the depot, $c^s$ is the cost of the original direct personal trip, $F_d$ is the fixed cost of a dedicated vehicle, and $e_d,e_o\ge0$ are the detour and per-order compensation coefficients.
-
-$\mathcal R_s$ includes \emph{all} feasible routes of the following form. For a sequence of distinct orders $(p_1,\ldots,p_k)$, travel from the personal origin to depot $o$, visit every $n_{p_j}$ in order, and finish at $n_s$. Require $1\le k\le q_s$ and nonnegative service times $t_0,\ldots,t_{k+1}$ that satisfy:
+\section*{P0193 Parcel Delivery with Shared Trips and Dedicated Vehicles}
+\subsection*{Mathematical formulation}
 \begin{align*}
 t_0&\ge T_s^d,&t_0&\ge T_{p_j}^d &&(j=1,\ldots,k),\\
 t_1&\ge t_0+\tau_{o,n_{p_1}},&
@@ -18,11 +17,7 @@ t_j&\le T_{p_j}^a&&(j=1,\ldots,k),\\
 t_{k+1}&\ge t_k+\tau_{n_{p_k},n_s},&
 t_{k+1}&\le T_s^a.
 \end{align*}
-The set $\mathcal R_s$ must also include the direct personal trip with zero orders served and cost $c^s$. The cost $c_{rs}$ of a delivery route equals $c_s^o$ plus the costs of all arcs traveled after the depot.
 
-$\mathcal R_d$ includes all nonempty depot-to-depot routes that serve distinct orders, with $1\le k\le q_d$. Each route waits at the depot until all its orders are ready for pickup, satisfies the arc travel times and delivery deadlines, and returns to $h$ by $T^D$. Its cost $c_{rd}$ is the sum of the costs of the arcs traveled. The depot is initially available at time zero. If an instance includes common loading or unloading times, include those times in the arc travel times exactly once. $a_{prv}\in\{0,1\}$ indicates whether the complete route $r\in\mathcal R_v$ serves order $p$. The route sets include every route satisfying the stated conditions.
-\subsection*{Optimization model}
-The variable $y_{rv}\in\{0,1\}$ indicates whether vehicle $v$ selects route $r$.
 \begin{align}
 \min_y\quad&
  e_d\sum_{s\in S}\sum_{r\in\mathcal R_s}(c_{rs}-c^s)y_{rs}
@@ -37,6 +32,16 @@ The variable $y_{rv}\in\{0,1\}$ indicates whether vehicle $v$ selects route $r$.
 &\sum_{r\in\mathcal R_d,p\in P}a_{prd}y_{rd}\le q_d &&d\in D,\tag{25}\\
 &y_{rv}\in\{0,1\} &&v\in S\cup D,\ r\in\mathcal R_v.\tag{26}
 \end{align}
-The order's $T_p^d$ indicates the moment when the goods can be picked up from the warehouse.
 
+\subsection*{Definitions and model scope}
+A delivery platform must deliver each parcel order $P$ exactly once using shared private cars $S$ and dedicated vehicles $D$. Each parcel has a delivery location $n_p$, a ready-for-pickup time $T_p^d$ at the common warehouse $o$, and a delivery deadline $T_p^a$. Ready time applies at the warehouse, not as an earliest customer service time. Each private car has a personal origin and destination $n_s$, an earliest warehouse time $T_s^d$, a personal arrival deadline $T_s^a$, and an order capacity $q_s$. Each dedicated vehicle starts at the warehouse, returns to its separate return label $h$ by the operating deadline $T^D$, and has capacity $q_d$. Given nonnegative travel times $\tau_{ij}$ already include any common handling time supplied with the instance.
+
+A private car's available routes $\mathcal R_s$ include every nonrepeating sequence of one or more orders within its capacity, preceded by travel from its personal origin to the warehouse and followed by travel to its personal destination. Nonnegative service times must exist: warehouse departure is at least the car's earliest warehouse time and every included parcel's ready time; the first customer is reached no earlier than warehouse departure plus travel, successive customers no earlier than previous service plus travel, and the personal destination no earlier than last delivery plus travel. Every parcel is served by its deadline and the car reaches its personal destination by its deadline. Waiting is allowed. The car also has a direct personal trip taking no orders. A dedicated vehicle's available routes $\mathcal R_d$ contain all nonempty, nonrepeating order sequences within capacity, with warehouse departure no earlier than zero and all included ready times, the same travel and delivery requirements, and return by its operating deadline.
+
+Each zero-or-one route choice $y_{rv}$ selects a complete available route. The given zero-or-one route coverage $a_{prv}$ records whether it serves an order. Across all vehicles the selected route coverage for each parcel must total one. Each private car chooses exactly one route, including its direct no-delivery option; each dedicated vehicle chooses at most one. For each vehicle, total orders on its selected route cannot exceed its own capacity. The full feasible route collections are available rather than an arbitrary restricted candidate list.
+
+A participating private route's travel cost $c_{rs}$ equals the cost from personal origin to warehouse $c_s^o$ plus all subsequent private-car arc costs $c^s_{ij}$. Its no-delivery direct route has the given original personal trip cost $c^s$ and zero coverage. A dedicated route's travel cost $c_{rd}$ is the sum of its arc costs $c^d_{ij}$. The platform seeks the lowest total of the nonnegative detour compensation rate $e_d$ times each selected private route cost minus that car's original direct cost, plus the nonnegative per-order compensation $e_o$ for each parcel delivered privately, plus travel cost and the fixed use fee $F_d$ for each selected dedicated route. The detour rate multiplies the entire cost difference; the difference is not replaced by its positive part.
+
+\subsection*{Inline notation and relations}
+$P$; $p$; $n_p$; $o$; $T_p^d$; $T_p^a$; $S$; $D$; $s$; $n_s$; $T_s^d$; $T_s^a$; $q_s$; $d$; $h$; $q_d$; $T^D$; $\tau_{ij}\ge0$; $c^s_{ij},c^d_{ij}$; $c_s^o$; $c^s$; $F_d$; $e_d,e_o\ge0$; $\mathcal R_s$; $(p_1,\ldots,p_k)$; $n_{p_j}$; $1\le k\le q_s$; $t_0,\ldots,t_{k+1}$; $c_{rs}$; $\mathcal R_d$; $1\le k\le q_d$; $c_{rd}$; $a_{prv}\in\{0,1\}$; $r\in\mathcal R_v$; $y_{rv}\in\{0,1\}$; $v$; $r$.
 \end{document}

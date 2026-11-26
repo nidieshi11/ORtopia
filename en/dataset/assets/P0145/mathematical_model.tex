@@ -1,41 +1,57 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,longtable}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
-\begin{document}
-\section*{P145: Current complete mathematical model (as of 2026-10-20)}
-\section*{Basis and scope of the revision}Restored limited delivery capacity per vehicle, achievable range, and continuous delivery of individual drones. The combined path model involving trucks and drones, based on fixed-demand snapshots, enables optimal optimization of delivery routes.
 
-\section*{Data and variables}
-Let $C$ be the set of customers, $K$ the set of vehicles, and $o,f$ the source and sink. The allowed truck arcs $E\subset(\{o\}\cup C)\times(C\cup\{f\})$ contain no self-loops. Each vehicle carries one drone. The set $F$ consists of allowable sorties $(i,j,l)$ with three distinct nodes and a drone-eligible customer $j$, satisfying $d_j\le Q_D$ and $t'_{ij}+t'_{jl}\le E_D$. Capacity, time, deadlines, costs, and rejection penalties are instance parameters. The binary variables $x_{ijk},r_{ijk},y_{ijlk}$ represent truck movement, a drone traveling on the truck, and a complete drone sortie, respectively. Time variables satisfy $a_{ik},a'_{jk}\in[0,H]$, the ordering variable is $u_{ik}\in[0,|V|]$, and lateness is $L_{jk}\ge0$. Define $v_{jk}=\sum_i x_{ijk}$, $b_{jk}=\sum_{(i,j,l)\in F}y_{ijlk}$, and $h_k=\sum_jx_{ojk}$.
-\section*{Complete constraints}
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
+\begin{document}
+\section*{P0145 Collaborative Deliveries with One Drone per Truck under Fixed Demand}
+\subsection*{Mathematical formulation}
 \[
 \sum_k(v_{jk}+b_{jk})\le1,\quad h_k\le1,\quad
 \sum_ix_{ifk}=h_k,\quad v_{jk}=\sum_lx_{jlk},\quad a_{ok}=u_{ok}=0.
 \]
+
 \[
 a_{jk}\le Hv_{jk},\quad a'_{jk}\le Hb_{jk},\quad
 L_{jk}\ge a_{jk}-D_j,\quad L_{jk}\ge a'_{jk}-D_j,\quad
 \sum_jd_j(v_{jk}+b_{jk})\le Q_T.
 \]
+
 \[
 r_{ijk}\le x_{ijk},\quad
 a_{jk}\ge a_{ik}+t_{ij}-M(1-x_{ijk}),\quad
 u_{jk}\ge u_{ik}+1-|V|(1-x_{ijk}).
 \]
-Each point and each vehicle can have a maximum of one takeoff and landing. The number of source/sink operations is limited by $h_k$, while the number of operations at customers is limited by $v_{jk}$.
+
 \[
 a'_{jk}\ge a_{ik}+t'_{ij}-M(1-y_{ijlk}),\quad
 a_{lk}\ge a'_{jk}+t'_{jl}-M(1-y_{ijlk}),\quad
 u_{lk}\ge u_{ik}+1-|V|(1-y_{ijlk}).
 \]
-For each vehicle and each node, the drone follows a path consisting of an arc $r$ along with a complete flight path $y$. This combined path forms a unit flow from $o$ to $f$. The difference between outflow and inflow is $h_k$ at $o$, $-h_k$ at $f$, and zero for all other cases. The order in which trucks are processed is determined by this flow, ensuring that no overlapping flights occur.
-\section*{Target}
+
 \[
 \min c_T\sum_{ijk}t_{ij}x_{ijk}
 +c_D\sum_{(i,j,l),k}(t'_{ij}+t'_{jl})y_{ijlk}
 +\sum_{jk}\alpha_jL_{jk}
 +\sum_j\beta_j(1-\sum_k(v_{jk}+b_{jk})).
 \]
-This is the problem of determining the exact path for handling original requests. It allows for the imposition of fines in case of rejected requests, and it’s necessary to keep track of both service orders and rejected requests separately.
 
+\subsection*{Definitions and model scope}
+A distributor assigns vehicles $K$ to currently known customers $C$, with one drone per vehicle, departing from source $o$ and ending at sink $f$. Allowed truck arcs $E$ run from source or customers to customers or sink and exclude self-loops. Allowed complete flights $F$ contain three distinct nodes: launch, served customer and recovery. The customer must be air-service eligible, its demand $d_j$ cannot exceed drone capacity $Q_D$, and flight durations $t'_{ij}$ plus $t'_{jl}$ cannot exceed endurance $E_D$. Planning uses this fixed demand snapshot rather than anticipating or simulating later orders.
+
+Truck movement $x_{ijk}$, drone carriage $r_{ijk}$ and complete flights $y_{ijlk}$ take zero or one. Truck customer-visit record $v_{jk}$ is that vehicle's incoming-arc count. Drone-service record $b_{jk}$ totals complete flights serving that customer as their middle node. For each customer, both service types summed over vehicles total at most one; rejection is allowed at a charge. Vehicle-use record $h_k$ equals source departures and is at most one. Sink arrivals equal that record, and truck arrivals and departures balance at each customer.
+
+Truck arrival $a_{ik}$ and drone-customer arrival $a'_{jk}$ lie between zero and horizon $H$, with truck source time zero. Customer truck time cannot exceed horizon times truck-visit record, and drone time cannot exceed horizon times drone-service record, so unserved times of that kind are zero. Nonnegative lateness $L_{jk}$ must cover both truck time minus deadline $D_j$ and drone time minus that deadline. Total demand served by either truck or drone on each vehicle cannot exceed truck delivery capacity $Q_T$.
+
+Drone-carriage records cannot exceed corresponding truck-arc selections. On every truck arc, destination arrival is at least preceding arrival plus driving time $t_{ij}$ minus valid allowance $M$ times one minus arc use. Node-order record $u_{ik}$ lies between zero and total node count, with source order zero. Destination order is at least preceding order plus one minus total node count times one minus arc choice. These finite allowances remain on unselected arcs.
+
+Each vehicle has at most one launch and one recovery at any node. At source and sink these counts also cannot exceed vehicle use, and at customers they cannot exceed truck visits. For each complete flight, drone-customer arrival is at least launch-node truck arrival plus first flight duration minus allowance times one minus flight choice. Recovery-node truck arrival is at least drone-customer arrival plus second flight duration minus the same allowance. Recovery order is at least launch order plus one minus total node count times one minus flight choice.
+
+For each vehicle, drone-carriage arcs and complete flights linking launch to recovery jointly form a continuous source-to-sink flow. Outgoing minus incoming flow equals vehicle use at source, its negative at sink and zero elsewhere. Together with strictly increasing truck order, this prevents overlapping flights by the same drone. Total cost should be as low as possible: truck time rate $c_T$ times all selected truck travel, drone time rate $c_D$ times both legs of selected flights, customer-specific lateness rate $\alpha_j$ times every customer-vehicle lateness record, and rejection fee $\beta_j$ times one minus total service of each customer. Rejected customers cannot be counted as delivered.
+
+\subsection*{Inline notation and relations}
+$C$; $K$; $o,f$; $E\subset(\{o\}\cup C)\times(C\cup\{f\})$; $F$; $(i,j,l)$; $j$; $d_j\le Q_D$; $t'_{ij}+t'_{jl}\le E_D$; $x_{ijk},r_{ijk},y_{ijlk}$; $a_{ik},a'_{jk}\in[0,H]$; $u_{ik}\in[0,|V|]$; $L_{jk}\ge0$; $v_{jk}=\sum_i x_{ijk}$; $b_{jk}=\sum_{(i,j,l)\in F}y_{ijlk}$; $h_k=\sum_jx_{ojk}$; $h_k$; $v_{jk}$; $r$; $y$; $o$; $f$; $-h_k$.
 \end{document}

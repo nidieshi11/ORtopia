@@ -3,8 +3,8 @@
 const F=window.ORTOPIA_FIELD;
 const {W,H,clamp,poly,line,ellipse,box,text,badge,tree,terrain,road,along,truck,person}=F;
 const raw={"L":["water","kits"],"M":["west","east"],"V":["west","east"],"groups":{"priority":["area0","area2"],"ordinary":["area1","area3"]},"D":{"area0":{"water":4,"kits":3},"area1":{"water":9,"kits":4},"area2":{"water":5,"kits":8},"area3":{"water":3,"kits":6}},"Q":{"west":{"water":7,"kits":12},"east":{"water":13,"kits":11}},"Omega":{"priority":3,"ordinary":1},"omega_r":0.9,"omega_c":0.1,"UNV":{"water":2,"kits":1},"UNL":{"west":26,"east":28},"NV":{"west":{"west":1,"east":0},"east":{"west":0,"east":1}},"CS":{"west":{"water":1,"kits":1},"east":{"water":1,"kits":1}},"CT":{"west":{"area0":{"water":1,"kits":5},"area1":{"water":2,"kits":1},"area2":{"water":1,"kits":4},"area3":{"water":1,"kits":5}},"east":{"area0":{"water":1,"kits":5},"area1":{"water":3,"kits":1},"area2":{"water":3,"kits":4},"area3":{"water":1,"kits":3}}},"u":{"area0":4,"area1":3,"area2":1,"area3":4},"normalization":{"priority":{"F1_min":0,"F1_max":1,"F2_min":0,"F2_max":200},"ordinary":{"F1_min":0,"F1_max":1,"F2_min":0,"F2_max":220}}};
-const depots=['west','east'],items=['water','kits'],names=["Xicang","dongcang"],areas=['area0','area1','area2','area3'];
-const goods=["Drinking water","Relief package"],colors=['#38859c','#c68a40'],stops=[[140,287],[349,300],[602,289],[800,306]],dep=[[95,118],[735,110]];
+const depots=['west','east'],items=['water','kits'],names=['Xicang','dongcang'],areas=['area0','area1','area2','area3'];
+const goods=['Drinking water','Relief package'],colors=['#38859c','#c68a40'],stops=[[140,287],[349,300],[602,289],[800,306]],dep=[[95,118],[735,110]];
 const stationX=[160,386,625,840],centerY=203,sourceX=[169,815],truckColors=['#548a79','#d08744'];
 const states=new WeakMap();
 const clone=o=>JSON.parse(JSON.stringify(o));
@@ -16,10 +16,10 @@ function score(plan){
  const sums=areas.map(a=>items.map(l=>depots.reduce((s,d)=>s+plan[d][a][l],0)));
  const issues=[];
  depots.forEach((d,di)=>{
-  if(volumes[di]>raw.UNL[d]+1e-8)issues.push(names[di]+"overload "+fmt(volumes[di]-raw.UNL[d])+" Volume");
-  items.forEach((l,li)=>{if(used[di][li]>raw.Q[d][l]+1e-8)issues.push(names[di]+goods[li]+"Insufficient stock")});
+  if(volumes[di]>raw.UNL[d]+1e-8)issues.push(names[di]+' overload '+fmt(volumes[di]-raw.UNL[d])+' Volume');
+  items.forEach((l,li)=>{if(used[di][li]>raw.Q[d][l]+1e-8)issues.push(names[di]+goods[li]+' Insufficient stock')});
  });
- areas.forEach((a,i)=>items.forEach((l,j)=>{if(sums[i][j]>raw.D[a][l]+1e-8)issues.push(i+" Zone"+goods[j]+"exceed demand")}));
+ areas.forEach((a,i)=>items.forEach((l,j)=>{if(sums[i][j]>raw.D[a][l]+1e-8)issues.push(i+' Zone '+goods[j]+' exceed demand')}));
  let value=0;
  for(const [group,members] of Object.entries(raw.groups)){
   let need=0,total=0,cost=0;
@@ -121,26 +121,26 @@ function reliefFrame(c,state,t){
   for(let k=0;k<2;k++){let nx=sx-16+k*15,ny=sy+25+(k%2)*5;person(c,nx,ny,0,k?'#718c79':'#b77957')}
   for(let j=0;j<Math.round(received[1]/2);j++)drawLoad(c,sx+25+(j%3)*7,sy+16+Math.floor(j/3)*6,.1,1);
   for(let j=0;j<Math.round(received[0]/2);j++)drawLoad(c,sx-56+(j%3)*7,sy+22+Math.floor(j/3)*6,.1,0);
-  if(transfer&&i<=1)badge(c,i===0?"redirect −1 water":"Change charge +1 water",sx,sy-54,i?'#2e6c61':'#965949','#fffce7',13);
-  badge(c,(priority?"Priority":"Ordinary")+' · '+i+" Zone",sx,sy+55,i===a?'#254f47':priority?'#eee0b9':'#f6f8ea',i===a?'#fffde9':'#344e47',14);
+  if(transfer&&i<=1)badge(c,i===0?'redirect −1 water':'Change charge +1 water',sx,sy-54,i?'#2e6c61':'#965949','#fffce7',13);
+  badge(c,(priority?'Priority':'Ordinary')+' · '+i+' Zone',sx,sy+55,i===a?'#254f47':priority?'#eee0b9':'#f6f8ea',i===a?'#fffde9':'#344e47',14);
   for(let j=0;j<2;j++){let xx=sx-46+j*50,yy=sy+77,need=raw.D[key(i)][items[j]];
    c.fillStyle='#a9b6a9';c.fillRect(xx,yy,39,4);c.fillStyle=colors[j];c.fillRect(xx,yy,39*clamp(received[j]/need),4);
    text(c,fmt(Math.round(received[j]*10)/10)+'/'+need,xx+19,yy+15,13,'#263e3c','center',700)}
  }
- badge(c,blocked?"Loading blocked":q<.19?"Loading":q<.72?"On the way to delivery":q<.97?"Unloading at the station":"Delivery completed",W-71,22,blocked?'#943e2e':'#294e48','#fffbe6',15);
+ badge(c,blocked?'Loading blocked':q<.19?'Loading':q<.72?'On the way to delivery':q<.97?'Unloading at the station':'Delivery completed',W-71,22,blocked?'#943e2e':'#294e48','#fffbe6',15);
 }
 function mount(host,onInteract,index,onNode,replayAction){
  const source=window.ORTOPIA_REPLAYS.P0310.sceneValues.shipments;
  let state=states.get(host);
  if(!state){state={plan:clone(source),depot:1,good:0};states.set(host,state)}
  state.area=index;state.transfer=false;
- const ui=F.siteShell(host,'fp-relief',"The two warehouses are the loading, transportation and unloading sites for distributing materials to the four resettlement areas.","The blue bars are drinking water and the yellow bars are material packages. The warehouse label is the entire load volume.");
+ const ui=F.siteShell(host,'fp-relief','The two warehouses are the loading, transportation and unloading sites for distributing materials to the four resettlement areas.','The blue bars are drinking water and the yellow bars are material packages. The warehouse label is the entire load volume.');
  function update(){
   state.res=score(state.plan);
   let d=depots[state.depot],a=key(state.area),l=items[state.good],quantity=state.plan[d][a][l];
   const group=(label,attr,values,sel)=>'<span class="fp-group"><strong>'+label+'</strong>'+values.map((v,i)=>'<button data-'+attr+'="'+i+'" aria-pressed="'+(sel===i)+'">'+v+'</button>').join('')+'</span>';
-  ui.control.innerHTML=group("Shipping", 'depot',names,state.depot)+group("deliver to",'area',["Zone 0","Zone 1","Zone 2","Zone 3"],state.area)+group("load",'good',goods,state.good)+'<span class="fp-group"><button data-change="-0.5" '+(quantity<.5?'disabled':'')+'>− 0.5</button><strong>'+fmt(quantity)+"</strong><button data-change=\"0.5\">+ 0.5</button></span><button class=\"fp-action\" data-divert>Try to change the delivery: Dongcang 1 unit water from 0 District transfer 1 Zone</button><button data-reset>Restore original solution</button>";
-  ui.result.dataset.error=String(!!state.res.issues.length);ui.result.textContent=state.res.issues.length?state.res.issues.join(' · '):"Feasible throughout the period · Score "+state.res.value.toFixed(6);
+  ui.control.innerHTML=group('Shipping', 'depot',names,state.depot)+group('deliver to','area',['Zone 0','Zone 1','Zone 2','Zone 3'],state.area)+group('load','good',goods,state.good)+'<span class="fp-group"><button data-change="-0.5" '+(quantity<.5?'disabled':'')+'>− 0.5</button><strong>'+fmt(quantity)+'</strong><button data-change="0.5">+ 0.5</button></span><button class="fp-action" data-divert>Try to change the delivery: Dongcang 1 unit water from 0 District transfer 1 Zone</button><button data-reset>Restore original solution</button>';
+  ui.result.dataset.error=String(!!state.res.issues.length);ui.result.textContent=state.res.issues.length?state.res.issues.join(' · '):'Feasible throughout the period · Score '+state.res.value.toFixed(6);
  }
  function run(){update();onInteract?.();if(replayAction)replayAction();else host.sceneFrame(0)}
  function select(attr,i){state[attr]=i;state.transfer=false;run()}
@@ -149,8 +149,8 @@ function mount(host,onInteract,index,onNode,replayAction){
   state.plan=clone(source);state.plan.east.area0.water-=1;state.plan.east.area1.water+=1;
   state.depot=1;state.area=1;state.good=0;state.transfer=true;
  }
- dep.forEach(([x,y],i)=>F.hotspot(ui.scene,"from"+names[i]+"Shipping",x,y-14,()=>select('depot',i),148,76));
- stops.forEach(([x,y],i)=>F.hotspot(ui.scene,"Delivered to "+i+" Zone",x,y-5,()=>select('area',i),142,92));
+ dep.forEach(([x,y],i)=>F.hotspot(ui.scene,'from '+names[i]+' Shipping',x,y-14,()=>select('depot',i),148,76));
+ stops.forEach(([x,y],i)=>F.hotspot(ui.scene,'Delivered to '+i+' Zone',x,y-5,()=>select('area',i),142,92));
  ui.control.onclick=e=>{
   const b=e.target.closest('button');if(!b)return;
   for(let attr of ['depot','area','good'])if(b.dataset[attr]!==undefined){select(attr,+b.dataset[attr]);return}

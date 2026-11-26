@@ -1,17 +1,14 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,longtable}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
 \allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
+
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
 \begin{document}
-\section*{P47: Current complete mathematical model (2026-10-20)}
-\section*{Basis and scope of the revision}On page 10 of the source text, the actual formula 23–24 has been replaced with the perceptual formula 41. In the current complete model, only the perceived travel time, denoted as r, is used; the independent diagnostic parameters related to the actual travel time remain intact. The starting perceptual time, the binary domain, and the set of two segments of the journey are also retained.
-
-
-\section*{Problem: **Multi-vehicle Dial-a-Ride Problem with Interchange (DARPi)**. This problem belongs to the category of **Vehicle Routing Problems (VRP)**. It combines elements of Pickup and Delivery Problems with features related to transfer points. The problem is a **Mixed Integer Linear Programming (MILP)** problem; the original non-linear problem is transformed into a MILP form through linearization. DARPi is a **NP-hard** combinatorial optimization problem, involving various constraints such as time windows, capacity limits, and travel times.}
-
-
-
-\subsection*{Decision Variables}
+\section*{P0047 Dial-a-Ride Service with Interchange and Crowding Perception}
+\subsection*{Mathematical formulation}
 \begin{align*}
 & x_{ij}^k \in \{0, 1\} && \forall (i,j) \in \mathcal{A}, k \in \mathcal{K} \\
 & \eta_i^k, \theta_i^k \in \{0, 1\} && \forall i \in \mathcal{P}, k \in \mathcal{K} \\
@@ -28,32 +25,30 @@
 & d_i^k \ge 1 && \forall i \in \mathcal{V}, k \in \mathcal{K}
 \end{align*}
 
-\subsection*{Objective Function}
 \[
 \min \sum_{k \in \mathcal{K}} \sum_{(i,j) \in \mathcal{A}} c_{ij}^k x_{ij}^k
 \]
 
-\subsection*{Constraints}
 \begin{align*}
-& \text{1. Constraints related to customer-specific services:} \\
+& \text{1. customer service:} \\
 & \quad \sum_{k \in \mathcal{K}} \sum_{j: (i,j) \in \mathcal{A}} x_{ij}^k = 1 \quad \forall i \in \mathcal{P} \cup \mathcal{D} \\
 \\
-& \text{2. Vehicle capacity constraints:} \\
+& \text{2. vehicle capacity:} \\
 & \quad \sum_{i \in \mathcal{P}} \sum_{j: (i,j) \in \mathcal{A}} q_i x_{ij}^k \le Q_k \quad \forall k \in \mathcal{K} \\
 & \quad \sum_{i \in \mathcal{D}} \sum_{j: (i,j) \in \mathcal{A}} q_i x_{ij}^k \le Q_k \quad \forall k \in \mathcal{K} \\
 \\
-& \text{3. Balancing constraints related to traffic flow in the parking lot:} \\
+& \text{3. depot flow balance:} \\
 & \quad \sum_{j: (o_1, j) \in \mathcal{A}} x_{o_1 j}^k = \sum_{j: (o_3, j) \in \mathcal{A}} x_{o_3 j}^k = 1 \quad \forall k \in \mathcal{K} \\
 & \quad \sum_{j: (j, o_2) \in \mathcal{A}} x_{j o_2}^k = \sum_{j: (j, o_4) \in \mathcal{A}} x_{j o_4}^k = 1 \quad \forall k \in \mathcal{K} \\
 & \quad \sum_{i: (i, h) \in \mathcal{A}} x_{i h}^k - \sum_{j: (h, j) \in \mathcal{A}} x_{h j}^k = 0 \quad \forall h \in \mathcal{P} \cup \mathcal{D}, k \in \mathcal{K} \\
 \\
-& \text{4. Time window and sub-loop elimination constraints:} \\
+& \text{4. time windows and subtour elimination:} \\
 & \quad u_j^k \ge u_i^k + t_{ij} - M(1 - x_{ij}^k) \quad \forall (i, j) \in \mathcal{A}, k \in \mathcal{K} \\
 & \quad e_i \le u_i^k \le l_i \quad \forall i \in \mathcal{V}, k \in \mathcal{K} \\
 & \quad u_i^k \ge e_i + \sum_{j: (j,i) \in A} \max\{0, e_j - e_i + t_{ij}\} x_{ji}^k \quad \forall i \in P \cup D, k \in K \\
 & \quad u_i^k \le l_i + \sum_{j: (i,j) \in A} \max\{0, l_i - l_j + t_{ij}\} x_{ij}^k \quad \forall i \in P \cup D, k \in K \\
 \\
-& \text{5. Constraints on the division and connection of itineraries:} \\
+& \text{5. trip partitioning and connections:} \\
 & \quad \eta_i^k - \theta_i^k = \sum_{j \in \mathcal{P} \cup \{o_2\}: j \neq i} x_{ij}^k - \sum_{j \in \mathcal{D} \cup \{o_4\}: j \neq i+n} x_{i+n, j}^k \quad \forall i \in \mathcal{P}, k \in \mathcal{K} \\
 & \quad \eta_i^k + \theta_i^k \le 1 \quad \forall i \in \mathcal{P}, k \in \mathcal{K} \\
 & \quad \frac{1}{M} \sum_{i \in \mathcal{P}} \eta_i^k \le \tilde{\eta}^k \le \sum_{i \in \mathcal{P}} \eta_i^k \quad \forall k \in \mathcal{K} \\
@@ -66,7 +61,7 @@
 & \quad u_{o_2}^k - u_{o_1}^k \le T_k \quad \forall k \in \mathcal{K} \\
 & \quad u_{o_4}^k - u_{o_3}^k \le T_k \quad \forall k \in \mathcal{K} \\
 \\
-& \text{6. Order response time constraints:} \\
+& \text{6. order response time:} \\
 & \quad r_i \le L \quad \forall i \in \mathcal{P} \\
 & \quad \tilde{u}_i + \sigma_{j, i}^{u,k} = u_i^k \quad \forall (j, i) \in \mathcal{A}: i \in \mathcal{P} \cup \mathcal{D}, \forall k \in \mathcal{K} \\
 & \quad \sigma_{j i}^{u,k} \le M(1 - x_{j, i}^k) \quad \forall (j, i) \in \mathcal{A}: i \in \mathcal{P} \cup \mathcal{D}, k \in \mathcal{K} \\
@@ -74,7 +69,7 @@
 & \quad \sigma_{j i}^{u,k} \ge -M(1 - x_{j, i}^k) \quad \forall (j, i) \in \mathcal{A}: i \in \mathcal{P} \cup \mathcal{D}, k \in \mathcal{K} \\
 & \quad \sigma_{j i}^{p,k} \ge -M(1 - x_{j, i}^k) \quad \forall (j, i) \in \mathcal{A}: i \in \mathcal{P} \cup \mathcal{D}, k \in \mathcal{K} \\
 \\
-& \text{7. Load balance and definition constraints:} \\
+& \text{7. load balance and definition:} \\
 & \quad \nu_{o_1}^k = 0 \quad \forall k \in \mathcal{K} \\
 & \quad \nu_{o_3}^k = \sum_{i \in \mathcal{D}} \sum_{j: (i,j) \in \mathcal{A}} q_i x_{ij}^k \quad \forall k \in \mathcal{K} \\
 & \quad \nu_j^k + s_{ij}^k = \nu_i^k + q_j \quad \forall (i, j) \in \mathcal{A}: i \in \mathcal{P} + \{o_1\}, k \in \mathcal{K} \\
@@ -83,7 +78,7 @@
 & \quad s_{ij}^k \ge -M(1 - x_{ij}^k) \quad \forall (i, j) \in \mathcal{A}, k \in \mathcal{K} \\
 & \quad 0 \le \nu_j^k \le Q_k \quad \forall j \in \mathcal{V}, k \in \mathcal{K} \\
 \\
-& \text{8. Linearization constraints for load impact factors:} \\
+& \text{8. load-factor linearization:} \\
 & \quad g_i^k \ge \nu_i^k - \rho Q_k \quad \forall i \in \mathcal{V}, k \in \mathcal{K} \\
 & \quad g_i^k \ge 0 \quad \forall i \in \mathcal{V}, k \in \mathcal{K} \\
 & \quad g_i^k \le \nu_i^k - \rho Q_k + M \delta_i^k \quad \forall i \in \mathcal{V}, k \in \mathcal{K} \\
@@ -91,7 +86,7 @@
 & \quad \delta_i^k \in \{0, 1\} \quad \forall i \in \mathcal{V}, k \in \mathcal{K} \\
 & \quad d_i^k = 1 + \gamma g_i^k \quad \forall i \in \mathcal{V}, k \in \mathcal{K} \\
 \\
-& \text{9. Constraints on departure time and response time (taking into account load effects):} \\
+& \text{9. departure and response times(accounting for load)constraints:} \\
 & \quad p_j^k + \tilde{s}_{ij}^k = u_j^k + (p_i^k - u_i^k) + t_{ij} d_i^k - t_{ij} \quad \forall (i, j) \in \mathcal{A}, k \in \mathcal{K} \\
 & \quad \tilde{s}_{ij}^k \le M(1 - x_{ij}^k) \quad \forall (i, j) \in \mathcal{A}, k \in \mathcal{K} \\
 & \quad \tilde{s}_{ij}^k \ge -M(1 - x_{ij}^k) \quad \forall (i, j) \in \mathcal{A}, k \in \mathcal{K} \\
@@ -104,15 +99,29 @@
 & \quad r_i = \tilde{p}_{n+i} - \tilde{p}_i \quad \forall i \in \mathcal{P}
 \end{align*}
 
-
-\section*{The complete definition of perceived time}
-On page 10 of the source text, it is clearly stated that option 41 replaces option 23–24. Therefore, $r_i$ is defined solely by $r_i=\tilde p_{n+i}-\tilde p_i$, while $r_i\le L$ determines the perceived riding time. The actual time $\tilde u$ is used only for independent diagnostics purposes. Link relaxation is denoted as $\sigma^u$. The perceived time is calculated using a different method, denoted as $\sigma^p$; these two methods should not be used interchangeably.
 \[
 p_{o_1}^k=u_{o_1}^k,\qquad\tilde\eta^k,\tilde\theta^k\in\{0,1\}.
 \]
-The legal journey paths are indicated for each instance: the first journey starts at $o_1$ and ends at $o_2$; the second journey starts at $o_3$ and ends at $o_4$. Each journey only visits the nodes where pick-up and drop-off are possible; there are no direct “empty” journey paths. All parameters such as capacity, passenger requirements, travel/transfer times, congestion levels, and time windows are limited to specific instances.
 
-\section*{Clear conventions for marking questions in this set of questions}
-Both of the two time-windowed arc selections belong to the same vehicle, namely $k$. According to the definitions given in the third subscript, these can be denoted as $x_{ji}^k$ and $x_{ij}^k$, and need to be calculated separately for each vehicle. The coefficient for the first arc remains unchanged, being $t_{ij}$ – that is, the time interval from the current point $i$ to the previous point $j$. The coefficient for the second arc remains the original plus sign. The passenger demand at the four boundary points is defined as $q_{o_1}=q_{o_2}=q_{o_3}=q_{o_4}=0$; the demand from customers is provided by individual instances. Here, $A,P,D,K$ is an equivalent notation for $\mathcal A,\mathcal P,\mathcal D,\mathcal K$.
+\subsection*{Definitions and model scope}
+An operator assigns vehicles $\mathcal K$ to pickups $\mathcal P$ and corresponding deliveries $\mathcal D$, with a delivery node numbered by adding the order count to its pickup number. All service nodes belong to $\mathcal V$, and allowed arcs $\mathcal A$ are supplied individually. Each vehicle travels from first origin $o_1$ to interchange arrival $o_2$, then from interchange departure $o_3$ to final destination $o_4$. Each leg visits only its allowed pickup or delivery nodes, and no direct empty-leg arc exists. Arc-use records $x_{ij}^k$ are zero or one. Each pickup and delivery node has exactly one outgoing arc across all vehicles. Every vehicle has exactly one departure from each leg origin, one arrival at each leg destination, and matching incoming and outgoing counts at each service node. The combined cost of chosen arcs at vehicle-specific charges $c_{ij}^k$ should be as low as possible.
 
+Passenger quantities $q_i$ and vehicle capacities $Q_k$ are supplied. For each vehicle, pickup quantities counted through selected outgoing arcs cannot exceed capacity, and delivery quantities obey a separate identical total-capacity limit. Actual times $u_i^k$ are nonnegative and lie between node earliest time $e_i$ and latest time $l_i$, including nodes the vehicle does not visit. On every arc, destination time is at least preceding time plus travel duration $t_{ij}$ minus the given allowance $M$ multiplied by one minus its use record. Passenger demand is zero at all four depot and interchange boundary nodes.
+
+Two additional time requirements apply to every vehicle at every customer. Actual time is at least that customer's earliest time plus, for each incoming arc, the positive part of predecessor earliest time minus current earliest time plus reverse travel time from the current node to its predecessor, multiplied by that vehicle's incoming choice $x_{ji}^k$ and summed. Actual time is no greater than current latest time plus, for each outgoing arc, the positive part of current latest time minus successor latest time plus travel time from the current node to its successor, multiplied by that vehicle's outgoing choice $x_{ij}^k$ and summed. A positive part is the larger of a number and zero. Both requirements use only the arc records of the vehicle being checked.
+
+For each order and vehicle, transfer-out record $\eta_i^k$ and transfer-in record $\theta_i^k$ are zero or one and sum to at most one. Their difference equals that vehicle's arcs leaving the order's pickup toward other pickups or the first leg's endpoint, minus arcs leaving its delivery toward other deliveries or the final endpoint, excluding self-connections. Vehicle-level any-transfer-out $\tilde\eta^k$ and any-transfer-in $\tilde\theta^k$ are also zero or one. Each is at least the sum of corresponding order records divided by the allowance and at most that sum. Thus any corresponding transfer activates the vehicle-level record, while the sum still respects the allowance.
+
+Unloading completion time $\tau^k$ equals first-leg actual finish plus fixed handling time $a$ times any-transfer-out, plus per-passenger handling time $\beta$ times total transferred-out passengers. Ready-to-board time $w^k$ is no earlier than unloading completion. Second-leg departure equals ready-to-board time plus fixed handling time times any-transfer-in and per-passenger handling time times transferred-in passengers. Each order's transfer availability time $z_i$ is at least every vehicle's unloading completion minus the allowance times one minus its transfer-out record. Each vehicle's ready-to-board time is at least each order's transfer availability minus the allowance times one minus its transfer-in record. All three types of times are nonnegative. Each leg's actual finish minus its actual start cannot exceed vehicle-specific leg limit $T_k$.
+
+Vehicle occupancy $\nu_i^k$ lies between zero and capacity at every node. Initial occupancy of the first leg is zero; initial occupancy of the second leg equals all delivery passenger quantities counted through that vehicle's selected outgoing arcs. For each arc leaving a pickup or first origin, destination occupancy plus signed deviation $s_{ij}^k$ equals preceding occupancy plus destination passenger quantity. For each arc leaving a delivery or second origin, the same left side equals preceding occupancy minus destination passenger quantity. The deviation lies between negative and positive allowance times one minus arc use. It is therefore zero on selected arcs and remains finitely bounded on unselected arcs.
+
+Crowding excess $g_i^k$ is nonnegative and at least occupancy minus crowding-threshold fraction $\rho$ times capacity. It cannot exceed that difference plus allowance times two-state record $\delta_i^k$, nor allowance times one minus that record. The record is zero or one. Thus excess equals the positive part of the difference, while both allowance bounds remain in force. Perception multiplier $d_i^k$ is one plus crowding excess times influence coefficient $\gamma$ and is at least one.
+
+Vehicle perceived times $p_i^k$ are nonnegative. On each arc, destination perceived time plus signed perceived-time deviation $\tilde s_{ij}^k$ equals destination actual time plus preceding perceived time minus preceding actual time, plus arc duration times preceding crowding multiplier, and finally minus arc duration. This deviation also lies between negative and positive allowance times one minus arc choice. First-origin perceived time equals actual time. Second-origin perceived time equals its actual time plus first-leg final perceived time minus first-leg final actual time.
+
+Each customer has nonnegative common actual time $\tilde u_i$ and common perceived time $\tilde p_i$. For every vehicle and arc entering that customer, common actual time plus actual linking deviation $\sigma_{ji}^{u,k}$ equals vehicle actual time. Common perceived time plus separate perceived linking deviation $\sigma_{ji}^{p,k}$ equals vehicle perceived time. Each deviation independently lies between negative and positive allowance times one minus that entering-arc record; they are not the same deviation. Nonnegative perceived ride duration $r_i$ is common perceived time at delivery minus that at pickup and cannot exceed limit $L$. Actual-time links support separate checks of actual journeys and do not replace the perceived duration used here.
+
+\subsection*{Inline notation and relations}
+$r_i$; $r_i=\tilde p_{n+i}-\tilde p_i$; $r_i\le L$; $\tilde u$; $\sigma^u$; $\sigma^p$; $o_1$; $o_2$; $o_3$; $o_4$; $k$; $x_{ji}^k$; $x_{ij}^k$; $t_{ij}$; $i$; $j$; $q_{o_1}=q_{o_2}=q_{o_3}=q_{o_4}=0$; $A,P,D,K$; $\mathcal A,\mathcal P,\mathcal D,\mathcal K$.
 \end{document}

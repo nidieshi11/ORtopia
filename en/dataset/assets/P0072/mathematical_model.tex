@@ -1,14 +1,14 @@
-\documentclass{article}
-\usepackage{amsmath,amssymb}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
+
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
 \begin{document}
-\section*{Two-level vehicle routing model with drones}
-This file represents the complete model for handling the current set of problems. The objectives of the original model remain unchanged, along with all 24 constraints. Additionally, a new constraint has been added: each unmanned aerial vehicle can only be assigned to one truck. The issue of using the same drone number multiple times has also been resolved. This constraint ensures that each unmanned aerial vehicle has unique resources. The original model and its results are stored in the parent directory. The current code is located in the 05\_solver.py file in this directory.
-
-\subsection*{Conventions regarding groups, parameters, and boundaries}
-$V=\{0\}\cup Z$, where 0 is the unique depot and $Z^d\subseteq Z$ is the set of customers serviceable by a drone. $A\subseteq\{(i,j)\in V^2:i\ne j\}$. The sets of physical trucks and physical drones are $K^v$ and $K^d$, respectively. $\Gamma$ is the maximum number of drones carried per truck. The travel time is $t^v,t^d$, the service time is $s^v,s^d$, and the launch preparation time is $t_0$. The demand is $q_i$, the weight of drones and support equipment is $q_1^d$, and truck capacity is $Q$. The round-trip energy feasibility indicator is $E_{ij}$, the latest service start time is $l_i$, and the end of the planning horizon for return to the depot is $l_0$. Each family $M$ consists of valid relaxation upper bounds explicitly provided by the instance. Treat $x$ outside $A$ as zero, and treat $u_{ij}$ as zero when $j\notin Z^d$. $a_0$ is a uniform upper bound on the return time. $\varphi_i$ includes the time spent at the stop serving customers and waiting for drones. $\omega_i^k$ is a nonnegative upper bound for load accounting. The constraints require it to cover at least the assigned demand, and its value is jointly determined by the load lower bounds and capacity constraints.
-
-\subsection*{Variable fields}
+\section*{P0072 Two-Echelon Customer Deliveries by Trucks Carrying Drones}
+\subsection*{Mathematical formulation}
 \[
 \begin{aligned}
 &x^k_{ij} \in \{0, 1\} && \forall (i,j) \in A, k \in K^v \\
@@ -21,12 +21,12 @@ $V=\{0\}\cup Z$, where 0 is the unique depot and $Z^d\subseteq Z$ is the set of 
 &\varphi_i \ge 0 && \forall i \in Z
 \end{aligned}
 \]
-\subsection*{Target}
+
 \[
 \min\quad\sum_{(i,j)\in A}\sum_{k\in K^v}t^v_{ij}x^k_{ij}
 +\sum_{i\in Z}\varphi_i
 \]
-\subsection*{Complete constraints}
+
 \[
 \begin{aligned}
 &\sum_{i \in V} \sum_{k \in K^v} x^k_{ij} + \sum_{i \in Z} u_{ij} = 1 && \forall j \in Z, \\
@@ -56,6 +56,24 @@ $V=\{0\}\cup Z$, where 0 is the unique depot and $Z^d\subseteq Z$ is the set of 
 &\sum_{k\in K^v}y_d^k\le 1 && \forall d\in K^d.
 \end{aligned}
 \]
-\subsection*{The implications of this amendment}
-Constraint $\sum_k y_d^k\le1$ prohibits a single entity from having drones belonging to different trucks simultaneously. The original 24 constraints are only satisfied through the number of drones per truck, $\sum_d y_d^k$, using $y$. If $|K^d|\ge |K^v|\Gamma$ is satisfied, each original feasible solution can be renumbered without changing the number of drones per truck or other variables and target values, thereby satisfying the new constraint. This batch of 10 instances meets this sufficient condition; the current code will still be used to re-solve and verify each instance individually. This equivalence applies to instances that meet the above inventory conditions.
+
+\subsection*{Definitions and model scope}
+A distributor serves customers $Z$ from a single depot $0$, with all nodes in $V$ and allowed directed arcs $A$ excluding self-loops. Physical trucks $K^v$ carry drones from the global physical fleet $K^d$, up to count $\Gamma$ per truck. Drone-eligible customers belong to $Z^d$. Truck-arc choices $x_{ij}^k$, drone assignments $y_d^k$, truck launch-site records $h_i^k$, dispatches $u_{ij}$ from stopping customers to drone customers and drone-task succession records $z_{ij}$ are zero or one. Missing truck arcs and dispatches to ineligible customers are zero. Each customer's total truck arrivals plus all drone dispatches equals exactly one. Each truck has at most one departure from depot to customers and equal incoming and outgoing counts at every node, including depot.
+
+A dispatch from a stopping customer to a drone customer requires a truck's launch-site record at that stop. Each truck's launch-site record cannot exceed its assigned drone count or its incoming-arc count there. Each truck carries no more than the allowed drone count, and each physical drone's assignments across trucks sum to at most one. Dispatch also cannot exceed round-trip energy-feasibility indicator $E_{ij}$.
+
+For each drone customer, all incoming dispatches must total the same as all incoming task-succession records. When a current node is drone-eligible, its succession record to a next drone customer plus all launch-site records at the current node cannot exceed one plus its dispatch record to that next customer. When the current node is ineligible, succession cannot exceed the corresponding dispatch. For any two drone customers and any stopping customer, dispatch from the stop to the first minus dispatch to the second cannot exceed one plus all launch-site records at the first customer minus succession from first to second. That succession record also cannot exceed all dispatches received by the first customer plus its launch-site records.
+
+For every node and truck, total outgoing drone-task succession cannot exceed that truck's drone count plus valid allowance $M$ times one minus the truck's launch-site record there. It also cannot exceed one plus another valid allowance $M'$ times all launch-site records there. Allowances are explicitly supplied; residual upper bounds when a record is inactive are retained.
+
+Customer demands $q_i$, weight of each drone and supporting equipment $q_1^d$ and truck capacity $Q$ are supplied. Each truck-customer load-accounting upper amount $\omega_i^k$ is nonnegative. Own customer demand plus total demand dispatched by drones from that customer, minus the accounting amount, cannot exceed customer allowance $M_j$ times one minus that truck's incoming-arc count. Each truck's accounting amounts summed over all customers plus assigned drone count times equipment weight cannot exceed capacity. Accounting amounts at unvisited customers are not forced to zero.
+
+Service-start records $a_i$ are nonnegative at every node; the depot record is a common return upper time rather than departure time. Nonnegative customer stopping duration $\varphi_i$ includes truck service and waiting for drones. Depot-to-customer driving time $t_{0j}^v$ minus customer start cannot exceed allowance $M'_j$ times one minus the total truck departures directly to that customer. For a truck arc from a customer to any node, current start plus stopping duration plus driving time $t_{ij}^v$ minus next-node start cannot exceed allowance $M_{ij}$ times one minus total truck selections of that arc.
+
+From every stopping customer to every drone customer, current start plus launch preparation $t_0$ and flight time $t_{ij}^d$ minus customer start cannot exceed allowance $M'_{ij}$ multiplied by two minus the succession record minus the dispatch record. For every stop and two drone customers, first-customer start plus its service duration $s_i^d$, flight back to the stop, preparation and flight from the stop to the second customer, minus second-customer start, cannot exceed allowance $M_{ijl}$ multiplied by two minus succession between the customers minus dispatch from the stop to the first.
+
+Each stopping duration must cover truck service time $s_i^v$ times all truck arrivals at that customer. For each stop and drone customer, customer start plus its service and flight back to the stop, minus stop start and stopping duration, cannot exceed allowance $M''_{ij}$ times one minus dispatch. Every node's start cannot exceed its latest limit $l_i$, with depot limit $l_0$ ending the planning horizon. The distributor seeks the lowest sum of driving time on all selected truck arcs and stopping duration across all customers. Stopping includes service rather than only waiting for drones.
+
+\subsection*{Inline notation and relations}
+$V=\{0\}\cup Z$; $Z^d\subseteq Z$; $A\subseteq\{(i,j)\in V^2:i\ne j\}$; $K^v$; $K^d$; $\Gamma$; $t^v,t^d$; $s^v,s^d$; $t_0$; $q_i$; $q_1^d$; $Q$; $E_{ij}$; $l_i$; $l_0$; $M$; $A$; $x$; $j\notin Z^d$; $u_{ij}$; $a_0$; $\varphi_i$; $\omega_i^k$; $\sum_k y_d^k\le1$; $\sum_d y_d^k$; $y$; $|K^d|\ge |K^v|\Gamma$.
 \end{document}

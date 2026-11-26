@@ -1,24 +1,18 @@
-\documentclass[11pt]{article}
-\usepackage{amsmath,amssymb,longtable}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
-\usepackage{geometry}
-\geometry{paperwidth=235mm,paperheight=297mm,hmargin=18mm,vmargin=19mm}
+
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
 \begin{document}
-\section*{P152: Current complete mathematical model (as of 2026-10-20)}
-\section*{Basis and scope of the revision}Current primary standard selection from the original construction mode 1: collect lambda1 once per vehicle per departure; remove the redundant warehouse summation from equation 48 to achieve a truly equivalent reconstruction. Historical two branches and differences are retained; only the results calculated by the original \_ objective \_ 1 are referenced, without mixing objectives.
-
-
-
-
-% --- Page 5 ---
-\section*{Page 5}
-
-\subsection*{Objective Functions}
+\section*{P0152 Multi-trip electric demand-responsive transit with opportunity charging}
+\subsection*{Mathematical formulation}
 \begin{equation}
     \text{ID 1: } min \sum_{k \in K} \lambda_0 \bullet V_k + \sum_{k \in K} \sum_{i \in I} \lambda_1 \bullet U_{k,i} + \sum_{k \in K} \sum_{i \in I} \sum_{p \in P} \lambda_2 \bullet s_p \bullet \left| A_{p}^{k,i} - b_p \bullet Z_{p}^{k,i} \right| + \sum_{k \in K} \sum_{i \in I} \sum_{n \in N} \sum_{n' \in N} \lambda_3 \bullet t_{n,n'} \bullet X_{n,n'}^{k,i} + \sum_{k \in K} \sum_{i \in I} \lambda_4 \bullet C_{k,i} \tag{1}
 \end{equation}
 
-\subsection*{Constraints}
 \begin{align}
     \text{ID 2: } & Y_{d}^{k,0} = \sigma_{k,d}, \forall k \in K, d \in D \tag{2} \\
     \text{ID 3: } & C_{k,0} = 0, \forall k \in K \tag{3} \\
@@ -32,10 +26,6 @@
     \text{ID 11: } & \sum_{p \in P} Z_{p}^{k,i} \bullet s_p \leq \vartheta_{cap}, \forall i \in I_k, k \in K, i \neq 0 \tag{11}
 \end{align}
 
-% --- Page 6 ---
-\section*{Page 6}
-
-\subsection*{Constraints}
 \begin{align}
     \text{ID 12: } & \sum_{d \in D} Y_{d}^{k,i} \bullet d + M \bullet (1 - Z_{p}^{k,i}) \geq u_p, \forall p \in P, i \in I_k, k \in K, i \neq 0 \tag{12} \\
     \text{ID 13: } & \sum_{d \in D} Y_{d}^{k,i} \bullet d \leq u_p + M \bullet (1 - Z_{p}^{k,i}), \forall p \in P, i \in I_k, k \in K, i \neq 0 \tag{13} \\
@@ -53,10 +43,6 @@
     \text{ID 25: } & SOC_{k,i+1}^{DEP} B_{cap} = SOC_{k,i}^{ARR} B_{cap} + \theta C_{k,i}, \forall i \in I_k, k \in K \tag{25}
 \end{align}
 
-% --- Page 7 ---
-\section*{Page 7}
-
-\subsection*{Constraints}
 \begin{align}
     \text{ID 26: } & X_{n,p}^{k,i} \leq Z_{p}^{k,i}, \forall p \in P, n \in N, i \in I_k, k \in K, i \neq 0 \tag{26} \\
     \text{ID 27: } & X_{p,n}^{k,i} \leq Z_{p}^{k,i}, \forall p \in P, n \in N, i \in I_k, k \in K, i \neq 0 \tag{27} \\
@@ -78,10 +64,6 @@
     \text{ID 43: } & L_{n,n'}^{k,i} \leq M \bullet X_{n,n'}^{k,i}, \forall n, n' \in N, i \in I_k, k \in K \tag{43}
 \end{align}
 
-% --- Page 8 ---
-\section*{Page 8}
-
-\subsection*{Constraints}
 \begin{align}
     \text{ID 44: } & \sum_{p \in N} L_{p,q}^{k,i} + s_q \bullet \sum_{p \in N} X_{p,q}^{k,i} = \sum_{p' \in N} L_{q,p'}^{k,i}, \forall q \in P, i \in I_k, k \in K \tag{44} \\
     \text{ID 45: } & e_{k,i} = \sum_{d \in D} \sum_{p \in P} (\alpha \bullet \omega' + \beta) \bullet X_{d,p}^{k,i} \bullet t_{d,p} + \sum_{p \in P} \sum_{n \in N} [\alpha (\omega \bullet L_{p,n}^{k,i} + \omega' \bullet X_{p,n}^{k,i}) + \beta \bullet X_{p,n}^{k,i}] \bullet t_{p,n}, \forall i \in I_k, k \in K \tag{45} \\
@@ -89,9 +71,23 @@
     \text{ID 47: } & A_n^{k,i}, C_{k,i}, W_{k,i}, L_{n,n'}^{k,i}, e_{k,i}, \tau_{k,i}, F_p^{k,i}, \mu_p \geq 0, 0 \leq SOC_{k,i}^{DEP} \leq 1, 0 \leq SOC_{k,i}^{ARR} \leq 1 \tag{47}
 \end{align}
 
+\subsection*{Definitions and model scope}
+A transit operator schedules electric vehicles $K$ between depots $D$ and passenger requests $P$. Each request supplies a passenger count, desired pickup time and destination-depot identifier, and each road segment has a fixed travel time. Seat capacity, battery capacity, minimum and maximum charge fractions, charging rate, depot charging availability, vehicle and passenger weights and energy coefficients are given. Each vehicle has an ordered set of allowed trips $I_k$; trip zero records its initial depot and provides no service. The operator chooses vehicle-use flags $V_k$, trip-use flags $U_{ki}$, road-use flags $X_{nn'}^{ki}$, destination-depot selections $Y_d^{ki}$ and request allocations $Z_p^{ki}$, together with times, charging, waiting, passenger loads and charge levels. These flags and the charging-wait switch $h_{ki}$ take only zero or one. All other times, durations, road loads, energy use, trip travel times and ordering records are nonnegative, and charge fractions also lie between zero and one.
 
-\section*{Equivalent linearization of targets and complete indexing}
-$F_p^{ki}\ge A_p^{ki}-b_pZ_p^{ki}$ and $F_p^{ki}\ge b_pZ_p^{ki}-A_p^{ki}$. In the original objective (1), replace the absolute value by $F$, keeping all other coefficients and summation ranges exactly as stated. The departure fee is $\lambda_1\sum_{k,i}U_{ki}$, with no multiplication by $|D|$. The depot sum printed in equation 48 duplicates a charge and is corrected here. The historical printed\_reformulation results are outside the current objective. $I=\{0,\ldots,\pi_{\max}\}$. Successors $i+1$ are used only within their defined domain. Trip 0 records the initial state only, $X=Z=U=0$. A terminal state of charge with the same domain is defined separately for the last trip in equation 25. $H=|P|$ is a valid counting big-M constant, $P_i=P$. Self-loops and depot-to-depot service arcs are prohibited. Original physical energy consumption is converted to kWh using minutes (divide $\alpha,\beta$ by 60), and the charging rate is in kWh per minute. All parameters, time windows, capacities, batteries, vehicle types, requests, and maximum numbers of trips are given by the completed instance.
+The operator seeks the lowest total expense. It includes a fixed charge per used vehicle, a fixed charge once per used actual trip, passenger counts multiplied by the absolute difference between each trip's pickup time and the desired time multiplied by that request's allocation flag, then charged at the deviation rate, travel-time charges on every used road, and charging-time charges over all trips. Pickup deviations are counted over every vehicle, trip and request; the trip charge is not repeated over depots. An optional nonnegative deviation record $F_p^{ki}$ must be at least both this time difference and its negative.
 
+Trip zero's depot selection is the given initial location, its charging duration and depot arrival times are zero, and its road-use, request-allocation and trip-use flags are zero. An actual trip requires a used vehicle, an allocated request requires a used trip, and the number of selected destination depots cannot exceed the trip-use flag. A request pickup time cannot exceed the given sufficiently large time bound multiplied by its allocation flag; a depot arrival time is limited in the same way by its destination selection. Each request is allocated exactly once across vehicles and actual trips, and the allocated passenger total of each trip cannot exceed seat capacity. For every request, the absolute difference between the sum of selected depot identifiers and its destination identifier cannot exceed the large bound multiplied by one minus its allocation flag. Requests allocated to a trip therefore agree with its selected destination.
 
+For consecutive trips of the same vehicle and every pair of current and next destination depots, the absolute difference between current arrival plus current waiting, charging and next-trip travel time and next arrival cannot exceed the large bound multiplied by the sum of one minus each of the two destination flags. In addition, next depot arrival minus current depot arrival cannot exceed the prescribed maximum interval. This latter requirement applies to every depot combination, even when a depot is not selected. Consecutive-trip requirements are used only where the next trip lies within the declared range.
+
+The first actual trip starts at the maximum allowed charge fraction. Departure and arrival fractions $SOC^{dep}_{ki}$ and $SOC^{arr}_{ki}$ remain between the given minimum and maximum. Arrival fraction times battery capacity equals departure fraction times capacity less trip energy use. The next departure fraction times capacity equals current arrival fraction times capacity plus charging rate times charging duration; a terminal charge record also supports this link after the final trip. Each trip's charging duration is separately bounded by every depot's availability multiplied by the large bound. Thus a zero availability at any depot forces this duration to zero under the stated rule, rather than checking only the selected depot. The time needed to charge from the arrival level to the maximum, less actual charging time, cannot exceed the charging-wait switch plus the large bound times one minus that switch, and cannot be less than one minus the switch. Waiting time cannot exceed the large bound times the switch. A switch value of one permits a charging-time shortfall from zero to one and does not require an exact full recharge.
+
+For each actual trip and request, the number of incoming roads and the number of outgoing roads each cannot exceed its allocation flag. The incoming number also equals that flag, and incoming and outgoing numbers are equal. At each depot, the absolute difference between its selected outbound road count to requests and its preceding-trip depot flag, and between its selected inbound road count from requests and its current-trip depot flag, each cannot exceed the large bound times one minus current trip use. Service roads from a node to itself or directly between depots are forbidden. Requests share nonnegative ordering records $\mu_p$. For every trip and ordered request pair, the first record less the second, plus the total request count plus two multiplied by road use, cannot exceed the request count plus one. The request count is the size of the given request collection.
+
+On a selected depot-to-request road, pickup time less the preceding trip's depot arrival, charging and waiting equals road travel time. On a selected request-to-request road, the pickup-time difference equals travel time. On a selected request-to-depot road, depot arrival less pickup equals travel time. When the corresponding road is unused, each of these time equalities permits deviation by at most the large bound in either direction; the remaining bounds are retained. Total trip travel time $\tau_{ki}$ equals the travel-time sum over selected depot-to-request, request-to-request and request-to-depot roads.
+
+The passenger load on every depot-to-request road is zero. Each road load $L_{nn'}^{ki}$ cannot exceed the large bound multiplied by road use. At each request, incoming load plus its passenger count multiplied by the incoming road count equals outgoing load. Trip energy $e_{ki}$ includes, on depot-departure roads, vehicle weight times the weight-dependent rate plus the base rate, multiplied by road use and travel time. On every request-departure road, passenger unit weight times road load plus vehicle weight times road use gives the transported weight; this is multiplied by the weight-dependent rate, increased by the base rate times road use, and multiplied by travel time. Energy coefficients are converted to minute-based units, and charging rate is also expressed as energy per minute so that battery accounting uses consistent units.
+
+\subsection*{Inline notation and relations}
+$F_p^{ki}\ge A_p^{ki}-b_pZ_p^{ki}$; $F_p^{ki}\ge b_pZ_p^{ki}-A_p^{ki}$; $F$; $\lambda_1\sum_{k,i}U_{ki}$; $|D|$; $I=\{0,\ldots,\pi_{\max}\}$; $i+1$; $X=Z=U=0$; $H=|P|$; $P_i=P$; $\alpha,\beta$.
 \end{document}

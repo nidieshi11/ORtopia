@@ -1,10 +1,14 @@
-\documentclass{article}
-\usepackage{amsmath,amssymb}
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
 \emergencystretch=4em
-\begin{document}
-\section*{Robot and truck-based package distribution model}
 
-This model involves the assignment of tasks to robotic vehicles and trucks, without considering path optimization. $P,Z,R_z$ represents packages, regions, and sets of robots within a region; $z_p$ indicates the region to which a package belongs. $c_T,c_R$ represents the cost per package delivery. $f_T,f_R$ represents the fixed costs associated with using individual robots or vehicles (see Table 4 on page 10 of the original paper, $fc_T,fc_R$). $Q_T,Q_R$ represents the capacity for handling a certain number of packages. $D$ represents the distance threshold. The original model measured the workload required for truck deliveries based on the number of robots available. This capacity is still used in the new model. $B_p=\mathbf1_{\{w_p>m_W\ \mathrm{or}\ m_p>m_M\}}$ is calculated based on explicit weight and size thresholds.
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
+\begin{document}
+\section*{P0347 Allocating Parcel Deliveries to Trucks and Local Robots}
+\subsection*{Mathematical formulation}
 \begin{align*}
 \min\quad &c_T\sum_px^T_p+c_R\sum_{p,z,r}x^R_{pzr}
 +f_Ty^T+(f_R+c_T)\sum_{z,r}z^R_{zr}\\
@@ -17,6 +21,18 @@ x^T_p+\sum_{r\in R_{z_p}}x^R_{p,z_p,r}=1&&(p\in P),\\
 &x^R_{pzr}+x^R_{qzr}\le1&&(z,r,p,q:d_{pq}>D),\\
 &x^T,x^R,z^R\in\{0,1\},\quad y^T\in\mathbb Z_{\ge1}.
 \end{align*}
-Package dimensions use a common scale (centimeters in these instances), weights are in kilograms, and distances use the common unit of the input matrix. Missing diagonal distances are filled with 0. The added weights and dimensions preserve the original oversized-package classification and are explicitly synthetic values supplied as data. The original $c_F=200$ is retained as the special input case in which both fixed charges are 200. Setting variables outside their region to 0 makes the regional service limits explicit. This does not affect the optimal objective value in these instances, where all delivery unit costs are positive.
 
+\subsection*{Definitions and model scope}
+A delivery operator allocates given parcels $P$ between trucks and robots serving given zones $Z$. Each parcel has a fixed home zone $z_p$ and each zone has its own supplied robot collection $R_z$. The operator chooses a zero-or-one direct truck-delivery state $x_p^T$ and zero-or-one robot-delivery states $x_{pzr}^R$. For each parcel, its truck state plus the robot states in its home zone must sum to exactly one. All robot-delivery states outside the parcel's home zone are zero, so a parcel cannot be split or sent to an out-of-zone robot.
+
+Each parcel has given weight $w_p$ and size measure $m_p$. Its fixed large-parcel flag $B_p$ is one when weight exceeds the given weight threshold $m_W$ or size exceeds the given size threshold $m_M$. Every parcel with that flag must be delivered directly by truck. Equality to either threshold alone does not trigger the flag. Weights, size measures and pairwise distances must use their respective consistent units; specific threshold or cost values from one example are not imposed on every case.
+
+A robot has a zero-or-one activation state $z_{zr}^R$. For each robot, its assigned parcels in its own zone cannot total more than the given robot parcel capacity $Q_R$ times that activation state. Activating a robot does not require assigning it a parcel. Whenever the given distance between a parcel pair $d_{pq}$ exceeds the given distance threshold $D$, their assignment states to the same robot cannot sum to more than one. Thus every parcel pair assigned to a robot must meet the threshold; equality is allowed. This is a pairwise-distance requirement, not a robot tour-length limit.
+
+The operator chooses an integer truck count $y^T$ of at least one. Add the number of parcels delivered directly by truck and the number of activated robots. This workload cannot exceed the given truck capacity $Q_T$ times the truck count. Each activated robot contributes one replenishment unit, regardless of how many parcels it delivers; robot-delivered parcels are not individually added to this truck-capacity calculation.
+
+The operator seeks the lowest total delivery and activation cost. Charge the given truck per-parcel rate $c_T$ for every directly truck-delivered parcel, and the given robot per-parcel rate $c_R$ for every robot-delivered parcel. Add the fixed truck charge $f_T$ times truck count. For each activated robot, add its fixed robot charge $f_R$ and one truck per-parcel rate for replenishment. The truck and robot fixed charges are separate supplied amounts, not a common multiplier on delivery rates. These choices allocate work and equipment without constructing actual vehicle or robot routes.
+
+\subsection*{Inline notation and relations}
+$P,Z,R_z$; $z_p$; $c_T,c_R$; $f_T,f_R$; $fc_T,fc_R$; $Q_T,Q_R$; $D$; $B_p=\mathbf1_{\{w_p>m_W\ \mathrm{or}\ m_p>m_M\}}$; $c_F=200$.
 \end{document}

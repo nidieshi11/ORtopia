@@ -1,44 +1,15 @@
-% Mathematical Model - paper
-% Auto-generated at 2026-01-12T09:22:44.432720
-% Model Source: Directly Extracted
-% This model is directly extracted from the paper
+\documentclass[10pt]{article}
+\usepackage{amsmath,amsfonts,amssymb,mathtools,mathrsfs,bm,bbm,array,xcolor,geometry}
+\allowdisplaybreaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{4pt}
+\emergencystretch=4em
 
-\documentclass{article}
-\usepackage{amsmath}
-\usepackage{amssymb}
-
+\geometry{paperwidth=215mm,paperheight=290mm,hmargin=15mm,vmargin=16mm}
 \begin{document}
-
-\section*{Problem: Integer Programming (IP) / Mixed-Integer Linear Programming (MILP). Specifically, it is a multicommodity network flow problem based on a space-time network, representing an extension of the Integrated Timetabling and Vehicle Scheduling (ITTVS) problem with a resource (battery) constraint.}
-
-\textbf{Model Source}: Directly Extracted
-
-\subsection*{Decision Variables}
-x^k_{uv} \in \{0, 1\}, \quad \text{for all } k \in K, u \to v \in A
-
-\subsection*{Objective Function}
-\text{Maximize} \quad \sum_{k \in K} \sum_{u \to v \in A} -c(u, v) x^k_{uv} \quad \text{(1)}
-
-\subsection*{Constraints}
-% 流平衡约束
-\sum_{\{v: \bar{o} \to v \in A\}} x^k_{\bar{o}v} = 1, \quad \text{for all } k \in K \quad \text{(2)}
-\sum_{\{u: u \to \bar{d} \in A\}} x^k_{u\bar{d}} = 1, \quad \text{for all } k \in K \quad \text{(3)}
-\sum_{\{v: u \to v \in A\}} x^k_{uv} = \sum_{\{v: v \to u \in A\}} x^k_{vu}, \quad \text{for all } k \in K, u \in V \setminus \{\bar{o}, \bar{d}\} \quad \text{(4)}
-
-% 请求接送匹配约束
-\sum_{\{u \to v \in A^+_d\}} x^k_{uv} = \sum_{\{u \to v \in A^-_d\}} x^k_{uv}, \quad \text{for all } k \in K, d \in D \quad \text{(5)}
-
-% 资源（电量）约束
-\sum_{u \to v \in A} e_{uv} x^k_{uv} \le E_{\text{max}}, \quad \text{for all } k \in K \quad \text{(6)}
-
-% 时间窗冲突避免约束（互斥约束）
-\sum_{k \in K} \sum_{u \to v \in C} x^k_{uv} \le 1, \quad \text{for all } C \in \mathcal{C}_1 \quad \text{(7)}
-\sum_{k \in K} \sum_{u \to v \in C} x^k_{uv} \ge 1, \quad \text{for all } C \in \mathcal{C}_2 \quad \text{(8)}
-
-% 变量域约束
-x^k_{uv} \in \{0, 1\}, \quad \text{for all } k \in K, u \to v \in A \quad \text{(9)}
-
-\subsection*{Complete Mathematical Model}
+\section*{P0274 Electric-bus operations on a time-and-location network}
+\subsection*{Mathematical formulation}
+\begin{align*}
 \text{Maximize} \quad & \sum_{k \in K} \sum_{u \to v \in A} -c(u, v) x^k_{uv} \quad \text{(1)} \\
 \text{subject to} \quad & \sum_{\{v: \bar{o} \to v \in A\}} x^k_{\bar{o}v} = 1, && \text{for all } k \in K \quad \text{(2)} \\
 & \sum_{\{u: u \to \bar{d} \in A\}} x^k_{u\bar{d}} = 1, && \text{for all } k \in K \quad \text{(3)} \\
@@ -48,6 +19,16 @@ x^k_{uv} \in \{0, 1\}, \quad \text{for all } k \in K, u \to v \in A \quad \text{
 & \sum_{k \in K} \sum_{u \to v \in C} x^k_{uv} \le 1, && \text{for all } C \in \mathcal{C}_1 \quad \text{(7)} \\
 & \sum_{k \in K} \sum_{u \to v \in C} x^k_{uv} \ge 1, && \text{for all } C \in \mathcal{C}_2 \quad \text{(8)} \\
 & x^k_{uv} \in \{0, 1\}, && \text{for all } k \in K, u \to v \in A \quad \text{(9)}
-\end{aligned}
+\end{align*}
+
+\subsection*{Definitions and model scope}
+A bus operator schedules vehicles $K$ on a supplied time-and-location network $V$. Allowed connections $A$ represent specific departure, waiting, travel and service opportunities. Each has a supplied cost $c(u,v)$ and energy use $e_{uv}$. Vehicles share a departure node $\bar o$, an end node $\bar d$ and a total energy allowance $E_{max}$. Every request $D$ has a supplied pickup-connection group $A_d^+$ and delivery-connection group $A_d^-$. Inputs also explicitly give mutually exclusive connection groups $\mathcal C_1$ and required-coverage groups $\mathcal C_2$; their membership is not inferred from missing timetable information.
+
+Each vehicle chooses whether to use each allowed connection $x^k_{uv}$, taking only zero or one. Every vehicle uses exactly one connection leaving the common departure node and exactly one entering the common end node. At every other network node, its selected outgoing count equals its selected incoming count, without an extra requirement that either count be at most one. For every vehicle and request, its total selected pickup connections equals its total selected delivery connections. This matches pickup and delivery counts without separately requiring every request to be served exactly once by one vehicle.
+
+A vehicle's total energy over all selected connections cannot exceed the common allowance. Within every mutually exclusive group, total use across all vehicles is at most one. Within every required-coverage group, total use across all vehicles is at least one. A connection may belong to multiple groups as supplied, and every group's requirement applies separately. Energy is checked as a route-wide total without adding station-level battery states or charging recurrences.
+
+The operator seeks the largest negative total connection cost across all vehicles, equivalently the smallest total of the given connection charges. Only the supplied cost of each selected connection is included; no separate fixed vehicle-activation charge is added.
+
 
 \end{document}
