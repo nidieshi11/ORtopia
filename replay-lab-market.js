@@ -1,0 +1,140 @@
+/* Retail and inventory decisions. Periods and customer arrivals drive the state;
+   display time between events is used only to interpolate movement. */
+(() => {
+'use strict';
+const labs=window.ORTOPIA_LABS, money=(n,d=2)=>Number(n).toLocaleString('zh-CN',{maximumFractionDigits:d});
+const clamp=v=>Math.max(0,Math.min(1,v)),lerp=(a,b,f)=>a+(b-a)*clamp(f);
+function eventAt(f,count){
+ const index=Math.min(count-1,Math.floor(f*count));return [index,clamp(f*count-index)];
+}
+function decision(history,at,fallback){
+ let selected=fallback;for(const event of history||[]){if(event.at>at+1e-10)break;selected=event.choice;}return selected;
+}
+function studio(canvas,sky='#d0e5df',floor='#dddfcc'){
+ const c=canvas.getContext('2d');c.setTransform(canvas.width/900,0,0,canvas.height/360,0,0);
+ const box=(x,y,w,h,color)=>{c.fillStyle=color;c.fillRect(x,y,w,h);};
+ function disk(x,y,r,color){c.beginPath();c.arc(x,y,r,0,2*Math.PI);c.fillStyle=color;c.fill();}
+ function path(pts,color,w=2){c.beginPath();pts.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.strokeStyle=color;c.lineWidth=w;c.stroke();}
+ function poly(pts,color){c.beginPath();pts.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.closePath();c.fillStyle=color;c.fill();}
+ function text(s,x,y,size=15,color='#203d3c',align='center'){
+  c.fillStyle=color;c.font='600 '+size+'px system-ui,sans-serif';c.textAlign=align;c.fillText(s,x,y);}
+ function plate(s,x,y,color='#204944'){c.font='600 15px system-ui';const w=c.measureText(s).width+20;box(x-w/2,y-17,w,24,color);text(s,x,y,15,'#fff');}
+ function person(x,y,color,walk=0){const z=Math.sin(walk*14)*3;path([[x-4-z,y],[x,y-9],[x+4+z,y]],'#314849',3);box(x-4,y-18,8,10,color);disk(x,y-22,4,'#ba916c');path([[x,y-15],[x+5,y-12],[x+9,y-15]],color,2);}
+ function crate(x,y,color='#bb894f'){box(x,y,18,14,color);box(x+7,y,4,14,'#dfbc86');path([[x,y+14],[x+18,y+14]],'#796046',1);}
+ const wash=c.createLinearGradient(0,0,0,250);wash.addColorStop(0,sky);wash.addColorStop(1,'#f3efdc');box(0,0,900,360,wash);box(0,235,900,125,floor);
+ return {c,box,disk,path,poly,text,plate,person,crate};
+}
+labs.P0488={
+ title:'卸货月台的一期订货提前期',action:'改变下一笔订货量。到货受当期可供数量限制；货架缺货时，当期销售随即流失。',choices:['按归档量订货','改订半量','停止订货'],live:true,
+ scope:'复现归档见证路径 1 的前 12 期。订单提前一期，初始在途为零。图中成本为该段实际样本；全时域归档期望成本为 28,672.625。',
+ frame(d,choice,f,hist){const [i,phase]=eventAt(f,d.path.length);let pipe=d.initialPipeline,loss=0,sales=0,out;
+  for(let j=0;j<=i;j++){
+   const [need,supply]=d.path[j],order=[d.orderMax,d.orderMax/2,0][decision(hist,j/d.path.length,choice)];
+   const received=Math.min(pipe,supply),sold=Math.min(need,received);
+   const settled=j<i||phase>=.82;
+   if(settled){sales+=sold;loss+=need-sold;}
+   out={i,phase,pipe,need,supply,order,received,sold,loss};pipe=order;
+  }
+  return {...out,clock:'第 '+(i+1)+' / 12 期',metrics:[['上期在途订单',money(out.pipe)],['本期可交付',money(out.received)],['累计成交',money(sales)],['累计失销成本',money(loss*d.penalty)]]};
+ },
+ draw(canvas,s){const g=studio(canvas);const {box,disk,path,text,plate,crate,person}=g;
+  for(let j=0;j<10;j++){box(48+j*86,79,63,67,'#c1d8d0');path([[79+j*86,79],[79+j*86,146]],'#e9eeda',3);}
+  box(0,158,900,95,'#c2bfab');box(265,142,11,116,'#748476');box(625,142,11,116,'#748476');
+  const x=lerp(-50,124,s.phase/.42);box(x,182,95,45,'#688a76');box(x+96,199,35,28,'#cf9455');box(x+103,202,19,10,'#c6e2dc');for(const k of [13,93,117])disk(x+k,229,8,'#344a49');
+  box(330,218,224,8,'#86765b');for(let n=0;n<4;n++){box(339+n*68,184,3,75,'#7b8179');}
+  const units=Math.round(s.received*4);
+  for(let k=0;k<units;k++){const px=lerp(175+k*19,366+k*28,(s.phase-.22)/.26),xx=lerp(px,682+k*20,(s.phase-.6)/.24);crate(xx,203);}
+  const shopperX=lerp(864,729,s.phase/.60);person(shopperX,238,'#946148',s.phase);
+  plate('到货月台',151,120);plate('待售货架',443,120);plate('提货窗口',748,120);
+  text('在途 '+money(s.pipe)+'　可供 '+money(s.supply),153,281);text('下期订单 '+money(s.order),447,281);text('当期需求 '+money(s.need),748,281);
+  text('每个货箱 = 0.25 单位',145,327,13,'#54675d');
+  if(s.phase>=.82)plate('成交 '+money(s.sold)+'　流失 '+money(s.need-s.sold),742,323,s.need>s.sold?'#945840':'#34735b');
+ }
+};
+labs.P0489={
+ title:'水箱的排空阀、补水泵与用水口',action:'选择首日是否排空以及补多少水，观察供水缺口和后续按水龄触发的排空。',choices:['归档排空与补水','首日保留旧水且不补','首日排空后补半箱'],
+ scope:'按归档策略表追踪 12 天。三种首日决策共用固定种子抽取的需求，次日起执行原策略。显示该路径的折现费用，归档无限期目标由原 Bellman 检查器核对。',
+ frame(d,c,f){const rows=d.runs[c],[i,phase]=eventAt(f,rows.length),[old,purge,buy,need,served,end,age,cost]=rows[i],base=purge?0:old,peak=base+buy;
+  const volume=phase<.22?lerp(old,base,phase/.22):phase<.54?lerp(base,peak,(phase-.22)/.32):lerp(peak,end,(phase-.54)/.39);
+  const total=rows.slice(0,i+(phase>=.94?1:0)).reduce((a,r,j)=>a+r[7]*d.discount**j,0);
+  return {i,phase,old,purge,buy,need,served,end,age,volume,clock:'第 '+(i+1)+' 天',metrics:[['清空量',money(old*purge)],['采购水量',money(buy)],['本日供水缺口',phase>=.93?money(need-served):'待用水'],['已结算折现费用',money(total)]]};
+ },
+ draw(canvas,s,d){const {box,disk,path,poly,text,plate}=studio(canvas,'#d4e6e5','#ced8c0');
+  poly([[0,193],[140,105],[230,165],[370,108],[500,184],[650,130],[900,188],[900,240],[0,240]],'#b6c9ac');
+  const feed=s.phase>=.22&&s.phase<.54&&s.buy>0,drain=s.phase<.22&&s.purge,demand=s.phase>=.54&&s.phase<.93;
+  path([[87,184],[136,184],[136,98],[287,98]],'#758e88',15);path([[555,224],[691,224],[691,181],[790,181]],'#718983',15);path([[321,234],[321,274],[184,274]],'#718983',11);
+  if(feed)path([[90,184],[136,184],[136,98],[290,98]],'#53aab5',6);
+  if(demand)path([[553,224],[691,224],[691,181],[791,181]],'#4c9da9',6);
+  if(drain)path([[321,234],[321,274],[184,274]],'#bd8751',5);
+  box(282,64,284,178,'#627c78');box(289,70,270,164,'#d8e6df');
+  const h=156*s.volume/d.capacity;box(289,234-h,270,h,s.age>=2?'#72a59a':'#68b4bf');
+  for(let j=0;j<=4;j++)path([[290,232-j*39],[305,232-j*39]],'#53766e',2);
+  disk(91,184,25,'#527e76');const ang=feed?s.phase*35:0;for(let j=0;j<3;j++)path([[91,184],[91+18*Math.cos(ang+j*2.094),184+18*Math.sin(ang+j*2.094)]],'#d4e5cb',5);
+  plate('水量 '+money(s.volume,1),425,159);text('水龄 '+s.age+' 天',425,270);
+  text('补水泵',90,230);text('排空阀',190,306);plate('用水需求 '+money(s.need),766,137);
+  if(demand)for(let j=0;j<3;j++)disk(792,188+((s.phase*175+j*11)%34),3,'#5c9faf');
+  text(['排空或留存','采购入池','向用户供水'][s.phase<.22?0:s.phase<.54?1:2],450,329,17);
+ }
+};
+labs.P0466={
+ title:'限量商品的最后一段销售时间',action:'切换报价规则。顾客依次到达，估值达到报价才成交；卖掉一件后，下一位顾客面对新的库存状态。',choices:['归档反馈定价','固定报价 1','归档价加 0.55'],live:true,
+ scope:'在原需求强度和估值分布下，取剩余时间 0.14、库存 8 的条件状态。按实例种子另抽共同客流，显示这段客流的实际销售收入。归档整场期望价值按原级数复算为 9,601.6534。',
+ frame(d,c,f,h){let left=d.stock,rev=0,k=0,latest=null,now=f*d.duration;
+  for(const [j,[time,budget]] of d.arrivals.entries()){
+   if(time>now)break;
+   const choice=decision(h,time/d.duration,c),price=left===0?null:choice===1?1:d.quotes[j][left]+(choice===2 ? .55 : 0),ok=left>0&&budget>=price;
+   if(ok){rev+=price;left--;}k++;latest={time,budget,price,ok};
+  }
+  return {left,rev,k,latest,now,clock:'剩余 '+money(d.duration-now,4),metrics:[['已到顾客',String(k)],['可售库存',String(left)],['最近一笔',latest?(latest.ok?'成交':'离开'):'等待'],['本段实收',money(rev,4)]]};
+ },
+ draw(canvas,s,d){const {box,disk,path,poly,text,plate,person}=studio(canvas,'#d7e2e4','#dfd9c6');
+  box(65,74,490,150,'#547775');box(73,82,474,134,'#eee5c9');text('限 量 商 品',310,111,19);
+  for(let j=0;j<8;j++){const x=100+j*54;box(x,147,39,44,j<s.left?'#b37652':'#c9c6b6');if(j<s.left){box(x+16,147,6,44,'#e6c888');text(j+1,x+20,177,12,'#fff');}}
+  box(578,121,230,105,'#a18b71');box(608,91,94,50,'#305a57');text(!s.latest?'待报价':s.latest.price===null?'售罄':'报价 '+money(s.latest.price,2),655,123,15,'#fff');
+  const visit=s.latest,diff=visit?Math.min(1,(s.now-visit.time)*270):0;
+  if(visit){const x=lerp(720,visit.ok?524:847,diff);person(x,252+(visit.ok?10:0)*diff,visit.ok?'#477e69':'#ac7057',diff);if(visit.ok)box(x+7,239,13,11,'#b4754b');plate('估值 '+money(visit.budget,2),x,202);}
+  person(614,198,'#34685f');box(568,195,148,12,'#795c47');box(581,207,13,25,'#90765c');box(694,207,13,25,'#90765c');
+  for(let j=0;j<Math.min(4,d.arrivals.length-s.k);j++)person(769+j*26,288+j*6,'#738492',0);
+  path([[80,287],[536,287]],'#9aa99b',3);text('已售 '+(d.stock-s.left)+' / '+d.stock,306,321,18);
+ }
+};
+labs.P0469={
+ title:'三个陈列位与顾客的购买选择',action:'更换展示组合，让下一位顾客在新货架与离店选项之间选择。比较客流相同情况下的销售收入。',choices:['归档组合','替换一个商品','按吸引力选三件'],live:true,
+ duration:79,scope:'归档策略的原题对抗性目标值为 0。现场展示典型顾客的选择。99 次到店使用实例种子生成同一组随机偏好，期望单客收入按 MNL 选择概率精确计算。',
+ frame(d,c,f,h){const [i,phase]=eventAt(f,d.runs[0].picks.length);let revenue=0,sold=0,r,pick;
+  for(let j=0;j<=i;j++){r=d.runs[decision(h,j/d.runs[0].picks.length,c)];pick=r.picks[j];if(pick>=0&&(j<i||phase>.76)){sold++;revenue+=d.prices[pick];}}
+  return {r,pick,i,phase,clock:'顾客 '+(i+1)+' / 99',metrics:[['当前展示',r.ids.map(k=>'#'+(k+1)).join('、')],['期望单客收入',money(r.expected,5)],['已成交人数',String(sold)],['客流样本实收',money(revenue,3)]]};
+ },
+ draw(canvas,s){const {box,disk,path,text,plate,person}=studio(canvas,'#efe1c9','#dfd9c3');
+  box(60,67,560,165,'#718978');box(75,78,530,140,'#f7f0dc');
+  for(const [j,k] of s.r.ids.entries()){const x=110+j*160,c=['#b37e56','#6986a1','#ba9562','#b76460','#8d9977','#558d80','#9b83a3','#9aa4ab'][k];
+   box(x,111,104,64,'#e6dfc9');for(let n=0;n<3;n++){box(x+n*30+6,128,21,41,c);box(x+n*30+11,120,12,9,c);box(x+n*30+7,142,19,12,'#eee3c9');}plate('商品 '+(k+1),x+49,201);}
+  box(700,110,114,94,'#a89a82');box(713,125,88,79,'#e3dbbe');plate('出口',760,139,'#556761');
+  const at=s.pick<0?760:160+s.r.ids.indexOf(s.pick)*160,paid=s.phase>.76;
+  const x=paid?lerp(at,760,(s.phase-.76)/.24):lerp(641,at,s.phase/.65),y=paid?lerp(241,215,(s.phase-.76)/.24):lerp(270,241,s.phase/.65);
+  const shirts=['#7d6c94','#9f704e','#548777','#687f95'];person(x,y,shirts[s.i%4],s.phase);
+  if(s.pick>=0&&paid)box(x+7,y-15,11,12,'#c59b64');
+  for(let k=1;k<=Math.min(3,98-s.i);k++){const qx=644+k*30-16*s.phase;person(qx,278+k*7,shirts[(s.i+k)%4],s.phase*.2);}
+  text(paid?(s.pick<0?'顾客离店':'取走商品 '+(s.pick+1)):'顾客比较本次上架商品',362,316,17);
+ }
+};
+labs.P0496={
+ title:'两家店争夺两期的同一件订单',action:'改变甲店首期报价。首期赢家可能售罄，两家依据成交历史执行第二期定价策略。',choices:['甲按归档报价','甲首期报零','甲提高一档'],
+ scope:'画面取两店均限产一件的分支；首期同价取甲胜，次期采用在售方策略的中位报价。期望利润另对容量类型、平局和归档延续混合策略全部加权。',
+ frame(d,c,f){const r=d.runs[c],[period,phase]=eventAt(f,2),first=r.sample[0],seller=period?1-first:first,px=period?r.sample[1]:(first?d.opponent:r.quote);
+  const stocks=[1,1];if(period)stocks[first]=0;if(phase>.77&&px<=1)stocks[seller]=0;
+  return {r,first,period,phase,seller,px,stocks,clock:'第 '+(period+1)+' 个销售期',metrics:[['甲首期报价',money(r.quote,5)],['甲首单胜率',money(r.first[0]*100)+'%'],['甲两期期望利润',money(r.profit[0],5)],['乙两期期望利润',money(r.profit[1],5)]]};
+ },
+ draw(canvas,s,d){const {box,disk,path,poly,text,plate,person,crate}=studio(canvas,'#e7dfcf','#d6d6bc');
+  ['甲','乙'].forEach((name,j)=>{const x=j?572:94,col=j?'#a06556':'#4b7c78';box(x,114,230,111,'#d0bda0');
+   poly([[x-9,117],[x+24,78],[x+214,78],[x+240,117]],col);box(x+24,136,181,57,'#879c8d');
+   if(s.stocks[j])crate(x+107,169);else text('售罄',x+116,175,20,'#543e31');plate(name+'店',x+114,105,col);
+   text(s.period===0?'报价 '+money(j?d.opponent:s.r.quote,3):s.first===j?'首期已售出':'报价 '+money(s.px,3),x+114,251);});
+  path([[105,267],[786,267]],'#b6b59e',3);
+  const store=s.seller?686:208,x=s.phase<=.77?lerp(450,store,(s.phase-.14)/.6):lerp(store,s.seller?819:75,(s.phase-.77)/.23),y=lerp(295,270,s.phase/.68);
+  person(x,y,s.period?'#9b714e':'#536389',s.phase);
+  if(s.phase>.77&&s.px<=1)crate(x+6,y-14);
+  text('买家 '+(s.period+1)+'　'+(s.phase>.77?(s.px<=1?'从'+(s.seller?'乙':'甲')+'店买走商品 · 成交价 '+money(s.px,3):'离开市场'):'在两家门店间比价'),450,323,17);
+ }
+};
+})();

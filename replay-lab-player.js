@@ -1,0 +1,88 @@
+(() => {
+'use strict';
+const labs=window.ORTOPIA_LABS=Object.create(null);
+function el(name,cls,txt){const node=document.createElement(name);if(cls)node.className=cls;if(txt!=null)node.textContent=txt;return node;}
+function link(url,txt){const node=el('a','',txt);node.href=url;return node;}
+function list(host,cases){
+ const main=el('article','wrap replay-page sim-directory batch-index');
+ const nav=el('div','replay-breadcrumb');nav.append(link('index.html','实例仿真'));main.append(nav);
+ const head=el('header','replay-heading');head.append(el('h1','','决策仿真试用集'),el('p','','20 个中等规模实例 · 选择一题，在运行中观察方案差异'));main.append(head);
+ const byScene=new Map();
+ for(const [id,lab] of Object.entries(labs)){
+  const p=cases.get(id);if(!p)continue;
+  if(!byScene.has(p.sceneName))byScene.set(p.sceneName,[]);
+  byScene.get(p.sceneName).push([p,lab]);
+ }
+ for(const [name,entries] of byScene){
+  const section=el('section'),items=el('ul','sim-list');section.append(el('h2','',name),items);
+  entries.sort(([a],[b])=>a.id.localeCompare(b.id));
+  for(const [p,lab] of entries){const li=el('li'),a=link('replay.html#'+p.id,'');a.append(el('small','',p.id),el('span','',lab.title));li.append(a);items.append(li);}
+  main.append(section);
+ }
+ host.replaceChildren(main);document.title='决策仿真试用集 · ORtopia';scrollTo(0,0);
+}
+function mount(host,p,pack,step){
+ const lab=labs[p.id],data=pack.lab,ctl=new AbortController();
+ const on=(el,event,fn)=>el.addEventListener(event,fn,{signal:ctl.signal});
+ host.innerHTML=`<article class="wrap atlas medium-world batch-world"><div class="replay-breadcrumb"></div>
+ <header class="atlas-title"><div><small class="lab-meta"></small><h1></h1></div></header>
+ <section class="atlas-stage"><div class="atlas-stage-head"><h2></h2><output class="lab-clock"></output><button class="lab-expand">放大现场</button></div>
+ <div class="atlas-window"><canvas class="lab-canvas"></canvas></div>
+ <div class="lab-decisions"><p></p><div class="lab-choices" aria-label="选择决策"></div></div>
+ <div class="atlas-control"><button class="lab-play"></button><input class="lab-scrub" type="range" min="0" max="1000" aria-label="仿真进度"><select class="lab-speed" aria-label="播放速度"><option>0.5×</option><option selected>1×</option><option>2×</option><option>4×</option></select><button class="lab-reset">恢复归档方案</button></div></section>
+ <dl class="lab-metrics"></dl><details class="atlas-proof"><summary>实例与试算范围</summary><p></p><code></code></details></article>`;
+ const q=sel=>host.querySelector(sel),stage=q('.atlas-stage'),map=q('.lab-canvas'),btn=q('.lab-play'),scrub=q('.lab-scrub'),group=q('.lab-choices'),dl=q('.lab-metrics');
+ q('.replay-breadcrumb').append(link('index.html#scene/'+p.sceneId,p.sceneName),' / ',link('replay.html#lab20','本批 20 个仿真'));
+ q('article').dataset.problem=p.id;q('.lab-meta').textContent=p.id+' · '+pack.sample;q('h1').textContent=p.title;q('h2').textContent=lab.title;
+ q('.lab-decisions p').textContent=lab.action;map.setAttribute('aria-label',lab.title);
+ q('.atlas-proof p').textContent=lab.scope;
+ q('.atlas-proof code').textContent='实例 '+pack.instance+' · 解 '+pack.solution+' · '+pack.variables.toLocaleString()+' 个决策变量 · '+(pack.lower?'至少 ':'')+pack.constraints.toLocaleString()+' 条约束';
+ const baseline=[{at:0,choice:0}];
+ let history=baseline.slice(),mode=0,f=0,playing=!matchMedia('(prefers-reduced-motion: reduce)').matches,rate=1,last=0,raf=0;
+ function selected(){return lab.live?(history.findLast(v=>v.at<=f+1e-12)?.choice??0):mode;}
+ const choices=lab.choices.map((name,i)=>{
+  const b=el('button','',name);group.append(b);on(b,'click',()=>{
+   if(lab.live){
+    if(f===1){f=0;history=[];playing=true;}
+    history=history.filter(h=>h.at<f);history.push({at:f,choice:i});
+   }else mode=i;
+   start();
+  });return b;
+ });
+ function paint(){
+  const choice=selected(),s=lab.frame(data,choice,f,history),ref=(!choice&&(!lab.live||history.every(h=>!h.choice)))?s:lab.frame(data,0,f,baseline);
+  lab.draw(map,s,data,choice,f);
+  q('.lab-clock').textContent=s.clock??('进度 '+Math.round(100*f)+'%');scrub.value=Math.round(f*1000);btn.textContent=playing?'暂停':f===1?'重播':'播放';
+  choices.forEach((b,i)=>b.setAttribute('aria-pressed',String(choice===i)));
+  while(dl.children.length<s.metrics.length){const card=el('div');card.append(el('dt'),el('dd'),el('small'));dl.append(card);}
+  for(let j=0;j<dl.children.length;j++){
+   const card=dl.children[j],m=s.metrics[j];card.hidden=!m;if(!m)continue;
+   const [label,value]=m;const [dt,dd,compare]=card.children;
+   if(dt.textContent!==String(label))dt.textContent=label;
+   if(dd.textContent!==String(value))dd.textContent=value;
+   const reference=ref.metrics.find(v=>v[0]===label)?.[1],text=reference!=null&&String(value)!==String(reference)?'归档同刻 '+reference:'';
+   if(compare.textContent!==text)compare.textContent=text;
+  }
+ }
+ function tick(now){
+  if(!playing||document.hidden)return;
+  f=Math.min(1,f+Math.min(120,now-(last||now))*rate/(1000*(lab.duration||23)));
+  last=now;if(f===1)playing=false;paint();if(playing)raf=requestAnimationFrame(tick);
+ }
+ function start(){cancelAnimationFrame(raf);last=0;paint();if(playing&&!document.hidden)raf=requestAnimationFrame(tick);}
+ on(btn,'click',()=>{if(f===1)f=0;playing=!playing;start();});
+ on(scrub,'input',()=>{f=Number(scrub.value)/1000;playing=false;start();});
+ on(q('.lab-reset'),'click',()=>{history=baseline.slice();mode=0;f=0;playing=false;start();});
+ on(q('.lab-speed'),'change',e=>rate=parseFloat(e.target.value));
+ const dialog=el('dialog','atlas medium-world batch-world lab-dialog'),anchor=document.createComment('simulation stage');stage.before(anchor);host.append(dialog);
+ dialog.setAttribute('aria-label',lab.title);const expand=q('.lab-expand');
+ on(expand,'click',()=>{if(dialog.open){dialog.close();return;}dialog.append(stage);dialog.showModal();expand.textContent='收起现场';});
+ on(dialog,'close',()=>{anchor.after(stage);expand.textContent='放大现场';expand.focus();});
+ function resize(){const r=map.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,2);map.width=Math.max(1,Math.round(r.width*d));map.height=Math.max(1,Math.round(r.height*d));paint();}
+ const ro=new ResizeObserver(resize);ro.observe(map);on(document,'visibilitychange',start);
+ if(step>1 && pack.events.length>1)f=Math.min(1,(step-1)/(pack.events.length-1));
+ resize();start();document.title=p.title+' · ORtopia';scrollTo(0,0);
+ return ()=>{ctl.abort();ro.disconnect();cancelAnimationFrame(raf);};
+}
+window.ORTOPIA_LAB_PLAYER={list,mount};
+})();
