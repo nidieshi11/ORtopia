@@ -3,12 +3,14 @@
 const labs=window.ORTOPIA_LABS=Object.create(null);
 function el(name,cls,txt){const node=document.createElement(name);if(cls)node.className=cls;if(txt!=null)node.textContent=txt;return node;}
 function link(url,txt){const node=el('a','',txt);node.href=url;return node;}
-function list(host,cases){
+function list(host,cases,batch='lab20'){
  const main=el('article','wrap replay-page sim-directory batch-index');
  const nav=el('div','replay-breadcrumb');nav.append(link('index.html','实例仿真'));main.append(nav);
- const head=el('header','replay-heading');head.append(el('h1','','决策仿真试用集'),el('p','','20 个中等规模实例 · 选择一题，在运行中观察方案差异'));main.append(head);
+ const entriesForBatch=Object.entries(labs).filter(([,lab])=>(lab.batch||'lab20')===batch);
+ const title=batch==='world20'?'连续世界仿真':'决策仿真试用集';
+ const head=el('header','replay-heading');head.append(el('h1','',title),el('p','',entriesForBatch.length+' 个中等规模实例 · 按场景选择'));main.append(head);
  const byScene=new Map();
- for(const [id,lab] of Object.entries(labs)){
+ for(const [id,lab] of entriesForBatch){
   const p=cases.get(id);if(!p)continue;
   if(!byScene.has(p.sceneName))byScene.set(p.sceneName,[]);
   byScene.get(p.sceneName).push([p,lab]);
@@ -19,7 +21,7 @@ function list(host,cases){
   for(const [p,lab] of entries){const li=el('li'),a=link('replay.html#'+p.id,'');a.append(el('small','',p.id),el('span','',lab.title));li.append(a);items.append(li);}
   main.append(section);
  }
- host.replaceChildren(main);document.title='决策仿真试用集 · ORtopia';scrollTo(0,0);
+ host.replaceChildren(main);document.title=title+' · ORtopia';scrollTo(0,0);
 }
 function mount(host,p,pack,step){
  const lab=labs[p.id],data=pack.lab,ctl=new AbortController();
@@ -33,7 +35,7 @@ function mount(host,p,pack,step){
  <dl class="lab-metrics"></dl><details class="atlas-proof"><summary>实例与试算范围</summary><p></p><code></code></details></article>`;
  const q=sel=>host.querySelector(sel),stage=q('.atlas-stage'),map=q('.lab-canvas'),btn=q('.lab-play'),scrub=q('.lab-scrub'),group=q('.lab-choices'),dl=q('.lab-metrics');
  const heading=q('.atlas-stage-head'),clock=q('.lab-clock'),article=q('article');
- q('.replay-breadcrumb').append(link('index.html#scene/'+p.sceneId,p.sceneName),' / ',link('replay.html#lab20','本批 20 个仿真'));
+ q('.replay-breadcrumb').append(link('index.html#scene/'+p.sceneId,p.sceneName),' / ',link('replay.html#'+(lab.batch||'lab20'),lab.batch==='world20'?'连续世界仿真':'决策仿真试用集'));
  q('article').dataset.problem=p.id;q('.lab-meta').textContent=p.id+' · '+pack.sample;q('h1').textContent=p.title;q('h2').textContent=lab.title;
  q('.lab-decisions p').textContent=lab.action;map.setAttribute('aria-label',lab.title);
  q('.atlas-proof p').textContent=lab.scope;
