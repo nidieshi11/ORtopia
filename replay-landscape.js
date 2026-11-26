@@ -67,71 +67,155 @@ function frame(canvas,p,track,index,progress,overlay,custom){
  }
  function actor(x,y,direction,phase){
   ctx.save();ctx.translate(x,y);ctx.scale(direction<0?-1:1,1);oval(0,3,18,4,'#345e6238');
-  const rail=k==='rail',drone=/无人机|飞行/.test(track.name)&&!/卡车/.test(track.name),flight=/航班|飞行航段/.test(track.name);
+  const rail=k==='rail',drone=/无人机|飞行/.test(track.title)&&!/卡车/.test(track.title),flight=/航班|飞行航段/.test(track.title);
   if(drone){line([[-10,-12],[10,-19]],'#445f68',3);line([[10,-12],[-10,-19]],'#445f68',3);for(const xx of [-11,11])oval(xx,-17,7,2,'#627d81');box(0,-9,10,5,3,'#d89f53','#8b7249','#f1c67f');}
   else if(flight){poly([[-22,-8],[-5,-8],[-10,-20],[-4,-20],[6,-9],[21,-7],[24,-4],[6,-3],[-6,7],[-11,7],[-6,-3],[-20,-2]],'#e5eee9','#62828c');}
-  else if(k==='port'&&/船/.test(track.name)){poly([[-23,-7],[23,-7],[14,2],[-15,2]],'#376c79');box(1,-7,16,8,5,'#f4e6c6','#c1c6ad','#dae4c4');}
-  else{const passenger=rail||/公交|乘客|接送|班次/.test(track.name);box(-3,-3,passenger?42:26,13,5,rail?'#3c7085':'#cc7942','#946b51','#ffe0a0');if(passenger){for(let j=0;j<5;j++)rect(-19+j*7,-14,5,5,'#d6e6dc');}else{rect(11,-11,11,9,'#527e80');rect(13,-10,6,4,'#d9e8df');}for(const n of [-12,12]){oval(n,-1,3.4,3.4,'#374f52');oval(n,-1,1.3,1.3,'#d6d8c3');}}
+  else if(k==='port'&&/船/.test(track.title)){poly([[-23,-7],[23,-7],[14,2],[-15,2]],'#376c79');box(1,-7,16,8,5,'#f4e6c6','#c1c6ad','#dae4c4');}
+  else{const passenger=rail||/公交|乘客|接送|班次/.test(track.title);box(-3,-3,passenger?42:26,13,5,rail?'#3c7085':'#cc7942','#946b51','#ffe0a0');if(passenger){for(let j=0;j<5;j++)rect(-19+j*7,-14,5,5,'#d6e6dc');}else{rect(11,-11,11,9,'#527e80');rect(13,-10,6,4,'#d9e8df');}for(const n of [-12,12]){oval(n,-1,3.4,3.4,'#374f52');oval(n,-1,1.3,1.3,'#d6d8c3');}}
   ctx.restore();
  }
  function person(x,y,phase){const walk=Math.sin(phase*6)*2;oval(x,y+1,5,1.6,'#426b6333');line([[x,y-7],[x-2-walk,y],[x-2-walk,y]],'#475e64',1.8);line([[x,y-7],[x+2+walk,y]],'#475e64',1.8);rect(x-2,y-13,5,7,'#ae7146');oval(x+.5,y-16,2.8,3,'#bd906d');}
- const rows=track.rows,r=rows[index],hit=[];
- if(custom?.coverage){
-  const {routes,picks}=custom.coverage,clients=[...new Set(routes.flatMap(z=>z.customers))];
-  const xpos=(j,count)=>count===1?450:65+j*765/(count-1);
-  const shown=routes.filter(z=>picks.has(z.id));const more=shown.length>12,lines=more?shown.slice(0,12):shown;
-  lines.forEach((z,j)=>{const x=xpos(j,lines.length);for(const c of z.customers){const dx=xpos(clients.indexOf(c),clients.length);line([[x,180],[dx,296]],'#80a896',2);}
-   building(x,171,.75,true);chip(z.id,x,192,true);});
-  clients.forEach((c,j)=>{const x=xpos(j,clients.length),n=shown.filter(z=>z.customers.includes(c)).length;building(x,290,.7,n===1);oval(x,300,7,6,n===1?'#367c67':'#c27337');chip(c+' × '+n,x,322,n===1);});
-  label(more?'显示前 12 条已选路线，覆盖次数按全部已选路线计算':'已选路线与客户覆盖',450,125);return [];
+ const rows=track.events, time=progress, omit=custom.omit;
+ const travel=['clock','route','coverage'].includes(track.kind);
+ const color=['#126f71','#b96339','#49639a','#857138','#734c77','#407b50'];
+ const legend=(v,x,y)=>{ctx.font='600 14px system-ui';ctx.textAlign='left';ctx.fillStyle='#21423d';ctx.fillText(v,x,y);};
+ const clamp=v=>Math.max(0,Math.min(1,v)), fmt=v=>typeof v==='number'?new Intl.NumberFormat('zh-CN',{maximumSignificantDigits:5}).format(v):String(v);
+ if(p.id==='P0479'){
+  const min=Math.min(...rows.map(r=>+r[1])),max=Math.max(...rows.map(r=>+r[2])),pos=x=>75+750*(x-min)/(max-min||1);
+  rect(0,195,900,64,'#657772');for(let x=0;x<900;x+=45)rect(x,232,22,2,'#eae6c9');const locations=[];
+  for(const id of new Set(rows.map(r=>r[0]))){if(id===omit)continue;const steps=rows.filter(r=>r[0]===id),r=steps.find(r=>r[3]<=time&&time<r[4])||steps.at(-1);
+   const f=clamp((time-r[3])/(r[4]-r[3])),meters=Number(r[1])+(Number(r[2])-Number(r[1]))*f;
+   actor(pos(meters),224,1,f);chip(id,pos(meters),195,true);locations.push(meters);}
+  const gaps=locations.slice(1).map((v,j)=>locations[j]-v);
+  return {done:0,active:locations.length,text:'实例时间 '+fmt(time)+' 秒 · 展示车辆 '+locations.length+' 辆 · 最小相邻间距 '+fmt(Math.min(...gaps))+' 米'};
  }
- if(custom?.share!=null){
-  const share=custom.share;building(450,156,1.35,true);chip('配送平台',450,181,true);
-  [[208,share,'众包司机'],[692,1-share,'第三方承运']].forEach(([x,f,name])=>{
-   line([[450,161],[x,278]],'#bbc5b2',10);line([[450,161],[x,278]],'#5b9382',2+7*f);
-   building(x,275,1.1,false);const t=progress;actor(450+(x-450)*t,161+117*t,x-450,t);
-   chip(name+' '+(f*100).toFixed(2)+'%',x,309,true);});
-  return [];
+ if(p.id==='P0488'){
+  const j=Math.min(rows.length-1,Math.floor(time)),f=clamp(time-j);building(150,223,1.9,true);building(740,223,1.9,true);
+  line([[162,236],[724,236]],'#849b8c',12);line([[162,236],[724,236]],'#d9ddc6',6);
+  actor(183+515*f,234,1,f);chip('本期发单 '+fmt(rows[j][1]),175,268,true);chip('上期订单 '+(j?fmt(rows[j-1][1]):'—'),732,268,true);
+  for(let h=0;h<Math.min(36,j);h++)box(560+(h%12)*13,317-Math.floor(h/12)*10,11,10,3,'#b99868','#9f815b','#e6cda0');
+  return {done:j,active:1,text:'第 '+(j+1)+' 期 · 订货提前期 1 期 · 箱体记录已走完提前期的订单'};
  }
- if(route){
-  const names=[...new Set(rows.flatMap(e=>[e.a,e.b]))],pos=new Map();
-  const cols=Math.min(7,Math.max(2,Math.ceil(names.length/3))),nr=Math.ceil(names.length/cols);
-  names.forEach((n,i)=>{const row=Math.floor(i/cols),len=Math.min(cols,names.length-row*cols),x=len===1?450:95+(row%2?len-1-i%cols:i%cols)*(710/(len-1));pos.set(n,[x,165+(nr===1?54:row*151/(nr-1))+13*Math.sin(i+seed)]);});
-  rows.forEach(e=>{const a=pos.get(e.a),b=pos.get(e.b);line([a,b],k==='rail'?'#808e88':'#a5b5aa',k==='rail'?6:12);line([a,b],k==='rail'?'#e5dfc8':'#d9dace',k==='rail'?2:9);
-   const dx=b[0]-a[0],dy=b[1]-a[1],length=Math.hypot(dx,dy)||1;
-   for(let j=16;j<length-12;j+=k==='rail'?12:35){const x=a[0]+dx*j/length,y=a[1]+dy*j/length;
-    if(k==='rail')line([[x-4*dy/length,y+4*dx/length],[x+4*dy/length,y-4*dx/length]],'#948f7f',1.6);
-    else line([[x,y],[x+8*dx/length,y+8*dy/length]],'#f6f2d9',1.3);}
-   });
-  if(overlay){ctx.setLineDash([7,5]);for(const edge of overlay.rows){if(pos.has(edge.a)&&pos.has(edge.b))line([pos.get(edge.a),pos.get(edge.b)],'#985d9b',2);}ctx.setLineDash([]);}
-  const a=pos.get(r.a),b=pos.get(r.b);line([a,b],'#167f76',5);
-  for(const [n,[x,y]] of pos){const active=n===r.a||n===r.b;if(k==='depot'&&/^(C\d|客户)/i.test(n)){
-    const scale=names.length>15?.65:1;ctx.save();ctx.translate(x,y-4);ctx.scale(scale,scale);box(0,0,25,18,8,'#e0c399','#ac9c84','#ae7153');poly([[-13,-18],[0,-30],[13,-18]],'#d3a984');rect(-7,-12,7,12,'#657c72');rect(4,-13,5,5,'#75949a');ctx.restore();
-   }else building(x,y-6,names.length>15?.7:1.06,active);oval(x,y,4,3,active?'#13766e':'#688a78');chip(n,x,y+18,active);hit.push({x,y,i:rows.findIndex(z=>z.a===n||z.b===n)});}
-  let t=.03+.94*progress;actor(a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t,b[0]-a[0],t);person(b[0]+16,b[1]-3,0);
- }else{
-  const group=Math.floor(index/6)*6,entries=rows.slice(group,group+6),values=rows.map(z=>z.v).filter(z=>typeof z==='number'),lim=Math.max(...values.map(Math.abs),1e-12);
-  const binary=values.length===rows.length&&values.every(v=>v===0||v===1);
-  entries.forEach((e,j)=>{const active=group+j===index,col=j%3,y=j<3?(entries.length>3?178:229):300,x=165+col*283;
-   poly([[x-110,y+9],[x-72,y-39],[x+101,y-39],[x+79,y+10]],active?'#aaceb8':'#c9d8c2');line([[x-106,y+11],[x+78,y+11]],active?'#438776':'#a8bda7',2);
-   building(x-33,y,1,active);const frac=typeof e.v==='number'?Math.min(1,Math.abs(e.v)/lim):1;
-   const accent=active?'#c77835':'#648f85';
-   if(overlay){const o=overlay.rows.find(other=>other.at===e.at);if(o)chip('对照 '+String(o.v).slice(0,12),x-30,y-65,false);}
-   if(binary){rect(x+12,y-28,36,19,'#4c6868');oval(x+21,y-19,5,5,e.v?'#b6df7c':'#a2aca7');label(e.v?'1':'0',x+38,y-15,'#fff',11);}
-   else if(/库存|结存|储量|电量|容量/.test(track.name)){rect(x+14,y-40,29,40,'#7a958d');rect(x+17,y-37,23,34,'#d4dfd2');rect(x+17,y-3-34*frac,23,34*frac,accent);for(let n=0;n<4;n++)rect(x+17,y-6-n*8,6,1,'#596d68');}
-   else if(/价格|成本|报价|工资|收益|费用|租金|佣金|预算/.test(track.name)){
-    poly([[x+9,y-29],[x+52,y-29],[x+62,y-18],[x+52,y-7],[x+9,y-7]],'#eed294','#b49b70');oval(x+54,y-18,2.3,2.3,'#f8f4e3');
-    line([[x+13,y-14],[x+13+33*frac,y-14]],accent,3);
-   }else if(/到达|时刻|时间|时长|间隔|工期/.test(track.name)){
-    oval(x+36,y-20,17,17,'#657f78');oval(x+36,y-20,14,14,'#f7f1d5');const angle=frac*5.23-1.57;line([[x+36,y-20],[x+36+12*Math.cos(angle),y-20+12*Math.sin(angle)]],accent,2);
-   }else if(/装载|物资|采购|生产量|产量|配送量|服务量|订单量|分配量/.test(track.name)&&typeof e.v==='number'){
-    for(let n=0;n<Math.round(8*frac);n++){const xx=x+14+(n%4)*11,yy=y-Math.floor(n/4)*10;box(xx,yy,10,9,3,'#d2a366','#ad8254','#e0bf8f');}
-   }else{rect(x+9,y-30,55,27,'#385653');rect(x+12,y-27,49,21,'#e4eedb');const angle=-2.75+2.36*frac;oval(x+36,y-9,2,2,accent);line([[x+36,y-9],[x+36+Math.cos(angle)*18,y-9+Math.sin(angle)*18]],accent,2);rect(x+30,y-3,12,3,'#648479');}
-   if(active){const ax=x+4+progress*6;person(ax,y+5,progress);}
-   chip(e.at||track.name,x,y+27,active);label(String(e.v).length>16?String(e.v).slice(0,15)+'…':e.v,x+38,y-46,active?'#84471e':'#41675b',14);hit.push({x,y,i:group+j});
+ if(p.id==='P0079'){
+  const lanes=[...new Set(rows.map(r=>r[1]))];let done=0,working=0;
+  for(let j=0;j<lanes.length;j++){
+   const y=172+j*100;box(445,y,85,36,12,'#658b85','#476b68','#acc2ac');line([[135,y+10],[763,y+10]],'#6a7b74',9);
+   for(let k=0;k<18;k++)oval(140+35*k,y+11,3,3,'#b2bfb0');chip(lanes[j].replace('待加工','机台'),445,y-52,true);
+   for(const [id,a,b,t,u] of rows.filter(e=>e[1]===lanes[j]&&e[0]!==omit)){const h=rows.findIndex(e=>e[0]===id),started=time>=t,finished=time>=u;const x=finished?670+h*20:started?386+105*clamp((time-t)/(u-t)):146+h*32;
+    box(x,y+4,22,19,5,finished?'#69a087':'#c78e56','#806f59','#ebce8b');chip(id,x,y+31,started&&!finished);if(finished)done++;else if(started)working++;}
+  }
+  return {done,active:working,text:'加工中 '+working+' 件 · 已完工 '+done+' 件'};
+ }
+ if(p.id==='P0006'||p.id==='P0029'||p.id==='P0036'||p.id==='P0493'){
+  const production=p.id==='P0006',bins=p.id==='P0029',stations=p.id==='P0493',col=r=>production?Number(r[0].slice(-1)):bins?String(r[1]):stations?Math.floor(r[2]*4/Math.max(1,track.total)):r[2]%4;
+  const keys=[...new Set(rows.map(col))],shown=keys.slice(0,8),tick=Math.min(rows.length-1,Math.floor(time)),frac=clamp(time-tick),cur=rows[tick],tallies=new Map(shown.map(g=>[g,0]));
+  for(const r of rows.slice(0,Math.floor(time))){if(r[0]!==omit&&tallies.has(col(r)))tallies.set(col(r),tallies.get(col(r))+(bins?1:Number(r[1])||0));}
+  const sum=[...tallies.values()].reduce((a,b)=>a+b,0),maximum=Math.max(1,...rows.map(r=>Math.abs(Number(r[1])||1)))*Math.max(1,rows.length/shown.length);
+  shown.forEach((g,j)=>{const x=shown.length===1?500:172+j%4*(565/Math.max(1,Math.min(shown.length,4)-1)),y=j<4?219:313;
+   building(x,y-18,1.15,true);const amount=tallies.get(g);
+   chip((production?'厂 ':bins?'箱 ':stations?'站点组 ':'商品组 ')+g,x,y+9,col(cur)===g);
+   rect(x-40,y+24,80,8,'#aebdac');rect(x-40,y+24,80*clamp(amount/maximum),8,'#3d806d');label(fmt(amount),x,y+50);
+   if(col(cur)===g&&cur[0]!==omit&&time<rows.length){const xx=65+(x-65)*frac,yy=y+5-26*Math.sin(Math.PI*frac);
+    if(bins||production||!stations)box(xx,yy,14,13,5,'#bd8a51','#887050','#eed095');else{person(xx,yy,frac);box(xx+10,yy,6,12,3,'#628e89','#50726f','#d3dfc4');}}
   });
+  return {done:Math.floor(time),active:1,text:(production?'样本累计产量 ':bins?'已装箱物品 ':stations?'样本站点累计配置 ':'样本累计采购量 ')+fmt(sum)};
  }
- return hit;
+ if(p.id==='P0478'){
+  let done=0;rows.forEach(([id,a,b,t,u],j)=>{const x=190+(j%6)*106,y=192+Math.floor(j/6)*88;if(y>350)return;
+   box(x,y,48,30,8,'#b5bdac','#819a8c','#dae4c6');const f=id===omit?0:clamp((time-t)/(u-t));
+   rect(x-13,y-22,26,11,'#475d58');rect(x-11,y-20,22*f,7,'#95c666');chip(b,x,y+18,f===1);
+   if(f>0&&f<1){person(x-64+60*f,y+2,f);line([[x-23,y-2],[x-14,y-12]],'#9a875d',2);}
+   if(f===1)done++;});
+  return {done,active:0,text:'已完成 '+done+' 项构件更新'};
+ }
+
+
+ if(travel){
+  const names=[...new Set(rows.flatMap(r=>r.slice(1,3)))],pos=new Map(),ordered=['P0092','P0110'].includes(p.id);
+  if(ordered)names.sort((a,b)=>Number(a)-Number(b));
+  const cols=Math.min(8,Math.max(3,Math.ceil(names.length/2))),nr=Math.ceil(names.length/cols);
+  names.forEach((n,i)=>{const row=Math.floor(i/cols),len=Math.min(cols,names.length-row*cols),a=len===1?.5:(row%2?len-1-i%cols:i%cols)/(len-1);pos.set(n,[85+730*a,146+(nr>1?row*163/(nr-1):67)+Math.sin(i*.93)*12]);});
+  const edges=new Set(),seen=new Set(),units=new Map();
+  for(const [id,a,b,t,u] of rows){
+   const v=pos.get(a),w=pos.get(b),key=[a,b].sort().join('|');
+   if(!edges.has(key)){line([v,w],pal[0],8);line([v,w],'#e8e4ce',4);edges.add(key);}
+   if(id!==omit&&time>=u){seen.add(b);line([v,w],'#70a294',3);}
+  }
+  for(const [n,[x,y]] of pos){const yes=seen.has(n);building(x,y-4,names.length>20?.55:.83,yes);oval(x,y,6,3,yes?'#257762':'#90a59d');chip(n,x,y+14,yes);}
+  const ids=[...new Set(rows.map(r=>r[0]))];let moving=0;
+  for(const id of ids){
+   if(id===omit)continue;const group=rows.filter(r=>r[0]===id).sort((a,b)=>a[3]-b[3]),active=group.filter(r=>r[3]<=time&&time<r[4]);
+   const done=group.filter(r=>r[4]<=time);
+   if(!active.length&&(!done.length||time>group.at(-1)[4]))continue;
+   for(const [unit,aa,bb,t,u,v] of active.length?active:[done.at(-1)]){
+    const a=pos.get(aa),b=pos.get(bb),f=clamp((time-t)/(u-t)),x=a[0]+(b[0]-a[0])*f,y=a[1]+(b[1]-a[1])*f,shade=color[ids.indexOf(id)%color.length];
+    if(active.length){moving++;line([a,[x,y]],shade,4);}
+    if(track.kind==='coverage'){oval(x,y,7,7,shade);if(v!=null)chip(fmt(v),x,y-17,true);continue;}
+    actor(x,y,b[0]-a[0],f);if(ids.length<=8)chip(id+(v!=null?' · '+fmt(v):''),x,y-30,true);
+   }
+  }
+  return {done:rows.filter(r=>r[0]!==omit&&r[4]<=time).length,active:moving,text:'已抵达 '+seen.size+' 个端点'};
+ }
+ const n=rows.length, f=clamp(time/n),completed=Math.floor(time),idx=Math.min(n-1,completed),phase=clamp(time-idx),active=rows[idx];
+ if(track.kind==='allocation'){
+  const share=custom.share??rows[0][1],total=50,placed=Math.floor(f*total),left=Math.round(placed*share);
+  for(const [j,title,nr] of [[0,'众包司机',left],[1,'第三方承运',placed-left]]){
+   const x=j?680:225;building(x,220,1.8,true);chip(title,x,247,true);
+   line([[449,158],[x,218]],'#b0c1af',9);
+   for(let h=0;h<nr;h++)box(x-57+(h%11)*11,277+Math.floor(h/11)*12,9,7,3,'#c99d62','#946f47','#f5cd89');
+  }
+  if(placed<total){const l=Math.round((placed+1)*share)>left,x=l?225:680,t=(f*total)%1;actor(450+(x-450)*t,158+60*t,x-450,t);}
+  building(450,156,1.3,true);chip('订单池',450,182,true);
+  return {done:placed,active:total-placed,text:'众包 '+left+' 份 · 第三方 '+(placed-left)+' 份（50 份等量示意）'};
+ }
+ const vals=rows.map(r=>Number(r[1])).filter(Number.isFinite),mx=Math.max(...vals,0),mn=Math.min(...vals,0),range=mx-mn||1;
+ if(track.kind==='series'){
+  const x=j=>88+720*(rows[j][2]-rows[0][2])/(rows[n-1][2]-rows[0][2]||1),y=v=>305-145*(Number(v)-mn)/range;
+  rect(55,135,790,194,'#f5f7e9');for(let j=0;j<4;j++)line([[80,160+j*45],[820,160+j*45]],'#cbdbce',1);
+  const pts=rows.slice(0,idx+1).map((r,j)=>[x(j),y(r[1])]),next=Math.min(n-1,idx+1),last=pts.at(-1);
+  const cursor=[last[0]+(x(next)-last[0])*phase,last[1]+(y(rows[next][1])-last[1])*phase];
+  line([...pts,cursor],pal[2],4);oval(...cursor,7,7,'#c1683d');chip(fmt(active[1]),cursor[0],cursor[1]-17,true);
+  if(p.id==='P0476'){const xx=80+720*(Number(active[1])-mn)/range;line([[70,342],[830,342]],'#9eafa5',7);actor(xx,341,1,phase);}
+  legend(track.title,80,125);return {done:idx+1,active:1,text:'原记录 '+active[0]+' · '+fmt(active[1])};
+ }
+ const panels={
+  depot:['调度台','订单与运力'],plant:['生产控制台','作业配置'],street:['交通调度台','车辆与班次'],rail:['行车控制室','列车与时刻'],port:['港航调度台','运输作业'],air:['飞行调度台','飞行任务'],power:['系统调度台','运行设定'],market:['经营决策台','商品与策略'],clinic:['服务调度台','服务配置'],relief:['应急调度台','物资配置'],cloud:['计算控制台','资源配置'],network:['网络控制台','方案配置']
+ };
+ const [desk,unit]=panels[k],phaseNow=clamp(time-Math.floor(time)),iNow=Math.min(rows.length-1,Math.floor(time)),current=rows[iNow],complete=rows.slice(0,Math.floor(time)).filter(r=>r[0]!==omit),v=Number(current[1]),all=rows.map(r=>Number(r[1])).filter(Number.isFinite),scale=Math.max(1e-9,...all.map(Math.abs)),binary=all.length===rows.length&&all.every(x=>x===1||x===0),selected=current[0]!==omit,ink=pal[2];
+ // The field desk stages an archived assignment. The ledger below persists as the plan is assembled.
+ const yard='#d4dfcb';poly([[36,277],[91,153],[829,153],[865,281]],yard);line([[41,281],[861,281]],'#a8b9a8',3);
+ building(127,235,1.94,true);chip(desk,127,264,true);
+ const centers=[365,564,755];for(const [j,x] of centers.entries()){
+  const idx=iNow-1+j;if(idx<0||idx>=rows.length)continue;const record=rows[idx],num=Number(record[1]),active=idx===iNow,arrived=idx<iNow||time===rows.length;
+  const reveal=arrived?1:active&&selected?phaseNow:0,ink2=idx<iNow?ink:active?'#b8693c':'#8f9d90';
+  box(x,239,120,12,12,'#9dad9d','#849487','#dce6d7');
+  if(k==='power'||k==='cloud'){
+   box(x,225,40,54,10,'#708985','#506d6b','#a7bdb3');for(let z=0;z<6;z++){rect(x-15,179+z*7,26,3,'#3b5854');rect(x-14,179+z*7,22*reveal,2,ink2);}
+   line([[x-50,223],[x-50,202],[x-25,202]],'#789d91',3);
+   if(active&&selected){const xx=x-51+27*phaseNow;oval(xx,202,3,3,'#efb45b');}
+  }else if(k==='market'){
+   box(x,224,72,43,8,'#f0d6ad','#c3a882','#c57953');for(let z=0;z<6;z++)rect(x-35+z*12,181,12,9,z%2?'#e5a479':'#f5e5c5');rect(x-24,197,46,16,'#354c49');
+   label(reveal>0?fmt(record[1]).slice(0,9):'—',x,209,'#edf3d6',12);
+  }else if(k==='street'||k==='rail'||k==='air'||k==='port'){
+   line([[x-52,215],[x+46,215]],'#899a93',6);if(reveal>0)actor(x-40+70*reveal,214,1,reveal);
+   box(x+28,188,24,17,4,'#749795','#517779','#bad0c0');rect(x+20,177,15,5,reveal>0?ink2:'#b9c9ba');
+  }else if(k==='clinic'||k==='relief'){
+   building(x,216,.95,active);if(reveal>0)person(x-38+30*reveal,229,reveal);
+  }else if(k==='plant'||k==='depot'){
+   line([[x-51,220],[x+44,220]],'#748d83',7);for(let z=0;z<7;z++)oval(x-46+z*14,223,3,3,'#b9c9b6');
+   if(reveal>0)box(x-39+65*reveal,216,22,17,4,'#c2a36a','#987e51','#e7c993');
+  }else{
+   for(let z=0;z<4;z++){const bx=x-33+z*20;line([[x,183],[bx,218]],'#a7bdb0',3);oval(bx,218,5,5,reveal>z/4?ink2:'#afbbb1');}oval(x,183,8,8,ink2);
+  }
+  chip(String(record[0]).slice(-22),x,254,active);if(active)chip(selected?fmt(record[1]):'暂缓',x,148,true);
+ }
+ const total=rows.length,x0=55,y0=315,w=785/total;
+ for(let j=0;j<total;j++){const r=rows[j],h=Number.isFinite(Number(r[1]))?5+Math.min(1,Math.abs(Number(r[1]))/scale)*26:16;rect(x0+j*w,y0+28-h,Math.max(2,w-2),h,j<time&&r[0]!==omit?ink:'#c1cebd');}
+ line([[x0+Math.min(784,time*w),y0-4],[x0+Math.min(784,time*w),y0+30]],'#b76b3c',2);
+ legend(unit+'　'+current[0]+'　'+fmt(current[1]),54,371);
+ return {done:complete.length,active:selected?1:0,text:'已执行 '+complete.length+' / '+total+' 项展示配置'+(binary?' · 已启用 '+complete.filter(r=>r[1]===1).length+' 项':'')+(omit?' · 暂缓 '+omit:'')};
+
+
 }
 window.ORTOPIA_LANDSCAPE={frame};
 })();

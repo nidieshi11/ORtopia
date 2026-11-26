@@ -6,7 +6,7 @@ P0455–P0499 的场景图采用题库 2026 年 11 月 22 日修订的版本。[
 
 ## 实例仿真
 
-206 道题覆盖全部 12 个领域，每题都有实例仿真。原有 25 个场景保留专用交互。新增 181 个场景分别使用通过原题检查器的 small/I001 与 small/I002，可逐条查看路线、资源分派或策略取值。73 道题还提供改变 I001 一个决策后的约束检查对照。点击题目标题下方的「进入实例仿真」，或从顶部导航的「实例仿真」浏览全部实例。在 P0213 调节天然气交付量和入口压力，观察沿线压力表和用户站能否达标，在 P0214 安排检修车和设备停机，在 P0310 改变物资的装载与去向，在 P0057 为不同电价时段分配燃料，在 P0062 操作抽水和发电。P0013 可以扳动炉前开关，沿选定的一条风电情景路径播放三期调度。P0045 可以改动客户的渠道份额，检查总收益、预算和公平约束。
+206 道题覆盖全部 12 个领域，每题都有实例仿真。原有 25 个场景保留专用交互。新增的 181 道题均使用 medium/I001，每个实例的决策变量和约束分别达到一万。运行时刻、访问顺序和静态决策按各题归档字段展示。可以暂停、调速及沿事件轴回看。点击题目标题下方的「进入实例仿真」，或从顶部导航的「实例仿真」浏览全部实例。在 P0213 调节天然气交付量和入口压力，观察沿线压力表和用户站能否达标，在 P0214 安排检修车和设备停机，在 P0310 改变物资的装载与去向，在 P0057 为不同电价时段分配燃料，在 P0062 操作抽水和发电。P0013 可以扳动炉前开关，沿选定的一条风电情景路径播放三期调度。P0045 可以改动客户的渠道份额，检查总收益、预算和公平约束。
 
 | 领域 | 可操作的实例 |
 | --- | --- |
@@ -26,7 +26,7 @@ ORtopia contains 206 operations research problems. Browse by domain or use the p
 
 The scene diagrams for P0455–P0499 use the November 22, 2026 revision. [View the source revision](https://github.com/nidieshi11/ORtopia-bench/commit/bc5f5bb66a1eeec001035159c59822fa1d8f825b)
 
-All 206 problems across 12 domains have an instance replay. The original 25 retain their bespoke interactions. Each of the 181 additional scenes provides two independently checked archived runs (small/I001 and small/I002) with selectable routes, allocations, or policy values. For 73 problems you can also inspect the checker’s response to changing one I001 decision. Open **进入实例仿真** beneath the problem title, or select **实例仿真** in the top navigation to browse the full collection. Adjust inlet pressure and delivery in P0213 to keep the gas network within its operating limits. Schedule maintenance crews in P0214, redirect relief shipments in P0310, allocate fuel across price periods in P0057, or switch between pumping and generation in P0062. In P0013, switch the thermal unit on or off and follow one wind scenario through three periods. In P0045 you can reallocate marketing shares and check total returns, budgets, and fairness constraints.
+All 206 problems across 12 domains have an instance replay. The original 25 retain their bespoke interactions. The additional 181 scenes use medium/I001, with at least 10,000 decision variables and 10,000 constraints in each model. Timed operations, selected routes and staged static decisions use the corresponding archived fields. The controls support pause, speed adjustment and event seeking. Open **进入实例仿真** beneath the problem title, or select **实例仿真** in the top navigation to browse the full collection. Adjust inlet pressure and delivery in P0213 to keep the gas network within its operating limits. Schedule maintenance crews in P0214, redirect relief shipments in P0310, allocate fuel across price periods in P0057, or switch between pumping and generation in P0062. In P0013, switch the thermal unit on or off and follow one wind scenario through three periods. In P0045 you can reallocate marketing shares and check total returns, budgets, and fairness constraints.
 
 The bike rebalancing (P0068), metro scheduling (P0154), berth and crane assignment (P0204), graph partitioning (P0198), and cloud capacity (P0058) scenes each show how a change in a decision affects the example instance.
 
