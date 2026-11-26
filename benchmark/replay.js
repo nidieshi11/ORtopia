@@ -1,6 +1,7 @@
 (() => {
 'use strict';
 const host=document.querySelector('#content');
+const directoryHeading=document.querySelector('.directory-heading');
 const ids=window.ORTOPIA_REPLAY_IDS;
 const sceneByProblem=new Map();
 const sceneTopics=window.ORTOPIA_SCENE_TOPICS??{};
@@ -172,11 +173,8 @@ function directory(key){
      <i class="scene-chevron" aria-hidden="true"></i>
     </a>`;
   }).join('');
-  host.innerHTML=`<div class="wrap replay-page sim-directory scene-index">
-    <header class="replay-heading">
-     <h1>实例仿真</h1>
-     <p>${groups.length} 类业务场景 · ${ids.length} 个仿真实例</p>
-    </header>
+  directoryHeading.innerHTML=`<h1>实例仿真</h1><p>${groups.length} 类业务场景 · ${ids.length} 个仿真实例</p>`;
+  host.innerHTML=`<div class="replay-page sim-directory scene-index">
     <nav class="scene-groups" aria-label="按场景选择实例">${links}</nav>
    </div>`;
   return;
@@ -184,6 +182,7 @@ function directory(key){
  host.innerHTML='<div class="wrap replay-page sim-directory topic-directory"><div class="replay-breadcrumb"><a href="index.html">实例仿真</a> / '+esc(group.name)+'</div><header class="replay-heading"><h1>'+esc(group.name)+'</h1><p>'+group.items.length+' 个实例</p></header>'+simulationSections(key,group.items)+'</div>';
 }
 async function openPage(){
+ directoryHeading.replaceChildren();
  const token=++renderToken;window.ORTOPIA_FIELD_PLAYER.close();stop();leaveTheater();data=null;elapsed=0;finished=false;svgRoots=[];cssTracks=[];
  let route=location.hash.slice(1);
  if(['lab20','world20','remaining'].includes(route)){window.ORTOPIA_LAB_PLAYER.list(host,cases,route);return;}
