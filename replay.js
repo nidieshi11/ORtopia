@@ -1,7 +1,7 @@
 (() => {
 'use strict';
 const host=document.querySelector('#content');
-const cases=new Map(window.BENCHMARK_CATALOG.problems.map(p=>[p.id,p]));
+const cases=new Map(window.ORTOPIA_SIMULATIONS.map(p=>[p.id,p]));
 const ids=window.ORTOPIA_REPLAY_IDS;
 const q=id=>document.getElementById(id);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -42,7 +42,7 @@ function loadLab(id){
  return promises.get(id);
 }
 let logic=[], selectedOption=0;
-let data=null,current=0,timer=0,mode='',rate=1,selectedGroup='全部',renderToken=0;
+let data=null,current=0,timer=0,mode='',rate=1,renderToken=0;
 const byId=new Map(),groups=new Map();
 // A single clock drives step navigation, SVG, CSS and canvas actors. Time is in presentation seconds.
 const stepSeconds=6;
@@ -112,16 +112,42 @@ function loadDataset(id,folder,registry){
  return promises.get(key);
 }
 const rootLink='<a href="replay.html">实例仿真</a>';
-function directory(){
- document.title='实例仿真 · ORtopia';
- const domains=[...new Set(ids.map(id=>cases.get(id).domain))];
- host.innerHTML='<div class="wrap replay-page"><div class="replay-breadcrumb"><a href="index.html">ORtopia</a> / 实例仿真</div><div class="replay-heading"><h1>实例仿真</h1><p>这里收录 '+ids.length+' 道题的实例仿真。<a href="index.html#/domains">查看题库全部 '+cases.size+' 道题 →</a></p></div><div class="replay-filters">'+['全部',...domains].map(g=>'<button data-filter="'+esc(g)+'" aria-pressed="'+(selectedGroup===g)+'">'+esc(g)+'</button>').join('')+'</div><div class="replay-cards">'+ids.filter(id=>selectedGroup==='全部'||cases.get(id).domain===selectedGroup).map(id=>{
- const p=cases.get(id);return '<a href="#'+id+'" class="replay-card"><div><small>'+id+' · '+esc(p.domain)+'</small><h2>'+esc(decisionUI.questions[id]||p.title)+'</h2><span>'+esc(labs[id]?.link||'查看决策过程')+' →</span></div></a>';
- }).join('')+'</div></div>';
+const sceneGroups=new Map();
+for(const id of ids){
+ const p=cases.get(id);
+ if(!p)continue;
+ if(!sceneGroups.has(p.domainId))sceneGroups.set(p.domainId,{name:p.domain,items:[]});
+ sceneGroups.get(p.domainId).items.push(p);
+}
+function categoryLink(p){
+ return '<a href="index.html#scene/'+encodeURIComponent(p.domainId)+'">'+esc(p.domain)+'</a>';
+}
+function simulationList(items){
+ return '<ul class="sim-list">'+items.map(p=>'<li><a href="replay.html#'+p.id+'"><small>'+p.id+'</small><span>'+esc(p.title)+'</span><i aria-hidden="true">→</i></a></li>').join('')+'</ul>';
+}
+function directory(key){
+ const group=sceneGroups.get(key);
+ document.title=(group?group.name+' · ':'')+'实例仿真 · ORtopia';
+ if(!group){
+  host.innerHTML='<div class="wrap replay-page sim-directory"><header class="replay-heading"><h1>实例仿真</h1><p>'+sceneGroups.size+' 类业务场景 · '+ids.length+' 个仿真实例</p></header><nav class="scene-groups" aria-label="按场景选择实例">'+[...sceneGroups].map(([id,g])=>'<a href="#scene/'+encodeURIComponent(id)+'"><strong>'+esc(g.name)+'</strong><span>'+g.items.length+' 个实例　→</span></a>').join('')+'</nav></div>';
+  return;
+ }
+ const sections=window.ORTOPIA_SUBDOMAINS?.[key]||[],used=new Set();
+ const blocks=sections.map(s=>{
+  const items=group.items.filter(p=>s.ids.includes(p.id)&&!used.has(p.id));
+  items.forEach(p=>used.add(p.id));
+  return items.length?'<section><h2>'+esc(s.label)+' <small>'+items.length+'</small></h2>'+simulationList(items)+'</section>':'';
+ });
+ const rest=group.items.filter(p=>!used.has(p.id));
+ if(rest.length)blocks.push(simulationList(rest));
+ host.innerHTML='<div class="wrap replay-page sim-directory"><div class="replay-breadcrumb"><a href="index.html">实例仿真</a> / '+esc(group.name)+'</div><header class="replay-heading"><h1>'+esc(group.name)+'</h1><p>'+group.items.length+' 个实例</p></header>'+blocks.join('')+'</div>';
 }
 async function openPage(){
  const token=++renderToken;window.ORTOPIA_FIELD_PLAYER.close();stop();leaveTheater();data=null;elapsed=0;finished=false;svgRoots=[];cssTracks=[];
- const route=location.hash.slice(1);
+ let route=location.hash.slice(1);
+ if(route.startsWith('scene/')){directory(route.slice(6));window.scrollTo(0,0);return;}
+ if(route.startsWith('/problem/'))route=route.slice(9);
+ else if(route.startsWith('/')||route==='content')route='';
  if(!route){directory();return;}
  // An optional one-based step lets a shared scene open directly at its action.
  const match=/^(P\d{4})(?:\/([1-9]\d*))?$/.exec(route);
@@ -154,11 +180,11 @@ function shell(p){
  if(labs[p.id]||sceneRenderer(p.id))modes.unshift(['simulation',labs[p.id]?'交互试排':'实例现场']);
  if(r.schedule?.events?.length)modes.push(['schedule','资源排程']);
  if(r.trend?.points?.length)modes.push(['trend',r.trend.label||'指标变化']);
- host.innerHTML='<div class="wrap replay-page world-page'+(labs[p.id]?' has-planning-lab':'')+'"><div class="replay-breadcrumb">'+rootLink+' / <a href="index.html#/problem/'+p.id+'">'+p.id+' 题目详情</a></div>'+
+ host.innerHTML='<div class="wrap replay-page world-page'+(labs[p.id]?' has-planning-lab':'')+'"><div class="replay-breadcrumb">'+rootLink+' / '+categoryLink(p)+'</div>'+
  '<div class="replay-heading"><div class="replay-meta">'+p.id+' · '+esc(p.domain)+' · '+esc(r.instance)+'</div><h1>'+esc(decisionUI.questions[p.id]||r.title||p.title)+'</h1><p>'+esc(labs[p.id]?.description||r.description)+'</p></div>'+
  '<div class="replay-layout"><section class="replay-console"><div class="board-head"><strong id="live-title">实例现场</strong><div class="mode-switch">'+modes.map(([k,v])=>'<button data-mode="'+k+'" aria-pressed="'+(k===mode)+'">'+esc(v)+'</button>').join('')+'</div></div>'+
  '<div id="world-viewport" tabindex="0" aria-label="仿真现场，可在近看时滚动"><div id="stage"></div></div><div class="motion-meter" aria-hidden="true"><i id="motion-progress"></i></div><div class="play-controls"><div class="play-row"><button id="prev" aria-label="上一步">←</button><button id="play">▶ 播放</button><button id="next" aria-label="下一步">→</button><button id="repeat-step" title="从头回放当前一步">重播本步</button><label class="speed"><select id="rate" aria-label="播放速度"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label><button type="button" id="closer" aria-pressed="false">近看</button><button type="button" id="theater" aria-pressed="false">放大现场</button><span id="step-count"></span></div><input id="scrub" aria-label="仿真步数" type="range" min="1" max="'+r.steps.length+'" value="1"></div></section>'+
- '<aside class="replay-detail">'+(labs[p.id]?'<h2 class="reference-heading">原解逐步对照</h2>':'')+'<div class="decision-card" id="step-info" aria-live="polite"></div><details class="world-source"><summary>查看本步数据与场景说明</summary><div id="step-record"></div><p id="layout-note"></p><a href="'+esc(p.scene)+'" target="_blank" rel="noopener">查看原题场景图 ↗</a></details></aside></div>'+
+ '<aside class="replay-detail">'+(labs[p.id]?'<h2 class="reference-heading">原解逐步对照</h2>':'')+'<div class="decision-card" id="step-info" aria-live="polite"></div><details class="world-source"><summary>查看本步数据与场景说明</summary><div id="step-record"></div><p id="layout-note"></p></details></aside></div>'+
  '<section class="replay-bottom"><div><strong>已校验解的目标值</strong><p>'+esc(r.objective.label)+'　<b title="'+esc(r.objective.value)+'">'+fmt(r.objective.value,r.objective.unit)+'</b></p></div><div class="source-links"><a download href="'+source+'instance.json">实例数据 ↓</a><a download href="'+source+'solution.json">求解结果 ↓</a><a download href="'+source+'verification.json">校验记录 ↓</a></div></section>'+
  '<details class="step-index"><summary>全部 '+r.steps.length+' 步</summary><div>'+r.steps.map((s,i)=>'<button data-jump="'+i+'"><small>'+String(i+1).padStart(2,'0')+'</small> '+esc(s.title)+'</button>').join('')+'</div></details></div>';
  if(labs[p.id]&&p.id!=='P0045'){
@@ -303,7 +329,6 @@ function toggleTheater(){
 }
 host.addEventListener('click',e=>{
  const b=e.target.closest('button');if(!b)return;
- if(b.dataset.filter){selectedGroup=b.dataset.filter;directory();return;}
  if(!data)return;
  if(b.hasAttribute('data-option')){
   stop();selectedOption=Number(b.dataset.option);q('stage').previewDecision?.(selectedOption);decisionUI.panel(q('step-info'),logic,current,data.steps[current],selectedOption);
