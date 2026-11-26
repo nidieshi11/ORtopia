@@ -3,11 +3,12 @@
 const labs=window.ORTOPIA_LABS=Object.create(null);
 function el(name,cls,txt){const node=document.createElement(name);if(cls)node.className=cls;if(txt!=null)node.textContent=txt;return node;}
 function link(url,txt){const node=el('a','',txt);node.href=url;return node;}
+const collectionTitle=batch=>batch==='remaining'?'新增连续仿真':batch==='world20'?'连续世界仿真':'首批重制仿真';
 function list(host,cases,batch='lab20'){
  const main=el('article','wrap replay-page sim-directory batch-index');
  const nav=el('div','replay-breadcrumb');nav.append(link('index.html','实例仿真'));main.append(nav);
  const entriesForBatch=Object.entries(labs).filter(([,lab])=>(lab.batch||'lab20')===batch);
- const title=batch==='world20'?'连续世界仿真':'决策仿真试用集';
+ const title=collectionTitle(batch);
  const head=el('header','replay-heading');head.append(el('h1','',title),el('p','',entriesForBatch.length+' 个中等规模实例 · 按场景选择'));main.append(head);
  const byScene=new Map();
  for(const [id,lab] of entriesForBatch){
@@ -35,7 +36,7 @@ function mount(host,p,pack,step){
  <dl class="lab-metrics"></dl><details class="atlas-proof"><summary>实例与试算范围</summary><p></p><code></code></details></article>`;
  const q=sel=>host.querySelector(sel),stage=q('.atlas-stage'),map=q('.lab-canvas'),btn=q('.lab-play'),scrub=q('.lab-scrub'),group=q('.lab-choices'),dl=q('.lab-metrics');
  const heading=q('.atlas-stage-head'),clock=q('.lab-clock'),article=q('article');
- q('.replay-breadcrumb').append(link('index.html#scene/'+p.sceneId,p.sceneName),' / ',link('replay.html#'+(lab.batch||'lab20'),lab.batch==='world20'?'连续世界仿真':'决策仿真试用集'));
+ q('.replay-breadcrumb').append(link('index.html#scene/'+p.sceneId,p.sceneName),' / ',link('replay.html#'+(lab.batch||'lab20'),collectionTitle(lab.batch)));
  q('article').dataset.problem=p.id;q('.lab-meta').textContent=p.id+' · '+pack.sample;q('h1').textContent=p.title;q('h2').textContent=lab.title;
  q('.lab-decisions p').textContent=lab.action;map.setAttribute('aria-label',lab.title);
  q('.atlas-proof p').textContent=lab.scope;

@@ -336,10 +336,34 @@
     // From the station district the market, crossings and successive departing groups share the frame.
     return slide({x:1120,y:370,w:495},{x:871,y:302,w:680},easing(between(t,busArrival(shortage.busId)+.96,12)));
   }
+  function customerComparison(s,d){
+    // Compare the same quarter-unit request under the actual command history and the archived policy.
+    const options=[];
+    s.rows.forEach((row,j)=>{
+      const ref={...row,parcels:Math.round(4*Math.min(j?d.orderMax:d.initialPipeline,row.supply))};
+      for(let k=0;k<row.visits;k++){
+        const actual=buyerRoute(row,j,k),baseline=buyerRoute(ref,j,k);
+        if(actual.checkout<=s.t)options.push({actual,baseline,j,k,active:s.t<=Math.max(actual.end,baseline.end)});
+      }
+    });
+    return options.findLast(q=>q.active&&q.actual.sold!==q.baseline.sold)||options.findLast(q=>q.actual.sold!==q.baseline.sold)||options.findLast(q=>q.active)||options.at(-1);
+  }
+  function footprints(g,trip,t,k,col){
+    const until=Math.min(t,trip.end),pts=Array.from({length:24},(_,j)=>afterCheckout(trip,mix(trip.checkout,until,j/23),k));
+    g.line(pts,col,2,[4,4]);return pts.at(-1);
+  }
   function draw(canvas,s,data,mode,f,view=0){
     const c=canvas.getContext('2d'),w=canvas.width,h=canvas.height;
     if(!w||!h)return;
-    const cam=camera(s,view,w/h),scale=cam.fit?Math.min(w/cam.width,h/cam.height):Math.max(w/cam.width,h/cam.height);
+    const compare=view===3?customerComparison(s,data):null;
+    let cam=camera(s,view===3?2:view,w/h);
+    if(compare){
+      const {actual,baseline,k}=compare,a=afterCheckout(actual,Math.min(s.t,actual.end),k),b=afterCheckout(baseline,Math.min(s.t,baseline.end),k);
+      const spanX=Math.abs(a[0]-b[0])+150,spanY=Math.abs(a[1]-b[1])+115,aspect=w/h;
+      const width=Math.max(aspect<1.3?250:395,spanX,spanY*aspect);
+      cam={x:(a[0]+b[0])/2,y:(a[1]+b[1])/2-12,width,height:width/aspect};
+    }
+    const scale=cam.fit?Math.min(w/cam.width,h/cam.height):Math.max(w/cam.width,h/cam.height);
     const x=clamp(cam.x-w/(2*scale),0,Math.max(0,W-w/scale));
     const y=clamp(cam.y-h/(2*scale),0,Math.max(0,H-h/scale));
     const ox=(w>W*scale?(w-W*scale)/2:0)-x*scale,oy=(h>H*scale?(h-H*scale)/2:0)-y*scale;
@@ -365,6 +389,12 @@
     g.line([[311,293],[339,292],[455,260]],'#71938b',3);
     for(let i=0;i<10;i++){const x=323+i*13,y=290-Math.max(0,x-335)*.28;g.line([[x,y],[x,y-6]],'#78978d',1.8);}
     receiving(g,s);customers(g,s);
+    if(compare){
+      const {actual,baseline,j,k}=compare,b=footprints(g,baseline,s.t,k,'#75858e'),a=footprints(g,actual,s.t,k,'#a67435');
+      const same=actual.sold===baseline.sold;
+      if(!same){g.oval(b[0],b[1]-2,5,2,'#748695');label(g,'归档 · '+(baseline.sold?'取到货':'缺货'),b[0]-21,b[1]-31,'#607a84',10);}
+      g.oval(a[0],a[1],6,2,'#a97737');label(g,(j+1)+' 期 · 顾客 '+(k+1)+' · '+(actual.sold?'取到货':'缺货'),a[0]-20,a[1]-14,'#966633',10);
+    }
     if(view===0){
       const selected=s.t>=6.74?[6,3]:s.t>=2.50&&s.t<5.20?[2,0]:null;
       if(selected){
@@ -380,7 +410,7 @@
   window.ORTOPIA_LABS.P0488={
     title:'河岸供应仓与社区市场',action:'选择以后各期的订货量。每期开头发出订单，上一期的订单继续运输，到货量取决于本期供应。每个小箱对应 0.25 单位需求。',
     choices:['按归档量订货','改订半量','停止订货'],live:true,duration:72,
-    views:['沿线观察','街区全景','市场近看'],
+    views:['沿线观察','街区全景','市场近看','顾客去向对照'],
     chapters:d=>[{label:'首批车过桥',at:.69/d.path.length},{label:'首批到货与销售',at:1.15/d.path.length},{label:'跟随第三期顾客',at:2.50/d.path.length},{label:'第七期供应缩减',at:6.70/d.path.length},{label:'东岸乘车离开',at:8.60/d.path.length}],
     scope:'归档见证路径 1 的前 12 期。到货受本期供应和上期订单限制，未满足的需求当期流失。每箱和每位顾客表示 0.25 单位。街区、步行回家与乘车离开用来追踪销售去向，交通和期内动作时长为示意。完整 65,536 期归档期望成本为 28,672.625。',
     frame,draw

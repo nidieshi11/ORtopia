@@ -40,13 +40,14 @@ function along(pts,f){let lengths=[],sum=0;for(let i=1;i<pts.length;i++){const a
  let left=cap(f)*sum;for(let i=0;i<lengths.length;i++){if(left<=lengths[i]||i===lengths.length-1)return lerp(pts[i],pts[i+1],left/(lengths[i]||1));left-=lengths[i];}return pts[0];}
 const backdrops=new Map();
 function scene(canvas,id,bg,at,overview,width,paint){
- let backing=backdrops.get(id);if(!backing){backing=document.createElement('canvas');backing.width=W*1.5;backing.height=H*1.5;const b=backing.getContext('2d');b.scale(1.5,1.5);bg(drawKit(b));backdrops.set(id,backing);}
+ let backing=backdrops.get(id);if(!backing){if(backdrops.size>=4)backdrops.delete(backdrops.keys().next().value);backing=document.createElement('canvas');backing.width=W*1.5;backing.height=H*1.5;const b=backing.getContext('2d');b.scale(1.5,1.5);bg(drawKit(b));backdrops.set(id,backing);}
  const c=canvas.getContext('2d'),w=canvas.width,h=canvas.height,aspect=w/h;
  let scale=overview?Math.min(w/W,h/H):Math.max(h/(width*.55),w/(aspect<1.35?width*.61:width));
  const ox=(w>=W*scale?(w-W*scale)/2:-cap(at[0]*scale-w*.5,0,W*scale-w));
  const oy=(h>=H*scale?(h-H*scale)/2:-cap(at[1]*scale-h*.52,0,H*scale-h));
  c.setTransform(1,0,0,1,0,0);c.fillStyle='#d8e2d3';c.fillRect(0,0,w,h);c.setTransform(scale,0,0,scale,ox,oy);c.drawImage(backing,0,0,W,H);paint(drawKit(c));
 }
+window.ORTOPIA_PAINT={scene,drawKit,building,tree,person,crate,car,road,along,lerp};
 const checkpoints=arr=>()=>arr.map(([label,at])=>({label,at}));
 const routePts=[[122,382],[265,277],[462,205],[683,185],[949,249],[1041,385],[684,457]];
 function way(a,b){const p=routePts[a],q=routePts[b];return [p,[mix(p[0],q[0],.48),mix(p[1],q[1],.38)+13],q];}

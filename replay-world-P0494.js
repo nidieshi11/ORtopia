@@ -378,10 +378,32 @@
     txt('距仓 '+Number(s.x.toFixed(1))+' km',clamp(xx,64,W-65),yy-55,14,INK,'center',750);
     hud(g,s,d);
   }
+  function compare(g,d,f){
+    const {W,H,rect,line,txt,oval}=g;
+    rect(0,0,W,H,'#e3e5d2');
+    const horizon=d.positions[d.positions.length-1], x=km=>44+(W-88)*km/horizon;
+    const fork=d.stops[8][0],depot=d.stops[9][0],next=d.stops[10][0];
+    for(const [k,y] of [[0,H*.31],[1,H*.68]]){
+      const s=state(d,k,f),roadTop=y+22,col=k?BAD:TEAL;
+      const cap=d.capacity-s.load;
+      txt(k?'直接去第九站':'回仓装货',28,y-77,19,col,'left',750);
+      txt(s.phase+'  ·  '+Math.round(s.distance)+' km',28,y-51,16,INK);
+      line([[x(0),roadTop],[x(horizon),roadTop]],'#8b9b89',12);
+      for(const [label,id,dy] of [['仓库',depot,31],['S'+next,next,30],['S'+fork,fork,53]]){
+        oval(x(d.positions[id]),roadTop,4,4,col);txt(label,x(d.positions[id]),roadTop+dy,13,INK,'center');
+      }
+      const active=s.site===null&&s.from!==s.target;
+      if(active)line([[x(d.positions[s.from]),roadTop+7],[x(s.x),roadTop+7]],col,3);
+      parcelVan(g,x(s.x),roadTop-6,s.dir,cap,s.phase==='交付包裹',.65);
+      const cx=clamp(x(s.x),92,W-94);txt('可服务 '+cap+' 格',cx,roadTop-41,15,col,'center',750);
+      if(k&&s.phase==='第九单超出容量'){person(g,x(d.positions[next])+8,roadTop+7,'#ae694d',0,false);}
+    }
+    const archived=state(d,0,f);txt('同一模型时刻 · '+Math.floor(archived.t)+' 分',W/2,H-26,16,INK,'center');
+  }
   window.ORTOPIA_LABS.P0494={
     title:'移动包裹柜的两趟街区配送',action:'选择送完前八单后的行驶指令。看车是否回仓补足八格，再观察第九位取件人。',
     choices:['返回仓库补货 · 存档','直接前往下一服务点'],duration:84,
-    views:['跟随包裹柜','路线全景'],
+    views:['跟随包裹柜','路线全景','两种路线同刻对照'],
     endAt(d,k){return k?clockAt(d,d.windows[d.stops[10][0]-1][0],true):1;},
     scope:'回放一号车的前两趟配送。原实例中 51 个站点与仓库共线，车辆位置、里程、停靠、时间窗和八格容量均取自实例。街区建筑、弯道、居民及背景车流为示意。屏幕按事件变速，长距离行车快放，交付和装货慢放。',
     chapters(d,k){
@@ -389,6 +411,6 @@
       return [[0,'出仓装货'],[tour[1][1]-.6,'第一站交付'],[tour[8][1]-.5,'第八单与回仓分叉'],
         [k?arrival-.5:tour[9][1]-.6,k?'提前抵达 S36':'回仓装货'],[tour[10][1]-.5,'第九单开窗']].map(([t,label])=>({label,at:clockAt(d,t,true)}));
     },
-    frame:state,draw(canvas,s,d,k,f,view=0){const g=brush(canvas);if(view===1)atlas(g,s,d);else street(g,s,d);}
+    frame:state,draw(canvas,s,d,k,f,view=0){const g=brush(canvas);if(view===2)compare(g,d,f);else if(view===1)atlas(g,s,d);else street(g,s,d);}
   };
 })();
