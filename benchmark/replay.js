@@ -138,7 +138,7 @@ function directory(key){
  const group=sceneGroups.get(key);
  document.title=(group?group.name+' · ':'')+'实例仿真 · ORtopia';
  if(!group){
-  host.innerHTML='<div class="wrap replay-page sim-directory"><header class="replay-heading"><h1>实例仿真</h1><p>'+sceneGroups.size+' 类业务场景 · '+ids.length+' 个仿真实例</p><div class="sim-collections"><a class="remaining-entry" href="replay.html#remaining">新增连续仿真 · 133 题 →</a><a class="world-entry" href="replay.html#world20">连续世界仿真 · 20 题 →</a><a class="batch-entry" href="replay.html#lab20">首批重制 · 20 个仿真 →</a></div></header><nav class="scene-groups" aria-label="按场景选择实例">'+[...sceneGroups].sort((a,b)=>a[1].domainId.localeCompare(b[1].domainId)).map(([id,g])=>'<a href="#scene/'+encodeURIComponent(id)+'"><strong>'+esc(g.name)+'</strong><span>'+g.items.length+' 个实例　→</span></a>').join('')+'</nav></div>';
+  host.innerHTML='<div class="wrap replay-page sim-directory"><header class="replay-heading"><h1>实例仿真</h1><p>'+sceneGroups.size+' 类业务场景 · '+ids.length+' 个仿真实例</p></header><nav class="scene-groups" aria-label="按场景选择实例">'+[...sceneGroups].sort((a,b)=>a[1].domainId.localeCompare(b[1].domainId)).map(([id,g])=>'<a href="#scene/'+encodeURIComponent(id)+'"><strong>'+esc(g.name)+'</strong><span>'+g.items.length+' 个实例　→</span></a>').join('')+'</nav></div>';
   return;
  }
  host.innerHTML='<div class="wrap replay-page sim-directory"><div class="replay-breadcrumb"><a href="index.html">实例仿真</a> / '+esc(group.name)+'</div><header class="replay-heading"><h1>'+esc(group.name)+'</h1><p>'+group.items.length+' 个实例</p></header>'+simulationList(group.items)+'</div>';
