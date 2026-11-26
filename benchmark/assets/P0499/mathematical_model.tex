@@ -1,0 +1,96 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage[UTF8]{ctex}
+\begin{document}
+
+\begin{equation}
+V(r_0)=\max_{p_t\in[0,U]}\sum_{t=0}^{\infty}\gamma^t\Pi(r_t,p_t).
+\tag{3}
+\end{equation}
+在参考价格的变动和可行的价格限制条件下，
+\begin{equation}
+r_{t+1}=\alpha r_t+(1-\alpha)p_t,\qquad t\geq 0,
+\tag{1}
+\end{equation}
+\[
+p_t\in[0,U],\qquad t=0,1,\ldots,
+\qquad r_0\in[0,U]\quad\text{given}.
+\]
+该决策是指公司在特定时期$t=0,1,\ldots$内收取的价格序列$p_t$。参考价格$r_t$是由公式(1)计算得出的，起始点为固定的初始参考价格$r_0$。数值$V(r_0)$则代表最大折现后的无限期利润。
+
+\section*{固定的输入和可接受性假设}
+可行的价格上限为$U$，内存因子为$\alpha$，折扣因子为$\gamma$。源假设为：
+\[
+\alpha\in[0,1),\qquad \gamma\in[0,1),\qquad 0^0=1,
+\]
+\[
+b,a>0,\qquad \eta^+,\eta^-\geq 0,\qquad \eta^+>\eta^-.
+\]
+这里的$b,a,\eta^+,\eta^-$是固定需求参数。严格的不等式$\eta^+>\eta^-$则用于选择追求增益的需求。对$U$的约束条件则如下：
+\[
+D(0,U)\geq 0,\qquad\text{i.e.,}\qquad U\leq\frac{b}{a+\eta^-},
+\]
+\[
+U\geq\frac{b}{2a}.
+\]
+这些是对于固定输入的限制，并非额外的价格决策。假设边际成本为零。
+
+案例$\alpha=1$被排除在外：来源说明，参考价格在整个规划期间将保持恒定，无论收益-损失是否不对称，恒定定价策略都是最优的。终点$\gamma=0$被包含在内，并遵循印刷惯例$0^0=1$。
+
+\section*{需求与单期利润}
+对于价格$p$和参考价格$r$在$[0,U]$中，需求是
+\begin{equation}
+D(r,p)=
+\begin{cases}
+b-ap+\eta^+(r-p),&r>p,\\
+b-ap,&r=p,\\
+b-ap+\eta^-(r-p),&r<p.
+\end{cases}
+\tag{2}
+\end{equation}
+来源还提供了简洁的表达方式。
+\[
+D(r,p)=b-ap+\eta^+\max\{r-p,0\}+\eta^-\min\{r-p,0\}.
+\]
+基础需求，与参考价格无关。
+\[
+D(p,p)=b-ap.
+\]
+差异$r-p$是指感知到的附加费/折扣：$r<p$被视为损失，而$r>p$则被视为收益。相应的需求变化分别为$\eta^-(r-p)$或$\eta^+(r-p)$。
+
+零边际成本下，单期利润为
+\[
+\Pi(r,p)=pD(r,p).
+\]
+来源将$\Pi(p,p)$称为基础利润。在$\eta^+>\eta^-$和$p\geq 0$所陈述的前提条件下，它还给出了
+\[
+\Pi(r,p)=\max\{\Pi^+(r,p),\Pi^-(r,p)\},
+\]
+\[
+\Pi^+(r,p)=p[b-ap+\eta^+(r-p)],\qquad
+\Pi^-(r,p)=p[b-ap+\eta^-(r-p)].
+\]
+
+\section*{将 Linked Bellman 方程与定价策略相结合}
+该论文明确将以下表达式认定为问题（3）中的贝尔曼方程：
+\begin{equation}
+V(r)=\max_{p\in[0,U]}\Pi(r,p)+\gamma V(\alpha r+(1-\alpha)p).
+\tag{4}
+\end{equation}
+该方程适用于$r\in[0,U]$；最大化过程是在当前利润与折现后的后续价值之和的基础上进行的。
+
+定价策略是一种函数。
+\[
+p(\cdot):[0,U]\longrightarrow[0,U].
+\]
+对于给定的参考价格$r$，$p(r)$在(4)中指定了一个可行的价格。其参考价格路径$\{r_t\}$会根据以下方式演变：
+\[
+r_{t+1}=\alpha r_t+(1-\alpha)p(r_t),\qquad t=0,1,\ldots.
+\]
+解决方程（4）的最优定价策略用$p^*(r)$表示。问题（3）不受循环、固定价格或短视策略的限制。
+
+\paragraph{来源范围和边界表述。}
+上述操作模型出自第2节，具体位置为Hu、Chen和Hu的论文中的第8-10页。相关内容为\emph{动态定价与收益追求参考价格效应}。需求定义和参数限制信息可在提供的原始页面中找到，且尚未解决。后面的特殊情况限制$\alpha=0$和$\eta^-=0$并非本模型中的假设。在第9页中，论文提到$U\geq b/(2a)$，即基础利润在$[0,U]$处“非单调”变化。在允许的等式$U=b/(2a)$情况下，基础利润$\Pi(p,p)=p(b-ap)$会一直上升，直到其终点；因此，这种解释性表述在等式成立时并不成立。打印出来的弱不等式部分保持不变，无需修改。
+
+\end{document}

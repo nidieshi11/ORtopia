@@ -1,0 +1,29 @@
+\documentclass[UTF8,11pt]{ctexart}
+\usepackage{amsmath,amssymb,geometry}
+\geometry{margin=22mm}
+\begin{document}
+\section*{P39: 有限配送时限分区的零售无人机网络利润模型（正文$P^M$）}
+\paragraph{来源与范围}依据原论文PDF第5, 6, 7, 8, 28, 29页，第2节$P^M$；附录A的$\bar P^M$仅用于辨认原代码。
+
+\subsection*{业务假设与参数}
+单位半径圆形市场的圆周上客户均匀分布，配送中心对称设置。
+$M\in\mathbb Z_{++}$为每个中心每侧配送区域划分的时限分区数；$\lambda>0$为需求系数，
+给定配送承诺时间$\tau>0$时单位圆弧需求率为$D(\tau)=\lambda/\sqrt\tau$。
+$m\ge0$为商品单位边际收益，$\alpha\ge0$为单位距离配送成本对速度平方的系数，$k\ge0$为中心网络经营成本系数。
+$H_r(M)=\sum_{i=1}^M i^{-r}$为广义调和数，所有参数均给定。
+\subsection*{变量与单一主模型}
+$n\ge0$为配送中心规模，$\omega\ge0$为角速度，$\beta\ge0$为每中心单侧服务圆弧长度。
+运营规模$n$采用连续变量域。
+\begin{align}
+\max_{n,\omega,\beta}\quad
+\Pi={}&2n\lambda mH_{1/2}(M)\sqrt{\frac{\beta\omega}{M}}
+-2n\lambda\alpha\sqrt{\frac{\omega^5\beta^3}{M^3}}
+\left[2H_{-1/2}(M)-H_{1/2}(M)\right]-kn^2,\tag{$P^M$}\\
+\text{s.t.}\quad &n\beta\le\pi,\\
+&n\ge0,\quad\omega\ge0,\quad\beta\ge0.
+\end{align}
+对$n>0$，$n\beta\le\pi$即原式$0\le\beta\le\pi/n$；$n=0$作为不经营的零利润边界解释。
+对有经营活动的正变量方案，第$i$区承诺时间为$\tau_i=i\beta/(M\omega)$。
+目标依次为商品边际收益、配送费用和中心网络经营费用。原式未包含库存订货成本、有限需求截距或速度固定费用。
+
+\end{document}

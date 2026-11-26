@@ -1,0 +1,80 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+
+\title{核心可解数学模型}
+\author{Paper 1}
+\date{\today}
+
+\usepackage[UTF8]{ctex}
+\begin{document}
+
+\maketitle
+
+\section*{保留的核心模型}
+根据\texttt{}公式以及PDF文件，可以直接求解的核心模型是第6页上的单层MILP模型，用于学习DNF分类器。子问题$(SP)^u$以及主问题$(MP)^u$和$(MP)$属于IRELAND启发式框架的一部分，因此在此处省略了它们。
+
+\paragraph{集合与参数。}
+设$\mathcal{N}_1$为正样本集合，$\mathcal{N}_0$为负样本集合，$\mathcal{N}=\mathcal{N}_0 \cup \mathcal{N}_1$和$\mathcal{J}$为特征集合，$\mathcal{K}$为AND子句集合。设$K = |\mathcal{K}|$为参数，$X_{nj}\in\{0,1\}$表示特征$j$在样本$n$中是否活跃，$w_n \ge 0$为样本权重，$M$为单个AND子句中允许的最大特征数量。
+
+\paragraph{决策变量。}
+$\hat{y}_n \in \{0,1\}$表示样本$n$的预测标签；  
+$t_{nk} \in \{0,1\}$表示样本$n$是否满足条件$k$；  
+$s_{kj} \in \{0,1\}$表示特征$j$是否包含在条件$k$中。
+
+\section*{MILP 公式化}
+约束条件\textup{(BP4-f)}被保留下来，作为求解器侧公式化中使用的加强约束。该约束强制遵循求解器公式化所使用的二元否定式语义。
+
+\begin{equation}
+\max \sum_{n \in \mathcal{N}_1} w_n \hat{y}_n
++ \sum_{n \in \mathcal{N}_0} w_n (1 - \hat{y}_n)
+\tag{BP4-Obj}
+\end{equation}
+
+\begin{equation}
+t_{nk} + (1 - X_{nj}) s_{kj} \le 1
+\quad \forall j \in \mathcal{J},\ \forall k \in \mathcal{K},\ \forall n \in \mathcal{N}_1
+\tag{BP4-a}
+\end{equation}
+
+\begin{equation}
+t_{nk} + \sum_{j \in \mathcal{J}} (1 - X_{nj}) s_{kj} \ge 1
+\quad \forall k \in \mathcal{K},\ \forall n \in \mathcal{N}_0
+\tag{BP4-b}
+\end{equation}
+
+\begin{equation}
+\hat{y}_n - \sum_{k \in \mathcal{K}} t_{nk} \le 0
+\quad \forall n \in \mathcal{N}_1
+\tag{BP4-c}
+\end{equation}
+
+\begin{equation}
+K \hat{y}_n - \sum_{k \in \mathcal{K}} t_{nk} \ge 0
+\quad \forall n \in \mathcal{N}_0
+\tag{BP4-d}
+\end{equation}
+
+\begin{equation}
+\sum_{j \in \mathcal{J}} s_{kj} \le M
+\quad \forall k \in \mathcal{K}
+\tag{BP4-e}
+\end{equation}
+
+\begin{equation}
+\hat{y}_n \ge 1 - \sum_{j \in \mathcal{J}} (1 - X_{nj}) s_{kj}
+\quad \forall k \in \mathcal{K},\ \forall n \in \mathcal{N}_0
+\tag{BP4-f}
+\end{equation}
+
+\begin{equation}
+\hat{y}_n,\, t_{nk},\, s_{kj} \in \{0,1\}
+\quad \forall n \in \mathcal{N},\ \forall k \in \mathcal{K},\ \forall j \in \mathcal{J}
+\tag{BP4-g}
+\end{equation}
+
+\end{document}

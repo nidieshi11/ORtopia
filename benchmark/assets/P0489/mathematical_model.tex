@@ -1,0 +1,101 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\usepackage[UTF8]{ctex}
+\begin{document}
+
+\begin{equation}
+\min\;\mathbb{E}\!\left[\sum_{n=0}^{\infty}\gamma^n\left(
+\begin{aligned}
+&c_u u_n-p\cdot(\xi_n+u_n-w_n)^-\\
+&\quad+q(\tau_n)\cdot\bigl(\xi_n+u_n-(\xi_n+u_n-w_n)^+\bigr)
++c_r x_n r_n
+\end{aligned}
+\right)\right].
+\tag{5}
+\end{equation}
+\begin{align}
+\text{s.t.}\quad x_{n+1}&=(\xi_n+u_n-w_n)^+,
+&&\text{for }n\geq0,\tag{6}\\
+t_{n+1}&=\tau_n+1,
+&&\text{for }n\geq0,\tag{7}\\
+\xi_n&=x_n\cdot(1-r_n),
+&&\text{for }n\geq0,\tag{8}\\
+\tau_n&=t_n\cdot(1-r_n),
+&&\text{for }n\geq0,\tag{9}\\
+t_n&\leq k,
+&&\text{for }n\geq0,\tag{10}\\
+r_n&\in\mathbb{B},
+&&\text{for }n\geq0,\tag{11}\\
+u_n&\in[0,c_{\max}-\xi_n],
+&&\text{for }n\geq0.\tag{12}
+\end{align}
+
+\section*{领域、数据以及操作定义}
+该公式即Lee等人第2.1节中的储水问题，文献为\emph{《具有周期性且受控重置的库存管理最优策略》}，arXiv:2209.03571v1，物理PDF页码8--11。决策时刻为一天，由$n\in\mathbb{Z}_+$索引，目标与约束条件从$n=0$开始。
+
+状态与行为领域是
+\[
+x_n\in\mathbb{R}_+,\qquad t_n\in\mathbb{Z}_+,\qquad
+u_n\in\mathbb{R}_+,\qquad r_n\in\mathbb{B},
+\qquad n\geq0.
+\]
+这里的$x_n$表示储水箱中储存的水量，而$t_n$则表示自储水箱上次被清空以来已经过去的天数。决策点包括$r_n$，即是否清空整个储水箱；以及$u_n$，即当天开始时需要购买多少水。二进制域$\mathbb{B}$代表了两种操作：$r_n=1$表示冲洗，而$r_n=0$表示不冲洗。决策者首先决定是否清空储水箱，然后再决定需要购买多少水。
+
+在(8)--(9)中，伪状态$\xi_n$和$\tau_n$分别代表了重置决策之后的中间库存情况和经过的时间。 继承来的伪状态时间域为 $\tau_n\in\mathbb{Z}_+$。 水的重置状态为$\zeta=0$，这一点在附录A中也有明确说明，具体见第36页的命题7的证明部分。 因此，刷新操作会将中间库存和经过的时间重置为零，而(7)则使第二天的经过时间等于一。
+
+需求是一个外生的、非负的、独立的，并且具有相同分布规律的随机干扰过程。
+\[
+w_n\in\mathbb{R}_+,\qquad n\geq0,\qquad
+\{w_n\}\text{ are i.i.d.}
+\]
+在式(5)中，期望值是在随机需求过程之上的。第2.1节并未规定具体的需求分布。
+
+正数和负数部分都保留了其印刷上的定义。
+\[
+(x)^+=\max\{x,0\},\qquad (x)^-=\min\{x,0\}.
+\]
+特别是，负部分是非正的，并非亏损的幅度。
+
+固定成本数据以及折扣因子满足以下条件：
+\[
+c_u,c_r,p\in\mathbb{R}_+,\qquad \gamma\in[0,1).
+\]
+这些成本参数是非负的：$c_u$表示变动的采购成本，$c_r$表示每单位的清除成本，而$p$则代表短缺时的惩罚费用。固定的健康成本函数是
+\[
+q:\mathbb{R}_+\longrightarrow\mathbb{R}_+,
+\qquad q\text{ is nonnegative and nondecreasing}.
+\]
+它衡量了在储水箱中停留时间较长的水所带来的健康成本增加。在 2.1 节中，并没有对 $q$ 的具体功能形式做出任何规定。
+
+固定参数$k$表示重置之间的最大间隔时间：当达到(10)时，至少需要每隔$k$天进行一次清除操作。固定参数$c_{\max}$表示储液罐的容量；(12)则限制了在重置决策后，剩余容量所能进行的购买次数。论文在假设4的第16页中明确说明，这个容量常数应该是非负的。
+\[
+c_{\max}\geq0.
+\]
+在本表述中没有为$k$或$c_{\max}$指定具体的数值。
+
+\section*{关联定义动态与成本解释}
+第9页上的原始水状态动态数据保持不变，无需进行任何修改。所有数字都应原封不动地保留下来。
+\begin{align}
+x_{n+1}&=\bigl(x_n\cdot(1-r_n)+u_n-w_n\bigr)^+,\tag{3}\\
+t_{n+1}&=t_n\cdot(1-r_n)+1.\tag{4}
+\end{align}
+这些是同样的动态，由(6)--(9)所表达，并非额外的或替代的控制模型。
+
+如第10-11页的文中所定义的，当天开始时可用的水量为$\xi_n+u_n$，当天结束时未使用的水量为$(\xi_n+u_n-w_n)^+$，而实际消耗的水量则……
+\[
+\xi_n+u_n-(\xi_n+u_n-w_n)^+.
+\]
+因此，所选目标中的健康成本项为
+\[
+q(\tau_n)\cdot\bigl(\xi_n+u_n-(\xi_n+u_n-w_n)^+\bigr).
+\]
+购买和冲洗分别会产生$c_u u_n$和$c_r x_n r_n$的费用；只有在进行重置操作时，才会产生冲洗相关的费用。
+
+\paragraph{印刷错误与范围。}
+在紧接着的段落中（12），将$p\cdot(\xi_n+u_n-w_n)^-$称为总短缺成本，尽管打印的目标值（5）使用的是$-p\cdot(\xi_n+u_n-w_n)^-$。这里保留了目标符号以及打印出的负数值定义。第2.1节并未为初始状态$x_0,t_0$指定具体数值；因此这里也没有添加任何数值。
+
+第23页中讨论的舞台成本重写方法，以及附录A中的(A.17)--(A.20)部分内容，都用于证明命题7的充分条件。这些方法并不取代(A.5)--(A.12)中的内容。同样，第23页到第25页中的BiDS算法也是一种解决方案。而第25页上的需求分布、每周重置间隔以及成本比较等数值选择，其实都是数值实例的选择而已。它们并不是对所选公式的额外限制。
+
+\end{document}

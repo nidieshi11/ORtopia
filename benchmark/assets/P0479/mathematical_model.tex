@@ -1,0 +1,220 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,mathtools,hyperref}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\usepackage[UTF8]{ctex}
+\begin{document}
+
+\section*{基于 GP 学习的车队控制 MPC。已批准的有限视界版本（17）}
+\begin{equation}
+\begin{aligned}
+\min_{\mathbb V}\;&
+\sum_{\mathbf{n_a}=1}^{N_a}\sum_{i=k}^{k+N-1}
+ \left\|\mathrm{acc}_{i|k}^{\mathbf{n_a}}\right\|_R^2
++\sum_{i=k}^{k+N-1}
+ \left\|v_{i+1|k}^{1}-v_{i+1|k}^{\mathrm{ref}}\right\|_{Q_1}^2\\
+&+\sum_{\mathbf{n_a}=2}^{N_a}\sum_{i=k}^{k+N-1}
+ \left\|v_{i+1|k}^{\mathbf{n_a}}-v_{i+1|k}^{\mathbf{n_a}-1}\right\|_{Q_2}^2 .
+\end{aligned}\tag{17a}
+\end{equation}
+打印出的决策集如下：
+\[
+\mathbb V=\left\{v_{i|k}^{1},v_{i|k}^{\mathbf{n_a}},v_{i|k}^{H},
+ p_{i|k}^{\mathbf{n_a}},\mu_{i|k}^{p^H},\Sigma_{i|k}^{p^H},
+ \mathrm{acc}_{i|k}^{\mathbf{n_a}}\right\},
+\]
+受…的约束
+\begin{align}
+v_{i+1|k}^{\mathbf{n_a}}&=v_{i|k}^{\mathbf{n_a}}+T\,\mathrm{acc}_{i|k}^{\mathbf{n_a}},
+& p_{i+1|k}^{\mathbf{n_a}}&=p_{i|k}^{\mathbf{n_a}}+T\,v_{i|k}^{\mathbf{n_a}},\tag{17b}\\
+v_{i|k}^{H}&=f\left(v_{i-1:i-4|k}^{H},v_{i-1:i-4|k}^{N_a}\right),\tag{17c}\\
+\mu_{i+1|k}^{p^H}&=\mu_{i|k}^{p^H}+T\,v_{i|k}^{H}
+ +T\,\mu^d\left(v_{i-1|k}^{H},v_{i-1|k}^{N_a}\right),\tag{17d}\\
+\Sigma_{i+1|k}^{p^H}&=\Sigma_{i|k}^{p^H}
+ +T^2\Sigma^d\left(v_{i-1|k}^{H},v_{i-1|k}^{N_a}\right),\tag{17e}\\
+p_{i|k}^{\mathbf{n_a}-1}-p_{i|k}^{\mathbf{n_a}}&\geq\Delta,\tag{17f}\\
+p_{i|k}^{N_a}-\mu_{i|k}^{p^H}&\geq\Delta+\phi^{-1}(p_{\mathrm{def}})
+ \sqrt{\Sigma_{i|k}^{p^H}},\tag{17g}\\
+v_{\min}\leq v_{i|k}^{\mathbf{n_a}}&\leq v_{\max},
+&\mathrm{acc}_{\min}\leq\mathrm{acc}_{i|k}^{\mathbf{n_a}}&\leq\mathrm{acc}_{\max}.\tag{17h}
+\end{align}
+
+\paragraph{范围、角色和印刷索引（第\ 页，第19、22-23条）。}
+纵向排队由$N_a$辆AV组成，这些车辆被标记为$A^{\mathbf{n_a}}$。之后是1辆HV，标记为$H$。第3.1节中，车辆索引的描述如下：
+\[
+\mathbf{n_a}=\{1,2,\ldots,N_a\}.
+\]
+这里的$N_a$表示AV的数量，而$\mathbf{n_a}$则用作方程中的组件索引。领导者是AV$1$，而AV$N_a$则紧接在HV之前。位置、速度和加速度分别用$p$、$v$和$\mathrm{acc}$来表示。$\mu^{p^H}$和$\Sigma^{p^H}$分别表示HV的位置均值和方差。当前离散时间为$k$；$N$则是预测范围。参考速度$v^{\mathrm{ref}}$，速度及加速度限制、安全距离$\Delta$，所需满足的概率$p_{\mathrm{def}}$，模型参数以及训练好的GP都是固定数据，不是$\mathbb V$中的额外元素。成本权重和采样时间前提也是固定的。
+\[
+Q_1>0,\qquad Q_2>0,\qquad R>0,\qquad 0<T\ll1.
+\]
+该论文忽略了式(17a)中的加权范数。在合成动力学系统中，所有的速度和加速度都是标量，可以表示为$\|z\|^2_Q=Qz^2$，其中$Q_1,Q_2,R,T>0$是相关参数。
+
+\paragraph{预测区间与来源差异。}
+这一经明确批准的执行版本在$i=k,\dots,k+N-1$和$N+1$状态快照处使用$N$控制方式，在$i=k,\dots,k+N$处进行运算。公式(17a)中的两个速度项在$i+1=k+1,\dots,k+N$时刻对$N$的未来快照进行运算。而公布的(17a)版本则将两个速度总和的计算结果设定在$i=k+N$时刻，并在最后一个控制点之后引入了一个额外的速度值$k+N+1$。作者们的实现方案中，使用了$N$个控制点和$N+1$个状态。选择此处所展示的时域变化作为(17a)的运算依据。不过，仍然可以提供一个基于历史输入数据的、超出时域范围的参考样本。其数值对这一目标并无影响。
+
+将 (17b)–(17e) 应用于 $k,\dots,k+N-1$。将速度限制和 (17f)–(17g) 应用于 $k,\dots,k+N$，将加速度限制应用于 $k,\dots,k+N-1$。在 (17b) 中，速度限制和控制限制的范围涵盖了 $1,\dots,N_a$；(17f) 的范围则涵盖了 $2,\dots,N_a$。所有必需的当前自动车辆的位置和速度都是观测值。初始人类位置的平均值就是观测到的人类位置，其方差为零。人类的速度以及最后一个自动车辆的速度是在 $k-4,\dots,k-1$ 的四个时间点观测到的。这次实例中，观测到的人类当前速度与 (17c) 中的结果一致。在转换点 $i$ 时，GP 获取了 $i-1$ 时刻的两个速度值，并将其后验方差贡献到 (17e) 中。
+
+作者手稿中的早期方程式和注释记录了从观测位置出发、经过四个速度延迟后的初始化过程。作者的 Matlab 代码则详细说明了有限视界的尺寸。本版本保留了论文中的$R,Q_1,Q_2$以及后验方差。作者的软件还计算了平滑项，并输出了标准差值；这些不同的公式在源代码中分别进行了记录。所报告的优化问题仅涉及一个后退视界更新过程。
+
+\section*{名义上的 HV 模型定义为：\texorpdfstring{$f$}{f}（pp.\ 8--9）}
+该来源以以下方式构建名义模型：
+\begin{equation}
+G_H(s)\approx K\frac{1+T_zs}{1+2\gamma T_ws+T_w^2s^2}e^{-T_ds}
+ =\frac{\dot P_H(s)}{\dot P_N(s)}.\tag{1}
+\end{equation}
+这里的$s$是拉普拉斯域中的变量，$K$是增益，$T_z$是零时间常数，$\gamma$是阻尼系数，而$T_d$则是人类响应延迟。源代码中将$T_w$称为系统的自然频率。$\dot P_H(s)$和$\dot P_N(s)$对应的分别是$v_k^H$和$v_k^{N_a}$。二阶Pad\'e近似法用于近似延迟和离散化处理。
+\begin{equation}
+\begin{aligned}
+v_k^H={}&-c_1v_{k-1}^H-c_2v_{k-2}^H-c_3v_{k-3}^H-c_4v_{k-4}^H\\
+&+b_1v_{k-1}^{N_a}+b_2v_{k-2}^{N_a}+b_3v_{k-3}^{N_a}+b_4v_{k-4}^{N_a}\\
+={}&f\left(v_{k-1:k-4}^H,v_{k-1:k-4}^{N_a}\right).
+\end{aligned}\tag{2}
+\end{equation}
+$c_i$是恒定的自回归系数，而$b_i$则是恒定的外生输入系数，其滞后指数为$i=1,2,3,4$。这些系数是通过对$G_H(s)$进行离散化处理得到的；这里并未给出具体的数值或明确的系数转换公式。Wang等人提出的离散化方法在\ （2024）中被引用，但在所提供的材料中并未得到验证。所链接的ARX+GP模型结构则……
+\begin{align}
+v_k^H&=\sum_{i=1}^{4}-c_i v_{k-i}^H
+       +\sum_{i=1}^{4}b_i v_{k-i}^{N_a}=f(\cdot),\tag{3a}\\
+\widetilde v_k^H&=\overbrace{v_k^H}^{\text{ARX prediction}}
+ +\overbrace{g(v_{k-1}^H,v_{k-1}^{N_a})}^{\text{GP-based correction}}.\tag{3b}
+\end{align}
+因此，$v^H$就是名义上的ARX速度，$\widetilde v^H$则是经过GP补偿后的速度，而$g$则用于反映实际行为与名义模型之间的差异。方程(17c)中使用的是名义上的$f$，而不是经过补偿后的速度，作为$f$的替代值。
+
+\section*{与(17d)--(17e) (pp.\ 10--12)相关的GP定义}
+差异观察结果和输入数据如下：
+\begin{equation}
+\widehat v_j^H-v_j^H=g(a_{j-1}),\tag{4}
+\end{equation}
+\[
+a_{j-1}=(v_{j-1}^H,v_{j-1}^{N_a}).
+\]
+这里的$\widehat v_j^H$表示收集到的速度数据，而$v_j^H$则代表ARX预测值。打印出的数据集就是这样的数据。
+\[
+\mathcal D=\left\{
+ a=[a_1,\ldots,a_n]^\top\in\mathbb R^{n_a\times n},\quad
+ g=[g_1,\ldots,g_n]^\top\in\mathbb R^{1\times n}
+\right\}.
+\]
+在这段 GP 代码中，$n$表示数据点的数量，而普通的$n_a$则表示输入维度，而不是加粗显示的车辆索引$\mathbf{n_a}$，也不是自动驾驶车辆的数量$N_a$。每个输入$a_i$的维度为$n_a$乘$1$。上述数据集的布局和声明维度均按原样保留；转置表示法并未被悄悄改变，以保持不变的矩阵布局。
+
+以零均值为基础的GP使用平方指数核。
+\begin{equation}
+k(a_i,a_j)=\sigma_f^2\exp\left[-\frac12(a_i-a_j)^\top L^{-1}(a_i-a_j)\right].\tag{5}
+\end{equation}
+超参数$\sigma_f^2$和$L\in\mathbb R^{n_a\times n_a}$是通过最大化观测到的差异数据的对数边际似然来优化的。论文并未将这种优化作为另一个控制子问题来讨论。对于新的输入$a^*\in\mathbb R^{n_a\times1}$，
+\begin{align}
+g(a^*)&\sim\mathcal N\bigl(\mu^d(a^*),\Sigma^d(a^*)\bigr),\tag{6}\\
+\mu^d(a^*)&=K_{a^*a}\bigl(K_{aa}+\sigma^2I\bigr)^{-1}g,\tag{7a}\\
+\Sigma^d(a^*)&=K_{a^*a^*}
+ -K_{a^*a}\bigl(K_{aa}+\sigma^2I\bigr)^{-1}K_{aa^*}.\tag{7b}
+\end{align}
+附带的 Gram-matrix 定义如下：
+\[
+[K_{aa}]_{ij}=k(a_i,a_j),\qquad
+[K_{aa^*}]=k(a_j,a^*),\qquad
+K_{a^*a}=(K_{aa^*})^\top,\qquad
+K_{a^*a^*}=k(a^*,a^*).
+\]
+在(7a)中，符号$g$表示数据集的偏差输出集合，而$g(\cdot)$则表示GP函数。在(7)中，符号$\sigma^2$与核超参数$\sigma_f^2$是不同的；其定义并未在提供的GP说明中给出，因此这里也不进行说明。对于GP超参数，没有施加任何不可打印的符号、明确性或可逆性限制。
+
+\section*{系统假设与时刻传播（参见\ 第19-20页）}
+由 (17b) 所再现的底层 AV 动态变化如下：
+\begin{align}
+v_{k+1}^{\mathbf{n_a}}&=v_k^{\mathbf{n_a}}+T\,\mathrm{acc}_k^{\mathbf{n_a}},\tag{9a}\\
+p_{k+1}^{\mathbf{n_a}}&=p_k^{\mathbf{n_a}}+T\,v_k^{\mathbf{n_a}}.\tag{9b}
+\end{align}
+假设 AVs 是确定性的，并且能够完美地测量和传递它们的状态。
+\[
+\Sigma(v_k^{\mathbf{n_a}})=0.
+\]
+所链接的 HV 状态方程如下：
+\begin{align}
+\widetilde v_k^H&=v_k^H+g(v_{k-1}^H,v_{k-1}^{N_a}),\tag{10a}\\
+p_{k+1}^H&=p_k^H+T\widetilde v_k^H.\tag{10b}
+\end{align}
+目前，源数据仍假定为……
+\[
+\Sigma(v_k^H)=0,\qquad \Sigma(p_k^H)=0.
+\]
+在 (17d)–(17e) 中使用的位置矩，其定义如下：
+\begin{equation}
+\mu_{k+1}^{p^H}=\mu_k^{p^H}+Tv_k^H
+ +T\mu^d(v_{k-1}^H,v_{k-1}^{N_a}),\tag{11}
+\end{equation}
+包含打印出的初始化信息。
+\[
+\mu_0^{p^H}=p_k^H,
+\]
+以及
+\begin{align}
+\Sigma(p_{k+1}^H)
+ &=\Sigma\bigl(p_k^H+Tv_k^H+Tg(v_{k-1}^H,v_{k-1}^{N_a})\bigr),\tag{12a}\\
+ &=\Sigma_k^{p^H}+T^2\Sigma_{k-1}^d,\tag{12b}
+\end{align}
+与…一起
+\[
+\Sigma_0^{p^H}=0.
+\]
+该论文明确指出，(12b)忽略了$p_k^H$与$v_k^H$之间的协方差关系。零下标初始化及其当前时间的右侧部分被保留下来；没有新的地平线索引初始化被引入。方程(17e)给出了出现在(12b)中的方差增量的具体GP输入参数。
+
+\section*{安全约束的推导与选定的替换（第\ 20–22页）}
+以下行记录了 (17g) 的源推导过程；这些并不是在 (17f)–(17g) 之外额外施加的约束条件。前面的 AV-spacing 文本使用了严格的不等式关系。
+\[
+p_k^{\mathbf{n_a}-1}-p_k^{\mathbf{n_a}}>\Delta.
+\]
+方程（17f）作为操作行被保留下来，但它仍然打印出$\geq$。严格的文风要求也没有被遵守。
+
+对于最后一个 AV 和 HV，源代码如下：
+\begin{equation}
+\Pr\bigl(p_k^{N_a}-(p_k^H+\Delta)>\Delta_{\mathrm{ext}}\bigr)
+ \geq p_{\mathrm{def}},\tag{13}
+\end{equation}
+其中，$\Delta$是预先定义的安全距离，$p_{\mathrm{def}}$是所需的满意度概率。
+\[
+\Delta_{\mathrm{ext}}\geq0.
+\]
+半空间构造是
+\[
+\mathcal X^{\mathrm{hs}}:=\{x\mid h^\top x\leq b\},\qquad
+h\in\mathbb R^n,\quad b\in\mathbb R,
+\]
+\begin{equation}
+\mathcal X^{\mathrm{hs}}(\Sigma_i^x):=
+\left\{x\;\middle|\;h^\top x\leq b-\phi^{-1}(p_{\mathrm{def}})
+ \sqrt{h^\top\Sigma_i^x h}\right\}.\tag{14}
+\end{equation}
+对于此应用，
+\[
+h^\top=\begin{bmatrix}-1&1\end{bmatrix},\qquad
+x:=\begin{bmatrix}p_k^{N_a}&p_k^H+\Delta\end{bmatrix}^{\!\top},\qquad
+b=-\Delta_{\mathrm{ext}}.
+\]
+来源中將$\phi^{-1}$描述为逆累积分布函数。其协方差显示，如第21页文本中所提供的，是
+\begin{equation}
+\Sigma_k^x:=
+\begin{bmatrix}\Sigma_k^{p^{N_a}}\\ \Sigma_k^{p^H}+\Delta\end{bmatrix}
+=\begin{bmatrix}0&0\\0&\Sigma_k^{p^H}\end{bmatrix}.\tag{15}
+\end{equation}
+第21页的图像没有提供，因此(15)的左侧布局无法验证；因此，对该提取的布局无需进行任何修正。右侧的协方差矩阵附有假设，即HV位置与其领先的AV位置之间不存在协方差。
+\[
+\Sigma_k^{p^{N_a}}=0.
+\]
+源代码的确定性替换方式如下：
+\begin{equation}
+p_k^{N_a}-p_k^H\geq\Delta+\Delta_{\mathrm{ext}}
+ +\phi^{-1}(p_{\mathrm{def}})\sqrt{\Sigma_k^{p^H}}.\tag{16}
+\end{equation}
+源代码中允许将$\Delta_{\mathrm{ext}}$设置为零，当需要高度保证约束满足时，应适当描述此选项。方程(17g)选择了这种零额外距离的形式。
+\[
+\Delta_{\mathrm{ext}}=0,
+\]
+并且使用了预测的HV位置平均值。在(13)中的严格条件以及(16)中的非严格替换条件都保持不变，没有进行任何修改或同时实施。源代码中提到，在所有条件下，最终的要求都超过了$\Delta$；这一点比(17g)中的情况更为明确，因为在零方差的情况下，其右侧的值正好是$\Delta$；没有引入额外的严格限制。
+
+\section*{计算依赖边界：\ 11–12, 17–18, 23–25}
+方程式（6）至（7）是第3.3节中引用的打印后的后验定义。论文还介绍了一种完全独立的条件性稀疏近似方法。该方法将训练信息压缩成诱导变量，这些变量的位置是通过梯度上升法来确定的，以最大化GP边际似然度。第2.5节指出，稀疏模型的超参数来自完整的GP模型，并且其实现过程中使用了20个诱导点。不过，对于（7a）至（7b）部分，并未提供稀疏后验替代方案。
+
+第3.4节指出，稀疏GP的评估是在前一个MPC时间步长获得的轨迹上进行的，而这些结果被用于(17d)–(17e)公式中，以预测当前的平均值和方差。这里描述的是整个预测范围内的单一稀疏GP预测，而不是对每个时间步长分别进行预测。没有列出用于指定这种评估或轨迹对齐的索引替换行。因此，(17d)–(17e)公式被保留下来，无需发明新的输入公式、诱导点方程或替代的优化问题。这些缺失的规范涉及稀疏近似的处理方式。上述全GP版本则使用第2.1节和第3.3节中的公式来进行后验评估。作者的Matlab存储库也进行了单独检查，以了解预测范围、训练模型以及实现方面的差异。
+
+第25页上的数值采样时间、时间范围、权重、界限、初始配置以及概率等参数，都是模拟实例中的设置，并非(17)中的普遍前提条件，因此这些参数并不适用于这个符号模型。在名义MPC比较中，GP效应被忽略了，这是一种不同的控制器，并不是这次重建中的实际替代方案。所选的3.3节模型包含$N_a$辆AV和一辆HV；而第24页中的描述称模拟的AV车队包含“两辆HV”，这与第25页中描述的两辆AV后面跟着一辆HV的情况相矛盾，因此这一描述并不适用于所选的模型。
+
+\end{document}

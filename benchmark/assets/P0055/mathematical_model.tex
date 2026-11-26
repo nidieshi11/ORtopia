@@ -1,0 +1,461 @@
+% Mathematical Model - 1-s2.0-S1366554524005374-main
+% Auto-generated at 2026-01-19T13:54:37.749913
+% Model Source: Directly Extracted
+% This model is directly extracted from the paper
+
+\documentclass{article}
+\usepackage{amsmath}
+\allowdisplaybreaks
+\usepackage{amssymb}
+
+\usepackage[UTF8]{ctex}
+\begin{document}
+
+\section*{问题：DARP}
+
+\textbf{模型来源}：直接提取的
+
+\subsection*{决策变量}
+% Routing
+\begin{equation*}
+x_{i,j}^k \in \{0,1\}, \quad \forall k\in K,\ \forall i,j\in V,\ i\neq j.
+\end{equation*}
+
+% Service start time
+\begin{equation*}
+T_i^k \ge 0, \quad \forall i\in V,\ \forall k\in K.
+\end{equation*}
+
+% Charging start/end time at charging station
+\begin{equation*}
+S_i^k \ge 0,\quad F_i^k \ge 0, \quad \forall i\in C',\ \forall k\in K.
+\end{equation*}
+
+% TOU time-zone indicators for charging start/end time
+\begin{align*}
+S_{i,k}^m \in \{0,1\},\quad F_{i,k}^m \in \{0,1\}, \\
+\quad \forall i\in C',\ \forall k\in K,\ \forall m\in T.
+\end{align*}
+
+% Auxiliary variables for linearizing \Gamma(\cdot)
+\begin{align*}
+M_{i,k}^m \ge 0,\quad N_{i,k}^m \ge 0, \\
+\quad \forall i\in C',\ \forall k\in K,\ \forall m\in T.
+\end{align*}
+
+% Load after servicing node i
+\begin{equation*}
+L_i^k \ge 0, \quad \forall i\in V,\ \forall k\in K.
+\end{equation*}
+
+% Battery level upon arrival at node i
+\begin{equation*}
+B_i^k \ge 0, \quad \forall i\in V,\ \forall k\in K.
+\end{equation*}
+
+% Excess ride time of passenger i
+\begin{equation*}
+R_i \ge 0, \quad \forall i\in P.
+\end{equation*}
+
+\subsection*{目标函数}
+% (1) Original objective
+\begin{equation}\tag{1}
+\min\
+\sum_{k\in K}\sum_{i\in C'}\Big(\Gamma(F_i^k)-\Gamma(S_i^k)\Big)
++\phi\sum_{k\in K}\sum_{i\in V}\sum_{j\in V} d_{i,j}x_{i,j}^k
++\varphi\sum_{i\in P} R_i
+\end{equation}
+
+\subsection*{约束条件：}
+% -------------------------
+% Linearization constraints (2)-(6)
+% -------------------------
+\begin{equation}\tag{2}
+\sigma_m S_i^k+\epsilon_m-M(1-S_{i,k}^m)\le M_{i,k}^m\le \sigma_m S_i^k+\epsilon_m+M(1-S_{i,k}^m),
+\quad \forall i\in C',\ k\in K,\ m\in T
+\end{equation}
+
+\begin{equation}\tag{3}
+- M S_{i,k}^m\le M_{i,k}^m\le M S_{i,k}^m,
+\quad \forall i\in C',\ k\in K,\ m\in T
+\end{equation}
+
+\begin{equation}\tag{4}
+\sigma_m F_i^k+\epsilon_m-M(1-F_{i,k}^m)\le N_{i,k}^m\le \sigma_m F_i^k+\epsilon_m+M(1-F_{i,k}^m),
+\quad \forall i\in C',\ k\in K,\ m\in T
+\end{equation}
+
+\begin{equation}\tag{5}
+- M F_{i,k}^m\le N_{i,k}^m\le M F_{i,k}^m,
+\quad \forall i\in C',\ k\in K,\ m\in T
+\end{equation}
+
+\begin{equation}\tag{6}
+\sum_{m\in T}(N_{i,k}^m-M_{i,k}^m)\ge 0,
+\quad \forall i\in C',\ k\in K
+\end{equation}
+
+% -------------------------
+% Routing / flow / visit constraints (8)-(15)
+% -------------------------
+\begin{equation}\tag{8}
+\sum_{i\in V,\ i\neq j}x_{i,j}^k-\sum_{i\in V,\ i\neq j}x_{j,i}^k=0,
+\quad \forall k\in K,\ \forall j\in N\cup C'
+\end{equation}
+
+\begin{equation}\tag{9}
+\sum_{k\in K}\sum_{i\in N\cup C'\cup S,\ i\neq j}x_{i,j}^k=1,
+\quad \forall j\in P
+\end{equation}
+
+\begin{equation}\tag{10}
+\sum_{k\in K}\sum_{i\in N,\ i\neq j}x_{i,j}^k=1,
+\quad \forall j\in D
+\end{equation}
+
+\begin{equation}\tag{11}
+\sum_{i\in D\cup C'\cup S,\ i\neq j}x_{i,j}^k\le 1,
+\quad \forall j\in C',\ \forall k\in K
+\end{equation}
+
+\begin{equation}\tag{12}
+\sum_{i\in D\cup C'\cup\{\tau_k\}}x_{i,\tau_k'}^k\le 1,
+\quad \forall k\in K
+\end{equation}
+
+\begin{equation}\tag{13}
+\sum_{j\in P\cup C'\cup\{\tau_k'\}}x_{\tau_k,j}^k\le 1,
+\quad \forall k\in K
+\end{equation}
+
+\begin{equation}\tag{14}
+\sum_{i\in D\cup C'\cup\{\tau_k\}}x_{i,\tau_k'}^k-\sum_{j\in P\cup C'\cup\{\tau_k'\}}x_{\tau_k,j}^k=0,
+\quad \forall k\in K
+\end{equation}
+
+\begin{equation}\tag{15}
+\sum_{j\in N,\ i\neq j}x_{i,j}^k-\sum_{j\in N\setminus\{i,i+n\}}x_{j,i+n}^k=0,
+\quad \forall k\in K,\ \forall i\in P
+\end{equation}
+
+% -------------------------
+% Time constraints (16)-(20)
+% -------------------------
+\begin{equation}\tag{16}
+T_i^k+\xi_i+t_{i,i+n}\le T_{i+n}^k,
+\quad \forall k\in K,\ \forall i\in P
+\end{equation}
+
+\begin{equation}\tag{17}
+a_i\le T_i^k\le b_i,
+\quad \forall i\in V,\ \forall k\in K
+\end{equation}
+
+\begin{equation}\tag{18}
+T_{i+n}^k+\xi_{i+n}-T_i^k-\xi_i\le \varrho_i,
+\quad \forall i\in P,\ \forall k\in K
+\end{equation}
+
+\begin{equation}\tag{19}
+T_{i+n}^k-T_i^k-\xi_i-t_{i,i+n}\le R_i,
+\quad \forall i\in P,\ \forall k\in K
+\end{equation}
+
+\begin{equation}\tag{20}
+T_i^k+t_{i,j}+\xi_i-M(1-x_{i,j}^k)\le T_j^k,
+\quad \forall k\in K,\ \forall i\in V,\ \forall j\in V,\ i\neq j
+\end{equation}
+
+% -------------------------
+% TOU time-zone selection for S_i^k and F_i^k (21)-(24)
+% -------------------------
+\begin{equation}\tag{21}
+\sum_{m\in T}S_{i,k}^m=\sum_{j\in S\cup N\cup C',\ i\neq j}x_{j,i}^k,
+\quad \forall i\in C',\ \forall k\in K
+\end{equation}
+
+\begin{equation}\tag{22}
+\varpi_m-M(1-S_{i,k}^m)\le S_i^k\le \varpi_{m+1}+M(1-S_{i,k}^m),
+\quad \forall i\in C',\ \forall k\in K,\ \forall m\in T
+\end{equation}
+
+\begin{equation}\tag{23}
+\sum_{m\in T}F_{i,k}^m=\sum_{j\in S\cup N\cup C',\ i\neq j}x_{j,i}^k,
+\quad \forall i\in C',\ \forall k\in K
+\end{equation}
+
+\begin{equation}\tag{24}
+\varpi_m-M(1-F_{i,k}^m)\le F_i^k\le \varpi_{m+1}+M(1-F_{i,k}^m),
+\quad \forall i\in C',\ \forall k\in K,\ \forall m\in T
+\end{equation}
+
+% -------------------------
+% Capacity constraints (25)-(29)
+% -------------------------
+\begin{equation}\tag{25}
+L_i^k+l_i-M(1-x_{i,j}^k)\le L_j^k,
+\quad \forall k\in K,\ \forall i\in V\setminus E,\ \forall j\in V\setminus S,\ i\neq j
+\end{equation}
+
+\begin{equation}\tag{26}
+L_i^k+l_i+M(1-x_{i,j}^k)\ge L_j^k,
+\quad \forall k\in K,\ \forall i\in V\setminus E,\ \forall j\in V\setminus S,\ i\neq j
+\end{equation}
+
+\begin{equation}\tag{27}
+L_i^k\ge 0,
+\quad \forall k\in K,\ \forall i\in V
+\end{equation}
+
+\begin{equation}\tag{28}
+L_i^k\le L,
+\quad \forall k\in K,\ \forall i\in V
+\end{equation}
+
+\begin{equation}\tag{29}
+L_i^k=0,
+\quad \forall i\in S\cup C'\cup E,\ \forall k\in K
+\end{equation}
+
+% -------------------------
+% Charging time feasibility (30)-(32)
+% -------------------------
+\begin{equation}\tag{30}
+F_i^k\le T_j^k-t_{i,j}+M(1-x_{i,j}^k),
+\quad \forall k\in K,\ \forall i\in C',\ \forall j\in (P\cup E\cup C'),\ i\neq j
+\end{equation}
+
+\begin{equation}\tag{31}
+S_i^k\ge T_i^k+\xi_i,
+\quad \forall k\in K,\ \forall i\in C'
+\end{equation}
+
+\begin{equation}\tag{32}
+S_i^k\le F_i^k,
+\quad \forall k\in K,\ \forall i\in C'
+\end{equation}
+
+% -------------------------
+% Energy constraints (33)-(39)
+% -------------------------
+\begin{equation}\tag{33}
+B_j^k\ge B_i^k-\beta_{i,j}-M(1-x_{i,j}^k),
+\quad \forall k\in K,\ \forall i\in V\setminus C',\ \forall j\in V\setminus S,\ i\neq j
+\end{equation}
+
+\begin{equation}\tag{34}
+B_j^k\le B_i^k-\beta_{i,j}+M(1-x_{i,j}^k),
+\quad \forall k\in K,\ \forall i\in V\setminus C',\ \forall j\in V\setminus S,\ i\neq j
+\end{equation}
+
+\begin{equation}\tag{35}
+B_j^k\ge B_i^k-\beta_{i,j}+\gamma(F_i^k-S_i^k)-M(1-x_{i,j}^k),
+\quad \forall k\in K,\ \forall i\in C',\ \forall j\in V\setminus (S\cup D),\ i\neq j
+\end{equation}
+
+\begin{equation}\tag{36}
+B_j^k\le B_i^k-\beta_{i,j}+\gamma(F_i^k-S_i^k)+M(1-x_{i,j}^k),
+\quad \forall k\in K,\ \forall i\in C',\ \forall j\in V\setminus (S\cup D),\ i\neq j
+\end{equation}
+
+\begin{equation}\tag{37}
+B_{\tau_k'}^k\ge \Pi,
+\quad \forall k\in K
+\end{equation}
+
+\begin{equation}\tag{38}
+Q\ge B_i^k+\gamma(F_i^k-S_i^k),
+\quad \forall k\in K,\ \forall i\in C'
+\end{equation}
+
+\begin{equation}\tag{39}
+B_{\tau_k}^k=Q_0,
+\quad \forall k\in K
+\end{equation}
+
+% -------------------------
+% Variable domains (40)-(49)
+% -------------------------
+\begin{equation}\tag{40}
+x_{i,j}^k\in\{0,1\},
+\quad \forall i\in V,\ \forall j\in V,\ \forall k\in K,\ i\neq j
+\end{equation}
+
+\begin{equation}\tag{41}
+T_i^k\ge 0,
+\quad \forall i\in V,\ \forall k\in K
+\end{equation}
+
+\begin{equation}\tag{42}
+S_i^k\ge 0,
+\quad \forall i\in C',\ \forall k\in K
+\end{equation}
+
+\begin{equation}\tag{43}
+F_i^k\ge 0,
+\quad \forall i\in C',\ \forall k\in K
+\end{equation}
+
+\begin{equation}\tag{44}
+S_{i,k}^m\in\{0,1\},
+\quad \forall i\in C',\ \forall k\in K,\ \forall m\in T
+\end{equation}
+
+\begin{equation}\tag{45}
+F_{i,k}^m\in\{0,1\},
+\quad \forall i\in C',\ \forall k\in K,\ \forall m\in T
+\end{equation}
+
+\begin{equation}\tag{46}
+0\le M_{i,k}^m\le \Gamma(\varpi_{m+1}),
+\quad \forall i\in C',\ \forall k\in K,\ \forall m\in T
+\end{equation}
+
+\begin{equation}\tag{47}
+0\le N_{i,k}^m\le \Gamma(\varpi_{m+1}),
+\quad \forall i\in C',\ \forall k\in K,\ \forall m\in T
+\end{equation}
+
+\begin{equation}\tag{48}
+L_i^k\ge 0,
+\quad \forall i\in V,\ \forall k\in K
+\end{equation}
+
+\begin{equation}\tag{49}
+B_i^k\ge 0,
+\quad \forall i\in V,\ \forall k\in K
+\end{equation}
+
+% -------------------------
+% Additional constraints for efficiency (50)-(52)
+% -------------------------
+\begin{equation}\tag{50}
+\sum_{i\in V}\sum_{j\in S\cup E\setminus\{\tau_k'\}}x_{i,j}^k=0,
+\quad \forall k\in K
+\end{equation}
+
+\begin{equation}\tag{51}
+\sum_{i\in S\cup E\setminus\{\tau_k\}}\sum_{j\in V}x_{i,j}^k=0,
+\quad \forall k\in K
+\end{equation}
+
+\begin{equation}\tag{52}
+x_{i,j}^k=0,
+\quad \forall l\in C,\ \forall i\in \rho_l,\ \forall j\in \rho_l,\ \forall k\in K
+\end{equation}
+
+\subsection*{完整的数学模型}
+\begin{align}
+\textbf{(DAR-RSTOU MIP)}\qquad
+\min\ & 
+\sum_{k\in K}\sum_{i\in C'}\sum_{m\in T}\left(N_{i,k}^m-M_{i,k}^m\right)
++\phi\sum_{k\in K}\sum_{i\in V}\sum_{j\in V} d_{i,j}x_{i,j}^k
++\varphi\sum_{i\in P} R_i \\
+\text{s.t. }\ 
+&\sigma_m S_i^k+\epsilon_m-M(1-S_{i,k}^m)\le M_{i,k}^m\le \sigma_m S_i^k+\epsilon_m+M(1-S_{i,k}^m),
+&& \forall i\in C',\ k\in K,\ m\in T \tag{2}\\
+&- M S_{i,k}^m\le M_{i,k}^m\le M S_{i,k}^m,
+&& \forall i\in C',\ k\in K,\ m\in T \tag{3}\\
+&\sigma_m F_i^k+\epsilon_m-M(1-F_{i,k}^m)\le N_{i,k}^m\le \sigma_m F_i^k+\epsilon_m+M(1-F_{i,k}^m),
+&& \forall i\in C',\ k\in K,\ m\in T \tag{4}\\
+&- M F_{i,k}^m\le N_{i,k}^m\le M F_{i,k}^m,
+&& \forall i\in C',\ k\in K,\ m\in T \tag{5}\\
+&\sum_{m\in T}(N_{i,k}^m-M_{i,k}^m)\ge 0,
+&& \forall i\in C',\ k\in K \tag{6}\\[2mm]
+&\sum_{i\in V,\ i\neq j}x_{i,j}^k-\sum_{i\in V,\ i\neq j}x_{j,i}^k=0,
+&& \forall k\in K,\ \forall j\in N\cup C' \tag{8}\\
+&\sum_{k\in K}\sum_{i\in N\cup C'\cup S,\ i\neq j}x_{i,j}^k=1,
+&& \forall j\in P \tag{9}\\
+&\sum_{k\in K}\sum_{i\in N,\ i\neq j}x_{i,j}^k=1,
+&& \forall j\in D \tag{10}\\
+&\sum_{i\in D\cup C'\cup S,\ i\neq j}x_{i,j}^k\le 1,
+&& \forall j\in C',\ \forall k\in K \tag{11}\\
+&\sum_{i\in D\cup C'\cup\{\tau_k\}}x_{i,\tau_k'}^k\le 1,
+&& \forall k\in K \tag{12}\\
+&\sum_{j\in P\cup C'\cup\{\tau_k'\}}x_{\tau_k,j}^k\le 1,
+&& \forall k\in K \tag{13}\\
+&\sum_{i\in D\cup C'\cup\{\tau_k\}}x_{i,\tau_k'}^k-\sum_{j\in P\cup C'\cup\{\tau_k'\}}x_{\tau_k,j}^k=0,
+&& \forall k\in K \tag{14}\\
+&\sum_{j\in N,\ i\neq j}x_{i,j}^k-\sum_{j\in N\setminus\{i,i+n\}}x_{j,i+n}^k=0,
+&& \forall k\in K,\ \forall i\in P \tag{15}\\[2mm]
+&T_i^k+\xi_i+t_{i,i+n}\le T_{i+n}^k,
+&& \forall k\in K,\ \forall i\in P \tag{16}\\
+&a_i\le T_i^k\le b_i,
+&& \forall i\in V,\ \forall k\in K \tag{17}\\
+&T_{i+n}^k+\xi_{i+n}-T_i^k-\xi_i\le \varrho_i,
+&& \forall i\in P,\ \forall k\in K \tag{18}\\
+&T_{i+n}^k-T_i^k-\xi_i-t_{i,i+n}\le R_i,
+&& \forall i\in P,\ \forall k\in K \tag{19}\\
+&T_i^k+t_{i,j}+\xi_i-M(1-x_{i,j}^k)\le T_j^k,
+&& \forall k\in K,\ \forall i\in V,\ \forall j\in V,\ i\neq j \tag{20}\\[2mm]
+&\sum_{m\in T}S_{i,k}^m=\sum_{j\in S\cup N\cup C',\ i\neq j}x_{j,i}^k,
+&& \forall i\in C',\ \forall k\in K \tag{21}\\
+&\varpi_m-M(1-S_{i,k}^m)\le S_i^k\le \varpi_{m+1}+M(1-S_{i,k}^m),
+&& \forall i\in C',\ \forall k\in K,\ \forall m\in T \tag{22}\\
+&\sum_{m\in T}F_{i,k}^m=\sum_{j\in S\cup N\cup C',\ i\neq j}x_{j,i}^k,
+&& \forall i\in C',\ \forall k\in K \tag{23}\\
+&\varpi_m-M(1-F_{i,k}^m)\le F_i^k\le \varpi_{m+1}+M(1-F_{i,k}^m),
+&& \forall i\in C',\ \forall k\in K,\ \forall m\in T \tag{24}\\[2mm]
+&L_i^k+l_i-M(1-x_{i,j}^k)\le L_j^k,
+&& \forall k\in K,\ \forall i\in V\setminus E,\ \forall j\in V\setminus S,\ i\neq j \tag{25}\\
+&L_i^k+l_i+M(1-x_{i,j}^k)\ge L_j^k,
+&& \forall k\in K,\ \forall i\in V\setminus E,\ \forall j\in V\setminus S,\ i\neq j \tag{26}\\
+&L_i^k\ge 0,
+&& \forall k\in K,\ \forall i\in V \tag{27}\\
+&L_i^k\le L,
+&& \forall k\in K,\ \forall i\in V \tag{28}\\
+&L_i^k=0,
+&& \forall i\in S\cup C'\cup E,\ \forall k\in K \tag{29}\\[2mm]
+&F_i^k\le T_j^k-t_{i,j}+M(1-x_{i,j}^k),
+&& \forall k\in K,\ \forall i\in C',\ \forall j\in (P\cup E\cup C'),\ i\neq j \tag{30}\\
+&S_i^k\ge T_i^k+\xi_i,
+&& \forall k\in K,\ \forall i\in C' \tag{31}\\
+&S_i^k\le F_i^k,
+&& \forall k\in K,\ \forall i\in C' \tag{32}\\[2mm]
+&B_j^k\ge B_i^k-\beta_{i,j}-M(1-x_{i,j}^k),
+&& \forall k\in K,\ \forall i\in V\setminus C',\ \forall j\in V\setminus S,\ i\neq j \tag{33}\\
+&B_j^k\le B_i^k-\beta_{i,j}+M(1-x_{i,j}^k),
+&& \forall k\in K,\ \forall i\in V\setminus C',\ \forall j\in V\setminus S,\ i\neq j \tag{34}\\
+&B_j^k\ge B_i^k-\beta_{i,j}+\gamma(F_i^k-S_i^k)-M(1-x_{i,j}^k),
+&& \forall k\in K,\ \forall i\in C',\ \forall j\in V\setminus (S\cup D),\ i\neq j \tag{35}\\
+&B_j^k\le B_i^k-\beta_{i,j}+\gamma(F_i^k-S_i^k)+M(1-x_{i,j}^k),
+&& \forall k\in K,\ \forall i\in C',\ \forall j\in V\setminus (S\cup D),\ i\neq j \tag{36}\\
+&B_{\tau_k'}^k\ge \Pi,
+&& \forall k\in K \tag{37}\\
+&Q\ge B_i^k+\gamma(F_i^k-S_i^k),
+&& \forall k\in K,\ \forall i\in C' \tag{38}\\
+&B_{\tau_k}^k=Q_0,
+&& \forall k\in K \tag{39}\\[2mm]
+&x_{i,j}^k\in\{0,1\},
+&& \forall i\in V,\ \forall j\in V,\ \forall k\in K,\ i\neq j \tag{40}\\
+&T_i^k\ge 0,
+&& \forall i\in V,\ \forall k\in K \tag{41}\\
+&S_i^k\ge 0,
+&& \forall i\in C',\ \forall k\in K \tag{42}\\
+&F_i^k\ge 0,
+&& \forall i\in C',\ \forall k\in K \tag{43}\\
+&S_{i,k}^m\in\{0,1\},
+&& \forall i\in C',\ \forall k\in K,\ \forall m\in T \tag{44}\\
+&F_{i,k}^m\in\{0,1\},
+&& \forall i\in C',\ \forall k\in K,\ \forall m\in T \tag{45}\\
+&0\le M_{i,k}^m\le \Gamma(\varpi_{m+1}),
+&& \forall i\in C',\ \forall k\in K,\ \forall m\in T \tag{46}\\
+&0\le N_{i,k}^m\le \Gamma(\varpi_{m+1}),
+&& \forall i\in C',\ \forall k\in K,\ \forall m\in T \tag{47}\\
+&L_i^k\ge 0,
+&& \forall i\in V,\ \forall k\in K \tag{48}\\
+&B_i^k\ge 0,
+&& \forall i\in V,\ \forall k\in K \tag{49}\\[2mm]
+&\sum_{i\in V}\sum_{j\in S\cup E\setminus\{\tau_k'\}}x_{i,j}^k=0,
+&& \forall k\in K \tag{50}\\
+&\sum_{i\in S\cup E\setminus\{\tau_k\}}\sum_{j\in V}x_{i,j}^k=0,
+&& \forall k\in K \tag{51}\\
+&x_{i,j}^k=0,
+&& \forall l\in C,\ \forall i\in \rho_l,\ \forall j\in \rho_l,\ \forall k\in K. \tag{52}
+\end{align}
+
+\subsection*{零对角线以及 (15) 的精确计数范围}
+为了表示上的方便，为每个节点和车辆定义$x_{i,i}^k=0$，同时定义$d_{i,i}=0$。这些都是固定的自弧常数。因此，所有节点的总和与不同节点的总和具有相同的值。在(15)中，第二个求和项排除了$i$和$i+n$；在论文的印刷公式中，还排除了$i$；而排除$i+n$则只是去掉了它的零自弧。结合访问次数和流量要求，这就禁止了从取货点直接选择一条弧线将其自身的配对交付点。因此，这种保留的表示方式除了用于车辆配对之外，还附加了上述的限制条件。
+
+\end{document}

@@ -1,0 +1,78 @@
+\documentclass[UTF8,11pt]{ctexart}
+\usepackage{amsmath,amssymb,geometry}
+\geometry{margin=22mm}
+\begin{document}
+\section*{P82: 具有非前瞻政策的原始多阶段随机混合整数规划}
+\paragraph{来源与范围}依据原论文PDF第1, 8, 9, 10页，第2节式(1a)--(1c)及$X_t$定义；第8页假设1--2；第10页非前瞻性解释。
+
+\paragraph{建模对象与信息结构}
+保留论文第2节原始多阶段随机混合整数规划（MSMIP）式(1a)--(1c)。
+阶段式与非前瞻拉格朗日对偶是求该问题下界的方法，不属于本文件的另一套决策模型。
+阶段集合为 $\mathcal T=\{1,\ldots,T\}$。在概率空间
+$(\Omega,\mathcal F,\mathbb P)$ 上，阶段随机向量为
+$\boldsymbol\xi_t\in\mathbb R^{\ell_t}$，历史为
+$h_t=(\boldsymbol\xi_1,\ldots,\boldsymbol\xi_t)$，历史维数
+$L_t=\sum_{s=1}^t\ell_s$；$\boldsymbol\xi_1=1$，第一阶段确定。
+$\mathcal F_t=\sigma(h_t)$，完整路径的分布与支持集 $\Xi$ 均为输入。
+各阶段随机向量的联合分布由实例给定，可包含阶段间相关性。
+
+\paragraph{参数}
+阶段 $t$ 的决策维数为 $n_t$，其中前 $p_t$ 个分量为整数，
+$0\le p_t\le n_t$；状态等式和阶段内不等式行数分别为
+$m_t^s,m_t^r$。以下可测系数均仅依赖已知历史 $h_t$：
+\[
+\begin{aligned}
+&c_t(h_t)\in\mathbb R^{n_t},\qquad b_t(h_t)\in\mathbb R^{m_t^s},
+\qquad d_t(h_t)\in\mathbb R^{m_t^r},\\
+&A_t(h_t)\in\mathbb R^{m_t^s\times n_t},\quad
+B_t(h_t)\in\mathbb R^{m_t^s\times n_{t-1}},\quad
+C_t(h_t)\in\mathbb R^{m_t^r\times n_t}.
+\end{aligned}
+\]
+$c_t$ 为成本向量，$A_t,B_t,b_t$ 描述当期和上一期的状态耦合，
+$C_t,d_t$ 描述本期资源、边界及其他可行性条件。
+论文约定 $x_0(h_0)\equiv0$；非零初始资源等常数须作为 $b_1$ 的一部分输入，
+初始状态由实例固定。
+
+\paragraph{变量与阶段可行域}
+变量为非前瞻政策 $x_t: h_t\mapsto x_t(h_t)$，即 $x_t$ 必须
+$\mathcal F_t$ 可测，同一历史必须采用同一决策。
+完整的阶段内可行域为
+\[
+X_t(h_t)=\{x\in\mathbb Z^{p_t}\times\mathbb R^{n_t-p_t}:
+ C_t(h_t)x\ge d_t(h_t)\}.
+\]
+变量的非负性、上下界及二元性若为具体实例所需，必须由 $C_t,d_t$
+由实例明确给出。
+
+\paragraph{唯一核心模型}
+\begin{align}
+\min_{\{x_t(\cdot)\}_{t=1}^T}\quad&
+\mathbb E_{\mathbb P}\!\left[\sum_{t=1}^T c_t(h_t)^\top x_t(h_t)\right]
+\tag{1a}\\
+\text{s.t.}\quad& A_t(h_t)x_t(h_t)+B_t(h_t)x_{t-1}(h_{t-1})=b_t(h_t),
+&&t=1,\ldots,T,\quad\mathbb P\text{-a.s.},\tag{1b}\\
+&C_t(h_t)x_t(h_t)\ge d_t(h_t),
+&&t=1,\ldots,T,\quad\mathbb P\text{-a.s.},\tag{1c-i}\\
+&x_t(h_t)\in\mathbb Z^{p_t}\times\mathbb R^{n_t-p_t},
+&&t=1,\ldots,T,\quad\mathbb P\text{-a.s.},\tag{1c-ii}\\
+&x_t\text{ is }\mathcal F_t\text{-measurable},
+&&t=1,\ldots,T.\tag{NA}
+\end{align}
+其中(1c-i)--(1c-ii)只展开原文(1c)，(NA)明确原文政策变量的定义，
+没有增加另一套优化问题。
+
+\paragraph{输入适用条件与有限实例}
+依论文第8--9页，假设相对完全补救：任意可行过去决策与可达历史下都有
+可行当期决策；$X_t(h_t)$ 几乎处处紧，且
+$\mathbb E[\operatorname{diam}(X_t(h_t))]<\infty$。
+同时成本期望应有定义。上述条件是本问题类的输入假设，不表示可以擅自添加
+松弛变量、罚金或截断界来修复一个实例。
+
+若输入以有限情景树表示，每个结点代表一个历史，结点共享决策直接实现
+非前瞻性；该结点的概率必须是到达该结点的无条件概率。
+叶结点概率之和为1，每个非叶结点概率等于子结点概率之和。
+树若完整表示原输入分布，则是同一模型的有限表示；若树仅为样本，则只能代表
+该离散近似分布的实例。此说明不另列第二套数学模型。
+
+\end{document}

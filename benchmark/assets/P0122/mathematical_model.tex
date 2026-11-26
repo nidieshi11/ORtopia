@@ -1,0 +1,20 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage[UTF8]{ctex}
+\begin{document}
+\section*{能力受限的车辆路径规划：单一路径模型}
+给定一个无向图$G=(V,E)$，其中包含$V=\{0,1,\ldots,n\}$和$V_c=V\setminus\{0\}$两个节点。节点$0$是仓库。边的成本$d_{ij}\ge0$和需求$0\le q_i\le\bar q$是输入参数；$q_0=0$和$m$则是可用的车队规模。每条无向边都可以双向通行。选择$m_s\in\{0,\ldots,m\}$表示选择一些非空的路径。一条路径是一个有序的序列$R_i^s=(0,v_1^i,\ldots,v_{t_i-1}^i,0)$，其中$t_i\ge2$表示其内部节点是不同的客户。用$C_i$表示这条路径所服务的客户集合。对于$n>0$，下面的客户划分意味着$m_s\ge1$。
+\begin{align*}
+\min\quad &\sum_{i=1}^{m_s}\sum_{h=0}^{t_i-1}d_{v_h^i v_{h+1}^i}\\
+\text{s.t.}\quad &v_0^i=v_{t_i}^i=0 && i=1,\ldots,m_s,\\
+&v_h^i\in V_c &&i=1,\ldots,m_s,\ h=1,\ldots,t_i-1,\\
+&v_h^i\ne v_{h'}^i &&1\le h<h'<t_i,\ i=1,\ldots,m_s,\\
+&\{v_h^i,v_{h+1}^i\}\in E &&i=1,\ldots,m_s,\ h=0,\ldots,t_i-1,\\
+&C_i=\{v_h^i:1\le h<t_i\},\quad C_i\cap C_j=\varnothing &&i\ne j,\\
+&\bigcup_{i=1}^{m_s}C_i=V_c,\\
+&\sum_{v\in C_i}q_v\le\bar q &&i=1,\ldots,m_s,\\
+&m_s\le m.
+\end{align*}
+这明确指出了AILS-II论文第2节、PDF第3页中的无节点重复约定。只有起点和终点仓库位置重合。未使用的车辆无需空驶路线。 
+\end{document}

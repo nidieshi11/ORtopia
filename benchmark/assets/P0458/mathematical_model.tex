@@ -1,0 +1,316 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\usepackage[UTF8]{ctex}
+\begin{document}
+
+\begin{equation}
+\begin{aligned}
+(P[b_h,b_p,\mathbf z])\qquad \text{maximize:}\quad
+ &\sum_{j,k}r_{jk}x_{jk\mathrm a}+\sum_j\bar r_jx_{j\mathrm a}\\
+\text{subject to:}\quad
+ &\sum_{j,k}x_{jk\mathrm a}+\sum_jx_{j\mathrm a}\le b_h,\\
+ &\sum_jx_{j\mathrm p}\le b_p,\\
+ &x_{j\mathrm a}+x_{j\mathrm p}+x_{j\mathrm r}=z_j
+ &&\forall j\in[n],\\
+ &x_{jk\mathrm a}+x_{jk\mathrm r}=q_{jk}x_{j\mathrm p}
+ &&\forall j\in[n],\ k\in[m],\\
+ &\mathbf x\ge0.
+\end{aligned}\tag{7}
+\end{equation}
+
+\section*{预算有限的在线探测：数据与决策变量}
+这是《Vera, Banerjee, and Gurvich》第4节中提出的预算受限、单位权重版本，相关文献为\emph{在线分配与定价：通过Bellman不等式实现恒定遗憾}，arXiv:1906.06361v2。这里未采用探测成本替代方案。在式(7)中，对$j$和$k$的求和分别是在$[n]$和$[m]$范围内进行的。相关参数和决策变量域为：
+\[
+(b_h,b_p,\mathbf z)\in\mathbb N^2\times\mathbb R_{\ge0}^{n},
+\qquad
+\mathbf x\in\mathbb R_{\ge0}^{3n+2nm}.
+\]
+符号$P[b_h,b_p,\mathbf z]$表示(7)的最优值；该论文也使用与$P[(b_h,b_p),\mathbf z]$或$P[\mathbf b,\mathbf z]$相同的数值。
+
+对于每一个$j\in[n]$、$x_{j\mathrm a}$、$x_{j\mathrm r}$和$x_{j\mathrm p}$，需要汇总未经探测而接受的、被拒绝的，以及经过探测后接受的未来类型$j$的到来数量。对于每一个$(j,k)\in[n]\times[m]$、$x_{jk\mathrm a}$和$x_{jk\mathrm r}$，需要汇总经过探测后发现的、显示出奖励$r_{jk}$的、随后被接受和拒绝的类型$j$的到来数量。这些都是连续的LP变量，而不是针对每个单独到来的个体的整数决策。
+
+地平线就是$T$，还有需要流逝的时间
+\[
+t=T,T-1,\ldots,1.
+\]
+到达的公众类型是从$[n]$中选取的，其分布为$\mathbf p=(p_1,\ldots,p_n)$。每次出现类型$j$时，都会有一个独立的随机奖励，且奖励的支撑和概率都是已知的。
+\[
+R_j\in\{r_{jk}:k\in[m]\},\qquad
+q_{jk}:=\mathbb P[R_j=r_{jk}]
+\quad(j\in[n],\ k\in[m]).
+\]
+第4节假设，无需考虑特殊情况，
+\[
+r_{j1}<r_{j2}<\cdots<r_{jm},\qquad r_{jm}>0
+\quad\forall j\in[n].
+\]
+该支撑物的尺寸为$m$。在公式(7)中使用的预期奖励系数为
+\[
+\bar r_j:=\sum_{k\in[m]}r_{jk}q_{jk}\quad\forall j\in[n].
+\]
+第2.1节将预期奖励称为$r_j=\mathbb E[R_j]$；而第4节和(7)节中的操作系数则是被括号包围的$\bar r_j$，这与每个实际获得的奖励$r_{jk}$是不同的。
+
+在所选版本中，所有到达的物品都具有单位重量。初始的资源分配（雇佣和探测预算）都是固定不变的。
+\[
+B_h\in\mathbb N,\qquad B_p\in\mathbb N.
+\]
+接受一个到达点需要消耗一个资源预算单位；而探测则需要消耗一个探测预算单位。有些到达点可以在不进行探测的情况下被接受。第2.1节中用$B$表示资源预算，并指出当$B_p\ge T$或$B_p=0$成立时，问题就简化为在线背包问题。这些都是边界情况，并不是对(7)的额外限制。
+
+\section*{两阶段流程与信息}
+每个阶段都由$t$和$t-\tfrac12$两个步骤组成，输入…
+\[
+\xi^t\in[n],\qquad
+\xi^{t-1/2}\in[n]\times[m].
+\]
+在阶段$t$中，控制器会观察$\xi^t=j$的结果，并根据$\{\mathrm a,\mathrm p,\mathrm r\}$中的选项来选择相应的动作（接受、探测、拒绝）。在阶段$t-\tfrac12$中，子类型$\xi^{t-1/2}=(j,k)$以及相应的奖励$r_{jk}$会以概率$q_{jk}$被抽取出来。如果第一阶段的选择是$\mathrm p$，那么可用的动作就是$\{\mathrm a,\mathrm r\}$；否则，可用的动作就是$\emptyset$，如第4节所述。第一阶段的选择由$\diamond$记录。
+\[
+\mathcal S=\{(b_h,b_p,\diamond):b_h,b_p\in\mathbb N,
+\ \diamond\in\{\mathrm a,\mathrm p,\mathrm r,\emptyset\}\}.
+\]
+这里$b_h,b_p$是剩余预算。每个周期的第一阶段，会收集$\diamond=\emptyset$；奖励则只在第二阶段发放。
+
+图3中显示的转换和奖励信息如下所示。箭头标签表示相应的动作，如果有选择的话，箭头还会标明该转换下的奖励内容。
+\[
+\begin{array}{ccl}
+\text{stage }t&&\text{stage }t-\tfrac12\\[2pt]
+(b_h,b_p,\emptyset)&\xrightarrow{\mathrm a\,;\,0}&(b_h-1,b_p,\mathrm a),\\
+(b_h,b_p,\emptyset)&\xrightarrow{\mathrm p\,;\,0}&(b_h,b_p-1,\mathrm p),\\
+(b_h,b_p,\emptyset)&\xrightarrow{\mathrm r\,;\,0}&(b_h,b_p,\mathrm r),
+\end{array}
+\]
+\[
+\begin{array}{ccl}
+\text{stage }t-\tfrac12&&\text{stage }t-1\\[2pt]
+(b_h-1,b_p,\mathrm a)&\xrightarrow{R_j}&(b_h-1,b_p,\emptyset),\\
+(b_h,b_p-1,\mathrm p)&\xrightarrow{\mathrm a\,;\,R_j}&(b_h-1,b_p-1,\emptyset),\\
+(b_h,b_p-1,\mathrm p)&\xrightarrow{\mathrm r\,;\,0}&(b_h,b_p-1,\emptyset),\\
+(b_h,b_p,\mathrm r)&\xrightarrow{0}&(b_h,b_p,\emptyset).
+\end{array}
+\]
+在文中，该子类型的约定是$\xi^{t-1/2}=(j,k)$，而(8)中的相应奖励则是$r_{\xi^{t-1/2}}$。图3的标题则将第二阶段输入直接描述为奖励。在下面的公式中，仍然保留了该子类型的约定。
+
+设$Z_j^t\in\mathbb N$表示在剩余的$t$个周期内，类型为$j$的到达次数。其定义数量为：
+\[
+Z_j^t=\sum_{l=1}^{t}\mathbf1_{\{\xi^l=j\}}
+\quad(j\in[n]).
+\]
+离线系统可以提前知道所有公共到达类型，但无法预测未来的奖励实现情况。第4.1节中的规范增强措施如下：
+\[
+\Theta=[T],\qquad G_\theta=\xi^\theta,
+\qquad
+\mathcal G_t=\sigma\bigl(\{\xi^t:t\in[T]\}\cup
+\{\xi^\tau:\tau\ge t\}\bigr).
+\]
+总体框架采用了概率空间$(\Omega,\Sigma,\mathbb P)$和自然过滤机制。
+\[
+\mathcal F_t=\sigma(\{\xi^\tau:\tau\ge t\}),
+\qquad
+\mathcal G_t\supseteq\mathcal F_t,
+\qquad
+\mathcal G_{t-1}\supseteq\mathcal G_t.
+\]
+对于两阶段的过程，已经过去的输入中包含了第二阶段输入的内容；而增强后的信息则只揭示了整数阶段的公共类型。在线时，采用非预期策略，而在离线时，则会根据增强后的信息来做出最优决策。
+
+\section*{选定的执行版本和宽松的值}
+此执行视图选择了原始物理页面18和38上打印的第二阶段信息参数$\mathcal G_{t-1/2}$。原始重建结果以及与之冲突的$\mathcal G_t$版本（8）仍分别存档。变量域（7）的所有行、所有原始数据以及算法2保持不变。
+
+仅对于内部连续值表达式，定义与(7)中相同的可行集合对应的扩展实数值。
+\[
+P_{\mathrm{ext}}[b_h,b_p,\mathbf z]=
+\begin{cases}
+P[b_h,b_p,\mathbf z],&b_h,b_p\ge0,\\
+-\infty,&b_h<0\text{ or }b_p<0.
+\end{cases}
+\]
+在此扩展中，预算均为整数，且为$\mathbf z\ge0$。负的资源右侧与其未改变的非负左侧不一致，因此可行集为空；其最大值仍为$-\infty$。对于非负预算，拒绝所有方案是可行的，且平衡行会约束每个变量，因此原始的最大值保持不变。物理状态与外部LP输入仍保持非负预算。没有行被删除或修改，也没有产生负预算的物理状态。
+
+在第一阶段，第 4.1 节对以下内容进行了定义：
+\[
+\varphi(t,(b_h,b_p,\emptyset)\mid\mathcal G_t)
+:=P[b_h,b_p,Z^t].
+\]
+在第二阶段，所选的源形式使用以下保持不变的右侧表达式，并明确指定其数值：
+\begin{equation}
+\begin{aligned}
+&\varphi(t-\tfrac12,(b_h,b_p,\diamond)\mid\mathcal G_{t-1/2})\\
+&\quad=\begin{cases}
+r_{\xi^{t-1/2}}+P_{\mathrm{ext}}[(b_h,b_p),Z^{t-1}],
+ &\diamond=\mathrm a,\\[2pt]
+\max\{r_{\xi^{t-1/2}}+P_{\mathrm{ext}}[(b_h-1,b_p),Z^{t-1}],
+       P_{\mathrm{ext}}[(b_h,b_p),Z^{t-1}]\},
+ &\diamond=\mathrm p,\\[2pt]
+P_{\mathrm{ext}}[(b_h,b_p),Z^{t-1}],
+ &\diamond=\mathrm r.
+\end{cases}
+\end{aligned}\tag{8}
+\end{equation}
+(8)中的预算是第二阶段剩余的预算：第一阶段所需的资源或调查性支出已经发生。
+
+\paragraph{存档的印刷版本和选定的惯例。}
+源代码中显示的（8）个标签将其第二阶段的值标记为$\mathcal G_t$，尽管它实际上使用的是新定义的子类型。 其物理页面 18 和 38 分别使用了 $\mathcal G_{t-1/2}$；此执行视图明确选择了后者。 原始资料中并未规定预算为负值的惯例。 上述相同的“可行集上确界”约定，能够在不改变(7)的情况下，提供该值。 在第二阶段的$(0,b_p,\mathrm p)$中，不可行的接受方案为$-\infty$，而有限的拒绝方案仍然可用。 第一阶段的行为仍然无法观察到后续的子类型。
+
+\section*{条件性估计与行动总结}
+第3.2节中的一般RABBI构造方式，表示放宽后的数值为：
+\[
+\varphi(t,s\mid\mathcal G_t)
+=\varphi(t,s;f_t(\xi^T,\ldots,\xi^t,G_\Theta)),
+\qquad
+\mathcal G_t=\sigma(\{\xi^l:l\ge t\}\cup G_\Theta),
+\]
+并且采用优化表示方式。
+\begin{equation}
+\begin{aligned}
+&\varphi(t,s;f_t(\xi^T,\ldots,\xi^t,G_\Theta))\\
+&\quad=\max_{\mathbf x\in\mathbb R^{\mathcal U\times\Xi}}
+\bigl\{h_t(\mathbf x;s,f_t(\xi^T,\ldots,\xi^t,G_\Theta)):
+ g_t(\mathbf x;s,f_t(\xi^T,\ldots,\xi^t,G_\Theta))\le0\bigr\}.
+\end{aligned}\tag{5}
+\end{equation}
+这里的$\mathcal U$和$\Xi$分别代表了动作和输入的空间。组件$x_{u,\xi}$则总结了在采取动作$u$之前，还有多少次可以输入$\xi$的机会，或者可以说它是该动作的得分。函数$f_t,h_t,g_t$在这个通用表示中仍然保持抽象状态。非预期估计则……
+\begin{equation}
+\begin{aligned}
+\hat\varphi(t,s\mid\mathcal F_t)
+&=\varphi(t,s;\mathbb E[f_t(\xi^T,\ldots,\xi^t,G_\Theta)\mid\mathcal F_t])\\
+&=\max_{\mathbf y\in\mathbb R^{\mathcal U\times\Xi}}
+\{h_t(\mathbf y;s,\mathbb E[f_t\mid\mathcal F_t]):
+ g_t(\mathbf y;s,\mathbb E[f_t\mid\mathcal F_t])\le0\}.
+\end{aligned}\tag{6}
+\end{equation}
+一般的 RABBI 规则在给定初始状态下初始化 $S^T$。对 $t=T,\ldots,1$，在 $s=S^t$ 按式 (6) 计算评分 $\mathbf y=(y_{u,\xi})_{u\in\mathcal U,\xi\in\Xi}$，选择具有最高评分 $y_{u,\xi^t}$ 的动作 $\hat U^t$，获得 $\mathcal R(S^t,\xi^t,\hat U^t)$，并更新
+\[
+S^{t-1}\leftarrow\mathcal T(S^t,\xi^t,\hat U^t).
+\]
+函数$\mathcal R$和$\mathcal T$分别表示即时奖励和状态转换。为了探究它们的具体数值，可以参考上述的转换过程。
+
+\paragraph{针对探测特定情况的估计值。}
+第(8)段中的文字表明，$\hat\varphi$是通过用$Z^t$来替换而构成的。
+\[
+\mathbb E_{\xi^{t-1/2}}[Z^t].
+\]
+不过，算法2明确使用了$\mathbb E[Z^t]$来表示某些数值。这里所打印出的期望值表达式之间并没有相互关联。下面的操作策略遵循算法2，包括其无条件期望值以及解决问题的顺序，这些顺序是在观察当前类型之前确定的。
+
+\section*{算法 2：RABBI 探测}
+输入内容是关于$(P[\mathbf b,\mathbf z])$的解决方案；输出则是一系列适用于Online的决策。
+\begin{enumerate}
+\item 初始化
+\[
+(B_h^T,B_p^T)\leftarrow(B_h,B_p).
+\]
+\item 对于每一个周期$t=T,\ldots,1$，计算$X^t$，即最优解。
+\[
+(P[\mathbf B^t,\mathbb E[Z^t]]),
+\]
+其中，$\mathbf B^t$包含了当前的资源分配情况和探测预算。这其实就是式子(7)中$(b_h,b_p,\mathbf z)=(B_h^t,B_p^t,\mathbb E[Z^t])$所表示的那个内容。
+\item 观察到达情况，然后输入$j$，接着进行下一步操作。
+\[
+\hat U^t\in\operatorname*{arg\,max}_{u=\mathrm a,\mathrm p,\mathrm r}
+\{X^t_{j,u}\}.
+\]
+\item 如果$\hat U^t=\mathrm r$或$\hat U^t=\mathrm a$，分别收集零或随机奖励$R_j$。
+\item 如果$\hat U^t=\mathrm p$，那么需要探测到达情况，观察$R_j=r_{jk}$，然后采取相应的行动。
+\[
+\operatorname*{arg\,max}_{u=\mathrm a,\mathrm r}\{X^t_{j,k,u}\}.
+\]
+相同的解决方案$X^t$提供了第二阶段的分值；算法2并未规定在探测之后需要再次进行线性规划求解。
+\item 根据单位资源和两阶段过渡中的探测支出，相应地更新预算$\mathbf B^{t-1}$。
+\end{enumerate}
+算法 2 并未提供任何额外的平局解决规则，也没有对这些最大化问题进行明确的预算可行性调整。因此，这里不会添加任何相关内容。
+
+\section*{贝尔曼基准测试以及保留下来的分析性资料声明}
+以下基准递归定义了完整的条件性离线决策问题。后续的贝尔曼不等式和引理3的陈述保留了源代码的解析性定义和主张，并未添加第(7)行的行为阈值，也未要求可执行策略必须验证每一个定理。这些来源的声明具有重要性：下面的反例表明，打印出的排除事件损失结果不必满足所提出的信息/可测量性以及第一阶段单调性要求。
+
+一般的基准值是通过奖励$\mathcal R$、转移过程$\mathcal T$，以及附加的信息来定义的。
+\begin{equation}
+V(t,s\mid\mathcal G_t)=\max_{u\in\mathcal U}
+\{\mathcal R(s,\xi^t,u)+
+\mathbb E[V(t-1,\mathcal T(s,\xi^t,u)\mid\mathcal G_{t-1})\mid\mathcal G_t]\},
+\qquad V(0,\cdot)=0.
+\tag{2}
+\end{equation}
+该框架通过以下方式编码可行的行动：
+\[
+\{u\in\mathcal U:\mathcal R(s,\xi,u)>-\infty\},
+\]
+假设对于每一个$s\in\mathcal S,\xi\in\Xi$，这个集合都是非空的，并且假设
+\[
+\sup_{s\in\mathcal S,\xi\in\Xi,u\in\mathcal U}\mathcal R(s,\xi,u)<\infty.
+\]
+对于贝尔曼不等式而言，$\varphi(t,\cdot)$和$L_B(t,\cdot)$是$\mathcal G_t$-可测量的。它们的定义条件为：
+\[
+\mathbb E[V(T,S^T)\mid\mathcal G_T]
+\le\varphi(T,S^T\mid\mathcal G_T),
+\qquad
+\varphi(0,s)=0\quad\forall s\in\mathcal S,
+\]
+\begin{equation}
+\begin{aligned}
+\varphi(t,s\mid\mathcal G_t)
+\le{}&\max_{u\in\mathcal U}
+\{\mathcal R(s,\xi^t,u)+
+\mathbb E[\varphi(t-1,\mathcal T(s,\xi^t,u)\mid\mathcal G_{t-1})\mid\mathcal G_t]\}
++L_B(t,s),\\[-2pt]
+&\hfill\forall s\in\mathcal S,\ t\in[T].
+\end{aligned}\tag{3}
+\end{equation}
+一个令人满意的动作，就是那个形式为$u$的动作。
+\begin{equation}
+\varphi(t,s\mid\mathcal G_t)
+\le\mathcal R(s,\xi^t,u)+
+\mathbb E[\varphi(t-1,\mathcal T(s,\xi^t,u)\mid\mathcal G_{t-1})\mid\mathcal G_t]
++L_B(t,s).
+\tag{4}
+\end{equation}
+在探测分析中使用的“最大损失”定义是：
+\[
+r_\varphi:=
+\max_{t,s,u:\mathcal R(s,\xi^t,u)>-\infty}
+\left\{\varphi(t,s\mid\mathcal G_t)-
+\left(\mathcal R(s,\xi^t,u)+
+\mathbb E[\varphi(t-1,\mathcal T(s,\xi^t,u)\mid\mathcal G_{t-1})\mid\mathcal G_t]\right)\right\}.
+\]
+这些是通用框架中按周期索引排列的行。为了进行验证，源代码中明确写出了两阶段单调性条件。
+\[
+\varphi(t,(b_h,b_p,\emptyset)\mid\mathcal G_t)
+\le\max_{\diamond\in\{\mathrm a,\mathrm p,\mathrm r\}}
+\left\{\mathbb E_{\xi^{t-1/2}}
+[\varphi(t-\tfrac12,(s_\diamond,\diamond)\mid\mathcal G_{t-1/2})\mid\mathcal G_t]\right\}
+\quad\forall\omega\notin\mathcal B(t,b_h,b_p),
+\]
+其中
+\[
+s_\diamond=
+\begin{cases}
+(b_h-1,b_p),&\diamond=\mathrm a,\\
+(b_h,b_p-1),&\diamond=\mathrm p,\\
+(b_h,b_p),&\diamond=\mathrm r.
+\end{cases}
+\]
+引理 2 描述了对于任意的 $b_h,b_p\in\mathbb N$ 和到达点 $Z$，初始比较的结果。
+\[
+\mathbb E[V(T,(b_h,b_p)\mid\mathcal G_T)]
+\le\mathbb E[\varphi(T,(b_h,b_p,\emptyset)\mid\mathcal G_T)].
+\]
+以下关于充分性条件的陈述，正是原始引理3中的内容。这些陈述被保留下来，以便进行明确的分析验证，而不是假设它们适用于所有可接受的数据。对于能够最大化$\bar X$的$(P[(b_h,b_p),Z^t])$，以及当前公开的类型$\xi^t=i$来说，引理3给出了以下充分条件：
+\begin{enumerate}
+\item $\bar X_{i\mathrm a}\ge1$：在时间$t$接受该提议是令人满意的。
+\item $\bar X_{i\mathrm r}\ge1$：在时间$t$时拒绝，这令人满意。
+\item $\bar X_{i\mathrm p}\ge1$以及实际实现的$\xi^{t-1/2}=(i,k)$，都能满足$\bar X_{ik\mathrm a}\ge1$或$\bar X_{ik\mathrm r}\ge1$的要求：在$t$处进行探测，如果$\bar X_{ik\mathrm a}\ge1$为真，则接受；如果$\bar X_{ik\mathrm r}\ge1$为真，则拒绝；在$t-\tfrac12$处进行这样的操作是令人满意的。
+\end{enumerate}
+基于这三项条件，其排除集合和贝尔曼损失为
+\[
+\mathcal B(t,b_h,b_p)=
+\{\omega\in\Omega:\nexists\,\bar X\text{ solving }(P[(b_h,b_p),Z^t])
+\text{ such that (1), (2), or (3) above holds}\},
+\]
+\[
+L_B(t,(b_h,b_p))=r_\varphi\mathbf1_{\mathcal B(t,b_h,b_p)}.
+\]
+所显示的充分条件与排除集合，实际上是所选松弛方法的分析性属性，并非对公式（7）的额外约束，也不是对算法2的阈值限制。附录B中提供了这些条件的证明；其中的辅助扰动LP并不是公式（7）的替代方案，也不是操作性探测策略的一部分。
+
+\section*{保留源代码的解析性反例。}
+取$n=1$、$m=2$、$T=2$、$B_h=1$、$B_p=2$、$p_1=1$，奖励为$(-1,1)$，以及子类型概率$(9/10,1/10)$。这些满足所陈述的原始数据条件。对于剩余的计数$z_1=2$，唯一的最优第一阶段总结为$x_{1\mathrm p}=2$和$x_{1\mathrm a}=x_{1\mathrm r}=0$；负奖励拒绝的总结为$9/5$，而正奖励接受的总结为$1/5$。公式(7)的值为$1/5$。从选定的(8)中得到的条件性第一阶段探测返回值为$19/100$，拒绝的结果为$1/10$，而立即接受的结果为$-4/5$。因此，第一阶段的贝尔曼赤字为$1/100$。
+
+源代码的引理3中的排除事件在负子类型下是假的，在正子类型下则是真的，尽管第一阶段的信息是相同的。因此，其提出的基于事件的损失度量在负子类型下是无法测量的。完整的条件性离线动态规划结果就是$19/100$。这些仍然是源代码的分析问题；它们不会改变原始的LP、整个算法2的策略、奖励法则，或者任何资源转换。不要报告未经计算的最大化或无条件期望值，也不要用单一的LP值来替代完整的策略或动态规划。
+\end{document}

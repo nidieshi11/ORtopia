@@ -1,0 +1,46 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,geometry}
+\geometry{margin=25mm}
+\usepackage[UTF8]{ctex}
+\begin{document}
+\section*{核心模型：最小成本 JOCR-R}
+第3节和第4.1节，PDF第5-7页（印刷版第624-626页），方程（1）至（12）。限制关注政策与无限制关注政策均作为主要模型在第4节中介绍。所采用的策略是JOCR-R，该策略与离散位置输入和声明代码接口相匹配。
+\paragraph{范围和数据。}
+$L=\{0,1,\ldots,N\}$包含仓库$0$和客户位置。  
+焦点必须位于$L$。一辆卡车最多可以运送$G$台相同的无人机；每台无人机每个集群最多进行一次往返运输，然后返回等待的卡车。卡车可以运送所有订单；它可以在一次行程中访问所有选定的焦点。$K\ge2$是包括仓库在内的选定焦点的最大数量。对于每个位置$i$，$(A_i,B_i)$是其坐标，而$F_i\ge0$则取决于其负载能力的\emph{单向允许分配距离}，按照(8)中的约定。只有卡车能够到达的位置有$F_i=0$。不同的位置坐标确保了这些位置能够成为焦点。
+\[
+ D^E_{ij}=\sqrt{(A_i-A_j)^2+(B_i-B_j)^2},\qquad
+ D^R_{ij}=|A_i-A_j|+|B_i-B_j|.
+\]
+$C_{D_1},C_{D_2},C_T\ge0$表示固定无人机成本、无人机飞行距离成本以及卡车运输距离成本。一次往返的飞行则会产生$2D^E_{ij}$的费用。
+\paragraph{变量。}
+$x_{ij}\in\{0,1\}$将位置$i$分配给焦点$j$；  
+$x_{jj}=1$选择$j$。$y_{ij}\in\{0,1\}$用于$i\ne j$选择  
+卡车弧线$i\to j$；$y_{ii}=0$。  
+$g\in\{0,\ldots,G\}$是无人机数量。非驻场顺序变量  
+$u_i\in\{1,\ldots,K-1\}$表示一种排序方式；未选中的位置可以取该范围内的任意值。它们的整性和有限表示并不排除存在最多包含$K$个焦点的有效路径。
+\paragraph{单个完整的成本模型。}
+\begin{align}
+\min\quad &C_{D_1}g+2C_{D_2}\sum_{i\in L}\sum_{j\in L}D^E_{ij}x_{ij}
+ +C_T\sum_{i\in L}\sum_{j\in L\setminus\{i\}}D^R_{ij}y_{ij},\tag{1}\\
+\text{s.t.}\quad &\sum_{j\in L}x_{jj}\le K,\tag{2}\\
+&x_{ij}\le x_{jj} &&i,j\in L,\tag{3}\\
+&\sum_{j\in L}x_{ij}=1 &&i\in L,\tag{4}\\
+&x_{00}=1,\tag{5}\\
+&\sum_{i\in L}x_{ij}\le g+1 &&j\in L,\tag{6}\\
+&0\le g\le G,\quad g\in\mathbb Z,\tag{7}\\
+&D^E_{ij}x_{ij}\le F_i &&i,j\in L,\tag{8}\\
+&\sum_{j\in L\setminus\{i\}}y_{ij}=x_{ii} &&i\in L,\tag{9}\\
+&\sum_{i\in L\setminus\{j\}}y_{ij}=x_{jj} &&j\in L,\tag{10}\\
+&u_i-u_j+(K-1)y_{ij}+(K-3)y_{ji}\le K-2
+ &&i,j\in L\setminus\{0\},i\ne j,\tag{11}\\
+&x_{ij}\in\{0,1\},\quad y_{ij}\in\{0,1\},\quad
+ u_i\in\{1,\ldots,K-1\}.\tag{12}
+\end{align}
+(11)中的系数是从渲染后的源页面中提取的，这些方程中的基数信息也被保留了下来。  
+(6)中的簇基数包括其焦点位置；其余客户最多需要$g$台并行无人机。
+
+\paragraph{公布的公式边界。}
+方程（9）～（10）所建立的约束条件，实际上是一种非平凡的运输方式，因此至少存在两个需要重点考虑的焦点点。  
+不受限制的焦点坐标、完成时间目标、epsilon值的权衡，以及每个集群由一架无人机负责多次配送的情况，都被排除在外了。
+\end{document}

@@ -1,0 +1,111 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\title{核心数学模型}
+\date{}
+
+\usepackage[UTF8]{ctex}
+\begin{document}
+
+\maketitle
+
+\section*{多资源灵活作业车间调度}
+
+\paragraph{来源与数据定义。}
+所选的应用案例为同时占用多资源灵活作业车间问题，参见PDF第2-3页（印刷版第2323-2324页），第2节和第3.1节，源方程(1)-(11)。设$J$为作业，$\Omega=\bigcup_{u\in J}O_u$为其操作，$R$为实际一元资源。操作$i$有需求组$G_i$；组$j$必须从$R_{i,j}\subseteq R$获取一个资源。同一实际资源不能同时为同一操作的两个组服务。$p_{i,k}\ge0$为固定处理时间。$PJ_i$在给定无环优先图中为直接前置任务。所有分配的资源在共同操作持续时间内同时被占用。$\mathcal M$是有限调度时间范围内的有效不兼容性常数；在需要时，可行的串行调度可提供完工时间的上限。独立变量为非负开始时间$\tau_i$、持续时间$p_i$、完工时间$C_{\max}\ge0$、分配情况$Y$、资源使用指标$U$以及成对顺序指标$X$，其值域如下。源完成变量为$t_i=\tau_i+p_i$；其表示方式有所变化，由其分配含义决定。源方程的印刷版本(3)中存在双和项与其解释不一致的情况：我们采用其明确规定的每资源规则，该规则也由CP约束(14)所确认。持续时间图表保留源中的形式(4)；在最优情况下，持续时间可以减少到最大选定的资源处理时间，而不会增加完工时间。
+
+
+在实际的 Gurobi 实现中，我们使用起始时间变量$\tau_i$，持续时间变量$p_i$，以及辅助二进制变量$U_{i,k}$，后者用于指示操作$i$是否使用了资源$k$。另外，还有$R_i = \bigcup_{j \in G_i} R_{i,j}$和$\mathcal{P} = \{(i,i') \in \Omega \times \Omega : i < i'\}$这些变量。这与论文中的 MILP 模型类似，但避免了时间表示上的歧义。
+
+\begin{equation}
+\min C_{\max}
+\tag{1}
+\end{equation}
+
+\begin{equation}
+\sum_{k \in R_{i,j}} Y_{i,j,k} = 1,
+\qquad
+\forall i \in \Omega,\ \forall j \in G_i
+\tag{2}
+\end{equation}
+
+\begin{equation}
+\sum_{j \in G_i:\ k \in R_{i,j}} Y_{i,j,k} \le 1,
+\qquad
+\forall i \in \Omega,\ \forall k \in R
+\tag{3}
+\end{equation}
+
+\begin{equation}
+U_{i,k} =
+\sum_{j \in G_i:\ k \in R_{i,j}} Y_{i,j,k},
+\qquad
+\forall i \in \Omega,\ \forall k \in R
+\tag{4}
+\end{equation}
+
+\begin{equation}
+p_i \ge \sum_{k \in R_{i,j}} p_{i,k} Y_{i,j,k},
+\qquad
+\forall i \in \Omega,\ \forall j \in G_i
+\tag{5}
+\end{equation}
+
+\begin{equation}
+\tau_i \ge \tau_{i'} + p_{i'},
+\qquad
+\forall i \in \Omega,\ \forall i' \in PJ_i
+\tag{6}
+\end{equation}
+
+\begin{equation}
+\tau_{i'} \ge
+\tau_i + p_i
+- \mathcal{M}\left(3 - X_{i,i',k} - U_{i,k} - U_{i',k}\right),
+\quad
+\forall (i,i') \in \mathcal{P},\ \forall k \in R_i \cap R_{i'}
+\tag{7}
+\end{equation}
+
+\begin{equation}
+\tau_i \ge
+\tau_{i'} + p_{i'}
+- \mathcal{M}\left(2 + X_{i,i',k} - U_{i,k} - U_{i',k}\right),
+\quad
+\forall (i,i') \in \mathcal{P},\ \forall k \in R_i \cap R_{i'}
+\tag{8}
+\end{equation}
+
+\begin{equation}
+C_{\max} \ge \tau_i + p_i,
+\qquad \forall i \in \Omega
+\tag{9}
+\end{equation}
+
+\begin{equation}
+\tau_i \ge 0,\quad p_i \ge 0,
+\qquad \forall i \in \Omega
+\tag{10}
+\end{equation}
+
+\begin{equation}
+X_{i,i',k} \in \{0,1\},
+\qquad \forall (i,i') \in \mathcal{P},\ \forall k \in R_i \cap R_{i'}
+\tag{11}
+\end{equation}
+
+\begin{equation}
+Y_{i,j,k} \in \{0,1\},
+\qquad \forall i \in \Omega,\ \forall j \in G_i,\ \forall k \in R_{i,j}
+\tag{12}
+\end{equation}
+
+\begin{equation}
+U_{i,k} \in \{0,1\},
+\qquad \forall i \in \Omega,\ \forall k \in R
+\tag{13}
+\end{equation}
+
+\end{document}

@@ -1,0 +1,258 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[margin=15mm]{geometry}
+\allowdisplaybreaks
+
+\title{P0020：集成式汽车重新排序功能与彩绘车身储物系统}
+\date{}
+
+\usepackage[UTF8]{ctex}
+\begin{document}
+
+\maketitle
+
+\section*{选定的核心模型与源数据}
+所选的单一模型即为联合上游序列、下游序列以及涂漆车身存储分配的完整表述。这是郭等人在第3节中讨论的应用问题。\emph{基于逻辑的分治法在汽车重新排序问题中的应用，包含涂漆车身存储}，CIRRELT-2025-04。局部PDF文件提供了补充资料1中的完整表述，具体位于第25-27页（打印版为第23-25页），方程式为(1)-(23)。以下表达式保留了可行集，并使用了在局部集成求解器中已使用的精确二进制乘积线性化方法。
+
+
+\section*{集合与固定数据}
+$B,M,J,L,W$是各种实体、颜色、配置、FIFO存储通道以及组装选项的集合。需求$d_{bmj}$是一个非负整数。设定$d=\sum_{b,m,j}d_{bmj}>0$和$V=P=\{1,\ldots,d\}$的值。正整数$\bar c,\bar q$分别表示最大颜色运行长度以及每条通道的承载能力。对于空索引集，其求和结果为零。对于$\bar c\ge d$，颜色窗口家族(4)为空。选项需求$r_j^w\ge0$和正成本权重$\alpha,\beta,\gamma$是固定的。本文的理想选项率为
+\[
+ \sigma_w=\frac{1}{d}\sum_{j\in J}r_j^w
+                  \sum_{b\in B,m\in M}d_{bmj}.
+\]
+该费率是根据需求来计算的。如果需要定义该文件的费率，那么本地求解器必须提供这一数值。
+
+\section*{决策变量}
+$x_{bmj}^i$选择上游位置的车身、颜色和配置。  
+$i$；$h_l^i$选择其存储通道；$y_p^i$选择其下游位置。二进制值$z_{vl}^i$表示当车辆$i$进入存储区时，车辆$v$会离开通道$l$，而$v\le i$则用于表示其他情况。变量$f_{i,i+1},g_{i,i+1}$表示连续车身和颜色的变化，而$u_{pw}$则表示通过下游位置实现的绝对选项消耗偏差，具体由$p$表示。辅助变量$\chi_{ij}$和$s_{ipj}$分别表示配置指示符及其与$y_p^i$的乘积。由于每辆车只选择一个规格，因此(20a)--(20d)强制要求这个乘积必须精确匹配。所有领域都在(22)--(25)中有所说明。
+
+\section*{目标与约束条件}
+
+\begin{equation}
+\min
+\alpha \cdot \sum_{i \in V \setminus \{d\}} f_{i,i+1}
++ \beta \cdot \sum_{i \in V \setminus \{d\}} g_{i,i+1}
++ \gamma \cdot \sum_{p \in P} \sum_{w \in W} u_{pw}
+\tag{1}
+\end{equation}
+
+\begin{equation}
+\sum_{b \in B} \sum_{m \in M} \sum_{j \in J} x_{bmj}^i = 1,
+\qquad i \in V
+\tag{2}
+\end{equation}
+
+\begin{equation}
+\sum_{i \in V} x_{bmj}^i = d_{bmj},
+\qquad b \in B,\ m \in M,\ j \in J
+\tag{3}
+\end{equation}
+
+\begin{equation}
+\sum_{i=p}^{p+\bar{c}} \sum_{b \in B} \sum_{j \in J} x_{bmj}^i \le \bar{c},
+\qquad p \in \{1,\ldots,d-\bar{c}\},\ m \in M
+\tag{4}
+\end{equation}
+
+\begin{equation}
+f_{i,i+1}
+\ge
+\sum_{m \in M} \sum_{j \in J} x_{bmj}^i
+- \sum_{m \in M} \sum_{j \in J} x_{bmj}^{i+1},
+\qquad i \in V \setminus \{d\},\ b \in B
+\tag{5}
+\end{equation}
+
+\begin{equation}
+g_{i,i+1}
+\ge
+\sum_{b \in B} \sum_{j \in J} x_{bmj}^i
+- \sum_{b \in B} \sum_{j \in J} x_{bmj}^{i+1},
+\qquad i \in V \setminus \{d\},\ m \in M
+\tag{6}
+\end{equation}
+
+\begin{equation}
+\sum_{l \in L} h_l^i = 1,
+\qquad i \in V
+\tag{7}
+\end{equation}
+
+\begin{equation}
+\sum_{p \in P} y_p^i = 1,
+\qquad i \in V
+\tag{8}
+\end{equation}
+
+\begin{equation}
+\sum_{i \in V} y_p^i = 1,
+\qquad p \in P
+\tag{9}
+\end{equation}
+
+\begin{equation}
+\sum_{p=p_1}^{d} y_p^{i_1}
++ \sum_{p=1}^{p_1} y_p^{i_2}
++ h_l^{i_1}
++ h_l^{i_2}
+\le 3,
+\quad
+i_1 \in V \setminus \{d\},\ p_1 \in P,\ i_2 \in \{i_1+1,\ldots,d\},\ l \in L
+\tag{10}
+\end{equation}
+
+\begin{equation}
+h_l^k + h_l^v + \sum_{l' \in L} z_{vl'}^i - 2
+\le
+\sum_{i'=k}^{i-1} \sum_{l' \in L} z_{kl'}^{i'},
+\quad
+v \in V \setminus \{1\},\ l \in L,\ k \in \{1,\ldots,v-1\},\ i \in \{v,\ldots,d\}
+\tag{11}
+\end{equation}
+
+\begin{equation}
+\sum_{v=1}^{i} \sum_{l \in L} z_{vl}^i \le 1,
+\qquad i \in V
+\tag{12}
+\end{equation}
+
+\begin{equation}
+\sum_{i=v}^{d} \sum_{l \in L} z_{vl}^i \le 1,
+\qquad v \in V
+\tag{13}
+\end{equation}
+
+\begin{equation}
+\sum_{p \in P} y_p^i \, p
+\ge
+\left(1-\sum_{l \in L} z_{il}^i\right) i + 1,
+\qquad i \in V
+\tag{14}
+\end{equation}
+
+\begin{equation}
+\sum_{p \in P} y_p^i \, p
+\ge
+1 + \sum_{i'=1}^{i-1} \sum_{v=1}^{i'} \sum_{l \in L} z_{vl}^{i'}
+- d\left(1-\sum_{l \in L} z_{il}^i\right),
+\qquad i \in V \setminus \{1\}
+\tag{15}
+\end{equation}
+
+\begin{equation}
+\sum_{p \in P} y_p^i \, p
+\le
+1 + \sum_{i'=1}^{i-1} \sum_{v=1}^{i'} \sum_{l \in L} z_{vl}^{i'}
++ d\left(1-\sum_{l \in L} z_{il}^i\right),
+\qquad i \in V \setminus \{1\}
+\tag{16}
+\end{equation}
+
+\begin{equation}
+\sum_{p \in P} y_p^i \, p
+- \sum_{p \in P} y_p^v \, p
+\ge
+1 - d\left(1-\sum_{l \in L} z_{vl}^i\right),
+\qquad i \in V \setminus \{1\},\ v \in \{1,\ldots,i-1\}
+\tag{17}
+\end{equation}
+
+\begin{equation}
+\sum_{i'=1}^{i} h_l^{i'}
+- \sum_{i'=1}^{i} \sum_{v=1}^{i'} z_{vl}^{i'}
+\le \bar{q},
+\qquad i \in V,\ l \in L
+\tag{18}
+\end{equation}
+
+\begin{equation}
+\sum_{i=v}^{d} z_{vl}^i \le h_l^v,
+\qquad v \in V,\ l \in L
+\tag{19}
+\end{equation}
+
+\begin{equation}
+\chi_{ij} = \sum_{b \in B} \sum_{m \in M} x_{bmj}^i,
+\qquad i \in V,\ j \in J
+\tag{20a}
+\end{equation}
+
+\begin{equation}
+s_{ipj} \le y_p^i,
+\qquad i \in V,\ p \in P,\ j \in J
+\tag{20b}
+\end{equation}
+
+\begin{equation}
+s_{ipj} \le \chi_{ij},
+\qquad i \in V,\ p \in P,\ j \in J
+\tag{20c}
+\end{equation}
+
+\begin{equation}
+s_{ipj} \ge y_p^i + \chi_{ij} - 1,
+\qquad i \in V,\ p \in P,\ j \in J
+\tag{20d}
+\end{equation}
+
+\begin{equation}
+u_{pw}
+\ge
+\sum_{j \in J} r_j^w
+\left(
+\sum_{p'=1}^{p} \sum_{i \in V} s_{ip'j}
+\right)
+- p \sigma_w,
+\qquad p \in P,\ w \in W
+\tag{21a}
+\end{equation}
+
+\begin{equation}
+u_{pw}
+\ge
+p \sigma_w
+- \sum_{j \in J} r_j^w
+\left(
+\sum_{p'=1}^{p} \sum_{i \in V} s_{ip'j}
+\right),
+\qquad p \in P,\ w \in W
+\tag{21b}
+\end{equation}
+
+\begin{equation}
+x_{bmj}^i,\ h_l^i,\ y_p^i,\ z_{vl}^i \in \{0,1\},
+\qquad
+i,v \in V,\ v \le i,\ b \in B,\ m \in M,\ j \in J,\ p \in P,\ l \in L
+\tag{22}
+\end{equation}
+
+\begin{equation}
+s_{ipj} \in \{0,1\},
+\qquad i \in V,\ p \in P,\ j \in J
+\tag{23}
+\end{equation}
+
+\begin{equation}
+0 \le \chi_{ij} \le 1,
+\qquad i \in V,\ j \in J
+\tag{24}
+\end{equation}
+
+\begin{equation}
+f_{i,i+1},\ g_{i,i+1},\ u_{pw} \ge 0,
+\qquad i \in V \setminus \{d\},\ p \in P,\ w \in W
+\tag{25}
+\end{equation}
+
+\paragraph{读取约束条件组。}
+(2)--(6) 分别指定了需求、颜色批量处理以及上游变更成本。  
+(7)--(19) 描述了上游/下游的排列组合、FIFO通道、同时发生的进入/退出事件以及容量问题。  
+(20a)--(20d) 是同一应用模型内的一种线性化处理；  
+(21a)--(21b) 则给出了论文中绝对选项偏差的数值。  
+定义出的不等式和赋值等式意味着$f,g,u$具有非负的下限边界。
+
+
+\end{document}

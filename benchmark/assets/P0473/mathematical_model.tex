@@ -1,0 +1,120 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\usepackage[UTF8]{ctex}
+\begin{document}
+
+\begin{equation}
+\begin{aligned}
+\mathrm{Exp}
+&=\min_r\left\{r\cdot\mathbb{E}\left[\min(q,D(z,\epsilon))\right]\right\}\\
+\text{s.t.}\quad
+&\mathbb{E}\left[\min(q,D(z,\epsilon))\right]\geq\Gamma,\\
+&r\geq 0.
+\end{aligned}
+\tag{2}
+\end{equation}
+政府预计供应商会对公布的消费者补贴$r$做出最优的价格和生产决策。供应商正在处理这些决策。
+\begin{equation}
+\Pi=\max_{q,p}\left\{p\cdot\mathbb{E}\left[\min(q,D(z,\epsilon))\right]-c\cdot q\right\}.
+\tag{1}
+\end{equation}
+
+\section*{决策角色与操作定义}
+这是一个单期、全信息、两阶段的斯塔克伯格博弈，其中只有一个供应商参与。政府作为领导者，决定每个产品的补贴金额$r$，该补贴直接支付给最终消费者。供应商根据$r$的信息来决定销售价格$p$（即制造商建议的零售价格），以及生产数量$q$。随后，需求得到满足，销售便得以实现。有效的消费者价格和实际销售额分别为：
+\[
+z=p-r,
+\qquad
+\min(q,D(z,\epsilon)).
+\]
+固定的采用目标$\Gamma$是众所周知的事实。政府必须实现这一目标。固定的边际单位成本$c$可能包含了制造成本以及额外制造能力所带来的成本。在产能建设与生产之间没有获得需求信息的情况下，产能建设将按照计划的生产方式进行。所选模型设定的残值$v$以及未成年处罚$u$则保持不变。
+\[
+v=u=0.
+\]
+在(1)中，符号$\Pi$表示供应商的最优预期利润。在(2)中，符号$\mathrm{Exp}$表示最低的预期补贴支出。第3.2节也提到，在最小化之前，预期支出应被考虑在内。
+\begin{equation}
+\mathrm{Exp}=r\cdot\mathbb{E}\left[\min(q,D(z,\epsilon))\right].
+\tag{5}
+\end{equation}
+因此，该论文在表示支出时使用了$\mathrm{Exp}$，同时也在其最优值的计算中使用了该符号。所有数字都保持原样。
+
+供应商的回复表示为：$p^*(r)$，表示最优价格；而$q^*(p,r)$则表示在价格和补贴条件满足的情况下，可获得最优数量。政府问题中的$p$和$q$则分别对应这两种回复情况。
+\[
+p=p^*(r),
+\qquad
+q=q^*(p^*(r),r).
+\]
+它们并非政府的额外选择。
+
+\section*{选定的需求版本：一般的加性不确定性}
+所选版本为第4.1节，其中名义需求函数部分被省略了。需求情况如下：
+\begin{equation}
+D(z,\epsilon)=y(z)+\epsilon.
+\tag{8}
+\end{equation}
+这里
+\[
+y(z)=\mathbb{E}[D(z,\epsilon)],
+\qquad z=p-r,
+\]
+$\epsilon$是一个具有累积分布函数$F_\epsilon$的随机变量。这种需求的不确定性会影响预期结果。需求指的是整个单一时期内的总需求。
+
+假设 1 规定了以下输入条件：
+\begin{itemize}
+\item 需求仅取决于$p$和$r$之间的差值$z$。
+\item 确定性需求函数$y(z)$是正值，具有二次可微性，并且在$z$方向上呈下降趋势，因此该函数是可逆的。
+\item 在$p=c$和$r=0$处，目标无法实现：
+\[
+y(c)<\Gamma.
+\]
+\item 加法噪声的均值为零：
+\[
+\mathbb{E}[\epsilon]=0.
+\]
+\end{itemize}
+未选择线性或等弹性特化、特定噪声分布、支撑端点或数值实例。
+
+\section*{链接的供应商-响应以及政府解决方案的特征描述}
+对于加法版本，定理1假设：
+\begin{equation}
+2y'(z)+(p-c)\cdot y''(z)
++\frac{c^2}{p^3}\cdot
+\frac{1}{f_\epsilon\!\left(F_\epsilon^{-1}\!\left((p-c)/p\right)\right)}<0.
+\tag{9}
+\end{equation}
+这里的$f_\epsilon$表示噪声密度，而$F_\epsilon^{-1}$则代表论文中出现的逆累积分布函数。论文指出，公式(9)能够确保最优价格作为补贴函数的唯一性，并且在后续分析中仍假定这一点成立。公式(9)并未明确给出具体的价格或有效价格区间；因此，这里也不会添加任何相关的数值。
+
+在假设1和(9)下，对于给定的$r$，最优的供应商价格如下：
+\begin{equation}
+y(p-r)
++\mathbb{E}\left[\min\left(F_\epsilon^{-1}\!\left(\frac{p-c}{p}\right),\epsilon\right)\right]
++y'(p-r)\cdot(p-c)=0.
+\tag{10}
+\end{equation}
+使用那个价格时，最优的生产数量就是
+\begin{equation}
+q^*(p,r)=y(p-r)+F_\epsilon^{-1}\!\left(\frac{p-c}{p}\right).
+\tag{11}
+\end{equation}
+定理1进一步指出，政府在最优情况下所采用的约束条件是严格的。使用论文中使用的随机最优表示法，
+\[
+p_{\mathrm{sto}}=p^*(r_{\mathrm{sto}}),
+\qquad
+q_{\mathrm{sto}}=q^*(p_{\mathrm{sto}},r_{\mathrm{sto}}),
+\qquad
+z_{\mathrm{sto}}=p_{\mathrm{sto}}-r_{\mathrm{sto}},
+\]
+此声明是
+\[
+\mathbb{E}\left[\min(q_{\mathrm{sto}},D(z_{\mathrm{sto}},\epsilon))\right]=\Gamma.
+\]
+方程式（10）至（11）以及这一最优性等式，实际上表征了方程（1）至（2）的解；它们并非对任意决策施加的额外可行性限制。本文并没有用另一种去中心化优化方法来替代方程（1）至（2）。
+
+\section*{原文的范围与定义域}
+明确的补贴限制是$r\geq0$。方程(1)中描述的是在$q,p$上的最大化问题，其中没有明确的可行集限制、区间界限或整数性声明。这些内容被原样保留下来，而不是通过虚构的界限来补充。特别是，$p\geq c$被描述为去中心化最优性的一个结果，而不是方程(1)中的额外约束条件。这里没有引入价格上限、补贴上限、有效价格界限、需求截断或噪声支持限制等条件。
+
+\paragraph{来源。}
+Cohen, Lobel和Perakis，\emph{需求不确定性对绿色技术采纳消费者补贴的影响}，管理科学，62(5)，2016年，页码~1235--1258。操作模型和定义位于物理PDF的5--8页；加性响应特征描述位于8--9页，其证明在19页的附录中。后面的乘法需求、集中式以及制造商成本补贴公式并不属于本选编内容。
+
+\end{document}

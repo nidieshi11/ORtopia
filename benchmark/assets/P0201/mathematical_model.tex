@@ -1,0 +1,87 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\title{确定性节点级电力网络运行模型}
+\author{}
+\date{}
+\usepackage[UTF8]{ctex}
+\begin{document}
+\maketitle
+
+\section*{范围与索引集合}
+该模型在固定节点$n$处得到解决，其中线路可用性和父节点生成信息作为输入参数。这是直接可解决的节点级模型（12）。
+
+设$\mathcal N$为有限的母线集合，$\mathcal L$为有限的传输线集合，$\mathcal G$为有限的发电机集合。提供的集合$\mathcal G_n\subseteq\mathcal G$作为目标函数中的发电成本索引，它是$\mathcal G$的一个子集。对于每条传输线$l\in\mathcal L$，设$s(l),t(l)\in\mathcal N$为其从母线出发和返回的路径。定义…
+\[
+ l(b,\cdot)=\{l\in\mathcal L:s(l)=b\},\qquad
+ l(\cdot,b)=\{l\in\mathcal L:t(l)=b\}.
+\]
+对于每一个总线$b\in\mathcal N$，所提供的集合$g(b)\subseteq\mathcal G$中包含了其生成器。符号$p(n)$表示固定节点$n$的父节点。
+
+\section*{参数}
+以下参数均为求解该节点时给定的数值数据。每个带索引的条目均为标量。
+\begin{itemize}
+\item $C_g$ 替换成 $g\in\mathcal G_n$：单位生成成本；$C^l$：目标中出现的标量单位负荷削减成本，其中上标表示负荷削减的程度。
+\item $d_{bn}$代替$b\in\mathcal N$: 需求。
+\item $\overline\theta^{\min},\overline\theta^{\max}$：上下电压角的范围。
+\item $B_l$对于$l\in\mathcal L$: 线路电纳; $a_{ln}\in\{0,1\}$: 线路可用性。
+\item $\overline F_l^{\min},\overline F_l^{\max}$代替$l\in\mathcal L$: 用于切换容量约束中的线流量界限。
+\item $\overline F_{ln}^{\max},\overline F_{ln}^{\mathrm{nom}}$ 对应 $l\in\mathcal L$：用于过载限制中的节点索引最大值和名义评分。该实例将节点索引评分和仅线路评分作为独立的参数数组提供。
+\item $P_g^{\min},P_g^{\max}$对于$g\in\mathcal G$: 生成界限；$R_g^+,R_g^-$: 上下坡限制；$p_{g p(n)}$: 固定的父节点生成量。
+\end{itemize}
+切换常数是根据以下方式定义的：
+\[
+M_l:=\left|B_l\bigl(\overline\theta^{\max}-\overline\theta^{\min}\bigr)\right|,
+\qquad l\in\mathcal L.
+\]
+
+\section*{决策变量}
+对于每一个$b\in\mathcal N$，$\theta_{bn}$表示连续的电压角度，而$\Delta_{bn}$表示连续的负荷削减。对于每一个$g\in\mathcal G$，$p_{gn}$表示连续的发电量。对于每一个$l\in\mathcal L$，$f_{ln}$表示连续的线路流量，$z_{ln}$是一个二进制线路闭合指示符，而$o_{ln}$是一个二进制过载指示符。这些角度和线路流量都是带符号的实变量，其定义域如下。
+
+\section*{优化模型}
+\begin{align}
+\min_{\theta,f,p,\Delta,z,o}\quad
+ &\sum_{g\in\mathcal G_n}C_g p_{gn}
+   +\sum_{b\in\mathcal N}C^l\Delta_{bn}
+ &&\tag{12a}\\
+\text{s.t.}\quad
+ &\overline\theta^{\min}\leq\theta_{bn}\leq\overline\theta^{\max}
+ && b\in\mathcal N,\tag{12b}\\
+ &\sum_{l\in l(b,\cdot)}f_{ln}
+  -\sum_{l\in l(\cdot,b)}f_{ln}
+  +\sum_{g\in g(b)}p_{gn}+\Delta_{bn}=d_{bn}
+ && b\in\mathcal N,\tag{12c}\\
+ &\overline F_l^{\min}z_{ln}\leq f_{ln}\leq\overline F_l^{\max}z_{ln}
+ && l\in\mathcal L,\tag{12d}\\
+ &z_{ln}\leq a_{ln}
+ && l\in\mathcal L,\tag{12e}\\
+ &B_l\bigl(\theta_{s(l)n}-\theta_{t(l)n}\bigr)-f_{ln}
+   +(2-z_{ln}-a_{ln})M_l\geq0
+ && l\in\mathcal L,\tag{12f}\\
+ &B_l\bigl(\theta_{s(l)n}-\theta_{t(l)n}\bigr)-f_{ln}
+   -(2-z_{ln}-a_{ln})M_l\leq0
+ && l\in\mathcal L,\tag{12g}\\
+ &P_g^{\min}\leq p_{gn}\leq P_g^{\max}
+ && g\in\mathcal G,\tag{12h}\\
+ &p_{gn}-p_{g p(n)}\leq R_g^+
+ && g\in\mathcal G,\tag{12i}\\
+ &p_{g p(n)}-p_{gn}\leq R_g^-
+ && g\in\mathcal G,\tag{12j}\\
+ &f_{ln}-\bigl(\overline F_{ln}^{\max}-\overline F_{ln}^{\mathrm{nom}}\bigr)o_{ln}
+   \leq\overline F_{ln}^{\mathrm{nom}}
+ && l\in\mathcal L,\tag{12k}\\
+ &f_{ln}+\bigl(\overline F_{ln}^{\max}-\overline F_{ln}^{\mathrm{nom}}\bigr)o_{ln}
+   \geq-\overline F_{ln}^{\mathrm{nom}}
+ && l\in\mathcal L,\tag{12l}\\
+ &p_{gn}\in\mathbb R_{\geq0}
+ && g\in\mathcal G,\tag{12m}\\
+ &\Delta_{bn}\in\mathbb R_{\geq0}
+ && b\in\mathcal N,\tag{12n}\\
+ &z_{ln},o_{ln}\in\{0,1\}
+ && l\in\mathcal L,\tag{12o}\\
+ &\theta_{bn}\in\mathbb R
+ && b\in\mathcal N,\notag\\
+ &f_{ln}\in\mathbb R
+ && l\in\mathcal L.\notag
+\end{align}
+\end{document}

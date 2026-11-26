@@ -1,0 +1,30 @@
+\documentclass[UTF8]{ctexart}
+\usepackage{amsmath,amssymb}
+\begin{document}
+\section*{机器人与卡车包裹分配模型}
+
+本模型是分区机器人与卡车配送分配，不包括路径优化。$P,Z,R_z$为包裹、
+区域和区域内机器人集合；$z_p$为包裹所属区域。$c_T,c_R$为单件配送费，
+$f_T,f_R$分别为单车和单机器人固定启用费（原论文第10页表4的$fc_T,fc_R$），
+$Q_T,Q_R$为件数容量，$D$为距离阈值。
+原选定模型按启用机器人数量计一次卡车补给工作量，保留该容量口径，
+容量按启用机器人数量计量。
+$B_p=\mathbf1_{\{w_p>m_W\ \mathrm{or}\ m_p>m_M\}}$由明确重量和尺寸阈值计算。
+\begin{align*}
+\min\quad &c_T\sum_px^T_p+c_R\sum_{p,z,r}x^R_{pzr}
++f_Ty^T+(f_R+c_T)\sum_{z,r}z^R_{zr}\\
+\text{s.t.}\quad&
+x^T_p+\sum_{r\in R_{z_p}}x^R_{p,z_p,r}=1&&(p\in P),\\
+&x^T_p=1&&(p:B_p=1),\\
+&x^R_{pzr}=0&&(z\ne z_p),\\
+&\sum_{p:z_p=z}x^R_{pzr}\le Q_Rz^R_{zr}&&(z\in Z,r\in R_z),\\
+&\sum_px^T_p+\sum_{z,r}z^R_{zr}\le Q_Ty^T,\\
+&x^R_{pzr}+x^R_{qzr}\le1&&(z,r,p,q:d_{pq}>D),\\
+&x^T,x^R,z^R\in\{0,1\},\quad y^T\in\mathbb Z_{\ge1}.
+\end{align*}
+各包裹尺寸采用同一尺度（本例为厘米），重量为千克，距离使用输入矩阵的统一单位；
+缺失对角距离补为0。新增重量/尺寸保留原数据的大件分类，但明确属于数据补全，
+这些值作为合成数据输入。原$c_F=200$作为两项固定费均为200的输入特例保留。
+区域外变量固定0明确了地区服务范围；在全部配送单价正的本例中不改变最优目标。
+
+\end{document}

@@ -1,0 +1,270 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\usepackage[UTF8]{ctex}
+\begin{document}
+
+\section*{可执行的 RNDDPC}
+\begin{align}
+\min_{\mathbf{u}(k),\mathbf{x}(k)}\quad &\sum_{i=0}^{N-1}\left(\|x(i+1\mid k)-r(i+1\mid k)\|_Q^2+\|u(i\mid k)\|_R^2\right) \tag{50a}\\
+\text{s.t.}\quad
+&\hat{\mathcal{R}}^z(i+1\mid k)=\mathcal{M}_{\mathrm{ABHJ}}\left(\hat{\mathcal{R}}^z(i\mid k)\times\mathcal{Z}_u\times\mathcal{Z}_{\epsilon}\times\mathcal{Z}_{\vartheta}\right)+\mathcal{Z}_{\sigma}, \tag{50b}\\
+&\hat{\mathcal{R}}(i+1\mid k)=\mathcal{M}_C\hat{\mathcal{R}}^z(i+1\mid k)+\mathcal{Z}_{\varrho}, \tag{50c}\\
+&\hat{\mathcal{H}}_l(i+1\mid k)\geq\mathcal{X}_l,\qquad \hat{\mathcal{H}}_u(i+1\mid k)\leq\mathcal{X}_u, \tag{50d}\\
+&x(i+1\mid k)\geq\hat{\mathcal{H}}_l(i+1\mid k),\qquad x(i+1\mid k)\leq\hat{\mathcal{H}}_u(i+1\mid k), \tag{50e}\\
+&u(i\mid k)\in\mathcal{U}, \tag{50f}\\
+&x(0\mid k)=x(k), \tag{50g}\\
+&\hat{\mathcal{R}}(0\mid k)=\langle x(k),0\rangle. \tag{50h}
+\end{align}
+阶段约束条件（50b～50f）适用于预测范围$i=0,\ldots,N-1$。时间$k$指的是当前的离散时间步长。这是Li等人提出的方程（50），\emph{关于通过Koopman算子进行混合车辆编队的非线性数据驱动预测控制的研究，以及可达性分析}，arXiv:2502.16466v2，物理PDF第17页。这里只采用了可执行的区间版本；较早的可达集约束条件并不属于该公式的额外约束条件。
+
+\subsection*{决策变量、固定输入以及状态约束}
+决策序列及其组成部分如下：
+\[
+\begin{aligned}
+\mathbf{u}(k)&=\{u(0\mid k),u(1\mid k),\ldots,u(N-1\mid k)\}, &u(i\mid k)&\in\mathbb{R},\\
+\mathbf{x}(k)&=\{x(1\mid k),x(2\mid k),\ldots,x(N\mid k)\}, &x(i+1\mid k)&\in\mathbb{R}^{2n}.
+\end{aligned}
+\]
+这里的$N$表示预测范围的长度。所测量的$x(k)$、参考值、权重、状态与输入限制、学习到的提升函数、离线数据以及不确定性描述，都是在线问题的输入参数。在(50)中，可达集合和区间端点是通过显示的集合传播和区间构建方法计算得出的，而不是通过独立的状态轨迹来确定的。
+
+在物理 PDF 文件的第 15 页到第 16 页上，与 (46) 相关的定义如下：
+\[
+\begin{gathered}
+r(i+1\mid k)=\left[r_1^\top(k),r_2^\top(k),\ldots,r_n^\top(k)\right]^\top\in\mathbb{R}^{2n},\\
+r_i(k)=\left[s_i^*(k),v_i^*(k)\right]^\top,\qquad i\in\{1,\ldots,n\},\\
+Q=\operatorname{diag}\left(Q_x,\xi Q_x,\ldots,\xi^{(n-1)}Q_x\right)\in\mathbb{R}^{2n\times2n},\qquad R\in\mathbb{R},\\
+Q_x=\operatorname{diag}(\rho_s,\rho_v),\qquad 0<\xi\leq1,\\
+\tilde{x}_{\max}=[\tilde{s}_{\max},\tilde{v}_{\max}]^\top,\\
+\mathcal{X}=\left\{x(k)\in\mathbb{R}^{2n}\ \middle|\ |x(k)-r(k)|\leq\mathbf{1}_n\otimes\tilde{x}_{\max}\right\},\\
+\mathcal{U}=\left\{u(k)\in\mathbb{R}\ \middle|\ |u(k)|\leq u_{\max}\right\}.
+\end{gathered}
+\]
+量值$s_i^*(k)$和$v_i^*(k)$分别表示所需的间距和速度。权重$\rho_s$和$\rho_v$用于惩罚间距和速度的偏差；$\xi$则降低那些距离CAV较远的HDV的惩罚力度。符号$\tilde{s}_{\max}$和$\tilde{v}_{\max}$分别表示偏差的极限值，而$u_{\max}$则代表允许的最大CAV输入值。向量$\mathbf{1}_n$是一个$n$维的全一向量，而$\otimes$则代表Kronecker积。向量$\mathcal{X}_l$和$\mathcal{X}_u$在(50d)中分别作为$\mathcal{X}$的下限和上限状态值。该论文并未对$\rho_s,\rho_v,R$施加任何额外的符号限制；因此这里也不添加任何限制。
+
+\subsection*{物理变量和有限的不利因素}
+有一个由$1$索引的领先CAV，接着是$n-1$个HDV；头部车辆的索引为$0$。物理PDF页面5-6上的源定义如下：
+\[
+\Omega=\{1,2,\ldots,n\},\qquad \Omega_C=\{1\},\qquad \Omega_H=\{2,\ldots,n\},
+\]
+\[
+s_i(k)=p_{i-1}(k)-p_i(k),\qquad x_i(k)=[s_i(k),v_i(k)]^\top,\qquad i\in\Omega,
+\]
+\begin{equation}
+x(k)=\left[x_1^\top(k),x_2^\top(k),\ldots,x_n^\top(k)\right]^\top\in\mathbb{R}^{2n}. \tag{11}
+\end{equation}
+这里的$p_i$和$v_i$分别代表位置和速度。标量输入是CAV加速度；干扰项则是车辆头部速度；而攻击项则是一种非时间延迟的叠加式输入攻击。
+\[
+u(k)=u_1(k)\in\mathbb{R},\qquad \epsilon(k)=v_0(k)\in\mathbb{R},\qquad \vartheta(k)=\vartheta_1(k)\in\mathbb{R},\qquad \omega(k)\in\mathbb{R}^{2n}.
+\]
+数据驱动的方法使得底层的非线性动态过程保持抽象状态。在(13)中列出的有界信号条件被保留了下来。
+\begin{equation}
+|\epsilon(k)|\leq\epsilon_{\max},\qquad |\vartheta(k)|\leq\vartheta_{\max},\qquad |\omega(k)|\leq\omega_{\max}, \tag{13}
+\end{equation}
+其中$\epsilon_{\max},\vartheta_{\max}\in\mathbb{R}$和$\omega_{\max}\in\mathbb{R}^{2n}$。噪声是未知的，在数据收集过程中无法直接测量。
+
+\subsection*{区间构造与集合运算}
+用于替代先前集合约束的间隔构造是
+\begin{equation}
+\hat{\mathcal{H}}(i+1\mid k)=\operatorname{interval}\bigl(\hat{\mathcal{R}}(i+1\mid k)\bigr)
+=[\hat{\mathcal{H}}_l(i+1\mid k),\hat{\mathcal{H}}_u(i+1\mid k)]. \tag{49}
+\end{equation}
+其端点是通过对传播的zonotope应用下面的公式(5)得到的。物理PDF页面4上的初步定义中，将$n$作为通用集合维度，而不是特指某个特定数量的车辆。
+
+区间集是由以下方式定义的：
+\[
+\mathcal{H}=\left\{x_{\mathcal{H}}\in\mathbb{R}^n\ \middle|\ \underline{x}_{\mathcal{H}i}\leq x_{\mathcal{H}i}\leq\overline{x}_{\mathcal{H}i},\quad\forall i=1,\ldots,n\right\}
+=[\underline{\mathcal{H}},\overline{\mathcal{H}}],
+\]
+\[
+\underline{\mathcal{H}}=[\underline{x}_{\mathcal{H}1},\underline{x}_{\mathcal{H}2},\ldots,\underline{x}_{\mathcal{H}n}],\qquad
+\overline{\mathcal{H}}=[\overline{x}_{\mathcal{H}1},\overline{x}_{\mathcal{H}2},\ldots,\overline{x}_{\mathcal{H}n}].
+\]
+对于$c_{\mathcal{Z}}\in\mathbb{R}^n$、$\gamma_{\mathcal{Z}}\in\mathbb{N}$以及其他数学符号，请按原顺序直接复制它们。确保所有数字都保持不变。
+\[
+G_{\mathcal{Z}}=[g_{\mathcal{Z}}^{(1)},g_{\mathcal{Z}}^{(2)},\ldots,g_{\mathcal{Z}}^{(\gamma_{\mathcal{Z}})}]\in\mathbb{R}^{n\times\gamma_{\mathcal{Z}}},
+\]
+区域定义是
+\begin{equation}
+\mathcal{Z}=\langle c_{\mathcal{Z}},G_{\mathcal{Z}}\rangle
+=\left\{x\in\mathbb{R}^n\ \middle|\ x=c_{\mathcal{Z}}+\sum_{i=1}^{\gamma_{\mathcal{Z}}}\beta^{(i)}g_{\mathcal{Z}}^{(i)},\ -1\leq\beta^{(i)}\leq1\right\}. \tag{3}
+\end{equation}
+对于兼容的维度，打印出的操作步骤如下：
+\[
+L\mathcal{Z}=\langle Lc_{\mathcal{Z}},LG_{\mathcal{Z}}\rangle,\qquad L\in\mathbb{R}^{m\times n},
+\]
+\[
+\mathcal{Z}_1+\mathcal{Z}_2=\left\langle c_{\mathcal{Z}_1}+c_{\mathcal{Z}_2},[G_{\mathcal{Z}_1},G_{\mathcal{Z}_2}]\right\rangle,
+\qquad \mathcal{Z}_a=\langle c_{\mathcal{Z}_a},G_{\mathcal{Z}_a}\rangle\ (a=1,2),
+\]
+\begin{equation}
+\mathcal{Z}_1\times\mathcal{Z}_2=
+\left\langle\begin{bmatrix}c_{\mathcal{Z}_1}\\c_{\mathcal{Z}_2}\end{bmatrix},
+\begin{bmatrix}G_{\mathcal{Z}_1}&0\\0&G_{\mathcal{Z}_2}\end{bmatrix}\right\rangle. \tag{4}
+\end{equation}
+区间的过度近似是
+\begin{equation}
+\mathcal{H}=\operatorname{interval}(\mathcal{Z})=[c_{\mathcal{Z}}-\Delta g_{\mathcal{Z}},c_{\mathcal{Z}}+\Delta g_{\mathcal{Z}}],\qquad
+\Delta g_{\mathcal{Z}}=\sum_{i=1}^{\gamma_{\mathcal{Z}}}|g_{\mathcal{Z}}^{(i)}|, \tag{5}
+\end{equation}
+其中，绝对值是逐个元素取得的。
+
+对于$C_{\mathcal{M}}\in\mathbb{R}^{n\times m}$、$\gamma_{\mathcal{M}}\in\mathbb{N}$以及其他数学符号，请按原顺序直接复制它们。确保所有数字都保持不变。
+\[
+G_{\mathcal{M}}=[G_{\mathcal{M}}^{(1)},G_{\mathcal{M}}^{(2)},\ldots,G_{\mathcal{M}}^{(\gamma_{\mathcal{M}})}]\in\mathbb{R}^{n\times m\gamma_{\mathcal{M}}},
+\]
+一个矩阵 zonotope 是
+\begin{equation}
+\mathcal{M}=\langle C_{\mathcal{M}},G_{\mathcal{M}}\rangle
+=\left\{X\in\mathbb{R}^{n\times m}\ \middle|\ X=C_{\mathcal{M}}+\sum_{i=1}^{\gamma_{\mathcal{M}}}\beta^{(i)}G_{\mathcal{M}}^{(i)},\ -1\leq\beta^{(i)}\leq1\right\}. \tag{6}
+\end{equation}
+在这个通用定义中，$X$是一个矩阵元素，而不是下面所定义的离线状态-数据矩阵。
+
+\subsection*{提升与带有不确定性的预测因子}
+状态提升及其域，来自物理 PDF 的第 8 页和第 11 页，内容如下：
+\begin{equation}
+\Psi(\chi(k))=\begin{bmatrix}z(k)\\u(k)\\\epsilon(k)\\\vartheta(k)\end{bmatrix},\qquad
+z(k)=[\varphi_1(x(k)),\varphi_2(x(k)),\ldots,\varphi_{n_z}(x(k))]^\top\in\mathbb{R}^{n_z},\qquad n_z>2n. \tag{19}
+\end{equation}
+对于选定的 DNN 提升操作，
+\begin{equation}
+z(k)=\begin{bmatrix}x(k)\\g(k)\end{bmatrix}. \tag{26}
+\end{equation}
+第一个$2n$基函数保留了物理状态，而其余的基函数则被学习到了。
+\[
+x(k)=[\varphi_1(x(k)),\ldots,\varphi_{2n}(x(k))]^\top,\qquad
+g(k)=[\varphi_{2n+1}(x(k)),\ldots,\varphi_{n_z}(x(k))]^\top.
+\]
+定义$g(k)$的编码器包含$n_e$个完全连接的层。
+\begin{equation}
+o_e^{(p)}=\sigma_e^{(p)}\left(W_e^{(p)}o_e^{(p-1)}+b_e^{(p)}\right),\qquad p\in\{1,2,\ldots,n_e\}. \tag{27}
+\end{equation}
+这里$W_e^{(p)}\in\mathbb{R}^{n_p\times n_{p-1}}$、$b_e^{(p)}\in\mathbb{R}^{n_p}$和$n_p$分别表示层宽度。输入和输出分别为$o_e^{(0)}=x(k)$和$o_e^{(n_e)}=g(k)$。对于$p\in\{1,\ldots,n_e-1\}$，使用ReLU激活函数；最后一层没有激活函数。这些学习到的量是在线外固定的，而不是在线决策变量。
+
+这些矩阵具有定义域。
+\[
+[A\ B\ H\ J]\in\mathbb{R}^{n_z\times(n_z+3)},\quad
+A\in\mathbb{R}^{n_z\times n_z},\quad B,H,J\in\mathbb{R}^{n_z},\quad C\in\mathbb{R}^{2n\times n_z}.
+\]
+它们分别代表了系统矩阵、控制矩阵、干扰矩阵、攻击矩阵以及投影矩阵。用于定义误差和模型集的模型，就是第13页上所提到的基于Koopman的等效模型。
+\begin{equation}
+\begin{cases}
+z(k+1)=Az(k)+Bu(k)+H\epsilon(k)+J\vartheta(k)+\sigma(k),\\
+x(k+1)=Cz(k+1)+\varrho(k).
+\end{cases} \tag{36}
+\end{equation}
+这是构成可达集结构的不确定性模型，并非在(50)中强加于决策轨迹上的额外名义等式。建模误差包含了建模的不准确性以及噪声。它们所假设的界限是……
+\begin{equation}
+|\sigma(k)|\leq\sigma_{\max},\qquad |\varrho(k)|\leq\varrho_{\max},\qquad
+\sigma_{\max}\in\mathbb{R}^{n_z},\quad\varrho_{\max}\in\mathbb{R}^{2n}. \tag{37}
+\end{equation}
+误差区域/误差空间
+\begin{equation}
+\begin{aligned}
+\sigma(k)\in\mathcal{Z}_{\sigma}
+&=\langle c_{\mathcal{Z}_{\sigma}},G_{\mathcal{Z}_{\sigma}}\rangle
+=\langle0_{n_z\times1},\operatorname{diag}(\sigma_{\max})\rangle,\\
+\varrho(k)\in\mathcal{Z}_{\varrho}
+&=\langle c_{\mathcal{Z}_{\varrho}},G_{\mathcal{Z}_{\varrho}}\rangle
+=\langle0_{2n\times1},\operatorname{diag}(\varrho_{\max})\rangle.
+\end{aligned} \tag{38}
+\end{equation}
+这些界限是根据在数据上评估的预测误差的统计特性得出的。附录E中提供了用于此目的的残差表达式，以及已学习到的矩阵和相关的信息。
+\begin{equation}
+\begin{cases}
+\sigma(k)=z(k+1)-Az(k)-Bu(k)-H\epsilon(k)-J\vartheta(k),\\
+\varrho(k)=x(k+1)-Cz(k+1).
+\end{cases} \tag{E.1}
+\end{equation}
+没有特定于模拟的值或概率覆盖百分比可以替代有界误差前提（37）。
+
+\subsection*{离线数据，用于定义模型集合}
+在噪声环境下，集合阶段会持续施加令人兴奋的控制、干扰以及长度为$T+1$的攻击序列。输入信号、干扰信号和攻击信号都是手动指定的，而状态则会被测量出来。源数据的定义如下：
+\begin{align}
+U&=[u(1),u(2),\ldots,u(T+1)]\in\mathbb{R}^{1\times(T+1)}, \tag{23a}\\
+E&=[\epsilon(1),\epsilon(2),\ldots,\epsilon(T+1)]\in\mathbb{R}^{1\times(T+1)}, \tag{23b}\\
+F&=[\vartheta(1),\vartheta(2),\ldots,\vartheta(T+1)]\in\mathbb{R}^{1\times(T+1)}, \tag{23c}\\
+X&=[x(1),x(2),\ldots,x(T+1)]\in\mathbb{R}^{2n\times(T+1)}, \tag{23d}\\
+Z&=[z(1),z(2),\ldots,z(T+1)]\in\mathbb{R}^{n_z\times(T+1)}. \tag{24}
+\end{align}
+在构建过程中所使用的矩阵是：
+\begin{align}
+U_-&=[u(1),u(2),\ldots,u(T)]\in\mathbb{R}^{1\times T}, \tag{25a}\\
+E_-&=[\epsilon(1),\epsilon(2),\ldots,\epsilon(T)]\in\mathbb{R}^{1\times T}, \tag{25b}\\
+F_-&=[\vartheta(1),\vartheta(2),\ldots,\vartheta(T)]\in\mathbb{R}^{1\times T}, \tag{25c}\\
+X_-&=[x(1),x(2),\ldots,x(T)]\in\mathbb{R}^{2n\times T}, \tag{25d}\\
+X_+&=[x(2),x(3),\ldots,x(T+1)]\in\mathbb{R}^{2n\times T}, \tag{25e}\\
+Z_-&=[z(1),z(2),\ldots,z(T)]\in\mathbb{R}^{n_z\times T}, \tag{25f}\\
+Z_+&=[z(2),z(3),\ldots,z(T+1)]\in\mathbb{R}^{n_z\times T}. \tag{25g}
+\end{align}
+不同的符号$U$和$\mathcal{U}$分别表示数据矩阵和允许输入集；$X$和$\mathcal{X}$同样表示数据矩阵和状态约束集。
+
+\subsection*{矩阵-区域模型构建及其前提条件}
+引理 1 和 2 都需要两者都成立。
+\[
+\begin{bmatrix}Z_-\\U_-\\E_-\\F_-\end{bmatrix}
+=\left[Z_-^\top\ U_-^\top\ E_-^\top\ F_-^\top\right]^\top
+\quad\text{and}\quad [Z_+]
+\quad\text{to have full row rank}.
+\]
+基于这些前提，打印出的模型集合为：
+\begin{align}
+\mathcal{M}_{\mathrm{ABHJ}}&=(Z_+-\mathcal{M}_{\sigma})\begin{bmatrix}Z_-\\U_-\\E_-\\F_-\end{bmatrix}^{\dagger}, \tag{39}\\
+\mathcal{M}_C&=(X_+-\mathcal{M}_{\varrho})[Z_+]^{\dagger}, \tag{40}\\
+\mathcal{M}_{\sigma}&=\left\langle C_{\mathcal{M}_{\sigma}},[G_{\mathcal{M}_{\sigma}}^{(1)},G_{\mathcal{M}_{\sigma}}^{(2)},\ldots,G_{\mathcal{M}_{\sigma}}^{(n_zT)}]\right\rangle, \tag{41}\\
+\mathcal{M}_{\varrho}&=\left\langle C_{\mathcal{M}_{\varrho}},[G_{\mathcal{M}_{\varrho}}^{(1)},G_{\mathcal{M}_{\varrho}}^{(2)},\ldots,G_{\mathcal{M}_{\varrho}}^{(2nT)}]\right\rangle. \tag{42}
+\end{align}
+匕首符号表示 Moore–Penrose 伪逆矩阵。完整的生成器构造如下：
+\begin{align}
+C_{\mathcal{M}_{\sigma}}&=[c_{\mathcal{Z}_{\sigma}}\ \cdots\ c_{\mathcal{Z}_{\sigma}}]\in\mathbb{R}^{n_z\times T}, \tag{43a}\\
+G_{\mathcal{M}_{\sigma}}^{(1+(i-1)T)}&=[g_{\mathcal{Z}_{\sigma}}^{(i)}\quad 0_{n_z\times(T-1)}]\in\mathbb{R}^{n_z\times T}, \tag{43b}\\
+G_{\mathcal{M}_{\sigma}}^{(k+(i-1)T)}&=[0_{n_z\times(k-1)}\quad g_{\mathcal{Z}_{\sigma}}^{(i)}\quad0_{n_z\times(T-k)}]\in\mathbb{R}^{n_z\times T}, \tag{43c}\\
+G_{\mathcal{M}_{\sigma}}^{(T+(i-1)T)}&=[0_{n_z\times(T-1)}\quad g_{\mathcal{Z}_{\sigma}}^{(i)}]\in\mathbb{R}^{n_z\times T}, \tag{43d}\\
+C_{\mathcal{M}_{\varrho}}&=[c_{\mathcal{Z}_{\varrho}}\ \cdots\ c_{\mathcal{Z}_{\varrho}}]\in\mathbb{R}^{2n\times T}, \tag{44a}\\
+G_{\mathcal{M}_{\varrho}}^{(1+(j-1)T)}&=[g_{\mathcal{Z}_{\varrho}}^{(j)}\quad0_{2n\times(T-1)}]\in\mathbb{R}^{2n\times T}, \tag{44b}\\
+G_{\mathcal{M}_{\varrho}}^{(k+(j-1)T)}&=[0_{2n\times(k-1)}\quad g_{\mathcal{Z}_{\varrho}}^{(j)}\quad0_{2n\times(T-k)}]\in\mathbb{R}^{2n\times T}, \tag{44c}\\
+G_{\mathcal{M}_{\varrho}}^{(T+(j-1)T)}&=[0_{2n\times(T-1)}\quad g_{\mathcal{Z}_{\varrho}}^{(j)}]\in\mathbb{R}^{2n\times T}. \tag{44d}
+\end{align}
+这里的$g_{\mathcal{Z}_{\sigma}}^{(i)}$和$g_{\mathcal{Z}_{\varrho}}^{(j)}$分别是式(38)中生成矩阵中的相应列。源量化器的范围如下：
+\[
+i\in\{1,2,\ldots,n_z\},\qquad j\in\{1,2,\ldots,2n\},\qquad k\in\{2,3,\ldots,T-1\}.
+\]
+在这个生成器构造中，$k$是一个列位置索引，而不是当前的在线时间。
+
+附录 A 中列出了这些集合背后的错误序列。
+\begin{align}
+O_-&=[\sigma(1),\sigma(2),\ldots,\sigma(T)]\in\mathbb{R}^{n_z\times T}, \tag{A.1}\\
+\Gamma_-&=[\varrho(1),\varrho(2),\ldots,\varrho(T)]\in\mathbb{R}^{2n\times T}, \tag{A.2}\\
+Z_+&=[A\ B\ H\ J]\begin{bmatrix}Z_-\\U_-\\E_-\\F_-\end{bmatrix}+O_-, \tag{A.3}\\
+X_+&=CZ_++\Gamma_-. \tag{A.4}
+\end{align}
+这些错误序列是无法测量的。矩阵 zonotopes 的近似结果与数据以及有限的误差范围相符合；附录 B 中使用了这些结果。
+\[
+[A\ B\ H\ J]\in\mathcal{M}_{\mathrm{ABHJ}},\qquad [C]\in\mathcal{M}_C.
+\]
+
+\subsection*{可到达性输入以及所选替换内容的适用范围}
+递归过程（45）实际上就是作为（50b）～（50c）保留下来的那对传播行。关于其相关定义的内容，则位于物理PDF页面的第15页。
+\[
+\mathcal{Z}_u=\langle u(i\mid k),0\rangle,\qquad
+\mathcal{Z}_{\epsilon}=\langle\epsilon(k),\epsilon_{\max}\rangle,\qquad
+\mathcal{Z}_{\vartheta}=\langle0,\vartheta_{\max}\rangle.
+\]
+集合$\hat{\mathcal{R}}^z(i+1\mid k)$是提升后的状态$z(i+1\mid k)$的近似可达集合，而$\hat{\mathcal{R}}(i+1\mid k)$则是物理状态$x(i+1\mid k)$的近似可达集合。附录B假设，精确可达集合和近似可达集合都源自于同一个初始集合。输入参数zonotope取决于决策变量$u(i\mid k)$；干扰zonotope以测量得到的车辆头部速度为中心，而攻击zonotope则以零为中心。之前所使用的名义控制器假设中，关于零攻击和零噪声的条件并未在(50)中强制执行。
+
+\paragraph{印刷范围和遗漏。}
+打印出的初始化值（50h）仅指定了$\hat{\mathcal{R}}(0\mid k)$，而（50b）则需要$\hat{\mathcal{R}}^z(0\mid k)$。无论是选定的块还是相关的初始化内容，都没有给出这个初始提升集合的公式。这里也没有提供该公式。此外，源代码中将$\mathcal{Z}_{\epsilon}=\langle\epsilon(k),\epsilon_{\max}\rangle$称为从（13）派生出的集合，但实际上（13）描述的是关于零的绝对扰动，而不是关于$\epsilon(k)$的扰动变化。这两个打印出的表达式都保留了它们原有的适用范围；没有用“居中偏差界限”来替代（13）。最后，（50e）是区间成员关系，并不对原始zonotope的成员关系产生任何影响。被替换掉的zonotope成员关系行并未被恢复。
+
+\paragraph{附录的范围已明确说明。}
+附录C和D中列出了问题(48)的递归可行性以及闭环约束满足结果，而不是针对问题(50)的独立定理。附录C中的假设1要求$\mathcal{X}$在某种可接受的备用输入$u_b\in\mathcal{U}$下具有一步鲁棒性控制不变性。闭环结果还假设了干扰、攻击和建模误差被限制在$\mathcal{Z}_{\epsilon},\mathcal{Z}_{\vartheta},\mathcal{Z}_{\sigma},\mathcal{Z}_{\varrho}$以内，并且在指定的时间步长内满足可行性要求。这些都是所引用的保证的前提条件，而不是在(50)中单独列出的额外终端约束条件。
+
+\subsection*{在线使用}
+在每个时间步长，问题都是基于当前测量到的状态来解决的。最终得到的序列就是……
+\[
+\mathbf{u}^*(k)=[u^*(0\mid k),u^*(1\mid k),\ldots,u^*(N-1\mid k)],\qquad
+\mathbf{x}^*(k)=[x^*(1\mid k),x^*(2\mid k),\ldots,x^*(N\mid k)].
+\]
+只有第一个输入值$u^*(0\mid k)$被应用于CAV；时间会递增，同时测量到的状态也会得到更新。 算法1将预先收集的$(U,E,F,X)$、约束条件$(\mathcal{X},\mathcal{U})$、权重$(Q,R)$、有界集合$(\mathcal{Z}_{\epsilon},\mathcal{Z}_{\vartheta},\mathcal{Z}_{\omega})$、时间范围$N$以及总步数$N_s$作为输入参数，并在$0\leq k\leq N_s$时继续运行。 它列出了$\mathcal{Z}_{\omega}$，但没有给出一般的定义公式；(50)则使用了建模误差区域模型（38）。 在选定的优化问题中，没有插入额外的噪声-区域构造。
+
+\end{document}

@@ -1,0 +1,81 @@
+\documentclass[UTF8,11pt]{ctexart}
+\usepackage{amsmath,amssymb,geometry}
+\geometry{margin=22mm}
+\begin{document}
+\section*{P59: 长期平均收益最大化的动态随机匹配主问题}
+\paragraph{来源与范围}依据原论文PDF第1, 6, 7, 8, 9, 10, 11, 20, 21, 22, 23页，第2节，式(1)及第9--10页政策/状态定义；第5节第20--21页$R_t$与长期平均收益；第21--22页(12)--(15)用于辨别基准模型。
+
+\paragraph{保留的主问题}
+采用原论文第5节的长期平均收益最大化动态匹配问题，沿用第2节的到达、
+耐心与信息结构。下面以第10页所述的类型计数状态完整展开连续时间决策过程。
+
+
+\paragraph{输入与随机机制}
+类型集合 $\mathcal T=\{1,\ldots,d\}$ 有限。类型 $i$ 的参与者按速率
+$\lambda_i>0$ 的泊松过程到达，各类型到达过程相互独立；每名类型 $i$
+参与者的耐心为独立指数随机变量，参数 $0<\mu_i<\infty$，与到达过程独立。
+参与者未匹配且耐心耗尽时立即离开。到达时间、类型与已经发生的离开可被观察，
+未来到达及仍在系统者的耐心截止时间不可预知。
+
+无向类型图上的匹配收益 $r_{ij}=r_{ji}\in\mathbb R$ 为给定有限数值。
+同类型收益 $r_{ii}$ 对应两名不同的类型 $i$ 参与者。
+可用零收益补全类型图（原文第20页）；没有放弃惩罚或等待成本。
+双方参与者采用给定的有限耐心分布。
+
+\paragraph{状态与完整动作域}
+在一次外部事件发生之后、匹配决策之前，状态为
+$\nu=(\nu_i)_{i\in\mathcal T}\in\mathbb Z_+^d$，表示当前仍可匹配的各类型人数。
+动作 $a=(a_{ij})_{1\le i\le j\le d}$ 表示在该时点执行的各类无序匹配对数。
+可行域为
+\begin{equation}
+\mathcal A(\nu)=\left\{a\in\mathbb Z_+^{d(d+1)/2}:\quad
+2a_{ii}+\sum_{j<i}a_{ji}+\sum_{j>i}a_{ij}\le\nu_i,
+\quad i=1,\ldots,d\right\}.\tag{A}
+\end{equation}
+允许空动作 $a=0$，即继续等待。每名参与者至多匹配一次，匹配双方立即从
+可匹配池删除。匹配后剩余状态和本次收益分别为
+\begin{align}
+v_i(\nu,a)&=\nu_i-2a_{ii}-\sum_{j<i}a_{ji}-\sum_{j>i}a_{ij},\quad i\in\mathcal T,\tag{S}\\
+g(a)&=\sum_{1\le i\le j\le d}r_{ij}a_{ij}.\tag{R}
+\end{align}
+式(A)是原文“在当前剩余顶点诱导子图上选匹配”的类型计数形式；
+各配对数均为整数且满足人数容量时，可在该类型完全图中选择相互不重叠的实际参与者对。
+
+\paragraph{连续时间状态转移}
+设第 $k$ 次决策时点为 $\tau_k$，决策前状态为 $\nu^k$，选择
+$a^k\in\mathcal A(\nu^k)$ 后得到 $v^k=v(\nu^k,a^k)$。
+在下一次影响匹配池的到达或离开之前，池内人数保持 $v^k$。
+令 $e_i$ 为第 $i$ 个单位向量，
+\[
+q(v)=\sum_{i=1}^d\lambda_i+\sum_{i=1}^d\mu_i v_i.
+\]
+由独立泊松到达和指数耐心的无记忆性，条件于当前已知历史及动作，
+\begin{align}
+\tau_{k+1}-\tau_k&\sim\operatorname{Exp}(q(v^k)),\tag{T1}\\
+\Pr\{\nu^{k+1}=v^k+e_i\mid v^k\}&=\frac{\lambda_i}{q(v^k)},\quad i\in\mathcal T,\tag{T2}\\
+\Pr\{\nu^{k+1}=v^k-e_i\mid v^k\}&=\frac{\mu_i v_i^k}{q(v^k)},\quad i\in\mathcal T:v_i^k>0.\tag{T3}
+\end{align}
+下一事件若为离开，该参与者先退出，不能在已离开后再选为匹配对象；
+下一事件若为到达，新参与者进入后才作下一匹配决策。
+并列事件的概率为零。池内离开事件由尚在池中的参与者产生。
+时间按改变剩余池的事件进行索引。
+取初始空池 $\nu^0=0,\tau_0=0,a^0=0$，与原文从首个到达开始构造系统一致。
+
+\paragraph{信息约束与唯一优化目标}
+令 $\mathcal H_k$ 为截至 $\tau_k$ 已观察到的到达、离开、状态与过去匹配动作
+所生成的信息。允许独立内部随机数，但不允许未来信息。
+一个可行政策 $\pi$ 在每个 $k$ 给出仅依赖 $\mathcal H_k$ 的动作分布，
+其支持必须属于 $\mathcal A(\nu^k)$。记所有这样的政策为 $\Pi$。
+优化模型为
+\begin{equation}
+\boxed{\quad\sup_{\pi\in\Pi}\ 
+\liminf_{t\to\infty}\frac1t\,
+\mathbb E^{\pi}\!\left[
+\sum_{k:\,0<\tau_k\le t}g(a^k)
+\right]\quad}\tag{DSM-R}
+\end{equation}
+并同时满足(A)、(S)、(R)、(T1)--(T3)及上述信息约束。
+目标为原文第20--21页定义的政策收益上确界 $\sup_\pi r^\pi$。原文第10页说明，在其正则条件下可以选最优确定性平稳政策。
+系统队长取非负整数，政策在无限时域上定义。
+
+\end{document}

@@ -1,0 +1,124 @@
+\documentclass[11pt]{ctexart}
+\usepackage{amsmath,amssymb,longtable}
+\allowdisplaybreaks
+\begin{document}
+\section*{P47: 当前完整数学模型（2026-10-20）}
+\section*{修订依据与边界}源文第10页明确用感知式41替换实际式23–24；当前完整模型只以感知乘车时间为r，保留实际时间的独立诊断链接；恢复起始感知时间、二元域及两段行程弧集。
+
+
+\section*{Problem: **多车辆换乘拨召服务问题（Multi-vehicle Dial-a-Ride Problem with Interchange, DARPi）**，属于：  
+- **车辆路径问题（VRP）** 的变体，结合了接送问题（PDP）与换乘点（cross-docking）特性。  
+- **混合整数线性规划（MILP）** 问题（原问题为非线性，通过线性化转化为MILP）。  
+- **NP-Hard** 组合优化问题，具有时间窗、容量、旅行时间等多重约束。}
+
+
+
+\subsection*{决策变量}
+\begin{align*}
+& x_{ij}^k \in \{0, 1\} && \forall (i,j) \in \mathcal{A}, k \in \mathcal{K} \\
+& \eta_i^k, \theta_i^k \in \{0, 1\} && \forall i \in \mathcal{P}, k \in \mathcal{K} \\
+& \tilde{\eta}^k, \tilde{\theta}^k \in \{0,1\} && \forall k \in \mathcal{K} \\
+& u_i^k, p_i^k \ge 0 && \forall i \in \mathcal{V}, k \in \mathcal{K} \\
+& \nu_i^k \ge 0 && \forall i \in \mathcal{V}, k \in \mathcal{K} \\
+& \tau^k, w^k \ge 0 && \forall k \in \mathcal{K} \\
+& z_i \ge 0 && \forall i \in \mathcal{P} \\
+& r_i \ge 0 && \forall i \in \mathcal{P} \\
+& \tilde{u}_i, \tilde{p}_i \ge 0 && \forall i \in \mathcal{P} \cup \mathcal{D} \\
+& \sigma_{ji}^k, s_{ij}^k, \tilde{s}_{ij}^k \in \mathbb{R} && \forall (i,j) \in \mathcal{A}, k \in \mathcal{K} \\
+& g_i^k \ge 0 && \forall i \in \mathcal{V}, k \in \mathcal{K} \\
+& \delta_i^k \in \{0, 1\} && \forall i \in \mathcal{V}, k \in \mathcal{K} \\
+& d_i^k \ge 1 && \forall i \in \mathcal{V}, k \in \mathcal{K}
+\end{align*}
+
+\subsection*{目标函数}
+\[
+\min \sum_{k \in \mathcal{K}} \sum_{(i,j) \in \mathcal{A}} c_{ij}^k x_{ij}^k
+\]
+
+\subsection*{约束条件：}
+\begin{align*}
+& \text{1. 客户点服务约束:} \\
+& \quad \sum_{k \in \mathcal{K}} \sum_{j: (i,j) \in \mathcal{A}} x_{ij}^k = 1 \quad \forall i \in \mathcal{P} \cup \mathcal{D} \\
+\\
+& \text{2. 车辆容量约束:} \\
+& \quad \sum_{i \in \mathcal{P}} \sum_{j: (i,j) \in \mathcal{A}} q_i x_{ij}^k \le Q_k \quad \forall k \in \mathcal{K} \\
+& \quad \sum_{i \in \mathcal{D}} \sum_{j: (i,j) \in \mathcal{A}} q_i x_{ij}^k \le Q_k \quad \forall k \in \mathcal{K} \\
+\\
+& \text{3. 车场流平衡约束:} \\
+& \quad \sum_{j: (o_1, j) \in \mathcal{A}} x_{o_1 j}^k = \sum_{j: (o_3, j) \in \mathcal{A}} x_{o_3 j}^k = 1 \quad \forall k \in \mathcal{K} \\
+& \quad \sum_{j: (j, o_2) \in \mathcal{A}} x_{j o_2}^k = \sum_{j: (j, o_4) \in \mathcal{A}} x_{j o_4}^k = 1 \quad \forall k \in \mathcal{K} \\
+& \quad \sum_{i: (i, h) \in \mathcal{A}} x_{i h}^k - \sum_{j: (h, j) \in \mathcal{A}} x_{h j}^k = 0 \quad \forall h \in \mathcal{P} \cup \mathcal{D}, k \in \mathcal{K} \\
+\\
+& \text{4. 时间窗与子环路消除约束:} \\
+& \quad u_j^k \ge u_i^k + t_{ij} - M(1 - x_{ij}^k) \quad \forall (i, j) \in \mathcal{A}, k \in \mathcal{K} \\
+& \quad e_i \le u_i^k \le l_i \quad \forall i \in \mathcal{V}, k \in \mathcal{K} \\
+& \quad u_i^k \ge e_i + \sum_{j: (j,i) \in A} \max\{0, e_j - e_i + t_{ij}\} x_{ji}^k \quad \forall i \in P \cup D, k \in K \\
+& \quad u_i^k \le l_i + \sum_{j: (i,j) \in A} \max\{0, l_i - l_j + t_{ij}\} x_{ij}^k \quad \forall i \in P \cup D, k \in K \\
+\\
+& \text{5. 行程划分与衔接约束:} \\
+& \quad \eta_i^k - \theta_i^k = \sum_{j \in \mathcal{P} \cup \{o_2\}: j \neq i} x_{ij}^k - \sum_{j \in \mathcal{D} \cup \{o_4\}: j \neq i+n} x_{i+n, j}^k \quad \forall i \in \mathcal{P}, k \in \mathcal{K} \\
+& \quad \eta_i^k + \theta_i^k \le 1 \quad \forall i \in \mathcal{P}, k \in \mathcal{K} \\
+& \quad \frac{1}{M} \sum_{i \in \mathcal{P}} \eta_i^k \le \tilde{\eta}^k \le \sum_{i \in \mathcal{P}} \eta_i^k \quad \forall k \in \mathcal{K} \\
+& \quad \frac{1}{M} \sum_{i \in \mathcal{P}} \theta_i^k \le \tilde{\theta}^k \le \sum_{i \in \mathcal{P}} \theta_i^k \quad \forall k \in \mathcal{K} \\
+& \quad \tau^k = u_{o_2}^k + a \tilde{\eta}^k + \beta \sum_{i \in \mathcal{P}} q_i \eta_i^k \quad \forall k \in \mathcal{K} \\
+& \quad w^k \ge \tau^k \quad \forall k \in \mathcal{K} \\
+& \quad u_{o_3}^k = w^k + a \tilde{\theta}^k + \beta \sum_{i \in \mathcal{P}} q_i \theta_i^k \quad \forall k \in \mathcal{K} \\
+& \quad w^k \ge z_i - M(1 - \theta_i^k) \quad \forall i \in \mathcal{P}, k \in \mathcal{K} \\
+& \quad z_i \ge \tau^k - M(1 - \eta_i^k) \quad \forall i \in \mathcal{P}, k \in \mathcal{K} \\
+& \quad u_{o_2}^k - u_{o_1}^k \le T_k \quad \forall k \in \mathcal{K} \\
+& \quad u_{o_4}^k - u_{o_3}^k \le T_k \quad \forall k \in \mathcal{K} \\
+\\
+& \text{6. 订单响应时间约束:} \\
+& \quad r_i \le L \quad \forall i \in \mathcal{P} \\
+& \quad \tilde{u}_i + \sigma_{j, i}^{u,k} = u_i^k \quad \forall (j, i) \in \mathcal{A}: i \in \mathcal{P} \cup \mathcal{D}, \forall k \in \mathcal{K} \\
+& \quad \sigma_{j i}^{u,k} \le M(1 - x_{j, i}^k) \quad \forall (j, i) \in \mathcal{A}: i \in \mathcal{P} \cup \mathcal{D}, k \in \mathcal{K} \\
+& \quad \sigma_{j i}^{p,k} \le M(1 - x_{j, i}^k) \quad \forall (j, i) \in \mathcal{A}: i \in \mathcal{P} \cup \mathcal{D}, k \in \mathcal{K} \\
+& \quad \sigma_{j i}^{u,k} \ge -M(1 - x_{j, i}^k) \quad \forall (j, i) \in \mathcal{A}: i \in \mathcal{P} \cup \mathcal{D}, k \in \mathcal{K} \\
+& \quad \sigma_{j i}^{p,k} \ge -M(1 - x_{j, i}^k) \quad \forall (j, i) \in \mathcal{A}: i \in \mathcal{P} \cup \mathcal{D}, k \in \mathcal{K} \\
+\\
+& \text{7. 载货量平衡与定义约束:} \\
+& \quad \nu_{o_1}^k = 0 \quad \forall k \in \mathcal{K} \\
+& \quad \nu_{o_3}^k = \sum_{i \in \mathcal{D}} \sum_{j: (i,j) \in \mathcal{A}} q_i x_{ij}^k \quad \forall k \in \mathcal{K} \\
+& \quad \nu_j^k + s_{ij}^k = \nu_i^k + q_j \quad \forall (i, j) \in \mathcal{A}: i \in \mathcal{P} + \{o_1\}, k \in \mathcal{K} \\
+& \quad \nu_j^k + s_{ij}^k = \nu_i^k - q_j \quad \forall (i, j) \in \mathcal{A}: i \in \mathcal{D} + \{o_3\}, k \in \mathcal{K} \\
+& \quad s_{ij}^k \le M(1 - x_{ij}^k) \quad \forall (i, j) \in \mathcal{A}, k \in \mathcal{K} \\
+& \quad s_{ij}^k \ge -M(1 - x_{ij}^k) \quad \forall (i, j) \in \mathcal{A}, k \in \mathcal{K} \\
+& \quad 0 \le \nu_j^k \le Q_k \quad \forall j \in \mathcal{V}, k \in \mathcal{K} \\
+\\
+& \text{8. 负载影响因子线性化约束:} \\
+& \quad g_i^k \ge \nu_i^k - \rho Q_k \quad \forall i \in \mathcal{V}, k \in \mathcal{K} \\
+& \quad g_i^k \ge 0 \quad \forall i \in \mathcal{V}, k \in \mathcal{K} \\
+& \quad g_i^k \le \nu_i^k - \rho Q_k + M \delta_i^k \quad \forall i \in \mathcal{V}, k \in \mathcal{K} \\
+& \quad g_i^k \le M(1 - \delta_i^k) \quad \forall i \in \mathcal{V}, k \in \mathcal{K} \\
+& \quad \delta_i^k \in \{0, 1\} \quad \forall i \in \mathcal{V}, k \in \mathcal{K} \\
+& \quad d_i^k = 1 + \gamma g_i^k \quad \forall i \in \mathcal{V}, k \in \mathcal{K} \\
+\\
+& \text{9. 离开时间与响应时间（考虑负载影响）约束:} \\
+& \quad p_j^k + \tilde{s}_{ij}^k = u_j^k + (p_i^k - u_i^k) + t_{ij} d_i^k - t_{ij} \quad \forall (i, j) \in \mathcal{A}, k \in \mathcal{K} \\
+& \quad \tilde{s}_{ij}^k \le M(1 - x_{ij}^k) \quad \forall (i, j) \in \mathcal{A}, k \in \mathcal{K} \\
+& \quad \tilde{s}_{ij}^k \ge -M(1 - x_{ij}^k) \quad \forall (i, j) \in \mathcal{A}, k \in \mathcal{K} \\
+& \quad p_{o_3}^k = u_{o_3}^k + (p_{o_2}^k - u_{o_2}^k) \quad \forall k \in \mathcal{K} \\
+& \quad \tilde{p}_i + \sigma_{j, i}^{p,k} = p_i^k \quad \forall (j, i) \in \mathcal{A}: i \in \mathcal{P} \cup \mathcal{D}, \forall k \in \mathcal{K} \\
+& \quad \sigma_{j i}^{u,k} \le M(1 - x_{j, i}^k) \quad \forall (j, i) \in \mathcal{A}: i \in \mathcal{P} \cup \mathcal{D}, k \in \mathcal{K} \\
+& \quad \sigma_{j i}^{p,k} \le M(1 - x_{j, i}^k) \quad \forall (j, i) \in \mathcal{A}: i \in \mathcal{P} \cup \mathcal{D}, k \in \mathcal{K} \\
+& \quad \sigma_{j i}^{u,k} \ge -M(1 - x_{j, i}^k) \quad \forall (j, i) \in \mathcal{A}: i \in \mathcal{P} \cup \mathcal{D}, k \in \mathcal{K} \\
+& \quad \sigma_{j i}^{p,k} \ge -M(1 - x_{j, i}^k) \quad \forall (j, i) \in \mathcal{A}: i \in \mathcal{P} \cup \mathcal{D}, k \in \mathcal{K} \\
+& \quad r_i = \tilde{p}_{n+i} - \tilde{p}_i \quad \forall i \in \mathcal{P}
+\end{align*}
+
+
+\section*{感知时间的完整定义}
+源文第10页明确式41替换原实际乘车式23--24，因此$r_i$只由
+$r_i=\tilde p_{n+i}-\tilde p_i$定义，$r_i\le L$限制感知乘车时间。
+实际时间$\tilde u$仅用于独立诊断，链接松弛记为$\sigma^u$；
+感知时间链接使用不同的$\sigma^p$，互不混用。
+\[
+p_{o_1}^k=u_{o_1}^k,\qquad\tilde\eta^k,\tilde\theta^k\in\{0,1\}.
+\]
+合法弧集由实例逐项给出：第一行程起点$o_1$至换乘到达$o_2$、第二行程从$o_3$至终点$o_4$，
+各行程只访问其允许取送节点，无直接空行程弧。所有容量、乘客需求、行驶/换乘/装卸时间、拥挤参数和时窗均为有限实例参数。
+
+\section*{本问题集的明确记号约定}
+两条时窗强化式的弧选择均属于同一车辆$k$，按本文三下标弧变量定义写为$x_{ji}^k$和$x_{ij}^k$，按车辆分别计算。第一条系数保留原式$t_{ij}$，即从当前点$i$到前驱点$j$的行时；第二条保留原式的加号。四个边界点的乘客需求定义为$q_{o_1}=q_{o_2}=q_{o_3}=q_{o_4}=0$；客户需求由实例给定。此处$A,P,D,K$分别是$\mathcal A,\mathcal P,\mathcal D,\mathcal K$的同义记号。
+
+\end{document}

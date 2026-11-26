@@ -1,0 +1,159 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+
+\title{核心可解数学模型}
+\author{Paper 2}
+\date{\today}
+
+\usepackage[UTF8]{ctex}
+\begin{document}
+
+\maketitle
+
+\section*{保留的核心模型}
+根据\texttt{tex}公式以及PDF文件，可以直接求解的实用模型，就是附录A中第35-36页所描述的精确McCormick线性化确定性模型。 
+
+\paragraph{集合与参数。}
+设$\mathcal{P}$为产品组合集合，$\mathcal{F}$为设施集合。对于每一个$p \in \mathcal{P}$，设$\mathcal{D}_p$为允许的分布集合；对于每一个$(p,d)$，设$\mathcal{S}_{pd}$为情景集合。对于每一个$(p,f)$，设$\mathcal{L}_{pf}$为生产水平集合。相关参数包括：$C_{pf}$为单位生产成本，$B_f$为设施容量，$b_f$为线性化模型中使用的设施特定上限，$L_{pfl}$和$U_{pfl}$分别为生产水平$l$的下限/上限，$l(p,f,d)$为分布$d$所要求的生产水平，$\pi_{sd}$为情景概率，$Y_{pfds}$为实际产量，$D_{pds}$为需求，$P_p$为全价收入，$O_p$为折现后的收入，而$N_{pds}$则为折现后销售额的有效上限。$o_{pds}$则代表折现后销售额的有效上限。
+
+\paragraph{决策变量。}
+$x_{pf} \ge 0$表示在设施$f$对产品$p$的生产分配。  
+$y_{pfl}\in\{0,1\}$选择生产级别$l$。  
+$\delta_{pd}\in\{0,1\}$选择产量与需求的分配方式。  
+$z_{pds}, w_{pds}, o_{pds} \ge 0$分别表示在情景$(p,d,s)$中可用的库存、全价销售以及打折销售。  
+$\mu_{pds}$和$\rho_{pds}$是McCormick线性化变量，分别替代$\delta_{pd} w_{pds}$和$\delta_{pd} o_{pds}$。
+
+\section*{线性化的 MIP 公式}
+\begin{equation}
+v_{PP\text{-}DESUP}^{*}
+= \max
+\left(
+- \sum_{p \in \mathcal{P}} \sum_{f \in \mathcal{F}} C_{pf} x_{pf}
++ \sum_{p \in \mathcal{P}} \sum_{d \in \mathcal{D}_p} \sum_{s \in \mathcal{S}_{pd}}
+\pi_{sd}\left( P_p \mu_{pds} + O_p \rho_{pds} \right)
+\right)
+\tag{22a}
+\end{equation}
+
+\begin{equation}
+\sum_{p \in \mathcal{P}} x_{pf} \le B_f
+\quad \forall f \in \mathcal{F}
+\tag{22b}
+\end{equation}
+
+\begin{equation}
+\sum_{l \in \mathcal{L}_{pf}} y_{pfl} = 1
+\quad \forall p \in \mathcal{P},\ \forall f \in \mathcal{F}
+\tag{22c}
+\end{equation}
+
+\begin{equation}
+\sum_{l \in \mathcal{L}_{pf}} L_{pfl} y_{pfl}
+\le x_{pf}
+\le \sum_{l \in \mathcal{L}_{pf}} \min\{b_f, U_{pfl}\}\, y_{pfl}
+\quad \forall p \in \mathcal{P},\ \forall f \in \mathcal{F}
+\tag{22d}
+\end{equation}
+
+\begin{equation}
+\sum_{d \in \mathcal{D}_p} \delta_{pd} = 1
+\quad \forall p \in \mathcal{P}
+\tag{22e}
+\end{equation}
+
+\begin{equation}
+\sum_{f \in \mathcal{F}} y_{p,f,l(p,f,d)} \ge |\mathcal{F}|\, \delta_{pd}
+\quad \forall p \in \mathcal{P},\ \forall d \in \mathcal{D}_p
+\tag{22f}
+\end{equation}
+
+\begin{equation}
+z_{pds} = \sum_{f \in \mathcal{F}} Y_{pfds} x_{pf}
+\quad \forall p \in \mathcal{P},\ \forall d \in \mathcal{D}_p,\ \forall s \in \mathcal{S}_{pd}
+\tag{22g}
+\end{equation}
+
+\begin{equation}
+w_{pds} \le D_{pds}
+\quad \forall p \in \mathcal{P},\ \forall d \in \mathcal{D}_p,\ \forall s \in \mathcal{S}_{pd}
+\tag{22h}
+\end{equation}
+
+\begin{equation}
+w_{pds} + o_{pds} = z_{pds}
+\quad \forall p \in \mathcal{P},\ \forall d \in \mathcal{D}_p,\ \forall s \in \mathcal{S}_{pd}
+\tag{22i}
+\end{equation}
+
+\begin{equation}
+\mu_{pds} \le w_{pds}
+\quad \forall p \in \mathcal{P},\ \forall d \in \mathcal{D}_p,\ \forall s \in \mathcal{S}_{pd}
+\tag{22n}
+\end{equation}
+
+\begin{equation}
+\mu_{pds} \le D_{pds}\, \delta_{pd}
+\quad \forall p \in \mathcal{P},\ \forall d \in \mathcal{D}_p,\ \forall s \in \mathcal{S}_{pd}
+\tag{22o}
+\end{equation}
+
+\begin{equation}
+\mu_{pds} \ge w_{pds} - D_{pds}(1 - \delta_{pd})
+\quad \forall p \in \mathcal{P},\ \forall d \in \mathcal{D}_p,\ \forall s \in \mathcal{S}_{pd}
+\tag{22p}
+\end{equation}
+
+\begin{equation}
+\rho_{pds} \le o_{pds}
+\quad \forall p \in \mathcal{P},\ \forall d \in \mathcal{D}_p,\ \forall s \in \mathcal{S}_{pd}
+\tag{22q}
+\end{equation}
+
+\begin{equation}
+\rho_{pds} \le N_{pds}\, \delta_{pd}
+\quad \forall p \in \mathcal{P},\ \forall d \in \mathcal{D}_p,\ \forall s \in \mathcal{S}_{pd}
+\tag{22r}
+\end{equation}
+
+\begin{equation}
+\rho_{pds} \ge o_{pds} - N_{pds}(1 - \delta_{pd})
+\quad \forall p \in \mathcal{P},\ \forall d \in \mathcal{D}_p,\ \forall s \in \mathcal{S}_{pd}
+\tag{22s}
+\end{equation}
+
+\begin{equation}
+x_{pf} \ge 0
+\quad \forall p \in \mathcal{P},\ \forall f \in \mathcal{F}
+\tag{22j}
+\end{equation}
+
+\begin{equation}
+y_{pfl} \in \{0,1\}
+\quad \forall p \in \mathcal{P},\ \forall f \in \mathcal{F},\ \forall l \in \mathcal{L}_{pf}
+\tag{22k}
+\end{equation}
+
+\begin{equation}
+\delta_{pd} \in \{0,1\}
+\quad \forall p \in \mathcal{P},\ \forall d \in \mathcal{D}_p
+\tag{22l}
+\end{equation}
+
+\begin{equation}
+z_{pds},\, w_{pds},\, o_{pds} \ge 0
+\quad \forall p \in \mathcal{P},\ \forall d \in \mathcal{D}_p,\ \forall s \in \mathcal{S}_{pd}
+\tag{22m}
+\end{equation}
+
+\begin{equation}
+\mu_{pds},\, \rho_{pds} \ge 0
+\quad \forall p \in \mathcal{P},\ \forall d \in \mathcal{D}_p,\ \forall s \in \mathcal{S}_{pd}
+\tag{Lin-Dom}
+\end{equation}
+
+\end{document}

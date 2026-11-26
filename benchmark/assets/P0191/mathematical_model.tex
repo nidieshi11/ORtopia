@@ -1,0 +1,88 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,geometry}
+\geometry{margin=22mm}
+\usepackage[UTF8]{ctex}
+\begin{document}
+
+\section*{P191：完整的、以停靠点为索引的协作式卡车/无人机模型}
+输入节点集$\mathcal V$包含仓库$0$、所有原始客户$\mathcal C$、所有有限的灵活停靠点，以及一个独立的终点站$v_{\rm end}=i_{N+F+1}$。该终点站与仓库的坐标相同，但标签仍然独立。客户被划分为仅使用卡车的$\mathcal C_T$和适合使用无人机的$\mathcal C_U$两类。无人机集合$\mathcal U$以及连续的停靠点$\mathcal S=\{0,\ldots,S_{\max}\}$保持原有的车队/规模不变。最后的位置标记为$s_{\hat S+1}$，实际上就是$S_{\max}$；$s_{\hat S}=S_{\max}-1$和$s_0=0$也是如此。
+
+有限的输入数组包括：卡车行驶时间$R^T_{ij}$、无人机飞行时间$R^U_{ijku}$、耐久性限制$E_{ijku}$、卡车/无人机客户服务时间$V^T_i,V^U_i$、发射/回收时间$H_j,G_j$，以及有效的大$M$。代码中的函数$H(s),G(s)$分别对应于$\sum_j H_jy_{js}$和$\sum_jG_jy_{js}$。在描述初始边界时，只需在必要时使用$X_{is}=\sum_u x_{ius}$和定义$X_{i,-1}=0$即可。
+
+二进制代码$y_{is}$用于指定卡车的位置；
+二进制代码$x_{ius}$用于将客户的服务项目分配到从位置$s$到$s+1$的区间内。二进制代码$w_{ijs}$则用于安排位置$s$处的活跃任务。
+它们所涉及的领域分别是$y:\mathcal V\times\mathcal S$、
+$x:\mathcal C\times\mathcal U\times\mathcal S$、
+$w:\mathcal C\times\mathcal C\times\mathcal S$。
+所有的时间变量以及完成状态$\hat t$都是非负的。
+$b_i,e_i$表示卡车服务在客户$i$处的开始/结束时间；
+提取出的表格中的上标$b_i^U,e_i^U$表示变量命名的一致性问题，使用的是相同的变量家族。
+\subsection*{目标函数}
+\[\min\ \hat t\]
+
+\subsection*{约束条件：}
+\[\begin{aligned}
+&\text{1. 完工时间定义:} \\
+&\hat{t} \ge a^T_s \quad \forall s \in \{s_{\hat{S}+1}\} \subseteq \mathcal{S} \\
+&\hat{t} \ge a^U_i + \sum_{u \in \mathcal{U}} G_j x_{ius} \quad \forall i \in \mathcal{C}, j \in \{j_{N+F+1}\} \subseteq \mathcal{V}, s \in \{s_{\hat{S}}\} \subseteq \mathcal{S} \\
+\\
+&\text{2. 路径流与节点分配约束:} \\
+&y_{is} = 1 \quad \forall i \in \{i_0\} \subseteq \mathcal{V}, s \in \{s_0\} \subseteq \mathcal{S} \\
+&y_{is} = 1 \quad \forall i \in \{i_{N+F+1}\} \subseteq \mathcal{V}, s \in \{s_{\hat{S}+1}\} \subseteq \mathcal{S} \\
+&\sum_{i \in \mathcal{V}} y_{is} = 1 \quad \forall s \in \mathcal{S} \\
+&\sum_{s \in \mathcal{S}} y_{is} \le 1 \quad \forall i \in \mathcal{V} \setminus \{i_{N+F+1}\} \\
+&y_{is} \le y_{i,s+1} \quad \forall i \in \{i_{N+F+1}\} \subseteq \mathcal{V}, s \in \mathcal{S} \setminus \{s_{\hat{S}+1}\} \\
+\\
+&\text{3. 客户服务分配约束:} \\
+&\sum_{s \in \mathcal{S}} y_{is} = 1 \quad \forall i \in \mathcal{C}_T \\
+&\sum_{u \in \mathcal{U}} \sum_{s \in \mathcal{S} \setminus \{s_{\hat{S}+1}\}} x_{ius} + \sum_{s \in \mathcal{S}} y_{is} = 1 \quad \forall i \in \mathcal{C}_U \\
+&\sum_{i \in \mathcal{C}} x_{ius} \le 1 \quad \forall u \in \mathcal{U}, s \in \mathcal{S} \\
+\\
+&\text{4. 卡车时序与路径连续性约束:} \\
+&a^T_{s+1} \ge d^T_s + R^T_{ij} - M(2 - y_{is} - y_{j,s+1}) \quad \forall i, j \in \mathcal{V}, s \in \mathcal{S} \setminus \{s_{\hat{S}+1}\} \\
+&d^T_s \ge a^T_s \quad \forall s \in \mathcal{S} \\
+\\
+&\text{5. 卡车-无人机协同时序约束:} \\
+&d^T_s \ge a^U_i + \sum_{j \in \mathcal{V}} G_j y_{js} - M\left(1 - \sum_{u \in \mathcal{U}} x_{iu,s-1}\right) \quad \forall i \in \mathcal{C}, s \in \mathcal{S} \setminus \{s_0\} \\
+&d^T_s \ge d^U_i - M\left(1 - \sum_{u \in \mathcal{U}} x_{ius}\right) \quad \forall i \in \mathcal{C}, s \in \mathcal{S} \\
+&d^T_s \ge e_i - M(1 - y_{is}) \quad \forall i \in \mathcal{C}, s \in \mathcal{S} \setminus \{s_0\} \\
+&d^U_i \ge a^T_s + \sum_{j \in \mathcal{V}} H_j y_{js} - M\left(1 - \sum_{u \in \mathcal{U}} x_{ius}\right) \quad \forall i \in \mathcal{C}, s \in \mathcal{S} \\
+&d^U_j \ge a^U_i + \sum_{k \in \mathcal{V}} (G_k + H_k) y_{ks} - M(2 - x_{ius} - x_{ju,s+1}) \quad \forall i, j \in \mathcal{C}, u \in \mathcal{U}, s \in \mathcal{S} \setminus \{s_{\hat{S}+1}\} \\
+&a^U_j \ge d^U_j + \sum_{u \in \mathcal{U}} R^U_{ijku} x_{jus} + V^U_j - M\left(3 - \sum_{u \in \mathcal{U}} x_{jus} - y_{is} - y_{k,s+1}\right) \quad \forall i, k \in \mathcal{V}, j \in \mathcal{C}, s \in \mathcal{S} \setminus \{s_{\hat{S}+1}\} \\
+&a^U_i \ge a^T_{s+1} - M\left(1 - \sum_{u \in \mathcal{U}} x_{ius}\right) \quad \forall i \in \mathcal{C}, s \in \mathcal{S} \setminus \{s_{\hat{S}+1}\} \\
+\\
+&\text{6. 无人机续航约束:} \\
+&a^U_j - d^U_j \le \sum_{u \in \mathcal{U}} E_{ijku} x_{jus} + M\left(3 - \sum_{u \in \mathcal{U}} x_{jus} - y_{is} - y_{k,s+1}\right) \quad \forall i, k \in \mathcal{V}, j \in \mathcal{C}, s \in \mathcal{S} \setminus \{s_{\hat{S}+1}\} \\
+\\
+&\text{7. 卡车服务客户时序约束:} \\
+&b_i \ge a^T_s - M(1 - y_{is}) \quad \forall i \in \mathcal{C}, s \in \mathcal{S} \\
+&e_i \ge b_i + V^T_i - M\left(1 - \sum_{s \in \mathcal{S}} y_{is}\right) \quad \forall i \in \mathcal{C} \\
+&b_i \le M \sum_{s \in \mathcal{S}} y_{is} \quad \forall i \in \mathcal{C} \\
+&e_i \le M \sum_{s \in \mathcal{S}} y_{is} \quad \forall i \in \mathcal{C} \\
+\\
+&\text{8. 资源冲突与排序约束:} \\
+&w_{ijs} + w_{jis} \ge \sum_{u \in \mathcal{U}} x_{ius} + \sum_{u \in \mathcal{U}} x_{jus} + \sum_{u \in \mathcal{U}} x_{iu,s-1} + \sum_{u \in \mathcal{U}} x_{ju,s-1} + y_{is} + y_{js} - 1 \quad \forall i, j \in \mathcal{C}, s \in \mathcal{S} \setminus \{s_0\}, i > j \\
+&w_{ijs} + w_{jis} \ge \sum_{u \in \mathcal{U}} x_{ius} + \sum_{u \in \mathcal{U}} x_{jus}-1 \quad \forall i, j \in \mathcal{C}, s=s_0,\ i > j \\
+\\
+&\text{9. 基于排序的时序约束:} \\
+&a^U_i \ge a^U_j + \sum_{k \in \mathcal{V}} G_k y_{ks} - M\left(3 - w_{jis} - \sum_{u \in \mathcal{U}} x_{iu,s-1} - \sum_{u \in \mathcal{U}} x_{ju,s-1}\right) \quad \forall i, j \in \mathcal{C}, s \in \mathcal{S} \setminus \{s_0\} \\
+&d^U_i \ge d^U_j + \sum_{k \in \mathcal{V}} H_k y_{ks} - M\left(3 - w_{jis} - \sum_{u \in \mathcal{U}} x_{ius} - \sum_{u \in \mathcal{U}} x_{jus}\right) \quad \forall i, j \in \mathcal{C}, s \in \mathcal{S} \\
+&a^U_j \ge d^U_i - M\left(2 + w_{jis} - \sum_{u \in \mathcal{U}} x_{ju,s-1} - \sum_{u \in \mathcal{U}} x_{ius}\right) \quad \forall i, j \in \mathcal{C}, s \in \mathcal{S} \setminus \{s_0\} \\
+&d^U_i \ge a^U_j + \sum_{k \in \mathcal{V}} (G_k + H_k) y_{ks} - M\left(3 - w_{jis} - \sum_{u \in \mathcal{U}} x_{ju,s-1} - \sum_{u \in \mathcal{U}} x_{ius}\right) \quad \forall i, j \in \mathcal{C}, s \in \mathcal{S} \setminus \{s_0\} \\
+&a^U_i \ge e_j - M\left(3 - w_{jis} - \sum_{u \in \mathcal{U}} x_{iu,s-1} - y_{js}\right) \quad \forall i, j \in \mathcal{C}, s \in \mathcal{S} \setminus \{s_0\} \\
+&b_i \ge a^U_j + \sum_{k \in \mathcal{V}} G_k y_{ks} - M\left(3 - w_{jis} - \sum_{u \in \mathcal{U}} x_{ju,s-1} - y_{is}\right) \quad \forall i, j \in \mathcal{C}, s \in \mathcal{S} \setminus \{s_0\} \\
+&b_i \ge d^U_j - M\left(3 - w_{jis} - y_{is} - \sum_{u \in \mathcal{U}} x_{jus}\right) \quad \forall i, j \in \mathcal{C}, s \in \mathcal{S} \\
+&d^U_i \ge e_j + \sum_{k \in \mathcal{V}} H_k y_{ks} - M\left(3 - w_{jis} - \sum_{u \in \mathcal{U}} x_{ius} - y_{js}\right) \quad \forall i, j \in \mathcal{C}, s \in \mathcal{S}
+\end{aligned}\]
+
+
+\paragraph{明确指定边界/域范围。}
+为每位客户/无人机设置$a^T_0=0$、$x_{iu,S_{\max}}=0$，为每位仅使用卡车的客户设置$x_{ius}=0$。初始排序行为$w_{ij0}+w_{ji0}\ge X_{i0}+X_{j0}-1$，如源方程(29)所示。发射需要定义前置位置。终端处于吸收状态，完成过程包括最终回收无人机。每个节点/客户和有限输入系数均被保留。上述方程以及这些边界条件构成了完整实现的MILP模型。
+
+\paragraph{验证与解释。}
+未改变的08求解器会实例化所有源约束族，同时明确指定客户和终端域。其全卡车构建方式仅作为热身阶段；无人机和灵活停止决策则仍然可以自由选择。
+
+通用执行证据检查了每一行、每个领域和每个目标。  
+额外的重放重建了发射间隔、$[d_i^U-H(s),d_i^U]$、恢复间隔$[a_i^U,a_i^U+G(s)]$以及每个选定站点的卡车服务间隔$[b_i,e_i]$，确认在全部十九个实施案例中不存在重叠和包含关系，并在$[a_s^T,d_s^T]$中进行了确认。结果记录了求解器的终止状态。
+
+\end{document}

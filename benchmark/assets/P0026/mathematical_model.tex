@@ -1,0 +1,211 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+
+\geometry{a4paper, margin=1in}
+
+\title{核心可解数学模型}
+\author{}
+\date{}
+
+\usepackage[UTF8]{ctex}
+\begin{document}
+
+\maketitle
+
+此文件中保留了论文中直接可求解的 ACOTS-QC 松弛问题。原始的非凸 ACOTS MINLP 模型以及用于额外循环割线的分支与切割分离模型则被省略了。
+
+\section{ACOTS-QC 松弛算法}
+
+\begin{equation}
+\begin{aligned}
+\min \quad
+& \sum_{k\in\mathcal{G}} \left(c_{2k}^g (p_k^g)^2 + c_{1k}^g p_k^g\right)
++ \sum_{i\in\mathcal{N}\setminus\mathcal{N}^L} \sum_{k\in\mathcal{G}_i} c_{0k}^g \\
+& \qquad
++ \sum_{i\in\mathcal{N}^L} \sum_{k\in\mathcal{G}_i} c_{0k}^g\,
+z_{\{ft\mid (f,t)\in\mathcal{A},\ f=i\ \text{or}\ t=i\}}
+\end{aligned}
+\tag{11a}
+\end{equation}
+
+\begin{equation}
+\begin{aligned}
+\text{s.t.}\quad
+& \sum_{k\in\mathcal{G}_i} S_k^g - \boldsymbol{S}_i^d - \boldsymbol{Y}_i^{s*} w_i
+= \sum_{(i,j)\in\mathcal{A}\cup\mathcal{A}^R} S_{ij}
+&& \forall i\in\mathcal{N}, \\
+& \theta_{ij} = \theta_i - \theta_j
+&& \forall (i,j)\in\mathcal{A}, \\
+& \underline{\theta}_{ij} z_{ij} - \theta^{M}(1-z_{ij})
+\le \theta_{ij} \le
+\overline{\theta}_{ij} z_{ij} + \theta^{M}(1-z_{ij})
+&& \forall (i,j)\in\mathcal{A}, \\
+& \theta_i = 0
+&& \forall i\in\mathcal{N}^{\mathrm{ref}}, \\
+& \underline{\boldsymbol{S}}_k^g \le S_k^g \le \overline{\boldsymbol{S}}_k^g
+&& \forall k\in\mathcal{G}, \\
+& |S_{ij}|^2 \le (\overline{\boldsymbol{s}}_{ij}^a)^2 z_{ij}^2,\qquad
+|S_{ji}|^2 \le (\overline{\boldsymbol{s}}_{ij}^a)^2 z_{ij}^2
+&& \forall (i,j)\in\mathcal{A}, \\
+& \underline{\boldsymbol{v}}_i \le v_i \le \overline{\boldsymbol{v}}_i
+&& \forall i\in\mathcal{N}, \\
+& z_{ij}\in\{0,1\}
+&& \forall (i,j)\in\mathcal{A}, \\
+& S_{ij} = (\boldsymbol{Y}_{ij}+\boldsymbol{Y}_{ij}^c)^*\frac{w_{ij}^z}{|\boldsymbol{T}_{ij}|^2}
+- \boldsymbol{Y}_{ij}^* \frac{W_{ij}}{\boldsymbol{T}_{ij}}
+&& \forall (i,j)\in\mathcal{A}, \\
+& S_{ji} = (\boldsymbol{Y}_{ij}+\boldsymbol{Y}_{ji}^c)^* w_{ji}^z
+- \boldsymbol{Y}_{ij}^* \frac{W_{ij}^*}{\boldsymbol{T}_{ij}^*}
+&& \forall (i,j)\in\mathcal{A}, \\
+& w_i - (1-z_{ij})\overline{\boldsymbol{v}}_i^2 \le w_{ij}^z \le w_i - (1-z_{ij})\underline{\boldsymbol{v}}_i^2
+&& \forall (i,j)\in\mathcal{A}, \\
+& w_j - (1-z_{ij})\overline{\boldsymbol{v}}_j^2 \le w_{ji}^z \le w_j - (1-z_{ij})\underline{\boldsymbol{v}}_j^2
+&& \forall (i,j)\in\mathcal{A}, \\
+& \underline{\boldsymbol{v}}_i^2 z_{ij} \le w_{ij}^z \le \overline{\boldsymbol{v}}_i^2 z_{ij}
+&& \forall (i,j)\in\mathcal{A}, \\
+& \underline{\boldsymbol{v}}_j^2 z_{ij} \le w_{ji}^z \le \overline{\boldsymbol{v}}_j^2 z_{ij}
+&& \forall (i,j)\in\mathcal{A}, \\
+& w_i \ge v_i^2
+&& \forall i\in\mathcal{N}, \\
+& w_i \le (\underline{\boldsymbol{v}}_i+\overline{\boldsymbol{v}}_i)v_i - \underline{\boldsymbol{v}}_i\overline{\boldsymbol{v}}_i
+&& \forall i\in\mathcal{N}, \\
+& -c_{ij} + \theta_{ij}^c \theta_{ij}
+\le
+(\theta_{ij}^c \underline{\theta}_{ij} - \cos(\underline{\theta}_{ij})) z_{ij}
++ |\theta_{ij}^c| \theta^M (1-z_{ij})
+&& \forall (i,j)\in\mathcal{A}, \\
+& c_{ij} \le z_{ij}
+- \frac{1-\cos(\theta_{ij}^u)}{(\theta_{ij}^u)^2}\theta_{ij}^2
++ \frac{1-\cos(\theta_{ij}^u)}{(\theta_{ij}^u)^2}(\theta^M)^2(1-z_{ij})
+&& \forall (i,j)\in\mathcal{A}, \\
+& \underline{\boldsymbol{c}}_{ij} z_{ij} \le c_{ij} \le \overline{\boldsymbol{c}}_{ij} z_{ij}
+&& \forall (i,j)\in\mathcal{A}, \\
+& s_{ij} - \cos\!\left(\frac{\theta_{ij}^u}{2}\right)\theta_{ij}
+\le
+\left(\sin\!\left(\frac{\theta_{ij}^u}{2}\right)-\cos\!\left(\frac{\theta_{ij}^u}{2}\right)\frac{\theta_{ij}^u}{2}\right)z_{ij}
++ \cos\!\left(\frac{\theta_{ij}^u}{2}\right)\theta^M(1-z_{ij})
+&& \forall (i,j)\in\mathcal{A}:\ \overline{\theta}_{ij}\ge 0, \\
+& -s_{ij} + \cos\!\left(\frac{\theta_{ij}^u}{2}\right)\theta_{ij}
+\le
+\left(\sin\!\left(\frac{\theta_{ij}^u}{2}\right)-\cos\!\left(\frac{\theta_{ij}^u}{2}\right)\frac{\theta_{ij}^u}{2}\right)z_{ij}
++ \cos\!\left(\frac{\theta_{ij}^u}{2}\right)\theta^M(1-z_{ij})
+&& \forall (i,j)\in\mathcal{A}:\ \underline{\theta}_{ij}\le 0, \\
+& s_{ij} - \theta_{ij}^s \theta_{ij}
+\le
+(-\theta_{ij}^s \underline{\theta}_{ij} + \sin(\underline{\theta}_{ij})) z_{ij}
++ \theta_{ij}^s \theta^M (1-z_{ij})
+&& \forall (i,j)\in\mathcal{A}:\ \overline{\theta}_{ij}\le 0, \\
+& -s_{ij} + \theta_{ij}^s \theta_{ij}
+\le
+(\theta_{ij}^s \underline{\theta}_{ij} - \sin(\underline{\theta}_{ij})) z_{ij}
++ \theta_{ij}^s \theta^M (1-z_{ij})
+&& \forall (i,j)\in\mathcal{A}:\ \underline{\theta}_{ij}\ge 0, \\
+& \underline{\boldsymbol{s}}_{ij} z_{ij} \le s_{ij} \le \overline{\boldsymbol{s}}_{ij} z_{ij}
+&& \forall (i,j)\in\mathcal{A}, \\
+& w_{ij}^R = \sum_{k=1}^{8} \lambda_{ij,k}^c (\xi_1^k \xi_2^k \xi_3^k),\qquad
+w_{ij}^I = \sum_{k=1}^{8} \lambda_{ij,k}^s (\gamma_1^k \gamma_2^k \gamma_3^k)
+&& \forall (i,j)\in\mathcal{A}, \\
+& \sum_{k=1}^{8} \lambda_{ij,k}^c \xi_1^k + (1-z_{ij})\underline{\boldsymbol{v}}_i
+\le v_i \le
+\sum_{k=1}^{8} \lambda_{ij,k}^c \xi_1^k + (1-z_{ij})\overline{\boldsymbol{v}}_i
+&& \forall (i,j)\in\mathcal{A}, \\
+& \sum_{k=1}^{8} \lambda_{ij,k}^s \gamma_1^k + (1-z_{ij})\underline{\boldsymbol{v}}_i
+\le v_i \le
+\sum_{k=1}^{8} \lambda_{ij,k}^s \gamma_1^k + (1-z_{ij})\overline{\boldsymbol{v}}_i
+&& \forall (i,j)\in\mathcal{A}, \\
+& \sum_{k=1}^{8} \lambda_{ij,k}^c \xi_2^k + (1-z_{ij})\underline{\boldsymbol{v}}_j
+\le v_j \le
+\sum_{k=1}^{8} \lambda_{ij,k}^c \xi_2^k + (1-z_{ij})\overline{\boldsymbol{v}}_j
+&& \forall (i,j)\in\mathcal{A}, \\
+& \sum_{k=1}^{8} \lambda_{ij,k}^s \gamma_2^k + (1-z_{ij})\underline{\boldsymbol{v}}_j
+\le v_j \le
+\sum_{k=1}^{8} \lambda_{ij,k}^s \gamma_2^k + (1-z_{ij})\overline{\boldsymbol{v}}_j
+&& \forall (i,j)\in\mathcal{A}, \\
+& c_{ij} = \sum_{k=1}^{8} \lambda_{ij,k}^c \xi_3^k,\qquad
+s_{ij} = \sum_{k=1}^{8} \lambda_{ij,k}^s \gamma_3^k
+&& \forall (i,j)\in\mathcal{A}, \\
+& \sum_{k=1}^{8} \lambda_{ij,k}^c = z_{ij},\qquad
+\sum_{k=1}^{8} \lambda_{ij,k}^s = z_{ij}
+&& \forall (i,j)\in\mathcal{A}, \\
+& \lambda_{ij,k}^c \ge 0,\qquad \lambda_{ij,k}^s \ge 0
+&& \forall (i,j)\in\mathcal{A},\ \forall k=1,\dots,8, \\
+&
+\begin{bmatrix}
+\lambda_{ij,1}^c+\lambda_{ij,2}^c-\lambda_{ij,1}^s-\lambda_{ij,2}^s \\
+\lambda_{ij,3}^c+\lambda_{ij,4}^c-\lambda_{ij,3}^s-\lambda_{ij,4}^s \\
+\lambda_{ij,5}^c+\lambda_{ij,6}^c-\lambda_{ij,5}^s-\lambda_{ij,6}^s \\
+\lambda_{ij,7}^c+\lambda_{ij,8}^c-\lambda_{ij,7}^s-\lambda_{ij,8}^s
+\end{bmatrix}^{\top}
+\begin{bmatrix}
+\underline{\boldsymbol{v}}_i\underline{\boldsymbol{v}}_j \\
+\underline{\boldsymbol{v}}_i\overline{\boldsymbol{v}}_j \\
+\overline{\boldsymbol{v}}_i\underline{\boldsymbol{v}}_j \\
+\overline{\boldsymbol{v}}_i\overline{\boldsymbol{v}}_j
+\end{bmatrix}
+= 0
+&& \forall (i,j)\in\mathcal{A}, \\
+& \tan(\underline{\boldsymbol{\theta}}_{ij}) w_{ij}^R \le w_{ij}^I \le \tan(\overline{\boldsymbol{\theta}}_{ij}) w_{ij}^R
+&& \forall (i,j)\in\mathcal{A}, \\
+& \boldsymbol{v}_i^\sigma \boldsymbol{v}_j^\sigma \bigl(\cos(\boldsymbol{\phi}_{ij}) w_{ij}^R + \sin(\boldsymbol{\phi}_{ij}) w_{ij}^I\bigr)
+- \overline{\boldsymbol{v}}_j \cos(\boldsymbol{\delta}_{ij}) \boldsymbol{v}_i^\sigma w_{ij}^z
+- \overline{\boldsymbol{v}}_i \cos(\boldsymbol{\delta}_{ij}) \boldsymbol{v}_j^\sigma w_{ji}^z \\
+& \qquad \ge
+\overline{\boldsymbol{v}}_i \overline{\boldsymbol{v}}_j \cos(\boldsymbol{\delta}_{ij})
+\bigl(\underline{\boldsymbol{v}}_i \underline{\boldsymbol{v}}_j - \overline{\boldsymbol{v}}_i \overline{\boldsymbol{v}}_j\bigr) z_{ij}
+&& \forall (i,j)\in\mathcal{A}, \\
+& \boldsymbol{v}_i^\sigma \boldsymbol{v}_j^\sigma \bigl(\cos(\boldsymbol{\phi}_{ij}) w_{ij}^R + \sin(\boldsymbol{\phi}_{ij}) w_{ij}^I\bigr)
+- \underline{\boldsymbol{v}}_j \cos(\boldsymbol{\delta}_{ij}) \boldsymbol{v}_i^\sigma w_{ij}^z
+- \underline{\boldsymbol{v}}_i \cos(\boldsymbol{\delta}_{ij}) \boldsymbol{v}_j^\sigma w_{ji}^z \\
+& \qquad \ge
+\underline{\boldsymbol{v}}_i \underline{\boldsymbol{v}}_j \cos(\boldsymbol{\delta}_{ij})
+\bigl(\overline{\boldsymbol{v}}_i \overline{\boldsymbol{v}}_j - \underline{\boldsymbol{v}}_i \underline{\boldsymbol{v}}_j\bigr) z_{ij}
+&& \forall (i,j)\in\mathcal{A}, \\
+& |S_{ij}|^2 \le \frac{w_i}{|\boldsymbol{T}_{ij}|^2} l_{ij}
+&& \forall (i,j)\in\mathcal{A}, \\
+& l_{ij} =
+|\boldsymbol{Y}_{ij}|^2
+\left(
+\frac{w_{ij}^z}{|\boldsymbol{T}_{ij}|^2} + w_{ji}^z
+- \frac{2(\boldsymbol{t}_{ij}^R w_{ij}^R + \boldsymbol{t}_{ij}^I w_{ij}^I)}{|\boldsymbol{T}_{ij}|^2}
+\right)
+- \frac{|\boldsymbol{Y}_{ij}^c|^2}{|\boldsymbol{T}_{ij}|^2} w_{ij}^z
++ 2(\boldsymbol{g}_{ij}^c p_{ij} - \boldsymbol{b}_{ij}^c q_{ij})
+&& \forall (i,j)\in\mathcal{A}, \\
+& 0 \le l_{ij} \le \overline l_{ij} z_{ij}
+&& \forall (i,j)\in\mathcal{A}.
+\end{aligned}
+\end{equation}
+
+
+\section{定义用于补充已保留的 QC 模型（2026-10-23）。}
+源PDF文件中的第6、8-10页以及第12页提供了以下定义：  
+在$\mathcal A$中，每条物理线路都出现一次；而$\mathcal A^R$仅提供其反向流表示。子集$\mathcal N^L$由零负载的叶节点组成，每个叶节点恰好有一条物理线路，用$a(i)$表示。在(11a)中的集合索引符号为$z_{a(i)}$。复杂的生成限制是逐组件应用的。
+\[
+ S_k^g=p_k^g+\mathrm{i}q_k^g,\qquad
+ S_{ij}=p_{ij}+\mathrm{i}q_{ij},\qquad
+ W_{ij}=w_{ij}^R+\mathrm{i}w_{ij}^I.
+\]
+变压器实/虚分量为$\boldsymbol t_{ij}^R,\boldsymbol t_{ij}^I$；  
+充电导纳分量则为$\boldsymbol g_{ij}^c,\boldsymbol b_{ij}^c$。  
+星号表示复数共轭。需要满足正电压下限条件，且变压器比率不能为零。此表达式使用严格位于$(-\pi/2,\pi/2)$内的非退化角度区间。  
+每行都写$a=\underline\theta_{ij}<b=\overline\theta_{ij}$。
+\[
+ \theta_{ij}^u=\max(|a|,|b|)>0,\qquad
+ \theta_{ij}^c=\frac{\cos b-\cos a}{b-a},\qquad
+ \theta_{ij}^s=\frac{\sin b-\sin a}{b-a}.
+\]
+正弦的上下限分别为$\sin a,\sin b$和$\min(\cos a,\cos b)$；余弦的上下限为1，当$a\le0\le b$为真时，否则为$\max(\cos a,\cos b)$。输入值$\theta^M$是一个给定的、有效的有限关闭状态角度范围，与保留的不等式中的定义一致。
+
+对于每一行，八个$\xi$点表示两个端点电压限制与余弦限制的组合；而八个$\gamma$点则使用正弦限制来表示。在$\xi,\gamma$上省略了下标，这些下标是隐含的。两个列表都按照电压从慢到快的顺序排列，同时以三角函数坐标作为最快的顺序：lower/lower/lower，lower/lower/upper，lower/upper/lower，lower/upper/upper，upper/lower/lower，upper/lower/upper，upper/upper/lower，upper/upper/upper。
+\[
+ \boldsymbol v_i^\sigma=\underline{\boldsymbol v}_i+\overline{\boldsymbol v}_i,
+ \quad\boldsymbol\phi_{ij}=\frac{a+b}{2},
+ \quad\boldsymbol\delta_{ij}=\frac{b-a}{2},
+ \quad\overline l_{ij}=\frac{|\boldsymbol T_{ij}|^2(\overline{\boldsymbol s}_{ij}^a)^2}
+ {\underline{\boldsymbol v}_i^2}.
+\]
+这些实例为线参数提供了这些值。
+
+\end{document}

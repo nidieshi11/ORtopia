@@ -1,0 +1,139 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+
+\title{核心可解数学模型}
+\author{Paper 9}
+\date{\today}
+
+\usepackage[UTF8]{ctex}
+\begin{document}
+
+\maketitle
+
+\section*{保留的核心模型}
+根据\texttt{【tex}公式以及PDF文件，所保留的核心数学模型就是原始的海啸灾难救援多阶段随机混合整数线性规划模型，该模型位于第22-23页。第4页的通用MSILP模型、第6页的部分扩展公式，以及后续的汇总/决策规则/分解公式则被省略了，因为它们都是基于原始核心问题而构建的重新表述或解决方法。
+
+\paragraph{决策变量。}
+在每个情景树节点$n$、$x_{nj}^{\mathrm I}$分别表示数据中心$j$的库存情况，
+$x_{nj}^{\mathrm c}$表示数据中心$j$的产能，$v_j$表示数据中心$j$的生产情况，
+$y_{ij}$表示从数据中心$j$到避难所$i$的运输数量，
+$w_i$表示避难所$i$的未满足需求，$z_{n\ell}\in\{0,1\}$表示应急模式的激活状态$\ell$。
+
+\paragraph{集合与参数。}
+$\mathcal I$是避难所集合，$\mathcal J$是配送中心集合，$\mathcal L$是突发事件模式集合。成本由$g_j$、$q_{nj}$、$f_{nij}$和$b_i$给出。$d_{ni}$是避难所$i$的需求量。容量增加量为$K_{j\ell}$。情景树转换概率为$\bar p_{nn'}$。
+
+\section*{根节点问题}
+\begin{equation}
+\min
+\sum_{j \in \mathcal J}
+\left(
+g_j x_{rj}^{\mathrm I} + q_{rj} v_j + \sum_{i \in \mathcal I} f_{rij} y_{ij}
+\right)
++
+\sum_{i \in \mathcal I} b_i w_i
++
+\sum_{\ell \in \mathcal L} z_{r\ell} c_\ell
++
+\sum_{n \in \mathcal C(r)} \bar p_{rn} Q_n(x_r, z_r)
+\tag{HDR}
+\end{equation}
+
+\begin{equation}
+\sum_{j \in \mathcal J} y_{ij} + w_i \ge d_{ri}
+\quad \forall i \in \mathcal I
+\tag{9a}
+\end{equation}
+
+\begin{equation}
+x_{rj}^{\mathrm I} = I_j - \sum_{i \in \mathcal I} y_{ij} + v_j
+\quad \forall j \in \mathcal J
+\tag{9b}
+\end{equation}
+
+\begin{equation}
+v_j \le x_{rj}^{\mathrm c}
+\quad \forall j \in \mathcal J
+\tag{9c}
+\end{equation}
+
+\begin{equation}
+x_{rj}^{\mathrm c} = C_j
+\quad \forall j \in \mathcal J
+\tag{9d}
+\end{equation}
+
+\begin{equation}
+\sum_{\ell \in \mathcal L} z_{r\ell} \le 1
+\tag{9e}
+\end{equation}
+
+\begin{equation}
+x_{rj}^{\mathrm I},\, x_{rj}^{\mathrm c},\, v_j,\, w_i,\, y_{ij} \ge 0,\qquad
+z_{r\ell} \in \{0,1\}
+\tag{9f}
+\end{equation}
+
+\section*{节点$n$处的求助问题}
+\begin{equation}
+Q_n(x_{a(n)}, z_{a(n)}) =
+\min
+\sum_{j \in \mathcal J}
+\left(
+g_j x_{nj}^{\mathrm I} + q_{nj} v_j + \sum_{i \in \mathcal I} f_{nij} y_{ij}
+\right)
++
+\sum_{i \in \mathcal I} b_i w_i
++
+\sum_{\ell \in \mathcal L} z_{n\ell} c_\ell
++
+\sum_{n' \in \mathcal C(n)} \bar p_{nn'} Q_{n'}(x_n, z_n)
+\tag{10-Obj}
+\end{equation}
+
+\begin{equation}
+\sum_{j \in \mathcal J} y_{ij} + w_i \ge d_{ni}
+\quad \forall i \in \mathcal I
+\tag{10a}
+\end{equation}
+
+\begin{equation}
+x_{nj}^{\mathrm I} = x_{a(n)j}^{\mathrm I} - \sum_{i \in \mathcal I} y_{ij} + v_j
+\quad \forall j \in \mathcal J
+\tag{10b}
+\end{equation}
+
+\begin{equation}
+v_j \le x_{nj}^{\mathrm c}
+\quad \forall j \in \mathcal J
+\tag{10c}
+\end{equation}
+
+\begin{equation}
+x_{nj}^{\mathrm c} = x_{a(n)j}^{\mathrm c} + \sum_{\ell \in \mathcal L} K_{j\ell} z_{a(n)\ell}
+\quad \forall j \in \mathcal J
+\tag{10d}
+\end{equation}
+
+\begin{equation}
+\sum_{\ell \in \mathcal L} z_{n\ell} \le 1
+\tag{10e}
+\end{equation}
+
+\begin{equation}
+z_{a(n)\ell} \le z_{n\ell}
+\quad \forall \ell \in \mathcal L
+\tag{10f}
+\end{equation}
+
+\begin{equation}
+x_{nj}^{\mathrm I},\, x_{nj}^{\mathrm c},\, v_j,\, w_i,\, y_{ij} \ge 0,\qquad
+z_{n\ell} \in \{0,1\}
+\tag{10g}
+\end{equation}
+
+\end{document}

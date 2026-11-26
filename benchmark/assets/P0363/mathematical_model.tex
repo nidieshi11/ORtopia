@@ -1,0 +1,53 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[UTF8]{ctex}
+\begin{document}
+\section*{电动车辆路线及时间依赖性的充电/放电决策}
+当前模型保留了所有原始的行和目标，并明确修复了物理能量守恒问题。旧模型和代码仍然被保留下来。  
+来源：local paper, pp.\ 4--5, Table 2 and (1)--(20)。  
+让$C,S$表示客户和充电站节点；$o=0,p$表示不同的出发/返回地点；$V=C\cup S\cup\{o,p\}$、$I=C\cup S\cup\{o\}$、$J=C\cup S\cup\{p\}$、$H=S\cup\{o,p\}$则分别表示其他相关元素。  
+车辆则表示为$k=1,\ldots,K$；充电时间则表示为$t=1,\ldots,|T|$；长度则表示为$\delta$；而$M=\delta|T|$则表示其他相关参数。输入参数包括行驶时间$t_{ij}$、服务时间$s_i$、配送时间$q_i$、窗口数量$[e_i,l_i]$、容量$Q$以及电池容量$B$，这些数值均以等效充电分钟为单位。行驶消耗$f_{ij}$分钟的充电时间。如果物理电池容量为$C_b$千瓦时，那么每周期的购买/销售成本分别为$P_t^{re}=\delta C_bp_t^b/B$和$P_t^{dis}=\delta C_bp_t^s/B$；而$P_{night}=C_bp_{night}/B$则表示其他相关参数。  
+当前输入中的所有时间/能量系数都使用这些单位来表示。
+
+变量包括二进制路线$x_{ijk}$、二进制充放电$r_{itk},d_{itk}$、到达时间$\tau_{ik}\ge0$、到达能量$0\le b_{ik}\le B$以及到达货物$0\le u_{ik}\le Q$。
+定义$E_{ik}=\delta\sum_t(r_{itk}-d_{itk})$为$i\in H$和零，用于客户。
+\begin{align*}
+\min\quad&
+\sum_{k,i\in H,t}(r_{itk}P_t^{re}-d_{itk}P_t^{dis})
++\sum_kP_{night}(B-b_{pk}-E_{pk}).
+\end{align*}
+\subsection*{所有路由、时间限制以及原始资源限制}
+\begin{align}
+\sum_{k,j\in J}x_{ijk}&=1 &&(i\in C),\\
+\sum_{i\in I}x_{ipk}&=1 &&(k),\\
+\sum_{j\in I}x_{jik}&=\sum_{j\in J}x_{ijk} &&(i\in C\cup S,k),\\
+\tau_{ik}+(t_{ij}+s_i)x_{ijk}-M(1-x_{ijk})&\le\tau_{jk}&&(i\in I,j\in J,k),\\
+t\delta(r_{itk}+d_{itk})+t_{ij}x_{ijk}-M(1-x_{ijk})&\le\tau_{jk}&&(i\in S\cup\{o\},j\in J,t,k),\\
+e_i\le\tau_{ik}&\le l_i&&(i\in V,k),\\
+b_{ok}&=B,\qquad u_{ok}=Q&&(k),\\
+b_{jk}&\le b_{ik}+E_{ik}-f_{ij}x_{ijk}+B(1-x_{ijk})&&(i\in I,j\in J,k),\\
+\delta\sum_t r_{itk}&\le B-b_{ik}&&(i\in H,k),\\
+\delta\sum_t d_{itk}&\le b_{ik}&&(i\in H,k),\\
+r_{itk}+d_{itk}&\le1&&(i\in H,t,k),\\
+\tau_{ik}-(t-1)\delta&\le M(1-d_{itk}-r_{itk})&&(i\in S\cup\{p\},t,k),\\
+u_{jk}&\le u_{ik}-q_ix_{ijk}+Q(1-x_{ijk})&&(i\in I,j\in J,k),\\
+b_{jk}&\le B\sum_{i\in I}x_{ijk}&&(j\in S,k).
+\end{align}
+即使总充电量和总放电限制可能比累积SOC限制更为严格，原有的限制条件仍然被保留。
+
+\subsection*{明确的物理完成状态}
+\begin{align}
+\sum_{j\in J}x_{ojk}&=1,\qquad x_{iik}=0&&(i\in C\cup S,k),\\
+v_{ik}:=\sum_{j\in I\setminus\{i\}}x_{jik}&\le1&&(i\in S,k),\\
+r_{itk}+d_{itk}&\le v_{ik}&&(i\in S,t,k),\\
+x_{ijk}=1&\Longrightarrow b_{jk}=b_{ik}+E_{ik}-f_{ij}&&(i\in I,j\in J,k),\\
+x_{ijk}=1&\Longrightarrow u_{jk}=u_{ik}-q_i&&(i\in I,j\in J,k),\\
+0\le b_{ik}+\delta\sum_{a=1}^{t}(r_{iak}-d_{iak})&\le B&&(i\in H,t,k),\\
+\tau_{ok}&=0&&(k).
+\end{align}
+这些指标等式严格强制执行条件状态更新。每个站点访问仅被车辆访问一次，这与每个节点/车辆对应一个到达状态变量是一致的。正的旅行/服务时间可以消除断开的循环；交付实例具有不同的非仓库坐标，并且每条这样的边都有正的旅行时间。对于未使用的车辆，仓库副本可以直接连接。
+
+源代码中将$b$和$u$称为剩余资源。其单边能量行可以在不造成物理消耗的情况下减少$b$的能量，从而允许超过实际容量进行充电。一个旧的三个车辆证书示例显示了这一错误。新的等式和每周期界限明确消除了这一错误；这指定了依赖于物理负载的能量消耗。货物等式消除了报告中的剩余负载值的歧义。完整的源代码目标和所有原始行仍然得到了验证。每个站点的充电可用性通过其能量和时间条件来表示，同时充电也是允许的。
+
+求解器使用的是 Gurobi 算法。每次输入的总时间限制为 3600 秒，其中包括初始可行路径的搜索时间。初始路径只是“温启动”过程而已。只有在经过原始行、新增行以及独立精确路径/能量重放检查之后，才接受时间限制条件。结果会记录当前的状态以及求解器所达到的界限。
+\end{document}

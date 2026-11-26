@@ -1,0 +1,257 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\usepackage[UTF8]{ctex}
+\begin{document}
+
+\section*{两步式混合自适应预测控制}
+
+\begin{equation}
+\operatorname*{Min}_{S(k)} J
+=\sum_{j=1}^{F}\left[
+\sum_{h=1}^{H(k+2)}p_h^{\Delta T(k+2)}(k+2)\cdot
+\left.C_j(k+2)\right|_{S_j(k),h}
+-\overbrace{C_j(k)}^{\text{known constant}}
+\right].
+\tag{15, final line}
+\end{equation}
+
+\paragraph{根据源端定义的路由和预测条件。}
+这些序列决策遵循以下插入和优先级条件，而其预测负载和离开时间则由(6)--(9)生成。论文中并未在(15)旁边单独列出代数主题块。关于其容量处理的方法，在解决方案程序中有所说明：对于容量不可行的序列，不会进行修复，而是会对其进行惩罚性评分。这里既没有提供一般的容量不等式，也没有提供该惩罚的公式；这些内容都不是在这里发明的。
+
+\section*{舰队、控制序列以及允许的插入内容}
+服务区域是一个具有$A$影响力的区域，其服务网络的长度为$D$。所使用的车辆组为$V$，其大小为$F$。服务请求以$\mu$的速率实时到达。车辆索引为$j\in V$，在公式中以$j=1,\ldots,F$的形式表示。在事件发生的瞬间$k$，已知的先前序列为$S(k-1)$，而路由决策则取决于此。
+\begin{equation}
+u(k)=S(k)=\{S_1(k),\ldots,S_j(k),\ldots,S_F(k)\}.
+\tag{3}
+\end{equation}
+对于每辆车来说，
+\[
+u_j(k)=S_j(k)
+=\bigl[s_j^1(k)\ \cdots\ s_j^i(k)\ \cdots\ s_j^{w_j(k)}(k)\bigr]^T,
+\]
+其中，$s_j^i(k)$表示第$i$个停靠点，而$w_j(k)$则是停靠点的数量。该序列的详细表示方式如下：
+\begin{equation}
+S_j(k)=
+\begin{bmatrix}
+r_j^1(k)&1-r_j^1(k)&\Gamma_j^1(k)&\mathrm{label}_j^1(k)\\
+\vdots&\vdots&\vdots&\vdots\\
+r_j^i(k)&1-r_j^i(k)&\Gamma_j^i(k)&\mathrm{label}_j^i(k)\\
+\vdots&\vdots&\vdots&\vdots\\
+r_j^{w_j(k)}(k)&1-r_j^{w_j(k)}(k)&\Gamma_j^{w_j(k)}(k)&\mathrm{label}_j^{w_j(k)}(k)
+\end{bmatrix}_{w_j(k)\times4}.
+\tag{7}
+\end{equation}
+对于$i=1,\ldots,w_j(k)$，
+\[
+r_j^i(k)=
+\begin{cases}
+1,&\text{if stop $i$ belonging to $S_j(k)$ is a pickup},\\
+0,&\text{otherwise}.
+\end{cases}
+\]
+前两列数据分别记录了由$[1\ 0]$进行的取货和由$[0\ 1]$进行的送货情况。外部运输时间$\Gamma_j^i(k)$指的是从点$i-1$到点$i$的总运输时间，再加上在节点$i$处的转运操作延迟时间。乘客标识符$\mathrm{label}_j^i(k)$用于判断取货和送货的顺序：取货必须在为同一客户送货之前完成。该模型中并未指定具体的运输时间函数。假设车辆以恒定速度行驶，这只是用于模拟的假设，并非此处额外施加的约束条件。
+
+所选的插入设计不会更换之前已安排的站点。新的请求在车辆接收顺序中增加了一次接送和一次交付。论文中描述的矩阵包含之前已安排的$w_j(k-1)$行，以及新增的两行。插入位置用以下方式表示：
+\[
+\vartheta=(pu,de),
+\qquad
+pu\in\{1,\ldots,w_j(k)-1\},
+\qquad
+de\in\{2,\ldots,w_j(k)\},
+\qquad pu<de.
+\]
+这里的$pu$和$de$是整数行位置，而不是求解器所使用的连续粒子。新序列中的第$pu$行和第$de$行分别对应于接收和发送传入请求的操作。这些条件适用于当前呼叫的插入操作，也适用于将每个预测的呼叫插入到相应的未来序列中。论文中的程序中有明确的可行对测试。
+\[
+\text{If }pu_l<de_l,\quad\text{then }\vartheta_l=(pu_l,de_l).
+\]
+最后一个来源关系中的下标$l$表示候选插入项；它不是乘客或车辆的索引。粒子生成、四舍五入、修复以及粒子运动方程都是求解器操作，而不是(15)中的额外约束条件。
+
+车辆按照$S(k-1)$的顺序行驶，直到新的呼叫触发路由决策。选定的$S_j(k)$在$(k,k+1)$期间保持不变，除非到达预定的取货或送货点，从而完成一次停靠。源描述中提到，当第一个序列行的任务完成时，该行会被删除。因此，插入新的序列行会使序列和状态维度发生变化，而完成的服务任务会减少这些维度。这种两行扩展的方式涉及到接收新请求的车辆，而不是将新请求分配给每一辆车。
+
+\section*{状态变量与预测性动态}
+在时刻$k$时，状态指的是$S(k-1)$，此时还没有插入新的调用。$L_j^i(k)$和$T_j^i(k)$分别是指车辆$j$离开停靠点$i$后的载货量和出发时间，这些数值都是在时刻$k$时计算得出的。以零为索引的 quantities 指的是当前车辆的位置，如图2所示。对于每一个$j\in V$，
+\begin{equation}
+L_j(k)=
+\bigl[L_j^0(k)\ L_j^1(k)\ \cdots\ L_j^{w_j(k-1)}(k)\bigr]^T_{(w_j(k-1)+1)\times1},
+\tag{4}
+\end{equation}
+\begin{equation}
+T_j(k)=
+\bigl[T_j^0(k)\ T_j^1(k)\ \cdots\ T_j^{w_j(k-1)}(k)\bigr]^T_{(w_j(k-1)+1)\times1}.
+\tag{5}
+\end{equation}
+系统范围内的集合和变量角色是
+\[
+\begin{aligned}
+L(k)&=\{L_1(k),\ldots,L_j(k),\ldots,L_F(k)\},\\
+T(k)&=\{T_1(k),\ldots,T_j(k),\ldots,T_F(k)\},\\
+x(k)&=\{L(k),T(k)\},\qquad y(k)=T(k),\qquad u(k)=S(k).
+\end{aligned}
+\]
+出发时间属于连续状态变量；而乘客数量则属于离散变量。在预测中，随机产生的乘客数量和出发时间被它们的条件期望值所替代，而不是通过额外自由选择的决策来替代。
+\begin{equation}
+\begin{aligned}
+\hat{x}_j(k+1)
+&=\begin{bmatrix}
+E\{L_j(k+1)/k\}\\ E\{T_j(k+1)/k\}
+\end{bmatrix}
+=\begin{bmatrix}\hat{L}_j(k+1)\\\widehat{T}_j(k+1)\end{bmatrix}\\
+&=\begin{bmatrix}
+f_L(L_j(k),S_j(k))\\
+f_T(T_j(k),S_j(k))
+\end{bmatrix},\qquad \forall j=1,\ldots,F.
+\end{aligned}
+\tag{6}
+\end{equation}
+$E\{\cdot/k\}$中的斜杠保留了该论文中的条件期望表示法。预测模型是
+\begin{equation}
+\hat{L}_j(k+1)=f_L(L_j(k),S_j(k))
+=A_LL_j(k)+B_L(S_j(k)),
+\tag{8}
+\end{equation}
+具有以下完整的矩阵：
+\[
+B_L(S_j(k))=B_L^2\cdot(S_j(k)\cdot B_L^1),
+\]
+\[
+A_L=
+\begin{bmatrix}
+1&0&\cdots&0\\
+1&0&\cdots&0\\
+\vdots&\vdots&\ddots&\vdots\\
+1&0&\cdots&0
+\end{bmatrix}_{(w_j(k)+1)\times(w_j(k-1)+1)},
+\qquad
+B_L^1=\begin{bmatrix}1\\-1\\0\\0\end{bmatrix},
+\]
+\[
+B_L^2=
+\begin{bmatrix}
+0&0&0&\cdots&0&0\\
+1&0&0&\cdots&0&0\\
+1&1&0&\cdots&0&0\\
+1&1&1&\ddots&\vdots&\vdots\\
+\vdots&\vdots&\vdots&\ddots&0&0\\
+\vdots&\vdots&\vdots&&1&0\\
+1&1&1&\cdots&1&1
+\end{bmatrix}_{(w_j(k)+1)\times w_j(k)}.
+\]
+出发时间模型是
+\begin{equation}
+\widehat{T}_j(k+1)=f_T(T_j(k),S_j(k))
+=A_T\cdot T_j(k)+B_T(S_j(k)),
+\tag{9}
+\end{equation}
+其中
+\[
+B_T(S_j(k))=B_T^2\cdot(S_j(k)\cdot B_T^1),
+\]
+\[
+A_T=
+\begin{bmatrix}
+1&0&\cdots&0\\
+1&0&\cdots&0\\
+\vdots&\vdots&\ddots&\vdots\\
+1&0&\cdots&0
+\end{bmatrix}_{(w_j(k)+1)\times(w_j(k-1)+1)},
+\qquad
+B_T^1=\begin{bmatrix}0\\0\\1\\0\end{bmatrix},
+\]
+\[
+B_T^2=
+\begin{bmatrix}
+0&0&0&\cdots&0&0\\
+1&0&0&\cdots&0&0\\
+1&1&0&\cdots&0&0\\
+1&1&1&\ddots&\vdots&\vdots\\
+\vdots&\vdots&\vdots&\ddots&0&0\\
+\vdots&\vdots&\vdots&&1&0\\
+1&1&1&\cdots&1&1
+\end{bmatrix}_{(w_j(k)+1)\times w_j(k)}.
+\]
+这些矩阵用于每种车辆，每种车辆的序列长度都是独立的。随着停靠点的插入或完成，这些矩阵的大小也会相应调整。在第二个预测步骤中，仍然使用相同的预测模型来预测未来的序列。对于在呼叫之间推进当前位置量值的问题，没有提供额外的事件时间转换公式。
+
+\section*{车辆成本以及选定的两步时间范围}
+所选的预测范围为$N=2$。控制器会计算当前及未来的决策结果，并仅应用$S(k)$这一决策规则，同时遵循“后退视界”原则。未来的决策结果$S_j(k+1)$取决于预测的请求$h$以及之前的决策结果$S_j(k)$；成本表达式中的条件符则保留了这种依赖性，而无需重新命名源变量。
+
+从父目标继承来的“车辆成本”定义是：
+\begin{equation}
+\begin{aligned}
+\left.C_j(k+t)\right|_{S_j(k+t-2),h}
+={}&\sum_{i=1}^{w_j(k+t-1)}\Bigl\{
+\underbrace{[\hat{L}_j^{i-1}(k+t)+1]
+\bigl(\widehat{T}_j^i(k+t)-\widehat{T}_j^{i-1}(k+t)\bigr)}_{J_{\mathrm{travel\ time}}}\\
+&\hspace{16mm}+\underbrace{r_j^i(k+t-1)\alpha
+\bigl(\widehat{T}_j^i(k+t)-T_j^0(k+t)\bigr)}_{J_{\mathrm{waiting\ time}}}
+\Bigr\}\biggr|_{S_j(k+t-2),h}.
+\end{aligned}
+\tag{11}
+\end{equation}
+这里$j=1,\ldots,F$，对于选定的时间范围$t=1,2$和$h=1,\ldots,H(k+t)$也是如此。打印出来的第二步专业化内容如下：
+\begin{equation}
+\begin{aligned}
+\left.C_j(k+2)\right|_{S_j(k),h}
+={}&\sum_{i=1}^{w_j(k+1)}\Bigl\{
+\underbrace{[\hat{L}_j^{i-1}(k+2)+1]
+\bigl(\widehat{T}_j^i(k+2)-\widehat{T}_j^{i-1}(k+2)\bigr)}_{J_{\mathrm{travel\ time}}}\\
+&\hspace{16mm}+\underbrace{r_j^i(k+1)\alpha
+\bigl(\widehat{T}_j^i(k+2)-T_j^0(k+2)\bigr)}_{J_{\mathrm{waiting\ time}}}
+\Bigr\}\biggr|_{S_j(k),h}.
+\end{aligned}
+\tag{16}
+\end{equation}
+预期的负载$\hat{L}_j^{i-1}(k+t)$指的是在$(i-1,i)$这段路线上乘客所承受的负载。连续预期出发时间的差异包括了在该路段上的行驶时间以及经过节点$i$时的换乘延迟时间。在行驶时间项中增加的$1$代表了司机的成本，同时也作为运营成本的代理指标，包括空驶时间在内。等待时间的差异是从当前位置时间$T_j^0(k+t)$开始计算的，该时间会被直接打印出来，而不需要加上任何符号。系数$\alpha$用于衡量等待时间；不过，一般性的公式并没有给出具体的数值或符号限制。在这里，并没有对模拟选择$\alpha=1$进行任何规定。
+
+\section*{请求概率和预测时间}
+该事件步骤的持续时间是可变的：它指的是连续两次调用之间的时间间隔。源代码中将$k+t$定义为$t$次请求进入的时刻，该时刻是从时间间隔$k$开始计算的。符号$\Delta T(k+t)$则表示事件步骤$k+t$所属的时间间隔；它并不是车辆出发时间向量的代数差。
+
+$H(k+t)$表示在那一刻可能发生的请求类型的数量。类型$h$则代表一个源节点到目标节点的集群对。
+\[
+h\in\{1,\ldots,H(k+t)\}.
+\]
+当前的新请求已经明确。在(15)中使用的第一步和第二步的概率条件为：
+\[
+H(k+1)=1,\qquad p_1^{\Delta T(k+1)}(k+1)=1,
+\qquad
+\sum_{h=1}^{H(k+2)}p_h^{\Delta T(k+2)}(k+2)=1.
+\]
+对于本文中使用的历史数据版本，研究区域被划分为多个集群。呼叫中心是指在特定时间段和特定区域内，最有可能发生呼叫的地理位置。概率的构建方式如下：
+\begin{equation}
+p_h^{\Delta T(k+t)}
+=\frac{N_h^{\Delta T(k+t)}}{\displaystyle\sum_{g=1}^{H(k+t)}N_g^{\Delta T(k+t)}}.
+\tag{12}
+\end{equation}
+这里的$N_h^{\Delta T(k+t)}$是指在指定时间段内，源-目的地集群对$h$的旅行请求总数。这些数字是固定不变的，并非预测范围$N$内的变化。数据来源也明确说明了这一点。
+\[
+\sum_{h=1}^{H(k+t)}p_h^{\Delta T(k+t)}=1.
+\]
+方程（15）中，这些概率参数被附加了一个事件参数$p_h^{\Delta T(k+t)}(k+t)$；而方程（12）则省略了这个参数。该参数在需要使用的位置仍然保留。对于方程（12），没有使用零分母的约定。
+
+两步预测时间参数的值为$\tau$。从物理意义上讲，它代表了预测请求发生的预期时间。但作者强调，这个参数实际上是最重要的时刻，可以用来优化路由方案。它是一个通过灵敏度分析来校准的连续调整参数，而不是(15)中所描述的路由决策。没有通用的数值、界限或方程式将$\tau$与$T_j^0$联系起来。这些特定于示例的校准值和需求分布并不属于这一通用公式的约束条件。
+
+\section*{打印出的目标链存在不一致的情况。}
+为了参考所选目标的推导过程，父级增量成本表达式为：
+\begin{equation}
+\operatorname*{Min}_{S(k)}J
+=\sum_{t=1}^{N}\sum_{j=1}^{F}\sum_{h=1}^{H(k+t)}
+p_h^{\Delta T(k+t)}
+\left(\left.\bigl(C_j(k+t)-C_j(k+t-1)\bigr)
+\right|_{S_j(k+t-2),h}\right),
+\qquad N=2\text{ here}.
+\tag{10}
+\end{equation}
+不过，原始页面图片中的(15)行内容显示的是这样的表达式：
+\[
+\sum_{t=1}^{2}\sum_{j=1}^{F}\sum_{h=1}^{H(k+t)}
+p_h^{\Delta T(k+t)}(k+t)\cdot
+\left.\bigl(C_j(k+t)-C_j(k+t+1)\bigr)
+\right|_{S_j(k+t-2),h}.
+\]
+打印的$k+t+1$与(10)以及后续的(15)展开式相矛盾。后者的展开式减去了$C_j(k)$，利用第二步概率之和为一来抵消第一步的成本，最终得到本文开头所选定的目标。这条冲突的第一行仅被记录为源数据不一致；它并非额外的目标或约束条件。
+
+\paragraph{重建的范围。}
+上述操作公式来源于Cort\'es、S\'aez、N\'u\~nez以及Mu\~noz-Carpintero、\emph{Hybrid Adaptive Predictive Control for a Dynamic Pickup and Delivery Problem}等文献。这些文献发表于《Transportation Science》43(1), 27--42 (2009)期刊上，具体参见物理部分的第4--8页，以及第9--11页关于可行性分析的讨论。提供的原始文件包括(11)、(12)、(16)页，以及(8)--(9)页中的完整矩阵；这些都不是不可用的依赖关系。不过，该文献并未提供该模型的完全代数式容量可行性或事件时间推进规范。在重新构建过程中，也没有提供任何缺失的不等式、惩罚项、行驶时间规则、边界约定或转换规则。此外，也没有提供任何官方补充材料；所有补充规范都尚未得到验证。
+
+\end{document}

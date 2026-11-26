@@ -1,0 +1,43 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,geometry}
+\geometry{margin=25mm}
+\usepackage[UTF8]{ctex}
+\begin{document}
+\section*{核心模型：多趟VRPTW算法，包含卸载队列功能}
+来源：第3.1节，PDF第3-4页，以及第3.4节，PDF第7页，
+SPM（44）-（48）。这是完整的整数旅行商问题表述，涵盖所有可行的列集合。
+\paragraph{物理数据。}
+$N=\{1,\ldots,n\}$是集合客户，$0$是仓库。
+客户$i$的需求为$q_i>0$，服务持续时间为$s_i$，服务开始窗口为$[e_i,l_i]$。车辆容量为$Q$，车队规模为$m$，运营时长为$[0,T]$。设$c_{ij}$为距离，$t_{ij}$为行驶时间\emph{，包括原地的服务时间}；因此$t_{ij}=s_i+\text{driving time}_{ij}$和$s_0=0$。
+仓库卸货时间窗为$u=1,\ldots,P$，长度为$L$，从$S_u=(u-1)L$开始；$S_{P+1}=T$。$C$是同时可卸货的位置数量，可用于同时卸货。卸货$q$单位需要$\delta q$时间，并占用完整的卸货时间窗。
+\paragraph{请完整填写“trip domain”部分的内容。}
+$R$是所有可行的\emph{单程}行程的集合。一次行程$r$指的是一个由不同客户组成的有序序列$(0,i_1,\ldots,i_k,0)$，包括出发时间$a_r\ge0$、服务开始时间$b_{r,i_j}$、返回时间$d_r$，以及连续的卸货时间$u_r,\ldots,v_r$。它具体发生在$R$时刻。
+\begin{align*}
+&k\ge1,\quad \sum_{j=1}^kq_{i_j}\le Q,\quad
+ b_{r,i_1}\ge a_r+t_{0i_1},\\
+&b_{r,i_{j+1}}\ge b_{r,i_j}+t_{i_ji_{j+1}}\quad(j<k),\qquad
+ e_{i_j}\le b_{r,i_j}\le l_{i_j}\quad(j=1,\ldots,k),\\
+&d_r=b_{r,i_k}+t_{i_k0},\qquad d_r\le S_{u_r},\qquad
+ 1\le u_r\le v_r\le P,\\
+&\delta\sum_{j=1}^kq_{i_j}\le S_{v_r+1}-S_{u_r},\qquad
+ f_r:=S_{v_r+1}\le T.
+\end{align*}
+卸载预约由连续的满舱位组成；通常就是$v_r-u_r+1=\lceil\delta\sum_jq_{i_j}/L\rceil$。较长的预约会被优先处理，且可以保留下来，而无需提高最小距离的目标。如果最后一个舱位被截断为$T$，那么显示的持续时间差异将确保各个被占用的舱位都有足够的卸载时间。整个行程会持续在$[a_r,f_r)$这个舱位上，包括旅行、排队等待以及卸载过程。所有这些数量都是某一列的属性。行程的大小则受到容量和时间限制的影响。
+\paragraph{列系数。}
+设$\alpha_{ir}=1$当且仅当$i$出现在$r$上，
+$\pi_{tr}=\mathbf1\{a_r\le t<f_r\}$和
+$\gamma_{ur}=\mathbf1\{u_r\le u\le v_r\}$。
+\[
+ c_r=c_{0i_1}+\sum_{j=1}^{k-1}c_{i_ji_{j+1}}+c_{i_k0}.
+\]
+因此，成本就是行驶距离。边界时间采用半开放占用模式，这样车辆就可以在之前的卸货预约结束后立即开始新的行程。
+\paragraph{一个完整整数模型。}
+\begin{align}
+\min_{\theta}\quad &\sum_{r\in R}c_r\theta_r,\tag{44}\\
+\text{s.t.}\quad &\sum_{r\in R}\alpha_{ir}\theta_r=1 &&i\in N,\tag{45}\\
+&\sum_{r\in R}\pi_{tr}\theta_r\le m &&t\in[0,T],\tag{46}\\
+&\sum_{r\in R}\gamma_{ur}\theta_r\le C &&u=1,\ldots,P,\tag{47}\\
+&\theta_r\in\{0,1\} &&r\in R.\tag{48}
+\end{align}
+可以将选定的旅行区间分配给与$m$相同的车辆，前提是这些区间不会重叠，只要满足(46)条件即可。对于有限列表示法，只需检查由其端点引起的所有事件区间是否满足(46)条件即可。AF1、AF2、连续的主问题以及定价子问题被排除在外。
+\end{document}

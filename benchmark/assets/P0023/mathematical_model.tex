@@ -1,0 +1,116 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\allowdisplaybreaks
+
+\geometry{a4paper, margin=1in}
+
+\title{核心可解数学模型}
+\author{}
+\date{}
+
+\usepackage[UTF8]{ctex}
+\begin{document}
+
+\maketitle
+
+请将数学符号如\(k\)按原顺序原样保留下来。所有数字也保持不变。
+
+该文件保留了针对具有等待时间保证的鲁棒预约调度问题的单周期混合整数线性变体模型。单周期结构详见附录B。PDF中的最大递归关系被转换为等效的大\(M\)线性形式，这样保留的模型可以直接作为MILP问题进行求解。其中\(M\)被视为足够大的有效上限，从而保持模型的等价性，同时不会过于宽松。
+
+
+\section*{索引和输入约定（于 2026-10-23 调整）}
+对于整数$r$、$[r]=\{1,\ldots,r\}$以及$[0]=\varnothing$，所有反向的求和范围均为空。输入满足$n\ge1$、$0\le k\le n$、$L\ge0$、$M>0$、$c_i,c_o,\bar p_j,W_j\ge0$的条件。所保留的有限模型$M$在其所有表达式中都使用了提供的单一服务持续时间向量$\bar p$；持续时间输入即为提供的向量$\bar p$。断点约束中的有限阈值$1/M$被明确保留下来。对于早期标签，零出席率适用于该标签之前的职位。这修正了附录B中打印出的不一致范围（第66页），并参考了PDF第47页的说明。断点变量被定义为实际计划中的位置$i\in[n]$以及断点$l\in[n+1]$。对$i=n+1$的额外引用被移除；因为它没有其他链接，可以等效地用零来替代。所有其他比较不等式及其符号都按原样保留下来。
+
+\section{一般 RASWTG MILP}
+
+\begin{equation}
+\min \quad U
+\tag{58}
+\end{equation}
+
+\begin{align*}
+\text{s.t.}\quad
+& U \ge \sum_{i=2}^{i^*} c_i \Delta_{i^* i} + c_o \sigma_{i^*}
+&& \forall i^* \in [n+1], \\
+& \Delta_{i^* i} \ge A_i - \bar C_{i^*,i-1}
+&& \forall i^* \in [n+1],\ \forall i \in [n+1], \\
+& \bar C_{i^* i} \ge A_i + \sum_{j=1}^{n} \lambda_{i^* i j}\bar p_j
+&& \forall i^* \in [n+1],\ \forall i \in [n], \\
+& \bar C_{i^* i} \ge \bar C_{i^*,i-1} + \sum_{j=1}^{n} \lambda_{i^* i j}\bar p_j
+&& \forall i^* \in [n+1],\ \forall i \in [n], \\
+& \bar C_{i^* i} \le A_i + \sum_{j=1}^{n} \lambda_{i^* i j}\bar p_j + M z_{i^* i}
+&& \forall i^* \in [n+1],\ \forall i \in [n], \\
+& \bar C_{i^* i} \le \bar C_{i^*,i-1} + \sum_{j=1}^{n} \lambda_{i^* i j}\bar p_j + M(1-z_{i^* i})
+&& \forall i^* \in [n+1],\ \forall i \in [n], \\
+& \sigma_{i^*} \ge A_{i^*} + \sum_{k=i^*}^{n} \sum_{j=1}^{n} \lambda_{i^* k j}\bar p_j - L
+&& \forall i^* \in [n], \\
+& \lambda_{i^* i j} \le \pi_{ij}
+&& \forall i^* \in [n+1],\ \forall i,j \in [n], \\
+& \sum_{i=1}^{n} \sum_{j=1}^{n} \lambda_{i^* i j} = k
+&& \forall i^* \in [n+1], \\
+& \sum_{j=1}^{n} \lambda_{i^* i j} = 1
+&& \forall i^* \in [n+1-k,n+1],\ \forall i \in [i^*,n], \\
+& \sum_{j=1}^{n} \lambda_{i^* i j} = 0
+&& \forall i^* \in [n-k],\ \forall i \in [i^*-1], \\
+& \sum_{i=1}^{n} \lambda_{i^* i j_2} - \sum_{i=1}^{n} \lambda_{i^* i j_1} \le w_{i^* j_1 j_2}
+&& \forall i^* \in [n+1],\ \forall j_1,j_2 \in [n], \\
+& w_{i^* j_1 j_2} \le 1-\sum_{i=1}^{n} \lambda_{i^* i j_1}
+&& \forall i^* \in [n+1],\ \forall j_1,j_2 \in [n], \\
+& w_{i^* j_1 j_2} \le \sum_{i=1}^{n} \lambda_{i^* i j_2}
+&& \forall i^* \in [n+1],\ \forall j_1,j_2 \in [n], \\
+& \sum_{l=1}^{n+1} c_l \left(\pi^{(c)}_{i^* j_2 l}\bar p_{j_2} - \pi^{(c)}_{i^* j_1 l}\bar p_{j_1}\right)
+\le M(1-w_{i^* j_1 j_2})
+&& \forall i^* \in [n+1-k,n+1],\ \forall j_1,j_2 \in [n], \\
+& \bar p_{j_2} - \bar p_{j_1} \le M(1-w_{i^* j_1 j_2})
+&& \forall i^* \in [n-k],\ \forall j_1,j_2 \in [n], \\
+& \gamma_{i l}^{(i^*)} \le M \Delta_{i^* l}
+&& \forall i^* \in [n+1],\ \forall i \in [n],\ \forall l \in [n], \\
+& \sum_{\alpha=i}^{l-1} \Delta_{i^* \alpha} \le L\left(1-\gamma_{i l}^{(i^*)}\right)
+&& \forall i^* \in [n+1],\ \forall i \in [n],\ \forall l \in [n], \\
+& \sum_{l=1}^{i-1} \gamma_{i l}^{(i^*)} = 0
+&& \forall i^* \in [n+1],\ \forall i \in [n], \\
+& \sum_{l=i}^{n+1} \gamma_{i l}^{(i^*)} = 1
+&& \forall i^* \in [n+1],\ \forall i \in [n], \\
+& -1 + \pi_{ij} + \gamma_{i l}^{(i^*)} \le \pi^{(c)}_{i^* j l}
+&& \forall i^* \in [n+1],\ \forall i,j \in [n],\ \forall l \in [n+1], \\
+& A_l + \sum_{k=l}^{i-1} \sum_{j=1}^{n} \pi_{k j}\bar p_j - A_i
+\le \sum_{j=1}^{n} \pi_{ij} W_j
+&& \forall i \in [n],\ \forall l \in [i-1]: i-l \le k-1, \\
+& A_l + (k-1)\alpha_{i,l} + \sum_{\sigma=l}^{i-1} p_{i l \sigma} - A_i
+\le \sum_{j=1}^{n} \pi_{ij} W_j
+&& \forall i \in [n],\ \forall l \in [i-1]: i-l > k-1, \\
+& \alpha_{i,l} + p_{i l \sigma} \ge \sum_{j=1}^{n} \pi_{\sigma j}\bar p_j
+&& \forall i,l,\sigma \in [n], \\
+& \sum_{j=1}^{n} \pi_{ij} = 1
+&& \forall i \in [n], \\
+& \sum_{i=1}^{n} \pi_{ij} = 1
+&& \forall j \in [n], \\
+& \sum_{l=1}^{n+1} \pi^{(c)}_{i^* j l} = 1
+&& \forall i^* \in [n+1],\ \forall j \in [n], \\
+& A_1 = 0,\quad \bar C_{i^* 0} = 0,\quad A_{n+1} = L
+&& \forall i^* \in [n+1], \\
+& A_i \ge 0
+&& \forall i \in [n+1], \\
+& \bar C_{i^* i} \ge 0
+&& \forall i^* \in [n+1],\ \forall i \in [n], \\
+& \Delta_{i^* i} \ge 0
+&& \forall i^* \in [n+1],\ \forall i \in [n+1], \\
+& \sigma_{i^*} \ge 0
+&& \forall i^* \in [n+1], \\
+& \alpha_{i,l},\ p_{i l \sigma} \ge 0
+&& \forall i,l,\sigma \in [n], \\
+& \pi_{ij} \in \{0,1\}
+&& \forall i,j \in [n], \\
+& \lambda_{i^* i j},\ w_{i^* j_1 j_2} \in \{0,1\}
+&& \forall i^* \in [n+1],\ \forall i,j,j_1,j_2 \in [n], \\
+& \pi^{(c)}_{i^* j l} \in \{0,1\}
+&& \forall i^* \in [n+1],\ \forall j \in [n],\ \forall l \in [n+1], \\
+& \gamma_{i l}^{(i^*)} \in \{0,1\}
+&& \forall i^* \in [n+1],\ \forall i \in [n],\ \forall l \in [n+1], \\
+& z_{i^* i} \in \{0,1\}
+&& \forall i^* \in [n+1],\ \forall i \in [n].
+\end{align*}
+
+\end{document}

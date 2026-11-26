@@ -1,0 +1,282 @@
+\documentclass[10pt]{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=0.7in]{geometry}
+\allowdisplaybreaks
+\usepackage[UTF8]{ctex}
+\begin{document}
+
+\section*{集成化的卡车与无人机路由及等待时间模型}
+\begin{equation}
+\begin{aligned}
+\min\quad &c\sum_{k\in K}\sum_{(i,j)\in A}r_{ij}(x_{ij}^k+y_{ij}^k)
++\hat c\left(\sum_{k\in K}\sum_{(i,j)\in A}\hat y_{ij}^k\frac{\hat r_{ij}}{\hat v}
++\sum_{k\in K}\sum_{i\in N_d}\hat s_i z_i^k\right)
++c^0\sum_{k\in K}u^k\\
+&+\frac{1}{|\Xi|}\sum_{\xi\in\Xi}\left(\sum_{i\in N_c}(c^e\delta_i^{-,\xi}+c^l\delta_i^{+,\xi})+\sum_{k\in K}c^k\delta^{k,\xi}\right).
+\end{aligned}\tag{21}
+\end{equation}
+\noindent 在遵守 (2)--(8)、(10)--(12) 以及 (14)--(20) 的条件下，保留 $\forall\xi\in\Xi$ 及其下方的扩展内容，同时保留继承下来的变量域。第一阶段中的变量是适用于所有情景的通用变量。如 (21) 所述，(9a)--(9b) 是多余的，因此在此不再赘述。
+
+\subsection*{路由、服务与部署：(2)–(8)}
+\begin{align}
+\sum_{i\in N_e}(x_{0i}^k+y_{0i}^k)
+&=\sum_{i\in N_s}(x_{i,n+1}^k+y_{i,n+1}^k)=1,
+&&k\in K.\tag{2a}\\
+\sum_{i\in N_e}(x_{0i}^k+\hat y_{0i}^k)
+&=\sum_{i\in N_s}(x_{i,n+1}^k+\hat y_{i,n+1}^k)=1,
+&&k\in K.\tag{2b}\\
+\sum_{\substack{i\in N_s\\(i,j)\in A}}(x_{ij}^k+y_{ij}^k)
+&=\sum_{\substack{i\in N_e\\(j,i)\in A}}(x_{ji}^k+y_{ji}^k),
+&&j\in N_c,\ k\in K.\tag{3a}\\
+\sum_{\substack{i\in N_s\\(i,j)\in A}}(x_{ij}^k+\hat y_{ij}^k)
+&=\sum_{\substack{i\in N_e\\(j,i)\in A}}(x_{ji}^k+\hat y_{ji}^k),
+&&j\in N_c,\ k\in K.\tag{3b}\\
+2*z_i^k&\leq\sum_{\substack{j\in N_s\\(j,i)\in A}}\hat y_{ji}^k+\sum_{\substack{j\in N_e\\(i,j)\in A}}\hat y_{ij}^k,
+&&i\in N_d,\ k\in K.\tag{4}\\
+\sum_{k\in K}\sum_{\substack{i\in N_s\\(i,j)\in A}}(x_{ij}^k+y_{ij}^k)+\sum_{k\in K}z_j^k&=1,
+&&j\in N_c.\tag{5a}\\
+\sum_{k\in K}\sum_{\substack{i\in N_s\\(i,j)\in A}}(x_{ij}^k+y_{ij}^k)&=1,
+&&j\in N_c\setminus N_d.\tag{5b}\\
+\sum_{\substack{j\in N_e\\(i,j)\in A}}\hat y_{ij}^k-z_i^k&\leq\sum_{\substack{j\in N_e\\(i,j)\in A}}y_{ij}^k,
+&&i\in N_c,\ k\in K.\tag{6a}\\
+\sum_{\substack{j\in N_s\\(j,i)\in A}}\hat y_{ji}^k-z_i^k&\leq\sum_{\substack{j\in N_s\\(j,i)\in A}}y_{ji}^k,
+&&i\in N_c,\ k\in K.\tag{6b}\\
+\sum_{k\in K}\sum_{\substack{j\in N_e\\(i,j)\in A}}\hat y_{ij}^k&\leq1,
+&&i\in N_c.\tag{7a}\\
+\sum_{k\in K}\sum_{\substack{j\in N_s\\(j,i)\in A}}\hat y_{ji}^k&\leq1,
+&&i\in N_c.\tag{7b}\\
+\sum_{j\in N_s}\sum_{\substack{i\in N_c\\(j,i)\in A}}(x_{ji}^k+y_{ji}^k)+\sum_{i\in N_d}z_i^k&\leq n\cdot u^k,
+&&k\in K.\tag{8}
+\end{align}
+\noindent\emph{在(7b)中选择的来源范围。}
+第7页打印外部$j\in N_c$，再次将总和 dummy 绑定在一起，并留下$i$自由。第8页描述了每个客户的到达限制，支持外部$i\in N_c$。这是注释修正，而非逐字转录。
+
+\subsection*{容量、有效载荷以及耐久性：(10)–(12)}
+\begin{equation}
+\sum_{i\in N_s}\sum_{\substack{j\in N_c\\(i,j)\in A}}(x_{ij}^k+y_{ij}^k)d_j+\sum_{i\in N_d}z_i^k d_i\leq W,
+\qquad k\in K.\tag{10}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+w_i^k-d_j-M(2-\hat y_{ij}^k-z_j^k)
+&\leq w_j^k\leq w_i^k-d_j+M(2-\hat y_{ij}^k-z_j^k),\\
+&i\in N_s,\ j\in N_d,\ (i,j)\in A,\ k\in K.
+\end{aligned}\tag{11a}
+\end{equation}
+\begin{equation}
+w_j^k\leq M\left(2-\sum_{\substack{j'\in N_s\\(j',i)\in A}}y_{j'i}^k-\hat y_{ji}^k\right),
+\qquad j\in N_d,\ i\in N_e,\ (j,i)\in A,\ k\in K.\tag{11b}
+\end{equation}
+\begin{equation}
+e_i^k\leq B\left(2-\sum_{\substack{j\in N_e\\(i,j)\in A}}y_{ij}^k-\sum_{\substack{j\in N_d\\(i,j)\in A}}\hat y_{ij}^k\right),
+\qquad i\in N_s,\ k\in K.\tag{12a}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+e_i^k+\frac{\hat r_{ij}}{\hat v}+\hat s_j-M(2-\hat y_{ij}^k-z_j^k)
+&\leq e_j^k\\
+&\leq e_i^k+\frac{\hat r_{ij}}{\hat v}+\hat s_j+M(2-\hat y_{ij}^k-z_j^k),\\
+&i\in N_s,\ j\in N_d,\ (i,j)\in A,\ k\in K.
+\end{aligned}\tag{12b}
+\end{equation}
+\begin{equation}
+e_i^k+\frac{\hat r_{ij}}{\hat v}-M\left(2-\hat y_{ij}^k-\sum_{\substack{i'\in N_s\\(i',j)\in A}}y_{i'j}^k\right)\leq B,
+\qquad i\in N_d,\ j\in N_e,\ (i,j)\in A,\ k\in K.\tag{12c}
+\end{equation}
+
+\subsection*{情景相关的时间限制和惩罚：(14)–(20)}
+本小节的每一行都对应一个$\xi\in\Xi$，除了其显示的节点和车辆编号之外，还包含了其他数值信息。
+
+\paragraph{无人机到达时间。}
+\begin{equation}
+\begin{aligned}
+\varphi_i^\xi+\hat s_i+\frac{\hat r_{ij}}{\hat v}-M(2-\hat y_{ij}^k-z_i^k)
+&\leq\hat\tau_j^{k,\xi}\\
+&\leq\varphi_i^\xi+\hat s_i+\frac{\hat r_{ij}}{\hat v}+M(2-\hat y_{ij}^k-z_i^k),\\
+&i\in N_d,\ j\in N_e,\ (i,j)\in A,\ k\in K.
+\end{aligned}\tag{14}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+\bar\tau_i^{k,\xi}+s^r+s^l+\frac{\hat r_{ij}}{\hat v}
+-M\left(3-\sum_{\substack{j\in N_e\\(i,j)\in A}}y_{ij}^k-\hat y_{ij}^k-\sum_{\substack{j\in N_d\\(j,i)\in A}}\hat y_{ji}^k\right)
+&\leq\hat\tau_j^{k,\xi}\\
+\leq\bar\tau_i^{k,\xi}+s^r+s^l+\frac{\hat r_{ij}}{\hat v}
++M\left(3-\sum_{\substack{j\in N_e\\(i,j)\in A}}y_{ij}^k-\hat y_{ij}^k-\sum_{\substack{j\in N_d\\(j,i)\in A}}\hat y_{ji}^k\right),&\\
+i\in N_s,\ j\in N_d,\ (i,j)\in A,\ k\in K.&
+\end{aligned}\tag{15a}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+\varphi_i^\xi+s_i+s^l+\frac{\hat r_{ij}}{\hat v}
+-M\left(2-\sum_{\substack{j\in N_e\\(i,j)\in A}}y_{ij}^k-\hat y_{ij}^k+\sum_{\substack{j\in N_d\\(j,i)\in A}}\hat y_{ji}^k\right)
+&\leq\hat\tau_j^{k,\xi}\\
+\leq\varphi_i^\xi+s_i+s^l+\frac{\hat r_{ij}}{\hat v}
++M\left(2-\sum_{\substack{j\in N_e\\(i,j)\in A}}y_{ij}^k-\hat y_{ij}^k+\sum_{\substack{j\in N_d\\(j,i)\in A}}\hat y_{ji}^k\right),&\\
+i\in N_s,\ j\in N_d,\ (i,j)\in A,\ k\in K.&
+\end{aligned}\tag{15b}
+\end{equation}
+
+\paragraph{卡车到达的时间。}
+\begin{equation}
+\begin{aligned}
+\bar\tau_i^{k,\xi}+s^r+s^l\sum_{\substack{j\in N_d\\(i,j)\in A}}\hat y_{ij}^k+\omega_i^{k,\xi}+\frac{r_{ij}}{v_{ij}^\xi}
+-M\left(2-x_{ij}^k-y_{ij}^k-\sum_{\substack{j\in N_d\\(j,i)\in A}}\hat y_{ji}^k\right)
+&\leq\tau_j^{k,\xi}\\
+\leq\bar\tau_i^{k,\xi}+s^r+s^l\sum_{\substack{j\in N_d\\(i,j)\in A}}\hat y_{ij}^k+\omega_i^{k,\xi}+\frac{r_{ij}}{v_{ij}^\xi}
++M\left(2-x_{ij}^k-y_{ij}^k-\sum_{\substack{j\in N_d\\(j,i)\in A}}\hat y_{ji}^k\right),&\\
+(i,j)\in A,\ k\in K.&
+\end{aligned}\tag{16a}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+\varphi_i^\xi+s_i+s^l\sum_{\substack{j\in N_d\\(i,j)\in A}}\hat y_{ij}^k+\omega_i^{k,\xi}+\frac{r_{ij}}{v_{ij}^\xi}
+-M\left(1-x_{ij}^k-y_{ij}^k+\sum_{\substack{j\in N_d\\(j,i)\in A}}\hat y_{ji}^k\right)
+&\leq\tau_j^{k,\xi}\\
+\leq\varphi_i^\xi+s_i+s^l\sum_{\substack{j\in N_d\\(i,j)\in A}}\hat y_{ij}^k+\omega_i^{k,\xi}+\frac{r_{ij}}{v_{ij}^\xi}
++M\left(1-x_{ij}^k-y_{ij}^k+\sum_{\substack{j\in N_d\\(j,i)\in A}}\hat y_{ji}^k\right),&\\
+(i,j)\in A,\ k\in K.&
+\end{aligned}\tag{16b}
+\end{equation}
+\noindent 方程(16a)的下半部分与物理页面8上的内容相连，而上半部分则与物理页面9上的内容相连。在(15)--(16)中，$j$既被用作求和索引，也被用作外部弧线索引，其用法保持不变，按原样打印下来。
+
+\paragraph{服务已启动。}
+\begin{equation}
+\hat\tau_i^{k,\xi}-M(1-z_i^k)\leq\varphi_i^\xi\leq\hat\tau_i^{k,\xi}+M(1-z_i^k),
+\qquad i\in N_d,\ k\in K.\tag{17a}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+\tau_i^{k,\xi}-M\left(1-\sum_{\substack{j\in N_s\\(j,i)\in A}}x_{ji}^k-\sum_{\substack{j\in N_s\\(j,i)\in A}}y_{ji}^k\right)
+&\leq\varphi_i^\xi\\
+&\leq\tau_i^{k,\xi}+M\left(1-\sum_{\substack{j\in N_s\\(j,i)\in A}}x_{ji}^k-\sum_{\substack{j\in N_s\\(j,i)\in A}}y_{ji}^k\right),\\
+&i\in N_c,\ k\in K.
+\end{aligned}\tag{17b}
+\end{equation}
+
+\paragraph{延迟的仓库退货。}
+\begin{align}
+\delta^{k,\xi}&\geq\hat\tau_{n+1}^{k,\xi}-l_{max}-M\left(1-\sum_{i\in N_d}\hat y_{i,n+1}^k\right),
+&&k\in K.\tag{18a}\\
+\delta^{k,\xi}&\geq\tau_{n+1}^{k,\xi}-l_{max}-M\left(1-\sum_{i\in N_c}x_{i,n+1}^k-\sum_{i\in N_c}y_{i,n+1}^k\right),
+&&k\in K.\tag{18b}
+\end{align}
+
+\paragraph{迟到与拖延。}
+\begin{align}
+\varphi_i^\xi-e_i&\leq M(1-\alpha_i^\xi),&&i\in N_c.\tag{19a}\\
+\delta_i^{-,\xi}&\leq M\alpha_i^\xi,&&i\in N_c.\tag{19b}\\
+e_i-\varphi_i^\xi&\leq\delta_i^{-,\xi}\leq e_i-\varphi_i^\xi+M(1-\alpha_i^\xi),&&i\in N_c.\tag{19c}\\
+l_i-\varphi_i^\xi&\leq M(1-\beta_i^\xi),&&i\in N_c.\tag{19d}\\
+\delta_i^{+,\xi}&\leq M\beta_i^\xi,&&i\in N_c.\tag{19e}\\
+\varphi_i^\xi-l_i&\leq\delta_i^{+,\xi}\leq\varphi_i^\xi-l_i+M(1-\beta_i^\xi),&&i\in N_c.\tag{19f}\\
+\alpha_i^\xi+\beta_i^\xi&\leq1,&&i\in N_c.\tag{19g}
+\end{align}
+
+\paragraph{准备接收无人机。}
+\begin{align}
+\hat\tau_i^{k,\xi}-\tau_i^{k,\xi}-s_i&\leq M(1-\gamma_i^{k,\xi}),
+&&i\in N_c,\ k\in K.\tag{20a}\\
+\hat\tau_i^{k,\xi}&\leq\bar\tau_i^{k,\xi}\leq\hat\tau_i^{k,\xi}+M\gamma_i^{k,\xi},
+&&i\in N_c,\ k\in K.\tag{20b}\\
+\tau_i^{k,\xi}+s_i&\leq\bar\tau_i^{k,\xi}\leq\tau_i^{k,\xi}+s_i+M(1-\gamma_i^{k,\xi}),
+&&i\in N_c,\ k\in K.\tag{20c}
+\end{align}
+\noindent 表3中给出的定义关系以及随后的段落（20c）是
+\[
+\bar\tau_i^{k,\xi}=\max\{\tau_i^{k,\xi}+s_i,\hat\tau_i^{k,\xi}\}.
+\]
+方程式(20a)–(20c)是此关系的选定线性化形式，其对应的打印范围分别为$i\in N_c$、$k\in K$，而在(21)中则是$\xi\in\Xi$。这里，定义该关系的方程式并未扩展到其他节点。
+
+\subsection*{网络、固定输入和采样}
+第3.2节和表2中的有向图和节点集
+\[
+\begin{gathered}
+G(N,A),\qquad N=\{0,1,\ldots,n+1\},\qquad N_c=\{1,\ldots,n\},\\
+N_d\subseteq N_c,\qquad
+N_s=N\setminus\{n+1\}=\{0\}\cup N_c=\{0,1,\ldots,n\},\\
+N_e=N\setminus\{0\}=N_c\cup\{n+1\}=\{1,\ldots,n+1\},\\
+A=\{(i,j)\mid i\in N_s,\ j\in N_e,\ i\ne j\}.
+\end{gathered}
+\]
+节点$0$和$n+1$是单一仓库的起始和结束位置。$N_d$是符合条件的无人机服务客户集合，而$N_c\setminus N_d$则是仅使用卡车的客户集合。表2将$K$定义为可用的同质卡车-无人机组合，以$k\in K$为索引；引言部分也使用$K$来表示车队规模。在公式中，它指的是索引集合。
+
+固定的距离$r_{ij}$是弧线$(i,j)$上的曼哈顿卡车行驶距离，而$\hat r_{ij}$则是欧几里得无人机行驶距离，单位均为公里。卡车的行驶速度是不确定的。
+\[
+v_{ij}\sim F_{ij},\qquad (i,j)\in A,
+\]
+请将所有$v_{ij}$这样的数学符号按原顺序原样保留下来。所有数字都应保持不变。
+
+每个分布$F_{ij}$在规划时都是已知的，或者可以估算出来，它可以是连续的，也可以是离散的。无人机的速度$\hat v$是恒定的。表格中同时给出了卡车和无人机的速度，单位为公里/小时。
+
+$d_i$的需求是针对客户$i\in N_c$的（以千克为单位）。卡车和无人机的载货能力分别为$W$和$\hat W$千克。无人机电池的容量$B$以分钟为单位衡量。卡车的服务时间$s_i$是针对$i\in N_c$而言的，而无人机的服务时间$\hat s_i$则针对$i\in N_d$而言，两者都以分钟为单位。所需的发射和回收时间分别为$s^l$和$s^r$分钟。$M$是一个足够大的数字，由模型直接给出，未作详细说明。
+
+每个节点都有一个固定的时间窗口$[e_i,l_i]$（以分钟为单位）；仓库的窗口时间为$[0,l_{max}]$。这里的$e_i$是一个固定的窗口终点，与用于累计无人机能量的决策变量$e_i^k$不同。固定的部署成本为每对$c^0$，卡车操作成本则为每单位距离$c$（\$/公里），而无人机操作成本则为每单位时间$\hat c$（\$/分钟）。提前和延迟的惩罚分别为$c^e$和$c^l$（\$/分钟）。对于$k$这一对来说，延迟返回的惩罚为$c^k$（\$/分钟）。这些数值在表3中有详细说明。
+\[
+c^k>c^l>c^e,\qquad k\in K.
+\]
+计算实验中的数值并未被固定下来。对于(21)，请保持所有数学符号的原始顺序不变，同时保留所有的数字。
+
+让
+\[
+\boldsymbol\theta=\{x_{ij}^k,y_{ij}^k,\hat y_{ij}^k,\ \forall k\in K,\ (i,j)\in A\},
+\]
+让$\mathbf v$表示所有弧线上随机卡车行驶速度的向量。然后，从$|\Xi|$中选取一个样本，得到$\mathbf v^\xi$。在场景$\xi$中，弧线$(i,j)$上的卡车行驶速度被固定为$v_{ij}^\xi$。第3.3节中使用了这些数值。
+\[
+\frac{1}{|\Xi|}\sum_{\xi\in\Xi}Q(\boldsymbol\theta,\mathbf v^\xi)
+\quad\text{to approximate}\quad E[Q(\boldsymbol\theta,\mathbf v)].
+\]
+链接到的“追索价值”定义是：
+\begin{equation}
+Q(\boldsymbol\theta,\mathbf v^\xi)
+=\min\left\{\sum_{i\in N_c}(c^e\delta_i^{-,\xi}+c^l\delta_i^{+,\xi})+\sum_{k\in K}c^k\delta^{k,\xi}\right\},\tag{13}
+\end{equation}
+在此定义中，路由向量和速度实现是固定的，而最小化过程则受(14)--(20)以及表3中已显示的条件的限制。在(21)中，这些备选方案是根据具体情况进行整合的；(13)则是对采样值的定义，并非额外的优化目标。
+
+\subsection*{变量角色和继承的域}
+第一阶段路由和辅助变量来自表2：
+\[
+\begin{aligned}
+x_{ij}^k,y_{ij}^k,\hat y_{ij}^k&\in\{0,1\},&& (i,j)\in A,\ k\in K,\\
+z_i^k&\in\{0,1\},&& i\in N_c,\ k\in K,\\
+u^k&\in\{0,1\},&& k\in K,\\
+e_i^k&\in[0,B],\\
+w_i^k&\in[0,\hat W].
+\end{aligned}
+\]
+这里$x_{ij}^k=1$表示卡车$k$搭载其无人机在$(i,j)$处行驶；$y_{ij}^k=1$表示卡车独立行驶；而$\hat y_{ij}^k=1$表示无人机独立行驶。 每个都是零，其他情况也是如此。 二进制表示$z_i^k$意味着客户$i$由无人机$k$进行服务，而$u^k$则表示使用了$k$这一对设备进行部署。 变量$e_i^k$表示无人机$k$在离开节点$i$后所消耗的累积能量；而$w_i^k$则表示无人机在访问节点$i$后所携带的有效载荷。 表2中列出了这些区间范围，没有分别列出节点索引范围；上述行仍然保持这种呈现方式。所有数字都保持不变。 特别是，$w_i^k$的上限提供了无人机容量限制。
+
+为完整性起见，表2还列出了辅助的相对访问位置。
+\[
+\lambda_i^k\in\mathbb Z_+,\qquad 1\leq\lambda_i^k\leq n,
+\qquad i\in N_c,\ k\in K.
+\]
+它指的是客户$i$在卡车/无人机$k$的访问序列中的相对位置。在(21)中，由于已经明确排除了(9a)--(9b)，因此该指标不再有实际意义；也没有重新排序的行。
+
+对于每一个场景$\xi\in\Xi$，表3中的领域包括：
+\[
+\begin{gathered}
+\omega_i^{k,\xi}\geq0,\qquad
+\delta_i^{-,\xi}\geq0,\qquad\delta_i^{+,\xi}\geq0,\qquad\delta^{k,\xi}\geq0,\\
+\tau_i^{k,\xi}\geq0,\qquad\hat\tau_i^{k,\xi}\geq0,\qquad
+\varphi_i^\xi\geq0,\qquad\bar\tau_i^{k,\xi}\geq0,\\
+\alpha_i^\xi\in\{0,1\},\qquad\beta_i^\xi\in\{0,1\},\qquad
+\gamma_i^{k,\xi}\in\{0,1\}.
+\end{gathered}
+\]
+这些是表格中按节点和配对索引排列的域，它们应用于显示行中的变量。表3并未单独列出这些声明的节点索引集。$\omega_i^{k,\xi}$这个变量表示节点$i$处的卡车等待时间。辅助变量$\delta_i^{-,\xi}$和$\delta_i^{+,\xi}$分别用于衡量服务开始的早晚程度，而$\delta^{k,\xi}$则用于衡量配对$k$返回仓库的时间。卡车和无人机到达的时间分别用$\tau_i^{k,\xi}$和$\hat\tau_i^{k,\xi}$表示；$\varphi_i^\xi$则是服务开始的时间。准备检索的时间用$\bar\tau_i^{k,\xi}$表示。指标$\alpha_i^\xi$和$\beta_i^\xi$分别表示服务是在较低时间窗口内还是在上限时间窗口之后发生的，如果服务发生在较低时间窗口内，则值为1，否则值为0。表3中$\gamma_i^{k,\xi}$的值表示卡车在检索节点$i$处的到达时间比无人机晚，否则值为0。
+
+\subsection*{常见的操作假设和打印说明/备注}
+在物理页面4-5上的问题描述中，要求每位顾客只能由一辆车服务一次，而仅使用卡车的顾客则由卡车来服务。每对部署好的车辆都从同一个仓库出发，然后返回到同一个仓库。无人机可以在一次飞行中服务多个顾客，但这取决于其载荷能力和电池容量。无人机可以沿着卡车的路线多次往返于不同的地点。在每个顾客所在的位置，无人机最多只能被发射和回收一次。当这对车辆重新会合时，先到达的车辆会等待另一辆车。顾客节点有无人机停机坪，因此无人机的等待时间可以忽略不计。被回收的无人机会获得充满电的替换电池。车辆在到达顾客处后立即开始服务；卡车在离开之前可能需要等待一段时间，包括在仓库内等待。如果违反软窗口规定，将会面临提前或延迟服务的惩罚，而超过$l_{max}$时间的返回则只会面临延迟返回的惩罚，而不是严格的返回时间限制。
+
+\paragraph{选定的源分辨率及剩余条件。}
+原始的笛卡尔范围与未过滤的和参考了对应于页面6弧集$A$之外的配对。选择该图定义：每个弧承载行和每个弧和项都限制于$A$中的相应有向弧。进库和合计数为空。没有引入任何外部弧变量/距离。这与打印出的畸形行并不完全相同；原始文本仍保留在变更日志中。
+
+选择源示例仓库约定$s_0=0$。表2仅定义了客户服务时间。在第2页的图1(i)中，等待时间为零，仓库出发时间为零，第一个弧段持续时间为三分钟，第一个客户到达时间为三。结合第15页的初始条件$\tau_0=0$和第16页的非检索递归(23a)，可以得到$3=0+s_0+3+0$。这是一个基于示例的注释性推理，而非表2中的明确陈述。将其用于(15b)、(16b)中。不要固定$\varphi_0$或$\bar\tau_0$，扩展(20)，也不要引入滚动时域约束。
+
+$\gamma_i^{k,\xi}$的描述部分比较了到达时间，而(20)则比较了无人机到达时间与卡车到达时间以及服务时间的总和。打印出来的不等式保持不变。最后，距离以公里为单位表示，速度以公里/小时为单位，而服务时间、电池充电时间和惩罚时间则以分钟为单位表示。不过，打印出来的比率$r_{ij}/v_{ij}^\xi$和$\hat r_{ij}/\hat v$中并没有60这个因子。这些打印出来的表达式保持不变，无需进行单位转换。
+
+\paragraph{来源范围。}
+该重建使用了提供的原始主论文的2、4-10页，并特别引用了15-16页的初始化/递归部分，包括表2-3以及(6)、(7b)的页面图像和跨页的(16a)。官方补充材料并未提供，且未经验证。所选的主题链并不涉及他们的启发式算法或证明；没有导入任何启发式或滚动视野约束。
+
+\end{document}

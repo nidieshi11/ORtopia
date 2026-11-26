@@ -1,0 +1,137 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\title{核心数学模型}
+\date{}
+
+\usepackage[UTF8]{ctex}
+\begin{document}
+
+\maketitle
+
+\section*{MILP1 用于固定 OR 和 PACU 容量}
+
+求解器采用了第4.2.1节中论文中提出的原始MILP1模型。操作室和PACU的容纳能力$R_1$和$R_2$是固定输入参数，与论文中的描述完全一致。 
+
+让$\mathcal{S} = \{1,2\}$表示阶段$1$为“OR”关系，而阶段$2$为“PACU”。对于阶段$s \in \mathcal{S}$，让$\mathcal{R}_s = \{1,\ldots,R_s\}$表示房间集合，并将时间范围划分为$\{0,\ldots,K\}$个离散的时间段。
+
+\begin{equation}
+\min \; \Pi =
+\sum_{s \in \mathcal{S}} \sum_{r \in \mathcal{R}_s} C_s^o h_{sr}
++
+\sum_{s \in \mathcal{S}} C_s^e R_s
+\tag{1}
+\end{equation}
+
+\begin{equation}
+\sum_{r \in \mathcal{R}_s} \sum_{t=0}^{K-p_{is}} x_{isr}^t = 1,
+\qquad
+\forall i \in \mathcal{I},\ \forall s \in \mathcal{S}
+\tag{2}
+\end{equation}
+
+\begin{equation}
+\sum_{i \in \mathcal{I}} \sum_{\tau=\max\{0,t-p_{is}\}}^{t-1} x_{isr}^{\tau} \le 1,
+\qquad
+\forall s \in \mathcal{S},\ \forall r \in \mathcal{R}_s,\ \forall t = 1,\ldots,K
+\tag{3}
+\end{equation}
+
+\begin{equation}
+\sum_{\tau=t}^{\min\{K-1,t+p_{is}-1\}} y_{isr}^{\tau} \ge p_{is} x_{isr}^t,
+\qquad
+\forall i \in \mathcal{I},\ \forall s \in \mathcal{S},\ \forall r \in \mathcal{R}_s,\ \forall t = 0,\ldots,K-p_{is}
+\tag{4}
+\end{equation}
+
+\begin{equation}
+\sum_{i \in \mathcal{I}} \sum_{r \in \mathcal{R}_s} y_{isr}^t = z_s^t,
+\qquad
+\forall s \in \mathcal{S},\ \forall t = 0,\ldots,K-1
+\tag{5}
+\end{equation}
+
+\begin{equation}
+\sum_{t=0}^{K-1} z_s^t = \sum_{i \in \mathcal{I}} p_{is},
+\qquad
+\forall s \in \mathcal{S}
+\tag{6}
+\end{equation}
+
+\begin{equation}
+\sum_{r \in \mathcal{R}_s} \sum_{t=0}^{K-p_{is}} (t+p_{is}) x_{isr}^t = f_{is},
+\qquad
+\forall i \in \mathcal{I},\ \forall s \in \mathcal{S}
+\tag{7}
+\end{equation}
+
+\begin{equation}
+\sum_{r \in \mathcal{R}_2} \sum_{t=0}^{K-p_{i2}} t \, x_{i2r}^t \ge f_{i1},
+\qquad
+\forall i \in \mathcal{I}
+\tag{8}
+\end{equation}
+
+\begin{equation}
+f_{i2} - (f_{i1} + p_{i2}) \le 0,
+\qquad
+\forall i \in \mathcal{I}
+\tag{9}
+\end{equation}
+
+\begin{equation}
+(t+1-g_{sr}) \le K\omega_{sr}^t,
+\qquad
+\forall s \in \mathcal{S},\ \forall r \in \mathcal{R}_s,\ \forall t = 0,\ldots,K-1
+\tag{10}
+\end{equation}
+
+\begin{equation}
+\sum_{i \in \mathcal{I}} y_{isr}^t \le K(1-\omega_{sr}^t),
+\qquad
+\forall s \in \mathcal{S},\ \forall r \in \mathcal{R}_s,\ \forall t = 0,\ldots,K-1
+\tag{11}
+\end{equation}
+
+\begin{equation}
+g_{sr} - T \le h_{sr},
+\qquad
+\forall s \in \mathcal{S},\ \forall r \in \mathcal{R}_s
+\tag{12}
+\end{equation}
+
+\begin{equation}
+z_s^t \le R_s,
+\qquad
+\forall s \in \mathcal{S},\ \forall t = 0,\ldots,K-1
+\tag{13}
+\end{equation}
+
+\begin{equation}
+x_{isr}^t,\ y_{isr}^t,\ \omega_{sr}^t \in \{0,1\},
+\qquad
+\forall i \in \mathcal{I},\ \forall s \in \mathcal{S},\ \forall r \in \mathcal{R}_s,\ \forall t = 0,\ldots,K-1
+\tag{14}
+\end{equation}
+
+\begin{equation}
+z_s^t,\ f_{is},\ g_{sr},\ h_{sr} \ge 0,
+\qquad
+\forall i \in \mathcal{I},\ \forall s \in \mathcal{S},\ \forall r \in \mathcal{R}_s,\ \forall t = 0,\ldots,K-1
+\tag{15}
+\end{equation}
+
+约束条件(2)至(7)用于分配每位患者，避免重复，包括第一个被占用的位置。方程(3)使用了原始论文中的窗口$[\max(0,t-p_{is}),t-1]$，位于$t=1,\ldots,K$处（PDF第15页）。完成变量$f_{is}$等于实际完成时间；这使得方程(8)至(9)能够实施源文献中描述的无需等待的传输方式（PDF第14页至第15页）。
+
+
+\paragraph{起始时间范围的说明：2026-10-23。}
+每个$p_{is}$都代表一个正整数个插槽。 定义$x_{isr}^t=0$
+对于$K-p_{is}<t\le K-1$；只有$0\le t\le K-p_{is}$是起始决策。
+所有正式包含后续开始的求和运算，都遵循这种零的约定。
+原始 PDF 文件中的第 15 页，在所有开始时间都适用其服务覆盖不等式（4）：如果开始时间较晚，那么剩余的二进制占用槽位数会少于 $p_{is}$，因此该不等式本身就迫使开始时间为零。
+这种明确的约定，在将(4)式限制在“可完成服务的时间范围内”之后，能够恢复原有的边界条件。同时，这也与当前求解器起始变量的范围相匹配。
+它仅从之前提取的模型中移除多余的、过时的记录；将这些记录设置为零后，所有实际的计划及其目标都得以保留。
+
+\end{document}

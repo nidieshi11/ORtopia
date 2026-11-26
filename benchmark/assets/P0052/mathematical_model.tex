@@ -1,0 +1,59 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,geometry}
+\geometry{margin=22mm}
+\usepackage[UTF8]{ctex}
+\begin{document}
+
+\section*{P52：全舰队电池与充电系统设计，具有明确的、可靠的分支结构}
+源头的名义方程和稳健方程不能与提取的相反能量符号一起应用。当前分支遵循物理能量守恒以及源方程（24）-（28），每个支路上都有独立的上部消耗项。这是一个保守的规划公式。
+
+\subsection*{有限的数据和变量}
+路线为$r\in R$，整个公交车队为$b\in B_r$，电池选择为$k\in BAT$，终端点为$t\in T$，充电选择为$c\in FCS$。每辆公交车都有有序的完整行程列表$h=1,\ldots,H_b$，包括最终的返回路线。行程$h$的终点为$t_{bh}$，并且拥有可接受的充电电池$\Omega_{bh}$；其在电池$w$中的重叠时间为$a_{bhw}\in(0,\Delta]$小时。在这些时间范围内，不存在其他充电选项。所提供的 Worst Consumption为
+\[
+ E_{bh}^{+}=\bar E_{bh}+\min(1,\Gamma_r)\widehat E_{bh}.
+\]
+其数值已经乘以了完成后的数据中每条路径的实际长度。这是单坐标不确定性的最大值，每个路径都采用保守的估计值，并且每条路径都有单独的不确定性预算。
+
+二进制代码$x_{rk}$用于选择电池；二进制代码$y_{tc}$用于选择充电器的类型；$n_{tc}\in\mathbb Z_{\ge0}$用于统计充电器的数量。二进制代码$z_{bh}$和$v_{bhw}$用于标记充电事件/电池单元。$p_{bhw}\ge0$表示计划中的功率，单位为千瓦；$A_{bh},D_{bh}\ge0$表示到达/离开时的能量，单位为千瓦时；而$P_t^{on},P_t^{off}\ge0$则代表两个需求充电高峰。还需要定义$C_r=\sum_k CAP_kx_{rk}$、$M_t=\sum_{r:t\in T_r}|B_r|$和$P^{max}=\max_c CP_c$这些代码。
+
+\subsection*{所有约束条件}
+\begin{align}
+\sum_kx_{rk}&=1,&
+\sum_c y_{tc}&\le1,&
+0\le n_{tc}&\le M_t y_{tc},\\
+A_{b1}&=SOC_{max}C_r-E_{b1}^{+},&
+A_{bh}&=D_{b,h-1}-E_{bh}^{+}\quad(h>1),\\
+SOC_{min}C_r&\le A_{bh}\le SOC_{max}C_r,&
+SOC_{min}C_r&\le D_{bh}\le SOC_{max}C_r,\\
+D_{bh}&=A_{bh}+\sum_{w\in\Omega_{bh}}a_{bhw}p_{bhw},\\
+0\le p_{bhw}&\le P^{max}v_{bhw},&
+p_{bhw}&\le\sum_cCP_c y_{t_{bh},c},&
+v_{bhw}&\le\sum_cy_{t_{bh},c},\\
+v_{bhw}&\le z_{bh},&
+z_{bh}&\le\sum_{w\in\Omega_{bh}}v_{bhw},&
+z_{bh}&\le\sum_c y_{t_{bh},c}.
+\end{align}
+对于每一个终端和单元，让$I_{tw}=\{(b,h):t_{bh}=t,\ w\in\Omega_{bh}\}$和$g(w)$分别表示其开/关状态。同时，保留所有的数字。
+\begin{align}
+\sum_{(b,h)\in I_{tw}}v_{bhw}&\le\sum_c n_{tc},\\
+\sum_{(b,h)\in I_{tw}}p_{bhw}&\le\sum_c CP_cn_{tc},\\
+P_t^{g(w)}&\ge\Delta^{-1}\sum_{(b,h)\in I_{tw}}a_{bhw}p_{bhw}.
+\end{align}
+对于整个占用单元来说，计算部分单元的充电事件是一种保守的做法；而按持续时间加权后的能量和需求平均值则采用实际重叠情况来计算。
+
+\subsection*{目标与单位}
+将$a(L)=d/[1-(1+d)^{-L}]$替换为以$d>0$折现后的年值。  
+以每千瓦时美元的价格和每千瓦每月美元的需求率，进行最小化计算。
+\begin{align}
+&\sum_{r,k}a(L_k^B)C_k^B|B_r|x_{rk}
++\sum_{t,c}[a(L^{station})C^{station}+M^{station}]y_{tc}\\
+&+\sum_{t,c}[a(L_c^C)C_c^C+M_c^C]n_{tc}
++365\sum_{b,h,w}c_w a_{bhw}p_{bhw}\\
+&+12\sum_t[d^{on}P_t^{on}+d^{off}P_t^{off}].
+\end{align}
+因此，每月的需求量会吸收源头的日变率转换为月变率；每月的费率会每月应用一次。电池采购的费用等于电池数量乘以电池成本。如果输入中包含了充电器维护的相关信息，那么这部分费用也会被明确计算在内。给定的初始SOC值是外部提供的：能源费用涵盖了白天的充电需求。
+
+\subsection*{稳健的操作含义}
+优化过程采用“上层消耗轨迹”作为依据。在任何较小的实际非负消耗情况下，充电量不超过计划中的电池功率，并在$SOC_{max}C_r$处停止充电。如果实际到达的能量为$a$，而计划中的电池能量为$q$，则反馈更新值为$a^+=\min\{SOC_{max}C_r,a+q\}$。感应充电方式下，实际能量至少等于“上层消耗轨迹”，且不会超过SOC上限；资源使用量和成本也不会增加。这种限制政策提供了一种可行的运营策略，同时又能确保成本保持在合理的范围内。
+
+\end{document}

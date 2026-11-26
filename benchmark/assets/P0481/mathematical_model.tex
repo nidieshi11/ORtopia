@@ -1,0 +1,255 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[margin=0.7in]{geometry}
+\allowdisplaybreaks
+\usepackage[UTF8]{ctex}
+\begin{document}
+
+\section*{顺序调度与电压惩罚相结合的 BEB–APDN 模型}
+
+\subsection*{第一步：公交车调度}
+\begin{equation}
+\min C^{\mathrm{BEB}}=\min\sum_{i\in\mathcal S}\sum_{o\in\mathcal O}\lambda^{\mathrm{BEB}}x_{oi}.
+\tag{61}
+\end{equation}
+在以下条件下：
+\begin{align}
+\sum_{j\in\mathcal{SD},\,i\ne j}x_{ij}&=1,
+&&\forall i\in\mathcal S,\tag{7}\\
+\sum_{i\in\mathcal{SD},\,i\ne j}x_{ji}-\sum_{i\in\mathcal{OS},\,i\ne j}x_{ij}&=0,
+&&\forall j\in\mathcal S,\tag{8}\\
+\overline u_i+\tau_i+\tau_i^{\mathrm{DH}}&\leq\underline u_j+M(1-x_{ij}),
+&&\forall i,j\in\mathcal S,\ i\ne j.\tag{9}
+\end{align}
+这些行程链变量都是二进制的：
+\[
+x_{ij}\in\{0,1\};\qquad
+x_{ij}=1\text{ if trip }i\text{ is connected to trip }j,\text{ and }0\text{ otherwise}.
+\]
+时间表是预先确定的。如(61)所述，\(x_{ij}\)的返回值会被作为固定参数传递给第二步，不会在第二步中进行重新优化。
+
+
+\subsection*{打印出联合支付和原始追随者信息。}
+方程（41）描述了耦合的顶层问题。其底层响应则选自方程（33）、（35）至（40）中的最优解。
+\begin{equation}
+\min \sum_{t,w,b}\rho_w\left(\sum_{o\in\mathcal O}\lambda^{\rm BEB}x_{oi}
+   +\lambda^{\rm M}_{t,w}p_{b,w,t}
+   +\sum_{g\in\mathcal G}\lambda^{\rm AG}_{g,t,w}P^{\rm LC}_{g,b,w,t}\right).\tag{41}
+\end{equation}
+这里的“上界”是一个决策，而(41)中的支付符号为正数。打印出的采购金额中包含了一个未量化的\(i\)。由于第一阶段计划已经确定，这个数值在所有第二阶段选项中都是恒定的。各实例分别报告了第一阶段的采购情况，并给出了第二阶段的经济成本，但没有包含那个未解决的附加常数。原始的电压上限\(\underline V\le V\le\bar V\)以及作者所描述的针对正电压不足的惩罚措施\(PF(\underline V-V)^+\)都得到了处理。在(29)中，电压变量被平方了。如果(63)中的内容直接按照原文来解读，而不对\(\Delta V\)施加任何限制，那么另一个目标就会得到单独的限制。
+\subsection*{集合、固定的输入值以及可变的角色}
+调度范围为\(\mathcal T\)，时间槽索引为\(t\)；\(\mathcal W\)是场景集合，索引为\(w\)；而\(\rho_w\)则是场景\(w\)发生的概率。聚合器集合为\(\mathcal G\)，其索引由\(g\)表示（在公式中也使用\(k\)作为命名方式）。传输节点和APDN节点的集合分别为\(\mathcal N\)和\(\mathcal B\)。源定义如下：
+\[
+\mathcal I=\mathcal O\cup\mathcal S\cup\mathcal D,
+\qquad\mathcal{OS}=\mathcal O\cup\mathcal S,
+\qquad\mathcal{SD}=\mathcal D\cup\mathcal S,
+\]
+其中，\(\mathcal O\)表示从起点仓库出发的首次行程；\(\mathcal S\)表示服务行程，不包括起点仓库和终点仓库的行程；\(\mathcal D\)表示前往终点仓库的最后一程。索引\(i,j\)表示行程本身，而\(o\)则表示第一次前往某个仓库的行程。计费节点和由聚合器管理的节点则满足以下条件：
+\[
+\mathcal N^{\mathrm B}\subset\mathcal N,
+\qquad\mathcal B^{\mathrm N}\subset\mathcal B,
+\qquad\mathcal B^{\mathrm G}\subset\mathcal B.
+\]
+充电节点\(\mathcal N^{\mathrm B}\)通过\(\mathcal B^{\mathrm N}\)与APDN相连；\(\mathcal B^{\mathrm G}\)则表示由DR聚合器管理的APDN节点。APDN是BEB充电功能的唯一来源。APDN采用辐射式结构，而\(b\)和\(b+1\)则被描述为独占的序列节点。每个APDN节点上假设有一个负载。
+
+\paragraph{固定输入。}
+\(\lambda^{\mathrm{BEB}}\)是BEB的采购价格；\(\lambda^{\mathrm M}_{t,w}\)是随场景变化的市场价格；\(PF\)是电压偏差的惩罚系数。固定的时间表包括：行程的开始和结束时间\(\underline u_i,\overline u_i\)，服务持续时间\(\tau_i\)，空载时间\(\tau_i^{\mathrm{DH}}\)，从仓库到服务点的时间\(\tau_i^{\mathrm{O2S}}\)，以及从服务点回到仓库的时间\(\tau_{ij}^{\mathrm{S2D}}\)，适用于\(j\in\mathcal D\)的情况。BEB的产能为\(A\)；\(\underline\Upsilon,\overline\Upsilon\)分别是电池能量的最低和最高百分比。这些与电池相关的符号与辅助二进制符号\(Y_{g,b,w,t}\)是不同的。能量消耗情况如下：从仓库到第一次服务行程的消耗为\(c^{\mathrm{O2S}}_{oi}\)，服务行程期间的消耗为\(c_i^{\mathrm{SL}}\)，服务行程之间的消耗为\(c^{\mathrm{ST}}_{ij}\)，而从最后一次服务行程回到仓库的消耗为\(c^{\mathrm{S2D}}_{ij}\)。充电器的容量在途中为\(p_n^{\mathrm{EnMax}}\)，在仓库处为\(p^{\mathrm{DMax}}\)。
+
+\(D^{\mathrm P}_{b,t},D^{\mathrm Q}_{b,t}\)是固定的有功功率需求和无功功率需求。支路电阻和电抗分别对应于\(\mathrm r_b,\mathrm x_b\)，并非跳闸链变量。电压限制值则对应于\(\underline V,\overline V\)；\(\overline P^{\mathrm{PV}}_{b,w}\)是依赖于情景的最大光伏发电量，其中没有\(t\)下标（见公式32）。能量和功率的削减系数则对应于\(\Lambda_b,\Phi_b\)。补偿参数则分别对应于\(c^{\mathrm{DR}}_{b,t}\)和\(\lambda^{\mathrm{NS}}_b\)，分别用于应对削减和未供应的能量。注册输入满足以下条件：
+\[
+\mathbb I_{bg}\in\{0,1\},\qquad
+\mathbb I_{bg}=1\text{ if consumer }b\text{ is registered through aggregator }g.
+\]
+\(M_1,M_2\)被描述为较大的数字。在(9)中，不同的\(M\)被原样保留下来；没有方程式将其与\(M_1\)或\(M_2\)关联起来。特定实例中的数值容量、百分比、电压限制以及场景生成选项，并非此处所复现的一般公式的固定输入。
+
+\paragraph{第二步中的决策。}
+\(SOC_{oi}\)表示离开充电站时的电池能量；\(\widetilde{SOC}_i\)表示完成旅程后的能量；\(i\)表示旅程结束后的能量；\(SOC_{ij}\)表示旅程开始前的能量；\(i\)表示旅程开始时的能量；\(j\)表示旅程结束前的能量。接收到的充电能量为\(e^{\mathrm{Ter}}_{inj},e^{\mathrm{Dep}}_{ij}\)，其充电功率则为\(p^{\mathrm{Ter}}_{injt},p^{\mathrm{Dep}}_{ijt}\)。网络变量包括分支功率\(P_{b,w,t},Q_{b,w,t}\)、网络节点注入量\(p_{b,w,t},q_{b,w,t}\)、分支电流的平方值\(I_{b,w,t}\)、光伏发电量\(P^{\mathrm{PV}}_{b,w,t}\)、电容器无功注入量\(Q^{\mathrm{CAP}}_{b,t}\)、电压值\(V_{b,w,t}\)以及偏差值\(\Delta V_{b,w,t}\)。网络方程式中，\(V_{b,w,t}\)被定义为电压值的平方，而命名法则则将其称为电压值本身。方程和界限条件保持不变，不进行重新缩放处理。
+
+\(P^{\mathrm{BEB}}_{b,w,t}\)正在以APDN节点的需求来收费。DR变量包括削减需求\(P^{\mathrm{LC}}_{g,b,w,t}\)、负荷转移\(P^{\mathrm{LS}}_{g,b,w,t}\)，以及未供应的能源\(P^{\mathrm{NS}}_{g,b,w}\)；\(\lambda^{\mathrm{AG}}_{g,t,w}\)则是向聚合器提供的价格。第二步还包含\(C^{\mathrm{EQ}}_{g,t,w}\)，即下面的双重变量，以及辅助二进制变量。文字转录部分准确地记录了这些显示方程式中出现的各个领域。物理基准则选择了下面明确指定的响应和注册领域。
+
+\subsection*{BEB能量和充电限制}
+公交车在出发时几乎都充满电，只有在日常行驶过程中才会进行充电。而返回车站时，则是在最后一次服务行程之后才进行充电。一般来说，可以在公交车站进行充电，只要时间足够即可。以下这些行内容，并非针对特定充电地点的限制条件，而是继承下来的约束条件。
+\begin{align}
+SOC_{oi}&=x_{oi}\overline\Upsilon A,
+&&\forall i\in\mathcal S,\ o\in\mathcal O,\tag{10}\\
+\widetilde{SOC}_i&\leq
+(SOC_{oi}-c^{\mathrm{O2S}}_{oi}-c^{\mathrm{SL}}_i)x_{oi}
++\overline\Upsilon A(1-x_{oi}),
+&&\forall i\in\mathcal S,\ o\in\mathcal O,\tag{11}\\
+\widetilde{SOC}_j&\leq
+(\widetilde{SOC}_i+e^{\mathrm{Ter}}_{inj}-c^{\mathrm{ST}}_{ij}-c^{\mathrm{SL}}_j)x_{ij}
++\overline\Upsilon A(1-x_{ij}),
+&&\forall i,j\in\mathcal S,\ i\ne j,\tag{12}\\
+SOC_{ij}&\leq
+(\widetilde{SOC}_i-c^{\mathrm{S2D}}_{ij})x_{ij}
++\overline\Upsilon A(1-x_{ij}),
+&&\forall i\in\mathcal S,\ j\in\mathcal D.\tag{13}
+\end{align}
+\begin{equation}
+\underline\Upsilon Ax_{oi}\leq
+(SOC_{oi}-c^{\mathrm{O2S}}_{oi}-c^{\mathrm{SL}}_i)x_{oi}
+\leq\overline\Upsilon Ax_{oi},
+\qquad\forall i\in\mathcal S,\ o\in\mathcal O.
+\tag{14}
+\end{equation}
+\begin{equation}
+\underline\Upsilon Ax_{ij}\leq
+(\widetilde{SOC}_i+e^{\mathrm{Ter}}_{inj})x_{ij}
+\leq\overline\Upsilon Ax_{ij},
+\qquad\forall i,j\in\mathcal S.
+\tag{15}
+\end{equation}
+\begin{equation}
+\underline\Upsilon Ax_{ij}\leq
+(\widetilde{SOC}_i+e^{\mathrm{Ter}}_{inj}-c^{\mathrm{ST}}_{ij}-c^{\mathrm{SL}}_j)x_{ij}
+\leq\overline\Upsilon Ax_{ij},
+\qquad\forall i,j\in\mathcal S.
+\tag{16}
+\end{equation}
+\begin{equation}
+\underline\Upsilon Ax_{ij}\leq
+(\widetilde{SOC}_i-c^{\mathrm{S2D}}_{ij})x_{ij}
+\leq\overline\Upsilon Ax_{ij},
+\qquad\forall i\in\mathcal S,\ j\in\mathcal D.
+\tag{17}
+\end{equation}
+\begin{align}
+(SOC_{ij}+e^{\mathrm{Dep}}_{ij})x_{ij}&\geq\overline\Upsilon Ax_{ij},
+&&\forall i\in\mathcal S,\ j\in\mathcal D,\tag{18}\\
+\underline\Upsilon Ax_{ij}\leq SOC_{ij}x_{ij}&\leq\overline\Upsilon Ax_{ij},
+&&\forall i\in\mathcal S,\ j\in\mathcal D,\tag{19}\\
+e^{\mathrm{Ter}}_{inj}&=\frac{1}{|\mathcal T|}\sum_{t\in\mathcal T}p^{\mathrm{Ter}}_{injt},
+&&\forall i,j\in\mathcal S,\ n\in\mathcal N^{\mathrm B},\tag{20}\\
+e^{\mathrm{Dep}}_{ij}&=\frac{1}{|\mathcal T|}\sum_{t\in\mathcal T}p^{\mathrm{Dep}}_{ijt},
+&&\forall i\in\mathcal S,\ j\in\mathcal D.\tag{21}
+\end{align}
+\begin{equation}
+\begin{aligned}
+p^{\mathrm{Ter}}_{injt}&\leq x_{ij}p_n^{\mathrm{EnMax}},\\
+&\forall i,j\in\mathcal S,\ i\ne j,\quad
+ t\in[\overline u_i+\tau_i^{\mathrm{DH}},\underline u_j-\tau_j^{\mathrm{DH}}],\quad
+ n\in\mathcal N^{\mathrm B}.
+\end{aligned}\tag{22}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+p^{\mathrm{Dep}}_{ijt}&\leq x_{ij}p^{\mathrm{DMax}},\\
+&\forall i\in\mathcal S,\ j\in\mathcal D,\ i\ne j,\quad
+ t\in\{[\underline u_1-\tau_i^{\mathrm{O2S}}]\cup[\overline u_j+\tau_{ij}^{\mathrm{S2D}}]\}.
+\end{aligned}\tag{23}
+\end{equation}
+\noindent\emph{打印出的范围和端点。}索引\(n\)在(12)、(15)或(16)中未被量化。在(23)中的单表达式括号被保留下来；缺失的区间端点未提供。没有添加任何窗口外的零充电关系。在(20)--(21)中的因子确切地等于\(1/|\mathcal T|\)。在(10)附近的描述中提到“超过90\%”表示几乎充满电的情况，而案例研究中使用的是90\%的最大值；操作上的通用关系仍然保持为(10)中的等式，而不是新的百分比限制。
+
+\subsection*{APDN约束条件与收费需求定义}
+\begin{align}
+P_{b+1,w,t}&=P_{b,w,t}-\mathrm r_b I_{b,w,t}-p_{b,w,t},
+&&\forall b\in\mathcal B,\ w\in\mathcal W,\ t\in\mathcal T,\tag{25}\\
+Q_{b+1,w,t}&=Q_{b,w,t}-\mathrm x_b I_{b,w,t}-q_{b,w,t},
+&&\forall b\in\mathcal B,\ w\in\mathcal W,\ t\in\mathcal T.\tag{26}
+\end{align}
+\begin{equation}
+\begin{aligned}
+p_{b,w,t}={}&D^{\mathrm P}_{b,t}
++\sum_{g\in\mathcal G}(P^{\mathrm{LS}}_{g,b,w,t}-P^{\mathrm{LC}}_{g,b,w,t})
+-P^{\mathrm{PV}}_{b,w,t}+P^{\mathrm{BEB}}_{b,w,t},\\
+&\forall b\in\mathcal B,\ w\in\mathcal W,\ t\in\mathcal T.
+\end{aligned}\tag{27}
+\end{equation}
+紧随其后的文字部分，描述了这种关系。
+\[
+P^{\mathrm{APDN}}_{t,w}=p_{b,w,t}-P^{\mathrm{BEB}}_{b,w,t}.
+\]
+这里的\(P^{\mathrm{APDN}}_{t,w}\)代表 APDN 的市场力量，不包括充电需求。该关系中没有具体的数值表示，其右侧只有一个节点索引；没有进行节点求和操作。
+\begin{equation}
+q_{b,w,t}=D^{\mathrm Q}_{b,t}-Q^{\mathrm{CAP}}_{b,t},
+\qquad\forall b\in\mathcal B,\ w\in\mathcal W,\ t\in\mathcal T.
+\tag{28}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+V_{b,w,t}-2(\mathrm r_bP_{b,w,t}+\mathrm x_bQ_{b,w,t})
+-(\mathrm r_b^2+\mathrm x_b^2)I_{b,w,t}&=V_{b+1,w,t},\\
+\forall b\in\mathcal B,\ w\in\mathcal W,\ t\in\mathcal T.&
+\end{aligned}\tag{29}
+\end{equation}
+\begin{equation}
+V_{b,w,t}I_{b,w,t}\geq P_{b,w,t}^2+Q_{b,w,t}^2,
+\qquad\forall b\in\mathcal B,\ s\in\mathcal W,\ t\in\mathcal T.
+\tag{30}
+\end{equation}
+\begin{equation}
+0\leq P^{\mathrm{PV}}_{b,w,t}\leq\overline P^{\mathrm{PV}}_{b,w},
+\qquad\forall b\in\mathcal B,\ w\in\mathcal W,\ t\in\mathcal T.
+\tag{32}
+\end{equation}
+方程（30）是作者提出的二阶圆锥松弛方法。其印刷体中的量词使用\(s\)，而变量则使用\(w\)。没有对索引进行任何修正，也没有添加任何额外的圆锥域约束条件。上述已经明确指出了电压限制的硬限制和惩罚性限制。
+
+\subsection*{操作 DR 容量条件}
+与每个源约束相关的对偶关系用冒号后表示。
+\begin{align}
+\sum_{t\in\mathcal T}P^{\mathrm{LS}}_{g,b,w,t}
+&\leq\sum_{t\in\mathcal T}\Lambda_bD^{\mathrm P}_{b,t}
+\quad:\omega_{g,b,w},
+&&\forall b\in\mathcal B,\ w\in\mathcal W,\ g\in\mathcal G,\tag{37}\\
+\sum_{t\in\mathcal T}P^{\mathrm{LC}}_{g,b,w,t}
+&\leq\sum_{t\in\mathcal T}\Lambda_bD^{\mathrm P}_{b,t}
+\quad:\sigma_{g,b,w},
+&&\forall b\in\mathcal B,\ w\in\mathcal W,\ g\in\mathcal G,\tag{38}\\
+P^{\mathrm{LS}}_{g,b,w,t}&\leq\Phi_bD^{\mathrm P}_{b,t}
+\quad:\alpha_{g,b,w,t},
+&&\forall t\in\mathcal T,\ b\in\mathcal B,\ w\in\mathcal W,\ g\in\mathcal G,\tag{39}\\
+P^{\mathrm{LC}}_{g,b,w,t}&\leq\Phi_bD^{\mathrm P}_{b,t}
+\quad:\varpi_{g,b,w,t},
+&&\forall t\in\mathcal T,\ b\in\mathcal B,\ w\in\mathcal W,\ g\in\mathcal G.\tag{40}
+\end{align}
+
+
+\subsection*{原始的需求响应目标与能源限制条件}
+\begin{equation}
+\begin{aligned}
+C^{\mathrm{DR}}_{g,w}=\min_{\Xi}\Biggl\{
+\sum_{t\in\mathcal T}\sum_{b\in\mathcal B}\mathbb I_{bg}
+\Bigl(P^{\mathrm{LC}}_{g,b,w,t}(c^{\mathrm{DR}}_{b,t}-\lambda^{\mathrm{AG}}_{g,t,w})
++\lambda_b^{\mathrm{NS}}P^{\mathrm{NS}}_{g,b,w}\Bigr)\Biggr\},\\
+\forall w\in\mathcal W,\ g\in\mathcal G.
+\end{aligned}\tag{33}
+\end{equation}
+这里的\(\Xi\)包含了较低级别的决策\(P^{\mathrm{LC}}_{g,b,w,t},P^{\mathrm{LS}}_{g,b,w,t},P^{\mathrm{NS}}_{g,b,w}\)。接下来的句子和术语说明指出，\(c^{\mathrm{DR}}_{b,t}\)和\(\lambda_b^{\mathrm{NS}}\)是补偿参数，而非较低级别的决策。然后，来源提供了……
+\begin{equation}
+C^{\mathrm{DR}}_w=\sum_{g\in\mathcal G}C^{\mathrm{DR}}_{g,w},
+\qquad\forall w\in\mathcal W.
+\tag{34}
+\end{equation}
+方程（34）出现在物理PDF文件的第10页上。原始的低级限制条件包括以下两行内容，除此之外还有（37）到（40）这些行。
+\begin{equation}
+\sum_{t\in\mathcal T}P^{\mathrm{LS}}_{g,b,w,t}
+\leq\sum_{t\in\mathcal T}P^{\mathrm{LC}}_{g,b,w,t}
+\quad:\phi_{g,b,w},
+\qquad\forall b\in\mathcal B,\ w\in\mathcal W,\ g\in\mathcal G.
+\tag{35}
+\end{equation}
+\begin{equation}
+P^{\mathrm{NS}}_{g,b,w}
+=\sum_{t\in\mathcal T}P^{\mathrm{LC}}_{g,b,w,t}
+-\sum_{t\in\mathcal T}P^{\mathrm{LS}}_{g,b,w,t}
+\quad:\delta_{g,b,w},
+\qquad\forall b\in\mathcal B,\ w\in\mathcal W,\ g\in\mathcal G.
+\tag{36}
+\end{equation}
+
+\paragraph{将这些基准源定义进行连接。}
+第一阶段的解在充电之前就已经确定下来了。服务连接有一个物理终端，该终端根据输入中的终端字段进行映射。对于选定的\(i,j\)对，在(12)、(15)、(16)中的索引\(n\)表示在服务\(i\)之后的数据映射物理终端；而对角线连接则取值为零。在车站处，相关的途中费用和储存费用会加到其节点电力需求上，如§3.1和5.1中所描述的那样。每个公交车的周期性物理储存机会使用其第一个服务\(f\)和最后一个服务\(l\)。公交车在\(R=\bar u_l+\tau^{\rm S2D}_l\)返回，第二天则在\(f\)出发，出发时间为\(1440+D\)、\(D=\underline u_f-\tau_f^{\rm O2S}\)。将闭区间\([R,1440+D]\)模1440映射到提供的两分钟网格上。所有在那里购买的能源都将在公交车返回和下一次完全出发之间计入，包括午夜之后可用的时间。如果\(D<0\)的储存机会在下一个午夜之前结束，那么选定连续对之间的终端窗口将保持其实际的往返间隔。方程(23)打印出不完整的端点，因此有限尾端变体以及不施加零功率的非物理松弛方法也需要单独验证。后者使用非负功率，并在窗口内设置限制。其价值仅对该数学分支有意义。每个链条、物理机会、车站、时间和能源都在生成器和解中可用。分支方程适用于每条物理线路，而下游净需求则作为辐射链的最终边界。两种报告的容量制度分别是(22)--(23)中的每连接额定值，以及§5.1中的额外共享车站名称。它们可能会有不同的成本。
+
+\paragraph{保留原始中的分歧。}
+早期的研究（24）、（33）将最小化聚合器净成本相加，而（41）则对运营商进行正向支付。这些目标不必一致。方程（60）中出现了两次\(b\)，但未将其相加；最终主题列表中省略了（35）至（36）的内容，而大\(M\)对应的符号仍然存在，这不符合所声称的互补松弛条件。关系式（27）左边使用标量，右边使用节点功率。原始来源和独立分支证据均被保留。不声称这些竞争形式之间存在等价性。原始的正向支付追随者模型是这一家族的执行目标。
+
+\paragraph{有限基准成本的定义域。}
+对于第3.4节的物理操作和注册解释以及第5.1节中互斥节点的分配，请使用
+\[
+ P^{\rm LC}_{g,b,w,t},P^{\rm LS}_{g,b,w,t}\ge0,\qquad
+ \mathbb I_{bg}=0\ \Longrightarrow\ 
+ P^{\rm LC}_{g,b,w,t}=P^{\rm LS}_{g,b,w,t}=P^{\rm NS}_{g,b,w}=0 .
+\]
+这些都是明确的执行领域约定。仅第35行到第40行就给出了上限值，而第27行和第41行则分别将幂次相加，但没有注册乘数。如果允许负响应，则将已注册的报价设为补偿系数，并将两个幂次设为相同的数值\(-K\)。这样，净需求和服务不足的能量保持不变， follower成本为零，同时上限目标也无限降低。如果只要求非负性，并且未注册的决策仍然不被揭露，那么可以将其中一对数值设为相同的正数值，并给出\(-K\)作为报价，所有已注册的响应都为零。未注册的配对在(33)中是无成本的，但在(41)中却会出现。因此，正支付的经济价值需要两种物理响应约定。方程(32)显示了按节点和情景索引的正支付上限。十个合成实例都考虑了案例配置文件的时间依赖性，包括夜间没有太阳能可用的情况。展示的馈线轨迹选择了指定的电容器注入量，这里为零。来源将这些注入量视为决策。经济下限忽略了馈线限制：即使允许其他电容器设置，只要达到这个可接受的电容器设置，就足够了。不假设这两个可行领域或打印出的太阳能领域之间存在相等关系。
+\end{document}
+

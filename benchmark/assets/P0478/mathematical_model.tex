@@ -1,0 +1,224 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\usepackage[UTF8]{ctex}
+\begin{document}
+
+\section*{基于高级场景的、具有概率约束的 TIO-MPC 模型}
+\begin{align}
+\min_{\tilde t(k)}\quad &\mathrm E_{\tilde{\mathcal H}}\bigl[f_{\mathrm{opt}}(x(k),\tilde t(k),\tilde h)\bigr] \tag{17}\\
+\text{subject to}\quad &\Pr_{\tilde{\mathcal H}}\bigl[\tilde g_{\mathrm{TIO}}(x(k),\tilde t(k),\tilde h)\leq0\bigr]\geq\eta, \tag{18}\\
+&g_{\tilde t}(\tilde t(k))\leq0. \tag{19}
+\end{align}
+这里$\eta\in(0,1)$。(18)中的概率是联合约束满足概率，而不是每个组件的单独概率。(17)中的决策是连续的干预时间点。当前状态$x(k)$是此MPC步骤的输入数据。下面的中级和低级目标后续进行的单独优化，而不是(17)中的附加项。
+
+\subsection*{状态、行动、不确定性以及恶化情况}
+基础设施中有$n$个组件，这些组件具有独立的状况恶化动态。对于组件$j$来说，
+\[
+x_j(k)=\begin{bmatrix}x_j^{\mathrm{con}}(k)\\x_j^{\mathrm{aux}}(k)\end{bmatrix}\in\mathcal X_j,
+\qquad j\in\{1,\ldots,n\}.
+\]
+条件是$x_j^{\mathrm{con}}$；向量$x_j^{\mathrm{aux}}$包含了描述与历史相关的维护效率低下所需的辅助状态信息。集合$\mathcal X_j$以及以下函数在整个通用模型中仍然保持抽象状态。条件值越大，状态就越差。自然恶化是单调递增的；图~3中的指数轨迹只是一个示例，并非规定的通用动态函数。
+\[
+\mathcal U=\{a_0,\ldots,a_N\},\qquad u_j(k)\in\mathcal U,
+\qquad u(k)=[u_1(k)^{\mathrm T}\ \cdots\ u_n(k)^{\mathrm T}]^{\mathrm T}\in\mathcal U^n.
+\]
+所有组件都使用相同的操作集。其中有$N$的干预措施：$a_0$不需要维护，而$a_N$则需要完全更换。
+\[
+\theta_j(k)\in\Theta_j,\qquad
+\theta(k)=[\theta_1^{\mathrm T}(k)\ \cdots\ \theta_n^{\mathrm T}(k)]^{\mathrm T}\in\Theta.
+\]
+这些是不确定性下的实现结果，而非决策。
+\begin{equation}
+\begin{aligned}
+x_j(k+1)&=f_j(x_j(k),u_j(k),\theta_j(k))\\
+&=\begin{cases}
+f_j^0(x_j(k),\theta_j(k)),&u_j(k)=a_0\quad\text{(no maintenance)},\\
+f_j^q(x_j(k),\theta_j(k)),&u_j(k)=a_q,\quad\forall q\in\{1,\ldots,N-1\},\\
+f_j^N(\theta_j(k)),&u_j(k)=a_N\quad\text{(full renewal)},
+\end{cases}\\[-2pt]
+&\hspace{1cm}\forall j\in\{1,\ldots,n\}.
+\end{aligned}\tag{1}
+\end{equation}
+自然退化过程$f_j^0$仅取决于当前的状态和不确定性因素。而更新过程则是随机的，与当前的状态和维护历史无关，能够恢复到“如同新的一样”的状态。其他干预措施则取决于当前的状态和维护历史。
+\begin{align}
+x(k+1)&=f(x(k),u(k),\theta(k)), \tag{2}\\
+g(x(k),u(k),\theta(k))&\leq0, \tag{3}
+\end{align}
+其中，$f=[f_1^{\mathrm T}\ \cdots\ f_n^{\mathrm T}]^{\mathrm T}$表示抽象向量。$g$则包含了局部约束条件，包括确保每个组件的状态都低于其维护限制，以及系统范围内的资源限制，例如维护预算和工作时间限制。对于这种通用公式，$g$没有具体的数值限制或额外的明确形式。
+
+\subsection*{预测构建与时间性决策}
+$N_{\mathrm P}$和$N_{\mathrm C}$分别代表了预测范围和控制范围的长度。估计值$\hat x(k+l\mid k)$则是基于时间$k$时已有的信息得出的。
+\[
+\begin{aligned}
+\tilde x(k)&=[\hat x^{\mathrm T}(k+1\mid k)\ \cdots\ \hat x^{\mathrm T}(k+N_{\mathrm P}\mid k)]^{\mathrm T},\\
+\tilde u(k)&=[u^{\mathrm T}(k)\ \cdots\ u^{\mathrm T}(k+N_{\mathrm P}-1)]^{\mathrm T},\\
+\tilde\theta(k)&=[\theta^{\mathrm T}(k)\ \cdots\ \theta^{\mathrm T}(k+N_{\mathrm P}-1)]^{\mathrm T}.
+\end{aligned}
+\]
+\begin{align}
+\tilde x(k)&=\tilde f(x(k),\tilde u(k),\tilde\theta(k)), \tag{4}\\
+\tilde g(x(k),\tilde u(k),\tilde\theta(k))&\leq0. \tag{5}
+\end{align}
+函数$\tilde f$是通过对(2)在预测范围内进行递归替换得到的；$\tilde g$也是通过类似的方法从(3)中得到的。方程(3)和(5)描述了潜在的约束条件族，这些约束条件通过(18)来强制执行，而不是作为每个场景的额外稳健约束条件。
+
+固定数量$\nu_{j,q}$是指在预测期内，干预措施$q$在组件$j$上的最大出现次数。连续向量$t_{j,q,k}$的长度为$\nu_{j,q}$，其中包含了相对干预时间点。
+\begin{equation}
+\tilde t(k)=\left[
+\underbrace{t_{1,1,k}^{\mathrm T}\ \cdots\ t_{1,N,k}^{\mathrm T}}_{t_1^{\mathrm T}(k)}\ \cdots\
+\underbrace{t_{n,1,k}^{\mathrm T}\ \cdots\ t_{n,N,k}^{\mathrm T}}_{t_n^{\mathrm T}(k)}
+\right]^{\mathrm T}.\tag{6}
+\end{equation}
+TIO转换将时间瞬间四舍五入到最近的离散时间步长，得到$\tilde u(k)$。控制周期$N_{\mathrm C}T_s$之外的瞬间被忽略。这里的$T_s$是采样时间。对于$N_{\mathrm C}<N_{\mathrm P}$，
+\[
+u_j(k+l)=a_0\quad
+\forall l\in\{N_{\mathrm C},\ldots,N_{\mathrm P}-1\},\quad
+\forall j\in\{1,\ldots,n\}.
+\]
+在之前的显示中，动作符号是$u_j$，即明确表示为：
+\[
+u_j(k+l)\equiv u_j(k+l).
+\]
+由(19)所表示的完整确定性时序块如下：
+\begin{align}
+(t_{j,q,k})_1&\geq t_{j,q}^{\min}, \tag{7}\\
+(t_{j,q,k})_{\nu_{j,q}}&\leq t_{j,q}^{\max}, \tag{8}\\
+(t_{j,q,k})_{i+1}-(t_{j,q,k})_i&\geq\Delta t_{j,q}^{\min},
+\quad\forall i\in\{1,\ldots,\nu_{j,q}-1\}, \tag{9}\\
+t_{j,q}^{\max}&=N_{\mathrm C}T_s+\nu_{j,q}\Delta t_{j,q}^{\min}. \tag{10}
+\end{align}
+所有行都适用于所有的$j\in\{1,\ldots,n\}$和$q\in\{1,\ldots,N\}$。下限$t_{j,q}^{\min}$用于提前规划，而$\Delta t_{j,q}^{\min}$则是同一类型连续干预之间的最小间隔。方程（10）是固定的上限定义，表示在控制期内不得进行任何干预；它不会被控制边界终点处的界限所替代。
+
+\subsection*{场景与目标定义}
+\[
+\tilde\Theta=\Theta^{N_{\mathrm P}},\qquad
+\tilde{\mathcal H}\subset\tilde\Theta.
+\]
+集合$\tilde{\mathcal H}$包含了整个预测期间所选定的代表性不确定性情景。对于任何一个$\tilde h\in\tilde{\mathcal H}$，其TIO预测及其约束表达式都是如此。
+\begin{align}
+\tilde x(k)&=\tilde f_{\mathrm{TIO}}(x(k),\tilde t(k),\tilde h), \tag{11}\\
+\tilde g_{\mathrm{TIO}}(x(k),\tilde t(k),\tilde h)&\leq0. \tag{12}
+\end{align}
+不等式 (12) 定义了情况 (18) 中的事件；它并不是针对每一个代表性场景独立施加的。
+\begin{align}
+J(k)&=J_{\mathrm{Deg}}(k)+\lambda\mu J_{\mathrm{Maint}}(k), \tag{13}\\
+J_{\mathrm{Deg}}(k)&=\sum_{j=1}^{n}\sum_{l=1}^{N_{\mathrm P}}
+\left|x_j^{\mathrm{con}}(k+l)-\hat x_j^{\mathrm{con}}\right|_q, \tag{14}\\
+J_{\mathrm{Maint}}(k)&=\sum_{j=1}^{n}\sum_{l=1}^{N_{\mathrm P}}\sum_{q=1}^{p}
+\gamma_{j,q}I_{u_j(k+l-1)=a_q}, \tag{15}\\
+J(k)&=f_{\mathrm{opt}}(x(k),\tilde t(k),\tilde h). \tag{16}
+\end{align}
+选择源支持的$1$-范数版本(14)，即该行中的$q=1$。而(15)中的$q$则是一个干预求和指标。因子$\mu$用于调整维护成本，而$\lambda$则表示条件与成本之间的权衡。系数$\gamma_{j,q}$是干预措施$a_q$对组件$j$的成本影响。
+\[
+I_X=\begin{cases}1,&X\text{ is true},\\0,&X\text{ is false}.\end{cases}
+\]
+符号$\hat x_j^{\mathrm{con}}$和上限$p$保持原样，如(14)--(15)中所示。提供的通用段落并未指定它们的值，也没有将$p$与$N$进行关联；因此这里也没有引入这样的关联。特别是，(14)中的时间无关的帽子量并未被$\hat x_j^{\mathrm{con}}(k+l\mid k)$替代。
+\begin{equation}
+\mathrm E_{\tilde{\mathcal H}}\bigl[f_{\mathrm{opt}}(x(k),\tilde t(k),\tilde h)\bigr]
+=\sum_{\tilde h\in\tilde{\mathcal H}}p(\tilde h)
+ f_{\mathrm{opt}}(x(k),\tilde t(k),\tilde h).\tag{20}
+\end{equation}
+这里的$p(\tilde h)$是场景$\tilde h$的概率，它与公式(15)中的上限值$p$是不同的。公式(18)对应的有限场景表达式为：
+\begin{equation}
+\sum_{\tilde h\in\tilde{\mathcal H}}p(\tilde h)
+ I_{\tilde g_{\mathrm{TIO}}(x(k),\tilde t(k),\tilde h)\leq0}\geq\eta.\tag{21}
+\end{equation}
+
+
+\section*{中层时间槽分配}
+在当前的规划阶段，最多只有\(N_{\rm sl}\)个可用插槽。  
+区间\([\tau_j,\tau_{j+1}]\)和\(j=1,\ldots,N_\tau\)的干扰率分别为\(c_j\)。  
+设\(a_i=t_i^{\rm start},\,b_i=t_i^{\rm end}\)。每个活跃的插槽都有设置时间\(T_{\rm set}\)，且成本为\(c_{\rm sl}\)。所需的生产时间则为\(\widehat T_{\rm Maint}\)。
+\begin{align}
+\min_{a,b}\quad&
+ \sum_{i=1}^{N_{\rm sl}}\sum_{j=1}^{N_\tau}c_j
+ [\max(\min(\tau_{j+1},b_i),\tau_j)-\min(\max(\tau_j,a_i),\tau_{j+1})]
+ +\lambda_{\rm sl}\sum_{i=1}^{N_{\rm sl}}c_{\rm sl}{\bf1}_{b_i\le\tau_{N_\tau+1}}\tag{22}\\
+a_1&\ge\tau_1\tag{23}\\
+b_{N_{\rm sl}}&\le\tau_{\max}\tag{24}\\
+b_i-a_i&\ge\Delta\tau_{\min} &&(1\le i\le N_{\rm sl})\tag{25}\\
+b_i+\epsilon&\le a_{i+1} &&(1\le i\le N_\tau-1)\tag{26}\\
+\tau_{\max}&=\tau_{N_\tau+1}+2N_{\rm sl}\Delta\tau_{\min}\tag{27}\\
+a_i\le\tau_{N_\tau+1}&\implies b_i\le\tau_{N_\tau+1} &&(1\le i\le N_{\rm sl})\tag{28}\\
+\sum_{i=1}^{N_{\rm sl}}{\bf1}_{b_i\le\tau_{N_\tau+1}}
+ (b_i-a_i-T_{\rm set})&\ge\widehat T_{\rm Maint}.\tag{29}
+\end{align}
+保留(26)中的印刷索引。示例中使用\(N_\tau=N_{\rm sl}=2\)。
+\section*{低层次聚类}
+在每个处于活动状态的\(s\)时段中，持续时间为\(T_s^{\rm sl}\)，只需考虑那些被选中用于干预的组件中的单元。最初，\(\mathcal I_1=\{1,\ldots,N^{\rm bu}\}\)；随后，\(\mathcal I_s\)包含尚未处理的索引。单元\(j\)的位置为\(\xi_j\)，严重程度为\(w_j\)。设置\(l_i=\phi_{i,s}^{\rm start},\,r_i=\phi_{i,s}^{\rm end}\)。
+\begin{align}
+\max_{l,r}\quad&
+\sum_{i=1}^{N_{\rm cl}}\sum_{j\in\mathcal I_s}w_j{\bf1}_{l_i\le\xi_j\le r_i}
+ +\lambda\sum_{i=1}^{N_{\rm cl}}{\bf1}_{r_i>\bar\xi}\tag{30}\\
+l_1&\ge\underline\xi\tag{31}\\
+r_{N_{\rm cl}}&\le\xi_{\max}\tag{32}\\
+\Delta\phi_{\min}\le r_i-l_i&\le\Delta\phi_{\max} &&(1\le i\le N_{\rm cl})\tag{33}\\
+l_{i+1}-r_i&\ge\epsilon &&(1\le i<N_{\rm cl})\tag{34}\\
+\xi_{\max}&=\bar\xi+2N_{\rm cl}(\Delta\phi_{\min}+\epsilon)\tag{35}\\
+l_i\le\bar\xi&\iff r_i\le\bar\xi &&(1\le i\le N_{\rm cl})\tag{36}\\
+\sum_{i=1}^{N_{\rm cl}}{\bf1}_{r_i\le\bar\xi}
+ \left((r_i-l_i)/v_{\rm on}+T_{\rm on}+T_{\rm off}\right)
+ +\sum_{i=1}^{N_{\rm cl}-1}{\bf1}_{r_i\le\bar\xi}
+ (l_{i+1}-r_i)/v_{\rm off}+T_{\rm set}&\le T_s^{\rm sl}.\tag{37}
+\end{align}
+在公式(37)中，驱动总和包括了当前集群处于活动状态时移动到下一个集群的过程，同时也包括了从活动集群打印出来的数据被传输到下一个非活动集群的过程。
+\section*{顺序协调、执行以及反馈}
+这三个目标通过第~节4、图~4以及算法~1中的流程相互关联。从宏观层面来看，输入主要包括基本单元的位置$\xi$以及初始条件$w(0)$。该算法会进行初始化操作。
+\[
+k\leftarrow1,\qquad w(k)\leftarrow w(0),\qquad
+x(k)\leftarrow\operatorname{Aggregate}(w(k),\xi).
+\]
+对于$k\leq k_{\mathrm{end}}$，高级的求解和转换过程会产生以下结果：
+\[
+u(k)\leftarrow\operatorname{MPC\_Optimize}(x(k)).
+\]
+左侧是行动向量$u(k)$。仅实施当前步骤的干预决策，遵循滚动视野原则。对于每一个干预$a_l$（如有$u_j(k)=a_l$），后续的调用是
+\[
+\begin{aligned}
+t_{\mathrm{sl}}(k)&\leftarrow\operatorname{MiddleLevel}(u(k),a_l,\widehat T_{\mathrm{Maint}}),\\
+\phi(k)&\leftarrow\operatorname{LowLevel}(w(k),\xi,t_{\mathrm{sl}}(k),a_l).
+\end{aligned}
+\]
+第一次调用解决了选定的中级问题；第二次调用则依次解决了活跃槽位上的聚类问题，使用的是上述的$\mathcal I_s$集合。通用输入$\widehat T_{\mathrm{Maint}}$表示建议的干预措施所需的预计时间。具体的研磨估计器（47）以及数值案例研究设置并不适用于这种通用公式。
+
+让$\mathcal I_{\mathrm{rem}}$表示那些未被任何活跃插槽中的集群所覆盖的基本单位的索引集合。反馈量则……
+\begin{align}
+v_{\mathrm{rem}}&=
+\frac{\displaystyle\sum_{j\in\mathcal I_{\mathrm{rem}}}w_j}
+{\displaystyle\sum_{j=1}^{N^{\mathrm{bu}}}w_j}, \tag{38}\\
+\Delta\widehat T&=
+\frac{|\mathcal I_{\mathrm{rem}}|}{N^{\mathrm{bu}}}
+\cdot\frac{\bar\xi-\underline\xi}{v_{\mathrm{on}}}. \tag{39}
+\end{align}
+第一个是累积严重程度的剩余部分；第二个是额外的维护时间估计值。因子$\mu$将额外的时间转化为成本。虽然基本单位不在返回的集群中，但规则仍然是……
+\[
+\begin{array}{ll}
+v_{\mathrm{rem}}-\mu\Delta\widehat T>0:
+&\widehat T_{\mathrm{Maint}}\leftarrow\widehat T_{\mathrm{Maint}}+\Delta\widehat T,
+\quad\text{repeat the middle- and low-level calls},\\[2pt]
+v_{\mathrm{rem}}-\mu\Delta\widehat T\leq0:
+&\text{terminate the iteration and leave those units uncovered}.
+\end{array}
+\]
+算法~1 在“计算”指令中写作 $\nu_{\mathrm{rem}}$，在判断条件中则写作 $v_{\mathrm{rem}}$；式 (38) 和第~4 节的文字说明使用 $v_{\mathrm{rem}}$。 打印符号的变更已注明，无需添加第二个反馈定义。 在(38)--(39)部分，没有提供零分母的约定。
+
+在迭代之后，算法会执行相应的操作。
+\[
+\operatorname{Intervention}(\phi(k),a_l).
+\]
+仅返回的数据集中的基本单位会被处理。如果不需要进行任何干预，则程序将继续进行条件更新。当有新测量数据可用时，就会使用这些数据；否则，算法会采用抽象的模拟操作。
+\[
+\begin{aligned}
+w(k+1)&\leftarrow\text{new measurements},&&\text{if available},\\
+w(k+1)&\leftarrow\operatorname{Simulate}(w(k),\xi,\phi(k)),&&\text{otherwise},\\
+x(k+1)&\leftarrow\operatorname{Aggregate}(w(k+1),\xi),\\
+k&\leftarrow k+1.
+\end{aligned}
+\]
+在通用基础设施中，Aggregate、Simulate和Intervention这些操作仍然保持抽象状态；没有导入任何具体的案例研究或模拟规则。重复的符号$\lambda$和$\mu$则保留其原有的打印格式，即用于表示高级、低级和反馈功能，而不是被赋予新的数值关系。
+
+
+\paragraph{原始公式和附录的差异。}
+Su等人发表在《Transportation Research Part C》2017年第84卷第92-123页的章节4.2和4.3中，分别给出了(22)--(29)和(30)--(37)两个独立的优化模型。附录C.1和C.2提出了MILP变换方法。方程(50)--(54)处理开槽起始和结束产品的问题，(61)则用于指定位移之后的后续位置，(55)--(56)和(62)对端点的处理方式与(30)中的封闭指标有所不同。本实施例采用了明确打印的原始目标和约束条件。原始的基于附录的重建方式在来源材料中得到了保留。
+\end{document}

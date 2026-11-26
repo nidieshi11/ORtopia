@@ -1,0 +1,46 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\usepackage[a4paper,margin=1in]{geometry}
+
+\title{$s$-俱乐部划分的二进制集合划分公式}
+\author{}
+\date{}
+
+\usepackage[UTF8]{ctex}
+\begin{document}
+\maketitle
+
+\section*{符号表示法与输入数据}
+
+设$G=(V,E)$为一个有限的无向图，设$s$为一个正整数，设$\mathcal{S}$表示所有可接受的$s$-俱乐部构成的有限族，这些俱乐部可以表示为$V$的子集。因此，
+\[
+\mathcal{S}\subseteq 2^V,
+\]
+并且每个成员关联$(i,S)$与$i\in V$和$S\in\mathcal{S}$作为输入。等价地，当该家族由$G$和$s$生成时，
+\[
+\mathcal{S}
+=
+\left\{S\subseteq V:\operatorname{diam}(G[S])\le s\right\},
+\]
+其中，$G[S]$是由$S$所诱导出的子图，而直径则通过$G[S]$中的最短路径距离来测量。
+
+\section*{决策变量}
+
+对于每一个$S\in\mathcal{S}$，让
+\[
+\lambda_S\in\{0,1\},
+\]
+其中，$\lambda_S=1$表示在划分中选择了集合$S$。
+
+\section*{二进制集分割模型}
+
+\begin{alignat}{2}
+\min\quad & \sum_{S\in\mathcal{S}}\lambda_S && \tag{2a}\\
+\text{s.t.}\quad
+& \sum_{S\in\mathcal{S}:\,i\in S}\lambda_S = 1
+&& \forall i\in V, \tag{2b}\\
+& \lambda_S\in\{0,1\}
+&& \forall S\in\mathcal{S}. \tag{2c}
+\end{alignat}
+
+\end{document}

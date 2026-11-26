@@ -1,0 +1,56 @@
+\documentclass[UTF8,11pt]{ctexart}
+\usepackage{amsmath,amssymb,geometry}
+\geometry{margin=22mm}
+\begin{document}
+\section*{P10: 无人机与配送员接力配送的弧式主模型M1}
+\paragraph{来源与范围}依据原论文PDF第1, 3, 4, 5, 6, 7, 8, 9, 10页，正文(1.1)–(1.26)。
+\subsection*{核心范围和集合}
+保留正文的弧式MILP $M1$：一个已到达订单批次中，选择接受哪些订单、经哪些取送站点、由哪些配送员与无人机接力及其时刻。每架无人机每批最多一单；配送员顺序完成取件/派件弧，不同时携带多个订单。交通时间确定，订单按五分钟间隔生成批次，各订单完成时限由实例给定。
+
+$O,R,D$分别为订单、配送员、无人机。订单$o$的可选取件弧$A_o^P$从其起点到候选取件站，可选送件弧$A_o^L$从候选派件站到终点。$A^P=\bigcup_oA_o^P,A^L=\bigcup_oA_o^L,A=A^P\cup A^L$，不同订单和类型弧均分别编号。$F=\bigcup_o(A_o^P\times A_o^L)$是同单取送弧对。$s_r,e_r$为配送员虚拟起止弧，$s_d$为无人机虚拟起弧。配送员可用连接集
+\[
+E_r=\{(a,b):a\in A\cup\{s_r\},\ b\in A\cup\{e_r\},a\ne b\}.
+\]
+不存在的连接变量恒为0；连接$(s_r,e_r)$允许配送员不服务本批订单。
+\subsection*{参数与变量}
+$v_o\geq0$为订单收益，$c_r^C,c_d^D\geq0$为每单位行驶时间成本；$t_r^C,t_d^D\geq0$为从已执行任务释放的已知时刻。$L_r^C,L_d^D$为最大累计行驶/飞行时间，后者反映剩余电量，累计时间分别统计行驶和飞行。
+
+$w_a\geq0$为配送员执行取/送弧$a$的行驶时间，$h_{ab}^C\geq0$为从弧$a$终点到弧$b$起点的空驶时间。$h_{d,a}^D$为无人机从当前位置到取件弧$a$终点站的飞行时间；$h_{ab}^D$为取件站到派件站飞行时间。原文(1.7)使用点号而(1.8)使用双点号，两者文字解释均为同一站间飞行，本文件统一记为$h_{ab}^D$。虚拟弧自身$w_{s_r}=0$；空闲连接行驶时间为0，其他终止连接时间按实例定义。
+
+$l_a\geq0$为配送员最晚从弧$a$起点出发的时刻；若$a$为派件弧，则收件截止时刻为$l_a+w_a$。真实作业弧的行驶时间为正，从而时间递推排除作业子回路。
+
+$\beta_a\in\{0,1\}$选择作业弧；$\gamma^C_{r,ab}\in\{0,1\}$选择配送员相邻连接；$\gamma^D_{d,ab}\in\{0,1\}$选择无人机执行同单站间飞行。$\tau_a^C$是配送员从作业弧起点出发时刻；取件弧的$\tau_a^D$是无人机从取件站出发时刻，派件弧的$\tau_a^D$是无人机到派件站时刻。$\varepsilon_r^C,\varepsilon_d^D$为累计行驶时间。
+
+令$H=\max_{a\in A}l_a$。可取$M_{ra}^C=t_r^C+h_{s_ra}^C$，$M_{ab}^C=l_a+w_a+h_{ab}^C$，$M_{ab}^D=H+h_{ab}^D$。无人机时刻限定$0\leq\tau_a^D\leq H$不排除任何满足最终派件时限的有效飞行，且使未激活时间递推的大常数有效；无作业时取0。
+\subsection*{唯一完整模型}
+\begin{equation}
+\max\quad \sum_{o\in O}v_o\sum_{a\in A_o^P}\beta_a-\sum_{r\in R}c_r^C\varepsilon_r^C-\sum_{d\in D}c_d^D\varepsilon_d^D.
+\end{equation}
+\begin{align}
+\sum_{a\in A_o^P}\beta_a&\leq1&&o\in O,\\
+\sum_{a\in A_o^P}\beta_a&=\sum_{b\in A_o^L}\beta_b&&o\in O,\\
+\sum_{(a,b)\in F}\gamma^D_{d,ab}&\leq1&&d\in D,\\
+\sum_{d\in D}\gamma^D_{d,ab}&\geq\beta_a+\beta_b-1&&(a,b)\in F,\\
+\tau_a^D&\geq(t_d^D+h_{d,a}^D)\sum_{b:(a,b)\in F}\gamma^D_{d,ab}&&a\in A^P,d\in D,\\
+\tau_b^D&\geq\tau_a^D+h_{ab}^D-M_{ab}^D(1-\sum_{d\in D}\gamma^D_{d,ab})&&(a,b)\in F,\\
+\varepsilon_d^D&=\sum_{(a,b)\in F}(h_{d,a}^D+h_{ab}^D)\gamma^D_{d,ab}&&d\in D,\\
+0\leq\varepsilon_d^D&\leq L_d^D&&d\in D.
+\end{align}
+\begin{align}
+\beta_a&=\sum_{r\in R}\sum_{b:(a,b)\in E_r}\gamma^C_{r,ab}&&a\in A,\\
+\sum_{b:(s_r,b)\in E_r}\gamma^C_{r,s_rb}&=1,\quad\sum_{a:(a,e_r)\in E_r}\gamma^C_{r,ae_r}=1&&r\in R,\\
+\sum_{b:(a,b)\in E_r}\gamma^C_{r,ab}&=\sum_{b:(b,a)\in E_r}\gamma^C_{r,ba}\leq1&&a\in A,r\in R,\\
+\tau_a^C&\geq t_r^C+h_{s_ra}^C-M_{ra}^C(1-\gamma^C_{r,s_ra})&&a\in A,r\in R,\\
+\tau_b^C&\geq\tau_a^C+w_a+h_{ab}^C-M_{ab}^C(1-\gamma^C_{r,ab})&&r\in R,(a,b)\in E_r,a\in A,\\
+\varepsilon_r^C&=\sum_{(a,b)\in E_r}(w_a+h_{ab}^C)\gamma^C_{r,ab}&&r\in R,\\
+0\leq\varepsilon_r^C&\leq L_r^C&&r\in R,\\
+\tau_a^D&\geq\tau_a^C+w_a\beta_a&&a\in A^P,\\
+\tau_a^D&\leq\tau_a^C&&a\in A^L,\\
+0\leq\tau_a^C&\leq l_a\beta_a&&a\in A,\\
+\tau_{e_r}^C&\geq0&&r\in R,\\
+0\leq\tau_a^D&\leq H&&a\in A,\\
+\beta_a,\gamma^C_{r,ab},\gamma^D_{d,ab}&\in\{0,1\}&&\text{所有已定义下标}.
+\end{align}
+时间递推按配送员$r$逐条列出，等价于原文真实弧间的求和激活式并避免虚拟终点混用。原式(1.10)将虚拟起点与$\beta_a$下标混写，本文件只对真实弧写该式，虚拟起点由单独出发约束处理。保留原文无人机指派下界形式；在非负成本下，无用无人机飞行可移除，不产生额外收益。$l_a$是配送员从订单起点出发的时限，无人机起飞时刻由取件完成时刻和衔接约束确定。
+
+\end{document}

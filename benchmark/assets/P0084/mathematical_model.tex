@@ -1,0 +1,143 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage[a4paper,margin=1in]{geometry}
+
+\title{缩放确定性正部分替代路由模型}
+\author{}
+\date{}
+
+\usepackage[UTF8]{ctex}
+\begin{document}
+\maketitle
+
+\section{集合与网络}
+
+设$I,L\in\mathbb{Z}_{+}$分别表示客户数量和可用同质车辆的数量。
+\[
+\mathcal{N}_c:=\{1,\ldots,I\},
+\qquad
+\mathcal{N}_d:=\{I+1,\ldots,I+L\},
+\qquad
+\mathcal{N}:=\{0\}\cup\mathcal{N}_c\cup\mathcal{N}_d,
+\]
+其中，节点$0$是仓库，$\mathcal{N}_c$是客户集合，而$\mathcal{N}_d$则是虚拟目的节点集合。有向弧的集合为：
+\[
+\mathcal{A}:=\mathcal{A}_o\cup\mathcal{A}_c\cup\mathcal{A}_d,
+\]
+与…一起
+\[
+\mathcal{A}_o:=\{(0,j):j\in\mathcal{N}_c\},
+\qquad
+\mathcal{A}_c:=\{(i,j):i,j\in\mathcal{N}_c,\ i\neq j\},
+\]
+\[
+\mathcal{A}_d:=\{(i,\ell):i\in\mathcal{N}_c,\ \ell\in\mathcal{N}_d\}.
+\]
+对于每个$\mathcal{H}\subseteq\mathcal{N}$，定义其输出和输入切割集。
+\[
+E^+(\mathcal{H})
+:=\{(i,j)\in\mathcal{A}:i\in\mathcal{H},\ j\in\mathcal{N}\setminus\mathcal{H}\},
+\]
+\[
+E^-(\mathcal{H})
+:=\{(j,i)\in\mathcal{A}:i\in\mathcal{H},\ j\in\mathcal{N}\setminus\mathcal{H}\}.
+\]
+对于单节点$i\in\mathcal{N}$，分别写入$E^+(i):=E^+(\{i\})$和$E^-(i):=E^-(\{i\})$。
+
+\section{参数}
+
+对于每一位客户$i\in\mathcal{N}_c$，让$d_i$表示其需求，让$Q>0$表示同质车辆的容量。让$\tau\in\mathbb{R}$表示共同阈值。
+\[
+T\in\mathbb{Z}_{+},
+\qquad
+\rho\in\mathbb{R}_{+}.
+\]
+对于每一个$t\in\{1,\ldots,T\}$和$a\in\mathcal{A}$，$\theta_a^t\in\mathbb{R}$是一个固定的系数，而$\bar\theta^t\in\mathbb{R}$是一个固定的截距。因此，对于每一个$t$，系数向量$\theta^t=(\theta_a^t)_{a\in\mathcal{A}}$的维度为$|\mathcal{A}|$。
+
+\section{决策变量}
+
+\begin{align*}
+x_a&\in\{0,1\} && \forall a\in\mathcal{A},\\
+s_a^\ell&\in\{0,1\} && \forall \ell\in\mathcal{N}_d,\ a\in\mathcal{A},\\
+\eta_\ell&\in\mathbb{R} && \forall \ell\in\mathcal{N}_d,\\
+w_{\ell t}&\in\mathbb{R} && \forall \ell\in\mathcal{N}_d,\ t=1,\ldots,T,\\
+u_{\ell t}&\in\mathbb{R}_{+} && \forall \ell\in\mathcal{N}_d,\ t=1,\ldots,T.
+\end{align*}
+这里$x_a=1$表示如果弧$a$属于某个选定路线，而$s_a^\ell=1$表示如果弧$a$属于终点为虚拟目的地$\ell$的路线。
+
+\section{优化模型}
+
+\begin{align}
+\min_{x,s,\eta,w,u}\quad
+&\sum_{\ell\in\mathcal{N}_d}\eta_\ell
+\label{obj}\\[1ex]
+\text{s.t.}\quad
+&\sum_{a\in E^+(i)}x_a=1
+&&\forall i\in\mathcal{N}_c,
+\label{customer-out}\\
+&\sum_{a\in E^-(i)}x_a=1
+&&\forall i\in\mathcal{N}_c,
+\label{customer-in}\\
+&\sum_{a\in E^+(0)}x_a
+ =\sum_{\ell\in\mathcal{N}_d}\sum_{a\in E^-(\ell)}x_a,
+\label{depot-balance}\\
+&\sum_{a\in E^-(\ell)}x_a\leq 1
+&&\forall \ell\in\mathcal{N}_d,
+\label{destination-use}\\
+&\sum_{a\in E^+(0)}s_a^\ell
+ =\sum_{a\in E^-(\ell)}x_a
+&&\forall \ell\in\mathcal{N}_d,
+\label{route-start}\\
+&\sum_{a\in E^-(\ell)}s_a^\ell
+ =\sum_{a\in E^-(\ell)}x_a
+&&\forall \ell\in\mathcal{N}_d,
+\label{route-end}\\
+&\sum_{a\in E^-(i)}s_a^\ell
+ -\sum_{a\in E^+(i)}s_a^\ell=0
+&&\forall \ell\in\mathcal{N}_d,\ i\in\mathcal{N}_c,
+\label{route-flow}\\
+&s_a^\ell\leq x_a
+&&\forall \ell\in\mathcal{N}_d,\ a\in\mathcal{A},
+\label{route-link}\\
+&\sum_{a\in E^+(\mathcal{H})}x_a
+ \geq
+ \left\lceil\frac{\sum_{i\in\mathcal{H}}d_i}{Q}\right\rceil
+&&\forall \mathcal{H}\subseteq\mathcal{N}_c:\ |\mathcal{H}|\geq 2,
+\label{capacity-cuts}\\
+&\sum_{a\in\mathcal{A}}s_a^\ell
+ \leq
+ \sum_{a\in\mathcal{A}}s_a^{\ell-1}
+&&\forall \ell\in\mathcal{N}_d\setminus\{I+1\},
+\label{route-ordering}\\
+&w_{\ell t}
+ =\sum_{a\in\mathcal{A}}\theta_a^t s_a^\ell
+  +\bar\theta^t-\tau
+&&\forall \ell\in\mathcal{N}_d,\ t=1,\ldots,T,
+\label{affine-risk}\\
+&u_{\ell t}=\max\{w_{\ell t},0\}
+&&\forall \ell\in\mathcal{N}_d,\ t=1,\ldots,T,
+\label{max-general}\\
+&\eta_\ell
+ \geq
+ \frac{\rho}{T+1}\sum_{t=1}^{T}u_{\ell t}
+&&\forall \ell\in\mathcal{N}_d,
+\label{surrogate-risk}\\
+&x_a\in\{0,1\}
+&&\forall a\in\mathcal{A},
+\label{x-domain}\\
+&s_a^\ell\in\{0,1\}
+&&\forall \ell\in\mathcal{N}_d,\ a\in\mathcal{A},
+\label{s-domain}\\
+&\eta_\ell\in\mathbb{R}
+&&\forall \ell\in\mathcal{N}_d,
+\label{eta-domain}\\
+&w_{\ell t}\in\mathbb{R},\quad u_{\ell t}\in\mathbb{R}_{+}
+&&\forall \ell\in\mathcal{N}_d,\ t=1,\ldots,T.
+\label{aux-domains}
+\end{align}
+
+约束条件\eqref{max-general}是一个精确的最大标量约束条件，可以直接作为 Gurobi 的最大通用约束条件来应用，其值为零。
+
+\end{document}

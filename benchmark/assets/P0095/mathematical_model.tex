@@ -1,0 +1,111 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\title{核心数学模型}
+\date{}
+
+\usepackage[UTF8]{ctex}
+\begin{document}
+
+\maketitle
+
+\section*{在 CNL 条件下，受限混合优化问题}
+
+假设可行的组合集可以用线性描述来表示，即$\mathcal{X} = \{x \in \{0,1\}^m : Fx \le g\}$。为了得到一个可以直接用 Gurobi 求解的模型，我们对线性分数近似方法应用了 Charnes-Cooper 变换和 Glover 线性化技术。定义$w = 1/(c + \sum_{n,k} d_{nk} z_{nk})$、$\tilde{x}_i = w x_i$、$\tilde{y}_{nk} = w y_{nk}$、$\tilde{z}_{nk} = w z_{nk}$和$\tilde{s}_{ink} = w s_{ink}$，同时定义$L_w = 1/(c + \sum_{n,k} d_{nk})$和$U_w = 1/c$。该求解器直接实现了以下 Assort-MILP 模型。
+
+
+\begin{equation}
+\max
+\left\{
+\sum_{i \in [m],\,n \in [N]} a_{in}\tilde{x}_i
++ \sum_{i \in [m],\,n \in [N],\,k \in [K_n]} b_{ink}\tilde{s}_{ink}
+\right\}
+\tag{Assort-MILP}
+\end{equation}
+
+\begin{equation}
+c w + \sum_{n \in [N],\,k \in [K_n]} d_{nk}\tilde{z}_{nk} = 1
+\tag{6a}
+\end{equation}
+
+\begin{equation}
+v_{0n} w + \sum_{i \in S_n} \alpha_{in} v_i \tilde{x}_i
+= L_n w + \sum_{k \in [K_n]} \Delta_{nk} \tilde{z}_{nk},
+\qquad \forall n \in [N]
+\tag{6b}
+\end{equation}
+
+\begin{equation}
+\tilde{y}_{n,k+1} \le \tilde{y}_{nk} \le \tilde{z}_{nk},
+\qquad \forall n \in [N],\ k \in [K_n-1]
+\tag{7}
+\end{equation}
+
+\begin{equation}
+\tilde{z}_{n,k+1} \le \tilde{y}_{nk},
+\qquad \forall n \in [N],\ k \in [K_n-2]
+\tag{8}
+\end{equation}
+
+\begin{equation}
+\tilde{s}_{ink} \le \tilde{x}_i,
+\quad
+\tilde{s}_{ink} \le \tilde{z}_{nk},
+\qquad \forall i \in [m],\ n \in [N],\ k \in [K_n]
+\tag{9}
+\end{equation}
+
+\begin{equation}
+\tilde{s}_{ink} \ge \tilde{x}_i + \tilde{z}_{nk} - w,
+\qquad \forall i \in [m],\ n \in [N],\ k \in [K_n]
+\tag{10}
+\end{equation}
+
+\begin{equation}
+F \tilde{x} \le g\,w
+\tag{11}
+\end{equation}
+
+约束\textnormal{(11)}是原始分类可行性系统的转换表示。该文件夹中的求解器直接强制执行原始线性约束$Fx \le g$对$x$的约束，同时还包括\textnormal{(12)}，它们代表$F\tilde{x} \le g\,w$。
+
+\begin{equation}
+w - U_w(1-x_i) \le \tilde{x}_i \le w,
+\qquad
+\tilde{x}_i \ge 0,
+\qquad
+\tilde{x}_i \le U_w x_i,
+\qquad \forall i \in [m]
+\tag{12}
+\end{equation}
+
+\begin{equation}
+w - U_w(1-y_{nk}) \le \tilde{y}_{nk} \le w,
+\qquad
+\tilde{y}_{nk} \ge 0,
+\qquad
+\tilde{y}_{nk} \le U_w y_{nk},
+\qquad \forall n \in [N],\ k \in [K_n]
+\tag{13}
+\end{equation}
+
+\begin{equation}
+x_i \in \{0,1\},
+\quad
+y_{nk} \in \{0,1\},
+\quad
+L_w \le w \le U_w,
+\qquad \forall i \in [m],\ n \in [N],\ k \in [K_n]
+\tag{14}
+\end{equation}
+
+\begin{equation}
+0 \le \tilde{z}_{nk} \le w,
+\quad
+0 \le \tilde{s}_{ink} \le w,
+\qquad \forall i \in [m],\ n \in [N],\ k \in [K_n]
+\tag{15}
+\end{equation}
+
+\end{document}

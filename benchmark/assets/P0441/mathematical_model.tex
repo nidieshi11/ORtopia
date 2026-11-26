@@ -1,0 +1,126 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage[UTF8]{ctex}
+\begin{document}
+
+\section*{FP购买补贴与内生定价}
+
+\[
+\boxed{\max\bigl\{s_{FP}^{*}(r_P):b_{FP}(r_P)\leq b\bigr\}.}
+\]
+赞助方选择每单位购买的补贴金额为$r_P$；$b$则是她可使用的固定预算。随后，该公司会选择适当的分配数量和价格，以最大化预期利润，在需求实现之前。下标$F$和$P$分别指代盈利性公司和购买补贴。赞助方的目标和预算限制与第5.1节中的未编号表述相同（物理PDF页面20）。
+
+\subsection*{明确的回应与赞助方的会计处理}
+
+第3.1节中，对新闻商数量与价格反应的购买补贴替代方法
+\begin{align*}
+p_{FP}^{*}(r_P)
+&=\operatorname*{argmax}_{p\in[\underline p,\bar p]}
+\left\{p\int_{\frac{c-r_P}{p}}^{1}
+\bar F_D^{inv}(\theta,p)\,d\theta\right\},\\
+q_{FP}^{*}(r_P)
+&=\bar F_D^{inv}\!\left(
+\frac{c-r_P}{p_{FP}^{*}(r_P)},p_{FP}^{*}(r_P)
+\right),\\
+s_{FP}^{*}(r_P)
+&=\hat s\!\left(q_{FP}^{*}(r_P),p_{FP}^{*}(r_P)\right),\\
+b_{FP}(r_P)&=r_Pq_{FP}^{*}(r_P).
+\end{align*}
+这些是物理PDF第19页上的操作响应和会计定义，而不是被取代的“无补贴”响应（4–6）。如物理PDF第12页的脚注5所述，在整篇论文中，如果存在多个最优解，则选择其中最小的一个。
+
+在本构造中使用的固定价格数量响应，具体内容见第4.1节（物理PDF页面14）。
+\[
+q_{FP}(r_P,p)=\bar F_D^{inv}\!\left(\frac{c-r_P}{p},p\right).
+\]
+这里$\bar F_D^{inv}(\cdot,p)$是$\bar F_D(\cdot,p)$的逆，如（4）之后所定义。该论文对这种逆符号的表示方式进行了抽象处理。
+
+\subsection*{需求、消费、利润以及可变因素}
+
+该固定需求族由非负随机变量$D(p)$组成，这些变量的分布为$F_D(\cdot,p)$，均值为$\mu_D(p)$，并且这些变量的索引取决于企业允许的价格范围。
+\begin{gather*}
+p\in[\underline p,\bar p],\qquad
+\mu_D(p)=\mathbb E[D(p)],\\
+\bar F_D(\cdot,p)=1-F_D(\cdot,p),\\
+\bar d(p)=\sup\{D(p)\}<\infty,
+\qquad p\in[\underline p,\bar p].
+\end{gather*}
+因此，$\underline p$和$\bar p$是固定价格端点，而$\bar d(p)$则是需求支持的上限，并非企业产量决策的明确上限。边际成本$c$和赞助预算$b$都是固定数据。企业的分配数量为$q$，价格为$p$，而$d$则表示实际需求。补贴和分配数量都是非负数值；没有关于整数性的限制规定。
+\[
+r_P\geq0,\qquad q\geq0,\qquad p\in[\underline p,\bar p].
+\]
+
+购买补贴为每单位产品带入市场支付$r_P$美元。实际获得的利润是
+\begin{equation}
+\pi_P(q,p,d,r_P)=p(q\wedge d)-cq+r_Pq,
+\tag{1}
+\end{equation}
+其中
+\[
+x\wedge y=\min\{x,y\}.
+\]
+这家营利性公司的目标是实现最大化
+\[
+\mathbb E[\pi_P(q,p,D(p),r_P)].
+\]
+在此公式中，不存在关于非营利组织盈亏平衡或亏损概率的约束条件。
+
+第4节中定义的预期销售函数（物理PDF页面13）是
+\[
+\hat s(q,p)=\int_0^q\bar F_D(x,p)\,dx
+           =\mathbb E[q\wedge D(p)].
+\]
+命题 3 的证明（物理 PDF 第 27 页）将相应的预期利润函数表述为：
+\[
+\phi(p,q,r_P)=p\int_0^q\bar F_D(x,p)\,dx-(c-r_P)q.
+\]
+这是该公司的利润目标，也是响应公式的基础，而非赞助方的消费目标。
+
+\subsection*{单调性前提的范围}
+
+赞助方的表述并未包含任何危险等级限制。命题3为相同的响应提供了一个条件性单调性结果。其打印版本的前提是：
+\[
+\{D(p),\ \underline p\leq p\leq\bar p\}
+\quad\text{is decreasing in the hazard rate order},
+\]
+附上打印出来的括号式解释。
+\[
+-\frac{d\log\bar F_D(x,p)}{dx}
+\quad\text{is decreasing in $p$ for any $x$}.
+\]
+基于上述前提，该命题指出，对于……来说，
+\[
+0\leq r_P\leq c,
+\]
+$q_{FP}^{*}(r_P)$、$s_{FP}^{*}(r_P)$和$b_{FP}(r_P)$都在$r_P$中呈上升趋势，而$p_{FP}^{*}(r_P)$则在$r_P$中呈下降趋势。这个范围就是命题3的打印范围；赞助方所显示的最大化值本身并不包含上限$r_P\leq c$。
+
+\paragraph{打印版的危险顺序不一致。}
+上述括号中的危险率方向按原样保留。在命题3的证明中，该论文则使用了蕴含关系。
+\[
+\frac{\bar F_D(x,p)}{\bar F_D(q,p)}
+\quad\text{is increasing in $p$ for any $x<q$}.
+\]
+这种含义与印刷体中的括号内容方向相反。两种读法并不会互相替代，也不会被添加为对赞助者问题的无条件限制条件。
+
+\subsection*{全额补贴的边界范围以及打印出来的扩展内容}
+
+第5.3节以及命题6的证明中，明确指出了全成本购买补贴$r_P=c$的具体数值。
+\[
+p_\mu\equiv\operatorname*{argmax}
+\{p\mu_D(p):\underline p\leq p\leq\bar p\},
+\]
+他们指出了所需的边界消耗量，以及实现这一目标所需的最低预算。
+\[
+s_{FP}^{*}(c)=\mu_D(p_\mu),\qquad
+b_{FP}(c)=c\bar d(p_\mu).
+\]
+
+\paragraph{打印扩展费用超过全额成本。}
+命题6的证明（物理PDF第29页）指出，如果$r_P\geq c$，那么公司的目标就是在$q$方面取得增长，然后继续打印。
+\[
+q_{FP}^{*}(r_P)=\bar d(p),\qquad
+p_{FP}^{*}(r_P)=p_\mu,
+\]
+断言：一旦$r_P\geq c$生效，这些决策就会与$r_P$独立。第一个表达式中的$p$保持原样。对于$r_P>c$，当没有数量限制时，这一断言与(1)相矛盾：在需求完全得到满足之后，利润仍然会随着$q$的增加而上升。该论文在其模型定义中并未提及决策约束$q\leq\bar d(p)$。因此，这里也没有引入任何此类限制、对逆论证的裁剪，或对$r_P>c$的修正响应。逆响应保持原样；该论文也没有对$\bar F_D^{inv}$进行任何明确的扩展，也没有提出任何额外的价格限制来解决此类情况。
+
+\end{document}

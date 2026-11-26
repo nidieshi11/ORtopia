@@ -1,0 +1,40 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\title{三生成器单一应急模型}
+\author{}
+\date{}
+\usepackage[UTF8]{ctex}
+\begin{document}
+\maketitle
+
+\section*{符号与数据}
+生成器集合为$\mathcal G=\{1,2,3\}$。情况$0$是基础情况，而情况$1$是单一突发事件，此时生成器$1$无法正常工作。在这两种情况下，需求均为$1$。基础生成的下限为零，上限为$(1,1,0.25)$。生成器$3$的突发事件输出上限分别为$0$和$0.25$。基础生成的二次成本系数为$(1,1,1)$，而生成器$3$的额外线性成本系数为$2$。短缺情况下的二次和线性成本系数分别为$10$和$3$。
+
+\section*{决策变量}
+对于$g\in\mathcal G$和$k\in\{0,1\}$，$p_{g,k}$表示发电机的输出。变量$\sigma_1$表示应急短缺情况，而$\delta_1$则表示发电机$3$的响应调整。这八个变量都是连续的。响应调整满足$\delta_1\in\mathbb R$以及下面的应急方程。
+
+\section*{精确的广义二次规划问题}
+所选的配方能够同时最小化基础变量和应急变量的值，其中，最小化目标被精确地扩展。最终结果是一个广义形式的二次规划问题。
+\begin{align}
+\min_{\substack{(p_{g,k})_{g\in\mathcal G,\,k\in\{0,1\}},\,\sigma_1,\,\delta_1}}
+\quad & p_{1,0}^{2}+p_{2,0}^{2}+p_{3,0}^{2}
+       +2p_{3,0}+10\sigma_1^{2}+3\sigma_1
+       \label{eq:objective}\\
+\text{subject to}\quad
+&0\le p_{1,0}\le 1,\\
+&0\le p_{2,0}\le 1,\\
+&0\le p_{3,0}\le 0.25,\\
+&p_{1,0}+p_{2,0}+p_{3,0}=1,\\
+&p_{1,1}=0,\\
+&p_{2,1}=p_{2,0},\\
+&p_{3,1}=p_{3,0}+\delta_1,\\
+&0\le p_{3,1}\le 0.25,\\
+&\sigma_1\ge 0,\\
+&p_{1,1}+p_{2,1}+p_{3,1}+\sigma_1=1,\\
+&p_{g,k}\in\mathbb R
+  \qquad(g\in\mathcal G,\ k\in\{0,1\}),\\
+&\sigma_1\in\mathbb R,\qquad \delta_1\in\mathbb R.
+\end{align}
+
+\end{document}

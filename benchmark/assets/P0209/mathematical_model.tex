@@ -1,0 +1,70 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\usepackage[UTF8]{ctex}
+\begin{document}
+\title{$N-1$- 基于安全的前瞻性流量市场耦合机制，具有精确的预测功能}
+\date{}
+\maketitle
+
+\paragraph{来源：} PDF第50页至51页以及第54页至55页，章节编号从(EC.3)到(EC.6)，以及(EC.22)到(EC.29)。仅保留日前清算内容。
+\section*{集合、映射和参数}
+设$N$为节点集合，$Z$为区域集合，$C$为消费者集合，$R$为备用控制区域集合，$G=G^{\mathrm{SLOW}}\mathbin{\dot\cup}G^{\mathrm{FAST}}$为发电机集合。发电机$g$具有生产出价$I(g)$，其中$I=\mathop{\dot\bigcup}_{g\in G}I(g)$为相关参数。节点和区域的映射关系为$n(g),z(g),n(c),z(c)$，而$G(r)=\{g:r(g)=r\}$则分别表示节点和区域的对应关系。集合$G^{\mathrm{SLOW}}(a)$、$I(a)$和$C(a)$分别包含节点或区域$a$处对应的发电机、出价和消费者信息。
+
+提前一天的参数就是$K_g,Q_g^L,Q_g^R,Q_g^U,P_i,Q_i,P_c,Q_c,P_r,Q_r$，同时每个$g\in G^{\mathrm{SLOW}}$都有一个有效的源指定参数$M_g$。让$\mathcal F=\mathcal F(\mathcal P_{N-1}^{\mathrm{FB-EP}})$成为精确预测的基于流量域的$N-1$的完整有限面族，其中提供了系数$V_{f,z}$和$W_f$。这个预测是在忽略缓慢生成器技术上的最小值的情况下构建的。
+
+\section*{日前FBMC清算}
+决策变量为$u_g,v_i,w_g,x_c,y_r,p_z,\sigma_g,\varsigma_i,\tau_g,\nu_g,\rho_z,\pi_r,\phi$和$\gamma_f$。它们的取值范围包括：
+\[
+ u_g\in\{0,1\}\ (g\in G^{\mathrm{SLOW}}),\quad v_i\geq0\ (i\in I(g),g\in G^{\mathrm{SLOW}}),\quad w_g\geq0\ (g\in G^{\mathrm{SLOW}}),
+\]
+\[
+0\leq v_i\leq1,\ 0\leq w_g\leq1\ (g\in G^{\mathrm{FAST}}),\quad0\leq x_c\leq1,\ \sigma_c\geq0\ (c\in C),
+\]
+\[
+0\leq y_r\leq1,\ \sigma_r\geq0,\ \pi_r\geq0\ (r\in R),\quad \sigma_g,\tau_g,\nu_g,\varsigma_i\geq0,
+\]
+与$p_z,\rho_z,\phi\in\mathbb R$和$\gamma_f\geq0$一起。
+
+日前问题就是
+\begin{align}
+\min\quad &\sum_{g\in G^{\mathrm{SLOW}}}K_gu_g+\sum_{i\in I}P_iQ_iv_i+\sum_{c\in C}P_cQ_cx_c+\sum_{r\in R}P_rQ_ry_r.\tag{EC.22}
+\end{align}
+对于速度较慢的发电机来说，需遵守以下规定：
+\begin{align}
+v_i&\leq u_g &&(g\in G^{\mathrm{SLOW}},i\in I(g)),\\
+w_g&\leq u_g &&(g\in G^{\mathrm{SLOW}}),\\
+Q_g^Lu_g+\sum_{i\in I(g)}Q_iv_i+Q_g^Rw_g&\leq Q_g^U &&(g\in G^{\mathrm{SLOW}}),\\
+\sigma_g&\geq Q_g^L\rho_{z(g)}+\sum_{i\in I(g)}\varsigma_i+\tau_g-Q_g^L\nu_g-K_g-M_g(1-u_g) &&(g\in G^{\mathrm{SLOW}}).
+\end{align}
+对于所有发电机以及快速发电机的容量，
+\begin{align}
+\varsigma_i&\geq Q_i(\rho_{z(g)}-\nu_g-P_i) &&(g\in G, i\in I(g)),\\
+\tau_g&\geq Q_g^R(\pi_{r(g)}-\nu_g) &&(g\in G),\\
+\sum_{i\in I(g)}Q_iv_i+Q_g^Rw_g&\leq Q_g^U &&(g\in G^{\mathrm{FAST}}).
+\end{align}
+对于消费者和储备金而言，
+\begin{align}
+\sigma_c&\geq Q_c(\rho_{z(c)}-P_c) &&(c\in C),\\
+\sum_{g\in G(r)}Q_g^Rw_g&\geq Q_r(1-y_r) &&(r\in R),\\
+\sigma_r&\geq Q_r(\pi_r-P_r) &&(r\in R).
+\end{align}
+区域网络约束是
+\begin{align}
+p_z&=\sum_{g\in G^{\mathrm{SLOW}}(z)}Q_g^Lu_g+\sum_{i\in I(z)}Q_iv_i-\sum_{c\in C(z)}Q_c(1-x_c) &&(z\in Z),\\
+\rho_z+\phi+\sum_{f\in\mathcal F}V_{f,z}\gamma_f&=0 &&(z\in Z),\\
+\sum_{z\in Z}p_z&=0,\\
+\sum_{z\in Z}V_{f,z}p_z&\leq W_f &&(f\in\mathcal F).
+\end{align}
+欧洲地区的定价支持是必需的。
+\begin{align}
+&\sum_{g\in G^{\mathrm{SLOW}}}K_gu_g+\sum_{i\in I}P_iQ_iv_i+\sum_{c\in C}P_cQ_cx_c+\sum_{r\in R}P_rQ_ry_r\\
+&\leq\sum_{z\in Z}\rho_z\sum_{c\in C(z)}Q_c+\sum_{r\in R}Q_r\pi_r-\Biggl(\sum_{g\in G^{\mathrm{SLOW}}}\sigma_g-\sum_{g\in G^{\mathrm{FAST}}}\left(\sum_{i\in I(g)}\varsigma_i+\tau_g\right)\\
+&\qquad+\sum_{g\in G}Q_g^U\nu_g+\sum_{c\in C}\sigma_c+\sum_{r\in R}\sigma_r+\sum_{f\in\mathcal F}W_f\gamma_f\Biggr).
+\end{align}
+
+
+\section*{经济含义与投入义务}
+$K_g$是慢速生成器的父块成本；$Q_g^L,Q_g^R,Q_g^U$表示最低产量、预留报价和总产能。$P_i,Q_i$表示生产出价的价格和数量。$P_c,Q_c$和$P_r,Q_r$分别描述了消费者出价和预留响应出价。$u$接受父块，$v,w$接受生产/预留比例，而$x,y$则接受需求/预留比例。$p$表示区域净出口。$\rho,\pi$是区域能源和预留价格。非负的$\sigma,\varsigma,\tau,\nu,\gamma$和自由的$\phi$支持欧洲定价标准以及相关的剩余关系。完整的一面系数$(V,W)$和有效的$M_g$必须附带其预测域的定义。完整的预测域作为输入提供。在(EC.29)中，快速生成器剩余项上的负号被保留，就像在引用的区域公式中那样。
+\end{document}

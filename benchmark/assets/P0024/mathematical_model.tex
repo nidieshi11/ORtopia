@@ -1,0 +1,145 @@
+\documentclass[11pt]{ctexart}
+\usepackage{amsmath,amssymb,longtable}
+\begin{document}
+\section*{P24: 当前完整数学模型（2026-10-20）}
+\section*{修订依据与边界}以源文第21页流入流出文字恢复全网络守恒；补齐有限采购/运输能力及预测器训练域。本地营养配送实例给出有限业务边界。
+
+
+
+
+\section*{保留的核心模型}
+第21页上的世界粮食计划署食物篮模型，将一种营养约束条件融入到混合整数优化问题中。 \emph{在}之后可以直接求解。预测函数$\hat h(\boldsymbol{x})$可以通过任何经过训练的、能够表示MIO的学习者来实现，这些学习者可以由本文所支持的模型来提供支持（例如，线性模型、树状模型、森林模型或ReLU网络）。
+
+\paragraph{决策变量。}
+$x_k$表示食物物品$k$的数量；$F_{ijk}$是供应/运输网络上的商品流动变量；而$y$则是由嵌入式模型$\hat h(\boldsymbol{x})$生成的预测适口性评分（或预测的约束输出）。
+
+\paragraph{集合与参数。}
+$\mathcal N_{\mathcal S}$、$\mathcal N_{\mathcal T}$和$\mathcal N_{\mathcal D}$分别是来源节点、转运节点和需求节点集合。$\mathcal K$是商品集合，而$\mathcal L$是营养元素集合。成本$p_{ik}^P$和$p_{ijk}^T$分别代表了采购成本和运输成本，$\gamma$是一个转换因子，$d_i$代表每日需求量，$days$表示规划的天数，$Nutval_{kl}$表示食物$k$中营养元素$l$的含量，$Nutreq_l$表示所需的营养元素$l$的数量，而$t$则是最低可接受的学习分数阈值。为了使保留模型完全可解，我们采用了一个经过训练的ReLU网络来实现学习映射$\hat h(\boldsymbol{x})$，该网络是本文明确支持的MIO可表示学习器之一。让$\mathcal R_\ell$代表隐藏层$\ell=1,\dots,H$的神经元集合，其权重为$W_{rq}^{(\ell)}$，偏置为$b_r^{(\ell)}$，并且具有有效的预激活界限$L_r^{(\ell)} \le s_r^{(\ell)} \le U_r^{(\ell)}$。
+
+\section*{应用层核心公式化}
+\begin{equation}
+\min_{\boldsymbol{x},\, y,\, \boldsymbol{F}}
+\sum_{i \in \mathcal{N}_{\mathcal S}}
+\sum_{j \in \mathcal{N}_{\mathcal T} \cup \mathcal{N}_{\mathcal D}}
+\sum_{k \in \mathcal K} p_{ik}^P F_{ijk}
++
+\sum_{i \in \mathcal{N}_{\mathcal S} \cup \mathcal{N}_{\mathcal T}}
+\sum_{j \in \mathcal{N}_{\mathcal T} \cup \mathcal{N}_{\mathcal D}}
+\sum_{k \in \mathcal K} p_{ijk}^T F_{ijk}
+\tag{6a}
+\end{equation}
+
+\begin{equation}
+\sum_{j \in \mathcal N_{\mathcal T}\cup\mathcal N_{\mathcal D}} F_{ijk}
+=
+\sum_{j \in \mathcal N_{\mathcal S}\cup\mathcal N_{\mathcal T}} F_{jik}
+\quad \forall i \in \mathcal N_{\mathcal T},\ \forall k \in \mathcal K
+\tag{6b}
+\end{equation}
+
+\begin{equation}
+\sum_{j \in \mathcal N_{\mathcal S} \cup \mathcal N_{\mathcal T}} \gamma F_{jik}
+= d_i x_k \, days
+\quad \forall i \in \mathcal N_{\mathcal D},\ \forall k \in \mathcal K
+\tag{6c}
+\end{equation}
+
+\begin{equation}
+\sum_{k \in \mathcal K} Nutval_{kl} x_k \ge Nutreq_l
+\quad \forall l \in \mathcal L
+\tag{6d}
+\end{equation}
+
+\begin{equation}
+x_{\mathrm{salt}} = 5
+\tag{6e}
+\end{equation}
+
+\begin{equation}
+x_{\mathrm{sugar}} = 20
+\tag{6f}
+\end{equation}
+
+\begin{equation}
+y \ge t
+\tag{6g}
+\end{equation}
+
+\begin{equation}
+y = \hat h(\boldsymbol{x})
+\tag{6h}
+\end{equation}
+
+\begin{equation}
+F_{ijk},\, x_k \ge 0
+\quad \forall i,j \in \mathcal N,\ \forall k \in \mathcal K
+\tag{6i}
+\end{equation}
+
+\section*{$\hat h(\boldsymbol{x})$ 的显式混合整数优化嵌入}
+\begin{equation}
+a_k^{(0)} = x_k
+\quad \forall k \in \mathcal K
+\tag{Emb-a}
+\end{equation}
+
+\begin{equation}
+s_r^{(\ell)} =
+\sum_{q \in \mathcal R_{\ell-1}} W_{rq}^{(\ell)} a_q^{(\ell-1)} + b_r^{(\ell)}
+\quad \forall \ell=1,\dots,H,\ \forall r \in \mathcal R_\ell
+\tag{Emb-b}
+\end{equation}
+
+\begin{equation}
+a_r^{(\ell)} \ge s_r^{(\ell)}
+\quad \forall \ell=1,\dots,H,\ \forall r \in \mathcal R_\ell
+\tag{Emb-c}
+\end{equation}
+
+\begin{equation}
+a_r^{(\ell)} \le s_r^{(\ell)} - L_r^{(\ell)} \left(1-\delta_r^{(\ell)}\right)
+\quad \forall \ell=1,\dots,H,\ \forall r \in \mathcal R_\ell
+\tag{Emb-d}
+\end{equation}
+
+\begin{equation}
+a_r^{(\ell)} \le U_r^{(\ell)} \delta_r^{(\ell)}
+\quad \forall \ell=1,\dots,H,\ \forall r \in \mathcal R_\ell
+\tag{Emb-e}
+\end{equation}
+
+\begin{equation}
+a_r^{(\ell)} \ge 0
+\quad \forall \ell=1,\dots,H,\ \forall r \in \mathcal R_\ell
+\tag{Emb-f}
+\end{equation}
+
+\begin{equation}
+y =
+\sum_{q \in \mathcal R_H} W_q^{(H+1)} a_q^{(H)} + b^{(H+1)}
+\tag{Emb-g}
+\end{equation}
+
+\begin{equation}
+\delta_r^{(\ell)} \in \{0,1\}
+\quad \forall \ell=1,\dots,H,\ \forall r \in \mathcal R_\ell
+\tag{Emb-h}
+\end{equation}
+
+\section*{解释}
+在第21页上的应用级模型，一旦约束条件(6h)被上述显式预测器嵌入所替代，就会成为一个完整的独立MIO模型。该论文还支持其他可表示为MIO的学习器，但经过训练的ReLU网络是一个完全指定的保留实例，因此之前缺失的学习约束块也得到了填补。
+
+
+
+\section*{有限业务数据域}
+实例逐项给出有向运输弧、价格、食品营养、需求、采购上限$Cap^P$、弧吨位上限$Cap^T$，
+食品上限$U$与类别集合$K_g$及类别上下限$L_g,U_g$。
+\[
+\sum_jF_{ijk}\le Cap^P_{ik}\ (i\in N_S),\quad
+\sum_kF_{ijk}\le Cap^T_{ij},\quad0\le x_k\le U_k,\quad
+L_g\le\sum_{k\in K_g}x_k\le U_g.
+\]
+这些参数给出有限采购、运输能力及学习器的有效输入域。
+ReLU权重、偏置和合法预激活界由实例逐层给出；上文所有嵌入约束同时成立。
+
+\end{document}

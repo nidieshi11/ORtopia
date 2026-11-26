@@ -1,0 +1,54 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+
+\geometry{a4paper, margin=1in}
+
+\title{核心可解数学模型}
+\author{}
+\date{}
+
+\usepackage[UTF8]{ctex}
+\begin{document}
+
+\maketitle
+
+该文件保留了本文采用的标准UCP混合整数规划模型作为核心表述方式。Benders主问题/对偶子问题以及基于DD的分解技术则被省略了。
+
+\section{单位承诺 MIP}
+
+\begin{equation}
+\min \quad \sum_{i=1}^{n} \sum_{j=1}^{T} \left(c_f^i x_j^i + c_g^i p_j^i + q_j^i\right)
+\tag{1a}
+\end{equation}
+
+\begin{equation}
+\begin{aligned}
+\text{s.t.}\quad
+& q_j^i \ge K_k^i\left(x_j^i - \sum_{h=1}^{k} x_{j-h}^i\right)
+&& \forall k\in\{1,\dots,j-1\},\ \forall j\in\mathcal{T},\ \forall i\in N, \\
+& y_j^i - \bar y_j^i = x_j^i - x_{j-1}^i
+&& \forall j\in\mathcal{T},\ \forall i\in N, \\
+& \sum_{j'=j-L^i+1}^{j} y_{j'}^i \le x_j^i
+&& \forall j\in\{L^i,\dots,T\},\ \forall i\in N, \\
+& \sum_{j'=j-\ell^i+1}^{j} \bar y_{j'}^i \le 1 - x_j^i
+&& \forall j\in\{\ell^i,\dots,T\},\ \forall i\in N, \\
+& p_j^i - p_{j-1}^i \le RU^i x_{j-1}^i + SU^i y_j^i
+&& \forall j\in\mathcal{T},\ \forall i\in N, \\
+& p_{j-1}^i - p_j^i \le RD^i x_j^i + SD^i \bar y_j^i
+&& \forall j\in\mathcal{T},\ \forall i\in N, \\
+& m^i x_j^i \le p_j^i \le \bar p_j^i \le M^i x_j^i
+&& \forall j\in\mathcal{T},\ \forall i\in N, \\
+& \sum_{i=1}^{n} p_j^i \ge D_j
+&& \forall j\in\mathcal{T}, \\
+& \sum_{i=1}^{n} \bar p_j^i \ge D_j + R_j
+&& \forall j\in\mathcal{T}, \\
+& x_j^i,\ y_j^i,\ \bar y_j^i \in \{0,1\}
+&& \forall j\in\mathcal{T},\ \forall i\in N, \\
+& q_j^i,\ p_j^i,\ \bar p_j^i \ge 0
+&& \forall j\in\mathcal{T},\ \forall i\in N.
+\end{aligned}
+\end{equation}
+
+\end{document}

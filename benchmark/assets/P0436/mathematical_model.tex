@@ -1,0 +1,301 @@
+\documentclass[10pt]{article}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[margin=0.75in]{geometry}
+\allowdisplaybreaks
+\usepackage[UTF8]{ctex}
+\begin{document}
+
+\section*{完整的嵌套多阶段随机中断感知OPF模型}
+\subsection*{第一阶段名义模型 (1)}
+\begin{equation}
+\begin{aligned}
+z^*=\min\ &\sum_{b\in\mathcal B}c_b^B u_b+\sum_{t=1}^{T}\sum_{\omega\in\Omega}p_t^\omega\Bigl[C_{1,t}(s^p,L^{p+},L^{p-},L^{q+},L^{q-})\\
+&\hspace{43mm}+f_{1+t}^\omega(s_{\cdot t}^p,w_{\cdot t},u)\Bigr].
+\end{aligned}\tag{1a}
+\end{equation}
+在以下条件下：
+\begin{align}
+\sum_{b\in\mathcal B_i}z_{bt}^p+\sum_{g\in\mathcal G_i}s_{gt}^p-d_{it}^p+L_{it}^{p+}-L_{it}^{p-}&=\sum_{ij\in\mathcal E}P_{ijt} &&\forall i\in\mathcal N,\ t\in\mathcal T, \tag{1b}\\
+\sum_{b\in\mathcal B_i}z_{bt}^q+\sum_{g\in\mathcal G_i}s_{gt}^q-d_{it}^q+L_{it}^{q+}-L_{it}^{q-}&=\sum_{ij\in\mathcal E}Q_{ijt} &&\forall i\in\mathcal N,\ t\in\mathcal T, \tag{1c}\\
+(P_{ijt})^2+(Q_{ijt})^2&\leq W_{ij}^2 &&\forall ij\in\mathcal E,\ t\in\mathcal T, \tag{1d}\\
+V_{jt}&=V_{it}-2(R_{ij}P_{ijt}+X_{ij}Q_{ijt}) &&\forall ij\in\mathcal E,\ t\in\mathcal T, \tag{1e}\\
+R_g^D\leq s_{gt}^p-s_{g,t-1}^p&\leq R_g^U &&\forall g\in\mathcal G,\ t=2,\ldots,T, \tag{1f}\\
+\underline{s}_g^p\leq s_{gt}^p&\leq\bar{s}_g^p &&\forall g\in\mathcal G,\ t\in\mathcal T, \tag{1g}\\
+\underline{s}_g^q\leq s_{gt}^q&\leq\bar{s}_g^q &&\forall g\in\mathcal G,\ t\in\mathcal T, \tag{1h}\\
+\underline V_i\leq V_{it}&\leq\bar V_i &&\forall i\in\mathcal N,\ t\in\mathcal T, \tag{1i}\\
+w_{bt}&=w_{b,t-1}-y_{bt}\Delta_t &&\forall b\in\mathcal B,\ t\in\mathcal T, \tag{1j}\\
+(z_{bt}^p)^2+(z_{bt}^q)^2&\leq u_b^2 &&\forall b\in\mathcal B,\ t\in\mathcal T, \tag{1k}\\
+z_{bt}^p&\leq\alpha_b^\ell y_{bt}+\beta_b^\ell &&\forall b\in\mathcal B,\ \ell\in\mathcal L_b,\ t\in\mathcal T, \tag{1l}\\
+0\leq w_{bt}&\leq\bar I_b &&\forall b\in\mathcal B,\ t\in\mathcal T, \tag{1m}\\
+0\leq u_b&\leq\bar u_b &&\forall b\in\mathcal B, \tag{1n}\\
+L_{it}^{p+},L_{it}^{p-},L_{it}^{q+},L_{it}^{q-}&\geq0 &&\forall i\in\mathcal N,\ t\in\mathcal T. \tag{1o}
+\end{align}
+
+\subsection*{条件性延续模型（2）}
+在时间$t_D$时，观测到$\bar\omega$的干扰现象。请写出$j_d=t_D+\tau^{\bar\omega}+d$。用户批准的执行说明（2026-11-13）将当前情景与下一个情景区分开来：
+\begin{equation}
+\begin{aligned}
+f_{t_D}^{\bar\omega}(\hat s,\hat w,\hat u)=\min\ 
+\sum_{d=1}^{T}\sum_{\omega'\in\Omega}p_d p^{\omega'}
+\bigl[C_{t_D,\min(j_d-1,T)}+\mathcal F_{j_d}^{\omega'}\bigr],\\
+\mathcal F_{j}^{\omega'}=
+\begin{cases}f_j^{\omega'}(s_{\cdot,j-1}^p,w_{\cdot,j-1},u),&j\leq T,\\
+0,&j>T.\end{cases}
+\end{aligned}\tag{2a}
+\end{equation}
+没有读取任何超出视野范围的状态变量。在以下条件约束中，$\omega=\bar\omega$表示已观察到的场景。
+\begin{align}
+\sum_{b\in\mathcal B_i}z_{bt}^p+\sum_{g\in\mathcal G_i}s_{gt}^p-d_{it}^p+L_{it}^{p+}-L_{it}^{p-}&=\sum_{ij\in\mathcal E}P_{ijt} &&\forall i\in\mathcal N,\ t=t_D,\ldots,T, \tag{2b}\\
+\sum_{b\in\mathcal B_i}z_{bt}^q+\sum_{g\in\mathcal G_i}s_{gt}^q-d_{it}^q+L_{it}^{q+}-L_{it}^{q-}&=\sum_{ij\in\mathcal E}Q_{ijt} &&\forall i\in\mathcal N,\ t=t_D,\ldots,T, \tag{2c}\\
+(P_{ijt})^2+(Q_{ijt})^2&\leq(1-B_{ijt}^{\omega})W_{ij}^2 &&\forall ij\in\mathcal E,\ t=t_D,\ldots,T, \tag{2d}\\
+V_{jt}-V_{it}&\leq-2(R_{ij}P_{ijt}+X_{ij}Q_{ijt})+B_{ijt}^{\omega}M &&\forall ij\in\mathcal E,\ t=t_D,\ldots,T, \tag{2e}\\
+V_{jt}-V_{it}&\geq-2(R_{ij}P_{ijt}+X_{ij}Q_{ijt})-B_{ijt}^{\omega}M &&\forall ij\in\mathcal E,\ t=t_D,\ldots,T, \tag{2f}\\
+s_{gt}^p-s_{g,t-1}^p&\geq R_g^D-B_{gt}^{\omega}M &&\forall g\in\mathcal G,\ t=t_D,\ldots,T, \tag{2g}\\
+s_{gt}^p-s_{g,t-1}^p&\leq R_g^U+B_{gt}^{\omega}M &&\forall g\in\mathcal G,\ t=t_D,\ldots,T, \tag{2h}\\
+\underline{s}_g^p(1-B_{gt}^{\omega})\leq s_{gt}^p&\leq\bar{s}_g^p(1-B_{gt}^{\omega}) &&\forall g\in\mathcal G,\ t=t_D,\ldots,T, \tag{2i}\\
+\underline{s}_g^q(1-B_{gt}^{\omega})\leq s_{gt}^q&\leq\bar{s}_g^q(1-B_{gt}^{\omega}) &&\forall g\in\mathcal G,\ t=t_D,\ldots,T, \tag{2j}\\
+\underline V_i\leq V_{it}&\leq\bar V_i &&\forall i\in\mathcal N,\ t=t_D,\ldots,T, \tag{2k}\\
+w_{bt}&=w_{b,t-1}-y_{bt}\Delta_t &&\forall b\in\mathcal B,\ t=t_D,\ldots,T, \tag{2l}\\
+(z_{bt}^p)^2+(z_{bt}^q)^2&\leq u_b^2 &&\forall b\in\mathcal B,\ t=t_D,\ldots,T, \tag{2m}\\
+z_{bt}^p&\leq\alpha_b^\ell y_{bt}+\beta_b^\ell &&\forall b\in\mathcal B,\ \ell\in\mathcal L_b,\ t=t_D,\ldots,T, \tag{2n}\\
+0\leq w_{bt}&\leq\bar I_b &&\forall b\in\mathcal B,\ t=t_D,\ldots,T, \tag{2o}\\
+0\leq u_b&\leq\bar u_b &&\forall b\in\mathcal B, \tag{2p}\\
+L_{it}^{p+},L_{it}^{p-},L_{it}^{q+},L_{it}^{q-}&\geq0 &&\forall i\in\mathcal N,\ t=t_D,\ldots,T, \tag{2q}\\
+s_{g,t_D-1}^p&=\hat s_{g,t_D-1}^p &&\forall g\in\mathcal G, \tag{2r}\\
+w_{b,t_D-1}&=\hat w_{b,t_D-1} &&\forall b\in\mathcal B, \tag{2s}\\
+u_b&=\hat u_b &&\forall b\in\mathcal B. \tag{2t}
+\end{align}
+
+\paragraph{明确执行约定于2026-11-13通过。}
+在(2a)中，源代码重复使用了同一个场景索引来指代两个角色。上述重新索引的过程是基于观察到的恢复时间以及独立的下一个场景概率来进行的。所有符合条件的历史记录都被保留下来，包括那些概率为零的历史记录。对于(1a)中的第一阶段延续情况，包含$1+t>T$的术语在评估时为零，因为该状态不在视野范围内。初始存储数据如下：
+\[w_{b0}=w_b^{\mathrm{initial}},\qquad 0\leq w_b^{\mathrm{initial}}\leq\bar I_b.\]
+每个物理边缘都有一个存储的方向。在节点总和中，$\sum_{ij\in\mathcal E}P_{ijt}$表示输出的存储流量减去输入的存储流量；$Q$则相反。反向弧线的值为负值。生成器的限制、存储限制以及恢复时间可能各不相同；此外，也没有要求必须采用相同的电压标准。
+
+\section*{索引集、固定数据以及决策角色}
+配电网络可以表示为图$(\mathcal N,\mathcal E)$：$\mathcal N$是总线集合，由$i$索引；$\mathcal E$是线路集合，由$ij$索引，用于描述总线$i$和$j$之间的线路。配电网络以辐射状方式运行。发电机组为$\mathcal G$，由$g$索引；$\mathcal G_i\subseteq\mathcal G$表示总线$i$上的发电机，而$i_g\in\mathcal N$表示发电机$g$的位置。电池组为$\mathcal B$，由$b$索引；$\mathcal B_i\subseteq\mathcal B$表示总线$i$上的电池，而$i_b\in\mathcal N$表示电池$b$的位置。时间周期集合为$\mathcal T=\{1,\ldots,T\}$；$\Omega$是中断场景的集合；而$\mathcal L_b$则是电池$b$的效率曲线上的点集合，由$\ell$在约束条件中索引。
+
+固定的参数如下：
+\begin{itemize}
+\item $d_{it}^p,d_{it}^q$: 在整个时间范围内，需求都是确定性的，既可以是主动需求，也可以是反应性需求（以兆瓦特和千伏安为单位）。
+\item $R_{ij},X_{ij}$: 线路电阻和电抗（$\mathrm{k}\Omega$）；$W_{ij}$: 视在功率热极限（MVA）。
+\item $\underline V_i,\bar V_i$：平方电压的下限与上限值（$(\mathrm{kV})^2$）。
+\item $\underline s_g^p,\bar s_g^p,\underline s_g^q,\bar s_g^q$: 高低端的有功功率与无功功率发电限值（以兆瓦计，千伏安计）；$R_g^U,R_g^D$: 功率的上升与下降速率（以兆瓦时计）。
+\item $\bar I_b$：最大电池储能容量（MWh）；$\bar u_b$：视在功率输出容量的上限（MVA）；$\alpha_b^\ell,\beta_b^\ell$：效率曲线的斜率和截距；$\ell$；$\Delta_t$：时间步长（小时）。
+\item $c_b^B$: 电池表观功率容量成本（\$/MVA）；$c^l$: 负载不匹配惩罚（\$/MW，\$/MVAr）；$c_{g,1},c_{g,2}$: 线性和二次方有功发电成本系数（\$/MW，\$/$(\mathrm{MW})^2$）。
+\item $\tau^\omega$：场景$\omega$中的恢复时间，以时间步长为单位；$t_D$：观察到的中断时间；$B_{gt}^\omega,B_{ijt}^\omega$：固定的中断指标；$p_t^\omega$：有限支持的中断概率质量；$M$：一个很大的数字，由来源方遗漏了。
+\end{itemize}
+原文中將$\bar I_b$描述为通过利用最大情况下的数值来估算得出的结果，这些数值是来自表观功率输出能力上限的估算值。不过，原文并未提供该估算值的通用公式。
+
+连续运行决策包括$s_{gt}^p,s_{gt}^q$（主动/被动发电）、$V_{it}$（平方电压）、$P_{ijt},Q_{ijt}$（主动/被动线路电流）、$w_{bt}$（电池充电状态）、$z_{bt}^p,z_{bt}^q$（实际电池主动/被动输出）、$y_{bt}$（损耗前的主动输出），以及$L_{it}^{p+},L_{it}^{q+}$和$L_{it}^{p-},L_{it}^{q-}$（分别指负荷削减和负荷补偿）。投资决策$u_b$是视在功率输出能力，而非能量容量。其成本在第一个时间周期之前就已产生，而(2t)则将其固定在每个后续问题中的继承值。区间(2r)--(2t)表示该条件问题的固定初始状态数据。变量边界和非负性限制与上述相同；对于线路电流、$y$或电池输出，没有额外的符号限制。
+
+带有下标的符号表示向量。下标中的点表示对应的分量索引，例如：
+\[
+s_{\cdot,t-1}^p=\{s_{g,t-1}^p\mid g\in\mathcal G\}.
+\]
+在(1)中提出的方案，仅在实施到第一次中断之前有效。在(2)中提出的方案，则仅在实施到下一次中断之前有效。链接状态包括活跃的生成过程、电池的充电状态，以及已安装的电池功率容量。
+
+\section*{运营成本、电池成本以及中断规律}
+物理页面第6页上未编号的定义内容如下：
+\begin{equation}
+\begin{aligned}
+C_{t_1,t_2}(s^p,L^{p+},L^{p-},L^{q+},L^{q-})
+={}&\sum_{t=t_1}^{\min\{t_2,T\}}\left[\sum_{i\in\mathcal N}c^l\left(L_{it}^{p+}+L_{it}^{p-}+L_{it}^{q+}+L_{it}^{q-}\right)\right.\\
+&\left.\hspace{31mm}+\sum_{g\in\mathcal G}\left(c_{g,2}(s_{gt}^p)^2+c_{g,1}s_{gt}^p\right)\right].
+\end{aligned}\tag{C}
+\end{equation}
+在此打印的成本定义中，没有出现因子$\Delta_t$。同样，坡度行也保留了其打印出的系数，没有添加时间步长因子。
+
+第4页上关于固定生成数据的陈述是：
+\[
+\underline s_g^p=0,\qquad\forall g\in\mathcal G.
+\]
+电池效率曲线是分段线性的，并且穿过原点，因为假设待机损耗可以忽略不计。所选模型采用多面体松弛法，即根据曲线下方的面积来进行决策，如图1和(1l)、(2n)所示，而不是采用二进制选择方式。第10页将原点前提表述为：
+\[
+\forall b\in\mathcal B,\quad\exists\ell\in\mathcal L_b\quad\text{such that}\quad\beta_b^\ell=0.
+\]
+图1中所示的仿射片段为$\alpha_b^\ell y_{bt}+\beta_b^\ell$。未添加与选定片段相等的片段。
+
+中断是指某条线路或发电机的故障。恢复过程所需的时间取决于具体场景，为$\tau^\omega$时间。在此期间，不会再次出现其他中断。如果某个组件发生故障，则相关指标参数的值为1；否则，该参数的值为0。特别是，关于线路故障的规则如下：
+\[
+B_{ijt'}^\omega=1,\qquad t'=t_D,\ldots,t_D+\tau^\omega,
+\]
+当第$ij$行被中断时，其他所有行和发电机指标都为零。同样，源代码中也使用$B_{gt}^\omega=1$来表示发电机的活跃/反应性为零，并放宽了故障发电机的斜坡调整。恢复间隔包括两个打印出的端点。下一次中断只能发生在$t_D+\tau^\omega$之后。
+
+给定最早的潜在中断时间$t'$，$p_t^\omega$表示在时间$t'+t$观察到场景$\omega$的概率，同时还有等待时间的支持$t=1,\ldots,T$。等待时间在给定$t'$的条件下与历史数据无关。在(1)中，第一次中断发生在$1+t$。分布是抽象的；这里没有使用指数型等待时间分布、均匀分量概率、常见的恢复时间以及实验中使用的数值电池数据。
+
+\section*{概率与价值函数假设}
+函数$f_t^\omega(s_{\cdot,t-1}^p,w_{\cdot,t-1},u)$表示的是在观察到情景$\omega$并在状态$t$下，从$t$到未来某个时间点的理想预期运行成本。方程（2）定义了这一延续问题在有限时间范围内的表现。
+
+\paragraph{A.1.}
+等待时间与情景分布是独立的：$p_t$表示等待时间为$t$期的概率，而$p^\omega$则表示情景$\omega$发生的概率。因此
+\begin{equation}
+p_t^\omega=p_t p^\omega,\qquad\forall t=1,\ldots,T,\ \omega\in\Omega.\tag{A.1}
+\end{equation}
+\paragraph{A.2.}
+给定$(s_{\cdot,t-1}^p,w_{\cdot,t-1},u)$，未来成本函数$f_t^\omega$与之前的干扰和决策条件无关。
+\[
+\begin{gathered}
+(s_{\cdot t'}^p,s_{\cdot t'}^q,V_{\cdot t'},P_{\cdot t'},Q_{\cdot t'},z_{\cdot t'}^p,z_{\cdot t'}^q,y_{\cdot t'},w_{\cdot t'},
+L_{\cdot t'}^{p+},L_{\cdot t'}^{p-},L_{\cdot t'}^{q+},L_{\cdot t'}^{q-}),\\
+\forall t'=1,\ldots,t-2.
+\end{gathered}
+\]
+\paragraph{A.3.}
+打印出的终端条件为：
+\begin{equation}
+f_t^\omega(s_{\cdot,t-1}^p,w_{\cdot,t-1},u)=0,\qquad\forall\omega\in\Omega,\ t>T,\tag{A.3}
+\end{equation}
+如果
+\[
+\begin{gathered}
+s_{g,t-1}^p\in[\underline s_g^p,\bar s_g^p],\quad\forall g\in\mathcal G,\qquad
+w_{b,t-1}\in[0,\bar I_b],\quad\forall b\in\mathcal B,\\
+u_b\in[0,\bar u_b],\quad\forall b\in\mathcal B.
+\end{gathered}
+\]
+印刷的向量域简写方式按组件进行应用。在视野之外，后续的计算直接被评估为零，无需构建虚拟状态。
+\paragraph{A.4.}
+\begin{equation}
+c_{g,2}\geq0,\qquad\forall g\in\mathcal G.\tag{A.4}
+\end{equation}
+\paragraph{A.5.}
+模型（1）具有一个可行的区域，且该区域的相对内部是空的。
+
+引理 1 中使用的进入状态域是
+\begin{equation}
+\begin{gathered}
+\hat s_{g,t-1}^p\in[\underline s_g^p,\bar s_g^p]\quad g\in\mathcal G,\qquad
+\hat w_{b,t-1}\in[0,\bar I_b]\quad b\in\mathcal B,\\
+\hat u_b\in[0,\bar u_b]\quad b\in\mathcal B.
+\end{gathered}\tag{3}
+\end{equation}
+对于每一个$t=2,3,\ldots$和$\omega\in\Omega$，来源指出，这些条件意味着……
+\[
+f_t^\omega(\hat s_{\cdot,t-1}^p,\hat w_{\cdot,t-1},\hat u)<+\infty.
+\]
+
+\section*{参考的可行性结构（非操作约束）}
+方程式(4)至(5)，位于物理页面9–10上，用于构建引理1证明中的可行点。这些方程式既不会替代也不会补充方程式(1)至(2)中的决策约束条件。让$\widetilde V,\widetilde P,\widetilde Q$表示方程式(1)中可行解所对应的电压和流量，其存在性是由A.5所决定的。
+
+对于$t=T$，在满足(3)的条件下，源程序会为所有的$\omega\in\Omega$构建相应的结构。
+\begin{equation}
+\begin{aligned}
+s_{gT}^p&=\begin{cases}0,&\text{if }B_{gT}^\omega=1,\\ \hat s_{g,T-1}^p,&\text{otherwise},\end{cases}
+& s_{gT}^q&=\begin{cases}0,&\text{if }B_{gT}^\omega=1,\\ \underline s_g^q,&\text{otherwise},\end{cases}
+\quad\forall g\in\mathcal G.
+\end{aligned}\tag{4a}
+\end{equation}
+\begin{equation}
+V_{iT}=\widetilde V_{iT},\qquad\forall i\in\mathcal N.\tag{4b}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+P_{ijT}&=\begin{cases}0,&\text{if }B_{ijT}^\omega=1,\\\widetilde P_{ijT},&\text{otherwise},\end{cases}
+&Q_{ijT}&=\begin{cases}0,&\text{if }B_{ijT}^\omega=1,\\\widetilde Q_{ijT},&\text{otherwise},\end{cases}
+\quad\forall ij\in\mathcal E.
+\end{aligned}\tag{4c}
+\end{equation}
+\begin{equation}
+w_{bT}=\hat w_{b,T-1},\qquad z_{bT}^p=z_{bT}^q=y_{bT}=0,\qquad u_b=\hat u_b,\qquad\forall b\in\mathcal B.\tag{4d}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+\phi_{iT}^p&=d_{iT}^p-\sum_{g\in\mathcal G_i}s_{gT}^p+\sum_{ij\in\mathcal E}P_{ijT},\\
+\phi_{iT}^q&=d_{iT}^q-\sum_{g\in\mathcal G_i}s_{gT}^q+\sum_{ij\in\mathcal E}Q_{ijT},\qquad\forall i\in\mathcal N.
+\end{aligned}\tag{4e}
+\end{equation}
+\begin{align}
+L_{iT}^{p+}=\max\{\phi_{iT}^p,0\},\qquad L_{iT}^{p-}&=\max\{-\phi_{iT}^p,0\},&&\forall i\in\mathcal N,\tag{4f}\\
+L_{iT}^{q+}=\max\{\phi_{iT}^q,0\},\qquad L_{iT}^{q-}&=\max\{-\phi_{iT}^q,0\},&&\forall i\in\mathcal N.\tag{4g}
+\end{align}
+该证明引用了$0\in[\underline s_g^p,\bar s_g^p]$中对每个$g\in\mathcal G$的论述，以及效率曲线上的起始前提。
+
+在反向归纳步骤中，当在相应的进入时刻有满足(3)条件的$(\hat s_{\cdot,t-2}^p,\hat w_{\cdot,t-2},\hat u)$时，源程序会为所有的$\omega\in\Omega$构建相应的结构。
+\begin{equation}
+\begin{gathered}
+s_{gt'}^p=\begin{cases}0,&\text{if }B_{g,t-1}^\omega=1,\\\hat s_{g,t-2}^p,&\text{otherwise},\end{cases}
+\qquad s_{gt'}^q=\begin{cases}0,&\text{if }B_{g,t-1}^\omega=1,\\\underline s_g^q,&\text{otherwise},\end{cases}\\
+\forall t'=t-1,\ldots,T,\ g\in\mathcal G.
+\end{gathered}\tag{5a}
+\end{equation}
+\begin{equation}
+V_{it'}=\widetilde V_{it'},\qquad\forall t'=t-1,\ldots,T,\ i\in\mathcal N.\tag{5b}
+\end{equation}
+\begin{equation}
+\begin{gathered}
+P_{ijt'}=\begin{cases}0,&\text{if }B_{ijt'}^\omega=1,\\\widetilde P_{ijt'},&\text{otherwise},\end{cases}
+\qquad Q_{ijt'}=\begin{cases}0,&\text{if }B_{ijt'}^\omega=1,\\\widetilde Q_{ijt'},&\text{otherwise},\end{cases}\\
+\forall t'=t-1,\ldots,T,\ ij\in\mathcal E.
+\end{gathered}\tag{5c}
+\end{equation}
+\begin{equation}
+w_{bt'}=\hat w_{b,t-2},\qquad z_{bt'}^p=z_{bt'}^q=y_{bt'}=0,\qquad\forall t'=t-1,\ldots,T,\ b\in\mathcal B.\tag{5d}
+\end{equation}
+\begin{equation}
+u_b=\hat u_b,\qquad\forall b\in\mathcal B.\tag{5e}
+\end{equation}
+\begin{align}
+\phi_{ijt'}^p&=d_{it'}^p-\sum_{g\in\mathcal G_i}s_{gt'}^p+\sum_{ij\in\mathcal E}P_{ijt'}
+&&\forall t'=t-1,\ldots,T,\ i\in\mathcal N,\tag{5f}\\
+\phi_{ijt'}^q&=d_{it'}^q-\sum_{g\in\mathcal G_i}s_{gt'}^q+\sum_{ij\in\mathcal E}Q_{ijt'}
+&&\forall t'=t-1,\ldots,T,\ i\in\mathcal N.\tag{5g}
+\end{align}
+\begin{equation}
+\begin{gathered}
+L_{it'}^{p+}=\max\{\phi_{ijt'}^p,0\},\qquad L_{it'}^{p-}=\max\{-\phi_{ijt'}^p,0\},\\
+\forall t'=t-1,\ldots,T,\ i\in\mathcal N.
+\end{gathered}\tag{5h}
+\end{equation}
+\begin{equation}
+\begin{gathered}
+L_{it'}^{q+}=\max\{\phi_{ijt'}^q,0\},\qquad L_{it'}^{q-}=\max\{-\phi_{ijt'}^q,0\},\\
+\forall t'=t-1,\ldots,T,\ i\in\mathcal N.
+\end{gathered}\tag{5i}
+\end{equation}
+在(5f)--(5i)中，尽管只有总线索引$i$被量化，且(4e)--(4g)使用了$iT$，但$ijt'$在$\phi$上的下标仍然保留。在(4a)和(5a)中，反应生成分支使用了下限$\underline s_g^q$，这一点在原始页面图像中清晰可见。
+
+\section*{确定可行的集合以及价值函数域。}
+第11页上的定义1中，将各项决定汇总如下：
+\[
+\begin{aligned}
+x_t=(&s_{\cdot t}^p,s_{\cdot t}^q,V_{\cdot t},P_{\cdot t},Q_{\cdot t},z_{\cdot t}^p,z_{\cdot t}^q,y_{\cdot t},w_{\cdot t},u,\\
+&L_{\cdot t}^{p+},L_{\cdot t}^{p-},L_{\cdot t}^{q+},L_{\cdot t}^{q-}).
+\end{aligned}
+\]
+在以上显示的所有定义约束行中，源代码的集合如下：
+\begin{itemize}
+\item $X^1$：满足 (1b)–(1o) 条件的 $\{x_t\mid t=1,\ldots,T\}$ 集合。
+\item $X^1_{t'\omega}$：由$\{\hat x_t\mid t=1,\ldots,T\}$组成的集合，使得存在$\{x_t\mid t=t',\ldots,T\}$，满足(2)中的约束条件，给定$\hat x_{t'-1}$，对于每一个$t'=2,3,\ldots$和$\omega\in\Omega$。
+\item $X^{t\omega}$：满足 (2b)–(2t) 条件的 $\{x_{\tilde t}\mid\tilde t=t,\ldots,T\}$ 集合。
+\item $X^{t\omega}_{t'\omega'}$：由$\{\hat x_{\tilde t}\mid\tilde t=t,\ldots,T\}$组成的集合，使得存在$\{x_{\tilde t}\mid\tilde t=t',\ldots,T\}$，当给定$\hat x_{t'-1}$时，能够满足(2)中的约束条件，对于所有的$\omega'\in\Omega$和$t'=t+\tau^{\omega'}+1,\ldots,T$而言都是如此。
+\end{itemize}
+命题2指出：
+\[
+X^1\subseteq\bigcap_{\substack{t=2,\ldots,T\\\omega\in\Omega}}X^1_{t\omega},
+\qquad
+X^{t\omega}\subseteq\bigcap_{\substack{\omega'\in\Omega\\t'=t+\tau^{\omega'}+1,\ldots,T}}X^{t\omega}_{t'\omega'}.
+\]
+本集合定义和包含中的$\tau^{\omega'}$保持原样。这些是诱导的可行性声明，而非额外的优化约束。
+
+命题 3 指出，在定义域上，$f_t^\omega$在其初始状态下是凸的。
+\[
+\left\{(s^p,w,u)\ \middle|\
+\begin{array}{l}
+s_g^p\in[\underline s_g^p,\bar s_g^p],\quad\forall g\in\mathcal G;\\
+w_b\in[0,\bar I_b],\quad u_b\in[0,\bar u_b],\quad\forall b\in\mathcal B
+\end{array}\right\},
+\]
+对于所有$t=2,3,\ldots$和$\omega\in\Omega$。在线补充材料B中的对偶证明、割集近似、算法采样假设以及替代对偶/SOCP表述并未替代嵌套模型(1)--(2)。
+
+\section*{印刷遗漏与官方实施差异}
+印刷版（1j）使用了$w_{b0}$，但（1m）仅限定了$t\in\mathcal T$；该论文并未在模型（1）或其定义文中提供初始存储的等式。 官方实现方式是将存储范围限制在时间零点，并将其固定为输入电池初始状态的数据。 Neither该等式 nor实例特定的初始值在此处被导入。
+
+原文对每个母线 $i$ 都保留了平衡式 $\sum_{ij\in\mathcal E}$。 该论文并未明确指定反向弧的约定或相反方向流动等式。 官方实现会构建有向反向弧，并施加相反流量的等式；这些额外的实现行不会添加到打印的公式中。
+
+官方实现中使用了与论文中故障指示符相反的“功能组件状态参数”。它有条件地应用了功能线路电压方程以及功能发电机的斜坡行，而不是打印出来的大号$M$行。在这里，(2d)--(2j)保留了论文中的指示符和系数。没有对$M$进行数值选择。
+
+该实现中的条件性目标构建器会接收一个提供的恢复持续时间，并省略那些持续时间超过$T$的后续步骤。这与(2a)中打印出的重复$\omega$范围有所不同，这样可以避免对超出时间范围的状态进行评估。这些实现选择并不是用来修复打印出的递归过程，也不是为了加强条件性终端语句A.3。
+
+所使用的资料包括杨和Nagarajan的主要论文，特别是第3至12页的物理部分内容，以及提供的官方在线补充材料，还有官方数据库快照。关于电池物理学和容量估算的外部参考文献并未被独立提供或验证；因此，这里没有引用这些参考文献中的额外公式。
+
+\end{document}

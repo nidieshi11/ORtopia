@@ -1,0 +1,231 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\usepackage[UTF8]{ctex}
+\begin{document}
+
+\section*{具有已知污染上限的稳健动态组合优化}
+
+\subsection*{目标与可接纳性}
+所选的绩效目标是：通过一种可接受的序贯组合策略，将“典型最优典型评估”（TOTE）的遗憾程度降至最低。
+\begin{equation}
+\operatorname{Regret}^{\mathrm{TOTE}}(T)
+:=\mathbb{E}\left[\sum_{t=1}^{T} R(S^*;\{v\})-R(S_t;\{v\})\right].
+\tag{2}
+\end{equation}
+零售商在做出决策时所面临的约束条件包括：
+\[
+S_t\subseteq[N],\qquad |S_t|\le K,\qquad
+S_t=\mathfrak{P}_t\bigl(\{S_\tau,i_\tau\}_{\tau\le t-1}\bigr),
+\qquad t=1,2,\ldots,T,
+\]
+在$T$随机函数$\mathfrak{P}_1,\ldots,\mathfrak{P}_T$构成的策略中，符合以下规定的可接受策略。基准是
+\[
+S^*=\arg\max_{S\subseteq[N],\,|S|\le K}R(S;\{v\}).
+\]
+TOTE会使用典型的客户模型来评估这两种情况，即使到达的客户属于异常情况也是如此。这是该论文所选择的性能评估标准，用于进行上限分析，而不是另一种事后最佳标准。
+
+\subsection*{输入、选择模型以及信息协议}
+共有$N$个物品，以及$T$个顾客到达时间段。容量参数为$K$。各个物品的参数均满足要求。
+\[
+r_i\in[0,1]\quad\text{(known revenue)},\qquad
+v_i\in[0,1]\quad\text{(unknown utility)},\qquad i\in[N].
+\]
+真正的污染参数和已知的上限有着不同的作用：
+\[
+\varepsilon\in[0,1),\qquad \overline{\varepsilon}\ge\varepsilon,
+\]
+在算法1中使用了$\overline{\varepsilon}$。所选的效用规范化方法是$v_i\in[0,1]$，而不是第7页中讨论的更大型的上界变体。
+
+在时间$t$时，所观察到的购买行为满足以下条件：
+\[
+i_t\in S_t\cup\{0\},\qquad t=1,\ldots,T.
+\]
+购买商品$i_t\in S_t$会产生收入$r_{i_t}$；而$i_t=0$则表示没有购买任何商品，因此不会产生任何收入。对于普通客户来说，
+\begin{equation}
+\Pr[i_t=i\mid S_t]
+=\frac{v_i}{v_0+\sum_{j\in S_t}v_j},\qquad v_0=1,
+\tag{1}
+\end{equation}
+对于购买结果$i\in S_t\cup\{0\}$，因此对于普通客户来说，没有购买是最有可能的结果。而异常值则根据一个未知的任意分布$Q_t$进行购买，该分布在$S_t\cup\{0\}$处边缘化；$Q_t$可能会随着$t$发生变化。
+
+源代码的假设（A1–（A2）以及定义1）明确指出了对手的情况以及零售商所掌握的信息。
+\[
+\phi_t\in\{0,1\},\qquad t=1,2,\ldots,T,
+\]
+其中，$\phi_t=1$表示异常值，而$\phi_t=0$表示典型客户。有限污染指的是……
+\[
+\sum_{t=1}^{T}\phi_t\le\varepsilon T. \tag{A1}
+\]
+自适应对手由$T$个任意可测量的函数$\mathfrak{A}_1,\ldots,\mathfrak{A}_T$组成。
+\[
+\begin{aligned}
+\mathcal{F}_{t-1}&=\{\phi_\tau,Q_\tau,S_\tau,i_\tau\}_{\tau\le t-1},\\
+\mathfrak{A}_t &: \{\phi_\tau,Q_\tau,S_\tau,i_\tau\}_{\tau\le t-1}
+\longmapsto(\phi_t,Q_t),\qquad t=1,\ldots,T.
+\end{aligned}
+\tag{A2 / Definition 1}
+\]
+因此，异常顾客的到来以及选择模型可以依赖于之前的顾客、提供的商品种类，以及过去的购买行为。零售商的政策中，关于这些信息的历史记录较少。
+\[
+\begin{aligned}
+\mathcal{G}_{t-1}&=\{S_\tau,i_\tau\}_{\tau\le t-1},\\
+\mathfrak{P}_t &: \{S_\tau,i_\tau\}_{\tau\le t-1}\longmapsto S_t,
+\qquad S_t\subseteq[N],\quad |S_t|\le K,
+\qquad t=1,\ldots,T.
+\end{aligned}
+\]
+如果$\phi_t=0$和$i_t$是根据(1)式实现的，且以$S_t$为条件；那么如果$\phi_t=1$，则它是根据$Q_t$来实现的。零售商不会得到异常值指标或异常值分布信息。
+
+符号$P_t$表示客户选择的模型，而非政策函数$\mathfrak{P}_t$：
+\[
+P_t=\begin{cases}
+\{v\},&\phi_t=0,\\
+Q_t,&\phi_t=1.
+\end{cases}
+\]
+函数$R(S;P)$表示在选择模型$P$下，提供$S$所能获得的预期收益。分别针对典型模型和估算的效用值进行计算。
+\[
+R(S;\{v\})=R(S;v)=\frac{\sum_{i\in S}r_iv_i}{1+\sum_{i\in S}v_i},
+\qquad
+R(S;\widehat v)=\frac{\sum_{i\in S}r_i\widehat v_i}{1+\sum_{i\in S}\widehat v_i}.
+\]
+第二个表达式是算法1中的定义性陈述；真正的效用表达式也出现在引理2的补充证明中（物理页面31）。
+
+\subsection*{已知的上下界构造方法：算法1}
+输入为 $T$、$\overline\varepsilon$、$\{r_i\}$ 和 $K$；输出为序列 $\{S_t\}_{t=1}^{T}$。初始化时，保持原有的顺序，并保留所有的数字。
+\[
+\widehat v^{(0)}\equiv1,\qquad
+\widehat\Delta_{\overline\varepsilon}(0)=1,\qquad
+\mathcal A^{(0)}=[N],\qquad
+T_0=128(K+1)^2N\ln T.
+\]
+对于时间节点$\tau=0,1,2,\ldots$，按照指定的顺序执行以下步骤：
+\[
+\begin{aligned}
+S_\tau^{(i)}
+&=\arg\max_{S\subseteq\mathcal A^{(\tau)},\,|S|\le K,\,i\in S}
+ R(S;\widehat v^{(\tau)}),
+&&i\in\mathcal A^{(\tau)},\\
+\gamma^{(\tau)}
+&=\max_{i\in\mathcal A^{(\tau)}}R(S_\tau^{(i)};\widehat v^{(\tau)}),\\
+\mathcal A^{(\tau+1)}
+&=\left\{i\in\mathcal A^{(\tau)}:
+R(S_\tau^{(i)};\widehat v^{(\tau)})
++2\widehat\Delta_{\overline\varepsilon}(\tau)\ge\gamma^{(\tau)}\right\},\\
+n_i&=0,\qquad n_0(i)=0,
+&&i\in\mathcal A^{(\tau+1)},\\
+T_\tau&=2^\tau T_0.
+\end{aligned}
+\]
+在接下来的$T_\tau$个时间周期中，随机选取$i\in\mathcal A^{(\tau+1)}$个样本，向到达的顾客提供$S_\tau^{(i)}$，观察$i_t$的情况，并更新该样本物品的计数器数值。
+\[
+S_t=S_\tau^{(i)},\qquad
+n_i\leftarrow n_i+\mathbf1\{i_t=i\},\qquad
+n_0(i)\leftarrow n_0(i)+\mathbf1\{i_t=0\}.
+\]
+购买的其他商品$\ell\in S_\tau^{(i)}$、$\ell\ne i$，不会计入这些计数器。在这一时期的末尾，打印出的估算值将会是……
+\[
+\widehat v_i^{(\tau+1)}
+=\max\{1,n_i/n_0(i)\},\qquad i\in\mathcal A^{(\tau+1)}.
+\]
+通过以下方式定义时代污染的上限和活跃集的基数：
+\[
+\overline\varepsilon_\tau
+=\min\{1,\overline\varepsilon T/T_\tau\},\qquad
+N_\tau=|\mathcal A^{(\tau+1)}|.
+\]
+算法1所使用的误差上限为
+\[
+\widehat\Delta_{\overline\varepsilon}(\tau+1)
+=\begin{cases}
+1,&T_\tau<\dfrac{\overline\varepsilon T}{4(K+1)},\\[6pt]
+16K(K+1)\left(
+\dfrac{\overline\varepsilon_\tau}{2}
++\sqrt{\dfrac{\overline\varepsilon_\tau N_\tau\ln T}{T_\tau}}
++\dfrac{2N_\tau\ln T}{3T_\tau}
+\right)
++16\sqrt{\dfrac{KN_\tau\ln T}{T_\tau}},&\text{otherwise}.
+\end{cases}
+\]
+附带的注释将$\mathcal A^{(\tau+1)}\subseteq[N]$描述为在时代$\tau$中被探索的活跃项目；$S_\tau^{(i)}\subseteq[N]$则被描述为包含$i$的各种物品的集合；而计数器则被描述为$n_i,n_0(i)\in\mathbb N$。此外，注释还说明了其他内容。
+\[
+\widehat v^{(\tau)}\in[0,1]^N,\qquad
+\gamma^{(\tau)}\in[0,1],\qquad
+\widehat\Delta_{\overline\varepsilon}(\tau+1)\in[0,1].
+\]
+这些是来源的描述，以下的不一致之处被保留下来，而不是被修复。
+
+\paragraph{此构造中存在印刷不一致的问题。}
+算法1的第14行打印出了$\max\{1,n_i/n_0(i)\}$。这与所指定的范围$\widehat v^{(\tau)}\in[0,1]^N$以及引理1的补充证明（物理页面30）相矛盾。在补充证明中，当该比率不超过1时，使用$\widehat v_i=n_i/n_0$；当该比率超过1时，则使用$\widehat v_i=1$。上述更新保留了算法1中打印的最大值，而不是补充阅读中的数值。没有使用零分母的约定。同样，错误界限表达式也没有被限制在1以内，尽管其指定的范围是$[0,1]$。第9-10页的说明中提到，$\gamma^{(\tau)}$和$S_\tau^{(i)}$是通过$\mathcal A^{(\tau+1)}$计算得出的；而实际的第5-6行则使用了$\mathcal A^{(\tau)}$。伪代码给出了几何时代的长度以及一个无限制的时代循环，但没有对$T_\tau$进行四舍五入处理，也没有明确的终端部分时代规则；这里也没有添加任何相关内容。
+
+\subsection*{链接式组合计算：第4.1节和算法2}
+这是算法1所调用的计算过程，并非对顺序问题的替代目标。在调用时，候选项就是当前的$\mathcal A^{(\tau)}$，效用值就是当前的$\widehat v^{(\tau)}$，而所需的项则是$i\in\mathcal A^{(\tau)}$。第4.1节详细描述了针对特定$i\in[N]$的通用计算方法。
+\begin{equation}
+\max_{|S|\le K,\,i\in S}R(S;\widehat v)
+=\max_{|S|\le K,\,i\in S}
+\frac{\sum_{j\in S}r_j\widehat v_j}{1+\sum_{j\in S}\widehat v_j}.
+\tag{4}
+\end{equation}
+对于任何一个$\alpha\in(0,1]$，可行性检查会判断是否存在$S\subseteq[N]$、$|S|\le K$、$i\in S$，使得…
+\[
+R(S;\widehat v)\ge\alpha
+\quad\Longleftrightarrow\quad
+\sum_{j\in S}r_j\widehat v_j
+\ge\alpha+\alpha\sum_{j\in S}\widehat v_j
+\quad\Longleftrightarrow\quad
+\sum_{j\in S}(r_j-\alpha)\widehat v_j\ge\alpha.
+\]
+因为必须包含$i$，所以这个检查实际上就是在判断是否存在这样的元素。
+\[
+S'\subseteq[N]\setminus\{i\},\qquad |S'|\le K-1
+\]
+令人满意
+\begin{equation}
+(r_i-\alpha)\widehat v_i
++\sum_{j\in S'}(r_j-\alpha)\widehat v_j\ge\alpha.
+\tag{5}
+\end{equation}
+附近的文本指示在$S'$中列出$(r_j-\alpha)\widehat v_j$正值最大的$(K-1)$项，并进行检查（5）。如果检查成功，则收入水平$\alpha$是可实现的；否则则不可实现。这些是计算过程中的阈值测试，而不是对每个$\alpha$提供的每种选择都施加的约束条件。
+
+算法2提供了以下二进制搜索结果。其输入参数为$\{r_j\}_{j=1}^{n}$、$\{\widehat v_j\}_{j=1}^{n}$、必选物品$i$、$K$，以及停止精度$\delta$。其输出结果为一组$\widehat S$。
+\[
+|\widehat S|\le K,\qquad i\in\widehat S,
+\]
+最大化$R(\widehat S;\widehat v)$的值。进行初始化操作。
+\[
+\alpha_\ell=0,\qquad \alpha_u=1,\qquad \widehat S=\varnothing.
+\]
+当$\alpha_u-\alpha_\ell\ge\delta$时，设置为
+\[
+\alpha_{\mathrm{mid}}\leftarrow(\alpha_\ell+\alpha_u)/2.
+\]
+对于每个$j\ne i$，对其进行排序。
+\[
+\psi_j:=(r_j-\alpha_{\mathrm{mid}})\widehat v_j
+\]
+按降序排列，然后组合成…
+\[
+\Psi:=\{j\ne i:\psi_j\ge0\}.
+\]
+其余的打印行是：
+\[
+\begin{aligned}
+t&:=\psi_i+\text{the $(K-1)$ $\psi_j$ in $\Psi$ with the largest values};\\
+\text{if }t\ge\alpha_{\mathrm{mid}}:\quad
+\widehat S&=\{i\}\cup
+\{\text{the $(K-1)$ items in $\Psi$ with the largest $\psi_j$ values}\},
+\qquad \alpha_\ell\leftarrow\alpha_{\mathrm{mid}};\\
+\text{else}:\quad \alpha_u&\leftarrow\alpha_{\mathrm{mid}}.
+\end{aligned}
+\]
+这里$t$是算法2中使用的标量，而不是客户到达的索引。然后循环会重复其宽度测试。
+
+\paragraph{算法2中的打印遗漏。}
+第6行将$\psi_j$仅定义为与$j\ne i$相关的内容，而第7行则使用$\psi_i$；缺失的定义并未在上方插入。第7至8行要求从$\Psi$中获取$(K-1)$项，但没有说明当可用数量不足时会发生什么情况。文中使用了正值，而伪代码中则明确使用了$\psi_j\ge0$；伪代码中的非负测试也被保留了下来。唯一明确规定的精度要求是停止测试$\alpha_u-\alpha_\ell\ge\delta$：在调用算法1时，如果没有提供$\delta$的值，或者在该有限的停止精度下无法保证精确最优性，那么就会停止计算。不过，输出结果被描述为最大化器，其初始化为空集。没有进行任何平局处理、短缺情况的处理，也没有进行任何初始化修复。
+
+\paragraph{来源范围。}
+该运筹学教材的片段来自第3节，物理页面6-8页；已知上界构造及其计算则来自第4节至4.1节，物理页面9-11页。引用的补充内容包含在提供的原始电子配套资料中。自适应未知污染策略、基于间隙的假设、数值实例以及仅用于证明的不等式，并非该选定模型的额外约束条件。
+
+\end{document}

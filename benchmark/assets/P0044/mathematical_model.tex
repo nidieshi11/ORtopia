@@ -1,0 +1,63 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+
+\geometry{a4paper, margin=1in}
+
+\title{核心可解数学模型}
+\author{}
+\date{}
+
+\usepackage[UTF8]{ctex}
+\begin{document}
+
+\maketitle
+
+该文件保留了论文中所展示的精确有限维重构形式，该重构形式可以直接用于解决目标不确定性情况下的二元一阶段和二阶段决策问题。中间嵌套的最小-最大重构形式以及更为复杂的约束不确定性近似方法则被省略了。
+
+\section{精确的 MBLP 重新表述}
+
+\begin{equation}
+\min \quad \boldsymbol{b}^{\top}\boldsymbol{\beta} + \sum_{k\in\mathcal{K}} \boldsymbol{b}^{\top}\boldsymbol{\beta}^k
+\tag{EC.12}
+\end{equation}
+
+\begin{equation}
+\begin{aligned}
+\text{s.t.}\quad
+& \boldsymbol{x}\in\mathcal{X},\ \boldsymbol{w}\in\mathcal{W},\ \boldsymbol{y}^k\in\mathcal{Y}
+&& \forall k\in\mathcal{K}, \\
+& \boldsymbol{\alpha}\in\mathbb{R}_+^{K},\ \boldsymbol{\beta}\in\mathbb{R}_+^{R},\ \boldsymbol{\beta}^k\in\mathbb{R}_+^{R},\ \boldsymbol{\gamma}^k\in\mathbb{R}^{N_\xi}
+&& \forall k\in\mathcal{K}, \\
+& \bar{\boldsymbol{\gamma}}^k\in\mathbb{R}^{N_\xi},\ \bar{\boldsymbol{x}}^k\in\mathbb{R}_+^{N_x},\ \bar{\boldsymbol{w}}^k\in\mathbb{R}_+^{N_\xi},\ \bar{\boldsymbol{y}}^k\in\mathbb{R}_+^{N_y}
+&& \forall k\in\mathcal{K}, \\
+& \boldsymbol{e}^{\top}\boldsymbol{\alpha}=1, \\
+& \boldsymbol{A}^{\top}\boldsymbol{\beta}=\sum_{k\in\mathcal{K}}\bar{\boldsymbol{\gamma}}^k, \\
+& \boldsymbol{A}^{\top}\boldsymbol{\beta}^k+\bar{\boldsymbol{\gamma}}^k
+= \boldsymbol{C}\bar{\boldsymbol{x}}^k+\boldsymbol{D}\bar{\boldsymbol{w}}^k+\boldsymbol{Q}\bar{\boldsymbol{y}}^k
+&& \forall k\in\mathcal{K}, \\
+& \boldsymbol{T}\boldsymbol{x}+\boldsymbol{V}\boldsymbol{w}+\boldsymbol{W}\boldsymbol{y}^k \le \boldsymbol{h}
+&& \forall k\in\mathcal{K}, \\
+& \bar{\boldsymbol{x}}^k \le \boldsymbol{x},\quad
+\bar{\boldsymbol{x}}^k \le \alpha_k \boldsymbol{e},\quad
+\bar{\boldsymbol{x}}^k \ge (\alpha_k-1)\boldsymbol{e}+\boldsymbol{x}
+&& \forall k\in\mathcal{K}, \\
+& \bar{\boldsymbol{w}}^k \le \boldsymbol{w},\quad
+\bar{\boldsymbol{w}}^k \le \alpha_k \boldsymbol{e},\quad
+\bar{\boldsymbol{w}}^k \ge (\alpha_k-1)\boldsymbol{e}+\boldsymbol{w}
+&& \forall k\in\mathcal{K}, \\
+& \bar{\boldsymbol{y}}^k \le \boldsymbol{y}^k,\quad
+\bar{\boldsymbol{y}}^k \le \alpha_k \boldsymbol{e},\quad
+\bar{\boldsymbol{y}}^k \ge (\alpha_k-1)\boldsymbol{e}+\boldsymbol{y}^k
+&& \forall k\in\mathcal{K}, \\
+& \bar{\boldsymbol{\gamma}}^k \le \boldsymbol{\gamma}^k + M(\boldsymbol{e}-\boldsymbol{w}),\quad
+\bar{\boldsymbol{\gamma}}^k \le M\boldsymbol{w},
+&& \forall k\in\mathcal{K}, \\
+& \bar{\boldsymbol{\gamma}}^k \ge -M\boldsymbol{w},\quad
+\bar{\boldsymbol{\gamma}}^k \ge \boldsymbol{\gamma}^k - M(\boldsymbol{e}-\boldsymbol{w})
+&& \forall k\in\mathcal{K}.
+\end{aligned}
+\end{equation}
+
+\end{document}

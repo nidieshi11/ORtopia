@@ -1,0 +1,55 @@
+\documentclass[UTF8,11pt]{ctexart}
+\usepackage{amsmath,amssymb,mathtools,geometry}
+\geometry{a4paper,margin=20mm}\allowdisplaybreaks
+\begin{document}
+\section*{完整可行路线集上的众包与专用车联合配送模型}
+
+\paragraph{来源} PDF第6--10页，§3问题定义与Formulation 2式(20)--(26)。
+\subsection*{输入与完整路线族}
+$P$ 为包裹订单集合，订单 $p$ 的投递地点为 $n_p$，在公共取货仓 $o$ 的最早取货时刻
+为 $T_p^d$，最晚投递时刻为 $T_p^a$。$S$ 为共享私家车，$D$ 为专用配送车。
+私家车 $s$ 有个人起点、个人终点 $n_s$、到仓最早时刻 $T_s^d$、最晚到终点时刻
+$T_s^a$、可装订单数 $q_s$；专用车 $d$ 从仓 $o$ 出发并返回仓的副本 $h$，
+容量为 $q_d$、运营截止时刻为 $T^D$。各弧时间 $\tau_{ij}\ge0$，弧成本
+$c^s_{ij},c^d_{ij}$ 均已知。$c_s^o$ 为私家起点至仓成本，$c^s$ 为个人直达原计划成本，
+$F_d$ 为专用车固定成本，$e_d,e_o\ge0$ 为绕行和逐单补偿系数。
+
+$\mathcal R_s$ 包含\emph{全部}如下可行路线：按某个不重复的订单序列
+$(p_1,\ldots,p_k)$，先从个人起点抵仓 $o$，再访问所有 $n_{p_j}$，最后到达 $n_s$。
+要求 $1\le k\le q_s$，且存在非负服务时刻 $t_0,\ldots,t_{k+1}$ 满足
+\begin{align*}
+t_0&\ge T_s^d,&t_0&\ge T_{p_j}^d &&(j=1,\ldots,k),\\
+t_1&\ge t_0+\tau_{o,n_{p_1}},&
+t_{j+1}&\ge t_j+\tau_{n_{p_j},n_{p_{j+1}}}&&(j=1,\ldots,k-1),\\
+t_j&\le T_{p_j}^a&&(j=1,\ldots,k),\\
+t_{k+1}&\ge t_k+\tau_{n_{p_k},n_s},&
+t_{k+1}&\le T_s^a.
+\end{align*}
+另外 $\mathcal R_s$ 必须含不接单的个人直达路线，订单覆盖为零且成本 $c^s$。
+参加配送路线的成本 $c_{rs}$ 是 $c_s^o$ 加全部仓后弧成本。
+
+$\mathcal R_d$ 包含全部非空的仓--不重复订单序列--仓路线，
+$1\le k\le q_d$；要求同样在仓等到其所有订单可取、满足弧时间和各订单投递截止，
+且返回 $h$ 的时刻不超过 $T^D$。其成本 $c_{rd}$ 为全部行驶弧成本。
+在时刻体系中仓起始可用时刻为零。若实例另含统一装卸服务时间，应先计入弧时间，
+不得重复计费或漏计。$a_{prv}\in\{0,1\}$ 表示完整路线 $r\in\mathcal R_v$ 是否服务 $p$。
+路线集合包含满足上述条件的全部可行路线。
+\subsection*{唯一优化模型}
+变量 $y_{rv}\in\{0,1\}$ 表示车辆 $v$ 是否选择路线 $r$。
+\begin{align}
+\min_y\quad&
+ e_d\sum_{s\in S}\sum_{r\in\mathcal R_s}(c_{rs}-c^s)y_{rs}
+ +e_o\sum_{s\in S}\sum_{r\in\mathcal R_s}\sum_{p\in P}a_{prs}y_{rs}\notag\\
+&+\sum_{d\in D}\sum_{r\in\mathcal R_d}(c_{rd}+F_d)y_{rd}\tag{20}\\
+\text{s.t.}\quad&
+\sum_{s\in S,r\in\mathcal R_s}a_{prs}y_{rs}
++\sum_{d\in D,r\in\mathcal R_d}a_{prd}y_{rd}=1 &&p\in P,\tag{21}\\
+&\sum_{r\in\mathcal R_s}y_{rs}=1 &&s\in S,\tag{22}\\
+&\sum_{r\in\mathcal R_d}y_{rd}\le1 &&d\in D,\tag{23}\\
+&\sum_{r\in\mathcal R_s,p\in P}a_{prs}y_{rs}\le q_s &&s\in S,\tag{24}\\
+&\sum_{r\in\mathcal R_d,p\in P}a_{prd}y_{rd}\le q_d &&d\in D,\tag{25}\\
+&y_{rv}\in\{0,1\} &&v\in S\cup D,\ r\in\mathcal R_v.\tag{26}
+\end{align}
+订单的 $T_p^d$ 是仓库取货准备时刻。
+
+\end{document}

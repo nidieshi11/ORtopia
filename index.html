@@ -6,8 +6,10 @@
   <meta name="theme-color" content="#f6f5ee">
   <title>ORtopia</title>
   <script>
-    // Bookmarks from the original directory carried their destination in the fragment.
+    // Older links used the fragment to select a simulation or a catalog view.
     if (/^#(?:(?:\/problem\/)?P\d{4}(?:\/[1-9]\d*)?|scene\/.+|remaining|world20|lab20)$/.test(location.hash)) {
+      location.replace('simulation/' + location.search + location.hash);
+    } else if (/^#\/(?:domains|library|domain\/[^/]+(?:\/[^/]+)?|case\/P\d{4})$/.test(location.hash)) {
       location.replace('benchmark/' + location.search + location.hash);
     }
   </script>
@@ -47,6 +49,12 @@
       letter-spacing: -.065em;
     }
     h1 em { font-weight: 400; white-space: nowrap; }
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5rem clamp(1.25rem, 4vw, 3rem);
+      margin-top: clamp(1.5rem, 3.5vh, 2.5rem);
+    }
     a {
       display: inline-flex;
       align-items: center;
@@ -54,7 +62,6 @@
       gap: 1.25rem;
       min-height: 44px;
       padding: .5rem 0;
-      margin-top: clamp(1.5rem, 3.5vh, 2.5rem);
       border-bottom: 1px solid currentColor;
       color: inherit;
       font-size: 1.125rem;
@@ -92,7 +99,10 @@
 <body>
   <main>
     <h1><span class="name">ORtopia：</span>An utopia for <em>AI-native</em> Operation Research</h1>
-    <a href="benchmark/">Benchmark<span class="arrow" aria-hidden="true"></span></a>
+    <nav aria-label="ORtopia">
+      <a href="benchmark/">Benchmark<span class="arrow" aria-hidden="true"></span></a>
+      <a href="simulation/">Simulation<span class="arrow" aria-hidden="true"></span></a>
+    </nav>
   </main>
 </body>
 </html>

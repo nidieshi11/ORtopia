@@ -1,0 +1,132 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage[UTF8]{ctex}
+\begin{document}
+
+\section*{具有给定初始库存的通用随机动态定价}
+
+\begin{equation}
+J^*(n,t)\doteq\sup_{u\in\mathcal U}J_u(n,t).
+\tag{7}
+\end{equation}
+该决策是一种非预期定价政策$u$。类$\mathcal U$则包含所有符合此政策的定价方式。
+\begin{equation}
+\int_0^t dN_s\leq n\qquad(\mathrm{a.s.})
+\tag{2}
+\end{equation}
+以及
+\begin{equation}
+p_s\in\mathcal P\ \Longleftrightarrow\ \lambda_s\in\Lambda
+\qquad\forall s.
+\tag{3}
+\end{equation}
+该公司寻求一种政策$u^*$，如果存在这样的政策的话，该政策应能够最大化在$[0,t]$期间的总预期销售收入。
+
+\subsection*{固定的输入、策略领域以及销售流程保持不变。}
+初始库存$n$是一个给定的非负整数，而销售期限$t$是已知且有限的：
+\[
+n\in\{0,1,2,\ldots\},\qquad 0<t<+\infty.
+\]
+时间$s$在销售范围$[0,t]$内持续进行。给定的需求函数$\lambda(\cdot)$具有以下特性：它是规则的。价格及其对应的需求强度满足以下条件：
+\[
+\lambda_s=\lambda(p_s),\qquad
+\mathcal P=\mathbb R_+\cup\{p_\infty\},\qquad
+\Lambda=\{\lambda(p):p\in\mathcal P\},\qquad
+0\in\Lambda.
+\]
+这里的$p_s$是政策在时间$s$时选定的价格，而$N_s$则统计了截至时间$s$为止售出的商品数量。需求是一个泊松过程，其强度可以通过$\lambda_s$来控制。如果$dN_s=1$，那么公司就会出售一件商品，并获得收入$p_s$。
+
+该企业在不完全竞争环境下运营。需求仅取决于当前价格，而不考虑过去或预期的价格；需求函数是由给定的，而非从竞争模型推导出来的。不允许库存积压。当库存耗尽时，企业不会获得额外收入。零价格$p_\infty$允许约束条件（2）消除需求：当库存为零时，模型强制定价为$p=p_\infty$。未售出的库存在时间$t$时具有零残值，所有采购和生产成本都已被消耗。基本模型不对价格变动收费。
+
+\subsection*{常规需求假设}
+函数$\lambda(p)$在$p$中是非增的。价格与需求率之间存在一一对应关系，而逆关系则由$p(\lambda)$表示。因此，该政策可以等效地控制强度，而相应的价格则由这种逆关系来决定。
+
+收入率是
+\begin{equation}
+r(\lambda)\doteq\lambda p(\lambda).
+\tag{1}
+\end{equation}
+它是连续的、有界的，并且是凹的。同时，它还满足…
+\[
+\lim_{\lambda\to0}r(\lambda)=0.
+\]
+它有一个有界的最小化函数，该函数在论文中有所定义。
+\[
+\lambda^*=\min\left\{\lambda:
+ r(\lambda)=\max_{\lambda\geq0}r(\lambda)\right\}.
+\]
+标量$\lambda^*$是给定收入率函数的属性，而不是下面所介绍的依赖于状态的优化强度$\lambda^*(n,t)$。
+
+有一个零价$p_\infty$，也可能是$+\infty$，对于该价格…
+\[
+\lim_{p\to p_\infty}\lambda(p)=0,
+\qquad
+\lim_{p\to p_\infty}p\lambda(p)=0.
+\]
+作者将满足这些假设的需求函数称为“规则需求函数”。
+
+对于在$p$价格下，在小的区间$\delta$内的情况，打印出的本地需求描述为
+\[
+\begin{array}{c|c}
+\text{number of items sold}&\text{probability}\\ \hline
+1&\lambda(p)\delta+o(\delta)\\
+0&1-\lambda(p)\delta-o(\delta)\\
+\text{more than }1&o(\delta).
+\end{array}
+\]
+该局部描述与(2)中的资源枯竭机制一起使用。
+
+\subsection*{预期收入的功能性和边界情况}
+对于$u\in\mathcal U$，初始库存为$n>0$，而时间范围则为$t>0$，那么按照该政策所预计的营收情况为：
+\begin{equation}
+J_u(n,t)\doteq E_u\left[\int_0^t p_s\,dN_s\right],
+\tag{4}
+\end{equation}
+其中，$E_u$表示在策略$u$下的期望值。边界定义如下：
+\begin{equation}
+J_u(n,0)\doteq0\qquad\forall n
+\tag{5}
+\end{equation}
+以及
+\begin{equation}
+J_u(0,t)\doteq0\qquad\forall t.
+\tag{6}
+\end{equation}
+边界量化词适用于价值函数的非负库存和时间参数。
+
+\subsection*{链接最优性特征描述}
+以下方程描述了 (7) 的值；这些方程并不是对每一个可行策略的额外限制。本文中非正式的小区间最优性关系如下：
+\[
+\begin{aligned}
+J^*(n,t)=\sup_\lambda\bigl[&\lambda\delta t
+ \bigl(p(\lambda)+J^*(n-1,t-\delta t)\bigr)\\
+ &+(1-\lambda\delta t)J^*(n,t-\delta t)+o(\delta t)\bigr].
+\end{aligned}
+\]
+利用公式(1)，经过重新排列后，将$\delta t\to0$代入，就可以得到汉密尔顿-雅可比方程的充分条件。
+\begin{equation}
+\begin{aligned}
+\frac{\partial J^*(n,t)}{\partial t}
+ &=\sup_\lambda\left[r(\lambda)-\lambda\bigl(J^*(n,t)-J^*(n-1,t)\bigr)\right],\\
+ &\hspace{25mm}\forall n\geq1,\quad\forall t>0.
+\end{aligned}
+\tag{8}
+\end{equation}
+这里的强度选择是根据定价模型确定的，允许的速率为$\Lambda$；在(8)中打印出的最大值用$\lambda$来表示。其边界条件为：
+\[
+J^*(n,0)=0\qquad\forall n,
+\qquad
+J^*(0,t)=0\qquad\forall t.
+\]
+达到最大强度的$\lambda^*(n,t)$值，构成了最优的强度控制。命题1指出，常规需求为(8)式提供了一个唯一的解决方案。
+\[
+\lambda^*(n,s)\leq\lambda^*
+\qquad\text{for all }n\text{ and all }0\leq s\leq t.
+\]
+这是最优强度的一个性质，并不是策略类$\mathcal U$在(7)中的定义界限。附录通过证明(8)中的上确界可以限制为$[0,\lambda^*]$上的最大值来证明存在性；这里保留了未替换的、打印形式的上确界形式(8)。
+
+\paragraph{来源范围。}
+公式的构建和常规需求定义来自Gallego和van Ryzin的著作\emph{《具有随机需求的有限时间范围内库存的最优动态定价》}，第2.1节至2.2.1节，物理PDF页面5-7（印刷版1003-1005页）。命题1的证明位于论文的附录中，物理PDF页面19（印刷版1017页）。方程（9）至（10）专门处理指数需求，不属于这一常规需求公式体系。从Br\'emaud引用的外部强度控制结果，用于证明充分性和存在性，并未从该参考文献中独立验证。
+
+\end{document}

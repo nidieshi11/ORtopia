@@ -1,0 +1,365 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[margin=0.7in]{geometry}
+\allowdisplaybreaks
+\usepackage[UTF8]{ctex}
+\begin{document}
+
+\section*{DRO位置——库存模型：公式（10），包含完整的标题（9）}
+\begin{equation}
+\begin{aligned}
+\min_{\substack{\boldsymbol{o},\boldsymbol{z},\boldsymbol{\alpha},\boldsymbol{\phi}\\
+\boldsymbol{\gamma},\boldsymbol{\lambda},\boldsymbol{\tau},\delta}}
+\Biggl\{&\sum_{i\in I}f_i o_i+
+\sum_{i\in I}\sum_{t\in\mathcal T}c_t^a z_{t,i}
++\sum_{i\in I}\sum_{t\in\mathcal T}\sum_{l\in L}
+ \left(\mu^d_{t,i,l}\alpha_{t,i,l}+\mu^M_{t,i,l}\phi_{t,i,l}\right)\\
+&+\sum_{i\in I}\sum_{l\in L}
+ \left(\mu^\rho_{i,l}\gamma_{i,l}+\mu^q_{i,l}\lambda_{i,l}\right)
++\sum_{(i,j)\in\mathcal A}\sum_{l\in L}\mu^V_{i,j,l}\tau_{i,j,l}+\delta\Biggr\}
+\end{aligned}\tag{10a}
+\end{equation}
+\begin{align}
+\text{s.t.}\quad &(1\mathrm b)\text{--}(1\mathrm c),\tag{10b}\\
+&\delta\geq H(\boldsymbol z,\boldsymbol\alpha,\boldsymbol\phi,
+\boldsymbol\gamma,\boldsymbol\lambda,\boldsymbol\tau).\tag{10c}
+\end{align}
+继承下来的第一阶段行是：
+\begin{align}
+&\sum_{t\in\mathcal T}s_t z_{t,i}\leq S_i o_i,
+&&\forall i\in I,\tag{1b}\\
+&o_i\in\{0,1\},\quad z_{i,t\geq0},
+&&\forall i\in I,\ t\in\mathcal T.\tag{1c}
+\end{align}
+\noindent\emph{在 (1c) 中打印出的符号表示。}页面图像中打印出了格式错误的下标$z_{i,t\geq0}$，此处予以保留。第10页的单独段落中明确地将$z_{t,i}$定义为一个非负连续变量：
+\[
+z_{t,i}\geq0\qquad(t\in\mathcal T,\ i\in\mathcal N).
+\]
+未引入额外的变量$z_{i,t}$。
+
+\subsection*{集合、固定数据以及可变角色}
+该有向网络为$G(\mathcal N,\mathcal A)$。集合$\mathcal N$包含节点，$\mathcal A$表示有向道路弧线，$I\subseteq\mathcal N$表示潜在的仓库位置，$\mathcal T$表示补给物品的类型，而$L$则表示灾难级别。问题描述段落假设候选地点和需求节点是相同的；不过，表1中明确指出$I\subseteq\mathcal N$，而所展示的模型中则使用$I$作为保留项。
+
+固定的非负参数$f_i,S_i,s_t,c_t^a,c_t^p,c_t^u,c_t^h,c^t_{i,j}$分别为：设施开设成本、仓库存储容量、单位存储需求、单位采购成本、单位灾后采购成本、单位未满足需求惩罚、单位持有成本以及单位运输成本。它们的索引分别为$i\in\mathcal N$、$t\in\mathcal T$和$(i,j)\in\mathcal A$，具体取决于上下文。参数$v_t$表示单位物品所需的弧容量，而$t$则表示名义弧容量。$\hat V_{i,j}$为名义弧容量。该模型假设第一阶段预置的供应没有限制。模型将灾后采购描述为有限且成本较高，但未具体说明一般的成本比率。
+
+第一阶段的决定$o_i$表示设施是否开放，而$z_{t,i}$则代表该设施的物品数量$t$。这五个变量$\alpha_{t,i,l},\phi_{t,i,l},\gamma_{i,l},\lambda_{i,l},\tau_{i,j,l}$都是时刻双变量，而非物理库存或流量变量。附录B中明确指出，对于$t\in\mathcal T$、$i\in I$、$l\in L$和$(i,j)\in\mathcal A$，它们的符号都是无限制的。标量$\delta$是完整的追索变量；而$\delta$则没有非负性限制。
+
+\subsection*{不确定性、支持与模糊性}
+随机向量是
+\[
+\xi=[\boldsymbol q,\boldsymbol d,\boldsymbol\rho,\boldsymbol M,\boldsymbol V]^\top.
+\]
+对于$i\in I$、$l\in L$、$q_{i,l}$，如果节点$i$发生级别为$l$的灾难，则取值为1；否则取值为0。随机变量$d_{t,i,l}$表示灾难发生后对物品$t$的需求；$\rho_{i,l}$表示剩余可用储备物资的比例；$M_{t,i,l}$是灾难发生后的最大采购量；而$V_{i,j,l}$表示任一端点发生级别为$l$的灾难后的弧线容量。这些都是不确定的输入参数，但其实际值是在$H$所定义的最坏情况最大化模型中确定的。均值和支撑端点则是固定数据，假设已知或可近似计算。
+
+来源定义如下：
+\[
+\mathcal R=\mathcal R_q\times\mathcal R_d\times\mathcal R_\rho
+\times\mathcal R_M\times\mathcal R_V,
+\]
+\begin{align}
+\mathcal R_q&:=\{0,1\}^{N},&
+\mathcal R_d&:=\left\{\boldsymbol d\geq0:
+\underline d_{t,i,l}\leq d_{t,i,l}\leq\overline d_{t,i.l},\ \forall(t,i,l)\right\},\tag{3a}\\
+\mathcal R_\rho&:=\left\{\boldsymbol\rho\geq0:
+\underline\rho_{i,l}\leq\rho_{i,l}\leq\overline\rho_{i,l},\ \forall(i,l)\right\},\tag{3b}\\
+\mathcal R_M&:=\left\{\boldsymbol M\geq0:
+\underline M_{t,i,l}\leq M_{t,i,l}\leq\overline M_{t,i,l},\ \forall(t,i)\right\},\tag{3c}\\
+\mathcal R_V&:=\left\{\boldsymbol V\geq0:
+\underline V_{i,j,l}\leq V_{i,j,l}\leq\overline V_{i,j,l},\
+\forall(i,j)\in\mathcal A,\ \forall l\right\}.\tag{3d}
+\end{align}
+这里的上下标注表示支持端点，而非随机实现值。  
+在(3a)的提供文本中，需求的上端点使用了指数$N$和标点符号$i.l$；(3c)中量化了$(t,i)$，尽管其表达式中也出现了$l$。这些打印标注被保留了下来。定义段落中的组件索引分别是$t\in\mathcal T$、$i\in\mathcal N$对应$d,M$，$i\in I$对应$q,\rho$、$l\in L$，而$(i,j)\in\mathcal A$对应$V$。这里没有为$\mathcal R_q$提供替代维度。
+
+设$\mathcal P=\mathcal P(\mathcal R)$为在$(\mathcal R,\mathcal B)$上的概率测度，其中$\mathcal B$为Borel$\sigma$-域；设$\mathbb E_{\mathbb P}$表示在$\mathbb P$下的期望值。那么……
+\[
+\mu:=\mathbb E_{\mathbb P}[\xi]
+=[\boldsymbol\mu^q,\boldsymbol\mu^d,\boldsymbol\mu^\rho,
+\boldsymbol\mu^M,\boldsymbol\mu^V]^\top,
+\]
+\begin{equation}
+\mathcal F(\mathcal R,\mu):=
+\left\{\mathbb P\in\mathcal P(\mathcal R)\mid
+\mathbb E_{\mathbb P}[\xi]=\mu\right\}.\tag{4}
+\end{equation}
+附录 B 中使用的组件矩和归一化等式保持不变。
+\begin{align}
+\int_{\mathcal R}d_{t,i,l}\,d\mathbb P&=\mu^d_{t,i,l},
+&&\forall i\in I,\ t\in\mathcal T,\ l\in L,\tag{B.1b}\\
+\int_{\mathcal R}M_{t,i,l}\,d\mathbb P&=\mu^M_{t,i,l},
+&&\forall i\in I,\ t\in\mathcal T,\ l\in L,\tag{B.1c}\\
+\int_{\mathcal R}\rho_{i,l}\,d\mathbb P&=\mu^\rho_{i,l},
+&&\forall i\in I,\ l\in L,\tag{B.1d}\\
+\int_{\mathcal R}V_{i,j,l}\,d\mathbb P&=\mu^V_{i,j,l},
+&&\forall(i,j\in\mathcal A,\ l\in L,\tag{B.1e}\\
+\int_{\mathcal R}q_{i,l}\,d\mathbb P&=\mu^q_{i,l},
+&&\forall i\in I,\ l\in L,\tag{B.1f}\\
+\int_{\mathcal R}d\mathbb P&=1.\tag{B.1g}
+\end{align}
+在(B.1e)的量词中未匹配的括号保留自提供的源文本。这六类乘数分别为$\alpha,\phi,\gamma,\tau,\lambda,\theta$，其符号均不受限制。规范化乘数$\theta$属于推导部分，而非(10)的决策列表。
+
+\paragraph{灾难的排他性以及可选计数。}
+第10页将计算研究的范围限定在……上，而不是一般性的表述。
+\[
+\sum_{l\in L}q_{i,l}\leq1,\qquad\forall i\in I.
+\]
+同样，第16页指出，要指定$l$级灾难的数量，可以执行\emph{操作，并加上}。
+\[
+\sum_{i\in I}q_{i,l}=N_l.
+\]
+在此处选中的一般公式(9b)中，并未包含任何此类限制条件。案例研究中的数值和飓风数量关系也不适用于这一公式。
+
+\subsection*{最糟糕的情况下的应对方案}
+对于固定的$(\boldsymbol z,\boldsymbol\alpha,\boldsymbol\phi,
+\boldsymbol\gamma,\boldsymbol\lambda,\boldsymbol\tau)$，命题2进行了定义。
+\begin{equation}
+\begin{aligned}
+&H(\boldsymbol z,\boldsymbol\alpha,\boldsymbol\phi,
+\boldsymbol\gamma,\boldsymbol\lambda,\boldsymbol\tau)\\
+&=\max_{\substack{
+\boldsymbol\beta,\boldsymbol\Gamma,\boldsymbol\psi,\boldsymbol\varphi,
+\boldsymbol a,\boldsymbol\Theta,\boldsymbol\kappa,\boldsymbol\varrho\\
+\boldsymbol a',\boldsymbol\Theta',\boldsymbol\kappa',\boldsymbol\varrho',
+\boldsymbol h,\boldsymbol g,\boldsymbol F,\boldsymbol\pi\\
+\boldsymbol\eta,\boldsymbol\Phi,\boldsymbol\varpi,\boldsymbol b,\boldsymbol\Lambda}}
+\Biggl\{\sum_{i\in I}\sum_{t\in\mathcal T}\sum_{l\in L}
+\Bigl[\underline d_{t,i,l}(k_{t,i,l}-\alpha_{t,i,l})
++\Delta d_{t,i,l}(h_{t,i,l}-\alpha_{t,i,l}a_{t,i,l})\Bigr]\\
+&\qquad+\sum_{i\in I}\sum_{t\in\mathcal T}z_{t,i}
+\left(\sum_{l\in L}k_{t,i,l}-\beta_{t,i}\right)\\
+&\qquad-\sum_{i\in I}\sum_{l\in L}
+\Bigl[\underline\rho_{i,l}\left(\sum_{t\in\mathcal T}z_{t,i}k_{t,i,l}+\gamma_{i,l}\right)
++\Delta\rho_{i,l}\left(\sum_{t\in\mathcal T}z_{t,i}g_{t,i,l}+\Theta_{i,l}\gamma_{i,l}\right)\Bigr]\\
+&\qquad+\sum_{i\in I}\sum_{t\in\mathcal T}\sum_{l\in L}
+\Bigl[\underline M_{t,i,l}(F_{t,i,l}-\phi_{t,i,l})
++\Delta M_{t,i,l}(\pi_{t,i,l}-\phi_{t,i,l}\kappa_{t,i,l})\Bigr]\\
+&\qquad+\sum_{(i,j)\in\mathcal A}\sum_{l\in L}
+\Bigl[\underline V_{i,j,l}(\eta_{i,j,l}+\varpi_{i,j,l}-\tau_{i,j,l})
++\Delta V_{i,j,l}(\Phi_{i,j,l}+\Lambda_{i,j,l}-\varrho_{i,j,l}\tau_{i,j,l})\\
+&\qquad+\sum_{(i,j)\in\mathcal A}
+\Bigl[\left(\psi_{i,j}-\sum_{l\in L}\eta_{i,j,l}\right)\hat V_{i,j}
++\left(\varphi_{i,j}-\sum_{l\in L}\varpi_{i,j,l}\right)\hat V_{i,j}\Bigr]
+-\sum_{i\in I}\sum_{l\in L}q_{i,l}\lambda_{i,l}\Biggr\}
+\end{aligned}\tag{9a}
+\end{equation}
+\begin{equation}
+\text{s.t.}\quad
+\{(7\mathrm a)\text{--}(7\mathrm d)\},\quad
+\boldsymbol q\in\{0,1\},\quad
+(\boldsymbol a,\boldsymbol\Theta,\boldsymbol\kappa,\boldsymbol\varrho)\in\{0,1\},
+\quad (\mathrm C.3a)\text{--}(\mathrm C.3n).\tag{9b}
+\end{equation}
+\noindent\emph{在(9a)中已打印省略的部分。}显示的最大化下标省略了$\boldsymbol q$和$\boldsymbol k$，尽管它们出现在目标函数和定义约束中。紧跟在$\sum_{(i,j)\in\mathcal A}\sum_{l\in L}$后面的方括号在原始页面图像中并没有对应的方括号。其打印位置保持不变；没有额外的嵌套或关闭位置要求。名义容量和$q\lambda$的总和则分别打印在单独的行上。
+
+二进制家族的组件索引
+\[
+q_{i,l},\Theta_{i,l}\ (i\in I,l\in L),\qquad
+ a_{t,i,l},\kappa_{t,i,l}\ (t\in\mathcal T,i\in I,l\in L),\qquad
+\varrho_{i,j,l}\ ((i,j)\in\mathcal A,l\in L).
+\]
+其余的内部变量是连续的辅助变量或参考对偶变量；
+未为带撇号的乘积变量赋予额外的整体性。
+对偶变量$\beta_{t,i},\Gamma_{t,i},\psi_{i,j},\varphi_{i,j}$分别对应于
+(2b)、(2c)、(2d)和(2e)。特别地，外部乘数$\phi_{t,i,l}$与弧容量对偶变量$\varphi_{i,j}$是不同的。
+
+\subsection*{由 (9) 继承的双重可行区域}
+\begin{align}
+-\beta_{t,i}+\beta_{t,j}+v_t\psi_{i,j}+v_t\varphi_{i,j}
+&\leq c^t_{i,j},
+&&\forall(i,j)\in\mathcal A,\ \forall t\in\mathcal T,\tag{7a}\\
+\beta_{t,i}+\Gamma_{t,i}&\leq c_t^p,
+&&\forall i\in I,\ t\in\mathcal T,\tag{7b}\\
+-c_t^h\leq\beta_{t,i}&\leq c_t^u,
+&&\forall i\in I,\ t\in\mathcal T,\tag{7c}\\
+\Gamma_{t,i}\leq0,\quad\psi_{i,j}&\leq0,\quad\varphi_{i,j}\leq0,
+&&\forall(i,j)\in\mathcal A,\ t\in\mathcal T.\tag{7d}
+\end{align}
+(7d)中的量词按原样保留。第16页称这一区域是有界的，并且$\mathcal R$是有限的。这些说法并非额外的约束条件：所显示的区域在其非正对偶变量中存在无界的负方向，而(3)中的区间支持并非一般的有限集合。
+
+\subsection*{端点构造与辅助含义}
+附录C将每个区间实现替换为较低端点加上其范围，再乘以二进制端点选择器。其基本原理是：在内部变量固定的情况下，当内部变量达到最优值时，每个这样的实现都可以以端点作为终点。定义关系如下：
+\begin{align*}
+\Delta d_{t,i,l}&=\overline d_{t,i,l}-\underline d_{t,i,l},&
+d_{t,i,l}&=\underline d_{t,i,l}+a_{t,i,l}\Delta d_{t,i,l},\\
+\Delta\rho_{i,l}&=\overline\rho_{i,l}-\underline\rho_{i,l},&
+\rho_{i,l}&=\underline\rho_{i,l}+\Delta\rho_{i,l}\Theta_{i,l},\\
+\Delta M_{t,i,l}&=\overline M_{t,i,l}-\underline M_{t,i,l},&
+M_{t,i,l}&=\underline M_{t,i,l}+\Delta M_{t,i,l}\kappa_{t,i,l},\\
+\Delta V_{i,j,l}&=\overline V_{i,j,l}-\underline V_{i,j,l},&
+V_{i,j,l}&=\underline V_{i,j,l}+\Delta V_{i,j,l}\varrho_{i,j,l}.
+\end{align*}
+此处$t\in\mathcal T$、$i\in I$、$l\in L$和$(i,j)\in\mathcal A$分别适用。需求选择器在上端点定义为1，在下端点定义为0；其他选择器也遵循相同的构造方式。对于重合端点没有单独的规则规定。
+
+以下是作者对于这些乘积辅助项的解释，并非在替换行（C.3）中额外添加的非线性等式：
+\begin{align*}
+k_{t,i,l}&=q_{i,l}\beta_{t,i},&
+a'_{t,i,l}&=a_{t,i,l}q_{i,l},&
+h_{t,i,l}&=a'_{t,i,l}\beta_{t,i},\\
+\Theta'_{i,l}&=\Theta_{i,l}q_{i,l},&
+g_{t,i,l}&=\Theta'_{i,l}\beta_{t,i},&
+F_{t,i,l}&=q_{i,l}\Gamma_{t,i},\\
+\kappa'_{t,i,l}&=\kappa_{t,i,l}q_{i,l},&
+\pi_{t,i,l}&=\kappa'_{t,i,l}\Gamma_{t,i},&
+\eta_{i,j,l}&=q_{i,l}\psi_{i,j},\\
+\varrho'_{i,j,l}&=\varrho_{i,j,l}q_{i,l},&
+\Phi_{i,j,l}&=\varrho'_{i,j,l}\psi_{i,j},&
+\varpi_{i,j,l}&=q_{j,l}\varphi_{i,j},\\
+b_{i,j,l}&=\varrho_{i,j,l}q_{j,l},&
+\Lambda_{i,j,l}&=b_{i,j,l}\varphi_{i,j}.&&
+\end{align*}
+节点/项家族由$t\in\mathcal T$、$i\in I$、$l\in L$索引，而$t$在$\Theta'$处缺失；弧家族由$(i,j)\in\mathcal A$、$l\in L$索引。
+
+\subsection*{用于(9b)的完全线性化行}
+双系数下方的上下边界表示固定限制，而非额外的优化变量。源文件未使用个体量化词来标注这些家族；其组成部分的范围即为上述所指定的范围。源文件在(C.3i)中使用了不一致的$\eta_{t,i,l}$下标。在操作候选中，同一源页面选择了明确的弧积定义；而原有的冲突下标则仍被记录在下方。
+\begin{align}
+&\begin{aligned}
+k_{t,i,l}&\geq q_{i,l}\underline\beta_{t,i},&
+k_{t,i,l}&\geq\beta_{t,i}+\overline\beta_{t,i}(q_{i,l}-1),\\
+k_{t,i,l}&\leq q_{i,l}\overline\beta_{t,i},&
+k_{t,i,l}&\leq\beta_{t,i}+\underline\beta_{t,i}(q_{i,l}-1)
+\end{aligned}\tag{C.3a}\\
+& a'_{t,i,l}\geq0,\quad a'_{t,i,l}\leq q_{i,l},\quad
+ a'_{t,i,l}\leq a_{t,i,l},\quad a'_{t,i,l}\geq a_{t,i,l}+q_{i,l}-1
+\tag{C.3b}\\
+&\begin{aligned}
+h_{t,i,l}&\geq a'_{t,i,l}\underline\beta_{t,i},&
+h_{t,i,l}&\geq\beta_{t,i},{}+\overline\beta_{t,i}(a'_{t,i,l}-1),\\
+h_{t,i,l}&\leq a'_{t,i,l}\overline\beta_{t,i},&
+h_{t,i,l}&\leq\beta_{t,i}+\underline\beta_{t,i}(a'_{t,i,l}-1)
+\end{aligned}\tag{C.3c}\\
+&\Theta'_{i,l}\geq0,\quad\Theta'_{i,l}\leq q_{i,l},\quad
+\Theta'_{i,l}\leq\Theta_{i,l},\quad\Theta'_{i,l}\geq\Theta_{i,l}+q_{i,l}-1
+\tag{C.3d}\\
+&\begin{aligned}
+g_{t,i,l}&\geq\Theta'_{i,l}\underline\beta_{t,i},&
+g_{t,i,l}&\geq\beta_{t,i},{}+\overline\beta_{t,i}(\Theta'_{i,l}-1),\\
+g_{t,i,l}&\leq\Theta'_{i,l}\overline\beta_{t,i},&
+g_{t,i,l}&\leq\beta_{t,i}+\underline\beta_{t,i}(\Theta'_{i,l}-1)
+\end{aligned}\tag{C.3e}\\
+&\begin{aligned}
+F_{t,i,l}&\geq q_{i,l}\underline\Gamma_{t,i},&F_{t,i,l}&\geq\Gamma_{t,i},\\
+F_{t,i,l}&\leq0,&F_{t,i,l}&\leq\Gamma_{t,i}+\underline\Gamma_{t,i}(q_{i,l}-1)
+\end{aligned}\tag{C.3f}\\
+&\kappa'_{t,i,l}\geq0,\quad\kappa'_{t,i,l}\leq q_{i,l},\quad
+\kappa'_{t,i,l}\leq\kappa_{t,i,l},\quad
+\kappa'_{t,i,l}\geq\kappa_{t,i,l}+q_{i,l}-1
+\tag{C.3g}\\
+&\begin{aligned}
+\pi_{t,i,l}&\geq\kappa'_{t,i,l}\underline\Gamma_{t,i},&\pi_{t,i,l}&\geq\Gamma_{t,i},\\
+\pi_{t,i,l}&\leq0,&\pi_{t,i,l}&\leq\Gamma_{t,i}+\underline\Gamma_{t,i}(\kappa'_{t,i,l}-1)
+\end{aligned}\tag{C.3h}\\
+&\begin{aligned}
+\eta_{i,j,l}&\geq q_{i,l}\underline\psi_{i,j},&\eta_{i,j,l}&\geq\psi_{i,j},\\
+\eta_{i,j,l}&\leq0,&\eta_{i,j,l}&\leq\psi_{i,j}+\underline\psi_{i,j}(q_{i,l}-1)
+\end{aligned}\tag{C.3i}\\
+&\varrho'_{i,j,l}\geq0,\quad\varrho'_{i,j,l}\leq q_{i,l},\quad
+\varrho'_{i,j,l}\leq\varrho_{i,j,l},\quad
+\varrho'_{i,j,l}\geq\varrho_{i,j,l}+q_{i,l}-1
+\tag{C.3j}\\
+&\begin{aligned}
+\Phi_{i,j,l}&\geq\varrho'_{i,j,l}\underline\psi_{i,j},&\Phi_{i,j,l}&\geq\psi_{i,j},\\
+\Phi_{i,j,l}&\leq0,&\Phi_{i,j,l}&\leq\psi_{i,j}+\underline\psi_{i,j}(\varrho'_{i,j,l}-1)
+\end{aligned}\tag{C.3k}\\
+&\begin{aligned}
+\varpi_{i,j,l}&\geq q_{j,l}\underline\varphi_{i,j},&\varpi_{i,j,l}&\geq\varphi_{i,j},\\
+\varpi_{i,j,l}&\leq0,&\varpi_{i,j,l}&\leq\varphi_{i,j}+\underline\varphi_{i,j}(q_{j,l}-1)
+\end{aligned}\tag{C.3l}\\
+&b_{i,j,l}\geq0,\quad b_{i,j,l}\leq q_{j,l},\quad
+ b_{i,j,l}\leq\varrho_{i,j,l},\quad b_{i,j,l}\geq\varrho_{i,j,l}+q_{j,l}-1
+\tag{C.3m}\\
+&\begin{aligned}
+\Lambda_{i,j,l}&\geq b_{i,j,l}\underline\varphi_{i,j},&\Lambda_{i,j,l}&\geq\varphi_{i,j},\\
+\Lambda_{i,j,l}&\leq0,&\Lambda_{i,j,l}&\leq\varphi_{i,j}+\underline\varphi_{i,j}(b_{i,j,l}-1)
+\end{aligned}\tag{C.3n}
+\end{align}
+\noindent\emph{印刷上的标点符号和索引不一致。}页面图像中，在$\beta_{t,i}$与下一个加号之间有一个逗号。在(C.3c)和(C.3e)的第二个不等式中，在(C.3i)中，最后两个不等式使用了$\eta_{t,i,l}$，而不是前面文本中定义的弧索引$\eta_{i,j,l}$。这个可执行候选方案选择了明确的源产品形式，并将C.3i中的所有四行绑定到同一个弧/级别辅助项上。它并不声称与将两个下标家族视为不同的字面阅读方式具有等价性。在这些四个替换行之外，没有额外的非线性产品等式被施加。
+
+\subsection*{边界系数以及附录D中的讨论内容}
+附录C将$\underline\beta,\overline\beta,
+\underline\Gamma,\underline\psi,\underline\varphi$标识为McCormick不等式中的约束系数。它们与未标记的对偶变量是不同的。附录D中提供了以下关于约束系数的讨论（第48页）：
+\[
+-c_t^h\leq\beta_{t,i}\leq c_t^u,\qquad
+\underline\beta_{t,i}=-c_t^h,\qquad \overline\beta=c_t^u,
+\qquad k_{t,i,l}\in[\underline\beta_{t,i},\overline\beta_{t,i}].
+\]
+上界定义是以不加组件下标的形式打印出来的。对于采购对偶问题，讨论中提到了……
+\[
+\Gamma_{t,i}\leq c_t^p-\beta_{t,i},\qquad \Gamma_{t,i}\leq0,
+\qquad \Gamma_{t,i}=\min\{c_t^p-\beta_{t,i},0\}
+\quad\text{in an optimal solution},
+\]
+\[
+\overline\Gamma_{t,i}=0,\qquad
+\underline\Gamma_{t,i}=
+\begin{cases}
+c_t^p-c_t^u,&c_t^p\leq c_t^u,\\
+0,&\text{otherwise}.
+\end{cases}
+\]
+其最后一段以以下方式开始：
+\[
+v_t\psi_{i,j}+v_t\varphi_{i,j}\leq c^t_{i,j}+\beta_{t,i}-\beta_{t,j},
+\qquad \psi_{i,j}\leq0,\quad\varphi_{i,i}\leq0,
+\]
+并且，所提供的文本中包含了需要连接的语句。
+\[
+\underline\psi_{i,j}\leq
+\min_t\left\{(1/v_t)(c^t_{i,j}-c_t^h-c_t^u\right\}
+\quad\text{if }c^t_{i,j}\leq c_t^h+c_t^u,
+\qquad \underline\psi_{i,j}=0\quad\text{otherwise}.
+\]
+这被保留为一种约束性的讨论，而不是被强化为等式，或者被修正为不同的不等式。 其条件中包含$t$，位于最小值之外，且提供的文本中括号不完整。 第48页的图像没有提供，因此这份最后装订的声明中的装饰元素，与第47页不等式中的系数一样，仍然没有图像验证。 在提供的附录D文本中出现了$\underline\varphi_{i,j}$；它仍然是(C.3l)和(C.3n)中使用的抽象边界系数。 增加了数值大$M$，对$v_t$的额外正性假设，以及$\underline\varphi$的对称修复。
+
+\subsection*{标题下所提到的“Recourse”定义}
+对于可行的第一阶段决策以及给定的实现$\xi$，在歧义模型中使用的替代价值如下。这些行定义了$Q$，以及(7)的来源；它们并不是对(9)中的变量施加的额外原始块。
+\begin{equation}
+Q(\boldsymbol o,\boldsymbol z,\xi):=
+\min_{\boldsymbol y,\boldsymbol u,\boldsymbol e,\boldsymbol x}
+\left\{\sum_{i\in I}\sum_{t\in\mathcal T}
+(c_t^p y_{t,i}+c_t^u u_{t,i}+c_t^h e_{t,i})
++\sum_{t\in\mathcal T}\sum_{(i,j)\in\mathcal A}c^t_{i,j}x^t_{i,j}\right\}.
+\tag{2a}
+\end{equation}
+\begin{align}
+&\begin{aligned}
+\text{s.t.}\quad
+\sum_{j:(j,i)\in\mathcal A}x^t_{j,i}
+-\sum_{j:(i,j)\in\mathcal A}x^t_{i,j}
++y_{t,i}-e_{t,i}+u_{t,i}
+&=\sum_{l\in L}q_{i,l}(d_{t,i,l}-\rho_{i,l}z_{t,i})\\
+&\quad-\left(1-\sum_{l\in L}q_{i,l}\right)z_{t,i},
+\qquad\forall t\in\mathcal T,\ i\in I,
+\end{aligned}\tag{2b}\\
+&y_{t,i}\leq\sum_{l\in L}q_{i,l}M_{t,i,l},
+\qquad\forall t\in\mathcal T,\ i\in I,\tag{2c}\\
+&\sum_{t\in\mathcal T}v_t x^t_{i,j}
+\leq\sum_{l\in L}q_{i,l}V_{i,j,l}
++\left(1-\sum_{l\in L}q_{i,l}\right)\hat V_{i,j},
+\qquad\forall(i,j)\in\mathcal A,\tag{2d}\\
+&\sum_{t\in\mathcal T}v_t x^t_{i,j}
+\leq\sum_{l'\in L}q_{j,l'}V_{i,j,l'}
++\left(1-\sum_{l'\in L}q_{j,l'}\right)\hat V_{i,j},
+\qquad\forall(i,j)\in\mathcal A,\tag{2e}\\
+&y_{t,i}\geq0,\quad e_{t,i}\geq0,\quad u_{t,i}\geq0,\quad x^t_{i,j}\geq0,
+\qquad\forall t\in\mathcal T,\ i\in(i,j)\in\mathcal A.\tag{2f}
+\end{align}
+变量$y_{t,i},e_{t,i},u_{t,i}$是连续量，分别未被使用且未得到满足；定义性文本为所有$t\in\mathcal T$和$i\in\mathcal N$提供了这些变量的定义。连续变量$x^t_{i,j}$表示通过弧$(i,j)\in\mathcal A$运输物品$t$的过程。根据定义文本，这四个变量都是非负的。在(2f)中的错误量化符号$i\in(i,j)\in\mathcal A$被保留下来。
+
+如果$\sum_{l\in L}q_{i,l}=0$，所有在$i$处预置的库存仍然可用。
+相应的容量解释如下：名义容量$\hat V_{i,j}$
+当没有端点被触及时，$V_{i,j,l}$或$V_{i,j,l'}$分别当只有$i$或只有$j$被触及时，以及
+\[
+\min\{V_{i,j,l},V_{i,j,l'}\}
+\]
+当两个端点分别达到$l$和$l'$的水平时。这些是作者对(2d)--(2e)的解释，并非额外的容量不等式。
+
+附录B中的对偶性以及附录C中的端点/乘积替换，最终都导致了选定的(9)--(10)结果。这里并没有同时实施中间的最小-最大公式化和算法主问题。命题3指出，对于固定的外部参数来说，
+\[
+H(\boldsymbol z,\boldsymbol\alpha,\boldsymbol\phi,
+\boldsymbol\gamma,\boldsymbol\lambda,\boldsymbol\tau)<\infty,
+\]
+并且，$H$在这些具有有限多部分的参数中，是凸的、分段线性的。
+
+\paragraph{来源。}
+K. S. Shehadeh和E. L. Tucker，\emph{灾难救援物资的选址与库存布局随机优化模型}，arXiv:2012.05387v3，物理PDF页面10--17及附录B--E，页面45--49。方程(3)--(4)以及附录B和D的内容可在提供的完整文本中找到；其原始页面图片并未提供。提供的第12、16、17和47页的图片展示了印刷中的问题以及线性化行中的装订斜体字问题。
+\end{document}

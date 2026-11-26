@@ -1,0 +1,88 @@
+\documentclass[UTF8,11pt]{ctexart}
+\usepackage{amsmath,amssymb,mathtools,geometry}
+\geometry{a4paper,margin=20mm}\allowdisplaybreaks
+\begin{document}
+\section*{最小能耗的异质电动车队路径与充电模型}
+
+\paragraph{来源} PDF第5--8页，§2.1--2.2，能耗式(1)、约束(3)--(21)。
+按原文的路径物理含义将(5)--(8)写成选中弧才生效的递推，避免未选弧强制状态为零。
+\subsection*{输入和访问副本}
+$W$ 为异质车队，$V$ 为必服务客户，$D$ 为绕行充电站。
+使用分离的起终仓 $o,e$；对允许多次访问的绕行/仓库充电点提供足够的访问副本，
+与客户处至多一次访问的目的地充电点区分。副本集合记为 $F$，
+$A$ 为 $\{o\}\cup V\cup F\cup\{e\}$ 上允许的无自环弧，不进入 $o$、不离开 $e$。
+车队可走空路线 $(o,e)$，其时间/距离/能耗为零。
+副本数须覆盖时间范围内全部可能访问；若提供有限上限而无充分性依据，本模型仅是该上限下的实例。
+
+已知 $H(t)$ 是时刻至旅行时段的映射；$\tau_{hij},e_{hij},d_{hij}$ 分别为
+时段 $h$ 的行驶时间、预计能耗和距离。$\tau_i^s,q_i$ 为服务时间和客户需求（非客户为零）。
+车辆 $v$ 的出发时刻 $\underline T^v$、回仓截止 $\overline T^v$、
+回仓后充电截止 $\overline T_c^v$、电池上下界 $\underline B^v,\overline B^v$、
+初始/终端电量 $B_{\rm ini}^v,B_{\rm ter}^v$、载重上限 $\overline Q^v$、充电功率
+$P_c^v$ 已知。节点充电功率为 $P_n^i$，有效功率
+$p_i^v=\min(P_c^v,P_n^i)$；不可充电节点不定义充电时间且强制 $C_i^v=E_i^v=0$。
+$\tau_f$ 是充电准备时间。无排队；所有时间在同一坐标系。
+\subsection*{变量}
+$x_{ij}^v,C_i^v\in\{0,1\}$ 为弧选择和充电启动；
+$T_i^v,B_i^v,D_i^v,Q_i^v$ 为到达时刻、电量、累计距离、累计已服务需求；
+$E_i^v\ge0$ 为补充电量，$b_{ij}^v\ge0$ 为行驶耗电。
+$a_i^v=\sum_jx_{ij}^v$ 为派生访问指示。空车终仓状态与起仓相同。
+\subsection*{完整核心模型}
+\[
+\min\ J_E=\sum_{v\in W}\left(B_o^v-B_e^v+
+ \sum_{i\in\{o\}\cup V\cup F}E_i^v\right).\tag{1}
+\]
+\begin{align}
+\sum_{v\in W,j:(i,j)\in A}x_{ij}^v&=1 &&i\in V,\\
+\sum_{j:(o,j)\in A}x_{oj}^v&=1,\quad \sum_{i:(i,e)\in A}x_{ie}^v=1 &&v\in W,\\
+\sum_{j:(i,j)\in A}x_{ij}^v&=\sum_{j:(j,i)\in A}x_{ji}^v\le1
+&&v\in W,\ i\in V\cup F,\\
+C_i^v&\le a_i^v,\qquad E_i^v\ge0 &&v\in W,\ i\ne e.
+\end{align}
+对每条选中弧 $(i,j)$，施加以下条件约束（未选弧不约束节点状态）：
+\begin{align}
+x_{ij}^v=1&\ \Longrightarrow\
+T_j^v=T_i^v+\tau_i^s+\tau_{H(T_i^v),ij}+E_i^v/p_i^v+\tau_f C_i^v,\tag{5}\\
+x_{ij}^v=1&\ \Longrightarrow\ B_j^v=B_i^v-b_{ij}^v+E_i^v,\tag{6}\\
+x_{ij}^v=1&\ \Longrightarrow\ D_j^v=D_i^v+d_{H(T_i^v),ij},\tag{7}\\
+x_{ij}^v=1&\ \Longrightarrow\ Q_j^v=Q_i^v+q_i,\tag{8}\\
+x_{ij}^v=1&\ \Longrightarrow\ b_{ij}^v\ge e_{H(T_i^v),ij},
+\qquad x_{ij}^v=0\Longrightarrow b_{ij}^v=0.\tag{9}
+\end{align}
+不可充电节点上的 $E_i^v/p_i^v$ 项定义为零，不计算 $0/0$。
+定义完整路线不含充电的耗时与预测耗电
+\[
+A_v=\sum_{(k,j)\in A}x_{kj}^v(\tau_k^s+\tau_{H(T_k^v),kj}),\qquad
+L_v=\sum_{(k,j)\in A}x_{kj}^v e_{H(T_k^v),kj}.
+\]
+对每个可充电节点 $i\ne e$：
+\begin{align}
+0\le E_i^v&\le C_i^vp_i^v
+\left[\overline T^v-\underline T^v-A_v
+-\sum_{q\ne i,\ q\ne e}\left(\tau_f C_q^v+E_q^v/p_q^v\right)\right],\tag{10}\\
+E_i^v&\le C_i^v(\overline B^v-B_i^v),\tag{11}\\
+E_i^v&\le C_i^v\max\left\{0,\max(\underline B^v,B_{\rm ter}^v)
+-B_{\rm ini}^v+L_v-\sum_{q\ne i,\ q\ne e}E_q^v\right\}.\tag{12}
+\end{align}
+式(10)用经过的总时长表达，等于将原式时间原点平移到出发时刻；式(5)仍单独计入本次充电准备时间。
+\begin{align}
+T_o^v&=\underline T^v,\quad B_o^v=B_{\rm ini}^v,\quad Q_o^v=D_o^v=0,\tag{13--16}\\
+T_e^v&\le\overline T^v,\tag{17}\\
+B_{\rm ter}^v-B_e^v&\le
+\min(P_c^v,P_n^{\rm depot})(\overline T_c^v-T_e^v),\tag{18}\\
+\underline B^v\le B_i^v&\le\overline B^v,\qquad
+0\le Q_i^v\le\overline Q^v,\quad D_i^v\ge0,\quad T_i^v\ge0,\tag{19--20}\\
+x_{ij}^v,C_i^v&\in\{0,1\}.\tag{21}
+\end{align}
+所有非空路线必须从 $o$ 连通到 $e$；可显式施加连通性割
+\[
+\sum_{i\in U,j\notin U:(i,j)\in A}x_{ij}^v\ge a_k^v
+\quad(\varnothing\ne U\subseteq V\cup F,\ k\in U,\ v\in W).
+\]
+上述关系展开了“从仓出发并回仓”的闭合行程定义。
+\paragraph{转写澄清}
+原文(17)排印为等号而解释是“by the latest arrival time”；采用截止不等式。
+原文(4)跨车辆汇总流量，这里按每辆车展开以保证各车辆路径；所有这些修正均以§2.1明确的物理路线定义为依据。
+不以最短时间目标替换节能目标。
+
+\end{document}

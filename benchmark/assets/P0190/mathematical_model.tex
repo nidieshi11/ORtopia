@@ -1,0 +1,115 @@
+\documentclass[UTF8,11pt]{ctexart}
+\usepackage{amsmath,amssymb,mathtools,geometry}
+\geometry{a4paper,margin=20mm}\allowdisplaybreaks
+\begin{document}
+\section*{交叉口信号与车辆到达车道联合高层调度}
+
+\paragraph{来源与边界} PDF第3--10页，§2.3--2.6，式(1)--(50)。
+高层给定信号、到达时间、车道后，§2.7低层才生成轨迹；本文件只覆盖完整高层调度。
+\subsection*{索引、输入和变量定义}
+进口道为 $i$，从右向左编号的车道为 $j$，按位置索引的车辆为 $k$；
+车辆集合 $\Omega=\Omega^{\rm CAV}\cup\Omega^{\rm OV}$。只有CAV受控。
+$f(j)$ 为车道至信号相位映射（依进口道使用相应映射），八相位 $\phi_1,\ldots,\phi_8$
+遵循NEMA双环屏障顺序。$I_\phi$ 表示当前相位绿灯；$g_\phi^p,t_\phi^l$ 是已过绿灯和损失时间；
+$\phi_g$ 是同环当前绿灯，式(7)的 $\phi_p$ 遍历其后、目标相位前的相位。
+$g^{\min},g^{\max}$ 是时长界。
+
+车辆输入 $d^{\rm stop},P,v,v^{\rm lat},d^{\rm lat}$ 分别为距停止线距离、沿车道位置、
+当前速度、横向速度和横向偏移。$v^l=v_l$ 是限速，$v_t$ 为通过速度，
+$a_{\max},d_{\max}>0$ 为加减速度限值，$v_{lc}$ 为换道最低速度，
+$v_{\rm avg}^{\rm CAV},v_{\rm avg}^{\rm OV}>0$ 为近口平均速度；
+$d^{\rm acc},d^{\rm dec}$ 是按给定运动状态求得的加减速距离。
+$d_v,d_g,t_{\rm headway},d_h$ 为车长、最小间隔、期望车头时间、放行车头时间；
+$CNL_i$ 为禁止换道区，$d_{\rm dis}$ 为规定队列清空距离，$e^{f(j)}$ 为入区时红灯指示。
+$I_j^{lm},I_j^{rm}$ 标识最左/最右车道。
+$K^{\rm front}_{ijk}(\ell)$ 为候选车道 $\ell$ 上处于本车前方的车辆集合，
+$kf,kfl$ 为候选车道即时前后车（只有存在的邻车才施加对应安全行）。
+$GAP_{ij}$ 为车道间隙；$K^{q_jL},K^{q_jR}$ 为可从相邻左右车道进入间隙的车辆集合。
+$I_{\rm safety},I_{\rm speed},I_{\rm NCG}$ 为按(17)--(23)和第8页规则预评估的可换道条件，
+同间隙冲突按距停止线较近者优先。$M$ 为覆盖各条件表达式的有效上界。
+
+$J^{\rm target}_{ijk}$ 为与车辆后续路径相容的绝对车道编号集合；
+$\widehat J_{ijk}$ 为本次可保持或朝目标方向移动一步的车道集合。
+动作 $j^{\prime}=0,1,2$ 对应 $\ell_{ijk}(j^{\prime})=j+1,j,j-1$，越出道路的动作固定为零。
+原(10)混用了动作编号与绝对车道编号，这里显式以 $\ell$ 映射避免把两者直接比较。
+$f^l,f^r$ 按(11)--(12)条件取1，否则取0。
+
+决策 $t^a,d,r,g,\theta,C,t^{\rm dis}\ge0$ 分别为到达、延误、剩余红灯、
+剩余绿灯、相位时长、周期、队列放行时间；
+$\delta^{0,1,2},\alpha,\beta\in\{0,1\}$ 为换道动作和本周期通过标记；
+$n^{r,c,l}$ 及其green/red分量为非负整数队列计数。$j_{\rm new}$ 是(16)定义的派生车道。
+式(47)--(49)的 $t$ 均指对应前车的 $t^a$。
+\subsection*{唯一目标}
+\[
+\min \sum_{i,j,k}(d_{ijk}+\delta^0_{ijk}+\delta^2_{ijk}),\qquad
+d_{ijk}=t^a_{ijk}-d^{\rm stop}_{ijk}/v^l.\tag{1--2}
+\]
+\subsection*{全部高层约束}
+\[\begin{aligned}&\text{信号配时约束 (基于NEMA双环屏障结构):}\end{aligned}\]
+\[\begin{aligned}&\quad \sum_{i=1}^{4} \theta_{\phi_{i}} = \sum_{i=5}^{8} \theta_{\phi_{i}} = C \quad \text{(式(3))}\end{aligned}\]
+\[\begin{aligned}&\quad \sum_{i=1}^{2} \theta_{\phi_{i}} = \sum_{i=5}^{6} \theta_{\phi_{i}} \quad \text{(式(4))}\end{aligned}\]
+\[\begin{aligned}&\quad \sum_{i=3}^{4} \theta_{\phi_{i}} = \sum_{i=7}^{8} \theta_{\phi_{i}} \quad \text{(式(5))}\end{aligned}\]
+\[\begin{aligned}&\quad g_{\phi} = I_{\phi} (\theta_{\phi} - g^{p}_{\phi} - t^{l}_{\phi}), \quad \forall \phi \quad \text{(式(6))}\end{aligned}\]
+\[\begin{aligned}&\quad \text{其中，当相位 } \phi \text{ 为红灯时， } g_{\phi} = 0.\end{aligned}\]
+\[\begin{aligned}&\quad r_{\phi} = (1 - I_{\phi})(g_{\phi_{g}} + t^{l}_{\phi_{g}} + \sum_{\phi_{p}} \theta_{\phi_{p}}), \quad \forall \phi \quad \text{(式(7))}\end{aligned}\]
+\[\begin{aligned}&\quad g^{\min} \leq \theta_{\phi} \leq g^{\max} \quad \text{(式(8))}\end{aligned}\]
+\[\begin{aligned}&\text{车道分配约束:}\end{aligned}\]
+\[\begin{aligned}&\quad \sum_{j^{\prime}=0,1,2} \delta^{j^{\prime}}_{ijk} = 1 \quad \text{(式(9))}\end{aligned}\]
+\[\begin{aligned}&\quad \delta^{j^{\prime}}_{ijk} = 0 \text{ if } \ell_{ijk}(j^{\prime}) \notin \widehat J_{ijk} \text{ and } \omega_{ijk} \in \Omega^{\text{CAV}} \quad \text{(式(10))}\end{aligned}\]
+\[\begin{aligned}&\quad f^{l}_{ijk} = 1 \text{ if } v^{\text{lat}}_{ijk} > 0, d^{\text{lat}}_{ijk} \geq 0.2 \quad \text{(式(11))}\end{aligned}\]
+\[\begin{aligned}&\quad f^{r}_{ijk} = 1 \text{ if } v^{\text{lat}}_{ijk} < 0, d^{\text{lat}}_{ijk} \leq -0.2 \quad \text{(式(12))}\end{aligned}\]
+\[\begin{aligned}&\quad \delta^{1}_{ijk} = 1 \text{ if } \omega_{ijk} \in \Omega^{\text{OV}}, f^{l}_{ijk} = 0, f^{r}_{ijk} = 0 \quad \text{(式(13))}\end{aligned}\]
+\[\begin{aligned}&\quad \delta^{2}_{ijk} = 1 \text{ if } \omega_{ijk} \in \Omega^{\text{OV}}, f^{r}_{ijk} = 1 \quad \text{(式(14))}\end{aligned}\]
+\[\begin{aligned}&\quad \delta^{0}_{ijk} = 1 \text{ if } \omega_{ijk} \in \Omega^{\text{OV}}, f^{l}_{ijk} = 1 \quad \text{(式(15))}\end{aligned}\]
+\[\begin{aligned}&\quad j_{\text{new}} = \delta^{0}_{ijk}(j + 1) + \delta^{1}_{ijk}(j) + \delta^{2}_{ijk}(j - 1) \quad \text{(式(16))}\end{aligned}\]
+\[\begin{aligned}&\quad (P_{ij_{\text{new}}kf} - P_{ijk}) - \max \left( \frac{v^{2}_{ijk} - v^{2}_{ij_{\text{new}}kf}}{2d_{\max}} + d_{r}, d_{\text{des}} \right) \geq - (1 - \delta^{j^{\prime}}_{ijk}) M \quad \text{(式(17))}\end{aligned}\]
+\[\begin{aligned}&\quad (P_{ijk} - P_{ij_{\text{new}}kfl}) - \max \left( \frac{v^{2}_{ij_{\text{new}}kfl} - v^{2}_{ijk}}{2d_{\max}} + d_{r}, d_{\text{des}} \right) \geq - (1 - \delta^{j^{\prime}}_{ijk}) M \quad \text{(式(18))}\end{aligned}\]
+\[\begin{aligned}&\quad d_{r} = d_{v} + d_{g} \quad \text{(式(19))}\end{aligned}\]
+\[\begin{aligned}&\quad d_{\text{des}} = d_{r} + t_{\text{headway}} \times v_{ijk} \quad \text{(式(20))}\end{aligned}\]
+\[\begin{aligned}&\quad v_{ijk} - v_{lc} \geq - (1 - \delta^{j^{\prime}}_{ijk}) M \quad \text{(式(21))}\end{aligned}\]
+式(17)、(18)、(21)仅对 CAV 的候选换道动作 $j^{\prime}\in\{0,2\}$ 施加；
+动作保持车道 $j^{\prime}=1$ 不受这些换道条件限制。
+在这些行中，候选车道取 $\ell_{ijk}(j^{\prime})$，相应 $kf,kfl$
+取该候选车道上存在的前车和后车；不得用未激活动作的邻车限制保持车道车辆。
+式(19)、(20)仅定义这些安全约束使用的距离参数。
+\[\begin{aligned}&\quad \delta^{1}_{ijk} = 1 \quad \text{if} \quad P_{ijk} \in \text{CNL}_{i} \quad \text{(式(22))}\end{aligned}\]
+\[\begin{aligned}&\quad (1 - I^{lm}_{j}) \sum_{k_{l} \in K^{q_{j}L}} \delta^{2}_{i(j+1)k_l} + (1 - I^{rm}_{j}) \sum_{k_{r} \in K^{q_{j}R}} \delta^{0}_{i(j-1)k_r} \leq 1, \quad \forall \text{gap}^{q}_{j} \in \text{GAP}_{ij} \quad \text{(式(23))}\end{aligned}\]
+\[\begin{aligned}&\quad \delta^{0}_{ijk} = 1, \quad \text{if} \quad j - \min(J^{\text{target}}_{ijk}) < 0, \quad I_{\text{safety}} = 1, \quad I_{\text{speed}} = 1, \quad I_{\text{NCG}} = 1, \quad P_{ijk} \notin \text{CNL}_{i} \quad \text{(式(24))}\end{aligned}\]
+\[\begin{aligned}&\quad \delta^{2}_{ijk} = 1, \quad \text{if} \quad j - \max(J^{\text{target}}_{ijk}) > 0, \quad I_{\text{safety}} = 1, \quad I_{\text{speed}} = 1, \quad I_{\text{NCG}} = 1, \quad P_{ijk} \notin \text{CNL}_{i} \quad \text{(式(25))}\end{aligned}\]
+\[\begin{aligned}&\quad \text{式(24)和(25)在车辆 } \omega_{ijk} \text{ 是CAV时有效。}\end{aligned}\]
+\[\begin{aligned}&\text{到达时间约束:}\end{aligned}\]
+\[\begin{aligned}&\quad \phi = f(j) \quad \text{(式(26))}\end{aligned}\]
+\[\begin{aligned}&\quad \text{当当前相位 } f(j_{\text{new}}) \text{ 为绿灯时:}\end{aligned}\]
+\[\begin{aligned}&\quad M(1 - \alpha_{ijk}) \geq I_{f(j_{\text{new}})}(t^{a}_{ijk} - g_{f(j_{\text{new}})}) \geq -M \alpha_{ijk} \quad \text{(式(27))}\end{aligned}\]
+\[\begin{aligned}&\quad M \alpha_{ijk} \geq I_{f(j_{\text{new}})}(g_{f(j_{\text{new}})} + t^{l}_{f(j_{\text{new}})} + C - \theta_{f(j_{\text{new}})} + t^{\text{dis}}_{ijk} - t^{a}_{ijk}) \geq -M(1 - \alpha_{ijk}) \quad \text{(式(28))}\end{aligned}\]
+\[\begin{aligned}&\quad \text{当当前相位 } f(j_{\text{new}}) \text{ 为红灯时:}\end{aligned}\]
+\[\begin{aligned}&\quad M \beta_{ijk} \geq (1 - I_{f(j_{\text{new}})})(r_{f(j_{\text{new}})} + \theta_{f(j_{\text{new}})} - t^{a}_{ijk}) \geq -M(1 - \beta_{ijk}) \quad \text{(式(29))}\end{aligned}\]
+\[\begin{aligned}&\quad (1 + I_{f(j_{\text{new}})}) \geq \beta_{ijk} \geq (1 - I_{f(j_{\text{new}})}) \quad \text{(式(30))}\end{aligned}\]
+\[\begin{aligned}&\quad t^{a}_{ijk} \geq (1 - I_{f(j_{\text{new}})})(r_{f(j_{\text{new}})} + t^{\text{dis}}_{ijk}) \quad \text{(式(31))}\end{aligned}\]
+\[\begin{aligned}&\quad t^{\text{dis}}_{ijk} = (n^{r}_{ijk} + n^{c}_{ijk} + n^{l}_{ijk}) d_{h} \quad \text{(式(32))}\end{aligned}\]
+\[\begin{aligned}&\quad n^{r}_{ijk} = n^{r \text{green}}_{ijk} I_{f(j_{\text{new}})} + n^{r \text{red}}_{ijk} (1 - I_{f(j_{\text{new}})}) \quad \text{(式(33))}\end{aligned}\]
+\[\begin{aligned}&\quad n^{r \text{green}}_{ijk} = \sum_{k^{\prime} \in K^{\text{front}}_{ijk}(j_{\text{new}}-1)} (1 - \alpha_{i(j_{\text{new}}-1)k^{\prime}})(\delta^{0}_{i(j_{\text{new}}-1)k^{\prime}}) \quad \text{(式(34))}\end{aligned}\]
+\[\begin{aligned}&\quad n^{r \text{red}}_{ijk} = \sum_{k^{\prime} \in K^{\text{front}}_{ijk}(j_{\text{new}}-1)} (\beta_{i(j_{\text{new}}-1)k^{\prime}})(\delta^{0}_{i(j_{\text{new}}-1)k^{\prime}}) \quad \text{(式(35))}\end{aligned}\]
+\[\begin{aligned}&\quad n^{c}_{ijk} = n^{c \text{green}}_{ijk} I_{f(j_{\text{new}})} + n^{c \text{red}}_{ijk} (1 - I_{f(j_{\text{new}})}) \quad \text{(式(36))}\end{aligned}\]
+\[\begin{aligned}&\quad n^{c \text{green}}_{ijk} = \sum_{k^{\prime} \in K^{\text{front}}_{ijk}(j_{\text{new}})} (1 - \alpha_{ij_{\text{new}}k^{\prime}})(\delta^{1}_{ij_{\text{new}}k^{\prime}}) \quad \text{(式(37))}\end{aligned}\]
+\[\begin{aligned}&\quad n^{c \text{red}}_{ijk} = \sum_{k^{\prime} \in K^{\text{front}}_{ijk}(j_{\text{new}})} (\beta_{ij_{\text{new}}k^{\prime}})(\delta^{1}_{ij_{\text{new}}k^{\prime}}) \quad \text{(式(38))}\end{aligned}\]
+\[\begin{aligned}&\quad n^{l}_{ijk} = n^{l \text{green}}_{ijk} I_{f(j_{\text{new}})} + n^{l \text{red}}_{ijk} (1 - I_{f(j_{\text{new}})}) \quad \text{(式(39))}\end{aligned}\]
+\[\begin{aligned}&\quad n^{l \text{green}}_{ijk} = \sum_{k^{\prime} \in K^{\text{front}}_{ijk}(j_{\text{new}}+1)} (1 - \alpha_{i(j_{\text{new}}+1)k^{\prime}})(\delta^{2}_{i(j_{\text{new}}+1)k^{\prime}}) \quad \text{(式(40))}\end{aligned}\]
+\[\begin{aligned}&\quad n^{l \text{red}}_{ijk} = \sum_{k^{\prime} \in K^{\text{front}}_{ijk}(j_{\text{new}}+1)} (\beta_{i(j_{\text{new}}+1)k^{\prime}})(\delta^{2}_{i(j_{\text{new}}+1)k^{\prime}}) \quad \text{(式(41))}\end{aligned}\]
+\[\begin{aligned}&\quad t^{a}_{ijk} \geq \frac{d^{\text{stop}}_{ijk} - d^{\text{acc}}_{ijk} - d^{\text{dec}}_{ijk}}{v_{l}} + \frac{v_{l} - v_{ijk}}{a_{\max}} + \frac{v_{l} - v_{t}}{d_{\max}} \quad \text{if} \quad d^{\text{stop}}_{ijk} \geq d^{\text{acc}}_{ijk} + d^{\text{dec}}_{ijk} \quad \text{(式(42))}\end{aligned}\]
+\[\begin{aligned}&\quad t^{a}_{ijk} \geq \frac{d^{\text{stop}}_{ijk}}{v^{\text{CAV}}_{\text{avg}}} \quad \text{if} \quad \omega_{ijk} \in \Omega^{\text{CAV}}, \quad d^{\text{stop}}_{ijk} < d^{\text{acc}}_{ijk} + d^{\text{dec}}_{ijk} \quad \text{(式(43))}\end{aligned}\]
+\[\begin{aligned}&\quad t^{a}_{ijk} \geq \frac{d^{\text{stop}}_{ijk}}{v^{\text{OV}}_{\text{avg}}} \quad \text{if} \quad \omega_{ijk} \in \Omega^{\text{OV}}, \quad d^{\text{stop}}_{ijk} < d^{\text{acc}}_{ijk} + d^{\text{dec}}_{ijk}, \quad v_{ijk} \leq v^{\text{OV}}_{\text{avg}} \quad \text{(式(44))}\end{aligned}\]
+\[\begin{aligned}&\quad t^{a}_{ijk} \geq \frac{d^{\text{stop}}_{ijk}}{v_{ijk}} \quad \text{if} \quad \omega_{ijk} \in \Omega^{\text{OV}}, \quad d^{\text{stop}}_{ijk} < d^{\text{acc}}_{ijk} + d^{\text{dec}}_{ijk}, \quad v_{ijk} > v^{\text{OV}}_{\text{avg}} \quad \text{(式(45))}\end{aligned}\]
+\[\begin{aligned}&\quad t^{a}_{ijk} \geq (r_{f(j_{\text{new}})} + t^{\text{dis}}_{ijk})(1 - I_{f(j_{\text{new}})}) \quad \text{(式(46))}\end{aligned}\]
+\[\begin{aligned}&\quad t^{a}_{ijk} \geq (t_{ij_{\text{new}}k^{\prime}} + d_{h})\delta^{1}_{ij_{\text{new}}k^{\prime}}, \quad k^{\prime} \in K^{\text{front}}_{ijk}(j_{\text{new}}) \quad \text{(式(47))}\end{aligned}\]
+\[\begin{aligned}&\quad t^{a}_{ijk} \geq (t_{i(j_{\text{new}}-1)k^{\prime}} + d_{h})\delta^{0}_{i(j_{\text{new}}-1)k^{\prime}}, \quad k^{\prime} \in K^{\text{front}}_{ijk}(j_{\text{new}}-1) \quad \text{(式(48))}\end{aligned}\]
+\[\begin{aligned}&\quad t^{a}_{ijk} \geq (t_{i(j_{\text{new}}+1)k^{\prime}} + d_{h})\delta^{2}_{i(j_{\text{new}}+1)k^{\prime}}, \quad k^{\prime} \in K^{\text{front}}_{ijk}(j_{\text{new}}+1) \quad \text{(式(49))}\end{aligned}\]
+\[\begin{aligned}&\quad \alpha_{ijk} = 1 \quad \text{if} \quad d^{\text{stop}}_{ijk} \leq d_{\text{dis}} \quad \text{and} \quad e^{f(j)}_{ijk} = 1 \quad \text{(式(50))}\end{aligned}\]
+\paragraph{表达方式}
+每条约束对所有存在的车辆、车道或相位施加；有 ``if'' 的行只在所列条件满足时施加。
+$j_{\rm new}$ 的索引选择可按三个候选动作分别条件化，二元乘积可用
+$z\le a,\ z\le b,\ z\ge a+b-1,\ z\ge0$ 精确线性化。
+保留原文逻辑/乘积写法是为了可读性，不加入低层轨迹目标。
+原转写(23)、(40)、(48)、(49)的车辆/车道下标已按邻车含义统一。
+
+\end{document}

@@ -1,0 +1,160 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\usepackage[UTF8]{ctex}
+\begin{document}
+
+\begin{equation}
+\varrho_*(x):=\inf_{U\in\mathfrak U}\mathfrak J(x,U).
+\tag{2.12}
+\end{equation}
+\[
+\mathfrak J(x,\hat U):=\limsup_{T\to\infty}\frac1T\,\mathbb E\left[\int_0^T\mathcal R\bigl(\hat X(s),\hat U(s)\bigr)\,\mathrm ds\right].
+\]
+在符合以下限制条件的前提下：
+\begin{equation}
+\mathrm d\hat X(t)=b\bigl(\hat X(t),\hat U(t)\bigr)\,\mathrm dt+\mathrm d\hat W(t),\qquad t\geq0,
+\tag{2.9}
+\end{equation}
+\[
+\hat X(0)=x,\qquad x\in\mathbb R^d,
+\qquad \hat U\in\mathfrak U,\qquad \hat U(t)\in\mathbb U\quad(t\geq0),
+\]
+\[
+\mathbb U:=\{u\in\mathbb R_+^d:\langle e,u\rangle=1\}.
+\]
+这里的\(x\)是固定的初始数据，\(\hat X\)是受控状态，而\(\hat U\)则是控制过程（在(2.12)中表示为\(U\)）。类\(\mathfrak U\)则包含了所有符合(2.9)要求的控制方式，具体参见第2.3节。定理2.1(iv)中所述的非预期性条件如下：
+\[
+\hat W(t)-\hat W(s)\ \text{is independent of }\mathcal F_s,
+\qquad 0\leq s\leq t,
+\]
+\[
+\mathcal F_s:=\sigma\bigl(\hat U(r),\hat W(r):r\leq s\bigr)\vee\mathcal N,
+\]
+其中，\(\mathcal N\)是由\(\mathbb P\)-空集合组成的集合。方程(2.9)按照该定理中所述的强解意义来理解。对优化类没有施加任何平稳马尔可夫或正回归的限制。
+
+\section*{运行成本：式 (2.10) 的表述}
+所选的代价是功率代价，而非备注 2.1 中所述的替代方案。
+\begin{equation}
+\widetilde{\mathcal R}(y)=c|y|^m,\qquad y\in\mathbb R_+^d,
+\qquad c>0,\quad m\geq1.
+\tag{2.10}
+\end{equation}
+\[
+\widetilde{\mathcal R}:\mathbb R_+^d\longrightarrow\mathbb R_+,
+\qquad
+\mathcal R:\mathbb R^d\times\mathbb U\longrightarrow\mathbb R_+,
+\qquad
+\mathcal R(x,u):=\widetilde{\mathcal R}\bigl(\langle e,x\rangle^+u\bigr).
+\]
+常数\(c,m\)是固定不变的数据。如第1.2节所述，\(|\cdot|\)表示欧几里得范数，\(a^+:=a\vee0\)用于\(a\in\mathbb R\)，\(\langle\cdot,\cdot\rangle\)表示内积，而\(e=(1,\ldots,1)^\prime\)则对应于相关向量的维度。符号\(\mathbb R_+\)表示零。
+
+\section*{漂移及其固定系数}
+\[
+b:\mathbb R^d\times\mathbb U\longrightarrow\mathbb R^d,
+\qquad
+b(x,u)=\ell-M\bigl(x-\langle e,x\rangle^+u\bigr)-\Gamma\langle e,x\rangle^+u,
+\]
+\[
+M=\operatorname{diag}(\mu_1^\pi,\ldots,\mu_d^\pi),
+\qquad
+\Gamma=\operatorname{diag}(\gamma_1^\pi,\ldots,\gamma_d^\pi),
+\]
+\[
+\ell:=(\ell_1,\ldots,\ell_d)^\prime,
+\qquad
+\ell_i:=\hat\lambda_i^\pi-\rho_i\hat\mu_i^\pi,
+\qquad i\in\mathcal I.
+\]
+第 5 至 7 页上的系数定义如下：
+\[
+\begin{aligned}
+\lambda_i^\pi&:=\sum_{k\in\mathcal K}\pi_k\lambda_i(k),&
+\mu_i^\pi&:=\sum_{k\in\mathcal K}\pi_k\mu_i(k),&
+\gamma_i^\pi&:=\sum_{k\in\mathcal K}\pi_k\gamma_i(k),\\
+\hat\lambda_i^\pi&:=\sum_{k\in\mathcal K}\pi_k\hat\lambda_i(k),&
+\hat\mu_i^\pi&:=\sum_{k\in\mathcal K}\pi_k\hat\mu_i(k),&
+\rho_i&:=\lambda_i^\pi/\mu_i^\pi,
+\end{aligned}
+\qquad i\in\mathcal I.
+\]
+
+\section*{布朗运动定律}
+过程\(\hat W\)是定理2.1(ii)中的\(d\)维布朗运动，其协方差系数矩阵为
+\[
+\sigma_\alpha^\prime\sigma_\alpha=
+\begin{cases}
+\Lambda^2,&\alpha>1,\\
+\Lambda^2+\Theta,&\alpha=1,\\
+\Theta,&\alpha<1,
+\end{cases}
+\qquad
+\Lambda:=\operatorname{diag}\bigl(\sqrt{2\lambda_1^\pi},\ldots,\sqrt{2\lambda_d^\pi}\bigr).
+\]
+\[
+\Theta=[\theta_{ij}]_{i,j\in\mathcal I}.
+\]
+\begin{equation}
+\theta_{ij}:=2\sum_{l\in\mathcal K}\sum_{k\in\mathcal K}
+\bigl(\lambda_i(k)-\rho_i\mu_i(k)\bigr)
+\bigl(\lambda_j(l)-\rho_j\mu_j(l)\bigr)
+\pi_k\Upsilon_{kl},\qquad i,j\in\mathcal I.
+\tag{2.8}
+\end{equation}
+对于\(\Upsilon\)的操作定义，请直接引用在(2.8)之后打印出的矩阵表达式。同时，保留所有的数字。
+\[
+\Upsilon=(\Pi-Q)^{-1}-\Pi,
+\]
+其中，\(\Pi\)的每一行都是静止概率向量\(\pi\)。
+
+\paragraph{原文的定义冲突。}
+第7页上的同一段文字也被打印出来了。
+\[
+\Upsilon_{kl}:=\int_0^{+\infty}\bigl(P_{kl}(t)-\pi_k\bigr)\,\mathrm dt,
+\qquad P_{kl}(t)=[e^{Qt}]_{kl},\qquad k,l\in\mathcal K.
+\]
+按照\(\Pi\)的行号约定，这个积分表达式通常与印刷矩阵表达式不一致，因为\(P_{kl}(t)\)倾向于指向\(\pi_l\)。上述矩阵表达式就是选定的定义；而积分则仅作为与印刷结果不同的数值记录下来。此外，对于一般的不可约\(Q\)，(2.8)并不需要是对称的，尽管定理中将\(\Theta\)称为协方差矩阵。系数公式以及定理中的协方差定义都保持不变，无需对\(Q\)进行对称性处理或额外的假设。
+
+\section*{原始数据、索引以及默认的输入假设}
+来源定义如下：
+\[
+\mathcal I:=\{1,\ldots,d\},\qquad
+\mathcal K:=\{1,\ldots,K\},\qquad n\in\mathbb N,
+\qquad \alpha>0,
+\qquad \beta:=\max\{1/2,1-\alpha/2\}.
+\]
+这里的\(\mathbb N\)表示正整数集合。对于每个\(n\)，\(J^n\)是在\(\mathcal K\)上的连续时间马尔可夫链，其不可约转移速率矩阵为\(n^\alpha Q\)。它的稳态分布为\(\pi=(\pi_1,\ldots,\pi_K)\)，并且该链从这一分布开始。第2.2节中打印出的稳态方程如下：
+\[
+\pi^\prime Q=0,\qquad \pi^\prime e=1.
+\]
+对于\(i\in\mathcal I\)、\(k\in\mathcal K\)和\(n\in\mathbb N\)，\(\lambda_i^n(k)\in\mathbb R_+\)是原始到达率，而\(\mu_i^n(k)\)和\(\gamma_i^n(k)\)分别是原始指数服务率和耐心率。这些参数族、它们的极限值以及\(Q,\pi\)都是固定数据，并非扩散控制参数。
+
+\paragraph{假设 2.1.}
+对于每一个\(i\in\mathcal I\)和\(k\in\mathcal K\)，都将其视为\(n\to\infty\)。
+\[
+\begin{aligned}
+n^{-1}\lambda_i^n(k)&\longrightarrow\lambda_i(k)>0,\\
+\mu_i^n(k)&\longrightarrow\mu_i(k)>0,\\
+\gamma_i^n(k)&\longrightarrow\gamma_i(k)>0,\\
+n^{-\beta}\bigl(\lambda_i^n(k)-n\lambda_i(k)\bigr)&\longrightarrow\hat\lambda_i(k),\\
+n^{1-\beta}\bigl(\mu_i^n(k)-\mu_i(k)\bigr)&\longrightarrow\hat\mu_i(k).
+\end{aligned}
+\]
+\paragraph{假设 2.2.}
+\[
+\sum_{i\in\mathcal I}\rho_i=1.
+\]
+这些都是本文中的基本假设。特别是，临界负载的等式是一个输入条件，而不是可以被削弱为不等式的约束条件。
+
+\paragraph{初始状态以及极限定理的适用范围。}
+源代码的初始状态按组件进行划分，具体定义如下：
+\[
+\hat X_i^n(0)=n^{-\beta}\bigl(X_i^n(0)-\rho_i n\bigr),\qquad i\in\mathcal I.
+\]
+第6页假设\(\{\hat X^n(0):n\in\mathbb N\}\)是确定性的，不依赖于\(n\)。定理2.1指出，在这些初始状态具有均匀有界性的情况下，其极限结果是什么；在部分(iv)中，\(x\)就是它们的极限，而\(\hat U^n\)的紧致性则是识别极限过程\(\hat U\)和强解(2.9)的前提条件。附录A第24页规定了在\(d\)维的c\`adl\`ag路径空间中的紧致性。这些都是队列到扩散极限的前提条件，而不是将(2.12)简化为可以从规定的排队序列中获得的控制条件的额外限制。
+
+\paragraph{来源范围。}
+操作模型为 (2.12) 和 (2.9)，其定义见于第 4 至 8 页。功率成本则对应于 (2.10) 公式。第 4.1 节中的静态占用度量公式以及最优性方程并未被强制应用。论文引用了参考文献 [1] 中的方程 (4) 和命题 3.2，用于确定漂移偏移量和环境噪声的限制值；不过，该外部参考文献并未被提供，因此在此处无法验证其准确性。上述使用的系数公式则直接印在提供的主论文中。
+
+\end{document}

@@ -1,0 +1,92 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\usepackage[UTF8]{ctex}
+\begin{document}
+
+\section*{仿射近似动态规划：(D1)}
+
+\begin{equation}
+(\mathbf{D1})\qquad
+\min_{\theta,V}\;\theta_1+\sum_i V_{1,i}c_i
+\tag{6}
+\end{equation}
+受…的约束
+\begin{equation}
+\begin{aligned}
+&\theta_t-\theta_{t+1}
+ +\sum_i\left(V_{t,i}x_i-V_{t+1,i}\left(x_i-\sum_{j\in S}\lambda P_j(S)a_{ij}\right)\right)
+ \geq \sum_{j\in S}\lambda P_j(S)f_j,\\
+&\hspace{25mm}\forall\,t=1,\ldots,\tau,\quad x\in X,\quad S\subseteq N(x).
+\end{aligned}
+\tag{7}
+\end{equation}
+末端系数已经确定：
+\[
+\theta_{\tau+1}=0,\qquad V_{\tau+1,i}=0\quad\forall\,i=1,\ldots,m.
+\]
+决策变量是$\theta_t$和$V_{t,i}$，它们分别用于$t=1,\ldots,\tau$和$i=1,\ldots,m$的运算。在打印的(D1)块中，这些决策变量没有受到任何符号限制。状态变量$x$以及提供集合$S$用于表示不等式；它们并不是这个线性程序的额外决策变量。
+
+\section*{固定的输入和索引化的可行集合}
+
+有$m$个航班班次和$n$种产品。产品指的是航班行程与票价等级的组合。初始容量向量和产品集合是……
+\[
+c=(c_1,\ldots,c_m),\qquad N=\{1,\ldots,n\},
+\]
+其中，$c_i$表示腿$i$的容量。产品$j$的运费为$f_j$。消耗矩阵就是$m\times n$矩阵。
+\[
+A\equiv(a_{ij}).
+\]
+其条目$a_{ij}$表示类$j$客户所需的资源$i$的整数数量。其第$i$行$A_i$是线路$i$的相关向量，而其第$j$列$A^j$则是产品$j$的相关向量。在整个过程中，$i$表示线路，$j$表示产品，而$t$表示时间；在(5)--(7)中，对$i$的所有求和运算都是针对$i=1,\ldots,m$进行的。
+
+有$\tau$个离散的时段，按顺序排列。最后一个时段为$\tau$。在每个时段中，有$\lambda$的概率有一个客户到来，而概率为$1-\lambda$时则没有客户到来。在有一个客户到来并且有$S\subseteq N$种优惠方案的情况下，客户有$P_j(S)$的概率选择产品$j\in S$，并且没有购买行为。
+\[
+P_0(S)=1-\sum_{j\in S}P_j(S),\qquad S\subseteq N.
+\]
+选择概率是一个固定的输入值；在这个公式中并没有强制使用特定的选择模型。集合$S=\varnothing$表示没有提供任何产品，它属于可能的产品提供集合之一。
+
+在一个周期的开始处，$x$表示未售出的座位数量，即$m$向量。状态空间与可行产品集合为：
+\[
+X=\{0,\ldots,c_1\}\times\cdots\times\{0,\ldots,c_m\},
+\qquad
+N(x)=\{j\in N:x\geq A^j\},\quad x\in X.
+\]
+因此，$N(x)$由可以在状态$x$下提供的产品组成；向量不等式要求每条路径都有足够的容量。初始状态为$c$。每个子集$S\subseteq N(x)$，包括空集在内，都对应着方程(7)中的一个约束条件。
+
+\section*{仿射值函数构造}
+
+设 $v_t(x)$ 为周期 $t,\ldots,\tau$ 结束时的最大总预期收入，此时周期 $t$ 开始时的状态为 $x$。 所选的近似值为
+\begin{equation}
+v_t(x)\approx\theta_t+\sum_i V_{t,i}x_i,
+\qquad t=1,\ldots,\tau,\quad x\in X.
+\tag{5}
+\end{equation}
+在这里，$V_{t,i}$估算了在时期$t$乘坐航班$i$的座位边际价值，而$\theta_t$是一个固定的偏移量。
+
+继承下来的价值函数定义就是贝尔曼方程。
+\begin{equation}
+\begin{aligned}
+v_t(x)
+&=\max_{S\subseteq N(x)}\left\{
+\sum_{j\in S}\lambda P_j(S)\bigl(f_j+v_{t+1}(x-A^j)\bigr)
+ +(\lambda P_0(S)+1-\lambda)v_{t+1}(x)
+\right\}\\
+&=\max_{S\subseteq N(x)}\left\{
+\sum_{j\in S}\lambda P_j(S)
+\bigl[f_j-\bigl(v_{t+1}(x)-v_{t+1}(x-A^j)\bigr)\bigr]
+\right\}+v_{t+1}(x),\\
+&\hspace{30mm}\forall\,t=1,\ldots,\tau,\quad x\in X,
+\end{aligned}
+\tag{1}
+\end{equation}
+具有边界条件
+\[
+v_{\tau+1}(x)=0\qquad\forall\,x\in X.
+\]
+方程(1)定义了需要近似的精确值函数，而不是对仿射系数的额外约束。该论文通过将(5)代入(D0)中的贝尔曼不等式中，得到了(D1)；(7)则是由此得出的完整不等式体系，而上述固定的终端系数则实现了终端值的计算。
+
+\paragraph{范围与来源。}
+这是Zhang和Adelman的原文(D1)，标题为\emph{一种针对具有客户选择的网络收入管理的近似动态规划方法}，发表于《Transportation Science》43(3)，2009年，页码为~381--394，章节为~2.1（物理PDF第~4页），定义来自~1.1章节（物理PDF第~2--3页）。对偶问题(P1)未被选中。物理PDF第~9页的实施方案证实了定理~1所提出的单调性约束在数值实验中得到了应用；这些实验性补充并不包含在选定的印刷版公式(6)--(7)中。用于证明定理~1的在线附录并未提供，因此尚未验证；该附录中的任何条件均未在此处引用。
+
+\end{document}

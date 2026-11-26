@@ -1,0 +1,281 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\usepackage[UTF8]{ctex}
+\begin{document}
+
+\section*{静态动态工作负载扩散控制}
+
+请选择一个非预期的、可测量的、稳定的马尔可夫漂移函数。
+\[
+\psi:[0,\tilde w]\longrightarrow[-K',K']
+\]
+为了最小化
+\begin{equation}
+\limsup_{t\to\infty}\frac1t\mathbb E\left[
+\int_0^t\left\{\alpha_w[\psi(W(s))+\kappa_w]^2\right\}\,ds
++\tilde c_I\tilde\mu_I U(t)\right].
+\tag{26}
+\end{equation}
+在以下条件下：
+\begin{equation}
+dW(t)=-\psi(W(t))\,dt+\sigma_w\,dX_w(t)+dL(t)-dU(t),
+\qquad t\geq0,
+\tag{25}
+\end{equation}
+\begin{equation}
+W(t)\in[0,\tilde w],\qquad t\geq0,
+\qquad \tilde w:=\tilde m\cdot b,
+\tag{16}
+\end{equation}
+\begin{equation}
+\int_0^t\mathbf1_{\{W(s)>0\}}\,dL(s)=0,
+\qquad
+\int_0^t\mathbf1_{\{W(s)<\tilde w\}}\,dU(s)=0,
+\qquad t\geq0,
+\tag{18}
+\end{equation}
+\[
+L(\cdot),U(\cdot)\text{ are continuous and nondecreasing},
+\qquad L(0)=U(0)=0,
+\qquad W(0)=\tilde m\cdot Z(0)=0.
+\]
+在这里，将\(\psi(W(t))\)替换成(25)中的时间索引\(\psi(t)\)，这正是第3.3节中规定的静态马尔可夫解释。决策函数就是\(\psi\)；\(W\)是受控工作量，而\(L,U\)则分别是其上下限调节器。反射条件则用于确定这些调节器；它们并不是额外可选的漂移控制项。
+
+\subsection*{工作负载系数以及继承的随机设置}
+
+在整个过程中，产品以\(i=1,\ldots,I\)为索引，对这些产品进行\(i\)次求和。点表示内积。在(26)中，固定系数为
+\[
+\alpha_w=(\tilde m\cdot A^{-1}\tilde m)^{-1}>0,
+\qquad \kappa_w=\tilde m\cdot\kappa,
+\qquad \tilde m_i=\frac1{\tilde\mu_i},
+\]
+\[
+b_i=\tilde\lambda_i\tilde d_i\quad(i=1,\ldots,I),
+\qquad
+\tilde w=\tilde m\cdot b,
+\qquad
+\sigma_w^2=\sum_{i=1}^I(1+\xi_i)\tilde m_i^2\tilde\lambda_i.
+\]
+从第3.1节至第3.2节继承下来的工作量和调节器定义如下：
+\[
+W(t):=\tilde m\cdot Z(t),
+\qquad L(t)=\sum_{i=1}^I\Upsilon_i(t),
+\]
+\begin{equation}
+U(t)=\tilde m\cdot D(t),\qquad
+U(\cdot)\text{ is continuous and nondecreasing},\qquad U(0)=0.
+\tag{15}
+\end{equation}
+父级扩散过程包含\(Z(0)=0\)、\(D(0)=0\)和\(L(0)=0\)。其分配和加速过程\(\Upsilon,D\)是右连续型的，且左极限不存在；同时，它也不具有提前完成的能力，这一点与\(X\)相关。而\(D\)则是连续型的，并且是非递减的。这些都是下面重建过程中所使用的过程的继承特性，而不是另一种优化方案。
+
+底层的噪声是一个\(I\)维的标准布朗运动\(X\)，而\(X(0)=0\)则几乎可以肯定地存在于其中。
+\[
+(\Omega,\mathcal F,\mathbb P;\mathcal F_t,t\geq0),
+\]
+其中，\((\mathcal F_t,t\geq0)\)是由\(X\)生成的过滤函数。父扩散系数就是……
+\[
+M=\operatorname{diag}(\tilde\mu_1,\ldots,\tilde\mu_I),
+\qquad
+\Sigma^2=\operatorname{diag}(\sigma_1^2,\ldots,\sigma_I^2),
+\]
+\[
+\sigma_{a,i}^2=\tilde\lambda_i,
+\qquad \sigma_{s,i}^2=\tilde\lambda_i\xi_i,
+\qquad \sigma_i^2=\sigma_{a,i}^2(1+\xi_i),
+\qquad i=1,\ldots,I.
+\]
+论文中将\(X_w\)称为标准布朗运动，但在同一句话中又将其描述为具有无穷小的方差\(\sigma_w^2\)。这是一种印刷上的歧义：(25)保留了印刷上的系数\(\sigma_w\)，而\(\sigma_w^2\)的定义则保持不变。
+
+\subsection*{固定的需求、服务以及扩展输入参数}
+
+每个产品都是某种商品与交货时间的组合。其预先确定的交货时间保证为\(d_i\)，同时还有\(d\in\mathbb R_+^I\)的额外保证。硬性保证的前提是：
+\[
+\mathbb P\{\text{delay for a class }i\text{ order}>d_i\}\leq\epsilon_i,
+\qquad \epsilon_i=0\quad\text{for all }i.
+\]
+价格和需求集合，以及逆向需求关系
+\[
+\mathcal P\subseteq\mathbb R^I,
+\qquad
+\mathcal L(d)=\{x\geq0:x=\lambda(p;d),\ p\in\mathcal P\}
+\subseteq\mathbb R_+^I,
+\]
+\[
+\lambda(\cdot;d):\mathcal P\longrightarrow\mathcal L(d),
+\qquad
+p(\cdot;d):\mathcal L(d)\longrightarrow\mathcal P,
+\qquad
+r(\lambda;d):=\lambda\cdot p(\lambda;d).
+\]
+对于每一个\(d\in\mathbb R_+^I\)，\(\mathcal L(d)\)都是凸的。需求函数在\(p,d\)中是有界的，并且可以连续微分。对于每一个产品\(i\)，\(\lambda_i(p;d)\)在\(p_i\)中是严格递减的。如果\(i,j\)对应同一种商品，而\(d_i>d_j\)也是如此，那么\(p_i<p_j\)也是如此。对于每一个可行的……
+\[
+p_{-i}=(p_1,\ldots,p_{i-1},p_{i+1},\ldots,p_I)
+\]
+并且，关于交货时间向量\(d\)的假设是……
+\[
+p_i^\infty(p_{-i})\in\mathbb R,
+\qquad
+\lim_{p_i\to p_i^\infty(p_{-i})}
+\lambda_i(p_i,p_{-i};d)=0.
+\]
+速率\(p\cdot\lambda(p;d)=\sum_i p_i\lambda_i(p;d)\)在\(p\in\mathcal P\)的范围内是有限的，并且存在一个最大值。假设存在逆需求函数。收入函数\(r\)是有限的、严格凹的，并且具有两次连续可微性。该论文还要求该函数在适当定义的序列\((p^n,d^n)\)上具有可微性，其中\(d^n\to0\)也参与其中。在定义段落中并未给出该要求的进一步通用公式。
+
+无容量限制的名义需求和市场规模标准化处理方式
+\[
+\hat\lambda(d):=\arg\max\{r(\lambda;d):\lambda\in\mathcal L(d)\},
+\qquad
+\Lambda=\sum_{i=1}^I\hat\lambda_i(d),
+\qquad
+\hat\lambda_i(d)>0\quad\text{for all }i.
+\]
+完全利用的名义需求是
+\begin{equation}
+\bar\lambda(d):=\arg\max\left\{
+ r(\lambda;d):\sum_{i=1}^I\lambda_i/\mu_i=1,
+ \ \lambda\in\mathcal L(d)\right\}.
+\tag{4}
+\end{equation}
+该论文假设，(4)对于选定的\(d\)是可行的：即存在一个非负价格向量（其中\(p=0\)也是其中的一个可能值），使得需求能够充分利用所有产能。同时，它还提出了……
+\[
+\bar\lambda_i(d)>0\quad\text{for all }i,
+\qquad
+\bar\rho_i=\frac{\bar\lambda_i(d)}{\mu_i}.
+\]
+各产品的服务需求是独立且同分布的，其均值为\(m_i\)，变化率为\(\mu_i=1/m_i\)，变异系数的平方为\(\xi_i\)。到达流是非均匀泊松过程；原始到达和服务过程在产品和之间是相互独立的。处理一个产品订单的成本为\(i\)，具体金额为\(c_i\)。产品被标记以便…
+\[
+c_1\mu_1\geq c_2\mu_2\geq\cdots\geq c_I\mu_I.
+\]
+所选系数中使用的缩放定义如下：
+\[
+\tilde\lambda=\frac{\bar\lambda(d)}{\Lambda},
+\qquad \tilde\mu_i=\frac{\mu_i}{\Lambda},
+\qquad \tilde d=d\sqrt\Lambda,
+\qquad \tilde c=c\sqrt\Lambda.
+\]
+这种近似方法是基于市场规模和加工速率的较大比例，以及相对于单个加工时间而言较长的前置时间，但绝对数值相对较小。名义需求为\(\Lambda\)的数量级，而它们在(11)中的差异在二阶尺度上被假设为\(\sqrt\Lambda\)。这些是近似前提，而不是额外的工作负荷状态约束。
+
+\subsection*{漂移与收入系数链}
+
+扩散背后的需求扰动是
+\begin{equation}
+\lambda(t)=[\bar\lambda(d)-\sqrt\Lambda\,\theta(t)]^+.
+\tag{5}
+\end{equation}
+附近的印刷版交通强度表达为：
+\[
+\rho(t)=\left[1-\sum_{i=1}^I
+\frac{\sqrt\Lambda}{\mu_i}\theta_i(t)\right]^+.
+\]
+随后，推导过程将\(\lambda_i(t)>0\)视为每个\(i\)和所有\(t\)的默认值，就像对于足够大的\(\Lambda\)那样。同时，还会进行适度的调整，以满足需求。
+\[
+\sqrt\Lambda\,\theta(t)\ll\bar\lambda(d).
+\]
+这些是扩展的既定前提条件；所展示的正数公式并不是作为单独的工作负载约束来施加的。
+
+漂移偏移量是
+\begin{equation}
+\kappa:=\frac{\hat\lambda(d)-\bar\lambda(d)}{\sqrt\Lambda}.
+\tag{11}
+\end{equation}
+因此，该论文写道：
+\[
+\lambda(t)=[\hat\lambda(d)-\sqrt\Lambda\,(\kappa+\theta(t))]^+,
+\]
+\[
+\tilde r(x;\tilde d)=\frac{r(\Lambda x;\tilde d/\sqrt\Lambda)}{\Lambda},
+\qquad
+\hat x=\arg\max\tilde r(x;\tilde d)=\frac{\hat\lambda(d)}{\Lambda},
+\qquad
+\nabla\tilde r(\hat x;\tilde d)=0,
+\]
+\begin{equation}
+A=-\frac12\nabla^2\tilde r(\hat x;\tilde d).
+\tag{12}
+\end{equation}
+为完整性起见，引入 (12) 的未编号扩展内容仍按原顺序打印出来。所有数字都保持不变。
+\[
+\begin{aligned}
+r(\lambda(t);d)
+&=\Lambda\tilde r\left([\hat x-(\kappa+\theta(t))/\sqrt\Lambda]^+;\tilde d\right)\\
+&=\Lambda\tilde r(\hat x;d)
+-[\kappa+\theta(t)]\cdot A[\kappa+\theta(t)]+o(1).
+\end{aligned}
+\]
+第二行中，在“固定收入项”中打印的是\(d\)，而不是\(\tilde d\)；(12)以及标准化收入定义中则使用\(\tilde d\)。对于(26)来说，其系数链为(11)--(12)，而不是通过那个固定项进行重新定义。
+
+\subsection*{与所选形式相关的简化与重构}
+
+命题1中的成本排序前提为：
+\[
+\tilde c_1\tilde\mu_1\geq\tilde c_2\tilde\mu_2
+\geq\cdots\geq\tilde c_I\tilde\mu_I.
+\]
+为了实现可行的工作量控制，需要对其进行类级加速和状态重建。
+\begin{equation}
+D_i(t)=0\quad\text{for all }i\ne I,
+\qquad D_I(t)=\tilde\mu_I U(t),\qquad t\geq0,
+\tag{19}
+\end{equation}
+\begin{equation}
+Z(t)=\frac b{\tilde w}W(t),\qquad t\geq0.
+\tag{20}
+\end{equation}
+“相对积压”的定义为：
+\[
+\eta_i(t):=\frac{Z_i(t)}{b_i},\qquad i=1,\ldots,I.
+\]
+在这种重构下，各部门的相对积压任务量相等。这就是所谓的最小积压分配特性。原始扩散缓冲区需求为\(0\leq Z(t)\leq b\)对应\(t\geq0\)；在选定的方案中，其替代方案为（16）与（20）的组合，而不是一个独立优化的类级状态。
+
+班级级别的漂移聚合与重建是
+\[
+\psi:=\tilde m\cdot\theta,
+\]
+\begin{equation}
+\begin{aligned}
+\theta^*=\tilde f(\psi)
+&:=\arg\min\{2\kappa\cdot A\theta+\theta\cdot A\theta:
+                 \tilde m\cdot\theta=\psi\}\\
+&=\frac{A^{-1}\tilde m}{\tilde m\cdot A^{-1}\tilde m}
+(\psi+\tilde m\cdot\kappa)-\kappa.
+\end{aligned}
+\tag{22}
+\end{equation}
+这是论文中定义的重建方案，并非解决工作负载问题的替代优化目标。在最优的静态工作负载控制下，它会产生以下结果：
+\begin{equation}
+\theta^*(w)=\tilde f(\psi^*(w))
+=\alpha_w A^{-1}\tilde m\bigl(\psi^*(w)+\tilde m\cdot\kappa\bigr)-\kappa.
+\tag{30}
+\end{equation}
+打印出的成本转换公式如下：
+\begin{equation}
+2\kappa\cdot A\theta^*+\theta^*\cdot A\theta^*
+=\frac{(\psi+\tilde m\cdot\kappa)^2}{\tilde m\cdot A^{-1}\tilde m}
++\kappa\cdot A\kappa.
+\tag{23}
+\end{equation}
+\paragraph{打印标识冲突。}
+在(23)中，\(\kappa\cdot A\kappa\)前面的加号被保留了下来。将(22)中的内容替换后，仍然不会得到那个加号。后续的文字明确删除了印刷出来的常数项，从而得到(24)，进而得到静态目标(26)。在(26)中，没有再添加任何常数项。此外，命题2中“相同的性能”这一表述并未被用来改变选定的目标。
+
+在物理 PDF 的第 8 页的脚注 7 中，复制了被归因于电子版的分配公式，其顺序与原文相同。所有数字都保持不变。
+\begin{equation}
+\Upsilon_i(t)=-\tilde m_i[Z(0)+\Theta(t)+\Sigma X(t)-D(t)]
++\frac{\tilde m_i b_i}{\tilde w}W(t),
+\qquad i=1,\ldots,I,\quad t\geq0.
+\tag{EC.1, as quoted}
+\end{equation}
+\paragraph{可用参考资料的範圍。}
+这里的电子版本无法使用，且未经验证。所显示的引文保留了脚注中的未索引向量括号以及符号\(\Theta(t)\)。所提供的主文段落并未定义\(\Theta\)；也没有插入任何组件选择或积分定义。因此，这段引文仅记录了现有的分配情况，并未对其进行修复或作为对(26)的额外约束。
+
+\paragraph{边界选择和范围。}
+父漂移是非预期的、可测量的、稳定的，并且属于马尔可夫过程。
+\[
+\theta(t)\in[-K,K]^I,\qquad t\geq0,
+\]
+其中\(K\)被描述为一个较大的常数。方程（22）仅在其最小化过程中显示了整体等式，而不是这个框。而工作量问题则使用了打印出的界限\([-K',K']\)。该论文在这些段落中并未提供关联\(K\)和\(K'\)的公式。定理1之后的注释指出，由于工作量受到\(\tilde w\)的约束，可以选择\(K'\)使得该界限不再具有约束力。这里没有额外的不等式来连接这些常数。定理1的分段解公式（27）至（29）是解表达式，而不是（26）中的额外约束条件；它们的相关参考文献（EC.7）和（EC.10）尚未得到验证。静态定价公式和实现启发式方法不属于该模型的一部分。
+
+\paragraph{来源。}
+S. \c{C}elik和C. Maglaras，《动态定价与多类别订单队列的交货时间报价》，\emph{管理科学} 54(6), 2008, 第1132-1146页, doi:10.1287/mnsc.1070.0836。选定的目标和主题部分位于第3.2节至3.3节，物理PDF页码8-9；定义输入和扩展链部分位于第2.1节至3.2节，物理PDF页码3-8。
+
+\end{document}

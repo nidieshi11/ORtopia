@@ -1,0 +1,79 @@
+\documentclass[UTF8,11pt]{ctexart}
+\usepackage{amsmath,amssymb,mathtools,geometry}
+\geometry{a4paper,margin=20mm}\allowdisplaybreaks
+\begin{document}
+\section*{多卡车多无人机协同配送M2线性化主模型}
+
+\paragraph{来源} PDF第4--7页，M2式(33)和(31)--(32)，以及M1共用的全部约束(2)--(30)。
+\subsection*{集合、参数与变量}
+$K$ 为卡车组，每组配置编号集 $D$ 的无人机。$O=\{0,1,\ldots,o,o+1\}$
+为卡车可访问的道路节点，其中 $0,o+1$ 是同一仓库的出发/返回副本；
+$O_-=O\setminus\{o+1\}$、$O_+=O\setminus\{0\}$、$O_0=O\setminus\{0,o+1\}$。
+$C$ 为仅由无人机服务的客户，$N=O\cup C$。所有弧均排除自环，未定义/不允许弧变量固定为零。
+$t^K_{ij}$ 为道路行驶时间，$t^D_{ic}=t^D_{ci}$ 为道路节点与客户间飞行时间；
+$s^G,s^K,s^D,s^T\ge0$ 为启用、行车、飞行、晚到成本，$q_c$ 为需求、$m^K$ 为卡车容量，
+$e_c$ 为客户期望最晚到达时刻；$M$ 是经时间上界验证足够大的常数。
+按本文假设，电池足以支持允许的单客户往返飞行，换电时间忽略；本模型不另优化电量。
+
+$\alpha_{ijk}$ 是卡车弧，$\beta_{ijdk}$ 是无人机弧（道路--道路弧表示随车搭载），
+$\varepsilon_k$ 表示启用卡车组；$\delta_{ik}\ge0$ 为组在节点的同步时刻，
+$\mu_{ik},\varphi_{idk}$ 是整数访问顺序；
+$\tau_{ck}^{1+},\tau_{ck}^{1-}\ge0$ 是晚到/提前线性化量。
+不使用的组走 $0\to o+1$ 的零耗时零成本虚拟弧。
+\subsection*{完整M2}
+
+\begin{align}
+\min\quad&\sum_{k\in K}s^G\varepsilon_k+
+\sum_{k\in K,i\in O_-,j\in O_+}s^Kt^K_{ij}\alpha_{ijk}\notag\\
+&+\sum_{k\in K,d\in D,i\in O_-,c\in C}s^Dt^D_{ic}\beta_{icdk}
++\sum_{k\in K,d\in D,j\in O_+,c\in C}s^Dt^D_{jc}\beta_{cjdk}
++\sum_{k\in K,c\in C}s^T\tau_{ck}^{1+}.\tag{33}
+\end{align}
+\begin{align}
+& \sum_{j \in O_+} \alpha_{0jk} = 1 \quad k \in K \\
+& \sum_{i \in O_-} \alpha_{i(o+1)k} = 1 \quad k \in K \\
+& \sum_{i \in O_-} \alpha_{ijk} = \sum_{i \in O_+} \alpha_{jik} \le 1 \quad j \in O_0, k \in K
+\end{align}
+
+\begin{align}
+& \sum_{j \in O_{+} \cup C} \beta_{0jdk} = 1 \quad k \in K, d \in D \\
+& \sum_{i \in O_{-} \cup C} \beta_{i(o+1)dk} = 1 \quad k \in K, d \in D \\
+& \sum_{i \in O_{-} \cup C} \beta_{ijdk} = \sum_{i \in O_{+} \cup C} \beta_{jidk} \le 1 \quad j \in O_{0} \cup C, k \in K, d \in D \\
+& \sum_{k \in K} \sum_{i \in O_{-}} \sum_{d \in D} \beta_{icdk} = 1 \quad c \in C \\
+& \sum_{k \in K} \sum_{j \in O_{+}} \sum_{d \in D} \beta_{cjdk} = 1 \quad c \in C \\
+& \beta_{ijdk} = 0 \quad i \in C, j \in C, k \in K, d \in D \\
+& \sum_{c \in C} \beta_{icdk} \le 1 \quad i \in O_{-}, k \in K, d \in D \\
+& \sum_{c \in C} \beta_{c j d k} \leq 1 \quad j \in O_{+}, k \in K, d \in D \\
+& \delta_{0 k}=0 \quad k \in K \\
+& \delta_{j k} \geq \delta_{i k}+t_{i j}^{K}-M(1-\alpha_{i j k}) \quad i \in O_{-}, j \in O_{+}, k \in K \\
+& \delta_{c k} \geq \delta_{i k}+t_{i c}^{D}-M(1-\beta_{i c d k}) \quad i \in O_{-}, c \in C, k \in K, d \in D \\
+& \delta_{j k} \geq \delta_{c k}+t_{j c}^{D}-M(1-\beta_{c j d k}) \quad c \in C, j \in O_{+}, k \in K, d \in D \\
+& \delta_{j k} \geq \delta_{i k}+t_{i j}^{K}-M(1-\beta_{i j d k}) \quad i \in O_{-}, j \in O_{+}, d \in D, k \in K \\
+& \delta_{j k} \geq \delta_{i k}-M(2-\beta_{i c d k}-\beta_{c j d k}) \quad c \in C, i \in O_{-}, j \in O_{+}, k \in K, d \in D \\
+& \beta_{i j d k} \leq \alpha_{i j k} \quad i \in O_{-}, j \in O_{+}, k \in K, d \in D \\
+& \beta_{i c d k} \leq \sum_{j \in O_{+}} \alpha_{i j k} \quad c \in C, i \in O_{-}, k \in K, d \in D \\
+& \beta_{c j d k} \leq \sum_{i \in O_{-}} \alpha_{i j k} \quad c \in C, j \in O_{+}, k \in K, d \in D \\
+& \sum_{i \in O_{-}} \sum_{c \in C} \sum_{d \in D} q_{c} \beta_{i c d k} \leq m^{K} \quad k \in K \\
+& \alpha_{0(o+1) k}=1-\varepsilon_{k} \quad k \in K \\
+& \varepsilon_{k} \geq \sum_{i \in O_{-}} \beta_{i c d k} \quad c \in C, k \in K, d \in D \\
+& \varphi_{i d k}-\varphi_{j d k} \leq(|O|+|C|)(1-\beta_{i j d k})-1 \quad i \in O_{-} \cup C, j \in O_{+} \cup C, k \in K, d \in D \\
+& \mu_{i k}-\mu_{j k} \leq|O|(1-\alpha_{i j k})-1 \quad i \in O_{-}, j \in O_{+}, k \in K \\
+& \delta_{i k} \geq 0 \quad i \in N, k \in K \\
+& 0 \leq \varphi_{i d k} \leq|O|+|C| \quad i \in N, k \in K, d \in D \\
+& 0 \leq \mu_{i k} \leq|O| \quad i \in N, k \in K \\
+& \alpha_{i j k}, \beta_{i j d k}, \varepsilon_{k} \in\{0,1\} \quad i, j \in N, k \in K, d \in D
+\end{align}
+
+\begin{align}
+& \delta_{ck} - e_{c} \sum_{d \in D} \sum_{i \in O_{-}} \beta_{icdk} = \tau_{ck}^{1+} - \tau_{ck}^{1-} \quad c \in C, k \in K \\
+& \tau_{ck}^{1+}, \tau_{ck}^{1-} \ge 0 \quad c \in C, k \in K
+\end{align}
+
+
+\[
+\mu_{ik}\in\mathbb Z_{\ge0},\qquad \varphi_{idk}\in\mathbb Z_{\ge0}.
+\]
+所有上式中的弧索引只遍历允许的不同节点对；矩阵中其余项按零变量处理。
+M2与正部惩罚的M1在最优目标上等价；这里只给出M2一个完整模型。
+
+\end{document}

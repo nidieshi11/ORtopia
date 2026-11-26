@@ -1,0 +1,158 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\usepackage[UTF8]{ctex}
+\begin{document}
+
+\section*{P2：包含内生信息获取的线性合约菜单}
+
+\begin{equation*}
+\begin{aligned}
+\Pi(\alpha(\cdot),\beta(\cdot))
+={}&E_{\mu_{ps}}[\mu_{ps}+\alpha(\mu_{ps})]
+-E_{\mu_{ps}}[\alpha^2(\mu_{ps})/2]
+-\Gamma(\sigma)\\
+&-\rho\sqrt{\sigma_\theta^2\sigma^2+\sigma_\varepsilon^2}
+-\widehat{\pi}(\sigma).
+\end{aligned}
+\end{equation*}
+\begin{equation*}
+\begin{aligned}
+\text{(P2).}\qquad
+&\max_{\alpha(\cdot)\geq 0,\,\beta(\cdot)}
+\quad \Pi(\alpha(\cdot),\beta(\cdot))\\
+&\text{s.t.}\quad
+\pi(\mu_{ps})\geq\pi(\mu_{ps},\widehat{\mu}_{ps}),
+\quad\forall\mu_{ps},\widehat{\mu}_{ps}
+&&\text{(IC1)}\\
+&\qquad\sigma=\arg\max_{\sigma'\in(0,1]}\widehat{\pi}(\sigma')
+&&\text{(IC2)}\\
+&\qquad\widehat{\pi}(\sigma)\geq 0.
+&&\text{(IR)}
+\end{aligned}
+\end{equation*}
+
+生产者选择佣金函数$\alpha(\cdot)$和固定转移函数$\beta(\cdot)$。销售者则选择信息精度$\sigma$，报告$\widehat{\mu}_{ps}$，以及销售努力$a$。因此，生产者目标中的$\sigma$是由(IC2)所决定的，而不是由(P2)中的额外最大化变量所决定的。条件(IC1)是全局报告激励相容性；(IC2)是全局信息获取选择；(IR)是事前参与，并期望的净收入被标准化为零。在(IC2)中，等式$\arg\max$保持不变；没有添加任何平局解决规则。
+
+\subsection*{合同与卖方利润的定义}
+
+对于报告后的平均值，补偿计划如下：
+\begin{equation*}
+w(x,\mu_{ps})=\alpha(\mu_{ps})x+\beta(\mu_{ps}),
+\qquad \alpha(\mu_{ps})\geq 0.
+\end{equation*}
+菜单为$\{\alpha(\cdot),\beta(\cdot)\}$。固定转移$\beta(\mu_{ps})$在(P2)中没有任何符号限制。报告$\widehat{\mu}_{ps}$和实际类型$\mu_{ps}$都是基于后验均值来确定的，模型中并没有对正态类型空间进行截断处理。下标$ps$表示后验值，而不是某个组件的索引。
+
+给定精度为$\sigma$，输入$\mu_{ps}$，然后输入努力值$a$，此时需求具有条件分布
+\begin{equation*}
+x\mid\mu_{ps}\sim N\!\left(\mu_{ps}+a,
+\sigma_\theta^2\sigma^2+\sigma_\varepsilon^2\right).
+\end{equation*}
+如果卖家报告了$\widehat{\mu}_{ps}$，那么他预期的赔偿金额是
+\begin{equation*}
+\alpha(\widehat{\mu}_{ps})(\mu_{ps}+a)+\beta(\widehat{\mu}_{ps}).
+\end{equation*}
+他的销售努力所付出的成本，以及优化后的利润，不包括那些无效的信息获取成本。
+\begin{gather*}
+V(a)=a^2/2,\qquad a\geq 0,\\
+\pi(\mu_{ps},\widehat{\mu}_{ps})
+=\max_{a\geq 0}
+\left[\alpha(\widehat{\mu}_{ps})(\mu_{ps}+a)
++\beta(\widehat{\mu}_{ps})-a^2/2\right].
+\end{gather*}
+真实的利润和真实的销售努力是由以下因素定义的：
+\begin{gather*}
+\pi(\mu_{ps})\equiv\pi(\mu_{ps},\mu_{ps}),\\
+a(\mu_{ps})=\alpha(\mu_{ps}).
+\end{gather*}
+同样的“真实利润”定义明确写在附录中。
+\begin{equation*}
+\pi(\mu_{ps})
+=\alpha(\mu_{ps})\left(\mu_{ps}+\frac{\alpha(\mu_{ps})}{2}\right)
++\beta(\mu_{ps}).
+\end{equation*}
+在获取信息之前，卖方的预期利润是
+\begin{equation*}
+\widehat{\pi}(\sigma)=E_{\mu_{ps}}[\pi(\mu_{ps})]-\Gamma(\sigma),
+\qquad
+\mu_{ps}\sim N\!\left(\mu_\theta,\sigma_\theta^2(1-\sigma^2)\right).
+\end{equation*}
+在评估$\widehat{\pi}(\sigma')$时，在(IC2)中，$\mu_{ps}$的分布相应地是具有精度$\sigma'$的分布。在这个销售选择过程中，菜单保持不变。
+
+\subsection*{需求、信号以及信息获取的基本元素}
+
+生产者和销售者都是风险中性的。固定的需求参数包括：先验均值$\mu_\theta$、先验方差$\sigma_\theta^2$，以及需求噪声方差$\sigma_\varepsilon^2$。需求参数和私有信号则……
+\begin{gather*}
+x=\theta+a+\varepsilon,\\
+\theta\sim N(\mu_\theta,\sigma_\theta^2),
+\qquad \varepsilon\sim N(0,\sigma_\varepsilon^2),\\
+s=\theta+\eta,
+\qquad \eta\sim N(0,\sigma_\eta^2),\\
+\sigma^2\equiv\frac{\sigma_\eta^2}{\sigma_\eta^2+\sigma_\theta^2}.
+\end{gather*}
+随机变量$\theta$和$\varepsilon$是独立的；而$\eta$则独立于$\theta$和$\varepsilon$。卖家可以通过获取信息的方式来选择$\sigma_\eta$，或者等价地选择$\sigma$。如果$\sigma_\eta$的值较大，那么市场的信息量就会较少。
+
+原始的后验定义是：
+\begin{equation}
+\theta\mid s\sim N(\mu_{ps},\sigma_{ps}^2),
+\tag{1}
+\end{equation}
+\begin{equation}
+(\mu_{ps},\sigma_{ps}^2)
+\equiv\left(\sigma^2\mu_\theta+(1-\sigma^2)s,
+\sigma_\theta^2\sigma^2\right).
+\tag{2}
+\end{equation}
+固定的信息获取成本函数保持抽象形式，具体数值则按照原始顺序保留不变。
+\begin{gather*}
+\sigma\in(0,1],\qquad \Gamma(1)=0,\\
+\Gamma'(\sigma)<0,\qquad\Gamma''(\sigma)>0,
+\qquad\sigma\in(0,1].
+\end{gather*}
+该论文将$\sigma=0$描述为能够揭示市场状况的精确指标，但将该数值排除在决策范围之外。论文指出，后验概率与先验概率相似，即$\sigma\to1$，因此信号中不包含任何有用的信息。同时，论文在决策范围内包含了$1$。这些打印出的边界条件以及定义$\sigma^2$的比例，都得到了保留，而信号则没有额外的端点构造。
+
+\subsection*{操作成本以及被取消的生产决策}
+
+固定的单位生产成本为$c$，紧急生产时的单位成本则为$c'$，而单位的回收价值则是$v$。 销售价格固定为$1+c$，从而使利润率归一化为一。 输入限制如下：
+\begin{equation*}
+v<c<c'<1+c.
+\end{equation*}
+如果需求超过初始的生产数量$q$，则紧急生产可以满足多余的需求；否则，剩余的库存将被处理掉。在销售商进行补偿之前，生产者的利润和损失情况如下：
+\begin{gather*}
+L(z)=(c-v)\max\{0,z\}+(c'-c)\max\{0,-z\},\\
+x-L(q-x).
+\end{gather*}
+在 (P2) 中使用的操作成本系数为
+\begin{equation*}
+\rho=(c'-v)\phi\!\left(\Phi^{-1}\!\left(\frac{c'-c}{c'-v}\right)\right),
+\end{equation*}
+其中，$\phi(\cdot)$是标准正态密度，$\Phi^{-1}(\cdot)$是标准正态分布的逆函数。
+
+(P2)中提到的条件性生产计算，是以信号依赖的努力$a(s)$的形式来表示的：
+\begin{gather*}
+x\mid s\sim N\!\left(\mu_{ps}+a(s),
+\sigma_\theta^2\sigma^2+\sigma_\varepsilon^2\right),\\
+q(s)=\mu_{ps}+a(s)
++\sqrt{\sigma_\theta^2\sigma^2+\sigma_\varepsilon^2}
+\,\Phi^{-1}\!\left(\frac{c'-c}{c'-v}\right),\\
+E[L(q(s)-x)\mid s]
+=\rho\sqrt{\sigma_\theta^2\sigma^2+\sigma_\varepsilon^2}.
+\end{gather*}
+在真实的菜单下方，生产者在生产决策时的信息如下：
+\begin{equation*}
+I=\{\mu_{ps},\sigma\},
+\end{equation*}
+其中，精度是由卖方的优化所决定的，而$a(\mu_{ps})=\alpha(\mu_{ps})$则代表了所付出的努力。因此，该论文采用了相同的最小预期不匹配成本。
+\begin{equation*}
+\rho\sqrt{\sigma_\theta^2\sigma^2+\sigma_\varepsilon^2}
+\end{equation*}
+在 (P2) 中，生产过程已经得到了优化；所显示的生产计算结果并不构成额外的优化问题，也不是菜单上的额外约束条件。
+
+\subsection*{合同阶段的假设与范围}
+
+生产者会在信息获取之前提供菜单选项。拒绝则会导致游戏结束。在接受信息后，卖方会选择信息的精确度，获取私人信号，并通过报告其后验均值来选择合同。然后，生产者会选择初始产量。卖方随后会进行销售努力，需求得以实现，或者进行紧急生产或抢救，同时也会支付补偿。无论是努力还是私人信号，对生产者来说都是不可观测的。在这个选定的模型中，卖方在接受信息后无法反悔，无论实际信号如何；也不存在中间参与的限制。
+
+上述操作公式遵循物理书籍第7页至第12页的内容，以及第26页上的“真实收益恒等式”。方程(2)以及信息成本假设在提供的原始文本中已有说明。第7页和第8页的脚注分别引用了这些假设和信息改进的相关依据，并且没有添加任何数学上的限制条件。附录中的一阶松弛方法和最优菜单特征描述，并不能替代(P2)中保留的全局约束条件。
+
+\end{document}

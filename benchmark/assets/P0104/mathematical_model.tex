@@ -1,0 +1,267 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\title{核心数学模型}
+\date{}
+
+\usepackage[UTF8]{ctex}
+\begin{document}
+
+\maketitle
+
+\section*{安全约束下的最优功率流}
+
+让$\bar{\mathcal{K}} = \{\text{base}\} \cup \mathcal{K}$表示基础状态以及所有应急状态。下面的模型保留了交流功率流方程和来自PDF的应急耦合关系，同时通过上图变量来表示凸形分段线性成本，并通过二进制变量来表示无功功率响应，从而使模型格式适合求解器使用。实现过程中，还将每个状态下的电压角度固定在指定的参考母线上，以消除交流方程的旋转自由度。
+
+\begin{equation}
+\min \quad
+\sum_{g \in \mathcal{G}} c_g^G
++ c_{\text{base}}^\sigma
++ \frac{1}{|\mathcal{K}|} \sum_{k \in \mathcal{K}} c_k^\sigma
+\tag{2.1a}
+\end{equation}
+
+\begin{equation}
+c_g^G = C_g(p_{g0}),
+\qquad \forall g \in \mathcal{G}
+\tag{2.1a$'$}
+\end{equation}
+
+\begin{equation}
+\begin{aligned}
+c_k^\sigma &=
+\sum_{i \in \mathcal{I}}
+\left(
+c_{ik}^{P} + c_{ik}^{Q}
+\right)
++ \sum_{e \in \mathcal{E}_k} c_{ek}^{S}
++ \sum_{f \in \mathcal{F}_k} c_{fk}^{S},
+\qquad \forall k \in \bar{\mathcal{K}}, \\
+c_{ik}^{P} &= C_{ik}^{p}(\sigma_{ik}^{P+} + \sigma_{ik}^{P-}),
+\qquad
+c_{ik}^{Q} = C_{ik}^{q}(\sigma_{ik}^{Q+} + \sigma_{ik}^{Q-}),
+\qquad \forall i \in \mathcal{I},\ k \in \bar{\mathcal{K}}, \\
+c_{ek}^{S} &= C_{ek}^{S}(\sigma_{ek}^{S}),
+\qquad
+c_{fk}^{S} = C_{fk}^{S}(\sigma_{fk}^{S}),
+\qquad \forall e \in \mathcal{E}_k,\ f \in \mathcal{F}_k,\ k \in \bar{\mathcal{K}}.
+\end{aligned}
+\tag{2.1b}
+\end{equation}
+
+\begin{equation}
+\begin{aligned}
+p_{ek}^o &=
+g_e v_{i_e^o k}^2
+- g_e v_{i_e^o k} v_{i_e^d k} \cos(\theta_{i_e^o k} - \theta_{i_e^d k})
+- b_e v_{i_e^o k} v_{i_e^d k} \sin(\theta_{i_e^o k} - \theta_{i_e^d k}), \\
+p_{ek}^d &=
+g_e v_{i_e^d k}^2
+- g_e v_{i_e^d k} v_{i_e^o k} \cos(\theta_{i_e^o k} - \theta_{i_e^d k})
++ b_e v_{i_e^d k} v_{i_e^o k} \sin(\theta_{i_e^o k} - \theta_{i_e^d k}),
+\end{aligned}
+\quad \forall e \in \mathcal{E}_k,\ k \in \bar{\mathcal{K}}
+\tag{2.1c}
+\end{equation}
+
+\begin{equation}
+\begin{aligned}
+q_{ek}^o &=
+-\left(b_e + \frac{b_e^{sh}}{2}\right) v_{i_e^o k}^2
++ b_e v_{i_e^o k} v_{i_e^d k} \cos(\theta_{i_e^o k} - \theta_{i_e^d k})
+- g_e v_{i_e^o k} v_{i_e^d k} \sin(\theta_{i_e^o k} - \theta_{i_e^d k}), \\
+q_{ek}^d &=
+-\left(b_e + \frac{b_e^{sh}}{2}\right) v_{i_e^d k}^2
++ b_e v_{i_e^d k} v_{i_e^o k} \cos(\theta_{i_e^o k} - \theta_{i_e^d k})
++ g_e v_{i_e^d k} v_{i_e^o k} \sin(\theta_{i_e^o k} - \theta_{i_e^d k}),
+\end{aligned}
+\quad \forall e \in \mathcal{E}_k,\ k \in \bar{\mathcal{K}}
+\tag{2.1d}
+\end{equation}
+
+\begin{equation}
+\begin{aligned}
+p_{fk}^o &=
+\frac{g_f}{\tau_f^2} v_{i_f^o k}^2
+- \frac{v_{i_f^o k} v_{i_f^d k}}{\tau_f}
+\left(
+g_f \cos(\theta_{i_f^o k} - \theta_{i_f^d k} - \phi_f)
++ b_f \sin(\theta_{i_f^o k} - \theta_{i_f^d k} - \phi_f)
+\right), \\
+p_{fk}^d &=
+g_f v_{i_f^d k}^2
+- \frac{v_{i_f^o k} v_{i_f^d k}}{\tau_f}
+\left(
+g_f \cos(\theta_{i_f^o k} - \theta_{i_f^d k} - \phi_f)
+- b_f \sin(\theta_{i_f^o k} - \theta_{i_f^d k} - \phi_f)
+\right),
+\end{aligned}
+\quad \forall f \in \mathcal{F}_k,\ k \in \bar{\mathcal{K}}
+\tag{2.1e}
+\end{equation}
+
+\begin{equation}
+\begin{aligned}
+q_{fk}^o &=
+-\frac{b_f + b_f^{sh}/2}{\tau_f^2} v_{i_f^o k}^2
+- \frac{v_{i_f^o k} v_{i_f^d k}}{\tau_f}
+\left(
+g_f \sin(\theta_{i_f^o k} - \theta_{i_f^d k} - \phi_f)
+- b_f \cos(\theta_{i_f^o k} - \theta_{i_f^d k} - \phi_f)
+\right), \\
+q_{fk}^d &=
+-\left(b_f + \frac{b_f^{sh}}{2}\right) v_{i_f^d k}^2
++ \frac{v_{i_f^o k} v_{i_f^d k}}{\tau_f}
+\left(
+b_f \cos(\theta_{i_f^o k} - \theta_{i_f^d k} - \phi_f)
++ g_f \sin(\theta_{i_f^o k} - \theta_{i_f^d k} - \phi_f)
+\right),
+\end{aligned}
+\quad \forall f \in \mathcal{F}_k,\ k \in \bar{\mathcal{K}}
+\tag{2.1f}
+\end{equation}
+
+\begin{equation}
+\sum_{g \in G_{ik}} p_{gk} - p_{ik}^L =
+\sum_{e \in E_{ik}^o} p_{ek}^o
++ \sum_{e \in E_{ik}^d} p_{ek}^d
++ \sum_{f \in F_{ik}^o} p_{fk}^o
++ \sum_{f \in F_{ik}^d} p_{fk}^d
++ \sigma_{ik}^{P+} - \sigma_{ik}^{P-},
+\quad \forall i \in \mathcal{I},\ k \in \bar{\mathcal{K}}
+\tag{2.1g}
+\end{equation}
+
+\begin{equation}
+\sum_{g \in G_{ik}} q_{gk} - q_{ik}^L =
+\sum_{e \in E_{ik}^o} q_{ek}^o
++ \sum_{e \in E_{ik}^d} q_{ek}^d
++ \sum_{f \in F_{ik}^o} q_{fk}^o
++ \sum_{f \in F_{ik}^d} q_{fk}^d
++ \sigma_{ik}^{Q+} - \sigma_{ik}^{Q-},
+\quad \forall i \in \mathcal{I},\ k \in \bar{\mathcal{K}}
+\tag{2.1h}
+\end{equation}
+
+\begin{equation}
+(p_{ek}^o)^2 + (q_{ek}^o)^2
+\le \left(\bar{R}_{ek} v_{i_e^o k} + \sigma_{ek}^S\right)^2,
+\quad \forall e \in \mathcal{E}_k,\ k \in \bar{\mathcal{K}}
+\tag{2.1i}
+\end{equation}
+
+\begin{equation}
+(p_{ek}^d)^2 + (q_{ek}^d)^2
+\le \left(\bar{R}_{ek} v_{i_e^d k} + \sigma_{ek}^S\right)^2,
+\quad \forall e \in \mathcal{E}_k,\ k \in \bar{\mathcal{K}}
+\tag{2.1j}
+\end{equation}
+
+\begin{equation}
+(p_{fk}^o)^2 + (q_{fk}^o)^2
+\le \left(\bar{s}_{fk} + \sigma_{fk}^S\right)^2,
+\quad \forall f \in \mathcal{F}_k,\ k \in \bar{\mathcal{K}}
+\tag{2.1k}
+\end{equation}
+
+\begin{equation}
+(p_{fk}^d)^2 + (q_{fk}^d)^2
+\le \left(\bar{s}_{fk} + \sigma_{fk}^S\right)^2,
+\quad \forall f \in \mathcal{F}_k,\ k \in \bar{\mathcal{K}}
+\tag{2.1l}
+\end{equation}
+
+\begin{equation}
+p_{g,\text{base}} = p_{g0}, \qquad q_{g,\text{base}} = q_{g0},
+\qquad \forall g \in \mathcal{G}
+\tag{2.1m}
+\end{equation}
+
+\begin{equation}
+p_{gk} = \operatorname{proj}_{[\underline{p}_g,\bar{p}_g]}
+\left(p_{g0} + \alpha_g \Delta_k\right),
+\qquad \forall g \in \mathcal{G}_k,\ k \in \mathcal{K}
+\tag{2.1n}
+\end{equation}
+
+\begin{equation}
+\left\{
+\underline{q}_g \le q_{gk} \le \bar{q}_g,\ v_{i_g k} = v_{i_g 0}
+\right\}
+\cup
+\left\{
+q_{gk} = \bar{q}_g,\ \underline{v}_{i_g} \le v_{i_g k} \le v_{i_g 0}
+\right\}
+\cup
+\left\{
+q_{gk} = \underline{q}_g,\ v_{i_g 0} \le v_{i_g k} \le \bar{v}_{i_g}
+\right\},
+\quad \forall g \in \mathcal{G}_k,\ k \in \mathcal{K}
+\tag{2.1o}
+\end{equation}
+
+\begin{equation}
+\delta_{gk}^{0} + \delta_{gk}^{U} + \delta_{gk}^{L} = 1,
+\qquad \forall g \in \mathcal{G}_k,\ k \in \mathcal{K}
+\tag{2.1o$'$}
+\end{equation}
+
+\begin{equation}
+-M_{ig}^{v}(1-\delta_{gk}^{0})
+\le v_{i_g k} - v_{i_g 0}
+\le M_{ig}^{v}(1-\delta_{gk}^{0}),
+\qquad \forall g \in \mathcal{G}_k,\ k \in \mathcal{K}
+\tag{2.1o$''$}
+\end{equation}
+
+\begin{equation}
+\bar{q}_g - M_g^q(1-\delta_{gk}^{U})
+\le q_{gk}
+\le \bar{q}_g + M_g^q(1-\delta_{gk}^{U}),
+\qquad
+v_{i_g k} \le v_{i_g 0} + M_{ig}^{v}(1-\delta_{gk}^{U}),
+\quad \forall g \in \mathcal{G}_k,\ k \in \mathcal{K}
+\tag{2.1o$'''$}
+\end{equation}
+
+\begin{equation}
+\underline{q}_g - M_g^q(1-\delta_{gk}^{L})
+\le q_{gk}
+\le \underline{q}_g + M_g^q(1-\delta_{gk}^{L}),
+\qquad
+v_{i_g k} \ge v_{i_g 0} - M_{ig}^{v}(1-\delta_{gk}^{L}),
+\quad \forall g \in \mathcal{G}_k,\ k \in \mathcal{K}
+\tag{2.1o$''''$}
+\end{equation}
+
+\begin{equation}
+\underline{v}_{ik} \le v_{ik} \le \bar{v}_{ik},
+\qquad
+\underline{q}_g \le q_{gk} \le \bar{q}_g,
+\qquad
+\underline{p}_g \le p_{g0} \le \bar{p}_g,
+\qquad
+\underline{q}_g \le q_{g0} \le \bar{q}_g,
+\quad \forall i \in \mathcal{I},\ g \in \mathcal{G}_k,\ k \in \bar{\mathcal{K}}
+\tag{2.1p}
+\end{equation}
+
+\begin{equation}
+p_{gk} = 0, \qquad q_{gk} = 0,
+\qquad \forall g \in \mathcal{G} \setminus \mathcal{G}_k,\ k \in \mathcal{K}
+\tag{2.1q}
+\end{equation}
+
+\begin{equation}
+\sigma_{ik}^{P+},\ \sigma_{ik}^{P-},\ \sigma_{ik}^{Q+},\ \sigma_{ik}^{Q-},
+\sigma_{ek}^{S},\ \sigma_{fk}^{S} \ge 0,
+\quad
+\forall i \in \mathcal{I},\ e \in \mathcal{E}_k,\ f \in \mathcal{F}_k,\ k \in \bar{\mathcal{K}}
+\tag{2.1r}
+\end{equation}
+
+在这里，$C_g$、$C_{ik}^{p}$、$C_{ik}^{q}$、$C_{ek}^{S}$和$C_{fk}^{S}$都是凸的分段线性惩罚函数。而二进制变量$\delta_{gk}^{0}, \delta_{gk}^{U}, \delta_{gk}^{L}$则用于实现PDF中无功功率和电压响应的三种情况。
+
+\end{document}

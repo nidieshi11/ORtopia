@@ -1,0 +1,71 @@
+\documentclass[UTF8,11pt]{ctexart}
+\usepackage{amsmath,amssymb,mathtools,geometry}
+\geometry{a4paper,margin=20mm}\allowdisplaybreaks
+\begin{document}
+\section*{单站单时段滚动公交调度RHMILP}
+
+\paragraph{来源与范围} PDF第10--12页，§3.2，RHMILP(33)--(55)。
+这是一个终点站、一个滚动时间段的完整调度模型；其他终点站的环境状态及DRL给定的空驶目标作为输入。
+\subsection*{集合与已知参数}
+$\mathbf B$ 为可调度公交车，$\mathbf K$ 为该终点站的线路，
+$\mathbf H=\{1,\ldots,H_{\max}\}$ 为发车次序，
+$\mathbf N=\{1,\ldots,H_{\max}\}$ 为正发车数候选，
+$\mathbf Y^{\mathbf I}=\{1,\ldots,m\}$ 为等长充电子时段。
+$v>0$ 为当前段时长；$S_k,a_k$ 分别为服务班次和DRL给定空驶数量目标；
+$\lambda_b$ 为已知到站时间，$\beta_b\in[0,100]$ 为已知到站/期初SOC百分数。
+$\mu_k^s,\mu_k^d$ 为服务和空驶所需运行量，$\zeta$ 将其换成SOC消耗，
+$\tau\ge0$ 为服务安全余量；$W$ 为单位时间SOC充电率，$|\Psi|$ 为充电桩数；
+$C^s,C^d,\rho_1,\rho_2\ge0$ 为偏差惩罚/奖励权重。
+$M$ 为覆盖全部时间与SOC表达的有效大常数。
+离散充电网格必须固定：
+\[
+\gamma_i^C=(i-1)v/m,\qquad \lambda_i^C=iv/m,\qquad i=1,\ldots,m.
+\]
+这两个符号表示离散子时段的固定起终点。
+\subsection*{变量}
+$I_{bhk}$ 是车辆发车指派，$\kappa_{hk}$ 表示服务班次（相对空驶）；
+$N^B_{nk}$ 是班次数量选择，$\nu_{bi}$ 是充电子时段占用；
+$\gamma^H,\gamma^B$ 为班次/车辆发车时刻，$\phi_b$ 为补充SOC，
+$N_k,P_k$ 为总发车数和班距，$G_k^s,G_k^d,G^b$ 为偏差和最大电量不足辅助量。
+$P_k$ 按式(41)、(55)为连续非负班距，数量 $N_k$ 由二元选择自然为整数。
+\subsection*{完整RHMILP}
+\[
+\begin{aligned}
+\text{(RHMILP)} : \quad & \min \sum_{k \in \mathbf{K}} C^s G_k^s + \sum_{k \in \mathbf{K}} C^d G_k^d - \rho_1 \sum_{b \in \mathbf{B}} \phi_b + \rho_2 G^b \\
+\text{s.t.} \quad & \\
+& -G_k^s \leq \left( S_k - \sum_{h \in \mathbf{H}} \kappa_{hk} \right) \leq G_k^s & \forall k \in \mathbf{K} \\
+& -G_k^d \leq \left[ a_k - \left( \sum_{b \in \mathbf{B}, h \in \mathbf{H}} I_{bhk} - \sum_{h \in \mathbf{H}} \kappa_{hk} \right) \right] \leq G_k^d & \forall k \in \mathbf{K} \\
+& (100 - \phi_b - \beta_b) - M[1 - (I_{bhk} - 2\kappa_{hk})] \leq G^b & \forall b \in \mathbf{B}, h \in \mathbf{H}, k \in \mathbf{K} \\
+& \sum_{h \in \mathbf{H}, k \in \mathbf{K}} I_{bhk} \leq 1 & \forall b \in \mathbf{B} \\
+& \sum_{b \in \mathbf{B}} I_{b(h+1)k} \leq \sum_{b \in \mathbf{B}} I_{bhk} \leq 1 & \forall k \in \mathbf{K}, h \in \mathbf{H} \setminus |\mathbf{H}| \\
+& \sum_{b \in \mathbf{B}, h \in \mathbf{H}} I_{bhk} = \sum_{n \in \mathbf{N}} n N_{nk}^B = N_k & \forall k \in \mathbf{K} \\
+& \sum_{n \in \mathbf{N}} N_{nk}^B \leq 1 & \forall k \in \mathbf{K} \\
+& \sum_{n \in \mathbf{N}} \frac{v}{n} N_{nk}^B = P_k & \forall k \in \mathbf{K} \\
+& v \left( 1 - \sum_{b \in \mathbf{B}} I_{bhk} \right) - M \sum_{b \in \mathbf{B}} I_{bhk} \leq \gamma_{hk}^H \leq P_k(h - 0.5) + M \left( 1 - \sum_{b \in \mathbf{B}} I_{bhk} \right) & \forall h \in \mathbf{H}, k \in \mathbf{K} \\
+& P_k(h - 0.5) - M \left( 1 - \sum_{b \in \mathbf{B}} I_{bhk} \right) \leq \gamma_{hk}^H \leq v \left( 1 - \sum_{b \in \mathbf{B}} I_{bhk} \right) + M \sum_{b \in \mathbf{B}} I_{bhk} & \forall h \in \mathbf{H}, k \in \mathbf{K} \\
+& \gamma_{hk}^H - M(1 - I_{bhk}) \leq \gamma_b^B \leq \gamma_{hk}^H + M(1 - I_{bhk}) & \forall b \in \mathbf{B}, h \in \mathbf{H}, k \in \mathbf{K} \\
+& \lambda_b - M(1 - I_{bhk}) \leq \gamma_{hk}^H & \forall b \in \mathbf{B}, h \in \mathbf{H}, k \in \mathbf{K}
+\end{aligned}
+\]
+
+
+\[
+\begin{aligned}
+& \sum_{h \in \mathbf{H}} \kappa_{hk} \leq \sum_{b \in \mathbf{B}, h \in \mathbf{H}} I_{bhk} & \forall k \in \mathbf{K} \\
+& - M(1 - \kappa_{hk}) + h \leq \sum_{b \in \mathbf{B}, h_1 \in \mathbf{H}} I_{bh_1k} & \forall h \in \mathbf{H}, k \in \mathbf{K} \\
+& v \left( 1 - \sum_{h \in \mathbf{H}, k \in \mathbf{K}} I_{bhk} \right) - M \sum_{h \in \mathbf{H}, k \in \mathbf{K}} I_{bhk} \leq \gamma_b^B \leq v \left( 1 - \sum_{h \in \mathbf{H}, k \in \mathbf{K}} I_{bhk} \right) + M \sum_{h \in \mathbf{H}, k \in \mathbf{K}} I_{bhk} & \forall b \in \mathbf{B} \\
+& \zeta \left[ (1 + \tau) \mu_k^s \kappa_{hk} + \mu_k^d (1 - \kappa_{hk}) \right] - M(1 - I_{bhk}) \leq \beta_b + \phi_b \leq 100 & \forall b \in \mathbf{B}, h \in \mathbf{H}, k \in \mathbf{K} \\
+& \sum_{b \in \mathbf{B}} \nu_{bi} \leq |\Psi| & \forall i \in \mathbf{Y}^{\mathbf{I}}, b \in \mathbf{B} \\
+& \nu_{bi} \leq \max \{0, \gamma_i^C - \lambda_b\} & \forall i \in \mathbf{Y}^{\mathbf{I}}, b \in \mathbf{B} \\
+& \nu_{bi} \leq \max \{0, -\lambda_i^C + \gamma_b^B\} & \forall i \in \mathbf{Y}^{\mathbf{I}}, b \in \mathbf{B} \\
+& 0 \leq \phi_b \leq \frac{vW}{|\mathbf{Y}^{\mathbf{I}}|} \sum_{i \in \mathbf{Y}^{\mathbf{I}}} \nu_{bi} & \forall b \in \mathbf{B} \\
+& I_{bhk}, \kappa_{hk}, N_{nk}^B, \nu_{bi} \in \{0, 1\} & \forall b \in \mathbf{B}, h \in \mathbf{H}, k \in \mathbf{K}, n \in \mathbf{N}, i \in \mathbf{Y}^{\mathbf{I}} \\
+& \gamma_{hk}^H, \gamma_b^B, \phi_b, N_k, P_k, G_k^d, G^b, G_k^s, \gamma_i^C, \lambda_i^C \geq 0 & \forall b \in \mathbf{B}, h \in \mathbf{H}, k \in \mathbf{K}, n \in \mathbf{N}, i \in \mathbf{Y}^{\mathbf{I}}
+\end{aligned}
+\]
+
+
+式(51)--(52)按论文原式保留时间差与二元量的比较；时间单位应与该离散化约定一致。
+时间网格、$\lambda_b$ 和 $\beta_b$ 均为给定参数。
+
+\end{document}
