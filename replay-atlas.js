@@ -5,6 +5,7 @@ const classic=new Set(["P0001", "P0012", "P0013", "P0020", "P0025", "P0045", "P0
 const fmt=n=>typeof n==='number'?n.toLocaleString('zh-CN',{maximumFractionDigits:5}):String(n);
 let clear=()=>{};
 function mount(host,p,pack,step){
+ if(pack.road){clear=window.ORTOPIA_ROAD_WORLD.mount(host,p,pack,step);return;}
  if(p.id==="P0039"){clear=window.ORTOPIA_DRONE_RETAIL.mount(host,p,pack,step);return;}
  const ctl=new AbortController(),on=(el,event,fn)=>el.addEventListener(event,fn,{signal:ctl.signal});
  const travel=['clock','route','coverage'].includes(pack.kind),data=pack.events;
