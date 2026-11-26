@@ -139,26 +139,19 @@ for(const id of ids){
 function categoryLink(p){
  return '<a href="index.html#scene/'+encodeURIComponent(p.sceneId)+'">'+esc(p.sceneName)+'</a>';
 }
-function simulationSections(key,items){
+function simulationList(key,items){
  const topics=new Map((sceneTopics[key]??[]).map(({label})=>[label,[]]));
  for(const p of items){
   if(!topics.has(p.topicLabel))topics.set(p.topicLabel,[]);
   topics.get(p.topicLabel).push(p);
  }
- const sections=[];
- for(const [label,problems] of topics){
-  if(!problems.length)continue;
-  const links=problems.map(p=>`<li><a href="replay.html#${p.id}">
+ const problems=[...topics.values()].flat();
+ const links=problems.map(p=>`<li><a href="replay.html#${p.id}">
    <small>${p.id}</small>
-   <span class="sim-info"><span class="sim-name">${esc(p.title)}</span><span class="sim-topic">${esc(label)}</span></span>
+   <span class="sim-info"><span class="sim-name">${esc(p.title)}</span><span class="sim-topic">${esc(p.topicLabel)}</span></span>
    <i aria-hidden="true">→</i>
   </a></li>`).join('');
-  sections.push(`<section class="topic-section">
-   <header><h2>${esc(label)}</h2><span>${problems.length} 个实例</span></header>
-   <ul class="sim-list">${links}</ul>
-  </section>`);
- }
- return sections.join('');
+ return `<ul class="sim-list">${links}</ul>`;
 }
 function directory(key){
  const group=sceneGroups.get(key);
@@ -179,7 +172,7 @@ function directory(key){
    </div>`;
   return;
  }
- host.innerHTML='<div class="wrap replay-page sim-directory topic-directory"><div class="replay-breadcrumb"><a href="index.html">实例仿真</a> / '+esc(group.name)+'</div><header class="replay-heading"><h1>'+esc(group.name)+'</h1><p>'+group.items.length+' 个实例</p></header>'+simulationSections(key,group.items)+'</div>';
+ host.innerHTML='<div class="wrap replay-page sim-directory topic-directory"><div class="replay-breadcrumb"><a href="index.html">实例仿真</a> / '+esc(group.name)+'</div><header class="replay-heading"><h1>'+esc(group.name)+'</h1><p>'+group.items.length+' 个实例</p></header>'+simulationList(key,group.items)+'</div>';
 }
 async function openPage(){
  directoryHeading.replaceChildren();
