@@ -256,8 +256,7 @@ function detailPage(id){
  const replay=replayIds.has(p.id)
    ? '<a class="primary replay-entry" href="../simulation/replay.html#'+param(p.id)+'">进入实例仿真 <span aria-hidden="true">→</span></a>' : '';
  const paper=p.pdf
-   ? '<a class="tool" href="'+param(p.pdf)+'" target="_blank" rel="noopener">'+ico('pdf')+'论文 PDF</a>'+
-     '<a class="tool" download="'+esc(p.pdfName||s(p.paperTitle)+'.pdf')+'" href="'+param(p.pdf)+'">下载论文</a>' : '';
+   ? '<a class="tool" href="'+param(p.pdf)+'" target="_blank" rel="noopener">'+ico('pdf')+'查看 PDF</a>' : '';
  const publisher=p.doiUrl?'<a class="tool" href="'+param(p.doiUrl)+'" target="_blank" rel="noopener">期刊官网</a>':'';
  const metadata='<strong>'+esc(p.journal||p.journalShort)+'</strong><span>'+esc(p.year)+'</span>'+
    groupOf(p).map(k=>'<span class="badge">'+esc(seriesNames[k]||k)+'</span>').join('');
