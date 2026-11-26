@@ -60,10 +60,96 @@ const sceneUrl = p => {
 };
 let domainSearch={id:null,query:''};
 let series=seriesList[0][0], currentProblem=null, zoom=1;
+const featuredSceneIds=[
+ 'P0012','P0122','P0174','P0020','P0110','P0190','P0154',
+ 'P0204','P0039','P0013','P0095','P0310','P0049','P0198'
+];
+const featuredByDomain=new Map();
+for(const p of [...featuredSceneIds.map(id=>byId.get(id)),...probs]){
+ if(p?.scene&&!featuredByDomain.has(p.domainId))featuredByDomain.set(p.domainId,p);
+}
+const featuredScenes=[...featuredByDomain.values()];
+let featuredIndex=0, rotationChoice=null, closeCarousel=null;
 function setNav(n){for(const k of ['domains','library'])E('nav-'+k).classList.toggle('active',k===n)}
 function crumb(items){return '<div class="crumb" aria-label="面包屑"><a href="../">首页</a>'+items.map(([t,u])=>'<i>/</i>'+(u?'<a href="'+param(u)+'">'+esc(t)+'</a>':'<strong>'+esc(t)+'</strong>')).join('')+'</div>'}
 function has(q,p){const hay=[p.id,p.title,p.paperTitle,p.domain,p.topic,p.journal,p.year,p.journalShort,...groupOf(p)].map(s).join(' ').toLowerCase(); return q.toLowerCase().trim().split(/\s+/).every(v=>hay.includes(v))}
 function listItem(p){return '<a class="result" href="'+param(detail(p))+'"><span class="serial">'+esc(p.id)+'</span><span class="result-body"><strong>'+esc(p.title)+'</strong><span class="catalog-topic">'+esc(p.topic)+'</span><small>'+esc(p.paperTitle)+'</small><small>'+esc([p.domain,p.journalShort||p.journal,p.year].filter(Boolean).join(' · '))+'</small></span><span class="chev"></span></a>'}
+function mountSceneCarousel(container){
+ const count=featuredScenes.length;
+ if(!count)return;
+ container.innerHTML=`<section class="scene-carousel" aria-label="场景选读" aria-roledescription="轮播">
+  <a class="scene-feature">
+   <span class="scene-visual"></span>
+   <div class="scene-copy"><span class="scene-kicker">场景选读</span><h2 class="scene-title"></h2><p class="scene-meta"></p></div>
+  </a>
+  <div class="scene-controls">
+   <button type="button" data-carousel="prev" aria-label="上一个场景">‹</button>
+   <span class="scene-position"></span>
+   <button type="button" data-carousel="next" aria-label="下一个场景">›</button>
+   <button type="button" data-carousel="play"></button>
+  </div>
+ </section>`;
+ const section=container.firstElementChild;
+ const link=section.querySelector('.scene-feature'), visual=link.querySelector('.scene-visual');
+ const title=link.querySelector('.scene-title'), meta=link.querySelector('.scene-meta');
+ const position=section.querySelector('.scene-position'), play=section.querySelector('[data-carousel="play"]');
+ const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+ const events=new AbortController(), options={signal:events.signal};
+ let timer, hovering=false;
+ const wantsRotation=()=>rotationChoice??!reduced.matches;
+
+ function show(index){
+  featuredIndex=(index+count)%count;
+  const problem=featuredScenes[featuredIndex];
+  const img=new Image();
+  img.alt=problem.title+'场景图';
+  img.onload=()=>{
+   if(section.isConnected&&img===visual.firstChild&&count>1){
+    const next=new Image();
+    next.src=sceneUrl(featuredScenes[(featuredIndex+1)%count]);
+   }
+  };
+  img.src=sceneUrl(problem);
+  visual.replaceChildren(img);
+  link.href=detail(problem);
+  link.setAttribute('aria-label',problem.domain+' · '+problem.id+' · '+problem.title);
+  title.textContent=problem.title;
+  meta.textContent=problem.domain+' · '+problem.id;
+  position.textContent=(featuredIndex+1)+' / '+count;
+ }
+ function schedule(){
+  clearTimeout(timer);
+  const rotate=wantsRotation();
+  play.textContent=rotate?'暂停':'播放';
+  play.setAttribute('aria-label',rotate?'暂停自动轮播':'开启自动轮播');
+  position.setAttribute('aria-live',rotate?'off':'polite');
+  if(count>1&&rotate&&!hovering&&!document.hidden){
+   timer=setTimeout(()=>{show(featuredIndex+1);schedule();},7000);
+  }
+ }
+ function step(delta){
+  rotationChoice=false;
+  schedule();
+  show(featuredIndex+delta);
+ }
+ section.querySelector('[data-carousel="prev"]').onclick=()=>step(-1);
+ section.querySelector('[data-carousel="next"]').onclick=()=>step(1);
+ play.onclick=()=>{rotationChoice=!wantsRotation();hovering=false;schedule();};
+ section.onpointerenter=e=>{if(e.pointerType==='mouse'){hovering=true;schedule();}};
+ section.onpointerleave=()=>{hovering=false;schedule();};
+ section.addEventListener('focusin',e=>{
+  if(e.target.matches(':focus-visible')){rotationChoice=false;schedule();}
+ });
+ section.onkeydown=e=>{
+  if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();step(e.key==='ArrowLeft'?-1:1);}
+ };
+ section.querySelector('.scene-controls').hidden=count<2;
+ document.addEventListener('visibilitychange',schedule,options);
+ reduced.addEventListener('change',()=>{rotationChoice=null;schedule();},options);
+ closeCarousel=()=>{clearTimeout(timer);events.abort();};
+ show(featuredIndex);
+ schedule();
+}
 function domainsPage(){
  document.title='领域目录 · ORtopia';
  const cards=domains.map(d=>{
@@ -74,7 +160,8 @@ function domainsPage(){
    rows.length+' 道问题 · '+topicCount+' 个子类</span></span><span class="chev" aria-hidden="true"></span></a>';
  }).join('');
  main.innerHTML='<div class="wrap page" id="domain-index"><div class="domain-head"><h1>领域目录</h1>'+
-  '<p class="muted">'+domains.length+' 个领域 · '+probs.length+' 道问题</p></div><div class="domains-grid">'+cards+'</div></div>';
+  '<p class="muted">'+domains.length+' 个领域 · '+probs.length+' 道问题</p></div><div id="featured-scenes"></div><div class="domains-grid">'+cards+'</div></div>';
+ mountSceneCarousel(E('featured-scenes'));
 }
 function libraryPage(){
  document.title='论文集 · ORtopia';
@@ -184,6 +271,7 @@ function detailPage(id){
 }
 function miss(){currentProblem=null;main.innerHTML='<div class="wrap page"><h1>未找到此条目</h1><a class="route-link" href="#/">返回资料库</a></div>'}
 function render(scroll=true){
+ if(closeCarousel){closeCarousel();closeCarousel=null;}
  const [kind,id,groupKey]=location.hash.replace(/^#\/?/,'').split('/').map(v=>{try{return decodeURIComponent(v)}catch{return v}});currentProblem=null;document.title='ORtopia';
  if(!probs.length){main.innerHTML='<div class="wrap page"><h1>目录暂未载入</h1><p>请确认网页与配套的数据目录保存在一起。</p></div>';return}
  if(kind!=='domain'||domainSearch.id!==id)domainSearch={id:kind==='domain'?id:null,query:''};
