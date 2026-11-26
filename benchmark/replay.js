@@ -3,6 +3,13 @@
 const host=document.querySelector('#content');
 const ids=window.ORTOPIA_REPLAY_IDS;
 const sceneByProblem=new Map();
+const sceneTopics=window.ORTOPIA_SCENE_TOPICS??{};
+const topicByProblem=new Map();
+for(const topics of Object.values(sceneTopics)){
+ for(const {label,ids} of topics){
+  for(const id of ids)topicByProblem.set(id,label);
+ }
+}
 for(const sections of Object.values(window.ORTOPIA_SUBDOMAINS)){
  for(const section of sections){
   for(const id of section.ids)sceneByProblem.set(id,section);
@@ -10,7 +17,7 @@ for(const sections of Object.values(window.ORTOPIA_SUBDOMAINS)){
 }
 const cases=new Map(window.ORTOPIA_SIMULATIONS.map(p=>{
  const scene=sceneByProblem.get(p.id);
- return [p.id,{...p,sceneId:scene?.key??p.domainId,sceneName:scene?.label??p.domain}];
+ return [p.id,{...p,sceneId:scene?.key??p.domainId,sceneName:scene?.label??p.domain,topicLabel:topicByProblem.get(p.id)??'待分类'}];
 }));
 const q=id=>document.getElementById(id);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -131,8 +138,26 @@ for(const id of ids){
 function categoryLink(p){
  return '<a href="index.html#scene/'+encodeURIComponent(p.sceneId)+'">'+esc(p.sceneName)+'</a>';
 }
-function simulationList(items){
- return '<ul class="sim-list">'+items.map(p=>'<li><a href="replay.html#'+p.id+'"><small>'+p.id+'</small><span>'+esc(p.title)+'</span><i aria-hidden="true">→</i></a></li>').join('')+'</ul>';
+function simulationSections(key,items){
+ const topics=new Map((sceneTopics[key]??[]).map(({label})=>[label,[]]));
+ for(const p of items){
+  if(!topics.has(p.topicLabel))topics.set(p.topicLabel,[]);
+  topics.get(p.topicLabel).push(p);
+ }
+ const sections=[];
+ for(const [label,problems] of topics){
+  if(!problems.length)continue;
+  const links=problems.map(p=>`<li><a href="replay.html#${p.id}">
+   <small>${p.id}</small>
+   <span class="sim-info"><span class="sim-name">${esc(p.title)}</span><span class="sim-topic">${esc(label)}</span></span>
+   <i aria-hidden="true">→</i>
+  </a></li>`).join('');
+  sections.push(`<section class="topic-section">
+   <header><h2>${esc(label)}</h2><span>${problems.length} 个实例</span></header>
+   <ul class="sim-list">${links}</ul>
+  </section>`);
+ }
+ return sections.join('');
 }
 function directory(key){
  const group=sceneGroups.get(key);
@@ -158,7 +183,7 @@ function directory(key){
    </div>`;
   return;
  }
- host.innerHTML='<div class="wrap replay-page sim-directory"><div class="replay-breadcrumb"><a href="index.html">实例仿真</a> / '+esc(group.name)+'</div><header class="replay-heading"><h1>'+esc(group.name)+'</h1><p>'+group.items.length+' 个实例</p></header>'+simulationList(group.items)+'</div>';
+ host.innerHTML='<div class="wrap replay-page sim-directory topic-directory"><div class="replay-breadcrumb"><a href="index.html">实例仿真</a> / '+esc(group.name)+'</div><header class="replay-heading"><h1>'+esc(group.name)+'</h1><p>'+group.items.length+' 个实例</p></header>'+simulationSections(key,group.items)+'</div>';
 }
 async function openPage(){
  const token=++renderToken;window.ORTOPIA_FIELD_PLAYER.close();stop();leaveTheater();data=null;elapsed=0;finished=false;svgRoots=[];cssTracks=[];
@@ -177,10 +202,13 @@ async function openPage(){
  const id=match?.[1];
  if(!id||!ids.includes(id)){host.innerHTML='<div class="wrap load">此题暂未提供实例仿真。 '+rootLink+'</div>';return;}
  host.innerHTML='<div class="wrap load">正在读取 '+id+' 的实例解…</div>';
+ const problem=cases.get(id);
  try{
   if(window.ORTOPIA_FIELD_PLAYER.supports(id)){
    const pack=await loadDataset(id,'field-scenes','ORTOPIA_FIELD_CASES');
-   if(token===renderToken)window.ORTOPIA_FIELD_PLAYER.mount(host,cases.get(id),pack,Number(match[2]||1));
+   if(token!==renderToken)return;
+   window.ORTOPIA_FIELD_PLAYER.mount(host,problem,pack,Number(match[2]||1));
+   showDetailTopic(problem);
    return;
   }
   const [r,rows]=await Promise.all([loadDataset(id,'replays','ORTOPIA_REPLAYS'),loadDataset(id,'replay-logic','ORTOPIA_REPLAY_LOGIC'),loadLab(id)]);if(token!==renderToken)return;
@@ -189,8 +217,15 @@ async function openPage(){
   data=r;current=Math.min(Number(match[2]||labs[id]?.first||1),r.steps.length)-1;byId.clear();groups.clear();
   for(const a of r.entities){byId.set(String(a.id),a);if(!groups.has(a.group))groups.set(a.group,groups.size);}
   mode=(labs[id]||sceneRenderer(id))?'simulation':r.schedule?.events?.length?'schedule':r.layout==='map'?'map':r.trend?.points?.length?'trend':'lanes';
-  shell(cases.get(id));paint();window.scrollTo(0,0);if(!reduced.matches&&!document.hidden)run(Boolean(labs[id]&&id!=='P0045'&&!match[2]));
+  shell(problem);showDetailTopic(problem);paint();window.scrollTo(0,0);if(!reduced.matches&&!document.hidden)run(Boolean(labs[id]&&id!=='P0045'&&!match[2]));
  }catch(e){if(token===renderToken)host.innerHTML='<div class="wrap load">实例解未能载入。 '+rootLink+'</div>';}
+}
+function showDetailTopic(problem){
+ if(!problem.topicLabel)return;
+ const tag=document.createElement('span');
+ tag.className='sim-topic';
+ tag.textContent=problem.topicLabel;
+ host.querySelector('h1').after(tag);
 }
 function sceneRenderer(id){
  if(id==='P0020' && window.ORTOPIA_FACTORY)return window.ORTOPIA_FACTORY;
