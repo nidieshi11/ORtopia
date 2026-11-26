@@ -69,12 +69,20 @@ for(const p of [...featuredSceneIds.map(id=>byId.get(id)),...probs]){
  if(p?.scene&&!featuredByDomain.has(p.domainId))featuredByDomain.set(p.domainId,p);
 }
 const featuredScenes=[...featuredByDomain.values()];
+const sceneRotationMs=15000;
 let featuredIndex=0, rotationChoice=null, closeCarousel=null;
 function setNav(n){for(const k of ['domains','library'])E('nav-'+k).classList.toggle('active',k===n)}
 function crumb(items){return '<div class="crumb" aria-label="面包屑"><a href="../">首页</a>'+items.map(([t,u])=>'<i>/</i>'+(u?'<a href="'+param(u)+'">'+esc(t)+'</a>':'<strong>'+esc(t)+'</strong>')).join('')+'</div>'}
 function has(q,p){const hay=[p.id,p.title,p.paperTitle,p.domain,p.topic,p.journal,p.year,p.journalShort,...groupOf(p)].map(s).join(' ').toLowerCase(); return q.toLowerCase().trim().split(/\s+/).every(v=>hay.includes(v))}
 function listItem(p){return '<a class="result" href="'+param(detail(p))+'"><span class="serial">'+esc(p.id)+'</span><span class="result-body"><strong>'+esc(p.title)+'</strong><span class="catalog-topic">'+esc(p.topic)+'</span><small>'+esc(p.paperTitle)+'</small><small>'+esc([p.domain,p.journalShort||p.journal,p.year].filter(Boolean).join(' · '))+'</small></span><span class="chev"></span></a>'}
-function mountSceneCarousel(container){
+function paperReference(p){
+ if(!p.citation)return '';
+ const doi=p.doiUrl?'<a href="'+param(p.doiUrl)+'">'+esc(p.doiUrl)+'</a>':'';
+ return '<section class="paper-reference" data-problem="'+esc(p.id)+'" aria-labelledby="reference-heading">'+
+  '<h2 id="reference-heading">参考文献 <span>'+esc(p.id)+'</span></h2>'+
+  '<p><span lang="en">'+esc(p.citation)+'</span>'+(doi?' '+doi:'')+'</p></section>';
+}
+function mountSceneCarousel(container,referenceContainer){
  const count=featuredScenes.length;
  if(!count)return;
  container.innerHTML=`<section class="scene-carousel" aria-label="场景选读" aria-roledescription="轮播">
@@ -95,7 +103,7 @@ function mountSceneCarousel(container){
  const position=section.querySelector('.scene-position'), play=section.querySelector('[data-carousel="play"]');
  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
  const events=new AbortController(), options={signal:events.signal};
- let timer, hovering=false;
+ let timer;
  const wantsRotation=()=>rotationChoice??!reduced.matches;
 
  function show(index){
@@ -116,6 +124,7 @@ function mountSceneCarousel(container){
   title.textContent=problem.title;
   meta.textContent=problem.domain+' · '+problem.id;
   position.textContent=(featuredIndex+1)+' / '+count;
+  referenceContainer.innerHTML=paperReference(problem);
  }
  function schedule(){
   clearTimeout(timer);
@@ -123,29 +132,26 @@ function mountSceneCarousel(container){
   play.textContent=rotate?'暂停':'播放';
   play.setAttribute('aria-label',rotate?'暂停自动轮播':'开启自动轮播');
   position.setAttribute('aria-live',rotate?'off':'polite');
-  if(count>1&&rotate&&!hovering&&!document.hidden){
-   timer=setTimeout(()=>{show(featuredIndex+1);schedule();},7000);
+  if(count>1&&rotate&&section.isConnected&&!document.hidden&&!referenceContainer.contains(document.activeElement)){
+   timer=setTimeout(()=>{show(featuredIndex+1);schedule();},sceneRotationMs);
   }
  }
  function step(delta){
-  rotationChoice=false;
-  schedule();
   show(featuredIndex+delta);
+  schedule();
  }
  section.querySelector('[data-carousel="prev"]').onclick=()=>step(-1);
  section.querySelector('[data-carousel="next"]').onclick=()=>step(1);
- play.onclick=()=>{rotationChoice=!wantsRotation();hovering=false;schedule();};
- section.onpointerenter=e=>{if(e.pointerType==='mouse'){hovering=true;schedule();}};
- section.onpointerleave=()=>{hovering=false;schedule();};
- section.addEventListener('focusin',e=>{
-  if(e.target.matches(':focus-visible')){rotationChoice=false;schedule();}
- });
+ play.onclick=()=>{rotationChoice=!wantsRotation();schedule();};
  section.onkeydown=e=>{
   if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();step(e.key==='ArrowLeft'?-1:1);}
  };
  section.querySelector('.scene-controls').hidden=count<2;
+ // Keep the DOI under keyboard focus stable until the reader leaves the reference.
+ referenceContainer.addEventListener('focusin',schedule,options);
+ referenceContainer.addEventListener('focusout',()=>queueMicrotask(schedule),options);
  document.addEventListener('visibilitychange',schedule,options);
- reduced.addEventListener('change',()=>{rotationChoice=null;schedule();},options);
+ reduced.addEventListener('change',schedule,options);
  closeCarousel=()=>{clearTimeout(timer);events.abort();};
  show(featuredIndex);
  schedule();
@@ -160,8 +166,8 @@ function domainsPage(){
    rows.length+' 道问题 · '+topicCount+' 个子类</span></span><span class="chev" aria-hidden="true"></span></a>';
  }).join('');
  main.innerHTML='<div class="wrap page" id="domain-index"><div class="domain-head"><h1>领域目录</h1>'+
-  '<p class="muted">'+domains.length+' 个领域 · '+probs.length+' 道问题</p></div><div id="featured-scenes"></div><div class="domains-grid">'+cards+'</div></div>';
- mountSceneCarousel(E('featured-scenes'));
+  '<p class="muted">'+domains.length+' 个领域 · '+probs.length+' 道问题</p></div><div id="featured-scenes"></div><div class="domains-grid">'+cards+'</div><div id="featured-reference"></div></div>';
+ mountSceneCarousel(E('featured-scenes'),E('featured-reference'));
 }
 function libraryPage(){
  document.title='论文集 · ORtopia';
@@ -266,7 +272,7 @@ function detailPage(id){
    panel('场景图','image',p.scene?zoomBtn('scene'):'',picBox('scene',sceneUrl(p),p.title+' 场景图'))+
    panel('数学模型','math',mp.length?zoomBtn('math'):'','<div class="panel-math">'+math+'</div>')+
    panel('问题描述','text',switcher,'<div class="descpanel" id="description-text"></div>')+'</div>'+
-   '<div class="case-nav"><a href="'+param(route('domain',p.domainId))+'">返回'+esc(p.domain)+'目录</a></div></div>';
+   '<div class="case-nav"><a href="'+param(route('domain',p.domainId))+'">返回'+esc(p.domain)+'目录</a></div>'+paperReference(p)+'</div>';
  descriptionMode('symbolic');
 }
 function miss(){currentProblem=null;main.innerHTML='<div class="wrap page"><h1>未找到此条目</h1><a class="route-link" href="#/">返回资料库</a></div>'}
