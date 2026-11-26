@@ -1,8 +1,17 @@
 (() => {
 'use strict';
 const host=document.querySelector('#content');
-const cases=new Map(window.ORTOPIA_SIMULATIONS.map(p=>[p.id,p]));
 const ids=window.ORTOPIA_REPLAY_IDS;
+const sceneByProblem=new Map();
+for(const sections of Object.values(window.ORTOPIA_SUBDOMAINS)){
+ for(const section of sections){
+  for(const id of section.ids)sceneByProblem.set(id,section);
+ }
+}
+const cases=new Map(window.ORTOPIA_SIMULATIONS.map(p=>{
+ const scene=sceneByProblem.get(p.id);
+ return [p.id,{...p,sceneId:scene?.key??p.domainId,sceneName:scene?.label??p.domain}];
+}));
 const q=id=>document.getElementById(id);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const num=v=>typeof v==='number'?v.toLocaleString('zh-CN',{maximumFractionDigits:6}):String(v??'');
@@ -116,11 +125,11 @@ const sceneGroups=new Map();
 for(const id of ids){
  const p=cases.get(id);
  if(!p)continue;
- if(!sceneGroups.has(p.domainId))sceneGroups.set(p.domainId,{name:p.domain,items:[]});
- sceneGroups.get(p.domainId).items.push(p);
+ if(!sceneGroups.has(p.sceneId))sceneGroups.set(p.sceneId,{name:p.sceneName,domainId:p.domainId,items:[]});
+ sceneGroups.get(p.sceneId).items.push(p);
 }
 function categoryLink(p){
- return '<a href="index.html#scene/'+encodeURIComponent(p.domainId)+'">'+esc(p.domain)+'</a>';
+ return '<a href="index.html#scene/'+encodeURIComponent(p.sceneId)+'">'+esc(p.sceneName)+'</a>';
 }
 function simulationList(items){
  return '<ul class="sim-list">'+items.map(p=>'<li><a href="replay.html#'+p.id+'"><small>'+p.id+'</small><span>'+esc(p.title)+'</span><i aria-hidden="true">→</i></a></li>').join('')+'</ul>';
@@ -129,23 +138,19 @@ function directory(key){
  const group=sceneGroups.get(key);
  document.title=(group?group.name+' · ':'')+'实例仿真 · ORtopia';
  if(!group){
-  host.innerHTML='<div class="wrap replay-page sim-directory"><header class="replay-heading"><h1>实例仿真</h1><p>'+sceneGroups.size+' 类业务场景 · '+ids.length+' 个仿真实例</p></header><nav class="scene-groups" aria-label="按场景选择实例">'+[...sceneGroups].map(([id,g])=>'<a href="#scene/'+encodeURIComponent(id)+'"><strong>'+esc(g.name)+'</strong><span>'+g.items.length+' 个实例　→</span></a>').join('')+'</nav></div>';
+  host.innerHTML='<div class="wrap replay-page sim-directory"><header class="replay-heading"><h1>实例仿真</h1><p>'+sceneGroups.size+' 类业务场景 · '+ids.length+' 个仿真实例</p></header><nav class="scene-groups" aria-label="按场景选择实例">'+[...sceneGroups].sort((a,b)=>a[1].domainId.localeCompare(b[1].domainId)).map(([id,g])=>'<a href="#scene/'+encodeURIComponent(id)+'"><strong>'+esc(g.name)+'</strong><span>'+g.items.length+' 个实例　→</span></a>').join('')+'</nav></div>';
   return;
  }
- const sections=window.ORTOPIA_SUBDOMAINS?.[key]||[],used=new Set();
- const blocks=sections.map(s=>{
-  const items=group.items.filter(p=>s.ids.includes(p.id)&&!used.has(p.id));
-  items.forEach(p=>used.add(p.id));
-  return items.length?'<section><h2>'+esc(s.label)+' <small>'+items.length+'</small></h2>'+simulationList(items)+'</section>':'';
- });
- const rest=group.items.filter(p=>!used.has(p.id));
- if(rest.length)blocks.push(simulationList(rest));
- host.innerHTML='<div class="wrap replay-page sim-directory"><div class="replay-breadcrumb"><a href="index.html">实例仿真</a> / '+esc(group.name)+'</div><header class="replay-heading"><h1>'+esc(group.name)+'</h1><p>'+group.items.length+' 个实例</p></header>'+blocks.join('')+'</div>';
+ host.innerHTML='<div class="wrap replay-page sim-directory"><div class="replay-breadcrumb"><a href="index.html">实例仿真</a> / '+esc(group.name)+'</div><header class="replay-heading"><h1>'+esc(group.name)+'</h1><p>'+group.items.length+' 个实例</p></header>'+simulationList(group.items)+'</div>';
 }
 async function openPage(){
  const token=++renderToken;window.ORTOPIA_FIELD_PLAYER.close();stop();leaveTheater();data=null;elapsed=0;finished=false;svgRoots=[];cssTracks=[];
  let route=location.hash.slice(1);
- if(route.startsWith('scene/')){directory(route.slice(6));window.scrollTo(0,0);return;}
+ if(route.startsWith('scene/')){
+  const key=route.slice(6);
+  if(!sceneGroups.has(key))history.replaceState(null,'',location.pathname+location.search);
+  directory(key);window.scrollTo(0,0);return;
+ }
  if(route.startsWith('/problem/'))route=route.slice(9);
  else if(route.startsWith('/')||route==='content')route='';
  if(!route){directory();return;}
@@ -181,7 +186,7 @@ function shell(p){
  if(r.schedule?.events?.length)modes.push(['schedule','资源排程']);
  if(r.trend?.points?.length)modes.push(['trend',r.trend.label||'指标变化']);
  host.innerHTML='<div class="wrap replay-page world-page'+(labs[p.id]?' has-planning-lab':'')+'"><div class="replay-breadcrumb">'+rootLink+' / '+categoryLink(p)+'</div>'+
- '<div class="replay-heading"><div class="replay-meta">'+p.id+' · '+esc(p.domain)+' · '+esc(r.instance)+'</div><h1>'+esc(decisionUI.questions[p.id]||r.title||p.title)+'</h1><p>'+esc(labs[p.id]?.description||r.description)+'</p></div>'+
+ '<div class="replay-heading"><div class="replay-meta">'+p.id+' · '+esc(p.sceneName)+' · '+esc(r.instance)+'</div><h1>'+esc(decisionUI.questions[p.id]||r.title||p.title)+'</h1><p>'+esc(labs[p.id]?.description||r.description)+'</p></div>'+
  '<div class="replay-layout"><section class="replay-console"><div class="board-head"><strong id="live-title">实例现场</strong><div class="mode-switch">'+modes.map(([k,v])=>'<button data-mode="'+k+'" aria-pressed="'+(k===mode)+'">'+esc(v)+'</button>').join('')+'</div></div>'+
  '<div id="world-viewport" tabindex="0" aria-label="仿真现场，可在近看时滚动"><div id="stage"></div></div><div class="motion-meter" aria-hidden="true"><i id="motion-progress"></i></div><div class="play-controls"><div class="play-row"><button id="prev" aria-label="上一步">←</button><button id="play">▶ 播放</button><button id="next" aria-label="下一步">→</button><button id="repeat-step" title="从头回放当前一步">重播本步</button><label class="speed"><select id="rate" aria-label="播放速度"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label><button type="button" id="closer" aria-pressed="false">近看</button><button type="button" id="theater" aria-pressed="false">放大现场</button><span id="step-count"></span></div><input id="scrub" aria-label="仿真步数" type="range" min="1" max="'+r.steps.length+'" value="1"></div></section>'+
  '<aside class="replay-detail">'+(labs[p.id]?'<h2 class="reference-heading">原解逐步对照</h2>':'')+'<div class="decision-card" id="step-info" aria-live="polite"></div><details class="world-source"><summary>查看本步数据与场景说明</summary><div id="step-record"></div><p id="layout-note"></p></details></aside></div>'+
