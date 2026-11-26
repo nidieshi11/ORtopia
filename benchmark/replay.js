@@ -164,12 +164,10 @@ function directory(key){
  document.title=(group?group.name+' · ':'')+'实例仿真 · ORtopia';
  if(!group){
   const groups=[...sceneGroups].sort((a,b)=>a[1].domainId.localeCompare(b[1].domainId));
-  const largest=Math.max(1,...groups.map(([,scene])=>scene.items.length));
   const links=groups.map(([id,scene])=>{
    const count=scene.items.length;
    return `<a href="#scene/${encodeURIComponent(id)}">
      <strong>${esc(scene.name)}</strong>
-     <i class="scene-meter" aria-hidden="true" style="--share:${count/largest}"></i>
      <span class="scene-count">${count} 个实例</span>
      <i class="scene-chevron" aria-hidden="true"></i>
     </a>`;
@@ -177,7 +175,7 @@ function directory(key){
   host.innerHTML=`<div class="wrap replay-page sim-directory scene-index">
     <header class="replay-heading">
      <h1>实例仿真</h1>
-     <p><span><b>${groups.length}</b> 类业务场景</span><span><b>${ids.length}</b> 个仿真实例</span></p>
+     <p>${groups.length} 类业务场景 · ${ids.length} 个仿真实例</p>
     </header>
     <nav class="scene-groups" aria-label="按场景选择实例">${links}</nav>
    </div>`;
