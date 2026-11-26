@@ -82,7 +82,7 @@ function paperReference(p){
   '<h2 id="reference-heading">参考文献 <span>'+esc(p.id)+'</span></h2>'+
   '<p><span lang="en">'+esc(p.citation)+'</span>'+(doi?' '+doi:'')+'</p></section>';
 }
-function mountSceneCarousel(container,referenceContainer){
+function mountSceneCarousel(container){
  const count=featuredScenes.length;
  if(!count)return;
  container.innerHTML=`<section class="scene-carousel" aria-label="场景选读" aria-roledescription="轮播">
@@ -124,7 +124,6 @@ function mountSceneCarousel(container,referenceContainer){
   title.textContent=problem.title;
   meta.textContent=problem.domain+' · '+problem.id;
   position.textContent=(featuredIndex+1)+' / '+count;
-  referenceContainer.innerHTML=paperReference(problem);
  }
  function schedule(){
   clearTimeout(timer);
@@ -132,7 +131,7 @@ function mountSceneCarousel(container,referenceContainer){
   play.textContent=rotate?'暂停':'播放';
   play.setAttribute('aria-label',rotate?'暂停自动轮播':'开启自动轮播');
   position.setAttribute('aria-live',rotate?'off':'polite');
-  if(count>1&&rotate&&section.isConnected&&!document.hidden&&!referenceContainer.contains(document.activeElement)){
+  if(count>1&&rotate&&section.isConnected&&!document.hidden){
    timer=setTimeout(()=>{show(featuredIndex+1);schedule();},sceneRotationMs);
   }
  }
@@ -147,9 +146,6 @@ function mountSceneCarousel(container,referenceContainer){
   if(e.key==='ArrowLeft'||e.key==='ArrowRight'){e.preventDefault();step(e.key==='ArrowLeft'?-1:1);}
  };
  section.querySelector('.scene-controls').hidden=count<2;
- // Keep the DOI under keyboard focus stable until the reader leaves the reference.
- referenceContainer.addEventListener('focusin',schedule,options);
- referenceContainer.addEventListener('focusout',()=>queueMicrotask(schedule),options);
  document.addEventListener('visibilitychange',schedule,options);
  reduced.addEventListener('change',schedule,options);
  closeCarousel=()=>{clearTimeout(timer);events.abort();};
@@ -166,8 +162,8 @@ function domainsPage(){
    rows.length+' 道问题 · '+topicCount+' 个子类</span></span><span class="chev" aria-hidden="true"></span></a>';
  }).join('');
  main.innerHTML='<div class="wrap page" id="domain-index"><div class="domain-head"><h1>领域目录</h1>'+
-  '<p class="muted">'+domains.length+' 个领域 · '+probs.length+' 道问题</p></div><div id="featured-scenes"></div><div class="domains-grid">'+cards+'</div><div id="featured-reference"></div></div>';
- mountSceneCarousel(E('featured-scenes'),E('featured-reference'));
+  '<p class="muted">'+domains.length+' 个领域 · '+probs.length+' 道问题</p></div><div id="featured-scenes"></div><div class="domains-grid">'+cards+'</div></div>';
+ mountSceneCarousel(E('featured-scenes'));
 }
 function libraryPage(){
  document.title='论文集 · ORtopia';
@@ -262,12 +258,13 @@ function detailPage(id){
  const paper=p.pdf
    ? '<a class="tool" href="'+param(p.pdf)+'" target="_blank" rel="noopener">'+ico('pdf')+'论文 PDF</a>'+
      '<a class="tool" download="'+esc(p.pdfName||s(p.paperTitle)+'.pdf')+'" href="'+param(p.pdf)+'">下载论文</a>' : '';
+ const publisher=p.doiUrl?'<a class="tool" href="'+param(p.doiUrl)+'" target="_blank" rel="noopener">期刊官网</a>':'';
  const metadata='<strong>'+esc(p.journal||p.journalShort)+'</strong><span>'+esc(p.year)+'</span>'+
    groupOf(p).map(k=>'<span class="badge">'+esc(seriesNames[k]||k)+'</span>').join('');
  main.innerHTML='<div class="wrap page">'+headings+
    '<header class="case-head"><div class="tagline"><span class="serial">'+esc(p.id)+'</span><span class="pill">'+esc(p.domain)+'</span></div>'+
    '<h1>'+esc(p.title)+'</h1><a class="catalog-topic" href="'+param(topicLink(p.domainId,p.topic))+'">'+esc(p.topic)+'</a><p class="eng-title">'+esc(p.paperTitle)+'</p>'+
-   '<div class="bar"><div class="pmeta">'+metadata+'</div><div class="doc-actions">'+replay+paper+'</div></div></header>'+
+   '<div class="bar"><div class="pmeta">'+metadata+'</div><div class="doc-actions">'+replay+paper+publisher+'</div></div></header>'+
    '<div class="case-grid">'+
    panel('场景图','image',p.scene?zoomBtn('scene'):'',picBox('scene',sceneUrl(p),p.title+' 场景图'))+
    panel('数学模型','math',mp.length?zoomBtn('math'):'','<div class="panel-math">'+math+'</div>')+
