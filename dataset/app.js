@@ -258,12 +258,13 @@ function detailPage(id){
  const paper=p.pdf
    ? '<a class="tool" href="'+param(p.pdf)+'" target="_blank" rel="noopener">'+ico('pdf')+'查看 PDF</a>' : '';
  const publisher=p.doiUrl?'<a class="tool" href="'+param(p.doiUrl)+'" target="_blank" rel="noopener">期刊官网</a>':'';
+ const source=p.sourceUrl?'<a class="tool" href="'+param(p.sourceUrl)+'" target="_blank" rel="noopener" title="私有仓库，需使用有访问权限的 GitHub 账号">GitHub 题目目录</a>':'';
  const metadata='<strong>'+esc(p.journal||p.journalShort)+'</strong><span>'+esc(p.year)+'</span>'+
    groupOf(p).map(k=>'<span class="badge">'+esc(seriesNames[k]||k)+'</span>').join('');
  main.innerHTML='<div class="wrap page">'+headings+
    '<header class="case-head"><div class="tagline"><span class="serial">'+esc(p.id)+'</span><span class="pill">'+esc(p.domain)+'</span></div>'+
    '<h1>'+esc(p.title)+'</h1><a class="catalog-topic" href="'+param(topicLink(p.domainId,p.topic))+'">'+esc(p.topic)+'</a><p class="eng-title">'+esc(p.paperTitle)+'</p>'+
-   '<div class="bar"><div class="pmeta">'+metadata+'</div><div class="doc-actions">'+replay+paper+publisher+'</div></div></header>'+
+   '<div class="bar"><div class="pmeta">'+metadata+'</div><div class="doc-actions">'+replay+paper+publisher+source+'</div></div></header>'+
    '<div class="case-grid">'+
    panel('场景图','image',p.scene?zoomBtn('scene'):'',picBox('scene',sceneUrl(p),p.title+' 场景图'))+
    panel('数学模型','math',mp.length?zoomBtn('math'):'','<div class="panel-math">'+math+'</div>')+
@@ -338,7 +339,7 @@ function changeZoom(direction){
 window.addEventListener('resize',()=>{if(E('viewer').open)applyZoom()});
 document.addEventListener('click',e=>{const el=e.target.closest('[data-close],[data-view],[data-description],#hits a,dialog,nav a,.brand');if(!el)return;
  if(el.dataset.description){descriptionMode(el.dataset.description);return}if(el.dataset.close){E(el.dataset.close).close();return}if(el.dataset.view){view(el.dataset.view,+(el.dataset.page||0));return}if(el.matches('#hits a'))E('search-modal').close();if(el.tagName==='DIALOG'&&e.target===el){const r=el.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)el.close()}
- if((el.matches('nav a')||el.matches('.brand'))&&el.hash===location.hash)render();
+ if((el.matches('nav a')||el.matches('.brand'))&&el.origin===location.origin&&el.hash===location.hash)render();
 });
 E('zoom-in').onclick=()=>changeZoom(1);E('zoom-out').onclick=()=>changeZoom(-1);E('zoom-fit').onclick=()=>changeZoom(0);E('open-search').onclick=search;E('lookup').addEventListener('input',lookup);
 document.addEventListener('keydown',e=>{if((e.key==='/'||((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'))&&!['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)&&!E('viewer').open){e.preventDefault();search()}if(e.key==='Enter'&&e.target===E('lookup')){const a=E('hits').querySelector('a');if(a){e.preventDefault();a.click()}}});
