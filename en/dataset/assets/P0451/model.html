@@ -1,0 +1,371 @@
+<!DOCTYPE html> 
+<html lang='en-US' xml:lang='en-US'> 
+<head><title>P0451 · Shared Automated Electric Vehicle Dispatch and Customer Assignment · Mathematical model</title> 
+<meta charset='utf-8' /> 
+<meta content='TeX4ht (https://tug.org/tex4ht/)' name='generator' /> 
+<meta content='width=device-width,initial-scale=1' name='viewport' /> 
+<style> 
+/* start css.sty */
+.cmr-5{font-size:50%;}
+.cmr-7{font-size:70%;}
+.cmmi-5{font-size:50%;font-style: italic;}
+.cmmi-7{font-size:70%;font-style: italic;}
+.cmmi-10{font-style: italic;}
+.cmsy-5{font-size:50%;}
+.cmsy-7{font-size:70%;}
+.cmbx-10{ font-weight: bold;}
+.cmbsy-10{font-weight: bold;}
+.cmbsy-10{font-weight: bold;}
+.cmbsy-10{font-weight: bold;}
+.cmbsy-7{font-size:70%;font-weight: bold;}
+.cmbsy-7{font-weight: bold;}
+.cmbsy-7{font-weight: bold;}
+.cmbsy-5{font-size:50%;font-weight: bold;}
+.cmbsy-5{font-weight: bold;}
+.cmbsy-5{font-weight: bold;}
+.cmex-7{font-size:70%;}
+.cmex-7x-x-71{font-size:49%;}
+.msam-7{font-size:70%;}
+.msam-5{font-size:50%;}
+.msbm-7{font-size:70%;}
+.msbm-5{font-size:50%;}
+.cmti-10{ font-style: italic;}
+p{margin-top:0;margin-bottom:0}
+p.indent{text-indent:0;}
+p + p{margin-top:1em;}
+p + div, p + pre {margin-top:1em;}
+div + p, pre + p {margin-top:1em;}
+a { overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; hyphens: auto; }
+@media print {div.crosslinks {visibility:hidden;}}
+table.tabular{border-collapse: collapse; border-spacing: 0;}
+a img { border-top: 0; border-left: 0; border-right: 0; }
+center { margin-top:1em; margin-bottom:1em; }
+td center { margin-top:0em; margin-bottom:0em; }
+.Canvas { position:relative; }
+math { text-indent: 0em; }
+body{ margin:1em auto; max-width:80ch; padding:0 .62em; }
+h1,h2,h3,h4,h5 { line-height:1.2; }
+@media print{ body{ max-width:none } }
+.partHead, .likepartHead { font-size: 2em; }
+.chapterHead, .likechapterHead { font-size: 1.7411em; }
+.sectionHead, .likesectionHead { font-size: 1.5157em; }
+.subsectionHead, .likesubsectionHead { font-size: 1.3195em; }
+.subsubsectionHead, .likesubsubsectionHead { font-size: 1.1487em; }
+ @media (prefers-color-scheme: dark) { img[src^="model"]{filter: invert(1); } } 
+li p.indent { text-indent: 0em }
+li p:first-child{ margin-top:0em; }
+li p:last-child, li div:last-child { margin-bottom:0.5em; }
+li p:first-child{ margin-bottom:0; }
+li p~ul:last-child, li p~ol:last-child{ margin-bottom:0.5em; }
+.enumerate1 {list-style-type:decimal;}
+.enumerate2 {list-style-type:lower-alpha;}
+.enumerate3 {list-style-type:lower-roman;}
+.enumerate4 {list-style-type:upper-alpha;}
+div.newtheorem { margin-bottom: 2em; margin-top: 2em;}
+div.newtheorem .head{font-weight: bold;}
+.obeylines-h,.obeylines-v {white-space: nowrap; }
+div.obeylines-v p { margin-top:0; margin-bottom:0; }
+.overline{ text-decoration:overline; }
+.overline img{ border-top: 1px solid black; }
+td.displaylines {text-align:center; white-space:nowrap;}
+.centerline {text-align:center;}
+.rightline {text-align:right;}
+pre.verbatim {font-family: monospace,monospace; text-align:left; clear:both; }
+.fbox {padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+div.fbox {display:table}
+div.center div.fbox {text-align:center; clear:both; padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+div.minipage{width:100%;}
+div.center, div.center div.center {text-align: center; margin-left:1em; margin-right:1em;}
+div.center div {text-align: left;}
+div.flushright, div.flushright div.flushright {text-align: right;}
+div.flushright div {text-align: left;}
+div.flushleft {text-align: left;}
+.underline{ text-decoration:underline; }
+.underline img{ border-bottom: 1px solid black; margin-bottom:1pt; }
+.framebox-c, .framebox-l, .framebox-r { padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+.framebox-c {text-align:center;}
+.framebox-l {text-align:left;}
+.framebox-r {text-align:right;}
+span.thank-mark{ vertical-align: super }
+span.footnote-mark sup.textsuperscript, span.footnote-mark a sup.textsuperscript{ font-size:80%; }
+code.verb{font-family:monospace,monospace;}
+div.tabular, div.center div.tabular {text-align: center; margin-top:0.5em; margin-bottom:0.5em; }
+table.tabular td p{margin-top:0em;}
+table.tabular {margin-left: auto; margin-right: auto;}
+td p:first-child{ margin-top:0em; }
+td p:last-child{ margin-bottom:0em; }
+div.td00{ margin-left:0pt; margin-right:0pt; }
+div.td01{ margin-left:0pt; margin-right:5pt; }
+div.td10{ margin-left:5pt; margin-right:0pt; }
+div.td11{ margin-left:5pt; margin-right:5pt; }
+table[rules] {border-left:solid black 0.4pt; border-right:solid black 0.4pt; }
+td.td00{ padding-left:0pt; padding-right:0pt; }
+td.td01{ padding-left:0pt; padding-right:5pt; }
+td.td10{ padding-left:5pt; padding-right:0pt; }
+td.td11{ padding-left:5pt; padding-right:5pt; }
+table[rules] {border-left:solid black 0.4pt; border-right:solid black 0.4pt; }
+.hline hr, .cline hr{ height : 0px; margin:0px; }
+.hline td, .cline td{ padding: 0; }
+.hline hr, .cline hr{border:none;border-top:1px solid black;}
+.hline {border-top: 1px solid black;}
+.hline + .vspace:last-child{display:none;}
+.hline:first-child{border-bottom:1px solid black;border-top:none;}
+.tabbing-right {text-align:right;}
+div.float, div.figure {margin-left: auto; margin-right: auto;}
+div.float img {text-align:center;}
+div.figure img {text-align:center;}
+.marginpar,.reversemarginpar {width:20%; float:right; text-align:left; margin-left:auto; margin-top:0.5em; font-size:85%; text-decoration:underline;}
+.marginpar p,.reversemarginpar p{margin-top:0.4em; margin-bottom:0.4em;}
+.reversemarginpar{float:left;}
+.equation td{text-align:center; vertical-align:middle; }
+td.eq-no{ width:5%; }
+table.equation { width:100%; } 
+div.math-display, div.par-math-display{text-align:center;}
+.array-hline,.array-cline{ border-top: 1px solid black; height:0px; }
+.array-hline + .array-vspace:last-child{display:none;}
+.hline-mtd, .array-hline td{ display:none }
+.array-hline + .array-row:last-child{display:none;}
+.array-hline:first-child{border-bottom:1px solid black;border-top:none;}
+math .texttt { font-family: monospace; }
+math .textit { font-style: italic; }
+math .textsl { font-style: oblique; }
+math .textsf { font-family: sans-serif; }
+math .textbf { font-weight: bold; }
+mo.MathClass-op + mi{margin-left:0.3em}
+mi + mo.MathClass-op{margin-left:0.3em}
+ math mstyle[mathvariant="bold"] { font-weight: bold; font-style: normal; } 
+ math mstyle[mathvariant="normal"] { font-weight: normal; font-style: normal; } 
+.partToc a, .partToc, .likepartToc a, .likepartToc {line-height: 200%; font-weight:bold; font-size:110%;}
+.index-item, .index-subitem, .index-subsubitem {display:block}
+div.caption {text-indent:-2em; margin-left:3em; margin-right:1em; text-align:left;}
+div.caption span.id{font-weight: bold; white-space: nowrap; }
+h1.partHead{text-align: center}
+p.bibitem { text-indent: -2em; margin-left: 2em; margin-top:0.6em; margin-bottom:0.6em; }
+p.bibitem-p { text-indent: 0em; margin-left: 2em; margin-top:0.6em; margin-bottom:0.6em; }
+.subsubsectionHead, .likesubsubsectionHead { font-size: 1em; }
+.paragraphHead, .likeparagraphHead { margin-top:2em; font-weight: bold;}
+.subparagraphHead, .likesubparagraphHead { font-weight: bold;}
+.verse{white-space:nowrap; margin-left:2em}
+div.maketitle {text-align:center;}
+h2.titleHead{text-align:center;}
+div.maketitle{ margin-bottom: 2em; }
+div.author, div.date {text-align:center;}
+div.thanks{text-align:left; margin-left:10%; font-size:85%; font-style:italic; }
+div.author{white-space: nowrap;}
+div.abstract p {margin-left:5%; margin-right:5%;}
+div.abstract {width:100%;}
+.abstracttitle{text-align:center;margin-bottom:1em;}
+.subsectionToc, .likesubsectionToc {margin-left:1em;}
+.subsubsectionToc, .likesubsubsectionToc {margin-left:2em;}
+.paragraphToc, .likeparagraphToc {margin-left:3em;}
+.subparagraphToc, .likesubparagraphToc {margin-left:4em;}
+figure.float, div.figure {margin-left: auto; margin-right: auto;}
+figure.figure {text-align:center;}
+figcaption.caption {text-indent:-2em; margin-left:3em; margin-right:1em; text-align:center;}
+figcaption.caption span.id{font-weight: bold; white-space: nowrap; }
+p + figcaption, img + figcaption{margin-top: 1em;}
+.abstract{margin:1em;}
+.equation-star td{text-align:center; vertical-align:middle; }
+table.equation-star { width:100%; } 
+.boxed{border: 1px solid black; padding-left:2px; padding-right:2px;}
+mtd.align-odd{margin-left:2em; text-align:right;}
+mtd.align-even{margin-right:2em; text-align:left;}
+/* end css.sty */
+
+
+html{background:#fff;color:#243833}body{padding:clamp(.55rem,2vw,1.25rem);margin:0;line-height:1.5;overflow-wrap:break-word}
+h1,h2,h3,h4,h5,h6{line-height:1.22;color:#193d35}p{margin:.5rem 0}math[display=block]{overflow-x:auto;max-width:100%}
+@media print{body{padding:0;color:#000}}
+</style> 
+<meta content='model.tex' name='src' /> 
+</head><body>
+<!-- l. 6 --><p class='noindent'>
+</p><!-- tex4ht:inline --><!-- l. 15 --><math display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mtable class='align' columnalign='left' displaystyle='true'>
+        <mtr><mtd class='align-odd' columnalign='right'><mstyle class='text'><mtext>Minimize</mtext></mstyle><mspace class='quad' width='1em'></mspace></mtd>        <mtd class='align-even'><mi>V</mi> <munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>c</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mstyle mathvariant='script'><mi>N</mi></mstyle></mrow><mrow><mstyle mathvariant='normal'><mi>C</mi></mstyle></mrow></msub></mrow></munder><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>v</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mstyle mathvariant='script'><mi>N</mi></mstyle></mrow><mrow><mstyle mathvariant='normal'><mi>V</mi></mstyle></mrow></msub></mrow></munder><msub><mrow><mi>C</mi></mrow><mrow><mi mathvariant='italic'>vc</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo><msub><mrow><mi>y</mi></mrow><mrow><mi mathvariant='italic'>vc</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-bin' stretchy='false'>−</mo><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>c</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mstyle mathvariant='script'><mi>N</mi></mstyle></mrow><mrow><mstyle mathvariant='normal'><mi>C</mi></mstyle></mrow></msub></mrow></munder><msub><mrow><mi>H</mi></mrow><mrow><mi>c</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>v</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mstyle mathvariant='script'><mi>N</mi></mstyle></mrow><mrow><mstyle mathvariant='normal'><mi>V</mi></mstyle></mrow></msub></mrow></munder><msub><mrow><mi>y</mi></mrow><mrow><mi mathvariant='italic'>vc</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo><mspace width='2em'></mspace></mtd>                <mtd class='align-odd' columnalign='right'></mtd>                      <mtd class='align-even'><mspace width='2em'></mspace></mtd>        <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(3)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-6r0'></mstyle><!-- endlabel -->
+        </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><mstyle class='text'><mtext>s.t.</mtext></mstyle><mspace class='quad' width='1em'></mspace></mtd>             <mtd class='align-even'><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>c</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mstyle mathvariant='script'><mi>N</mi></mstyle></mrow><mrow><mstyle mathvariant='normal'><mi>C</mi></mstyle></mrow></msub></mrow></munder><msub><mrow><mi>y</mi></mrow><mrow><mi mathvariant='italic'>vc</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>≤</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                                             <mtd class='align-odd' columnalign='right'></mtd>        <mtd class='align-even'><mi>v</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mstyle mathvariant='script'><mi>N</mi></mstyle></mrow><mrow><mstyle mathvariant='normal'><mi>V</mi></mstyle></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                                       <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(4)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-7r0'></mstyle><!-- endlabel -->
+        </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>                <mtd class='align-even'><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>v</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mstyle mathvariant='script'><mi>N</mi></mstyle></mrow><mrow><mstyle mathvariant='normal'><mi>V</mi></mstyle></mrow></msub></mrow></munder><msub><mrow><mi>y</mi></mrow><mrow><mi mathvariant='italic'>vc</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>≤</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                                             <mtd class='align-odd' columnalign='right'></mtd>        <mtd class='align-even'><mi>c</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mstyle mathvariant='script'><mi>N</mi></mstyle></mrow><mrow><mstyle mathvariant='normal'><mi>C</mi></mstyle></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                                       <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(5)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-8r0'></mstyle><!-- endlabel -->
+        </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>                <mtd class='align-even'><msub><mrow><mi>y</mi></mrow><mrow><mi mathvariant='italic'>vc</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>∈</mo><mo class='MathClass-open' stretchy='false'>{</mo><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>}</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                                                  <mtd class='align-odd' columnalign='right'></mtd>        <mtd class='align-even'><mi>c</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mstyle mathvariant='script'><mi>N</mi></mstyle></mrow><mrow><mstyle mathvariant='normal'><mi>C</mi></mstyle></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><mi>v</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mstyle mathvariant='script'><mi>N</mi></mstyle></mrow><mrow><mstyle mathvariant='normal'><mi>V</mi></mstyle></mrow></msub><mo class='MathClass-punc' stretchy='false'>.</mo><mspace width='2em'></mspace></mtd>                                <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(6)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-9r0'></mstyle><!-- endlabel -->
+   </mtd></mtr></mtable></math>
+<!-- l. 17 --><p class='noindent'><span class='paragraphHead' id='pertimestep-inputs-and-decisions'><a id='x1-1000'></a><span class='cmbx-10'>Per-time-step inputs and decisions.</span></span>
+   At every time step <!-- l. 18 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>t</mi></math>,
+the operator observes </p><table class='equation-star'><tr><td>
+<!-- l. 19 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                                  <mstyle mathvariant='bold'><mi>H</mi></mstyle><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>≡</mo><mo class='MathClass-open' stretchy='false'>{</mo><msub><mrow><mi>H</mi></mrow><mrow><mi>c</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-punc' stretchy='false'>:</mo> <mi>c</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mstyle mathvariant='script'><mi>N</mi></mstyle></mrow><mrow><mstyle mathvariant='normal'><mi>C</mi></mstyle></mrow></msub><mo class='MathClass-close' stretchy='false'>}</mo>
+</mrow></math></td></tr></table>
+<!-- l. 22 --><p class='indent'>   and solves (3)–(6). The fixed penalty constant satisfies </p><table class='equation-star'><tr><td>
+<!-- l. 23 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                                          <mi>V</mi> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+
+<!-- l. 26 --><p class='indent'>   Here <!-- l. 26 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>H</mi></mrow><mrow><mi>c</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math>
+is the observed waiting time of the head-of-line (HOL) customer at customer-charge node
+<!-- l. 26 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>c</mi></math>, and
+<!-- l. 26 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>C</mi></mrow><mrow><mi mathvariant='italic'>vc</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math> is the estimated dispatch cost at
+time <!-- l. 26 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>t</mi></math>. These are inputs, not decision
+variables in (3)–(6). The decision <!-- l. 26 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>y</mi></mrow><mrow><mi mathvariant='italic'>vc</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math>
+equals <!-- l. 26 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mn>1</mn></math> if vehicle
+<!-- l. 26 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>v</mi></math> is assigned to serve the
+HOL customer at node <!-- l. 26 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>c</mi></math>
+at time <!-- l. 26 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>t</mi></math>, and
+<!-- l. 26 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mn>0</mn></math> otherwise.
+Constraint (4) permits at most one customer per vehicle; (5) permits at most one vehicle per customer node. The
+case <!-- l. 26 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>V</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn></mrow></math> is
+retained as printed.
+</p>
+<!-- l. 28 --><p class='noindent'><span class='paragraphHead' id='network-availability-and-charginginclusive-costs'><a id='x1-2000'></a><span class='cmbx-10'>Network, availability, and charging-inclusive costs.</span></span>
+   The car-sharing graph is </p><table class='equation-star'><tr><td>
+<!-- l. 30 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                                     <mstyle mathvariant='script'><mi>G</mi></mstyle> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mstyle mathvariant='script'><mi>N</mi></mstyle></mrow><mrow><mstyle mathvariant='normal'><mi>C</mi></mstyle></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mstyle mathvariant='script'><mi>N</mi></mstyle></mrow><mrow><mstyle mathvariant='normal'><mi>V</mi></mstyle></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mstyle mathvariant='script'><mi>A</mi></mstyle><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>,</mo>
+</mrow></math></td></tr></table>
+<!-- l. 33 --><p class='indent'>   where <!-- l. 33 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mstyle mathvariant='script'><mi>N</mi></mstyle></mrow><mrow><mstyle mathvariant='normal'><mi>C</mi></mstyle></mrow></msub></math> and
+<!-- l. 33 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mstyle mathvariant='script'><mi>N</mi></mstyle></mrow><mrow><mstyle mathvariant='normal'><mi>V</mi></mstyle></mrow></msub></math> are the customer and vehicle
+node sets, respectively, and <!-- l. 33 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mstyle mathvariant='script'><mi>A</mi></mstyle></math>
+is the arc set. A customer node is a geographic zone with a specific charge level; a zone can have multiple customer
+nodes with different charge levels. The five charge levels in the paper’s Fig. 1 are an example, not fixed data for
+(3)–(6).
+</p><!-- l. 35 --><p class='indent'>   An arc from <!-- l. 35 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>v</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mstyle mathvariant='script'><mi>N</mi></mstyle></mrow><mrow><mstyle mathvariant='normal'><mi>V</mi></mstyle></mrow></msub></mrow></math>
+to <!-- l. 35 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>c</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mstyle mathvariant='script'><mi>N</mi></mstyle></mrow><mrow><mstyle mathvariant='normal'><mi>C</mi></mstyle></mrow></msub></mrow></math> exists
+only when <!-- l. 35 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>v</mi></math> is
+idle. A vehicle is idle whenever it is not assigned to a customer; a charging vehicle can therefore be idle. Once
+assigned, a vehicle remains committed while driving to the customer and carrying that customer to the destination;
+the assignment is not changed upon a new vehicle becoming available or a new customer arriving. Vehicles
+dropping customers off in zones with charging stations are assumed to connect automatically to chargers.
+Vehicles dropping customers off in zones without charging stations remain at the drop-off location until
+reassigned.
+</p><!-- l. 37 --><p class='indent'>   For <!-- l. 37 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mo class='MathClass-open' stretchy='false'>(</mo><mi>v</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>c</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>∈</mo><mstyle mathvariant='script'><mi>A</mi></mstyle></mrow></math>,
+<!-- l. 37 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>C</mi></mrow><mrow><mi mathvariant='italic'>vc</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math> is the travel
+time from <!-- l. 37 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>v</mi></math> to
+<!-- l. 37 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>c</mi></math>,
+including the required charging time when charging is needed before customer
+pickup. The cost description on physical page 4 distinguishes the following cases: if
+<!-- l. 37 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>v</mi></math> has enough charge to serve
+
+customer-charge node <!-- l. 37 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>c</mi></math>
+and then reach the nearest charging station after drop-off, the arc weight is the travel time; otherwise it is the travel time plus the
+required time to charge <!-- l. 37 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>v</mi></math>.
+No separate algebraic battery-consumption or charging-time formula is supplied for this assignment
+model.
+</p><!-- l. 39 --><p class='indent'>   The arcs represent directed zone-to-zone endpoints, not the physical routes.
+Routes depend on the road topology and real-time traffic conditions. Every vehicle
+<!-- l. 39 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>v</mi></math> is assumed capable
+of assessing <!-- l. 39 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>C</mi></mrow><mrow><mi mathvariant='italic'>vc</mi></mrow></msub></math>
+for every <!-- l. 39 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>c</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mstyle mathvariant='script'><mi>N</mi></mstyle></mrow><mrow><mstyle mathvariant='normal'><mi>C</mi></mstyle></mrow></msub></mrow></math>
+and reporting </p><table class='equation-star'><tr><td>
+<!-- l. 40 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                                        <msub><mrow><mo class='MathClass-open' stretchy='false'>{</mo><msub><mrow><mi>C</mi></mrow><mrow><mi mathvariant='italic'>vc</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>}</mo></mrow><mrow><mi>c</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mstyle mathvariant='script'><mi>N</mi></mstyle></mrow><mrow><mstyle mathvariant='normal'><mi>C</mi></mstyle></mrow></msub></mrow></msub>
+</mrow></math></td></tr></table>
+<!-- l. 43 --><p class='indent'>   to the operator. In the supporting road-network description, </p><table class='equation-star'><tr><td>
+<!-- l. 44 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow>
+                                      <mstyle mathvariant='script'><mi>G</mi></mstyle></mrow><mrow><mstyle mathvariant='normal'><mi>roads</mi></mstyle></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>(</mo><mstyle mathvariant='script'><mi>V</mi> </mstyle><mo class='MathClass-punc' stretchy='false'>,</mo><mstyle mathvariant='script'><mi>L</mi></mstyle><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>,</mo>
+</mrow></math></td></tr></table>
+<!-- l. 47 --><p class='indent'>   <!-- l. 47 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mstyle mathvariant='script'><mi>V</mi> </mstyle></math> is the intersection set
+and <!-- l. 47 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mstyle mathvariant='script'><mi>L</mi></mstyle></math> the road-segment
+set. The paper partitions <!-- l. 47 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mstyle mathvariant='script'><mi>V</mi> </mstyle></math>
+into <!-- l. 47 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mstyle mathvariant='script'><mi>V</mi> </mstyle></mrow><mrow><mstyle mathvariant='normal'><mi>S</mi></mstyle></mrow></msub></math> and
+<!-- l. 47 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mstyle mathvariant='script'><mi>V</mi> </mstyle> <mo class='MathClass-bin' stretchy='false'>∖</mo><msub><mrow><mstyle mathvariant='script'><mi>V</mi> </mstyle></mrow><mrow><mstyle mathvariant='normal'><mi>S</mi></mstyle></mrow></msub></mrow></math>, where
+<!-- l. 47 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mstyle mathvariant='script'><mi>V</mi> </mstyle></mrow><mrow><mstyle mathvariant='normal'><mi>S</mi></mstyle></mrow></msub></math> consists
+of the nearest intersections to charging stations without customers. Without a charging requirement, the costs are
+determined by a single-source shortest-path search. When charging is required, the described path consists of a
+shortest path from the vehicle to a charging station followed by a shortest path from that station to the
+customer, with the station determined during the searches. Costs vary with time and are periodically
+updated; the suggested five-minute update interval is not a fixed model parameter. The road-node set
+<!-- l. 47 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mstyle mathvariant='script'><mi>V</mi> </mstyle></math> is distinct from the
+penalty constant <!-- l. 47 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>V</mi> </mrow></math>.
+
+</p>
+<!-- l. 49 --><p class='noindent'><span class='paragraphHead' id='printed-availability-scope'><a id='x1-3000'></a><span class='cmbx-10'>Printed availability scope.</span></span>
+   Although the graph description permits arcs only from idle vehicles and defines
+<!-- l. 50 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>C</mi></mrow><mrow><mi mathvariant='italic'>vc</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math> as an arc cost, (3)–(6)
+are printed over all <!-- l. 50 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>c</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mstyle mathvariant='script'><mi>N</mi></mstyle></mrow><mrow><mstyle mathvariant='normal'><mi>C</mi></mstyle></mrow></msub></mrow></math>
+and <!-- l. 50 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>v</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mstyle mathvariant='script'><mi>N</mi></mstyle></mrow><mrow><mstyle mathvariant='normal'><mi>V</mi></mstyle></mrow></msub></mrow></math>. They contain no
+explicit restriction to <!-- l. 50 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mo class='MathClass-open' stretchy='false'>(</mo><mi>v</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>c</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>∈</mo><mstyle mathvariant='script'><mi>A</mi></mstyle></mrow></math>,
+no explicit rule for the cost of a nonexistent arc, and no explicit constraint excluding assignments to empty customer
+nodes. The printed index ranges are retained here; no zero-fixing, infinite-cost convention, or additional feasibility
+constraint is inserted.
+</p>
+<!-- l. 52 --><p class='noindent'><span class='paragraphHead' id='inherited-waitingtime-state-and-its-link-to-the-assignment'><a id='x1-4000'></a><span class='cmbx-10'>Inherited waiting-time state and its link to the assignment.</span></span>
+   Time is discretized into equal-length intervals, with
+<!-- l. 53 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>t</mi></math> denoting the beginning of
+<!-- l. 53 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mo class='MathClass-open' stretchy='false'>[</mo><mi>t</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>t</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math>. The source defines the
+waiting-time process, for each <!-- l. 53 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>c</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mstyle mathvariant='script'><mi>N</mi></mstyle></mrow><mrow><mstyle mathvariant='normal'><mi>C</mi></mstyle></mrow></msub></mrow></math>,
+by </p><table class='equation'><tr><td>
+<!-- l. 54 --><p class='indent'>
+</p><!-- l. 54 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                   <mstyle class='label' id='x1-4001r1'></mstyle><!-- endlabel --><msub><mrow><mi>H</mi></mrow><mrow><mi>c</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>=</mo> <msub><mrow><mi>χ</mi></mrow><mrow><mi>c</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo><msup><mrow><mrow><mo class='MathClass-open' fence='true' mathsize='1.19em'>[</mo><mrow><msub><mrow><mi>H</mi></mrow><mrow><mi>c</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-bin' stretchy='false'>+</mo> <mn>1</mn> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>x</mi></mrow><mrow><mi>c</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo><msub><mrow><mi>τ</mi></mrow><mrow><mi>c</mi></mrow></msub></mrow><mo class='MathClass-close' fence='true' mathsize='1.19em'>]</mo></mrow></mrow><mrow><mo class='MathClass-bin' stretchy='false'>+</mo></mrow></msup> <mo class='MathClass-bin' stretchy='false'>+</mo> <mo class='MathClass-open' stretchy='false'>(</mo><mn>1</mn> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>χ</mi></mrow><mrow>
+<mi>c</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-close' stretchy='false'>)</mo><msub><mrow><mi>A</mi></mrow><mrow><mi>c</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>.</mo>
+                                                                                         <mstyle class='label' id='x1-4002r0'></mstyle><!-- endlabel -->
+</mrow></math></td><td class='eq-no'>(1)<a id='x1-4003r0'></a></td></tr></table>
+<!-- l. 58 --><p class='indent'>   The positive-part notation is </p><table class='equation-star'><tr><td>
+<!-- l. 59 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                                     <msup><mrow><mo class='MathClass-open' stretchy='false'>[</mo><mspace class='thinspace' width='0.17em'></mspace> <mo class='MathClass-bin' stretchy='false'>⋅</mo><mspace class='thinspace' width='0.17em'></mspace><mo class='MathClass-close' stretchy='false'>]</mo></mrow><mrow><mo class='MathClass-bin' stretchy='false'>+</mo></mrow></msup> <mo class='MathClass-rel' stretchy='false'>≡</mo><mtext class='qopname'> max</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo><mo class='MathClass-open' stretchy='false'>{</mo><mspace class='thinspace' width='0.17em'></mspace><mo class='MathClass-bin' stretchy='false'>⋅</mo><mspace class='thinspace' width='0.17em'></mspace><mo class='MathClass-punc' stretchy='false'>,</mo><mn>0</mn><mo class='MathClass-close' stretchy='false'>}</mo><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 62 --><p class='indent'>   The state indicator <!-- l. 62 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>χ</mi></mrow><mrow><mi>c</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math>
+is binary, equal to <!-- l. 62 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mn>0</mn></math>
+if node <!-- l. 62 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>c</mi></math> is empty
+at time <!-- l. 62 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>t</mi></math> and
+<!-- l. 62 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mn>1</mn></math> otherwise. The
+binary control <!-- l. 62 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>x</mi></mrow><mrow><mi>c</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math>
+equals <!-- l. 62 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mn>1</mn></math> if the HOL
+customer at <!-- l. 62 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>c</mi></math> is
+
+served at time <!-- l. 62 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>t</mi></math>
+and <!-- l. 62 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mn>0</mn></math> otherwise.
+The symbol <!-- l. 62 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>τ</mi></mrow><mrow><mi>c</mi></mrow></msub></math>
+denotes the inter-arrival time between the HOL customer and the following customer at node
+<!-- l. 62 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>c</mi></math>; its lack
+of a time subscript is retained. The random arrival count satisfies </p><table class='equation-star'><tr><td>
+<!-- l. 63 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                                   <msub><mrow><mi>A</mi></mrow><mrow><mi>c</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>∈</mo><mo class='MathClass-open' stretchy='false'>{</mo><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>}</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mi>c</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mstyle mathvariant='script'><mi>N</mi></mstyle></mrow><mrow><mstyle mathvariant='normal'><mi>C</mi></mstyle></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo>
+</mrow></math></td></tr></table>
+<!-- l. 66 --><p class='indent'>   and counts arrivals during <!-- l. 66 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mo class='MathClass-open' stretchy='false'>[</mo><mi>t</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>t</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math>.
+These state and arrival quantities are not additional decision variables of (3)–(6).
+</p><!-- l. 68 --><p class='indent'>   The defining boundary cases and observations accompanying (1), for each node
+<!-- l. 68 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>c</mi></math>,
+are
+</p><!-- tex4ht:inline --><!-- l. 78 --><math display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mtable class='align-star' columnalign='left' displaystyle='true'>
+                 <mtr><mtd class='align-odd' columnalign='right'><msub><mrow><mi>χ</mi></mrow><mrow><mi>c</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn></mtd>                         <mtd class='align-even'><mspace class='nbsp' width='0.33em'></mspace><mo class='MathClass-rel' stretchy='false'>⟹</mo><mspace class='nbsp' width='0.33em'></mspace><msub><mrow><mi>H</mi></mrow><mrow><mi>c</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><msub><mrow><mi>τ</mi></mrow><mrow><mi>c</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><msub><mrow><mi>H</mi></mrow><mrow><mi>c</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>=</mo> <msub><mrow><mi>A</mi></mrow><mrow><mi>c</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                 <mtd class='align-label' columnalign='right'></mtd>                 <mtd class='align-label'>
+                 <mspace width='2em'></mspace></mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><msub><mrow><mi>χ</mi></mrow><mrow><mi>c</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn></mtd>                         <mtd class='align-even'><mspace class='nbsp' width='0.33em'></mspace><mo class='MathClass-rel' stretchy='false'>⟹</mo><mspace class='nbsp' width='0.33em'></mspace><msub><mrow><mi>H</mi></mrow><mrow><mi>c</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msub><mrow><mi>ℤ</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>+</mo></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><msub><mrow><mi>τ</mi></mrow><mrow><mi>c</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msub><mrow><mi>ℤ</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>+</mo></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                              <mtd class='align-label' columnalign='right'></mtd>                 <mtd class='align-label'>
+                 <mspace width='2em'></mspace></mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><msub><mrow><mi>χ</mi></mrow><mrow><mi>c</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><msub><mrow><mi>x</mi></mrow><mrow><mi>c</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn></mtd>                 <mtd class='align-even'><mspace class='nbsp' width='0.33em'></mspace><mo class='MathClass-rel' stretchy='false'>⟹</mo><mspace class='nbsp' width='0.33em'></mspace><msub><mrow><mi>H</mi></mrow><mrow><mi>c</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>=</mo> <msub><mrow><mi>H</mi></mrow><mrow><mi>c</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-bin' stretchy='false'>+</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                            <mtd class='align-label' columnalign='right'></mtd>                 <mtd class='align-label'>
+                 <mspace width='2em'></mspace></mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><msub><mrow><mi>χ</mi></mrow><mrow><mi>c</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><msub><mrow><mi>x</mi></mrow><mrow><mi>c</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn></mtd>                 <mtd class='align-even'><mspace class='nbsp' width='0.33em'></mspace><mo class='MathClass-rel' stretchy='false'>⟹</mo><mspace class='nbsp' width='0.33em'></mspace><msub><mrow><mi>H</mi></mrow><mrow><mi>c</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>=</mo><msup><mrow><mrow><mo class='MathClass-open' fence='true' mathsize='1.19em'>[</mo><mrow><msub><mrow><mi>H</mi></mrow><mrow><mi>c</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-bin' stretchy='false'>+</mo> <mn>1</mn> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>τ</mi></mrow><mrow><mi>c</mi></mrow></msub></mrow><mo class='MathClass-close' fence='true' mathsize='1.19em'>]</mo></mrow></mrow><mrow><mo class='MathClass-bin' stretchy='false'>+</mo></mrow></msup><mo class='MathClass-punc' stretchy='false'>.</mo><mspace width='2em'></mspace></mtd>                    <mtd class='align-label' columnalign='right'></mtd>                 <mtd class='align-label'>
+   <mspace width='2em'></mspace></mtd></mtr></mtable></math>
+<!-- l. 79 --><p class='noindent'>A customer arriving at time <!-- l. 79 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>t</mi></math>
+joins the queue at time <!-- l. 79 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>t</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <mn>1</mn></mrow></math>
+with waiting time <!-- l. 79 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mn>1</mn></math>.
+Upon service of the HOL customer, the new waiting time is that of the subsequent customer, or zero if the
+subsequent customer has not arrived; the latter case is described by </p><table class='equation-star'><tr><td>
+
+<!-- l. 80 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                                      <msub><mrow><mi>τ</mi></mrow><mrow><mi>c</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>&gt;</mo> <msub><mrow><mi>H</mi></mrow><mrow><mi>c</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-bin' stretchy='false'>+</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 83 --><p class='indent'>   This waiting process concerns time before entry into service. The time subsequently required for the assigned vehicle to reach the
+customer is represented by <!-- l. 83 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>C</mi></mrow><mrow><mi mathvariant='italic'>vc</mi></mrow></msub></math>.
+</p><!-- l. 85 --><p class='indent'>   Denote the solution of (3)–(6) by <!-- l. 85 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mo class='MathClass-open' stretchy='false'>{</mo><msubsup><mrow><mi>y</mi></mrow><mrow><mi mathvariant='italic'>vc</mi></mrow><mrow><mstyle mathvariant='normal'><mi>MDPP</mi></mstyle></mrow></msubsup><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-close' stretchy='false'>}</mo></mrow></math>.
+The resulting binary controls are </p><table class='equation'><tr><td>
+<!-- l. 86 --><p class='indent'>
+</p><!-- l. 86 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                              <mstyle class='label' id='x1-4004r1'></mstyle><!-- endlabel --><msubsup><mrow><mi>x</mi></mrow><mrow><mi>c</mi></mrow><mrow><mstyle mathvariant='normal'><mi>MDPP</mi></mstyle></mrow></msubsup><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>=</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>v</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mstyle mathvariant='script'><mi>N</mi></mstyle></mrow><mrow><mstyle mathvariant='normal'><mi>V</mi></mstyle></mrow></msub></mrow></munder><msubsup><mrow><mi>y</mi></mrow><mrow><mi mathvariant='italic'>vc</mi></mrow><mrow><mstyle mathvariant='normal'><mi>MDPP</mi></mstyle></mrow></msubsup><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>.</mo>
+                                                                                         <mstyle class='label' id='x1-4005r0'></mstyle><!-- endlabel -->
+</mrow></math></td><td class='eq-no'>(7)<a id='x1-4006r0'></a></td></tr></table>
+<!-- l. 89 --><p class='indent'>   For <!-- l. 89 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>c</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mstyle mathvariant='script'><mi>N</mi></mstyle></mrow><mrow><mstyle mathvariant='normal'><mi>C</mi></mstyle></mrow></msub></mrow></math>,
+these are the controls used in (1). Equations (1) and (7) describe the state-to-control link across time; they do not
+turn the per-time-step problem into a multistage optimization.
+</p>
+<!-- l. 91 --><p class='noindent'><span class='paragraphHead' id='scope-and-source'><a id='x1-5000'></a><span class='cmbx-10'>Scope and source.</span></span>
+   This is the full per-time-step minimization in Li, Pantelidis, Chow, and Jabari, <span class='cmti-10'>A real-time dispatching strategy
+for shared automated electric vehicles with performance guarantees</span>, arXiv:2006.15615v3, physical pages 3–6. The
+second-moment relation (2) is used for performance guarantees, not to define the observed inputs or feasible
+assignments of (3)–(6). The example time-increment choice (8) belongs to the subsequent event-driven solution
+approach, rather than a mandatory time scale for this full assignment problem. Neither the alternative maximization
+objective (9), its event-specific subproblems, nor the linear relaxation is imposed here. Vehicle rebalancing is not
+included in the selected model.
+</p>
+    
+</body> 
+</html>

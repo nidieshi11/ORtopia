@@ -1,0 +1,57 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,geometry}
+\geometry{margin=22mm}
+\emergencystretch=4em
+\begin{document}
+\section*{P10: The arc-shaped main model M1, where drones and delivery workers work together to achieve efficient delivery.}
+\paragraph{Source and scope}According to pages 1, 3, 4, 5, 6, 7, 8, 9, and 10 of the original paper’s PDF file, the text ranges from (1.1) to (1.26).
+\subsection*{Core scope and collection}
+Retain the arc-based MILP description for $M1$: It determines which orders to accept in a arrived order batch, through which pick-up and delivery stations, and which delivery staff will relay with the drones and at what times. Each drone can handle at most one order per batch; delivery staff complete the pick-up/delivery arcs in sequence, and cannot carry multiple orders at the same time. The transportation time is fixed, and orders are generated in batches every five minutes. The completion time for each order is determined by the instance.
+
+$O,R,D$ refer to orders, delivery workers, and drones. The optional delivery arc $A_o^P$ of order $o$ connects from its starting point to the candidate delivery station, while the optional delivery arc $A_o^L$ connects from the candidate distribution station to the destination. $A^P=\bigcup_oA_o^P,A^L=\bigcup_oA_o^L,A=A^P\cup A^L$ assigns unique numbers to arcs for different orders and types. $F=\bigcup_o(A_o^P\times A_o^L)$ represent pairs of orders with same pick and deliver arcs. $s_r,e_r$ represents the virtual starting and ending arcs for delivery workers, and $s_d$ represents the virtual starting arc for drones. Delivery workers can use connection sets.
+\[
+E_r=\{(a,b):a\in A\cup\{s_r\},\ b\in A\cup\{e_r\},a\ne b\}.
+\]
+The non-existent connection variable is always set to 0; the connection to $(s_r,e_r)$ allows the delivery person to not serve this batch of orders.
+\subsection*{Parameters and variables}
+$v_o\geq0$ represents the revenue from each order, while $c_r^C,c_d^D\geq0$ represents the cost per unit of driving time. $t_r^C,t_d^D\geq0$ indicates the known time points at which tasks can be released after completion. $L_r^C,L_d^D$ represents the maximum cumulative driving/flying time. This value reflects the remaining battery capacity. The cumulative time is calculated separately for driving and flying scenarios.
+
+$w_a\geq0$ represents the driving time for the deliveryman to execute pick-up/send-off arcs $a$. $h_{ab}^C\geq0$ denotes the travel time from the end point of arc $a$ to the starting point of arc $b$. $h_{d,a}^D$ refers to the flight time for the drone from the current location to the pick-up station at the end point of arc $a$. $h_{ab}^D$ represents the flight time from the pick-up station to the delivery station. In the original text, point symbols are used in (1.7) and double point symbols in (1.8), but both denote the same flight between stations. This document uniformly refers to this as $h_{ab}^D$. The virtual arc itself is denoted as $w_{s_r}=0$. The idle connection driving time is 0, and the time for other terminated connections is defined according to the instance.
+
+$l_a\geq0$ represents the latest departure time for the delivery driver from point $a$. If $a$ refers to the delivery arc, then the deadline for delivery is $l_a+w_a$. The travel time for actual delivery arcs is positive, thus subcircuits that involve negative travel times can be excluded from the calculation.
+
+$\beta_a\in\{0,1\}$ Select the delivery arc; $\gamma^C_{r,ab}\in\{0,1\}$ Choose the adjacent connections between delivery agents; $\gamma^D_{d,ab}\in\{0,1\}$ Determine when the drone should fly between different stations. $\tau_a^C$ This represents the time at which the delivery agent starts from the starting point of the delivery arc. $\tau_a^D$ This indicates the time when the drone departs from the pick-up station. $\tau_a^D$ This refers to the time when the drone reaches the delivery station. $\varepsilon_r^C,\varepsilon_d^D$ This represents the total travel time.
+
+Set it to $H=\max_{a\in A}l_a$. Values $M_{ra}^C=t_r^C+h_{s_ra}^C$, $M_{ab}^C=l_a+w_a+h_{ab}^C$, and $M_{ab}^D=H+h_{ab}^D$ are acceptable. The time limit for drones is set to $0\leq\tau_a^D\leq H$, which does not exclude any valid flight that meets the final delivery deadline. This also makes the large constants related to unactivated time intervals valid. When there is no work to be done, the value should be 0.
+\subsection*{The only complete model available}
+\begin{equation}
+\max\quad \sum_{o\in O}v_o\sum_{a\in A_o^P}\beta_a-\sum_{r\in R}c_r^C\varepsilon_r^C-\sum_{d\in D}c_d^D\varepsilon_d^D.
+\end{equation}
+\begin{align}
+\sum_{a\in A_o^P}\beta_a&\leq1&&o\in O,\\
+\sum_{a\in A_o^P}\beta_a&=\sum_{b\in A_o^L}\beta_b&&o\in O,\\
+\sum_{(a,b)\in F}\gamma^D_{d,ab}&\leq1&&d\in D,\\
+\sum_{d\in D}\gamma^D_{d,ab}&\geq\beta_a+\beta_b-1&&(a,b)\in F,\\
+\tau_a^D&\geq(t_d^D+h_{d,a}^D)\sum_{b:(a,b)\in F}\gamma^D_{d,ab}&&a\in A^P,d\in D,\\
+\tau_b^D&\geq\tau_a^D+h_{ab}^D-M_{ab}^D(1-\sum_{d\in D}\gamma^D_{d,ab})&&(a,b)\in F,\\
+\varepsilon_d^D&=\sum_{(a,b)\in F}(h_{d,a}^D+h_{ab}^D)\gamma^D_{d,ab}&&d\in D,\\
+0\leq\varepsilon_d^D&\leq L_d^D&&d\in D.
+\end{align}
+\begin{align}
+\beta_a&=\sum_{r\in R}\sum_{b:(a,b)\in E_r}\gamma^C_{r,ab}&&a\in A,\\
+\sum_{b:(s_r,b)\in E_r}\gamma^C_{r,s_rb}&=1,\quad\sum_{a:(a,e_r)\in E_r}\gamma^C_{r,ae_r}=1&&r\in R,\\
+\sum_{b:(a,b)\in E_r}\gamma^C_{r,ab}&=\sum_{b:(b,a)\in E_r}\gamma^C_{r,ba}\leq1&&a\in A,r\in R,\\
+\tau_a^C&\geq t_r^C+h_{s_ra}^C-M_{ra}^C(1-\gamma^C_{r,s_ra})&&a\in A,r\in R,\\
+\tau_b^C&\geq\tau_a^C+w_a+h_{ab}^C-M_{ab}^C(1-\gamma^C_{r,ab})&&r\in R,(a,b)\in E_r,a\in A,\\
+\varepsilon_r^C&=\sum_{(a,b)\in E_r}(w_a+h_{ab}^C)\gamma^C_{r,ab}&&r\in R,\\
+0\leq\varepsilon_r^C&\leq L_r^C&&r\in R,\\
+\tau_a^D&\geq\tau_a^C+w_a\beta_a&&a\in A^P,\\
+\tau_a^D&\leq\tau_a^C&&a\in A^L,\\
+0\leq\tau_a^C&\leq l_a\beta_a&&a\in A,\\
+\tau_{e_r}^C&\geq0&&r\in R,\\
+0\leq\tau_a^D&\leq H&&a\in A,\\
+\beta_a,\gamma^C_{r,ab},\gamma^D_{d,ab}&\in\{0,1\}&&\text{all defined indices}.
+\end{align}
+The time sequence is listed one by one, according to the deliveryman’s $r$ coordinates. This corresponds to the summation of actual arcs in the original text, while avoiding the use of virtual endpoints interchangeably. In the original formula (1.10), the virtual starting point is combined with $\beta_a$ subscripts. This document only applies this formula to actual arcs; virtual starting points are handled separately through departure constraints. The lower limit for drone assignments from the original text is retained. Under non-negative costs, unnecessary drone flights can be eliminated, without generating any additional benefits. $l_a$ represents the time limit for the deliveryman to reach the order’s starting point. The takeoff time of the drones is determined by the moment when the package is picked up and any connecting constraints that apply.
+
+\end{document}

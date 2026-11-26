@@ -1,0 +1,83 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\begin{document}
+\section*{Two-stage intermodal network design with disruption scenarios}
+This is the complete selected model for the supplied instances. The original
+root-level extraction and the source paper are preserved. Arc notation
+$e=(i,j,m)\in E$ combines node pair and mode; $N,K,S$ denote nodes, orders and
+scenarios, with probabilities $\pi_s$. Order $k$ has origin $o_k$, destination
+$d_k$, quantity $r_k$ and due time $T_k$. All times use the input's common time
+unit. Arc parameters are capacity $q_e$, vehicle capacity $v_e$, distance
+$D_e$, nominal time $t_e$, fixed cost $f_e$, variable cost $c_e$, consolidation
+cost $c^c_e$, emissions $e_e,e^c_e$, social cost per unit-distance $c^s_e$
+and road vehicle externality per distance $c^r_e$ (zero for other modes).
+Global parameters are budget $A$, carbon price $C$, lost-demand cost $u$,
+late-time cost $\hat u$, transfer cost $c^t$, emission $e^t$ and time $\tau^t$.
+Scenario inputs are capacity reduction $g_{es}$ and time increase $\delta_{es}$.
+The supplied action sets contain one preparation and one recovery option per
+arc: costs $h_e=20000$, $a_e=5000$, discounted recovery cost
+$\tilde a_e=4000$ after preparation, capacity gains $0.2q_e,0.5q_e$,
+recovered travel time $\hat t_{es}=t_e(1+0.3\delta_{es})$, and implementation
+time $o_e=2$. These are instance parameters for the corresponding actions.
+
+\subsection*{Variables and objective}
+First-stage fleet $Y_e\in\mathbb Z_{\ge0}$ and preparation
+$\beta_e\in\{0,1\}$ are common to every scenario.
+Recourse variables are $X_{kes},U_{ks},A_{ks},DL_{ks}\ge0$,
+$Z_{kes},\gamma_{es}\in\{0,1\}$, and
+$Y'_{es},Y^k_{es},n_{kjs},\operatorname{con}_{es}\in\mathbb Z_{\ge0}$.
+$A_{ks}$ is the arrival-time upper certificate at $d_k$. $n$ is transferred quantity,
+measured in transferred units.
+\begin{align*}
+\min\quad&
+\sum_e(f_e+c^r_eD_e)Y_e+\sum_eh_e\beta_e\\
+&+\sum_s\pi_s\left[
+\sum_{k,e}\{c_e+D_e(Ce_e+c^s_e)\}X_{kes}
++\sum_{k,j\ne d_k}(c^t+Ce^t)n_{kjs}
++\sum_e(c^c_e+Ce^c_e)\operatorname{con}_{es}
++\sum_e a_e\gamma_{es}
++\sum_k(uU_{ks}+\hat u DL_{ks})\right].
+\end{align*}
+\subsection*{Complete constraints}
+For every applicable order, node, arc and scenario:
+\begin{align}
+\sum_{e:\,\mathrm{tail}(e)=j}X_{kes}
+-\sum_{e:\,\mathrm{head}(e)=j}X_{kes}
+&=\begin{cases}r_k-U_{ks}&j=o_k\\-r_k+U_{ks}&j=d_k\\0&\text{otherwise},\end{cases}\\
+0\le U_{ks}&\le r_k,\\
+\sum_kX_{kes}&\le(1-g_{es})q_e+0.2q_e\beta_e+0.5q_e\gamma_{es},\\
+\sum_kX_{kes}&\le v_eY'_{es},\qquad X_{kes}\le v_eY^k_{es},\\
+\operatorname{con}_{es}&=\sum_kY^k_{es}-Y'_{es},\qquad Y'_{es}\le Y_e,\\
+Z_{kes}&\le X_{kes}\le r_kZ_{kes},\\
+\sum_{\substack{e:\,\mathrm{head}(e)=j\\\mathrm{mode}(e)=m}}X_{kes}
+-\sum_{\substack{e:\,\mathrm{tail}(e)=j\\\mathrm{mode}(e)=m}}X_{kes}
+&\le n_{kjs}\qquad(j\ne d_k,\text{ each mode }m),\\
+\sum_e Z_{kes}t_e(1+\delta_{es})
++\sum_e Z_{kes}\gamma_{es}\{\hat t_{es}-t_e(1+\delta_{es})\}
++\sum_e o_e\gamma_{es}+\sum_{j\ne d_k}\tau^t n_{kjs}
+&\le A_{ks},\\
+DL_{ks}&\ge A_{ks}-T_k,\qquad DL_{ks}\ge0,\\
+\sum_e h_e\beta_e+\sum_ea_e\gamma_{es}
++\sum_e(\tilde a_e-a_e)\beta_e\gamma_{es}&\le A,\\
+\gamma_{e0}&=0.
+\end{align}
+Binary products can be represented by their standard exact binary
+linearization. One action of each type is available per arc; hence its
+binary domain implements the corresponding mutual-exclusion constraint.
+
+\subsection*{Explicit corrections and algorithm boundary}
+The source paper's domain (18) makes $Y$ a nonnegative integer; the old
+extracted binary domain was wrong. The source and extraction both print
+$A-T_kDL\le DL$ although the text defines $DL$ as delay time. That product
+is represented here by the time-consistent delay bound $DL\ge A-T_k$ above.
+The delay definition uses consistent time units. The code and all rerun objectives use this
+corrected late-time definition. The source's unusual global recovery
+implementation-time sum is retained literally.
+
+The solver constructs an integer-flow feasible candidate on the complete
+network. Integer flows, at most two preparations and at most four recoveries,
+shortest-path choices, minimal vehicle counts and minimal modal transfer
+quantities are search choices only. They guide candidate construction.
+Every original node, arc, order and scenario remains in the certificate.
+The returned objective is a feasible upper bound.
+\end{document}

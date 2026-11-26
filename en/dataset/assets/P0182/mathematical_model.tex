@@ -1,0 +1,33 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\begin{document}
+\section*{Fixed-speed RouteOptimization VRPTW}
+This is the routing subproblem on PDF page15, equations(59)--(63),
+including its explicit references to(17)--(19),(21) on page8.
+
+Let $N$ be customers, $o$ the start depot, $e$ its distinct return copy,
+$V=N\cup\{o,e\}$, and $A\subset V\times V$ the supplied arcs with no
+incoming arcs to$o$, outgoing arcs from$e$, or self-arcs.
+Given demands$q_i>0$, capacity$Q>0$, fleet limit$K\ge1$,
+arc energy$\widehat E_{ij}$, distance$d_{ij}>0$, speed$\widehat v_{ij}>0$,
+time constants$T_{ij}$, and windows$[\underline\tau_i,\overline\tau_i]$:
+\begin{align*}
+\min\quad&\sum_{(i,j)\in A}\widehat E_{ij}x_{ij}\\
+\text{s.t.}\quad&
+\left\lceil\frac{\sum_{i\in N}q_i}{Q}\right\rceil
+\le\sum_{(o,j)\in A}x_{oj}\le K,\\
+&\sum_{(i,j)\in A}x_{ij}=1 &&i\in N,\\
+&\sum_{(i,j)\in A}x_{ij}-\sum_{(j,i)\in A}x_{ji}=0 &&i\in N,\\
+&t_i+w_i+d_{ij}/\widehat v_{ij}-t_j\le(1-x_{ij})T_{ij}&&(i,j)\in A,\\
+&\sum_{(i,j)\in\delta^+(\Omega)}x_{ij}\ge
+\left\lceil\frac{\sum_{i\in\Omega}q_i}{Q}\right\rceil
+&&\varnothing\ne\Omega\subseteq N,\\
+&\underline\tau_i\le t_i\le\overline\tau_i&&i\in V,\\
+&x_{ij}\in\{0,1\}&&(i,j)\in A,\\
+&w_i\ge0&&i\in N\cup\{o\}.
+\end{align*}
+The waiting/recharging offset cannot be negative. In these fixed-speed routing
+instances the cut sets range over customers and exclude both depots. All demands, fleet and depot mappings are
+explicit input data. The construction uses realistic heterogeneous travel,
+demands and time windows, and retains source coordinates where available.
+\end{document}

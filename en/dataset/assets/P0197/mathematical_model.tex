@@ -1,0 +1,143 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage[margin=1in]{geometry}
+
+\title{Piecewise McCormick Reformulation of a Bounded QCQP}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Notation and Data}
+Let $[s]:=\{1,\ldots,s\}$, and let $n,m,d\in\mathbb{Z}_{+}$ with $d\geq 1$. Let
+\[
+\mathcal{B}\subseteq\{(i,j)\in[n]^2:i<j\},
+\qquad
+\mathcal{Q}\subseteq[n]
+\]
+be, respectively, the sets of bilinear and univariate quadratic terms. Define
+\[
+\mathcal{NC}:=
+\bigl\{i\in[n]:\exists j\in[n]\text{ such that }(i,j)\in\mathcal{B}\text{ or }(j,i)\in\mathcal{B}\bigr\}\cup\mathcal{Q}.
+\]
+For each $i\in\mathcal{NC}$, let the fixed breakpoint vector be
+\[
+\mathbf{P}_i=(P_{i1},\ldots,P_{i,d+2}),
+\qquad
+0=P_{i1}\leq P_{i2}\leq\cdots\leq P_{i,d+1}\leq P_{i,d+2}=1.
+\]
+Let $Q^0,Q^i\in\mathbb{S}^n$ and $r^0,r^i\in\mathbb{R}^n$ for $i\in[m]$, and let $b_i\in\mathbb{R}$ for $i\in[m]$.
+
+\section*{Decision Variables}
+The decision variables are
+\[
+x_i\in\mathbb{R}\quad(i\in[n]),
+\qquad
+W_{ij}\in\mathbb{R}\quad(1\leq i\leq j\leq n),
+\]
+\[
+Y_{i\ell}\in\{0,1\}\quad(i\in\mathcal{NC},\ \ell\in[d+1]),
+\]
+\[
+\Lambda^{ij}_{k\ell}\geq 0
+\quad((i,j)\in\mathcal{B},\ k,\ell\in[d+2]),
+\qquad
+\Lambda^k_\ell\geq 0
+\quad(k\in\mathcal{Q},\ \ell\in[d+2]).
+\]
+For notational purposes, set $W_{ji}:=W_{ij}$ whenever $j<i$.
+
+\section*{Piecewise McCormick Reformulation}
+\begin{align}
+\min\quad
+&\sum_{i=1}^{n}r^0_i x_i
+ +\sum_{i=1}^{n}Q^0_{ii}W_{ii}
+ +2\sum_{1\leq i<j\leq n}Q^0_{ij}W_{ij}
+\label{eq:objective}
+\end{align}
+subject to
+\begin{align}
+&0\leq x_i\leq 1,
+&& i\in[n],
+\label{eq:xbounds}\\
+&\sum_{j=1}^{n}r^i_jx_j
+ +\sum_{k=1}^{n}Q^i_{kk}W_{kk}
+ +2\sum_{1\leq k<\ell\leq n}Q^i_{k\ell}W_{k\ell}
+ \leq b_i,
+&& i\in[m].
+\label{eq:baseconstraints}
+\end{align}
+
+For every $(i,j)\in\mathcal{B}$, impose
+\begin{align}
+&x_i=\sum_{k=1}^{d+2}\sum_{\ell=1}^{d+2}\Lambda^{ij}_{k\ell}P_{i\ell},
+\label{eq:pairx1}\\
+&x_j=\sum_{k=1}^{d+2}\sum_{\ell=1}^{d+2}\Lambda^{ij}_{k\ell}P_{jk},
+\label{eq:pairx2}\\
+&W_{ij}=\sum_{k=1}^{d+2}\sum_{\ell=1}^{d+2}\Lambda^{ij}_{k\ell}P_{i\ell}P_{jk},
+\label{eq:pairw}\\
+&\sum_{k=1}^{d+2}\sum_{\ell=1}^{d+2}\Lambda^{ij}_{k\ell}=1,
+\label{eq:pairnormalization}\\
+&\sum_{k=1}^{d+2}\Lambda^{ij}_{k1}\leq Y_{i1},
+\label{eq:pairleftendpoint}\\
+&\sum_{k=1}^{d+2}\Lambda^{ij}_{k,d+2}\leq Y_{i,d+1},
+\label{eq:pairrightendpoint}\\
+&\sum_{k=1}^{d+2}\Lambda^{ij}_{k,\ell+1}\leq Y_{i\ell}+Y_{i,\ell+1},
+&&\ell\in[d],
+\label{eq:pairiinterior}\\
+&\sum_{\ell=1}^{d+2}\Lambda^{ij}_{1\ell}\leq Y_{j1},
+\label{eq:pairjleftendpoint}\\
+&\sum_{\ell=1}^{d+2}\Lambda^{ij}_{d+2,\ell}\leq Y_{j,d+1},
+\label{eq:pairjrightendpoint}\\
+&\sum_{\ell=1}^{d+2}\Lambda^{ij}_{k+1,\ell}\leq Y_{jk}+Y_{j,k+1},
+&& k\in[d].
+\label{eq:pairjinterior}
+\end{align}
+
+For every $k\in\mathcal{Q}$, impose
+\begin{align}
+&x_k=\sum_{\ell=1}^{d+2}\Lambda^k_\ell P_{k\ell},
+\label{eq:diagx}\\
+&W_{kk}\leq\sum_{\ell=1}^{d+2}\Lambda^k_\ell(P_{k\ell})^2,
+\label{eq:diagupper}\\
+&\sum_{\ell=1}^{d+1}Y_{k\ell}P_{k\ell}
+ \leq x_k\leq
+ \sum_{\ell=1}^{d+1}Y_{k\ell}P_{k,\ell+1},
+\label{eq:diaginterval}\\
+&\sum_{\ell=1}^{d+1}Y_{k\ell}=1,
+\label{eq:diagpartition}\\
+&\sum_{\ell=1}^{d+2}\Lambda^k_\ell=1,
+\label{eq:diagnormalization}\\
+&W_{kk}\geq x_k^2,
+\label{eq:diaglower}\\
+&\Lambda^k_1\leq Y_{k1},
+\label{eq:diagleftendpoint}\\
+&\Lambda^k_{d+2}\leq Y_{k,d+1},
+\label{eq:diagrightendpoint}\\
+&\Lambda^k_{\ell+1}\leq Y_{k\ell}+Y_{k,\ell+1},
+&&\ell\in[d].
+\label{eq:diaginterior}
+\end{align}
+
+The shared partition-selection variables satisfy
+\begin{align}
+&\sum_{\ell=1}^{d+1}Y_{i\ell}=1,
+&& i\in\mathcal{NC},
+\label{eq:partitiononehot}\\
+&Y_{i\ell}\in\{0,1\},
+&& i\in\mathcal{NC},\ \ell\in[d+1].
+\label{eq:binary}
+\end{align}
+
+The auxiliary variables satisfy
+\begin{align}
+&\Lambda^{ij}_{k\ell}\geq 0,
+&& (i,j)\in\mathcal{B},\ k,\ell\in[d+2],
+\label{eq:pairnonnegative}\\
+&\Lambda^k_\ell\geq 0,
+&& k\in\mathcal{Q},\ \ell\in[d+2].
+\label{eq:diagnonnegative}
+\end{align}
+
+\end{document}

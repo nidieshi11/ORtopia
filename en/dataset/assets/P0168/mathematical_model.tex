@@ -1,0 +1,161 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\title{Full Extreme-Point Reformulation of Affine-Policy Robust Unit Commitment}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Sets and Parameters}
+
+Let $\mathcal N_g$, $\mathcal N_d$, $\mathcal M$, and $\mathcal N_l$ be finite sets of generators, demand nodes, buses, and transmission lines, respectively, with cardinalities $n_g$, $n_d$, $n_b$, and $n_l$. Let $T$ be the number of periods and $\mathcal T=\{1,\ldots,T\}$ the ordered planning horizon.
+
+The uncertainty data are the complete finite vertex list
+\[
+\{d^r:r\in\mathcal R\}=\operatorname{ext}(\mathcal D),
+\qquad \mathcal R=\{1,\ldots,R\},
+\qquad d^r=(d_j^{r,t})_{j\in\mathcal N_d,\,t\in\mathcal T}
+\in\mathbb R^{n_d\times T},
+\]
+where $\mathcal D$ is the intended nonempty bounded polyhedral uncertainty set and
+\[
+\mathcal D=\operatorname{conv}\{d^r:r\in\mathcal R\}.
+\]
+The complete vertex array has dimension $R\times n_d\times T$ and defines the uncertainty polytope, including lower-dimensional polytopes.
+
+For each $i\in\mathcal N_g$, the supplied scalar parameters are:
+\begin{itemize}
+\item $G_i$, $S_i$, and $C_i$: commitment, startup, and generation cost coefficients;
+\item $p_i^{\min}$ and $p_i^{\max}$: generation limits;
+\item $RD_i$, $SD_i$, $RU_i$, and $SU_i$: ramp-down, shutdown-ramp, ramp-up, and startup-ramp coefficients;
+\item $UT_i$ and $DT_i$: positive integer minimum up- and down-times, with $1\le UT_i,DT_i\le T$ so that the displayed time indices are defined;
+\item $x_i^0\in\{0,1\}$ and $p_i^0\in\mathbb R$: fixed initial commitment and dispatch.
+\end{itemize}
+The network data are
+\[
+\alpha=(\alpha_{lm})\in\mathbb R^{n_l\times n_b},
+\qquad B^p=(B^p_{mi})\in\mathbb R^{n_b\times n_g},
+\qquad B^d=(B^d_{mj})\in\mathbb R^{n_b\times n_d},
+\]
+and the scalar transmission limits $f_l^{\max}$ for $l\in\mathcal N_l$. All costs, limits, ramp coefficients, network entries, vertex coordinates, and initial conditions are fixed data.
+
+\section{Variables and Affine Expressions}
+
+For $i\in\mathcal N_g$ and $t\in\mathcal T$, the variables $x_i^t$, $u_i^t$, and $v_i^t$ denote commitment, startup, and shutdown indicators. The variables $w_i^t$ and $W_{itjs}$ are the intercepts and coefficients of the full history-dependent affine dispatch policy. Its coefficient index set is
+\[
+\mathcal I_W=\{(i,t,j,s):i\in\mathcal N_g,\ j\in\mathcal N_d,
+\ 1\le s\le t\le T\}.
+\]
+The scalar $z$ is the generation-cost epigraph variable. The domains are
+\begin{align}
+ x_i^t,u_i^t,v_i^t&\in\{0,1\}
+ &&\forall i\in\mathcal N_g,\ t\in\mathcal T,\label{eq:binary}\\
+ w_i^t&\in\mathbb R
+ &&\forall i\in\mathcal N_g,\ t\in\mathcal T,\\
+ W_{itjs}&\in\mathbb R
+ &&\forall(i,t,j,s)\in\mathcal I_W,\\
+ z&\in\mathbb R.
+\end{align}
+Affine coefficients and epigraph variables are real-valued and satisfy the displayed constraints.
+
+For each vertex, define the following expressions.
+\begin{align}
+ P_{i,t}^r&:=w_i^t+
+ \sum_{j\in\mathcal N_d}\sum_{s=1}^{t}W_{itjs}d_j^{r,s}
+ &&\forall r\in\mathcal R,\ i\in\mathcal N_g,\ t\in\mathcal T,\label{eq:dispatch}\\
+ P_{i,0}^r&:=p_i^0=w_i^0
+ &&\forall r\in\mathcal R,\ i\in\mathcal N_g.\label{eq:initial}
+\end{align}
+Here $w_i^0$ is fixed initial data. The empty-history sum at time zero is zero. The same $w$ and $W$ are used at every vertex; only coefficients with $s\le t$ exist.
+
+For $r\in\mathcal R$, $l\in\mathcal N_l$, and $t\in\mathcal T$, also define
+\begin{equation}
+ F_{l,t}^r:=
+ \sum_{m\in\mathcal M}\sum_{i\in\mathcal N_g}
+ \alpha_{lm}B^p_{mi}
+ \left(w_i^t+\sum_{j\in\mathcal N_d}\sum_{s=1}^{t}
+ W_{itjs}d_j^{r,s}\right)
+ -\sum_{m\in\mathcal M}\sum_{j\in\mathcal N_d}
+ \alpha_{lm}B^d_{mj}d_j^{r,t}.
+ \label{eq:flow}
+\end{equation}
+
+\section{Objective and Constraints}
+
+The selected full extreme-point formulation is
+\begin{equation}
+ \min_{x,u,v,w,W,z}\quad
+ \sum_{t\in\mathcal T}\sum_{i\in\mathcal N_g}
+ \bigl(G_ix_i^t+S_iu_i^t\bigr)+z,
+ \label{eq:objective}
+\end{equation}
+subject to the variable domains above and all constraints below.
+
+\subsection{Commitment Feasibility}
+
+\begin{align}
+ x_i^t-x_i^{t-1}&=u_i^t-v_i^t
+ &&\forall i\in\mathcal N_g,\ t\in\mathcal T,\label{eq:transition}\\
+ \sum_{\tau=t}^{t+UT_i-1}x_i^\tau&\ge UT_i u_i^t
+ &&\forall i\in\mathcal N_g,\ t\in\{1,\ldots,T-UT_i+1\},\label{eq:up}\\
+ \sum_{\tau=t}^{t+DT_i-1}(1-x_i^\tau)&\ge DT_i v_i^t
+ &&\forall i\in\mathcal N_g,\ t\in\{1,\ldots,T-DT_i+1\},\label{eq:down}\\
+ \sum_{\tau=t}^{T}x_i^\tau-(T-t+1)u_i^t&\ge0
+ &&\forall i\in\mathcal N_g,\ t\in\{T-UT_i+1,\ldots,T\},\label{eq:terminal-up}\\
+ (T-t+1)-\sum_{\tau=t}^{T}x_i^\tau-(T-t+1)v_i^t&\ge0
+ &&\forall i\in\mathcal N_g,\ t\in\{T-DT_i+1,\ldots,T\}.\label{eq:terminal-down}
+\end{align}
+The overlapping boundary periods in these index ranges are retained exactly.
+
+\subsection{Generation-Cost Epigraph}
+
+\begin{equation}
+ \sum_{t\in\mathcal T}\sum_{i\in\mathcal N_g}
+ C_i\left(w_i^t+\sum_{j\in\mathcal N_d}\sum_{s=1}^{t}
+ W_{itjs}d_j^{r,s}\right)\le z
+ \qquad\forall r\in\mathcal R.
+ \label{eq:cost}
+\end{equation}
+
+\subsection{Generation Limits}
+
+\begin{align}
+ P_{i,t}^r&\ge p_i^{\min}x_i^t
+ &&\forall r\in\mathcal R,\ i\in\mathcal N_g,\ t\in\mathcal T,\label{eq:gen-lower}\\
+ P_{i,t}^r&\le p_i^{\max}x_i^t
+ &&\forall r\in\mathcal R,\ i\in\mathcal N_g,\ t\in\mathcal T.\label{eq:gen-upper}
+\end{align}
+
+\subsection{Ramping}
+
+\begin{align}
+ P_{i,t}^r-P_{i,t-1}^r&\ge -RD_i x_i^t-SD_i v_i^t
+ &&\forall r\in\mathcal R,\ i\in\mathcal N_g,\ t\in\mathcal T,\label{eq:ramp-down}\\
+ P_{i,t}^r-P_{i,t-1}^r&\le RU_i x_i^{t-1}+SU_i u_i^t
+ &&\forall r\in\mathcal R,\ i\in\mathcal N_g,\ t\in\mathcal T.\label{eq:ramp-up}
+\end{align}
+At $t=1$, these expressions use the supplied constants $P_{i,0}^r=p_i^0$ and $x_i^0$.
+
+\subsection{Transmission Limits}
+
+\begin{align}
+ F_{l,t}^r&\le f_l^{\max}
+ &&\forall r\in\mathcal R,\ l\in\mathcal N_l,\ t\in\mathcal T,\label{eq:flow-upper}\\
+ -F_{l,t}^r&\le f_l^{\max}
+ &&\forall r\in\mathcal R,\ l\in\mathcal N_l,\ t\in\mathcal T.\label{eq:flow-lower}
+\end{align}
+
+\subsection{Energy Balance}
+
+\begin{equation}
+ \sum_{i\in\mathcal N_g}
+ \left(w_i^t+\sum_{j\in\mathcal N_d}\sum_{s=1}^{t}
+ W_{itjs}d_j^{r,s}\right)
+ =\sum_{j\in\mathcal N_d}d_j^{r,t}
+ \qquad\forall r\in\mathcal R,\ t\in\mathcal T.
+ \label{eq:balance}
+\end{equation}
+
+\end{document}

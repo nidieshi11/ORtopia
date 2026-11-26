@@ -1,0 +1,22 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,longtable}
+\emergencystretch=4em
+\begin{document}
+\section*{P416: Current complete mathematical model (as of 2026-10-20)}
+\section*{Basis and scope of the revision}Retain 24 cargo trains and all 4 passenger trains. The conflicted train P2 will be postponed by 45 minutes and will remain at the original time; the limited route is expanded into a state graph based on the frequency of occurrences. The complete minute schedule and all reverse safety interval models explicitly allow this limited route expansion.
+
+\section*{Limited routes, precise timing, and safety considerations}
+Each cargo column $j$ has a limited number of allowed routes $r$ (with repeated stations expanded according to their occurrence), as well as binary $y_{jr}$ and $\sum_ry_{jr}\le1$. The passage time $e$ for each interval on each candidate route has integer arrival times $d_{jre},a_{jre}\in[0,H]$ and $H=1440$.
+\[
+0\le d_{jre}\le Hy_{jr},\quad a_{jre}=d_{jre}+t_e y_{jr}.
+\]
+The first departure time $d_{jr1}$ lies in $[\max(0,I_j-S_j)y_{jr},\min(H,I_j+S_j)y_{jr}]$. There is an offset of $\delta_{jr}\ge\pm(d_{jr1}-I_jy_{jr})$ and $0\le\delta_{jr}\le S_jy_{jr}$ between these two points. The intermediate stops are represented by the integer $w_e\in[m_ey_{jr},(m_e+\bar w_e)y_{jr}]$. Additionally, $d_{jre}=a_{jr,e-1}+w_e$ is involved. A binary variable selects the order of trains traversing the same physical track. For same-direction movements, both departure and arrival order agree, with gaps of at least $g_d$ at departure and $g_a$ at arrival. For opposite-direction movements, the later departure is at least the earlier arrival plus $g_o$. These constraints apply only when both routes are selected. The per-section times of fixed passenger trains are constants and obey the same mutual-exclusion rules.
+\[
+\max\sum_{jr}\left[
+\Pi_jy_{jr}-c^\delta_j\delta_{jr}
+-c^w_j\sum_{e>1}(w_e-m_ey_{jr})
+-c^r_j(\sum_{e\in r}t_e-T_j^{ideal})y_{jr}\right].
+\]
+All durations are the sum of the original data durations; no error-based aggregation values are used. The P2 column is shifted by 45 minutes to resolve input conflicts, while the original values remain intact. The circular physical route is transformed into a finite-state path, maintaining all 24 cargo columns and 4 fixed passenger columns. Site feasibility is determined by the aforementioned capacity and scheduling constraints.
+
+\end{document}

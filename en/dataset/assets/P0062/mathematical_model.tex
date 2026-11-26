@@ -1,0 +1,77 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{geometry}
+\geometry{margin=1in}
+
+\title{Core Solvable Model}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Standalone Storage MILP}
+The retained core model is the multi-period storage scheduling MILP with mutually exclusive
+charging and generating modes and state-of-charge dynamics. The profit objective with terminal
+energy value is the most general directly solvable version.
+
+\begin{equation}
+\max \quad C^\top g - D^\top p
+\tag{M1}
+\end{equation}
+
+subject to
+\begin{equation}
+\underline{p}\, u_t \le p_t \le \overline{p}\, u_t,
+\qquad \forall t=1,\dots,T,
+\tag{M2}
+\end{equation}
+\begin{equation}
+\underline{g}\, v_t \le g_t \le \overline{g}\, v_t,
+\qquad \forall t=1,\dots,T,
+\tag{M3}
+\end{equation}
+\begin{equation}
+u_t + v_t \le 1,
+\qquad \forall t=1,\dots,T,
+\tag{M4}
+\end{equation}
+\begin{equation}
+s_t = s_{t-1} + \alpha p_t - \beta g_t,
+\qquad \forall t=1,\dots,T,
+\tag{M5}
+\end{equation}
+\begin{equation}
+\underline{s} \le s_0 \le \overline{s},
+\tag{M6}
+\end{equation}
+\begin{equation}
+s_{t-1} + \alpha p_t \le \overline{s},
+\qquad \forall t=1,\dots,T,
+\tag{M7}
+\end{equation}
+\begin{equation}
+s_{t-1} - \beta g_t \ge \underline{s},
+\qquad \forall t=1,\dots,T,
+\tag{M8}
+\end{equation}
+\begin{equation}
+p_t \ge 0,\quad g_t \ge 0,\quad s_t \in \mathbb{R},
+\qquad \forall t=1,\dots,T,
+\tag{M9}
+\end{equation}
+\begin{equation}
+u_t \in \{0,1\},\quad v_t \in \{0,1\},
+\qquad \forall t=1,\dots,T.
+\tag{M10}
+\end{equation}
+
+\noindent
+If a fixed terminal state of charge is required, one may additionally impose
+\begin{equation}
+s_0 + \sum_{\tau=1}^T (\alpha p_\tau - \beta g_\tau) = s_T^{\mathrm{target}}.
+\tag{M11}
+\end{equation}
+
+\end{document}

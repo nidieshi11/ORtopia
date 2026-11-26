@@ -1,0 +1,308 @@
+<!DOCTYPE html> 
+<html lang='en-US' xml:lang='en-US'> 
+<head><title>P0092 · Rail Service Recovery with Short Turnbacks and Persistent Passenger Queues · Mathematical model</title> 
+<meta charset='utf-8' /> 
+<meta content='TeX4ht (https://tug.org/tex4ht/)' name='generator' /> 
+<meta content='width=device-width,initial-scale=1' name='viewport' /> 
+<style> 
+/* start css.sty */
+.cmr-5{font-size:50%;}
+.cmr-7{font-size:70%;}
+.cmmi-5{font-size:50%;font-style: italic;}
+.cmmi-7{font-size:70%;font-style: italic;}
+.cmmi-10{font-style: italic;}
+.cmsy-5{font-size:50%;}
+.cmsy-7{font-size:70%;}
+.cmbx-10{ font-weight: bold;}
+.cmbsy-10{font-weight: bold;}
+.cmbsy-10{font-weight: bold;}
+.cmbsy-10{font-weight: bold;}
+.cmbsy-7{font-size:70%;font-weight: bold;}
+.cmbsy-7{font-weight: bold;}
+.cmbsy-7{font-weight: bold;}
+.cmbsy-5{font-size:50%;font-weight: bold;}
+.cmbsy-5{font-weight: bold;}
+.cmbsy-5{font-weight: bold;}
+.cmex-7{font-size:70%;}
+.cmex-7x-x-71{font-size:49%;}
+.msam-7{font-size:70%;}
+.msam-5{font-size:50%;}
+.msbm-7{font-size:70%;}
+.msbm-5{font-size:50%;}
+p{margin-top:0;margin-bottom:0}
+p.indent{text-indent:0;}
+p + p{margin-top:1em;}
+p + div, p + pre {margin-top:1em;}
+div + p, pre + p {margin-top:1em;}
+a { overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; hyphens: auto; }
+@media print {div.crosslinks {visibility:hidden;}}
+table.tabular{border-collapse: collapse; border-spacing: 0;}
+a img { border-top: 0; border-left: 0; border-right: 0; }
+center { margin-top:1em; margin-bottom:1em; }
+td center { margin-top:0em; margin-bottom:0em; }
+.Canvas { position:relative; }
+math { text-indent: 0em; }
+body{ margin:1em auto; max-width:80ch; padding:0 .62em; }
+h1,h2,h3,h4,h5 { line-height:1.2; }
+@media print{ body{ max-width:none } }
+.partHead, .likepartHead { font-size: 2em; }
+.chapterHead, .likechapterHead { font-size: 1.7411em; }
+.sectionHead, .likesectionHead { font-size: 1.5157em; }
+.subsectionHead, .likesubsectionHead { font-size: 1.3195em; }
+.subsubsectionHead, .likesubsubsectionHead { font-size: 1.1487em; }
+ @media (prefers-color-scheme: dark) { img[src^="model"]{filter: invert(1); } } 
+li p.indent { text-indent: 0em }
+li p:first-child{ margin-top:0em; }
+li p:last-child, li div:last-child { margin-bottom:0.5em; }
+li p:first-child{ margin-bottom:0; }
+li p~ul:last-child, li p~ol:last-child{ margin-bottom:0.5em; }
+.enumerate1 {list-style-type:decimal;}
+.enumerate2 {list-style-type:lower-alpha;}
+.enumerate3 {list-style-type:lower-roman;}
+.enumerate4 {list-style-type:upper-alpha;}
+div.newtheorem { margin-bottom: 2em; margin-top: 2em;}
+div.newtheorem .head{font-weight: bold;}
+.obeylines-h,.obeylines-v {white-space: nowrap; }
+div.obeylines-v p { margin-top:0; margin-bottom:0; }
+.overline{ text-decoration:overline; }
+.overline img{ border-top: 1px solid black; }
+td.displaylines {text-align:center; white-space:nowrap;}
+.centerline {text-align:center;}
+.rightline {text-align:right;}
+pre.verbatim {font-family: monospace,monospace; text-align:left; clear:both; }
+.fbox {padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+div.fbox {display:table}
+div.center div.fbox {text-align:center; clear:both; padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+div.minipage{width:100%;}
+div.center, div.center div.center {text-align: center; margin-left:1em; margin-right:1em;}
+div.center div {text-align: left;}
+div.flushright, div.flushright div.flushright {text-align: right;}
+div.flushright div {text-align: left;}
+div.flushleft {text-align: left;}
+.underline{ text-decoration:underline; }
+.underline img{ border-bottom: 1px solid black; margin-bottom:1pt; }
+.framebox-c, .framebox-l, .framebox-r { padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+.framebox-c {text-align:center;}
+.framebox-l {text-align:left;}
+.framebox-r {text-align:right;}
+span.thank-mark{ vertical-align: super }
+span.footnote-mark sup.textsuperscript, span.footnote-mark a sup.textsuperscript{ font-size:80%; }
+code.verb{font-family:monospace,monospace;}
+div.tabular, div.center div.tabular {text-align: center; margin-top:0.5em; margin-bottom:0.5em; }
+table.tabular td p{margin-top:0em;}
+table.tabular {margin-left: auto; margin-right: auto;}
+td p:first-child{ margin-top:0em; }
+td p:last-child{ margin-bottom:0em; }
+div.td00{ margin-left:0pt; margin-right:0pt; }
+div.td01{ margin-left:0pt; margin-right:5pt; }
+div.td10{ margin-left:5pt; margin-right:0pt; }
+div.td11{ margin-left:5pt; margin-right:5pt; }
+table[rules] {border-left:solid black 0.4pt; border-right:solid black 0.4pt; }
+td.td00{ padding-left:0pt; padding-right:0pt; }
+td.td01{ padding-left:0pt; padding-right:5pt; }
+td.td10{ padding-left:5pt; padding-right:0pt; }
+td.td11{ padding-left:5pt; padding-right:5pt; }
+table[rules] {border-left:solid black 0.4pt; border-right:solid black 0.4pt; }
+.hline hr, .cline hr{ height : 0px; margin:0px; }
+.hline td, .cline td{ padding: 0; }
+.hline hr, .cline hr{border:none;border-top:1px solid black;}
+.hline {border-top: 1px solid black;}
+.hline + .vspace:last-child{display:none;}
+.hline:first-child{border-bottom:1px solid black;border-top:none;}
+.tabbing-right {text-align:right;}
+div.float, div.figure {margin-left: auto; margin-right: auto;}
+div.float img {text-align:center;}
+div.figure img {text-align:center;}
+.marginpar,.reversemarginpar {width:20%; float:right; text-align:left; margin-left:auto; margin-top:0.5em; font-size:85%; text-decoration:underline;}
+.marginpar p,.reversemarginpar p{margin-top:0.4em; margin-bottom:0.4em;}
+.reversemarginpar{float:left;}
+.equation td{text-align:center; vertical-align:middle; }
+td.eq-no{ width:5%; }
+table.equation { width:100%; } 
+div.math-display, div.par-math-display{text-align:center;}
+.array-hline,.array-cline{ border-top: 1px solid black; height:0px; }
+.array-hline + .array-vspace:last-child{display:none;}
+.hline-mtd, .array-hline td{ display:none }
+.array-hline + .array-row:last-child{display:none;}
+.array-hline:first-child{border-bottom:1px solid black;border-top:none;}
+math .texttt { font-family: monospace; }
+math .textit { font-style: italic; }
+math .textsl { font-style: oblique; }
+math .textsf { font-family: sans-serif; }
+math .textbf { font-weight: bold; }
+mo.MathClass-op + mi{margin-left:0.3em}
+mi + mo.MathClass-op{margin-left:0.3em}
+ math mstyle[mathvariant="bold"] { font-weight: bold; font-style: normal; } 
+ math mstyle[mathvariant="normal"] { font-weight: normal; font-style: normal; } 
+.partToc a, .partToc, .likepartToc a, .likepartToc {line-height: 200%; font-weight:bold; font-size:110%;}
+.index-item, .index-subitem, .index-subsubitem {display:block}
+div.caption {text-indent:-2em; margin-left:3em; margin-right:1em; text-align:left;}
+div.caption span.id{font-weight: bold; white-space: nowrap; }
+h1.partHead{text-align: center}
+p.bibitem { text-indent: -2em; margin-left: 2em; margin-top:0.6em; margin-bottom:0.6em; }
+p.bibitem-p { text-indent: 0em; margin-left: 2em; margin-top:0.6em; margin-bottom:0.6em; }
+.subsubsectionHead, .likesubsubsectionHead { font-size: 1em; }
+.paragraphHead, .likeparagraphHead { margin-top:2em; font-weight: bold;}
+.subparagraphHead, .likesubparagraphHead { font-weight: bold;}
+.verse{white-space:nowrap; margin-left:2em}
+div.maketitle {text-align:center;}
+h2.titleHead{text-align:center;}
+div.maketitle{ margin-bottom: 2em; }
+div.author, div.date {text-align:center;}
+div.thanks{text-align:left; margin-left:10%; font-size:85%; font-style:italic; }
+div.author{white-space: nowrap;}
+div.abstract p {margin-left:5%; margin-right:5%;}
+div.abstract {width:100%;}
+.abstracttitle{text-align:center;margin-bottom:1em;}
+.subsectionToc, .likesubsectionToc {margin-left:1em;}
+.subsubsectionToc, .likesubsubsectionToc {margin-left:2em;}
+.paragraphToc, .likeparagraphToc {margin-left:3em;}
+.subparagraphToc, .likesubparagraphToc {margin-left:4em;}
+figure.float, div.figure {margin-left: auto; margin-right: auto;}
+figure.figure {text-align:center;}
+figcaption.caption {text-indent:-2em; margin-left:3em; margin-right:1em; text-align:center;}
+figcaption.caption span.id{font-weight: bold; white-space: nowrap; }
+p + figcaption, img + figcaption{margin-top: 1em;}
+.abstract{margin:1em;}
+.equation-star td{text-align:center; vertical-align:middle; }
+table.equation-star { width:100%; } 
+.boxed{border: 1px solid black; padding-left:2px; padding-right:2px;}
+mtd.align-odd{margin-left:2em; text-align:right;}
+mtd.align-even{margin-right:2em; text-align:left;}
+/* end css.sty */
+
+
+html{background:#fff;color:#243833}body{padding:clamp(.55rem,2vw,1.25rem);margin:0;line-height:1.5;overflow-wrap:break-word}
+h1,h2,h3,h4,h5,h6{line-height:1.22;color:#193d35}p{margin:.5rem 0}math[display=block]{overflow-x:auto;max-width:100%}
+@media print{body{padding:0;color:#000}}
+</style> 
+<meta content='model.tex' name='src' /> 
+</head><body>
+   <h3 class='likesectionHead' id='resuming-scheduling-for-rail-transit-services-after-interruptions-including-short-detours'><a id='x1-1000'></a>Resuming scheduling for rail transit services after interruptions, including short detours.</h3>
+<!-- l. 8 --><p class='noindent'>The current finite-event model completes the recovery-ending conditions and cost terms in equations (16)–(22) of the original
+paper. It retains the timetable, passenger flows, headways and vehicle availability constraints from the earlier model in
+file 02. All 16 stations, 15 line sections, and 47 physical trains in the original Figure 9 are retained. The missed demand
+and initial states are taken from the existing completed data. The current code uses policy search to produce a feasible
+schedule.
+</p><!-- l. 10 --><p class='noindent'>
+</p>
+   <h4 class='likesubsectionHead' id='input-and-decisionmaking'><a id='x1-2000'></a>Input and Decision-making</h4>
+<!-- l. 11 --><p class='noindent'>Two directions <!-- l. 11 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>r</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo><mo class='MathClass-open' stretchy='false'>{</mo><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>}</mo></mrow></math>, interruption
+<!-- l. 11 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mo class='MathClass-open' stretchy='false'>[</mo><msub><mrow><mi>T</mi></mrow><mrow><mn>0</mn></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>T</mi></mrow><mrow><mn>0</mn></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <mover accent='true'><mrow><mi>T</mi></mrow><mo accent='true'>~</mo></mover><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math>. Control nodes are located on both sides
+of the blocked section. <!-- l. 11 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>η</mi></mrow><mrow><mi mathvariant='italic'>rk</mi></mrow></msub></math> is the departure
+time of the service control node for item <!-- l. 11 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>k</mi></math>,
+<!-- l. 11 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>h</mi></mrow><mrow><mi mathvariant='italic'>rk</mi></mrow></msub></math> is the interval, and
+<!-- l. 11 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>H</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>{</mo><mn>100</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>150</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mn>500</mn><mo class='MathClass-close' stretchy='false'>}</mo></mrow></math> seconds; Normal schedule
+times are 171 and 180 trains respectively. Recovery reference times are defined instead of mandatory rearrangement of 351 trains. Inter-station operation
+time <!-- l. 11 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>v</mi></math>, station stops
+<!-- l. 11 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>ω</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>25</mn></mrow></math> seconds, return trips
+<!-- l. 11 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi mathvariant='normal'>Δ</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>180</mn></mrow></math> seconds, and garage
+preparation and capacity <!-- l. 11 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>D</mi></math>
+are all given as inputs. Vehicles have unique identifiers, current locations, and earliest available times. The decision is a finite service sequence,
+with each <!-- l. 11 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>h</mi></mrow><mrow><mi mathvariant='italic'>rk</mi></mrow></msub></math>,
+valid routes, and actual vehicle allocation. </p><table class='equation-star'><tr><td>
+<!-- l. 12 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                                          <msub><mrow><mi>η</mi></mrow><mrow><mi mathvariant='italic'>rk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <msub><mrow><mi>η</mi></mrow><mrow><mi>r</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>k</mi><mo class='MathClass-bin' stretchy='false'>−</mo><mn>1</mn></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>h</mi></mrow><mrow><mi mathvariant='italic'>rk</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><msub><mrow><mi>h</mi></mrow><mrow><mi mathvariant='italic'>rk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>H</mi><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 15 --><p class='indent'>   The first column, <!-- l. 15 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mrow><mi>K</mi></mrow><mrow><mi>r</mi></mrow><mrow><mi>′</mi></mrow></msubsup></math>,
+indicates the areas where services are temporarily suspended. Subsequently, at
+<!-- l. 15 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>η</mi></mrow><mrow><mi mathvariant='italic'>rk</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo><mi mathvariant='normal'>Δ</mi> <mo class='MathClass-bin' stretchy='false'>−</mo> <mi>ω</mi> <mo class='MathClass-rel' stretchy='false'>&lt;</mo> <msub><mrow><mi>T</mi></mrow><mrow><mn>0</mn></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <mover accent='true'><mrow><mi>T</mi></mrow><mo accent='true'>~</mo></mover></mrow></math>, a short
+detour route will be selected on the same side; otherwise, the route will remain normal. Adjacent stations along the route are identified by
+<!-- l. 15 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>τ</mi></mrow><mrow><msup><mrow><mi>n</mi></mrow><mrow><mi>′</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><mi>k</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <msub><mrow><mi>τ</mi></mrow><mrow><mi>n</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>k</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>v</mi></mrow><mrow><mi>n</mi><msup><mrow><mi>n</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <mi>ω</mi></mrow></math>. Stations that are part of the
+detour points are marked with <!-- l. 15 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi mathvariant='normal'>Δ</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <mi>ω</mi></mrow></math>.
+No one is allowed to enter the blocked areas until the congestion is resolved.
+</p><!-- l. 17 --><p class='noindent'>
+</p>
+   <h4 class='likesubsectionHead' id='vehicle-and-backtracking-resources'><a id='x1-3000'></a>Vehicle and backtracking resources</h4>
+<!-- l. 18 --><p class='noindent'>Let the input initial earliest return moment be <!-- l. 18 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mover accent='true'><mrow><mi>τ</mi></mrow><mo accent='true'>¯</mo></mover></mrow><mrow><mi mathvariant='italic'>rk</mi></mrow></msub></math>.
+The initial return service is satisfied.
+
+</p><!-- tex4ht:inline --><!-- l. 24 --><math display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mtable class='align-star' columnalign='left' displaystyle='true'>
+                     <mtr><mtd class='align-odd' columnalign='right'><msub><mrow><mi>η</mi></mrow><mrow><mi mathvariant='italic'>rk</mi></mrow></msub></mtd>                     <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>≥</mo><msub><mrow><mover accent='true'><mrow><mi>τ</mi></mrow><mo accent='true'>¯</mo></mover></mrow><mrow><mi mathvariant='italic'>rk</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <mi mathvariant='normal'>Δ</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <mi>ω</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                                                <mtd class='align-odd' columnalign='right'></mtd>                     <mtd class='align-even'><mspace width='2em'></mspace></mtd>                          <mtd class='align-label' columnalign='right'></mtd>                     <mtd class='align-label'>
+                     <mspace width='2em'></mspace></mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><msub><mrow><mi>η</mi></mrow><mrow><mi mathvariant='italic'>rk</mi></mrow></msub></mtd>                     <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>≥</mo><msub><mrow><mover accent='true'><mrow><mi>τ</mi></mrow><mo accent='true'>¯</mo></mover></mrow><mrow><mi>r</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>k</mi><mo class='MathClass-bin' stretchy='false'>−</mo><mn>1</mn></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <mn>2</mn><mi mathvariant='normal'>Δ</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <mi>ω</mi><mspace width='2em'></mspace></mtd>                                              <mtd class='align-odd' columnalign='right'></mtd>                     <mtd class='align-even'><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>&gt;</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                     <mtd class='align-label' columnalign='right'></mtd>                     <mtd class='align-label'><mspace width='2em'></mspace></mtd>                     <mtd class='align-label' columnalign='right'></mtd>                     <mtd class='align-label'>
+                     <mspace width='2em'></mspace></mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><msub><mrow><mi>η</mi></mrow><mrow><mi mathvariant='italic'>rk</mi></mrow></msub></mtd>                     <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>≤</mo><msub><mrow><mover accent='true'><mrow><mi>τ</mi></mrow><mo accent='true'>¯</mo></mover></mrow><mrow><mi>r</mi><mo class='MathClass-punc' stretchy='false'>,</mo><msubsup><mrow><mi>K</mi></mrow><mrow><mi>r</mi></mrow><mrow><mi>′</mi></mrow></msubsup></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msup><mrow><mi>H</mi></mrow><mrow><mi mathvariant='italic'>max</mi></mrow></msup> <mo class='MathClass-bin' stretchy='false'>+</mo> <mi mathvariant='normal'>Δ</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <mi>ω</mi> <mo class='MathClass-bin' stretchy='false'>−</mo> <mo class='MathClass-open' stretchy='false'>(</mo><msubsup><mrow><mi>K</mi></mrow><mrow>
+<mi>r</mi></mrow><mrow><mi>′</mi></mrow></msubsup><mo class='MathClass-bin' stretchy='false'>−</mo> <mi>k</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo><msup><mrow><mi>H</mi></mrow><mrow><mi mathvariant='italic'>min</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>.</mo><mspace width='2em'></mspace></mtd>                     <mtd class='align-odd' columnalign='right'></mtd>                     <mtd class='align-even'><mspace width='2em'></mspace></mtd>                          <mtd class='align-label' columnalign='right'></mtd>                     <mtd class='align-label'>
+   <mspace width='2em'></mspace></mtd></mtr></mtable></math>
+<!-- l. 25 --><p class='noindent'>The return interval is set to <!-- l. 25 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mo class='MathClass-open' stretchy='false'>[</mo><mi>η</mi> <mo class='MathClass-bin' stretchy='false'>−</mo> <mi>ω</mi> <mo class='MathClass-bin' stretchy='false'>−</mo><mi mathvariant='normal'>Δ</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>η</mi> <mo class='MathClass-bin' stretchy='false'>−</mo> <mi>ω</mi><mo class='MathClass-close' stretchy='false'>]</mo></mrow></math>.
+No overlap is allowed between services on the same side. The subsequent loops must meet the requirements of
+<!-- l. 25 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>h</mi> <mo class='MathClass-rel' stretchy='false'>≥</mo><mi mathvariant='normal'>Δ</mi></mrow></math>, and the
+actual departure time must not be earlier than the available time for vehicles. Normal service restoration also ensures that vehicles are
+available and can handle traffic congestion issues. The end point of the first vehicle’s service must coincide with the starting point
+of the second vehicle’s service. Additionally, the total travel time from the first vehicle’s arrival to its departure must
+not exceed the departure time of the second vehicle. Initial inventory is managed according to the recorded data, while
+available vehicles are used in a first-come, first-served manner. This explicit vehicle sequence replaces the old 02-style service
+numbering system (30/(32)), which could potentially result in negative indices. The sequence is also verified against the
+physical vehicle inventory. Services at the same station and in the same direction must be spaced at least 100 seconds
+apart.
+</p><!-- l. 27 --><p class='noindent'>
+</p>
+   <h4 class='likesubsectionHead' id='complete-od-queue-and-train-capacity'><a id='x1-4000'></a>Complete OD queue and train capacity</h4>
+<!-- l. 28 --><p class='noindent'>The state includes the continuous queues for each direction, starting and ending points, the number of ODs on vehicles, vehicle
+positions/available times, completed events, and normal references. The initial platform queues are derived from the complete normal schedule
+until <!-- l. 28 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>T</mi></mrow><mrow><mn>0</mn></mrow></msub></math>; the
+initially blocked vehicles return with empty vehicles after boundary evacuation, which is a clear completion of the initial state. The arrival
+rate <!-- l. 28 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mover accent='true'><mrow><mi>O</mi></mrow><mo accent='true'>~</mo></mover></mrow><mrow><mi>r</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>o</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>d</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math>
+is given as a constant per minute; during interruption periods, additional cross-road blockages require alternative
+transportation from the source text S1, while previous backlogs remain intact. Each platform service event
+<!-- l. 28 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>t</mi></math>, with the previous service at the same
+station and in the same direction being <!-- l. 28 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msup><mrow><mi>t</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>−</mo></mrow></msup></math>:
+</p><table class='equation-star'><tr><td>
+<!-- l. 29 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                                      <msub><mrow><mi>q</mi></mrow><mrow><mi mathvariant='italic'>rod</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>=</mo> <msub><mrow><mi>l</mi></mrow><mrow><mi mathvariant='italic'>rod</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><msup><mrow><mi>t</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>−</mo></mrow></msup><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-bin' stretchy='false'>+</mo><msubsup><mrow><mo> ∫
+ <!-- nolimits --></mo><!-- nolimits --></mrow><mrow><msup><mrow><mi>t</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>−</mo></mrow></msup></mrow><mrow><mi>t</mi></mrow></msubsup><msub><mrow><mover accent='true'><mrow><mi>O</mi></mrow><mo accent='true'>~</mo></mover></mrow><mrow>
+<mi mathvariant='italic'>rod</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>u</mi><mo class='MathClass-close' stretchy='false'>)</mo><mspace class='thinspace' width='0.17em'></mspace><mi mathvariant='italic'>du</mi><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 32 --><p class='indent'>   Passengers who arrive at the destination marked as <!-- l. 32 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>o</mi></math>
+on the shuttle can get off now. Next, we will define the set of destinations that can be reached along this route:
+<!-- l. 32 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>E</mi></math>. There are
+still <!-- l. 32 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>D</mi> <mo class='MathClass-bin' stretchy='false'>−</mo> <mi>B</mi></mrow></math> seats
+available. Seats will be allocated proportionally to the original distribution: </p><table class='equation-star'><tr><td>
+
+<!-- l. 33 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mi>γ</mi> <mo class='MathClass-rel' stretchy='false'>=</mo>  <mrow><mo fence='true' form='prefix'> {</mo><mrow> <mtable align='axis' class='array' columnlines='none' displaystyle='true' equalcolumns='false' equalrows='false' style=''> <mtr class='array-row'><mtd class='array-td' columnalign='left'><mtext class='qopname'>min</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo><mo class='MathClass-open' stretchy='false'>{</mo><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mo class='MathClass-open' stretchy='false'>(</mo><mi>D</mi> <mo class='MathClass-bin' stretchy='false'>−</mo> <mi>B</mi><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-bin' stretchy='false'>∕</mo><munder class='msub'><mrow><mo>∑</mo>
+  </mrow><mrow><mi>d</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>E</mi></mrow></munder><msub><mrow><mi>q</mi></mrow><mrow><mi mathvariant='italic'>rod</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>}</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace></mtd><mtd class='array-td' columnalign='left'><munder class='msub'><mrow><mo>∑</mo>
+  </mrow><mrow><mi>d</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>E</mi></mrow></munder><msub><mrow><mi>q</mi></mrow><mrow><mi mathvariant='italic'>rod</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>&gt;</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo></mtd>
+</mtr>   <!-- @{}l@{\quad }l@{} --></mtable>                                                                                             </mrow><mo fence='true' form='postfix'></mo></mrow><mspace class='quad' width='1em'></mspace><msub><mrow><mover accent='true'><mrow><mi>q</mi></mrow><mo accent='true'>^</mo></mover></mrow><mrow><mi mathvariant='italic'>rod</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo><msub><mrow> <mstyle mathvariant='bold'><mn>1</mn></mstyle></mrow><mrow><mo class='MathClass-open' stretchy='false'>{</mo><mi>d</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>E</mi><mo class='MathClass-close' stretchy='false'>}</mo></mrow></msub><mi>γ</mi><msub><mrow><mi>q</mi></mrow><mrow><mi mathvariant='italic'>rod</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><msub><mrow><mi>l</mi></mrow><mrow><mi mathvariant='italic'>rod</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <msub><mrow><mi>q</mi></mrow><mrow><mi mathvariant='italic'>rod</mi></mrow></msub><mo class='MathClass-bin' stretchy='false'>−</mo><msub><mrow><mover accent='true'><mrow><mi>q</mi></mrow><mo accent='true'>^</mo></mover></mrow><mrow><mi mathvariant='italic'>rod</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 41 --><p class='indent'>   The number of passengers in the vehicle remains constant depending on the destination, always staying within the range of
+<!-- l. 41 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mo class='MathClass-open' stretchy='false'>[</mo><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mi>D</mi><mo class='MathClass-close' stretchy='false'>]</mo></mrow></math>. The
+queue at the platform is non-negative. Short detours can only transport ODs that are on the same side and can be reached from the current
+direction of travel.
+</p><!-- l. 43 --><p class='noindent'>
+</p>
+   <h4 class='likesubsectionHead' id='limited-termination-and-targets'><a id='x1-5000'></a>Limited termination and targets</h4>
+<!-- l. 44 --><p class='noindent'>Every direction ends with a service that has the same complete trajectory as the normal reference. After each station, the remaining
+passengers in the queue should not exceed the corresponding number for the normal reference. The recovery conditions are identical to those
+in the original text (16). When the service concludes, all passengers on the vehicle must have arrived; any passengers who did not board the
+vehicle should continue to be tracked and reported. The goal is to minimize the total negative cost of the limited recovery sequence.
+</p><table class='equation-star'><tr><td>
+<!-- l. 45 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtext class='qopname'>max</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo><mi>C</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-bin' stretchy='false'>−</mo><mrow><mo fence='true' form='prefix'> [</mo><mrow> <mfrac><mrow><msub><mrow><mi>c</mi></mrow><mrow><mi>W</mi></mrow></msub></mrow>
+<mrow><mn>3600</mn></mrow></mfrac><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mstyle class='text'><mtext>Platform events </mtext></mstyle><mi>e</mi></mrow></munder><munderover accent='false' accentunder='false'><mrow><mo> ∫
+ <!-- nolimits --></mo><!-- nolimits --></mrow><mrow><munderover accent='false' accentunder='false'><mrow><mi>t</mi></mrow><mrow><mi>e</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>−</mo></mrow></munderover></mrow><mrow><msub><mrow><mi>t</mi></mrow><mrow><mi>e</mi></mrow></msub>
+       </mrow></munderover><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>d</mi></mrow></munder><msub><mrow><mi>Q</mi></mrow><mrow><msub><mrow><mi>r</mi></mrow><mrow><mi>e</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>o</mi></mrow><mrow><mi>e</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mi>d</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>u</mi><mo class='MathClass-close' stretchy='false'>)</mo><mspace class='thinspace' width='0.17em'></mspace><mi mathvariant='italic'>du</mi> <mo class='MathClass-bin' stretchy='false'>+</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mstyle class='text'><mtext>Sweep radius </mtext></mstyle><mi>e</mi></mrow></munder><msub><mrow><mi>c</mi></mrow><mrow><mi>E</mi></mrow></msub><msub><mrow><mi>𝜖</mi></mrow><mrow><mi>e</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>m</mi></mrow><mrow><mi>T</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>m</mi></mrow><mrow><mi>P</mi></mrow></msub><msub><mrow><mi>B</mi></mrow><mrow><mi>e</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-bin' stretchy='false'>+</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mstyle class='text'><mtext>Sweep radius </mtext></mstyle><mi>e</mi></mrow></munder><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>c</mi></mrow><mrow><mi>D</mi></mrow></msub><msub><mrow><mi>L</mi></mrow><mrow><mi>e</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>c</mi></mrow><mrow><mi>T</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><munderover accent='false' accentunder='false'><mrow><mi>τ</mi></mrow><mrow><mi>e</mi></mrow><mrow><mi>′</mi></mrow></munderover><mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>τ</mi></mrow><mrow>
+<mi>e</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>c</mi></mrow><mrow><mi>S</mi></mrow></msub><msub><mrow><mi>K</mi></mrow><mrow><mi mathvariant='italic'>short</mi></mrow></msub></mrow><mo fence='true' form='postfix'>]</mo></mrow> <mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 53 --><p class='indent'>   The waiting time is calculated based on the total points available to cover the queue length at each station, from the initial state/last
+event to this current event. The cumulative costs for each direction are calculated up to the moment when service restoration is confirmed.
+The operating energy consumption is calculated based on the passenger weight carried per arc. For repeated stops at
+intermediate stations, the driving distance is not considered; each initial return/short stop is counted as one short stop
+cost.
+</p><!-- l. 55 --><p class='noindent'>
+</p>
+   <h4 class='likesubsectionHead' id='algorithms-and-delivery-of-evidence'><a id='x1-6000'></a>Algorithms and delivery of evidence</h4>
+<!-- l. 56 --><p class='noindent'>The code searches for 12 sets of preference intervals, adjusts them based on availability within the
+<!-- l. 56 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>H</mi></math> range,
+and integrates normal trajectories during the recovery phase. The search method uses 12 sets of preferences to generate candidate strategies.
+All events, OD queues, vehicle chains, cost details, and recovery certificates are output. Capacity, ongoing queues, vehicle uniqueness,
+blockages, rejections, and recovery conditions are calculated for each item. The current entry performs a 3600-second budget check at the
+function/loop boundaries, including cases where no viable candidates have been found. The results record the target values of the generated
+viable strategies.
+</p>
+    
+</body> 
+</html>

@@ -1,0 +1,39 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\title{Three-Generator Single-Contingency Model}
+\author{}
+\date{}
+\begin{document}
+\maketitle
+
+\section*{Notation and data}
+The generator set is $\mathcal G=\{1,2,3\}$. Case $0$ is the base case and case $1$ is the single contingency, in which generator $1$ is out of service. Demand is $1$ in both cases. The base-generation lower bounds are zero and the upper bounds are $(1,1,0.25)$. Generator $3$ also has contingency-output bounds $0$ and $0.25$. The base-generation quadratic cost coefficients are $(1,1,1)$, with an additional linear cost coefficient $2$ for generator $3$. The shortage quadratic and linear cost coefficients are $10$ and $3$, respectively.
+
+\section*{Decision variables}
+For $g\in\mathcal G$ and $k\in\{0,1\}$, $p_{g,k}$ denotes generator output. The variable $\sigma_1$ denotes contingency shortage, and $\delta_1$ denotes the response adjustment of generator $3$. All eight variables are continuous. The response adjustment satisfies $\delta_1\in\mathbb R$ and the contingency equations below.
+
+\section*{Exact extensive-form quadratic program}
+The selected formulation jointly minimizes over the base and contingency variables, with the minimizing recourse objective expanded exactly. The result is an extensive-form quadratic program.
+\begin{align}
+\min_{\substack{(p_{g,k})_{g\in\mathcal G,\,k\in\{0,1\}},\,\sigma_1,\,\delta_1}}
+\quad & p_{1,0}^{2}+p_{2,0}^{2}+p_{3,0}^{2}
+       +2p_{3,0}+10\sigma_1^{2}+3\sigma_1
+       \label{eq:objective}\\
+\text{subject to}\quad
+&0\le p_{1,0}\le 1,\\
+&0\le p_{2,0}\le 1,\\
+&0\le p_{3,0}\le 0.25,\\
+&p_{1,0}+p_{2,0}+p_{3,0}=1,\\
+&p_{1,1}=0,\\
+&p_{2,1}=p_{2,0},\\
+&p_{3,1}=p_{3,0}+\delta_1,\\
+&0\le p_{3,1}\le 0.25,\\
+&\sigma_1\ge 0,\\
+&p_{1,1}+p_{2,1}+p_{3,1}+\sigma_1=1,\\
+&p_{g,k}\in\mathbb R
+  \qquad(g\in\mathcal G,\ k\in\{0,1\}),\\
+&\sigma_1\in\mathbb R,\qquad \delta_1\in\mathbb R.
+\end{align}
+
+\end{document}

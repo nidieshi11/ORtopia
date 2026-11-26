@@ -1,0 +1,57 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\emergencystretch=4em
+\usepackage{geometry}
+\geometry{paperwidth=235mm,paperheight=297mm,hmargin=18mm,vmargin=19mm}
+\begin{document}
+\section*{Resuming scheduling for rail transit services after interruptions, including short detours.}
+The current finite-event model completes the recovery-ending conditions and cost terms in equations (16)--(22) of the original paper. It retains the timetable, passenger flows, headways and vehicle availability constraints from the earlier model in file 02. All 16 stations, 15 line sections, and 47 physical trains in the original Figure 9 are retained. The missed demand and initial states are taken from the existing completed data. The current code uses policy search to produce a feasible schedule.
+
+\subsection*{Input and Decision-making}
+Two directions $r\in\{0,1\}$, interruption $[T_0,T_0+\widetilde T)$. Control nodes are located on both sides of the blocked section. $\eta_{rk}$ is the departure time of the service control node for item $k$, $h_{rk}$ is the interval, and $H=\{100,150,\ldots,500\}$ seconds; Normal schedule times are 171 and 180 trains respectively. Recovery reference times are defined instead of mandatory rearrangement of 351 trains. Inter-station operation time $v$, station stops $\omega=25$ seconds, return trips $\Delta=180$ seconds, and garage preparation and capacity $D$ are all given as inputs. Vehicles have unique identifiers, current locations, and earliest available times. The decision is a finite service sequence, with each $h_{rk}$, valid routes, and actual vehicle allocation.
+\[
+\eta_{rk}=\eta_{r,k-1}+h_{rk},\qquad h_{rk}\in H.
+\]
+The first column, $K'_r$, indicates the areas where services are temporarily suspended. Subsequently, at $\eta_{rk}-\Delta-\omega<T_0+\widetilde T$, a short detour route will be selected on the same side; otherwise, the route will remain normal. Adjacent stations along the route are identified by $\tau_{n',k}=\tau_{n,k}+v_{nn'}+\omega$. Stations that are part of the detour points are marked with $\Delta+\omega$. No one is allowed to enter the blocked areas until the congestion is resolved.
+
+\subsection*{Vehicle and backtracking resources}
+Let the input initial earliest return moment be $\bar\tau_{rk}$. The initial return service is satisfied.
+\begin{align*}
+\eta_{rk}&\ge\bar\tau_{rk}+\Delta+\omega,\\
+\eta_{rk}&\ge\bar\tau_{r,k-1}+2\Delta+\omega &&k>1,\\
+\eta_{rk}&\le\bar\tau_{r,K'_r}+H^{max}+\Delta+\omega
+ -(K'_r-k+1)H^{min}.
+\end{align*}
+The return interval is set to $[\eta-\omega-\Delta,\eta-\omega]$. No overlap is allowed between services on the same side. The subsequent loops must meet the requirements of $h\ge\Delta$, and the actual departure time must not be earlier than the available time for vehicles. Normal service restoration also ensures that vehicles are available and can handle traffic congestion issues. The end point of the first vehicle’s service must coincide with the starting point of the second vehicle’s service. Additionally, the total travel time from the first vehicle’s arrival to its departure must not exceed the departure time of the second vehicle. Initial inventory is managed according to the recorded data, while available vehicles are used in a first-come, first-served manner. This explicit vehicle sequence replaces the old 02-style service numbering system (30/(32)), which could potentially result in negative indices. The sequence is also verified against the physical vehicle inventory. Services at the same station and in the same direction must be spaced at least 100 seconds apart.
+
+\subsection*{Complete OD queue and train capacity}
+The state includes the continuous queues for each direction, starting and ending points, the number of ODs on vehicles, vehicle positions/available times, completed events, and normal references. The initial platform queues are derived from the complete normal schedule until $T_0$; the initially blocked vehicles return with empty vehicles after boundary evacuation, which is a clear completion of the initial state. The arrival rate $\widetilde O_{r,o,d}(t)$ is given as a constant per minute; during interruption periods, additional cross-road blockages require alternative transportation from the source text S1, while previous backlogs remain intact. Each platform service event $t$, with the previous service at the same station and in the same direction being $t^-$:
+\[
+q_{rod}(t)=l_{rod}(t^-)+\int_{t^-}^{t}\widetilde O_{rod}(u)\,du .
+\]
+Passengers who arrive at the destination marked as $o$ on the shuttle can get off now. Next, we will define the set of destinations that can be reached along this route: $E$. There are still $D-B$ seats available. Seats will be allocated proportionally to the original distribution:
+\[
+\gamma=\begin{cases}
+\min\{1,(D-B)/\sum_{d\in E}q_{rod}\},&\sum_{d\in E}q_{rod}>0,\\
+0,&\text{otherwise},
+\end{cases}\quad
+\widehat q_{rod}=\mathbf1_{\{d\in E\}}\gamma q_{rod},\quad
+l_{rod}=q_{rod}-\widehat q_{rod}.
+\]
+The number of passengers in the vehicle remains constant depending on the destination, always staying within the range of $[0,D]$. The queue at the platform is non-negative. Short detours can only transport ODs that are on the same side and can be reached from the current direction of travel.
+
+\subsection*{Limited termination and targets}
+Every direction ends with a service that has the same complete trajectory as the normal reference. After each station, the remaining passengers in the queue should not exceed the corresponding number for the normal reference. The recovery conditions are identical to those in the original text (16). When the service concludes, all passengers on the vehicle must have arrived; any passengers who did not board the vehicle should continue to be tracked and reported. The goal is to minimize the total negative cost of the limited recovery sequence.
+\[
+\max C=-\left[
+\frac{c_W}{3600}\sum_{\text{Platform events }e}\int_{t_e^-}^{t_e}
+\sum_d Q_{r_e,o_e,d}(u)\,du
++\sum_{\text{Sweep radius }e}c_E\epsilon_e(m_T+m_PB_e)
++\sum_{\text{Sweep radius }e}(c_D L_e+c_T(\tau'_e-\tau_e))
++c_S K_{\rm short}\right].
+\]
+The waiting time is calculated based on the total points available to cover the queue length at each station, from the initial state/last event to this current event. The cumulative costs for each direction are calculated up to the moment when service restoration is confirmed. The operating energy consumption is calculated based on the passenger weight carried per arc. For repeated stops at intermediate stations, the driving distance is not considered; each initial return/short stop is counted as one short stop cost.
+
+\subsection*{Algorithms and delivery of evidence}
+The code searches for 12 sets of preference intervals, adjusts them based on availability within the $H$ range, and integrates normal trajectories during the recovery phase. The search method uses 12 sets of preferences to generate candidate strategies. All events, OD queues, vehicle chains, cost details, and recovery certificates are output. Capacity, ongoing queues, vehicle uniqueness, blockages, rejections, and recovery conditions are calculated for each item. The current entry performs a 3600-second budget check at the function/loop boundaries, including cases where no viable candidates have been found. The results record the target values of the generated viable strategies.
+\end{document}

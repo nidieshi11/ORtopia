@@ -1,0 +1,41 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,longtable}
+\emergencystretch=4em
+\begin{document}
+\section*{P145: Current complete mathematical model (as of 2026-10-20)}
+\section*{Basis and scope of the revision}Restored limited delivery capacity per vehicle, achievable range, and continuous delivery of individual drones. The combined path model involving trucks and drones, based on fixed-demand snapshots, enables optimal optimization of delivery routes.
+
+\section*{Data and variables}
+Let $C$ be the set of customers, $K$ the set of vehicles, and $o,f$ the source and sink. The allowed truck arcs $E\subset(\{o\}\cup C)\times(C\cup\{f\})$ contain no self-loops. Each vehicle carries one drone. The set $F$ consists of allowable sorties $(i,j,l)$ with three distinct nodes and a drone-eligible customer $j$, satisfying $d_j\le Q_D$ and $t'_{ij}+t'_{jl}\le E_D$. Capacity, time, deadlines, costs, and rejection penalties are instance parameters. The binary variables $x_{ijk},r_{ijk},y_{ijlk}$ represent truck movement, a drone traveling on the truck, and a complete drone sortie, respectively. Time variables satisfy $a_{ik},a'_{jk}\in[0,H]$, the ordering variable is $u_{ik}\in[0,|V|]$, and lateness is $L_{jk}\ge0$. Define $v_{jk}=\sum_i x_{ijk}$, $b_{jk}=\sum_{(i,j,l)\in F}y_{ijlk}$, and $h_k=\sum_jx_{ojk}$.
+\section*{Complete constraints}
+\[
+\sum_k(v_{jk}+b_{jk})\le1,\quad h_k\le1,\quad
+\sum_ix_{ifk}=h_k,\quad v_{jk}=\sum_lx_{jlk},\quad a_{ok}=u_{ok}=0.
+\]
+\[
+a_{jk}\le Hv_{jk},\quad a'_{jk}\le Hb_{jk},\quad
+L_{jk}\ge a_{jk}-D_j,\quad L_{jk}\ge a'_{jk}-D_j,\quad
+\sum_jd_j(v_{jk}+b_{jk})\le Q_T.
+\]
+\[
+r_{ijk}\le x_{ijk},\quad
+a_{jk}\ge a_{ik}+t_{ij}-M(1-x_{ijk}),\quad
+u_{jk}\ge u_{ik}+1-|V|(1-x_{ijk}).
+\]
+Each point and each vehicle can have a maximum of one takeoff and landing. The number of source/sink operations is limited by $h_k$, while the number of operations at customers is limited by $v_{jk}$.
+\[
+a'_{jk}\ge a_{ik}+t'_{ij}-M(1-y_{ijlk}),\quad
+a_{lk}\ge a'_{jk}+t'_{jl}-M(1-y_{ijlk}),\quad
+u_{lk}\ge u_{ik}+1-|V|(1-y_{ijlk}).
+\]
+For each vehicle and each node, the drone follows a path consisting of an arc $r$ along with a complete flight path $y$. This combined path forms a unit flow from $o$ to $f$. The difference between outflow and inflow is $h_k$ at $o$, $-h_k$ at $f$, and zero for all other cases. The order in which trucks are processed is determined by this flow, ensuring that no overlapping flights occur.
+\section*{Target}
+\[
+\min c_T\sum_{ijk}t_{ij}x_{ijk}
++c_D\sum_{(i,j,l),k}(t'_{ij}+t'_{jl})y_{ijlk}
++\sum_{jk}\alpha_jL_{jk}
++\sum_j\beta_j(1-\sum_k(v_{jk}+b_{jk})).
+\]
+This is the problem of determining the exact path for handling original requests. It allows for the imposition of fines in case of rejected requests, and it’s necessary to keep track of both service orders and rejected requests separately.
+
+\end{document}

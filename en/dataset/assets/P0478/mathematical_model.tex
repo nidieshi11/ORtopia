@@ -1,0 +1,235 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\section*{High-level scenario-based chance-constrained TIO-MPC}
+\begin{align}
+\min_{\tilde t(k)}\quad &\mathrm E_{\tilde{\mathcal H}}\bigl[f_{\mathrm{opt}}(x(k),\tilde t(k),\tilde h)\bigr] \tag{17}\\
+\text{subject to}\quad &\Pr_{\tilde{\mathcal H}}\bigl[\tilde g_{\mathrm{TIO}}(x(k),\tilde t(k),\tilde h)\leq0\bigr]\geq\eta, \tag{18}\\
+&g_{\tilde t}(\tilde t(k))\leq0. \tag{19}
+\end{align}
+Here $\eta\in(0,1)$. The probability in (18) is a joint constraint-satisfaction probability, not a separate probability for each component. The decisions in (17) are continuous intervention time instants. The current state $x(k)$ is input data at this MPC step. The middle- and low-level objectives below are subsequent, separate optimizations, not additional terms in (17).
+
+\subsection*{State, actions, uncertainties, and deterioration}
+The infrastructure has $n$ components with independent condition-deterioration dynamics. For component $j$,
+\[
+x_j(k)=\begin{bmatrix}x_j^{\mathrm{con}}(k)\\x_j^{\mathrm{aux}}(k)\end{bmatrix}\in\mathcal X_j,
+\qquad j\in\{1,\ldots,n\}.
+\]
+The condition is $x_j^{\mathrm{con}}$; the vector $x_j^{\mathrm{aux}}$ contains the auxiliary state needed to describe the history-dependent inefficiency of corrective maintenance. The sets $\mathcal X_j$ and the functions below remain abstract in the generic model. A larger condition value means worse condition. Natural deterioration is monotonically increasing; the exponential trajectory in Fig.~3 is an illustration, not a prescribed generic dynamics function.
+\[
+\mathcal U=\{a_0,\ldots,a_N\},\qquad u_j(k)\in\mathcal U,
+\qquad u(k)=[u_1(k)^{\mathrm T}\ \cdots\ u_n(k)^{\mathrm T}]^{\mathrm T}\in\mathcal U^n.
+\]
+The same action set is used for all components. There are $N$ interventions: $a_0$ is no maintenance and $a_N$ is full renewal.
+\[
+\theta_j(k)\in\Theta_j,\qquad
+\theta(k)=[\theta_1^{\mathrm T}(k)\ \cdots\ \theta_n^{\mathrm T}(k)]^{\mathrm T}\in\Theta.
+\]
+These are uncertainty realizations, not decisions.
+\begin{equation}
+\begin{aligned}
+x_j(k+1)&=f_j(x_j(k),u_j(k),\theta_j(k))\\
+&=\begin{cases}
+f_j^0(x_j(k),\theta_j(k)),&u_j(k)=a_0\quad\text{(no maintenance)},\\
+f_j^q(x_j(k),\theta_j(k)),&u_j(k)=a_q,\quad\forall q\in\{1,\ldots,N-1\},\\
+f_j^N(\theta_j(k)),&u_j(k)=a_N\quad\text{(full renewal)},
+\end{cases}\\[-2pt]
+&\hspace{1cm}\forall j\in\{1,\ldots,n\}.
+\end{aligned}\tag{1}
+\end{equation}
+Natural degradation $f_j^0$ depends only on current condition and uncertainties. Renewal is stochastic but independent of current condition and maintenance history, restoring an ``as good as new'' condition. Other interventions depend on current condition and maintenance history.
+\begin{align}
+x(k+1)&=f(x(k),u(k),\theta(k)), \tag{2}\\
+g(x(k),u(k),\theta(k))&\leq0, \tag{3}
+\end{align}
+where $f=[f_1^{\mathrm T}\ \cdots\ f_n^{\mathrm T}]^{\mathrm T}$. The abstract vector $g$ collects local constraints, including keeping each component's condition below its maintenance limit, and system-wide resource constraints, such as maintenance budget and working-time limits. No numerical limit or additional explicit form of $g$ is fixed for this generic formulation.
+
+\subsection*{Prediction construction and time-instant decisions}
+$N_{\mathrm P}$ and $N_{\mathrm C}$ are the prediction and control horizon lengths. The estimate $\hat x(k+l\mid k)$ is based on information available at time $k$.
+\[
+\begin{aligned}
+\tilde x(k)&=[\hat x^{\mathrm T}(k+1\mid k)\ \cdots\ \hat x^{\mathrm T}(k+N_{\mathrm P}\mid k)]^{\mathrm T},\\
+\tilde u(k)&=[u^{\mathrm T}(k)\ \cdots\ u^{\mathrm T}(k+N_{\mathrm P}-1)]^{\mathrm T},\\
+\tilde\theta(k)&=[\theta^{\mathrm T}(k)\ \cdots\ \theta^{\mathrm T}(k+N_{\mathrm P}-1)]^{\mathrm T}.
+\end{aligned}
+\]
+\begin{align}
+\tilde x(k)&=\tilde f(x(k),\tilde u(k),\tilde\theta(k)), \tag{4}\\
+\tilde g(x(k),\tilde u(k),\tilde\theta(k))&\leq0. \tag{5}
+\end{align}
+The function $\tilde f$ is obtained by recursive substitution of (2) over the prediction horizon; $\tilde g$ is obtained similarly from (3). Equations (3) and (5) describe the underlying constraint family, whose scenario-based satisfaction is imposed through (18), not as an additional robust constraint for every scenario.
+
+The fixed quantity $\nu_{j,q}$ is the maximum number of occurrences of intervention $q$ on component $j$ within the prediction period. The continuous vector $t_{j,q,k}$ has length $\nu_{j,q}$ and contains relative intervention time instants.
+\begin{equation}
+\tilde t(k)=\left[
+\underbrace{t_{1,1,k}^{\mathrm T}\ \cdots\ t_{1,N,k}^{\mathrm T}}_{t_1^{\mathrm T}(k)}\ \cdots\
+\underbrace{t_{n,1,k}^{\mathrm T}\ \cdots\ t_{n,N,k}^{\mathrm T}}_{t_n^{\mathrm T}(k)}
+\right]^{\mathrm T}.\tag{6}
+\end{equation}
+The TIO conversion rounds time instants to the nearest discrete time steps to obtain $\tilde u(k)$. Instants outside the control period $N_{\mathrm C}T_s$ are neglected. Here $T_s$ is the sampling time. For $N_{\mathrm C}<N_{\mathrm P}$,
+\[
+u_j(k+l)=a_0\quad
+\forall l\in\{N_{\mathrm C},\ldots,N_{\mathrm P}-1\},\quad
+\forall j\in\{1,\ldots,n\}.
+\]
+In the preceding display the action symbol is $u_j$, i.e. explicitly:
+\[
+u_j(k+l)\equiv u_j(k+l).
+\]
+The complete deterministic timing block represented by (19) is
+\begin{align}
+(t_{j,q,k})_1&\geq t_{j,q}^{\min}, \tag{7}\\
+(t_{j,q,k})_{\nu_{j,q}}&\leq t_{j,q}^{\max}, \tag{8}\\
+(t_{j,q,k})_{i+1}-(t_{j,q,k})_i&\geq\Delta t_{j,q}^{\min},
+\quad\forall i\in\{1,\ldots,\nu_{j,q}-1\}, \tag{9}\\
+t_{j,q}^{\max}&=N_{\mathrm C}T_s+\nu_{j,q}\Delta t_{j,q}^{\min}. \tag{10}
+\end{align}
+Every row applies for all $j\in\{1,\ldots,n\}$ and $q\in\{1,\ldots,N\}$. The lower bound $t_{j,q}^{\min}$ accommodates advance planning, and $\Delta t_{j,q}^{\min}$ is the minimum interval between consecutive interventions of the same type. Equation (10) is the fixed upper-bound definition allowing no intervention within the control period; it is not replaced by a bound at the control-horizon endpoint.
+
+\subsection*{Scenarios and objective definitions}
+\[
+\tilde\Theta=\Theta^{N_{\mathrm P}},\qquad
+\tilde{\mathcal H}\subset\tilde\Theta.
+\]
+The set $\tilde{\mathcal H}$ contains the selected representative uncertainty scenarios over the whole prediction period. For any $\tilde h\in\tilde{\mathcal H}$, the TIO prediction and its constraint expression are
+\begin{align}
+\tilde x(k)&=\tilde f_{\mathrm{TIO}}(x(k),\tilde t(k),\tilde h), \tag{11}\\
+\tilde g_{\mathrm{TIO}}(x(k),\tilde t(k),\tilde h)&\leq0. \tag{12}
+\end{align}
+The inequality (12) defines the event in (18); it is not independently imposed for every representative scenario.
+\begin{align}
+J(k)&=J_{\mathrm{Deg}}(k)+\lambda\mu J_{\mathrm{Maint}}(k), \tag{13}\\
+J_{\mathrm{Deg}}(k)&=\sum_{j=1}^{n}\sum_{l=1}^{N_{\mathrm P}}
+\left|x_j^{\mathrm{con}}(k+l)-\hat x_j^{\mathrm{con}}\right|_q, \tag{14}\\
+J_{\mathrm{Maint}}(k)&=\sum_{j=1}^{n}\sum_{l=1}^{N_{\mathrm P}}\sum_{q=1}^{p}
+\gamma_{j,q}I_{u_j(k+l-1)=a_q}, \tag{15}\\
+J(k)&=f_{\mathrm{opt}}(x(k),\tilde t(k),\tilde h). \tag{16}
+\end{align}
+Select the source-supported $1$-norm version of (14), namely $q=1$ in that row. The $q$ in (15) is instead an intervention summation index. The factor $\mu$ scales the maintenance cost and $\lambda$ expresses the condition--cost trade-off. The coefficient $\gamma_{j,q}$ is the cost of intervention $a_q$ on component $j$.
+\[
+I_X=\begin{cases}1,&X\text{ is true},\\0,&X\text{ is false}.\end{cases}
+\]
+The symbol $\hat x_j^{\mathrm{con}}$ and the upper limit $p$ are retained as printed in (14)--(15). The supplied generic passages do not specify their values or identify $p$ with $N$; no such identification is introduced here. In particular, the time-independent hatted quantity in (14) is not replaced by $\hat x_j^{\mathrm{con}}(k+l\mid k)$.
+\begin{equation}
+\mathrm E_{\tilde{\mathcal H}}\bigl[f_{\mathrm{opt}}(x(k),\tilde t(k),\tilde h)\bigr]
+=\sum_{\tilde h\in\tilde{\mathcal H}}p(\tilde h)
+ f_{\mathrm{opt}}(x(k),\tilde t(k),\tilde h).\tag{20}
+\end{equation}
+Here $p(\tilde h)$ is the probability of scenario $\tilde h$, distinct from the upper summation limit $p$ in (15). The equivalent finite-scenario expression of (18) is
+\begin{equation}
+\sum_{\tilde h\in\tilde{\mathcal H}}p(\tilde h)
+ I_{\tilde g_{\mathrm{TIO}}(x(k),\tilde t(k),\tilde h)\leq0}\geq\eta.\tag{21}
+\end{equation}
+
+
+\section*{Middle-level time-slot allocation}
+At the current planning step there are at most \(N_{\rm sl}\) available slots.
+The intervals \([\tau_j,\tau_{j+1}]\), \(j=1,\ldots,N_\tau\), have disruption rates \(c_j\).
+Let \(a_i=t_i^{\rm start},\,b_i=t_i^{\rm end}\). Each active slot has setup time
+\(T_{\rm set}\) and cost \(c_{\rm sl}\). The required productive time is \(\widehat T_{\rm Maint}\).
+\begin{align}
+\min_{a,b}\quad&
+ \sum_{i=1}^{N_{\rm sl}}\sum_{j=1}^{N_\tau}c_j
+ [\max(\min(\tau_{j+1},b_i),\tau_j)-\min(\max(\tau_j,a_i),\tau_{j+1})]
+ +\lambda_{\rm sl}\sum_{i=1}^{N_{\rm sl}}c_{\rm sl}{\bf1}_{b_i\le\tau_{N_\tau+1}}\tag{22}\\
+a_1&\ge\tau_1\tag{23}\\
+b_{N_{\rm sl}}&\le\tau_{\max}\tag{24}\\
+b_i-a_i&\ge\Delta\tau_{\min} &&(1\le i\le N_{\rm sl})\tag{25}\\
+b_i+\epsilon&\le a_{i+1} &&(1\le i\le N_\tau-1)\tag{26}\\
+\tau_{\max}&=\tau_{N_\tau+1}+2N_{\rm sl}\Delta\tau_{\min}\tag{27}\\
+a_i\le\tau_{N_\tau+1}&\implies b_i\le\tau_{N_\tau+1} &&(1\le i\le N_{\rm sl})\tag{28}\\
+\sum_{i=1}^{N_{\rm sl}}{\bf1}_{b_i\le\tau_{N_\tau+1}}
+ (b_i-a_i-T_{\rm set})&\ge\widehat T_{\rm Maint}.\tag{29}
+\end{align}
+The printed index in (26) is retained. The instances use \(N_\tau=N_{\rm sl}=2\).
+\section*{Low-level clustering}
+At each active slot \(s\) of duration \(T_s^{\rm sl}\), consider only units in components
+selected for the intervention. Initially \(\mathcal I_1=\{1,\ldots,N^{\rm bu}\}\);
+subsequently \(\mathcal I_s\) contains the indices still untreated. Unit \(j\) has
+location \(\xi_j\) and severity \(w_j\). Set
+\(l_i=\phi_{i,s}^{\rm start},\,r_i=\phi_{i,s}^{\rm end}\).
+\begin{align}
+\max_{l,r}\quad&
+\sum_{i=1}^{N_{\rm cl}}\sum_{j\in\mathcal I_s}w_j{\bf1}_{l_i\le\xi_j\le r_i}
+ +\lambda\sum_{i=1}^{N_{\rm cl}}{\bf1}_{r_i>\bar\xi}\tag{30}\\
+l_1&\ge\underline\xi\tag{31}\\
+r_{N_{\rm cl}}&\le\xi_{\max}\tag{32}\\
+\Delta\phi_{\min}\le r_i-l_i&\le\Delta\phi_{\max} &&(1\le i\le N_{\rm cl})\tag{33}\\
+l_{i+1}-r_i&\ge\epsilon &&(1\le i<N_{\rm cl})\tag{34}\\
+\xi_{\max}&=\bar\xi+2N_{\rm cl}(\Delta\phi_{\min}+\epsilon)\tag{35}\\
+l_i\le\bar\xi&\iff r_i\le\bar\xi &&(1\le i\le N_{\rm cl})\tag{36}\\
+\sum_{i=1}^{N_{\rm cl}}{\bf1}_{r_i\le\bar\xi}
+ \left((r_i-l_i)/v_{\rm on}+T_{\rm on}+T_{\rm off}\right)
+ +\sum_{i=1}^{N_{\rm cl}-1}{\bf1}_{r_i\le\bar\xi}
+ (l_{i+1}-r_i)/v_{\rm off}+T_{\rm set}&\le T_s^{\rm sl}.\tag{37}
+\end{align}
+The drive sum in (37) includes the move to the following cluster when the current one is active,
+including the printed move from an active cluster to its next inactive successor.
+\section*{Sequential coordination, execution, and feedback}
+The three objectives are linked by the procedure in Section~4, Fig.~4, and Algorithm~1. At the high level, the input consists of basic-unit positions $\xi$ and initial conditions $w(0)$. The algorithm initializes
+\[
+k\leftarrow1,\qquad w(k)\leftarrow w(0),\qquad
+x(k)\leftarrow\operatorname{Aggregate}(w(k),\xi).
+\]
+For $k\leq k_{\mathrm{end}}$, the high-level solve and conversion produce
+\[
+u(k)\leftarrow\operatorname{MPC\_Optimize}(x(k)).
+\]
+Here the left side is the action vector $u(k)$. Only the current-step intervention decision is implemented, following the receding-horizon principle. For each intervention $a_l$, if any $u_j(k)=a_l$, the subsequent calls are
+\[
+\begin{aligned}
+t_{\mathrm{sl}}(k)&\leftarrow\operatorname{MiddleLevel}(u(k),a_l,\widehat T_{\mathrm{Maint}}),\\
+\phi(k)&\leftarrow\operatorname{LowLevel}(w(k),\xi,t_{\mathrm{sl}}(k),a_l).
+\end{aligned}
+\]
+The first call solves the selected middle-level problem; the second solves the selected clustering problem sequentially for the active slots using the sets $\mathcal I_s$ above. The generic input $\widehat T_{\mathrm{Maint}}$ is the estimated time to perform the suggested intervention. The particular grinding estimator (47) and numerical case-study settings are not imposed on this generic formulation.
+
+Let $\mathcal I_{\mathrm{rem}}$ be the set of indices of basic units not covered by any cluster in any active slot. The feedback quantities are
+\begin{align}
+v_{\mathrm{rem}}&=
+\frac{\displaystyle\sum_{j\in\mathcal I_{\mathrm{rem}}}w_j}
+{\displaystyle\sum_{j=1}^{N^{\mathrm{bu}}}w_j}, \tag{38}\\
+\Delta\widehat T&=
+\frac{|\mathcal I_{\mathrm{rem}}|}{N^{\mathrm{bu}}}
+\cdot\frac{\bar\xi-\underline\xi}{v_{\mathrm{on}}}. \tag{39}
+\end{align}
+The first is the remaining fraction of accumulated severity; the second estimates the additional maintenance time. A factor $\mu$ converts additional time into a cost. While basic units remain outside the returned clusters, the rule is
+\[
+\begin{array}{ll}
+v_{\mathrm{rem}}-\mu\Delta\widehat T>0:
+&\widehat T_{\mathrm{Maint}}\leftarrow\widehat T_{\mathrm{Maint}}+\Delta\widehat T,
+\quad\text{repeat the middle- and low-level calls},\\[2pt]
+v_{\mathrm{rem}}-\mu\Delta\widehat T\leq0:
+&\text{terminate the iteration and leave those units uncovered}.
+\end{array}
+\]
+Algorithm~1 writes $\nu_{\mathrm{rem}}$ in its ``Compute'' instruction but $v_{\mathrm{rem}}$ in its test; (38) and the Section~4 prose use $v_{\mathrm{rem}}$. The printed symbol change is noted without adding a second feedback definition. No zero-denominator convention is supplied for (38)--(39).
+
+After the iteration the algorithm applies
+\[
+\operatorname{Intervention}(\phi(k),a_l).
+\]
+Only basic units inside the returned clusters are treated. If no intervention is suggested, the procedure proceeds to the condition update. New measurements are used when available; otherwise the algorithm uses the abstract simulation operation:
+\[
+\begin{aligned}
+w(k+1)&\leftarrow\text{new measurements},&&\text{if available},\\
+w(k+1)&\leftarrow\operatorname{Simulate}(w(k),\xi,\phi(k)),&&\text{otherwise},\\
+x(k+1)&\leftarrow\operatorname{Aggregate}(w(k+1),\xi),\\
+k&\leftarrow k+1.
+\end{aligned}
+\]
+The operations Aggregate, Simulate, and Intervention remain abstract for the generic infrastructure; no case-study aggregation or simulation law is imported. The repeated symbols $\lambda$ and $\mu$ are retained in their printed high-level, low-level, and feedback roles rather than assigned new numerical relationships.
+
+
+\paragraph{Original formulations and appendix differences.}
+Sections 4.2 and 4.3 of Su et al., Transportation Research Part C 84 (2017), 92--123,
+give (22)--(29) and (30)--(37) as independent optimization formulations.
+Appendices C.1 and C.2 propose MILP transformations. Equations (50)--(54) cross
+slot start and end products, (61) indexes a successor beyond the last cluster,
+and (55)--(56), (62) treat endpoints differently from the closed indicator in (30).
+The execution here uses the explicitly printed original objectives and constraints.
+The original appendix-based reconstruction is preserved in the provenance materials.
+\end{document}

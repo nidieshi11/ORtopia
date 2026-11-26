@@ -1,0 +1,1634 @@
+<!DOCTYPE html> 
+<html lang="en-US" xml:lang="en-US" > 
+<head><title>P0459 · Offline–Online Approximate Dynamic Programming for Dynamic Vehicle Routing with Stochastic Requests · Mathematical model</title> 
+<meta  charset="utf-8" /> 
+<meta name="generator" content="TeX4ht (https://tug.org/tex4ht/)" /> 
+<meta name="viewport" content="width=device-width,initial-scale=1" /> 
+<style> 
+/* start css.sty */
+.cmr-5{font-size:50%;}
+.cmr-7{font-size:70%;}
+.cmmi-5{font-size:50%;font-style: italic;}
+.cmmi-7{font-size:70%;font-style: italic;}
+.cmmi-10{font-style: italic;}
+.cmsy-5{font-size:50%;}
+.cmsy-7{font-size:70%;}
+.cmbx-10{ font-weight: bold;}
+.cmbsy-10{font-weight: bold;}
+.cmbsy-10{font-weight: bold;}
+.cmbsy-10{font-weight: bold;}
+.cmbsy-7{font-size:70%;font-weight: bold;}
+.cmbsy-7{font-weight: bold;}
+.cmbsy-7{font-weight: bold;}
+.cmbsy-5{font-size:50%;font-weight: bold;}
+.cmbsy-5{font-weight: bold;}
+.cmbsy-5{font-weight: bold;}
+.cmex-7{font-size:70%;}
+.cmex-7x-x-71{font-size:49%;}
+.msam-7{font-size:70%;}
+.msam-5{font-size:50%;}
+.msbm-7{font-size:70%;}
+.msbm-5{font-size:50%;}
+.cmti-10{ font-style: italic;}
+p{margin-top:0;margin-bottom:0}
+p.indent{text-indent:0;}
+p + p{margin-top:1em;}
+p + div, p + pre {margin-top:1em;}
+div + p, pre + p {margin-top:1em;}
+a { overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; hyphens: auto; }
+@media print {div.crosslinks {visibility:hidden;}}
+table.tabular{border-collapse: collapse; border-spacing: 0;}
+a img { border-top: 0; border-left: 0; border-right: 0; }
+center { margin-top:1em; margin-bottom:1em; }
+td center { margin-top:0em; margin-bottom:0em; }
+.Canvas { position:relative; }
+math { text-indent: 0em; }
+body{ margin:1em auto; max-width:80ch; padding:0 .62em; }
+h1,h2,h3,h4,h5 { line-height:1.2; }
+@media print{ body{ max-width:none } }
+.partHead, .likepartHead { font-size: 2em; }
+.chapterHead, .likechapterHead { font-size: 1.7411em; }
+.sectionHead, .likesectionHead { font-size: 1.5157em; }
+.subsectionHead, .likesubsectionHead { font-size: 1.3195em; }
+.subsubsectionHead, .likesubsubsectionHead { font-size: 1.1487em; }
+ @media (prefers-color-scheme: dark) { img[src^="model"]{filter: invert(1); } } 
+li p.indent { text-indent: 0em }
+li p:first-child{ margin-top:0em; }
+li p:last-child, li div:last-child { margin-bottom:0.5em; }
+li p:first-child{ margin-bottom:0; }
+li p~ul:last-child, li p~ol:last-child{ margin-bottom:0.5em; }
+.enumerate1 {list-style-type:decimal;}
+.enumerate2 {list-style-type:lower-alpha;}
+.enumerate3 {list-style-type:lower-roman;}
+.enumerate4 {list-style-type:upper-alpha;}
+div.newtheorem { margin-bottom: 2em; margin-top: 2em;}
+div.newtheorem .head{font-weight: bold;}
+.obeylines-h,.obeylines-v {white-space: nowrap; }
+div.obeylines-v p { margin-top:0; margin-bottom:0; }
+.overline{ text-decoration:overline; }
+.overline img{ border-top: 1px solid black; }
+td.displaylines {text-align:center; white-space:nowrap;}
+.centerline {text-align:center;}
+.rightline {text-align:right;}
+pre.verbatim {font-family: monospace,monospace; text-align:left; clear:both; }
+.fbox {padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+div.fbox {display:table}
+div.center div.fbox {text-align:center; clear:both; padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+div.minipage{width:100%;}
+div.center, div.center div.center {text-align: center; margin-left:1em; margin-right:1em;}
+div.center div {text-align: left;}
+div.flushright, div.flushright div.flushright {text-align: right;}
+div.flushright div {text-align: left;}
+div.flushleft {text-align: left;}
+.underline{ text-decoration:underline; }
+.underline img{ border-bottom: 1px solid black; margin-bottom:1pt; }
+.framebox-c, .framebox-l, .framebox-r { padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+.framebox-c {text-align:center;}
+.framebox-l {text-align:left;}
+.framebox-r {text-align:right;}
+span.thank-mark{ vertical-align: super }
+span.footnote-mark sup.textsuperscript, span.footnote-mark a sup.textsuperscript{ font-size:80%; }
+code.verb{font-family:monospace,monospace;}
+div.tabular, div.center div.tabular {text-align: center; margin-top:0.5em; margin-bottom:0.5em; }
+table.tabular td p{margin-top:0em;}
+table.tabular {margin-left: auto; margin-right: auto;}
+td p:first-child{ margin-top:0em; }
+td p:last-child{ margin-bottom:0em; }
+div.td00{ margin-left:0pt; margin-right:0pt; }
+div.td01{ margin-left:0pt; margin-right:5pt; }
+div.td10{ margin-left:5pt; margin-right:0pt; }
+div.td11{ margin-left:5pt; margin-right:5pt; }
+table[rules] {border-left:solid black 0.4pt; border-right:solid black 0.4pt; }
+td.td00{ padding-left:0pt; padding-right:0pt; }
+td.td01{ padding-left:0pt; padding-right:5pt; }
+td.td10{ padding-left:5pt; padding-right:0pt; }
+td.td11{ padding-left:5pt; padding-right:5pt; }
+table[rules] {border-left:solid black 0.4pt; border-right:solid black 0.4pt; }
+.hline hr, .cline hr{ height : 0px; margin:0px; }
+.hline td, .cline td{ padding: 0; }
+.hline hr, .cline hr{border:none;border-top:1px solid black;}
+.hline {border-top: 1px solid black;}
+.hline + .vspace:last-child{display:none;}
+.hline:first-child{border-bottom:1px solid black;border-top:none;}
+.tabbing-right {text-align:right;}
+div.float, div.figure {margin-left: auto; margin-right: auto;}
+div.float img {text-align:center;}
+div.figure img {text-align:center;}
+.marginpar,.reversemarginpar {width:20%; float:right; text-align:left; margin-left:auto; margin-top:0.5em; font-size:85%; text-decoration:underline;}
+.marginpar p,.reversemarginpar p{margin-top:0.4em; margin-bottom:0.4em;}
+.reversemarginpar{float:left;}
+.equation td{text-align:center; vertical-align:middle; }
+td.eq-no{ width:5%; }
+table.equation { width:100%; } 
+div.math-display, div.par-math-display{text-align:center;}
+.array-hline,.array-cline{ border-top: 1px solid black; height:0px; }
+.array-hline + .array-vspace:last-child{display:none;}
+.hline-mtd, .array-hline td{ display:none }
+.array-hline + .array-row:last-child{display:none;}
+.array-hline:first-child{border-bottom:1px solid black;border-top:none;}
+math .texttt { font-family: monospace; }
+math .textit { font-style: italic; }
+math .textsl { font-style: oblique; }
+math .textsf { font-family: sans-serif; }
+math .textbf { font-weight: bold; }
+mo.MathClass-op + mi{margin-left:0.3em}
+mi + mo.MathClass-op{margin-left:0.3em}
+ math mstyle[mathvariant="bold"] { font-weight: bold; font-style: normal; } 
+ math mstyle[mathvariant="normal"] { font-weight: normal; font-style: normal; } 
+.partToc a, .partToc, .likepartToc a, .likepartToc {line-height: 200%; font-weight:bold; font-size:110%;}
+.index-item, .index-subitem, .index-subsubitem {display:block}
+div.caption {text-indent:-2em; margin-left:3em; margin-right:1em; text-align:left;}
+div.caption span.id{font-weight: bold; white-space: nowrap; }
+h1.partHead{text-align: center}
+p.bibitem { text-indent: -2em; margin-left: 2em; margin-top:0.6em; margin-bottom:0.6em; }
+p.bibitem-p { text-indent: 0em; margin-left: 2em; margin-top:0.6em; margin-bottom:0.6em; }
+.subsubsectionHead, .likesubsubsectionHead { font-size: 1em; }
+.paragraphHead, .likeparagraphHead { margin-top:2em; font-weight: bold;}
+.subparagraphHead, .likesubparagraphHead { font-weight: bold;}
+.verse{white-space:nowrap; margin-left:2em}
+div.maketitle {text-align:center;}
+h2.titleHead{text-align:center;}
+div.maketitle{ margin-bottom: 2em; }
+div.author, div.date {text-align:center;}
+div.thanks{text-align:left; margin-left:10%; font-size:85%; font-style:italic; }
+div.author{white-space: nowrap;}
+div.abstract p {margin-left:5%; margin-right:5%;}
+div.abstract {width:100%;}
+.abstracttitle{text-align:center;margin-bottom:1em;}
+.subsectionToc, .likesubsectionToc {margin-left:1em;}
+.subsubsectionToc, .likesubsubsectionToc {margin-left:2em;}
+.paragraphToc, .likeparagraphToc {margin-left:3em;}
+.subparagraphToc, .likesubparagraphToc {margin-left:4em;}
+figure.float, div.figure {margin-left: auto; margin-right: auto;}
+figure.figure {text-align:center;}
+figcaption.caption {text-indent:-2em; margin-left:3em; margin-right:1em; text-align:center;}
+figcaption.caption span.id{font-weight: bold; white-space: nowrap; }
+p + figcaption, img + figcaption{margin-top: 1em;}
+.abstract{margin:1em;}
+.equation-star td{text-align:center; vertical-align:middle; }
+table.equation-star { width:100%; } 
+.boxed{border: 1px solid black; padding-left:2px; padding-right:2px;}
+mtd.align-odd{margin-left:2em; text-align:right;}
+mtd.align-even{margin-right:2em; text-align:left;}
+/* end css.sty */
+
+
+html{background:#fff;color:#243833}body{padding:clamp(.55rem,2vw,1.25rem);margin:0;line-height:1.5;overflow-wrap:break-word}
+h1,h2,h3,h4,h5,h6{line-height:1.22;color:#193d35}p{margin:.5rem 0}math[display=block]{overflow-x:auto;max-width:100%}
+@media print{body{padding:0;color:#000}}
+</style> 
+<meta name="src" content="model.tex" /> 
+</head><body 
+>
+   <h3 class="likesectionHead"><a 
+ id="x1-1000"></a>Full VRPSSR Markov decision process</h3>
+   <table class="equation-star"><tr><td>
+<!--l. 9--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="block" class="equation">
+                            <munder class="msub"><mrow 
+><mtext class="qopname">max</mtext><mo> ⁡<!--FUNCTION APPLICATION--> </mo></mrow><mrow 
+><mi 
+>π</mi><mo 
+class="MathClass-rel" stretchy="false">∈</mo><mi mathvariant="normal">Π</mi></mrow></munder 
+><mspace width="0.28em" class="thickpace"/><mi 
+>𝔼</mi> <mrow><mo fence="true" form="prefix"> [</mo><mrow><mrow><mo fence="true" form="prefix"> </mo><mrow><munderover accentunder="false" accent="false"><mrow  
+><mo  
+>∑</mo>
+  </mrow><mrow 
+><mi 
+>k</mi><mo 
+class="MathClass-rel" stretchy="false">=</mo><mn>0</mn></mrow><mrow 
+><mi 
+>K</mi></mrow></munderover 
+><mi 
+>R</mi><mrow><mo class="MathClass-open" fence="true" mathsize="1.19em" >(</mo><mrow><msub><mrow 
+><mi 
+>s</mi></mrow><mrow 
+>
+<mi 
+>k</mi></mrow></msub 
+><mo 
+class="MathClass-punc" stretchy="false">,</mo><msubsup><mrow 
+><mi 
+>X</mi></mrow><mrow 
+><mi 
+>k</mi></mrow><mrow 
+><mi 
+>π</mi></mrow></msubsup 
+><mo 
+class="MathClass-open" stretchy="false">(</mo><msub><mrow 
+><mi 
+>s</mi></mrow><mrow 
+>
+<mi 
+>k</mi></mrow></msub 
+><mo 
+class="MathClass-close" stretchy="false">)</mo></mrow><mo class="MathClass-close" fence="true" mathsize="1.19em" >)</mo></mrow><mspace width="0.17em" class="thinspace"/></mrow><mo fence="true" form="postfix">|</mo></mrow><mspace width="0.17em" class="thinspace"/><msub><mrow 
+><mi 
+>s</mi></mrow><mrow 
+><mn>0</mn></mrow></msub 
+></mrow><mo fence="true" form="postfix">]</mo></mrow>
+</math></td></tr></table>
+<!--l. 14--><p class="noindent" >subject to each decision rule selecting a feasible decision at every state to which it applies: </p><table class="equation-star"><tr><td>
+<!--l. 15--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="block" class="equation">
+                                <msubsup><mrow 
+><mi 
+>X</mi></mrow><mrow 
+><mi 
+>k</mi></mrow><mrow 
+><mi 
+>π</mi></mrow></msubsup 
+><mo 
+class="MathClass-open" stretchy="false">(</mo><msub><mrow 
+><mi 
+>s</mi></mrow><mrow 
+>
+<mi 
+>k</mi></mrow></msub 
+><mo 
+class="MathClass-close" stretchy="false">)</mo> <mo 
+class="MathClass-rel" stretchy="false">∈</mo><mstyle 
+mathvariant="script"><mi 
+>X</mi></mstyle><mo 
+class="MathClass-open" stretchy="false">(</mo><msub><mrow 
+><mi 
+>s</mi></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+><mo 
+class="MathClass-close" stretchy="false">)</mo><mo 
+class="MathClass-punc" stretchy="false">,</mo><mspace width="2em" class="qquad"/><mi 
+>k</mi> <mo 
+class="MathClass-rel" stretchy="false">=</mo> <mn>0</mn><mo 
+class="MathClass-punc" stretchy="false">,</mo><mo>…</mo><mo 
+class="MathClass-punc" stretchy="false">,</mo><mi 
+>K</mi><mo 
+class="MathClass-punc" stretchy="false">.</mo>
+</math></td></tr></table>
+<!--l. 18--><p class="indent" >   The feasible-decision set is the following printed block:
+</p><!--tex4ht:inline--><!--l. 28--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="block" ><mtable 
+displaystyle="true" columnalign="left" class="align">
+                       <mtr><mtd 
+columnalign="right" class="align-odd"><mstyle 
+mathvariant="script"><mi 
+>X</mi></mstyle><mo 
+class="MathClass-open" stretchy="false">(</mo><msub><mrow 
+><mi 
+>s</mi></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+><mo 
+class="MathClass-close" stretchy="false">)</mo> <mo 
+class="MathClass-rel" stretchy="false">=</mo><mrow><mo class="MathClass-open" fence="true" mathsize="1.19em" >{</mo><mrow><mo 
+class="MathClass-open" stretchy="false">(</mo><mi 
+>a</mi><mo 
+class="MathClass-punc" stretchy="false">,</mo><mi 
+>c</mi><mo 
+class="MathClass-close" stretchy="false">)</mo> <mo 
+class="MathClass-punc" stretchy="false">:</mo> <mspace width="1em" class="quad"/></mtd>                       <mtd 
+class="align-even"><mspace width="2em"/></mtd>                                                   <mtd 
+columnalign="right" class="align-label"></mtd>                       <mtd 
+class="align-label">
+                       <mspace width="2em"/></mtd></mtr><mtr><mtd 
+columnalign="right" class="align-odd"></mtd>                                      <mtd 
+class="align-even"><mi 
+>a</mi> <mo 
+class="MathClass-rel" stretchy="false">∈</mo><msup><mrow 
+><mo 
+class="MathClass-open" stretchy="false">{</mo><mn>0</mn><mo 
+class="MathClass-punc" stretchy="false">,</mo><mn>1</mn><mo 
+class="MathClass-close" stretchy="false">}</mo></mrow><mrow 
+><mo 
+class="MathClass-rel" stretchy="false">|</mo><msub><mrow 
+><mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">~</mo></mover></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+><mo 
+class="MathClass-rel" stretchy="false">|</mo></mrow></msup 
+><mo 
+class="MathClass-punc" stretchy="false">,</mo><mspace width="2em"/></mtd>                                                             <mtd 
+columnalign="right" class="align-label"><mstyle 
+class="maketag"><mtext  >(1)</mtext></mstyle><mspace width="0.33em" class="nbsp" /><mstyle 
+   id="x1-1005r0"  class="label" ></mstyle><!--endlabel-->
+                       </mtd></mtr><mtr><mtd 
+columnalign="right" class="align-odd"></mtd>                                      <mtd 
+class="align-even"><mi 
+>c</mi> <mo 
+class="MathClass-rel" stretchy="false">∈</mo><msub><mrow 
+><mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">¯</mo></mover></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+> <mo 
+class="MathClass-bin" stretchy="false">∪</mo><msubsup><mrow 
+><mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">~</mo></mover></mrow><mrow 
+><mi 
+>k</mi></mrow><mrow 
+><mi 
+>′</mi></mrow></msubsup 
+><mo 
+class="MathClass-bin" stretchy="false">∪</mo><mo 
+class="MathClass-open" stretchy="false">{</mo><msub><mrow 
+><mi 
+>c</mi></mrow><mrow 
+>
+<mi 
+>k</mi></mrow></msub 
+><mo 
+class="MathClass-close" stretchy="false">}</mo><mo 
+class="MathClass-bin" stretchy="false">∪</mo><mo 
+class="MathClass-open" stretchy="false">{</mo><mstyle 
+class="text"><mtext  >depot</mtext></mstyle><mo 
+class="MathClass-close" stretchy="false">}</mo><mo 
+class="MathClass-punc" stretchy="false">,</mo><mspace width="2em"/></mtd>                                              <mtd 
+columnalign="right" class="align-label"><mstyle 
+class="maketag"><mtext  >(2)</mtext></mstyle><mspace width="0.33em" class="nbsp" /><mstyle 
+   id="x1-1006r0"  class="label" ></mstyle><!--endlabel-->
+                       </mtd></mtr><mtr><mtd 
+columnalign="right" class="align-odd"></mtd>                                      <mtd 
+class="align-even"><mi 
+>c</mi><mo 
+class="MathClass-rel" stretchy="false">≠</mo><mstyle 
+class="text"><mtext  >depot</mtext></mstyle><mspace width="1em" class="quad"/><mstyle 
+class="text"><mtext  >if</mtext></mstyle><mspace width="1em" class="quad"/><msub><mrow 
+><mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">¯</mo></mover></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+> <mo 
+class="MathClass-bin" stretchy="false">∪</mo><msubsup><mrow 
+><mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">~</mo></mover></mrow><mrow 
+><mi 
+>k</mi></mrow><mrow 
+><mi 
+>′</mi></mrow></msubsup 
+><mo 
+class="MathClass-bin" stretchy="false">∖</mo><mo 
+class="MathClass-open" stretchy="false">{</mo><msub><mrow 
+><mi 
+>c</mi></mrow><mrow 
+>
+<mi 
+>k</mi></mrow></msub 
+><mo 
+class="MathClass-close" stretchy="false">}</mo><mo 
+class="MathClass-rel" stretchy="false">≠</mo><mi 
+>∅</mi><mo 
+class="MathClass-punc" stretchy="false">,</mo><mspace width="2em"/></mtd>                                                <mtd 
+columnalign="right" class="align-label"><mstyle 
+class="maketag"><mtext  >(3)</mtext></mstyle><mspace width="0.33em" class="nbsp" /><mstyle 
+   id="x1-1007r0"  class="label" ></mstyle><!--endlabel-->
+                       </mtd></mtr><mtr><mtd 
+columnalign="right" class="align-odd"></mtd>                                      <mtd 
+class="align-even"><mstyle 
+class="text"><mtext  >feasible routing</mtext></mstyle><mspace width="0.33em" class="nbsp" /></mrow><mo class="MathClass-close" fence="true" mathsize="1.19em" >}</mo></mrow><mo 
+class="MathClass-punc" stretchy="false">.</mo><mspace width="2em"/></mtd>                                                           <mtd 
+columnalign="right" class="align-label"><mstyle 
+class="maketag"><mtext  >(4)</mtext></mstyle><mspace width="0.33em" class="nbsp" /><mstyle 
+   id="x1-1008r0"  class="label" ></mstyle><!--endlabel-->
+   </mtd></mtr></mtable></math>
+
+<!--l. 30--><p class="noindent" ><span class="paragraphHead"><a 
+ id="x1-2000"></a><span 
+class="cmbx-10">Assignment and routing meanings.</span></span>
+   A decision is the pair </p><table class="equation-star"><tr><td>
+<!--l. 32--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="block" class="equation">
+                                         <mi 
+>x</mi> <mo 
+class="MathClass-rel" stretchy="false">=</mo> <mo 
+class="MathClass-open" stretchy="false">(</mo><mi 
+>a</mi><mo 
+class="MathClass-punc" stretchy="false">,</mo><mi 
+>c</mi><mo 
+class="MathClass-close" stretchy="false">)</mo><mo 
+class="MathClass-punc" stretchy="false">,</mo>
+</math></td></tr></table>
+<!--l. 35--><p class="indent" >   where the binary vector <!--l. 35--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>a</mi></math>
+has <!--l. 35--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mo 
+class="MathClass-rel" stretchy="false">|</mo><msub><mrow 
+><mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">~</mo></mover></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+><mo 
+class="MathClass-rel" stretchy="false">|</mo></math>
+components. Each component permanently assigns its request to the vehicle when equal to one and
+rejects it when equal to zero. Rejected requests are not reconsidered. The location component
+<!--l. 35--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>c</mi></math> directs the vehicle to a
+location in the service region <!--l. 35--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></math>.
+The newly assigned customer set is </p><table class="equation-star"><tr><td>
+<!--l. 36--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="block" class="equation"><msubsup><mrow 
+>
+                               <mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">~</mo></mover></mrow><mrow 
+><mi 
+>k</mi></mrow><mrow 
+><mi 
+>′</mi></mrow></msubsup 
+> <mo 
+class="MathClass-rel" stretchy="false">=</mo> <mrow><mo fence="true" form="prefix"> {</mo><mrow><mi 
+>c</mi> <mo 
+class="MathClass-rel" stretchy="false">∈</mo><msub><mrow 
+><mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">~</mo></mover></mrow><mrow 
+>
+<mi 
+>k</mi></mrow></msub 
+> <mo 
+class="MathClass-punc" stretchy="false">:</mo> <msub><mrow 
+><mi 
+>a</mi></mrow><mrow 
+><msubsup><mrow 
+><mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">~</mo></mover></mrow><mrow 
+><mi 
+>k</mi></mrow><mrow 
+><mo 
+class="MathClass-bin" stretchy="false">−</mo><mn>1</mn></mrow></msubsup 
+><mo 
+class="MathClass-open" stretchy="false">(</mo><mi 
+>c</mi><mo 
+class="MathClass-close" stretchy="false">)</mo></mrow></msub 
+> <mo 
+class="MathClass-rel" stretchy="false">=</mo> <mn>1</mn></mrow><mo fence="true" form="postfix">}</mo></mrow><mo 
+class="MathClass-punc" stretchy="false">,</mo>
+</math></td></tr></table>
+<!--l. 41--><p class="indent" >   where <!--l. 41--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><msubsup><mrow 
+><mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">~</mo></mover></mrow><mrow 
+><mi 
+>k</mi></mrow><mrow 
+><mo 
+class="MathClass-bin" stretchy="false">−</mo><mn>1</mn></mrow></msubsup 
+><mo 
+class="MathClass-open" stretchy="false">(</mo><mi 
+>c</mi><mo 
+class="MathClass-close" stretchy="false">)</mo></math> returns the
+index of element <!--l. 41--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>c</mi></math>
+in <!--l. 41--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><msub><mrow 
+><mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">~</mo></mover></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+></math>.
+</p><!--l. 43--><p class="indent" >   Setting <!--l. 43--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>c</mi> <mo 
+class="MathClass-rel" stretchy="false">=</mo> <msub><mrow 
+><mi 
+>c</mi></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+></math>
+is the decision to wait at the current location for a base unit of time
+<!--l. 43--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mover 
+accent="true"><mrow 
+><mi 
+>t</mi></mrow><mo accent="true">¯</mo></mover></math>.
+Condition (3) is described in the source as disallowing travel to the depot when assigned customers in
+<!--l. 43--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><msub><mrow 
+><mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">¯</mo></mover></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+></math> and
+<!--l. 43--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><msubsup><mrow 
+><mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">~</mo></mover></mrow><mrow 
+><mi 
+>k</mi></mrow><mrow 
+><mi 
+>′</mi></mrow></msubsup 
+></math> have
+yet to be serviced. Condition (4) requires that a route exist from the current location, through all
+assigned customers, and back to the depot, with duration less than or equal to the remaining time
+<!--l. 43--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>T</mi> <mo 
+class="MathClass-bin" stretchy="false">−</mo> <msub><mrow 
+><mi 
+>t</mi></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+></math> less any
+time spent waiting at the current location. This is a route-existence requirement, not a cheapest-insertion test.
+The source leaves the requirement as “feasible routing” rather than supplying an arc-based routing
+formulation.
+
+</p>
+<!--l. 45--><p class="noindent" ><span class="paragraphHead"><a 
+ id="x1-3000"></a><span 
+class="cmbx-10">Printed scope of (3).</span></span>
+   The expression in (3) is retained without adding parentheses around the union before the set difference. The
+accompanying prose gives the interpretation above; the printed expression does not explicitly delimit the scope of the
+subtraction by <!--l. 46--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mo 
+class="MathClass-open" stretchy="false">{</mo><msub><mrow 
+><mi 
+>c</mi></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+><mo 
+class="MathClass-close" stretchy="false">}</mo></math>.
+</p><!--l. 48--><p class="noindent" >
+</p>
+   <h3 class="likesectionHead"><a 
+ id="x1-4000"></a>Fixed inputs, states, and boundary conditions</h3>
+<!--l. 50--><p class="noindent" >There is one vehicle, a working day of duration <!--l. 50--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>T</mi></math>,
+a service region <!--l. 50--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></math>,
+and a depot. Service calls arrive randomly over the working day and within
+<!--l. 50--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></math>. The
+early-request customers are known before the working day: </p><table class="equation-star"><tr><td>
+<!--l. 51--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="block" class="equation"><msub><mrow 
+>
+                                        <mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mrow 
+><mstyle mathvariant="normal"><mi 
+>e</mi><mi 
+>a</mi><mi 
+>r</mi><mi 
+>l</mi><mi 
+>y</mi></mstyle></mrow></msub 
+> <mo 
+class="MathClass-rel" stretchy="false">⊆</mo><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle><mo 
+class="MathClass-punc" stretchy="false">.</mo>
+</math></td></tr></table>
+<!--l. 54--><p class="indent" >   The vehicle must serve these customers and begin and end at the depot. The objective is to maximize the
+expected number of serviced late-request customers, who submit requests throughout the working
+day.
+</p><!--l. 56--><p class="indent" >   The fixed function <!--l. 56--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>d</mi><mo 
+class="MathClass-open" stretchy="false">(</mo><mo 
+class="MathClass-bin" stretchy="false">⋅</mo><mo 
+class="MathClass-punc" stretchy="false">,</mo><mo 
+class="MathClass-bin" stretchy="false">⋅</mo><mo 
+class="MathClass-close" stretchy="false">)</mo></math> gives known
+travel times between two locations in <!--l. 56--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></math>.
+The fixed quantity <!--l. 56--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mover 
+accent="true"><mrow 
+><mi 
+>t</mi></mrow><mo accent="true">¯</mo></mover></math>
+is the base waiting-time unit. No instance-specific travel-time formula, waiting-time value, request distribution, or
+numerical duration is imposed here.
+</p><!--l. 58--><p class="indent" >   At decision epoch <!--l. 58--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>k</mi></math>,
+the state is </p><table class="equation-star"><tr><td>
+<!--l. 59--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="block" class="equation">
+                              <msub><mrow 
+><mi 
+>s</mi></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+> <mo 
+class="MathClass-rel" stretchy="false">=</mo> <mo 
+class="MathClass-open" stretchy="false">(</mo><msub><mrow 
+><mi 
+>c</mi></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+><mo 
+class="MathClass-punc" stretchy="false">,</mo><msub><mrow 
+><mi 
+>t</mi></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+><mo 
+class="MathClass-punc" stretchy="false">,</mo><msub><mrow 
+><mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">¯</mo></mover></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+><mo 
+class="MathClass-punc" stretchy="false">,</mo><msub><mrow 
+><mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">~</mo></mover></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+><mo 
+class="MathClass-close" stretchy="false">)</mo><mo 
+class="MathClass-punc" stretchy="false">,</mo><mspace width="2em" class="qquad"/><mi 
+>k</mi> <mo 
+class="MathClass-rel" stretchy="false">=</mo> <mn>0</mn><mo 
+class="MathClass-punc" stretchy="false">,</mo><mo>…</mo><mo 
+class="MathClass-punc" stretchy="false">,</mo><mi 
+>K</mi><mo 
+class="MathClass-punc" stretchy="false">,</mo>
+</math></td></tr></table>
+<!--l. 63--><p class="indent" >   with </p><table class="equation-star"><tr><td>
+
+<!--l. 64--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="block" class="equation">
+                             <msub><mrow 
+><mi 
+>c</mi></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+> <mo 
+class="MathClass-rel" stretchy="false">∈</mo><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle><mo 
+class="MathClass-punc" stretchy="false">,</mo><mspace width="2em" class="qquad"/><msub><mrow 
+><mi 
+>t</mi></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+> <mo 
+class="MathClass-rel" stretchy="false">∈</mo> <mo 
+class="MathClass-open" stretchy="false">[</mo><mn>0</mn><mo 
+class="MathClass-punc" stretchy="false">,</mo><mi 
+>T</mi><mo 
+class="MathClass-close" stretchy="false">]</mo><mo 
+class="MathClass-punc" stretchy="false">,</mo><mspace width="2em" class="qquad"/><msub><mrow 
+><mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">¯</mo></mover></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+> <mo 
+class="MathClass-rel" stretchy="false">⊆</mo><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle><mo 
+class="MathClass-punc" stretchy="false">,</mo><mspace width="2em" class="qquad"/><msub><mrow 
+><mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">~</mo></mover></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+> <mo 
+class="MathClass-rel" stretchy="false">⊆</mo><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle><mo 
+class="MathClass-punc" stretchy="false">.</mo>
+</math></td></tr></table>
+<!--l. 70--><p class="indent" >   Here <!--l. 70--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><msub><mrow 
+><mi 
+>c</mi></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+></math>
+is the vehicle’s position, representing a customer location or the depot;
+<!--l. 70--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><msub><mrow 
+><mi 
+>t</mi></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+></math> is the time at which the vehicle
+arrives at <!--l. 70--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><msub><mrow 
+><mi 
+>c</mi></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+></math> and marks the
+beginning of decision epoch <!--l. 70--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>k</mi></math>;
+and <!--l. 70--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><msub><mrow 
+><mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">¯</mo></mover></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+></math>
+is the set of assigned customers not yet serviced. For epochs after the initial epoch,
+<!--l. 70--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><msub><mrow 
+><mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">~</mo></mover></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+></math> is the possibly empty set of
+service requests made at or before <!--l. 70--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><msub><mrow 
+><mi 
+>t</mi></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+></math>
+but after <!--l. 70--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><msub><mrow 
+><mi 
+>t</mi></mrow><mrow 
+><mi 
+>k</mi><mo 
+class="MathClass-bin" stretchy="false">−</mo><mn>1</mn></mrow></msub 
+></math>,
+that is, during </p><table class="equation-star"><tr><td>
+<!--l. 71--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="block" class="equation">
+                                    <mo 
+class="MathClass-open" stretchy="false">(</mo><msub><mrow 
+><mi 
+>t</mi></mrow><mrow 
+><mi 
+>k</mi><mo 
+class="MathClass-bin" stretchy="false">−</mo><mn>1</mn></mrow></msub 
+><mo 
+class="MathClass-punc" stretchy="false">,</mo><msub><mrow 
+><mi 
+>t</mi></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+><mo 
+class="MathClass-close" stretchy="false">]</mo><mo 
+class="MathClass-punc" stretchy="false">,</mo><mspace width="2em" class="qquad"/><mi 
+>k</mi> <mo 
+class="MathClass-rel" stretchy="false">=</mo> <mn>1</mn><mo 
+class="MathClass-punc" stretchy="false">,</mo><mo>…</mo><mo 
+class="MathClass-punc" stretchy="false">,</mo><mi 
+>K</mi><mo 
+class="MathClass-punc" stretchy="false">,</mo>
+</math></td></tr></table>
+<!--l. 74--><p class="indent" >   subject to the final-request assumption below.
+</p><!--l. 76--><p class="indent" >   The initial state is </p><table class="equation-star"><tr><td>
+<!--l. 77--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="block" class="equation">
+                                   <msub><mrow 
+><mi 
+>s</mi></mrow><mrow 
+><mn>0</mn></mrow></msub 
+> <mo 
+class="MathClass-rel" stretchy="false">=</mo> <mo 
+class="MathClass-open" stretchy="false">(</mo><mstyle 
+class="text"><mtext  >depot</mtext></mstyle><mo 
+class="MathClass-punc" stretchy="false">,</mo><mn>0</mn><mo 
+class="MathClass-punc" stretchy="false">,</mo><msub><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mrow 
+><mstyle mathvariant="normal"><mi 
+>e</mi><mi 
+>a</mi><mi 
+>r</mi><mi 
+>l</mi><mi 
+>y</mi></mstyle></mrow></msub 
+><mo 
+class="MathClass-punc" stretchy="false">,</mo><mi 
+>∅</mi><mo 
+class="MathClass-close" stretchy="false">)</mo><mo 
+class="MathClass-punc" stretchy="false">.</mo>
+</math></td></tr></table>
+<!--l. 80--><p class="indent" >   As an input-feasibility assumption, there exists a route from the depot, through each customer in
+<!--l. 80--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><msub><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mrow 
+><mstyle mathvariant="normal"><mi 
+>e</mi><mi 
+>a</mi><mi 
+>r</mi><mi 
+>l</mi><mi 
+>y</mi></mstyle></mrow></msub 
+></math>, and back to the depot with
+duration less than or equal to <!--l. 80--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>T</mi></math>.
+
+</p><!--l. 82--><p class="indent" >   The final decision epoch <!--l. 82--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>K</mi></math>
+may be a random variable. At this epoch the process occupies a terminal state in </p><table class="equation-star"><tr><td>
+<!--l. 83--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="block" class="equation">
+                              <msub><mrow 
+><mi 
+>s</mi></mrow><mrow 
+><mi 
+>K</mi></mrow></msub 
+> <mo 
+class="MathClass-rel" stretchy="false">∈</mo> <mrow><mo fence="true" form="prefix"> {</mo><mrow><mo 
+class="MathClass-open" stretchy="false">(</mo><mstyle 
+class="text"><mtext  >depot</mtext></mstyle><mo 
+class="MathClass-punc" stretchy="false">,</mo><msub><mrow 
+><mi 
+>t</mi></mrow><mrow 
+><mi 
+>K</mi></mrow></msub 
+><mo 
+class="MathClass-punc" stretchy="false">,</mo><mi 
+>∅</mi><mo 
+class="MathClass-punc" stretchy="false">,</mo><mi 
+>∅</mi><mo 
+class="MathClass-close" stretchy="false">)</mo> <mo 
+class="MathClass-punc" stretchy="false">:</mo> <msub><mrow 
+><mi 
+>t</mi></mrow><mrow 
+><mi 
+>K</mi></mrow></msub 
+> <mo 
+class="MathClass-rel" stretchy="false">∈</mo> <mo 
+class="MathClass-open" stretchy="false">[</mo><mn>0</mn><mo 
+class="MathClass-punc" stretchy="false">,</mo><mi 
+>T</mi><mo 
+class="MathClass-close" stretchy="false">]</mo></mrow><mo fence="true" form="postfix">}</mo></mrow><mo 
+class="MathClass-punc" stretchy="false">.</mo>
+</math></td></tr></table>
+<!--l. 87--><p class="indent" >   Thus the vehicle has returned to the depot by time
+<!--l. 87--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>T</mi></math> and has
+serviced all early-request customers. The source explicitly assumes the final set of requests is empty:
+</p><table class="equation-star"><tr><td>
+<!--l. 88--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="block" class="equation"><msub><mrow 
+>
+                                         <mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">~</mo></mover></mrow><mrow 
+><mi 
+>K</mi></mrow></msub 
+> <mo 
+class="MathClass-rel" stretchy="false">=</mo> <mi 
+>∅</mi><mo 
+class="MathClass-punc" stretchy="false">.</mo>
+</math></td></tr></table>
+<!--l. 92--><p class="noindent" >
+</p>
+   <h3 class="likesectionHead"><a 
+ id="x1-5000"></a>Reward and defining dynamics</h3>
+<!--l. 94--><p class="noindent" >When decision <!--l. 94--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>x</mi></math> is
+taken in state <!--l. 94--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><msub><mrow 
+><mi 
+>s</mi></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+></math>,
+the reward equals the number of assigned late-request customers: </p><table class="equation-star"><tr><td>
+<!--l. 95--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="block" class="equation">
+                                  <mi 
+>R</mi><mo 
+class="MathClass-open" stretchy="false">(</mo><msub><mrow 
+><mi 
+>s</mi></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+><mo 
+class="MathClass-punc" stretchy="false">,</mo><mi 
+>x</mi><mo 
+class="MathClass-close" stretchy="false">)</mo> <mo 
+class="MathClass-rel" stretchy="false">=</mo><mrow><mo class="MathClass-open" fence="true" mathsize="1.19em" >|</mo><mrow><msubsup><mrow 
+><mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">~</mo></mover></mrow><mrow 
+><mi 
+>k</mi></mrow><mrow 
+><mi 
+>′</mi></mrow></msubsup 
+><mo 
+class="MathClass-open" stretchy="false">(</mo><msub><mrow 
+><mi 
+>s</mi></mrow><mrow 
+>
+<mi 
+>k</mi></mrow></msub 
+><mo 
+class="MathClass-punc" stretchy="false">,</mo><mi 
+>x</mi><mo 
+class="MathClass-close" stretchy="false">)</mo></mrow><mo class="MathClass-close" fence="true" mathsize="1.19em" >|</mo></mrow><mo 
+class="MathClass-punc" stretchy="false">.</mo>
+</math></td></tr></table>
+
+<!--l. 98--><p class="indent" >   Here <!--l. 98--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><msubsup><mrow 
+><mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">~</mo></mover></mrow><mrow 
+><mi 
+>k</mi></mrow><mrow 
+><mi 
+>′</mi></mrow></msubsup 
+><mo 
+class="MathClass-open" stretchy="false">(</mo><msub><mrow 
+><mi 
+>s</mi></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+><mo 
+class="MathClass-punc" stretchy="false">,</mo><mi 
+>x</mi><mo 
+class="MathClass-close" stretchy="false">)</mo></math> denotes
+the set <!--l. 98--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><msubsup><mrow 
+><mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">~</mo></mover></mrow><mrow 
+><mi 
+>k</mi></mrow><mrow 
+><mi 
+>′</mi></mrow></msubsup 
+></math> specified
+by <!--l. 98--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><msub><mrow 
+><mi 
+>s</mi></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+></math> and by
+<!--l. 98--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>a</mi></math>, the assignment
+component of <!--l. 98--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>x</mi></math>.
+</p><!--l. 100--><p class="indent" >   Choosing <!--l. 100--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>x</mi></math>
+in <!--l. 100--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><msub><mrow 
+><mi 
+>s</mi></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+></math>
+transitions the process to the post-decision state </p><table class="equation-star"><tr><td>
+<!--l. 101--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="block" class="equation">
+                            <msubsup><mrow 
+><mi 
+>s</mi></mrow><mrow 
+><mi 
+>k</mi></mrow><mrow 
+><mi 
+>x</mi></mrow></msubsup 
+> <mo 
+class="MathClass-rel" stretchy="false">=</mo> <mo 
+class="MathClass-open" stretchy="false">(</mo><msub><mrow 
+><mi 
+>c</mi></mrow><mrow 
+>
+<mi 
+>k</mi></mrow></msub 
+><mo 
+class="MathClass-punc" stretchy="false">,</mo><msub><mrow 
+><mi 
+>t</mi></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+><mo 
+class="MathClass-punc" stretchy="false">,</mo><msubsup><mrow 
+><mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">¯</mo></mover></mrow><mrow 
+><mi 
+>k</mi></mrow><mrow 
+><mi 
+>x</mi></mrow></msubsup 
+><mo 
+class="MathClass-close" stretchy="false">)</mo><mo 
+class="MathClass-punc" stretchy="false">,</mo><mspace width="2em" class="qquad"/><msubsup><mrow 
+><mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">¯</mo></mover></mrow><mrow 
+>
+<mi 
+>k</mi></mrow><mrow 
+><mi 
+>x</mi></mrow></msubsup 
+> <mo 
+class="MathClass-rel" stretchy="false">=</mo><msub><mrow 
+> <mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">¯</mo></mover></mrow><mrow 
+>
+<mi 
+>k</mi></mrow></msub 
+> <mo 
+class="MathClass-bin" stretchy="false">∪</mo><msubsup><mrow 
+><mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">~</mo></mover></mrow><mrow 
+><mi 
+>k</mi></mrow><mrow 
+><mi 
+>′</mi></mrow></msubsup 
+><mo 
+class="MathClass-punc" stretchy="false">.</mo>
+</math></td></tr></table>
+<!--l. 107--><p class="indent" >   The assigned-customer set is thereby updated to include newly assigned requests. The subsequent pre-decision
+state is </p><table class="equation-star"><tr><td>
+<!--l. 108--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="block" class="equation">
+                              <msub><mrow 
+><mi 
+>s</mi></mrow><mrow 
+><mi 
+>k</mi><mo 
+class="MathClass-bin" stretchy="false">+</mo><mn>1</mn></mrow></msub 
+> <mo 
+class="MathClass-rel" stretchy="false">=</mo> <mo 
+class="MathClass-open" stretchy="false">(</mo><msub><mrow 
+><mi 
+>c</mi></mrow><mrow 
+><mi 
+>k</mi><mo 
+class="MathClass-bin" stretchy="false">+</mo><mn>1</mn></mrow></msub 
+><mo 
+class="MathClass-punc" stretchy="false">,</mo><msub><mrow 
+><mi 
+>t</mi></mrow><mrow 
+><mi 
+>k</mi><mo 
+class="MathClass-bin" stretchy="false">+</mo><mn>1</mn></mrow></msub 
+><mo 
+class="MathClass-punc" stretchy="false">,</mo><msub><mrow 
+><mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">¯</mo></mover></mrow><mrow 
+><mi 
+>k</mi><mo 
+class="MathClass-bin" stretchy="false">+</mo><mn>1</mn></mrow></msub 
+><mo 
+class="MathClass-punc" stretchy="false">,</mo><msub><mrow 
+><mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">~</mo></mover></mrow><mrow 
+><mi 
+>k</mi><mo 
+class="MathClass-bin" stretchy="false">+</mo><mn>1</mn></mrow></msub 
+><mo 
+class="MathClass-close" stretchy="false">)</mo><mo 
+class="MathClass-punc" stretchy="false">.</mo>
+</math></td></tr></table>
+<!--l. 112--><p class="indent" >   For transitions to a subsequent epoch, <!--l. 112--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>k</mi> <mo 
+class="MathClass-rel" stretchy="false">=</mo> <mn>0</mn><mo 
+class="MathClass-punc" stretchy="false">,</mo><mo>…</mo><mo 
+class="MathClass-punc" stretchy="false">,</mo><mi 
+>K</mi> <mo 
+class="MathClass-bin" stretchy="false">−</mo> <mn>1</mn></math>,
+the source distinguishes movement from waiting.
+</p>
+<!--l. 114--><p class="noindent" ><span class="paragraphHead"><a 
+ id="x1-6000"></a><span 
+class="cmbx-10">Movement: </span><!--l. 114--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>c</mi><mo 
+class="MathClass-rel" stretchy="false">≠</mo><msub><mrow 
+><mi 
+>c</mi></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+></math><span 
+class="cmbx-10">.</span></span>
+   Decision epoch <!--l. 115--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>k</mi> <mo 
+class="MathClass-bin" stretchy="false">+</mo> <mn>1</mn></math> begins
+upon arrival at position <!--l. 115--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>c</mi></math>,
+with </p><table class="equation-star"><tr><td>
+
+<!--l. 116--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="block" class="equation">
+                      <msub><mrow 
+><mi 
+>c</mi></mrow><mrow 
+><mi 
+>k</mi><mo 
+class="MathClass-bin" stretchy="false">+</mo><mn>1</mn></mrow></msub 
+> <mo 
+class="MathClass-rel" stretchy="false">=</mo> <mi 
+>c</mi><mo 
+class="MathClass-punc" stretchy="false">,</mo><mspace width="2em" class="qquad"/><msub><mrow 
+><mi 
+>t</mi></mrow><mrow 
+><mi 
+>k</mi><mo 
+class="MathClass-bin" stretchy="false">+</mo><mn>1</mn></mrow></msub 
+> <mo 
+class="MathClass-rel" stretchy="false">=</mo> <msub><mrow 
+><mi 
+>t</mi></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+> <mo 
+class="MathClass-bin" stretchy="false">+</mo> <mi 
+>d</mi><mo 
+class="MathClass-open" stretchy="false">(</mo><msub><mrow 
+><mi 
+>c</mi></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+><mo 
+class="MathClass-punc" stretchy="false">,</mo><msub><mrow 
+><mi 
+>c</mi></mrow><mrow 
+><mi 
+>k</mi><mo 
+class="MathClass-bin" stretchy="false">+</mo><mn>1</mn></mrow></msub 
+><mo 
+class="MathClass-close" stretchy="false">)</mo><mo 
+class="MathClass-punc" stretchy="false">,</mo><mspace width="2em" class="qquad"/><msub><mrow 
+><mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">¯</mo></mover></mrow><mrow 
+><mi 
+>k</mi><mo 
+class="MathClass-bin" stretchy="false">+</mo><mn>1</mn></mrow></msub 
+> <mo 
+class="MathClass-rel" stretchy="false">=</mo><msubsup><mrow 
+> <mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">¯</mo></mover></mrow><mrow 
+><mi 
+>k</mi></mrow><mrow 
+><mi 
+>x</mi></mrow></msubsup 
+> <mo 
+class="MathClass-bin" stretchy="false">∖</mo><mo 
+class="MathClass-open" stretchy="false">{</mo><msub><mrow 
+><mi 
+>c</mi></mrow><mrow 
+>
+<mi 
+>k</mi></mrow></msub 
+><mo 
+class="MathClass-close" stretchy="false">}</mo><mo 
+class="MathClass-punc" stretchy="false">.</mo>
+</math></td></tr></table>
+<!--l. 122--><p class="indent" >   The last relation reflects service at the vehicle’s previous location
+<!--l. 122--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><msub><mrow 
+><mi 
+>c</mi></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+></math>, not at
+its arrival location.
+</p>
+<!--l. 124--><p class="noindent" ><span class="paragraphHead"><a 
+ id="x1-7000"></a><span 
+class="cmbx-10">Waiting: </span><!--l. 124--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>c</mi> <mo 
+class="MathClass-rel" stretchy="false">=</mo> <msub><mrow 
+><mi 
+>c</mi></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+></math><span 
+class="cmbx-10">.</span></span>
+   The vehicle waits at its current location, and decision epoch
+<!--l. 125--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>k</mi> <mo 
+class="MathClass-bin" stretchy="false">+</mo> <mn>1</mn></math> begins
+after <!--l. 125--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mover 
+accent="true"><mrow 
+><mi 
+>t</mi></mrow><mo accent="true">¯</mo></mover></math>.
+The source prints </p><table class="equation-star"><tr><td>
+<!--l. 126--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="block" class="equation">
+                                 <msub><mrow 
+><mi 
+>t</mi></mrow><mrow 
+><mi 
+>k</mi><mo 
+class="MathClass-bin" stretchy="false">+</mo><mn>1</mn></mrow></msub 
+> <mo 
+class="MathClass-rel" stretchy="false">=</mo> <msub><mrow 
+><mi 
+>t</mi></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+> <mo 
+class="MathClass-bin" stretchy="false">+</mo> <mover 
+accent="true"><mrow 
+><mi 
+>t</mi></mrow><mo accent="true">¯</mo></mover><mo 
+class="MathClass-punc" stretchy="false">,</mo><mspace width="2em" class="qquad"/><msub><mrow 
+><mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">¯</mo></mover></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+> <mo 
+class="MathClass-rel" stretchy="false">=</mo><msubsup><mrow 
+> <mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">¯</mo></mover></mrow><mrow 
+><mi 
+>k</mi></mrow><mrow 
+><mi 
+>x</mi></mrow></msubsup 
+><mo 
+class="MathClass-punc" stretchy="false">.</mo>
+</math></td></tr></table>
+<!--l. 130--><p class="indent" >   <span 
+class="cmti-10">Printed inconsistency. </span>The waiting paragraph says that the assigned-customer set is unchanged, but prints
+<!--l. 130--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><msub><mrow 
+><mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">¯</mo></mover></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+> <mo 
+class="MathClass-rel" stretchy="false">=</mo><msubsup><mrow 
+> <mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">¯</mo></mover></mrow><mrow 
+><mi 
+>k</mi></mrow><mrow 
+><mi 
+>x</mi></mrow></msubsup 
+></math>, with subscript
+<!--l. 130--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>k</mi></math> on both sides, rather
+than an update for <!--l. 130--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><msub><mrow 
+><mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">¯</mo></mover></mrow><mrow 
+><mi 
+>k</mi><mo 
+class="MathClass-bin" stretchy="false">+</mo><mn>1</mn></mrow></msub 
+></math>.
+Together with the post-decision definition this equality conflicts with adding genuinely new assignments while
+waiting. The printed equality is retained here without replacing its left-hand subscript or supplying a missing
+assigned-set update.
+</p><!--l. 132--><p class="indent" >   At epoch <!--l. 132--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>k</mi> <mo 
+class="MathClass-bin" stretchy="false">+</mo> <mn>1</mn></math>, a new,
+possibly empty set <!--l. 132--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><msub><mrow 
+><mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">~</mo></mover></mrow><mrow 
+><mi 
+>k</mi><mo 
+class="MathClass-bin" stretchy="false">+</mo><mn>1</mn></mrow></msub 
+></math>
+of late-request customers may be observed. Its requests are those made during
+<!--l. 132--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mo 
+class="MathClass-open" stretchy="false">(</mo><msub><mrow 
+><mi 
+>t</mi></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+><mo 
+class="MathClass-punc" stretchy="false">,</mo><msub><mrow 
+><mi 
+>t</mi></mrow><mrow 
+><mi 
+>k</mi><mo 
+class="MathClass-bin" stretchy="false">+</mo><mn>1</mn></mrow></msub 
+><mo 
+class="MathClass-close" stretchy="false">]</mo></math>, with the explicit
+terminal exception <!--l. 132--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><msub><mrow 
+><mover 
+accent="true"><mrow 
+><mstyle 
+mathvariant="script"><mi 
+>C</mi></mstyle></mrow><mo accent="true">~</mo></mover></mrow><mrow 
+><mi 
+>K</mi></mrow></msub 
+> <mo 
+class="MathClass-rel" stretchy="false">=</mo> <mi 
+>∅</mi></math>.
+The general formulation leaves the stochastic request law abstract; the particular distributions used in the
+computational experiments are not conditions of this full model.
+
+</p><!--l. 134--><p class="noindent" >
+</p>
+   <h3 class="likesectionHead"><a 
+ id="x1-8000"></a>Policy class and scope</h3>
+<!--l. 136--><p class="noindent" >A policy is a sequence of decision rules </p><table class="equation-star"><tr><td>
+<!--l. 137--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="block" class="equation">
+                                  <mi 
+>π</mi> <mo 
+class="MathClass-rel" stretchy="false">=</mo> <mo 
+class="MathClass-open" stretchy="false">(</mo><msubsup><mrow 
+><mi 
+>X</mi></mrow><mrow 
+><mn>0</mn></mrow><mrow 
+><mi 
+>π</mi></mrow></msubsup 
+><mo 
+class="MathClass-punc" stretchy="false">,</mo><msubsup><mrow 
+><mi 
+>X</mi></mrow><mrow 
+>
+<mn>1</mn></mrow><mrow 
+><mi 
+>π</mi></mrow></msubsup 
+><mo 
+class="MathClass-punc" stretchy="false">,</mo><mo>…</mo><mo 
+class="MathClass-punc" stretchy="false">,</mo><msubsup><mrow 
+><mi 
+>X</mi></mrow><mrow 
+>
+<mi 
+>K</mi></mrow><mrow 
+><mi 
+>π</mi></mrow></msubsup 
+><mo 
+class="MathClass-close" stretchy="false">)</mo><mo 
+class="MathClass-punc" stretchy="false">.</mo>
+</math></td></tr></table>
+<!--l. 140--><p class="indent" >   The source describes each rule by </p><table class="equation-star"><tr><td>
+<!--l. 141--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="block" class="equation">
+                               <msubsup><mrow 
+><mi 
+>X</mi></mrow><mrow 
+><mi 
+>k</mi></mrow><mrow 
+><mi 
+>π</mi></mrow></msubsup 
+><mo 
+class="MathClass-open" stretchy="false">(</mo><msub><mrow 
+><mi 
+>s</mi></mrow><mrow 
+>
+<mi 
+>k</mi></mrow></msub 
+><mo 
+class="MathClass-close" stretchy="false">)</mo> <mo 
+class="MathClass-punc" stretchy="false">:</mo> <msub><mrow 
+><mi 
+>s</mi></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+><mo 
+class="MathClass-rel" stretchy="false">↦</mo><mstyle 
+mathvariant="script"><mi 
+>X</mi></mstyle><mo 
+class="MathClass-open" stretchy="false">(</mo><msub><mrow 
+><mi 
+>s</mi></mrow><mrow 
+><mi 
+>k</mi></mrow></msub 
+><mo 
+class="MathClass-close" stretchy="false">)</mo><mo 
+class="MathClass-punc" stretchy="false">,</mo><mspace width="2em" class="qquad"/><mi 
+>k</mi> <mo 
+class="MathClass-rel" stretchy="false">=</mo> <mn>0</mn><mo 
+class="MathClass-punc" stretchy="false">,</mo><mo>…</mo><mo 
+class="MathClass-punc" stretchy="false">,</mo><mi 
+>K</mi><mo 
+class="MathClass-punc" stretchy="false">,</mo>
+</math></td></tr></table>
+<!--l. 145--><p class="indent" >   meaning that the current state is mapped to a feasible decision. The optimization variable
+<!--l. 145--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>π</mi></math> ranges
+over <!--l. 145--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi mathvariant="normal">Π</mi></math>,
+the set of all Markovian deterministic policies. The expectation in the objective is conditional on
+<!--l. 145--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><msub><mrow 
+><mi 
+>s</mi></mrow><mrow 
+><mn>0</mn></mrow></msub 
+></math>
+and accounts for the stochastic requests and the possibly random final epoch
+<!--l. 145--><math 
+ xmlns="http://www.w3.org/1998/Math/MathML"  
+display="inline" ><mi 
+>K</mi></math>.
+</p>
+<!--l. 147--><p class="noindent" ><span class="paragraphHead"><a 
+ id="x1-9000"></a><span 
+class="cmbx-10">Source and selected scope.</span></span>
+   The objective and policy class are from physical PDF pages 8–9 of Ulmer, Goodson, Mattfeld,
+and Hennig, <span 
+class="cmti-10">Offline-Online Approximate Dynamic Programming for Dynamic Vehicle Routing with</span>
+<span 
+class="cmti-10">Stochastic Requests</span>, April 4, 2017. The input, state, and boundary definitions are on pages 6–7; the
+feasible-decision block, reward, and transitions are on page 8. The Appendix on pages 39–40 describes a
+reduction of the decision space for the heuristics, using no waiting, ordered assigned customers, and
+cheapest insertion. That reduction is not part of the selected full MDP and does not replace condition (4)
+here.
+</p>
+    
+</body> 
+</html>
+
+

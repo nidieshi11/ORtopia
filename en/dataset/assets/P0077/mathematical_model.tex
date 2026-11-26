@@ -1,0 +1,80 @@
+% Mathematical Model - paper
+% Auto-generated at 2026-01-12T00:33:16.128122
+% Model Source: Directly Extracted
+% This model is directly extracted from the paper
+
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\emergencystretch=4em
+\usepackage{geometry}
+\geometry{paperwidth=290mm,paperheight=297mm,hmargin=18mm,vmargin=19mm}
+\begin{document}
+
+\section*{Problem: Optimization Problem}
+
+\textbf{Model Source}: Directly Extracted
+
+\subsection*{Decision Variables}
+\[
+\begin{aligned}
+& p_{hkr} && \text{Path selection ratio, regarding the departure time } h \in \mathcal{H}, \text{ OD pair } k \in \mathcal{K}, \text{ Path } r \in R_k \\
+& \boldsymbol{u}_1, \boldsymbol{u}_2 && \text{Dual variables, corresponding to the upper and lower bounds of OD requirements} \\
+& \boldsymbol{v}_1, \boldsymbol{v}_2 && \text{Dual variables, representing the upper and lower bounds of the total demand during a given period.} \\
+& u_3 && \text{Dual variables, corresponding to the constraints related to total demand ratios} \\
+& \boldsymbol{y}_i && \text{Auxiliary variables are used to decompose robust uncertain sets. } i = 1, \dots, 6
+\end{aligned}
+\]
+
+\subsection*{Objective Function}
+\begin{equation}\tag{31a}
+\min_{\boldsymbol{p}, \boldsymbol{u}, \boldsymbol{v}, \boldsymbol{y}} \quad \hat{Z}(\boldsymbol{p}, \boldsymbol{u}, \boldsymbol{v}, \boldsymbol{y})_{\text{RC}} = \sum_{(h,k,r)\in \mathcal{P}} \beta_{hkr}(\tilde{\boldsymbol{f}}) \cdot (\bar{d}_{hk} \cdot p_{hkr} - \tilde{f}_{hkr}) + \rho_{1-\varepsilon} \|\boldsymbol{y}_1\|_2 + (\boldsymbol{d}^U - \bar{\boldsymbol{d}})^T \boldsymbol{u}_1 + (\bar{\boldsymbol{d}} - \boldsymbol{d}^L)^T \boldsymbol{u}_2 + (\boldsymbol{d}^U_{\mathcal{H}} - \boldsymbol{S}\bar{\boldsymbol{d}})^T \boldsymbol{v}_1 + (\boldsymbol{S}\bar{\boldsymbol{d}} - \boldsymbol{d}^L_{\mathcal{H}})^T \boldsymbol{v}_2 + (\Gamma - 1) \cdot (\boldsymbol{1}^T \bar{\boldsymbol{d}}) \cdot u_3 + Z(\tilde{\boldsymbol{f}})
+\end{equation}
+
+\subsection*{Constraints}
+\text{ (Auxiliary constraints for robust peer-to-peer conversion)}
+\[
+\begin{gathered}
+\boldsymbol{D}^T \boldsymbol{u}_1 = \boldsymbol{y}_2
+\\
+-\boldsymbol{D}^T \boldsymbol{u}_2 = \boldsymbol{y}_3
+\\
+(\boldsymbol{S}\boldsymbol{D})^T \boldsymbol{v}_1 = \boldsymbol{y}_4
+\\
+-(\boldsymbol{S}\boldsymbol{D})^T \boldsymbol{v}_2 = \boldsymbol{y}_5
+\\
+(\boldsymbol{1}^T \boldsymbol{D})^T u_3 = \boldsymbol{y}_6
+\end{gathered}
+\]
+\begin{equation}\tag{28g}
+\sum_{i=1}^{6} \boldsymbol{y}_i = (\boldsymbol{A}\boldsymbol{D})^T \boldsymbol{p}
+\end{equation}
+\begin{equation}\tag{28h}
+\boldsymbol{u}_1, \boldsymbol{u}_2, \boldsymbol{v}_1, \boldsymbol{v}_2, u_3 \geq \boldsymbol{0}
+\end{equation}
+\text{ (Path proportion constraints) }
+\begin{equation}\tag{31c}
+\sum_{r \in R_k} p_{hkr} = 1 \quad \forall h \in \mathcal{H}, k \in \mathcal{K}
+\end{equation}
+\begin{equation}\tag{31d}
+0 \leq p_{hkr} \leq 1 \quad \forall (h, k, r) \in \mathcal{P}
+\end{equation}
+
+\subsection*{Complete Mathematical Model}
+\[
+\begin{aligned}
+\min_{\boldsymbol{p}, \boldsymbol{u}, \boldsymbol{v}, \boldsymbol{y}} \quad & \hat{Z}(\boldsymbol{p}, \boldsymbol{u}, \boldsymbol{v}, \boldsymbol{y})_{\text{RC}} = \sum_{(h,k,r)\in \mathcal{P}} \beta_{hkr}(\tilde{\boldsymbol{f}}) \cdot (\bar{d}_{hk} \cdot p_{hkr} - \tilde{f}_{hkr}) + \rho_{1-\varepsilon} \|\boldsymbol{y}_1\|_2 + (\boldsymbol{d}^U - \bar{\boldsymbol{d}})^T \boldsymbol{u}_1 + (\bar{\boldsymbol{d}} - \boldsymbol{d}^L)^T \boldsymbol{u}_2 + (\boldsymbol{d}^U_{\mathcal{H}} - \boldsymbol{S}\bar{\boldsymbol{d}})^T \boldsymbol{v}_1 + (\boldsymbol{S}\bar{\boldsymbol{d}} - \boldsymbol{d}^L_{\mathcal{H}})^T \boldsymbol{v}_2 + (\Gamma - 1) \cdot (\boldsymbol{1}^T \bar{\boldsymbol{d}}) \cdot u_3 + Z(\tilde{\boldsymbol{f}}) \\
+\text{s.t.} \quad & \boldsymbol{D}^T \boldsymbol{u}_1 = \boldsymbol{y}_2 \\
+& -\boldsymbol{D}^T \boldsymbol{u}_2 = \boldsymbol{y}_3 \\
+& (\boldsymbol{S}\boldsymbol{D})^T \boldsymbol{v}_1 = \boldsymbol{y}_4 \\
+& -(\boldsymbol{S}\boldsymbol{D})^T \boldsymbol{v}_2 = \boldsymbol{y}_5 \\
+& (\boldsymbol{1}^T \boldsymbol{D})^T u_3 = \boldsymbol{y}_6 \\
+& \sum_{i=1}^{6} \boldsymbol{y}_i = (\boldsymbol{A}\boldsymbol{D})^T \boldsymbol{p} \\
+& \boldsymbol{u}_1, \boldsymbol{u}_2, \boldsymbol{v}_1, \boldsymbol{v}_2, u_3 \geq \boldsymbol{0} \\
+& \sum_{r \in R_k} p_{hkr} = 1 \quad \forall h \in \mathcal{H}, k \in \mathcal{K} \\
+& 0 \leq p_{hkr} \leq 1 \quad \forall (h, k, r) \in \mathcal{P}
+\end{aligned}
+\]
+
+\end{document}

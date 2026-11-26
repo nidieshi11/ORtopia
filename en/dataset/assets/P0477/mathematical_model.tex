@@ -1,0 +1,272 @@
+\documentclass[10pt]{article}
+\usepackage{amsmath,amssymb,mathtools,graphicx}
+\usepackage[margin=0.7in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\section*{Final relaxed SDP for DRSO--DRCC predictive eco-driving}
+\begin{equation}
+\min_{u,Q_d,P_d,p_d,r_d,s_d}\sum_{t=k}^{k+PH(k)}
+\left[\gamma_4\hat\Sigma\bullet Q_d(t)-\hat\mu\hat\mu^T\bullet Q_d(t)+r_d(t)+\hat\Sigma\bullet P_d(t)-2\hat\mu^Tp_d(t)+\gamma_3s_d(t)\right].
+\tag{68}
+\end{equation}
+Subject to
+\begin{equation}
+\begin{gathered}
+\resizebox{0.98\textwidth}{!}{$\displaystyle
+\begin{bmatrix}
+Q_d(t)-(Q_p^\xi)^TQ_p^\xi-(Q_r^\xi)^TQ_r^\xi &
+\frac12q_d(t)+\big((Q_p^\xi)^TQ_p+(Q_r^\xi)^T\big)x(t)\\
+\frac12(q_d(t))^T+x(t)^T\big((Q_p^\xi)^TQ_p+(Q_r^\xi)^T\big)^T &
+r_d-\operatorname{tr}\big((Q_p^TQ_p+I)X(t)\big)-\operatorname{tr}(RU(t))
+\end{bmatrix}\succeq0$}\\
+q_d(t)=-p_d(t)-Q_d(t)\hat\mu,\qquad X(t)\succeq0,\qquad U(t)\succeq0,
+\qquad\forall t=k,\ldots,k+PH(k).
+\end{gathered}
+\tag{69}
+\end{equation}
+\begin{equation}
+\begin{bmatrix}P_d(t)&p_d(t)\\(p_d(t))^T&s_d(t)\end{bmatrix}\succeq0,
+\qquad Q_d(t)\succeq0,\qquad r_d(t)\geq0,
+\qquad\forall t=k,\ldots,k+PH(k).
+\tag{70}
+\end{equation}
+\begin{equation}
+\begin{gathered}
+\sqrt{\frac{\gamma_1}{1-\gamma_1}G_r\hat\sigma_1(t)G_r^T}
++\begin{bmatrix}K_r&(\bar{\hat{x}}_p^\xi(t))^T\end{bmatrix}
+\begin{bmatrix}x(t)\\G_r^T\end{bmatrix}\leq-s^{jam},\\
+t\in\{k,\ldots,k+PH(k)\mid t_{r,a}(k)\leq t\leq t_{r,b}(k)\}.
+\end{gathered}
+\tag{71}
+\end{equation}
+\begin{equation}
+\sqrt{\frac{\gamma_2}{1-\gamma_2}G_s\hat\sigma_2(t)G_s^T}
++\begin{bmatrix}K_s&(\bar{\hat{x}}_p^\xi(t))^T\end{bmatrix}
+\begin{bmatrix}x(t)\\G_s^T\end{bmatrix}\leq-s^{jam},
+\qquad\forall t=k,\ldots,k+PH(k).
+\tag{72}
+\end{equation}
+\begin{equation}
+x(t)=x^{obs}(k),\qquad t=k.
+\tag{73}
+\end{equation}
+\begin{equation}
+x(t+1)=Ax(t)+Bu(t),\qquad\forall t=k,\ldots,k+PH(k).
+\tag{74}
+\end{equation}
+\begin{equation}
+u^{\min}\leq u(t)\leq u^{\max},\qquad\forall t=k,\ldots,k+PH(k).
+\tag{75}
+\end{equation}
+\begin{equation}
+K_fx(t)-G_f\mathrel{<=}0,\qquad\forall t=k,\ldots,k+PH(k).
+\tag{76}
+\end{equation}
+\begin{equation}
+u^{\min}\leq u(t)\leq u^{\max},\qquad\forall t=k,\ldots,k+PH(k).
+\tag{77}
+\end{equation}
+\begin{equation}
+K_fx(t)-G_f\mathrel{<=}0,\qquad\forall t=k,\ldots,k+PH(k).
+\tag{78}
+\end{equation}
+
+\paragraph{Selected source and scope.}
+These are Zhao and Zhang, \emph{Transportation Research Part B} 145 (2021), 80--117, Section 4.2.4, physical PDF page 24 (printed page 103), DOI 10.1016/j.trb.2020.12.009. The authors identify this block as the relaxed SDP obtained by combining the relaxed moment dual with the outer minimization constraints. The following definitions specify its inputs and the premises of the selected replacements; they do not reinstate the superseded minimax objective, chance constraints, or rank constraints. The two repeated pairs (75), (77) and (76), (78), and the characters \(<=\), are printed in the source. In (69), the bottom-right entry prints \(r_d\), without \((t)\).
+
+\section*{Variables, indices, and fixed matrices}
+The control index is \(k=1,2,\ldots\); the prediction index is \(t=k,\ldots,k+PH(k)\). The time-variant horizon \(PH(k)\) and control interval \(\Delta t\) are inputs at control step \(k\). The control variable \(u(t)\) is the acceleration or deceleration of the single controlled vehicle. Its state is
+\[
+x(t)=[l(t),v(t)]^T,
+\]
+where \(l(t)\) is the rear-bumper longitudinal location and \(v(t)\) is velocity. The initial state \(x^{obs}(k)\) is observed data. The printed terminal index in (74) is retained: the dynamics are imposed also at \(t=k+PH(k)\).
+
+The dual-variable domains and roles are
+\[
+Q_d(t)\in\mathbb R^{m\times m},\qquad
+P_d(t)\in\mathbb R^{m\times m},\qquad
+p_d(t)\in\mathbb R^m,\qquad s_d(t)\in\mathbb R.
+\]
+Here \(m\) is the length of the random vector \(\hat x^\xi\). The variable \(Q_d(t)\) corresponds to the second-moment constraint; \(P_d(t),p_d(t),s_d(t)\) correspond to the first-moment constraint. The scalar \(r_d(t)\) is the dual epigraph variable for the Lagrangian of the inner maximization. The auxiliary \(q_d(t)\) is defined in (69). The matrices \(X(t),U(t)\) are the lifted variables of Section 4.2.3, retained with the PSD conditions in (69).
+
+The fixed matrices are defined in Section 2.1, physical PDF page 5, and used in Section 4.1:
+\[
+Q_p=\begin{bmatrix}1&\tau^{\min}\\0&1\end{bmatrix},\qquad
+Q_p^\xi=\begin{bmatrix}1&0&0&0\\0&1&0&0\end{bmatrix},\qquad
+Q_r^\xi=\begin{bmatrix}0&0&1&0\\0&0&0&1\end{bmatrix},\qquad R=I,
+\]
+\[
+K_r=\begin{bmatrix}1&0\end{bmatrix},\quad
+G_r=\begin{bmatrix}-1&0\end{bmatrix},\quad
+K_s=\begin{bmatrix}1&\tau^{\min}\end{bmatrix},\quad
+G_s=\begin{bmatrix}-1&0\end{bmatrix},
+\]
+\[
+K_f=\begin{bmatrix}0&1\end{bmatrix},\qquad G_f=v^{limit},\qquad
+A=\begin{bmatrix}1&\Delta t\\0&1\end{bmatrix},\qquad
+B=\begin{bmatrix}(\Delta t)^2/2\\\Delta t\end{bmatrix}.
+\]
+The matrix \(R=I\) penalizes acceleration perturbations; it is distinct from the red-signal duration \(R(k)\) below. The symbol \(\bullet\) denotes the Frobenius inner product, and \(\operatorname{tr}\) denotes trace.
+
+\paragraph{Printed dimensional conflict.}
+The printed (66) and (69) use a four-by-four Gram coefficient on a two-component state. For the executable source form the two printed state-dependent residuals are expanded with the common all-stage index of (40) and (68)--(69). The cross coefficient is \(C=(Q_p^\xi)^TQ_p+(Q_r^\xi)^T\), of order \(4\times2\). The top-right column is \(q_d(t)/2+C x(t)\); the lower-left is its transpose. The leading Gram block remains \(Q_d(t)-I_4\). The reference term in (23) ends one stage earlier; that different endpoint is recorded, while (40) and the selected final SDP use all stages. The original literal transcription is archived with the audited execution model.
+
+\paragraph{Lifted-relaxation scope.}
+Section 4.2.3 first introduces, before relaxation,
+\[
+X(t)=x(t)[x(t)]^T,\qquad U(t)=u(t)[u(t)]^T,
+\qquad [u(t)]^TRu(t)=\operatorname{tr}([u(t)]^TRu(t))=\operatorname{tr}(RU(t)).
+\]
+It then states that the rank constraints are dropped. These pre-relaxation identities are not additional constraints on (68)--(78). The final printed block contains neither the rank-one constraints nor a linking block LMI between \(X,x\) or between \(U,u\); none is added here.
+
+\section*{Predicted inputs and ambiguity-set definitions}
+The scenario \(\xi\) represents uncertain driving states. The notation table on physical PDF page 5 defines the matrix-form random inputs as
+\[
+\hat x_p^\xi(t)=[\hat l_0^\xi(t),\hat v_0^\xi(t)]_{1\times2}^T,\qquad
+\hat x_r^\xi(t)=[\hat l_r^\xi(t),\hat v_r^\xi(t)]_{1\times2}^T,
+\]
+\[
+\hat x^\xi(t)=[\hat l_0^\xi(t),\hat v_0^\xi(t),\hat l_c^\xi(t),\hat v_c^\xi(t)]_{1\times4}^T.
+\]
+The subscript \(0\) denotes the immediately preceding vehicle (IPV); \(r\) denotes the controlled vehicle's predicted eco-driving reference. The table prints \(c\), not \(r\), in the last two components of \(\hat x^\xi\); no additional identity between these subscripted symbols is imposed. Predicted states are inputs to the selected control problem, not its control decisions.
+
+The observed/predicted reference support is described on physical PDF page 17 as
+\[
+\Xi=\left\{[\hat l_r^{\xi_i}(t)\quad\hat v_r^{\xi_i}(t)]^T\ \forall i=1,\ldots,M\right\},
+\]
+where \(M\) is the number of samples or boundary driving conditions. The corresponding safe-state and reference-state sample collections are
+\[
+\left\{[\hat l_s^{\xi_i}(t)\quad\hat v_s^{\xi_i}(t)]^T\ \forall i=1,\ldots,M\right\},\qquad
+\left\{[\hat l_r^{\xi_i}(t)\quad\hat v_r^{\xi_i}(t)]^T\ \forall i=1,\ldots,M\right\}.
+\]
+The parameters \(\hat\mu_p,\hat\Sigma_p\) and \(\hat\mu_r,\hat\Sigma_r\) are their estimated means and covariances. No sample-weight or covariance-normalization formula is specified in these defining passages.
+
+Section 3.3.1 uses \(x_p^\xi(t)=[l_s^\xi(t),v_s^\xi(t)]^T\) for the safe-state random vector, with support in \(\Xi\) and distribution \(F_p\in\mathbb D_p\). This differs from the raw-IPV definition of \(\hat x_p^\xi\) in the notation table. Its ambiguity set is printed as
+\begin{equation}
+\mathbb D_p(S,\hat\mu_p,\hat\Sigma_p,\gamma_3,\gamma_4)=
+\left\{\begin{array}{l}
+\mathbb P(\hat x_p^\xi(t)\in S)=1\\
+(\mathbb E[\hat x_p^\xi(x)]-\hat\mu_p)^T\hat\Sigma_p^{-1}
+(\mathbb E[\hat x_p^\xi(t)]-\hat\mu_p)\leq\gamma_3\\
+\mathbb E[(\hat x(t)-\hat\mu_p)(\hat x_p^\xi(t)-\hat\mu_p)^T]\leq\gamma_4\hat\Sigma_p
+\end{array}\right\}.
+\tag{21}
+\end{equation}
+The argument \(x\) in the first expectation of the second row, and the unsubscripted \(\hat x(t)\) in the third row, are printed as shown. They are not repaired. The corresponding reference distribution is \(F_r\in\mathbb D_r\), with \(x_r^\xi(t)=[l_r^\xi(t),v_r^\xi(t)]^T\), and
+\begin{equation}
+\mathbb D_r(S,\hat\mu_r,\hat\Sigma_r,\gamma_3,\gamma_4)=
+\left\{\begin{array}{l}
+\mathbb P(\hat x_r^\xi(t)\in S)=1\\
+(\mathbb E[\hat x_r^\xi(t)]-\hat\mu_r)^T\hat\Sigma_r^{-1}
+(\mathbb E[\hat x_r^\xi(t)]-\hat\mu_r)\leq\gamma_3\\
+\mathbb E[(\hat x_r^\xi(t)-\hat\mu_r)(\hat x_r^\xi(t)-\hat\mu_r)^T]\leq\gamma_4\hat\Sigma_r
+\end{array}\right\}.
+\tag{22}
+\end{equation}
+
+For the matrix-form moment dual used in (68), the paper writes \(F=\{F_p,F_r\}\) and \(\mathbb D=\{\mathbb D_p,\mathbb D_r\}\). Its explicit combined moment-set definition in the selected reformulation chain is
+\begin{equation}
+\begin{gathered}
+\mathbb D(S,\hat\mu,\hat\Sigma,\gamma_3,\gamma_4)=
+\left\{\begin{array}{l}
+\mathbb P(\hat x^\xi(t)\in S)=1\\
+(\mathbb E[\hat x^\xi(t)]-\hat\mu)^T\hat\Sigma^{-1}
+(\mathbb E[\hat x^\xi(t)]-\hat\mu)\leq\gamma_3\\
+\mathbb E[(\hat x^\xi(t)-\hat\mu)(\hat x^\xi(t)-\hat\mu)^T]\leq\gamma_4\hat\Sigma
+\end{array}\right\},\\
+\forall t=k,\ldots,k+PH(k).
+\end{gathered}
+\tag{47}
+\end{equation}
+The last row is the matrix inequality described by the authors as a positive-semidefinite-cone second-moment bound. Equation (47) is used here rather than assigning an identity to the unclear raised relation glyph in (30) and (52). The notation table describes \(\hat\mu,\hat\Sigma\) as the estimated mean and covariance of the joint IPV and controlled-vehicle predicted driving states. The prose following (47) describes these estimates using \(\hat l_i^\xi(t),\hat v_i^\xi\), \(i=0,\ldots,N\), from observations; it gives no stacking or aggregation formula reconciling that description with the four-component vector above.
+
+The support set \(S\) is any closed convex set known to contain the support of \(F\) (Section 4.2.2). It remains abstract; it is not the cardinality \(S\) of the distance discretization in Section 3.1. The input restrictions are
+\[
+\gamma_3\geq0,\qquad\gamma_4\geq1.
+\]
+The first bound specifies the ellipsoidal mean-uncertainty size, and the second specifies the second-moment cone bound. No additional invertibility, strict positivity, support bound, or nonemptiness condition is imposed here beyond the paper's stated premises.
+
+\paragraph{Moment-duality premise.}
+Proposition 2 assumes \(\gamma_3\geq0\), \(\gamma_4\geq1\), and that \(J(u,x,\hat x^\xi,t)\) is \(F\)-integrable for \(F\in\mathbb D\). Its proof invokes a nonempty bounded interior solution and a strictly feasible solution satisfying the equality and convex inequalities. The defining expression for \(J\) is printed as
+\begin{equation}
+J(u,x,\hat x^\xi,t)=
+\left\{\begin{array}{l}
+[Q_p^\xi\hat x^\xi(t)-Q_px(t)]^T[Q_p^\xi\hat x^\xi(t)-Q_px(t)]\\
+[Q_r^\xi\hat x^\xi(t)-x(t)]^T[Q_r^\xi\hat x^\xi(t)-x(t)]^T\\
+[u(t)]^TR[u(t)]
+\end{array}\right\}.
+\tag{48}
+\end{equation}
+The stacked rows have no printed connecting operators, and both factors of the second row carry a transpose. This is a printed defect of the upstream integrand definition, not an alternative objective enforced here.
+
+\section*{Deterministic safety replacement and its data}
+In (71)--(72), \(\bar{\hat{x}}_p^\xi(t)\) is the expected predicted IPV driving state. Section 4.2.1 denotes this mean also by \(\bar x_p^\xi(t)\); it describes \(\hat\sigma_1(t)\) as the covariance matrix of
+\[
+\{\hat x_p^{\xi_i}(t)\ \forall i=1,\ldots,M\}.
+\]
+The notation table defines \(\hat\sigma_2(t)\) as the covariance of the IPV driving states for the minimum-safe-time-headway DRCC. Both covariances and the mean are calculated from the predicted data. They are not identified with the dual matrices or with the lifted state variables.
+
+The deterministic replacements use the one-sided Chebyshev counterpart for confidence levels in the open interval:
+\[
+\gamma_1\in(0,1),\qquad\gamma_2\in(0,1).
+\]
+The theorem quoted on physical PDF page 20 states, for \(\gamma\in(0,1)\), the correspondence
+\[
+\sqrt{\frac{\gamma}{1-\gamma}\operatorname{var}[\varphi(x)]}
++\bar\varphi(x)\leq0
+\quad\Longleftrightarrow\quad
+\inf_{d\sim(\bar d,\Gamma)}\mathbb P(d^T\tilde x\leq0)\geq\gamma.
+\]
+Thus the fractions in (71)--(72) follow the denominator \(1-\gamma\) in that stated theorem. Proposition 1's introductory confidence symbol is printed \(\gamma_p\), while its constraint uses \(\gamma_1\). The paper applies the same construction to \(\gamma_2\).
+
+\paragraph{Scope conflict in the claimed equivalence.}
+The quoted theorem uses a fixed mean and covariance, whereas (21), (22), and (47) allow moment uncertainty. The paper calls (71)--(72) equivalent counterparts without supplying a further condition reducing those moment-bound sets to fixed-moment sets. The selected deterministic rows are retained, without adding such a condition or restoring the chance constraints. The red-signal scope is the interval in (71), not the different modular-cycle scope printed in (24) and (41).
+
+\section*{Safe-state and prediction-horizon input construction}
+The upstream safe-state inputs are defined in Section 3.2.3 by
+\[
+\hat l_s^\xi(t)=\min\{p^{int}(\lfloor l(t)\rfloor_d)+s^{min},\ \hat l_0^\xi(t)-L^{veh}\},
+\qquad
+\hat v_s^\xi(t)=\min\big(v^{limit}(\lfloor l(t)\rfloor_d),\hat v_0^\xi(t)\big).
+\]
+Here \(p^{int}\) is the distance-indexed interrupted location, \(\lfloor\cdot\rfloor_d\) is the rounding operator to \(d\) trailing digits, \(s^{min}\) is the minimum safe stopped spacing considering vehicle length, \(L^{veh}\) is vehicle length, and \(\tau^{\min}\) is minimum safe time headway. The symbol \(s^{jam}\) is the spacing threshold printed in the constraints; the source does not explicitly equate it to \(s^{min}\). The plus sign before \(s^{min}\) in the definition of \(\hat l_s^\xi\) is retained. These are upstream predicted-input definitions, not additional nonlinear decision constraints on the final SDP. The paper computes the corresponding safe inputs from the predicted reference trajectory before forming the uncertainty sets.
+
+The reference trajectories \(\hat l_r^\xi,\hat v_r^\xi\) are obtained from the separate eco-driving policy for each boundary condition. Its optimization objective and binary road-grade selection constraints are not another objective or another feasible set of (68)--(78). The time-variant horizon construction used for those predictions is
+\begin{equation}
+PH(k)\leq\hat t_f(k).
+\tag{6}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+\hat t_{f,1}(k)&=\max\left(t_{f,p}(k)+\tau^h,\ t^0+\frac{L}{v^{limit}}
+-\left[\frac{0.5(v^{limit}+v(t^0))(v^{limit}-v(t^0))}{u^{\max}\times v^{limit}}\right]
++\frac{v^{limit}-v(t^0)}{u^{\max}}\right),\\
+\hat t_{f,2}(k)&=\left\lfloor\frac{\hat t_{f,1}}{R(k)+G(k)}\right\rfloor(R(k)+G(k))+R(k),\\
+\hat t_f(k)&=\begin{cases}
+\hat t_{f,1}(k),&\forall\hat t_{f,1}\in\{t\mid\hat t_{f,1}\leq t_{r,a},\ \hat t_{f,1}\geq t_{r,b}\},\\
+\hat t_{f,2}(k),&\forall\hat t_{f,1}\notin\{t\mid t_{r,a}\leq\hat t_{f,1}\leq t_{r,b}\}.
+\end{cases}
+\end{aligned}
+\tag{14}
+\end{equation}
+The quantities \(t^0,t_{f,p}(k),\tau^h,R(k),G(k),t_{r,a}(k),t_{r,b}(k)\) are, respectively, entry time into communication range, simulated IPV arrival time, following headway, red duration, green duration, red start, and red end. The symbols \(\hat t_{f,1},\hat t_{f,2}\) represent arrival estimates for green and red conditions. The scalar \(L\) is left as printed: an explicit definition is not verified in the supplied defining passages. Equation (14)'s first branch retains its simultaneous reversed endpoint tests, and its second branch retains the printed nonmembership condition; no branch repair or extra case is added. The prose calls the result a minimum horizon estimate although (6) is an upper bound. Equation (6) belongs to the upstream reference-policy horizon construction; it is not an additional row printed in (69)--(78).
+
+\paragraph{Likelihood-threshold prescription.}
+Figure 10, Step 9 (physical PDF page 25), gives the following additional data-selection relations for a boundary-condition set of size \(M\):
+\[
+\hat\gamma_3=\frac{a}{1-a-b},\qquad
+\hat\gamma_4=\frac{1+b}{1-a-b},\qquad
+ a=O\!\left(\frac1{\sqrt M}\right),\qquad b=O\!\left(\frac1M\right).
+\]
+The hats, asymptotic orders, and absent explicit constants are retained. The figure does not print an equality identifying these hatted quantities with the unhatted parameters in (68), nor an additional bound on \(a+b\); none is introduced. The parameter premises \(\gamma_3\geq0,\gamma_4\geq1\) above remain the stated premises of the selected moment reformulation. The experiment's value \(\gamma_4=0.85\) conflicts with the latter premise and is not imported into this model.
+
+\section*{Source qualifications}
+The selected formulation retains the negative \(-\hat\mu\hat\mu^T\bullet Q_d(t)\) and the coefficients \(\gamma_4,\gamma_3\) of (68). Earlier (65) instead prints a positive quadratic mean term and uses \(\gamma_1,\gamma_2\); those are not the selected objective. Likewise (69) retains both \(\tfrac12q_d(t)\) and \(q_d(t)=-p_d(t)-Q_d(t)\hat\mu\), although the off-diagonal term in (64) lacks that one-half scaling. The selected final SDP retains this one-half factor.
+
+The selected matrix initial condition is (73). Upstream scalar equations (8) and (18) print \(v(k)=l^{obs}(k)\); this is not used to redefine the abstract vector \(x^{obs}(k)\). Upstream (12) and (20) print the lower velocity bound \(0\leq v(t)\), but the selected matrix bounds (76), (78), with \(K_f=[0\ 1]\), impose only the upper speed limit. A missing lower-bound row is not silently added to the selected printed SDP.
+
+The modeling assumptions are a given route and HD-map interrupted-facility and geometry information; real-time V2V preceding-vehicle and V2I signal information within communication range, without communication delay or packet loss; a controlled vehicle with Level 2 path-following automation; and preceding-state predictions and their probability distributions not known in advance. The numerical communication ranges, intervals, vehicle parameters, signal tables, and experimental horizon lengths are not fixed inputs of this general formulation.
+
+The supplied primary pages and image transcriptions support the displayed model and definitions. No separate official supplement or appendix was supplied; any additional supplement-based definition or correction is unverified. External proofs cited for strong duality, the S-lemma, and the chance-constraint theorem have not been independently verified here. No additional premises from those external sources are inserted into the printed model.
+\end{document}

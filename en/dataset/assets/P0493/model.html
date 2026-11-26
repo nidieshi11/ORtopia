@@ -1,0 +1,676 @@
+<!DOCTYPE html> 
+<html lang='en-US' xml:lang='en-US'> 
+<head><title>P0493 · Fast-charging facility location with traffic and environmental costs · Mathematical model</title> 
+<meta charset='utf-8' /> 
+<meta content='TeX4ht (https://tug.org/tex4ht/)' name='generator' /> 
+<meta content='width=device-width,initial-scale=1' name='viewport' /> 
+<style> 
+/* start css.sty */
+.cmr-5{font-size:50%;}
+.cmr-7{font-size:70%;}
+.cmmi-5{font-size:50%;font-style: italic;}
+.cmmi-7{font-size:70%;font-style: italic;}
+.cmmi-10{font-style: italic;}
+.cmsy-5{font-size:50%;}
+.cmsy-7{font-size:70%;}
+.cmbx-10{ font-weight: bold;}
+.cmbx-10{ font-weight: bold;}
+.cmbx-7{font-size:70%; font-weight: bold;}
+.cmbx-7{ font-weight: bold;}
+.cmbsy-10{font-weight: bold;}
+.cmbsy-10{font-weight: bold;}
+.cmbsy-10{font-weight: bold;}
+.cmbsy-7{font-size:70%;font-weight: bold;}
+.cmbsy-7{font-weight: bold;}
+.cmbsy-7{font-weight: bold;}
+.cmbsy-5{font-size:50%;font-weight: bold;}
+.cmbsy-5{font-weight: bold;}
+.cmbsy-5{font-weight: bold;}
+.cmex-7{font-size:70%;}
+.cmex-7x-x-71{font-size:49%;}
+.msam-7{font-size:70%;}
+.msam-5{font-size:50%;}
+.msbm-7{font-size:70%;}
+.msbm-5{font-size:50%;}
+.cmti-10{ font-style: italic;}
+p{margin-top:0;margin-bottom:0}
+p.indent{text-indent:0;}
+p + p{margin-top:1em;}
+p + div, p + pre {margin-top:1em;}
+div + p, pre + p {margin-top:1em;}
+a { overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; hyphens: auto; }
+@media print {div.crosslinks {visibility:hidden;}}
+table.tabular{border-collapse: collapse; border-spacing: 0;}
+a img { border-top: 0; border-left: 0; border-right: 0; }
+center { margin-top:1em; margin-bottom:1em; }
+td center { margin-top:0em; margin-bottom:0em; }
+.Canvas { position:relative; }
+math { text-indent: 0em; }
+body{ margin:1em auto; max-width:80ch; padding:0 .62em; }
+h1,h2,h3,h4,h5 { line-height:1.2; }
+@media print{ body{ max-width:none } }
+.partHead, .likepartHead { font-size: 2em; }
+.chapterHead, .likechapterHead { font-size: 1.7411em; }
+.sectionHead, .likesectionHead { font-size: 1.5157em; }
+.subsectionHead, .likesubsectionHead { font-size: 1.3195em; }
+.subsubsectionHead, .likesubsubsectionHead { font-size: 1.1487em; }
+ @media (prefers-color-scheme: dark) { img[src^="model"]{filter: invert(1); } } 
+li p.indent { text-indent: 0em }
+li p:first-child{ margin-top:0em; }
+li p:last-child, li div:last-child { margin-bottom:0.5em; }
+li p:first-child{ margin-bottom:0; }
+li p~ul:last-child, li p~ol:last-child{ margin-bottom:0.5em; }
+.enumerate1 {list-style-type:decimal;}
+.enumerate2 {list-style-type:lower-alpha;}
+.enumerate3 {list-style-type:lower-roman;}
+.enumerate4 {list-style-type:upper-alpha;}
+div.newtheorem { margin-bottom: 2em; margin-top: 2em;}
+div.newtheorem .head{font-weight: bold;}
+.obeylines-h,.obeylines-v {white-space: nowrap; }
+div.obeylines-v p { margin-top:0; margin-bottom:0; }
+.overline{ text-decoration:overline; }
+.overline img{ border-top: 1px solid black; }
+td.displaylines {text-align:center; white-space:nowrap;}
+.centerline {text-align:center;}
+.rightline {text-align:right;}
+pre.verbatim {font-family: monospace,monospace; text-align:left; clear:both; }
+.fbox {padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+div.fbox {display:table}
+div.center div.fbox {text-align:center; clear:both; padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+div.minipage{width:100%;}
+div.center, div.center div.center {text-align: center; margin-left:1em; margin-right:1em;}
+div.center div {text-align: left;}
+div.flushright, div.flushright div.flushright {text-align: right;}
+div.flushright div {text-align: left;}
+div.flushleft {text-align: left;}
+.underline{ text-decoration:underline; }
+.underline img{ border-bottom: 1px solid black; margin-bottom:1pt; }
+.framebox-c, .framebox-l, .framebox-r { padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+.framebox-c {text-align:center;}
+.framebox-l {text-align:left;}
+.framebox-r {text-align:right;}
+span.thank-mark{ vertical-align: super }
+span.footnote-mark sup.textsuperscript, span.footnote-mark a sup.textsuperscript{ font-size:80%; }
+code.verb{font-family:monospace,monospace;}
+div.tabular, div.center div.tabular {text-align: center; margin-top:0.5em; margin-bottom:0.5em; }
+table.tabular td p{margin-top:0em;}
+table.tabular {margin-left: auto; margin-right: auto;}
+td p:first-child{ margin-top:0em; }
+td p:last-child{ margin-bottom:0em; }
+div.td00{ margin-left:0pt; margin-right:0pt; }
+div.td01{ margin-left:0pt; margin-right:5pt; }
+div.td10{ margin-left:5pt; margin-right:0pt; }
+div.td11{ margin-left:5pt; margin-right:5pt; }
+table[rules] {border-left:solid black 0.4pt; border-right:solid black 0.4pt; }
+td.td00{ padding-left:0pt; padding-right:0pt; }
+td.td01{ padding-left:0pt; padding-right:5pt; }
+td.td10{ padding-left:5pt; padding-right:0pt; }
+td.td11{ padding-left:5pt; padding-right:5pt; }
+table[rules] {border-left:solid black 0.4pt; border-right:solid black 0.4pt; }
+.hline hr, .cline hr{ height : 0px; margin:0px; }
+.hline td, .cline td{ padding: 0; }
+.hline hr, .cline hr{border:none;border-top:1px solid black;}
+.hline {border-top: 1px solid black;}
+.hline + .vspace:last-child{display:none;}
+.hline:first-child{border-bottom:1px solid black;border-top:none;}
+.tabbing-right {text-align:right;}
+div.float, div.figure {margin-left: auto; margin-right: auto;}
+div.float img {text-align:center;}
+div.figure img {text-align:center;}
+.marginpar,.reversemarginpar {width:20%; float:right; text-align:left; margin-left:auto; margin-top:0.5em; font-size:85%; text-decoration:underline;}
+.marginpar p,.reversemarginpar p{margin-top:0.4em; margin-bottom:0.4em;}
+.reversemarginpar{float:left;}
+.equation td{text-align:center; vertical-align:middle; }
+td.eq-no{ width:5%; }
+table.equation { width:100%; } 
+div.math-display, div.par-math-display{text-align:center;}
+.array-hline,.array-cline{ border-top: 1px solid black; height:0px; }
+.array-hline + .array-vspace:last-child{display:none;}
+.hline-mtd, .array-hline td{ display:none }
+.array-hline + .array-row:last-child{display:none;}
+.array-hline:first-child{border-bottom:1px solid black;border-top:none;}
+math .texttt { font-family: monospace; }
+math .textit { font-style: italic; }
+math .textsl { font-style: oblique; }
+math .textsf { font-family: sans-serif; }
+math .textbf { font-weight: bold; }
+mo.MathClass-op + mi{margin-left:0.3em}
+mi + mo.MathClass-op{margin-left:0.3em}
+ math mstyle[mathvariant="bold"] { font-weight: bold; font-style: normal; } 
+ math mstyle[mathvariant="normal"] { font-weight: normal; font-style: normal; } 
+.partToc a, .partToc, .likepartToc a, .likepartToc {line-height: 200%; font-weight:bold; font-size:110%;}
+.index-item, .index-subitem, .index-subsubitem {display:block}
+div.caption {text-indent:-2em; margin-left:3em; margin-right:1em; text-align:left;}
+div.caption span.id{font-weight: bold; white-space: nowrap; }
+h1.partHead{text-align: center}
+p.bibitem { text-indent: -2em; margin-left: 2em; margin-top:0.6em; margin-bottom:0.6em; }
+p.bibitem-p { text-indent: 0em; margin-left: 2em; margin-top:0.6em; margin-bottom:0.6em; }
+.subsubsectionHead, .likesubsubsectionHead { font-size: 1em; }
+.paragraphHead, .likeparagraphHead { margin-top:2em; font-weight: bold;}
+.subparagraphHead, .likesubparagraphHead { font-weight: bold;}
+.verse{white-space:nowrap; margin-left:2em}
+div.maketitle {text-align:center;}
+h2.titleHead{text-align:center;}
+div.maketitle{ margin-bottom: 2em; }
+div.author, div.date {text-align:center;}
+div.thanks{text-align:left; margin-left:10%; font-size:85%; font-style:italic; }
+div.author{white-space: nowrap;}
+div.abstract p {margin-left:5%; margin-right:5%;}
+div.abstract {width:100%;}
+.abstracttitle{text-align:center;margin-bottom:1em;}
+.subsectionToc, .likesubsectionToc {margin-left:1em;}
+.subsubsectionToc, .likesubsubsectionToc {margin-left:2em;}
+.paragraphToc, .likeparagraphToc {margin-left:3em;}
+.subparagraphToc, .likesubparagraphToc {margin-left:4em;}
+figure.float, div.figure {margin-left: auto; margin-right: auto;}
+figure.figure {text-align:center;}
+figcaption.caption {text-indent:-2em; margin-left:3em; margin-right:1em; text-align:center;}
+figcaption.caption span.id{font-weight: bold; white-space: nowrap; }
+p + figcaption, img + figcaption{margin-top: 1em;}
+.abstract{margin:1em;}
+.equation-star td{text-align:center; vertical-align:middle; }
+table.equation-star { width:100%; } 
+.boxed{border: 1px solid black; padding-left:2px; padding-right:2px;}
+mtd.align-odd{margin-left:2em; text-align:right;}
+mtd.align-even{margin-right:2em; text-align:left;}
+/* end css.sty */
+
+
+html{background:#fff;color:#243833}body{padding:clamp(.55rem,2vw,1.25rem);margin:0;line-height:1.5;overflow-wrap:break-word}
+h1,h2,h3,h4,h5,h6{line-height:1.22;color:#193d35}p{margin:.5rem 0}math[display=block]{overflow-x:auto;max-width:100%}
+@media print{body{padding:0;color:#000}}
+</style> 
+<meta content='model.tex' name='src' /> 
+</head><body>
+   <h3 class='likesectionHead' id='selected-bilevel-formulation'><a id='x1-1000'></a>Selected bilevel formulation</h3>
+   <table class='equation'><tr><td>
+<!-- l. 8 --><p class='indent'>
+</p><!-- l. 8 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mstyle class='label' id='x1-1001r1'></mstyle><!-- endlabel --><mtable class='aligned'><mtr><mtd columnalign='right'><munder class='msub'><mrow><mtext class='qopname'>min</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow><mrow><mo class='MathClass-open' stretchy='false'>(</mo><mstyle mathvariant='bold'><mi>X</mi></mstyle><mo class='MathClass-punc' stretchy='false'>,</mo><mstyle mathvariant='bold'><mi>f</mi></mstyle><mo class='MathClass-close' stretchy='false'>)</mo></mrow></munder><mspace class='quad' width='1em'></mspace><mstyle mathvariant='normal'><mi>PI</mi></mstyle><mo class='MathClass-open' stretchy='false'>(</mo><mstyle mathvariant='bold'><mi>X</mi></mstyle><mo class='MathClass-punc' stretchy='false'>,</mo><mstyle mathvariant='bold'><mi>f</mi></mstyle><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>=</mo> </mtd><mtd columnalign='left'><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>k</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>K</mi></mrow></munder><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>c</mi></mrow><mrow><mi>k</mi></mrow></msub><msub><mrow><mi>x</mi></mrow><mrow><mi>k</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>h</mi></mrow><mrow><mi>k</mi></mrow></msub><msub><mrow><mi>u</mi></mrow><mrow><mi>k</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo></mtd>                                              <mtd columnalign='right'></mtd>
+</mtr><mtr><mtd columnalign='right'></mtd>                 <mtd columnalign='left'> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>v</mi></mrow><mrow><mn>1</mn></mrow></msub> <mrow><mo fence='true' form='prefix'> (</mo><mrow><munder class='msub'><mrow><mo>∑</mo>
+  </mrow><mrow><mi>w</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>W</mi></mrow></munder><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>p</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msup><mrow><mi>P</mi></mrow><mrow><mi>w</mi></mrow></msup></mrow></munder><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>n</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>N</mi></mrow></munder><msubsup><mrow><mi>t</mi></mrow><mrow><mi>p</mi></mrow><mrow><mi>w</mi></mrow></msubsup><msubsup><mrow><mi>f</mi></mrow><mrow>
+<mi>p</mi></mrow><mrow><mi>w</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi></mrow></msubsup> <mo class='MathClass-bin' stretchy='false'>+</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>k</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>K</mi></mrow></munder><msub><mrow><mi>W</mi></mrow><mrow><mi>k</mi></mrow></msub><msub><mrow><mi>λ</mi></mrow><mrow><mi>k</mi></mrow></msub></mrow><mo fence='true' form='postfix'>)</mo></mrow> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>v</mi></mrow><mrow><mn>2</mn></mrow></msub><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>a</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>A</mi></mrow></munder><msubsup><mrow><mi>q</mi></mrow><mrow><mi>a</mi></mrow><mrow><mi>g</mi></mrow></msubsup><msubsup><mrow><mi>e</mi></mrow><mrow>
+<mi>a</mi></mrow><mrow><mi>g</mi></mrow></msubsup><mo class='MathClass-punc' stretchy='false'>,</mo></mtd>
+</mtr><mtr><mtd columnalign='right'><mstyle class='text'><mtext>s.t.</mtext></mstyle><mspace class='quad' width='1em'></mspace></mtd>              <mtd columnalign='left'><mstyle mathvariant='bold'><mi>X</mi></mstyle><mo class='MathClass-open' stretchy='false'>(</mo><mstyle mathvariant='bold'><mi>x</mi></mstyle><mo class='MathClass-punc' stretchy='false'>,</mo><mstyle mathvariant='bold'><mi>u</mi></mstyle><mo class='MathClass-punc' stretchy='false'>,</mo><mstyle mathvariant='bold'><mi>y</mi></mstyle><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>∈</mo><mi mathvariant='normal'>Ω</mi><mo class='MathClass-punc' stretchy='false'>,</mo></mtd>
+</mtr><mtr><mtd columnalign='right'></mtd>                 <mtd columnalign='left'><mstyle mathvariant='bold'><mi>f</mi></mstyle> <mo class='MathClass-rel' stretchy='false'>∈</mo><mtext class='qopname'> argmin</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo> <mrow><mo fence='true' form='prefix'> {</mo><mrow><mi>Z</mi><mo class='MathClass-open' stretchy='false'>(</mo><mstyle mathvariant='bold'><mi>f</mi></mstyle><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-punc' stretchy='false'>:</mo> <mstyle mathvariant='bold'><mi>f</mi></mstyle> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>Θ</mi></mrow><mo fence='true' form='postfix'>}</mo></mrow><mo class='MathClass-punc' stretchy='false'>,</mo></mtd>
+</mtr><mtr><mtd columnalign='right'><mi>Z</mi><mo class='MathClass-open' stretchy='false'>(</mo><mstyle mathvariant='bold'><mi>f</mi></mstyle><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>=</mo> </mtd>           <mtd columnalign='left'> <mo class='MathClass-bin' stretchy='false'>−</mo><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>w</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>W</mi></mrow></munder><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>n</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>N</mi></mrow></munder><msup><mrow><mi>q</mi></mrow><mrow><mi>w</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi></mrow></msup><mi>𝔼</mi> <mrow><mo fence='true' form='prefix'> [</mo><mrow><munder class='msub'><mrow><mtext class='qopname'>min</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow><mrow>
+<mi>p</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msup><mrow><mi>P</mi></mrow><mrow><mi>w</mi></mrow></msup></mrow></munder><mo class='MathClass-open' stretchy='false'>{</mo><msubsup><mrow><mi>t</mi></mrow><mrow><mi>p</mi></mrow><mrow><mi>w</mi></mrow></msubsup><mo class='MathClass-close' stretchy='false'>}</mo><mo class='MathClass-rel' stretchy='false'>∣</mo><msup><mrow><mstyle mathvariant='bold'><mi>t</mi></mstyle></mrow><mrow><mi>w</mi></mrow></msup><mo class='MathClass-open' stretchy='false'>(</mo><mstyle mathvariant='bold'><mi>f</mi></mstyle><mo class='MathClass-close' stretchy='false'>)</mo></mrow><mo fence='true' form='postfix'>]</mo></mrow></mtd>
+</mtr><mtr><mtd columnalign='right'></mtd>                 <mtd columnalign='left'> <mo class='MathClass-bin' stretchy='false'>+</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>a</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>A</mi></mrow></munder><msub><mrow><mi>q</mi></mrow><mrow><mi>a</mi></mrow></msub><msub><mrow><mi>t</mi></mrow><mrow><mi>a</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>q</mi></mrow><mrow><mi>a</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-bin' stretchy='false'>−</mo><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>a</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>A</mi></mrow></munder><msubsup><mrow><mo> ∫
+ <!-- nolimits --></mo><!-- nolimits --></mrow><mrow><mn>0</mn></mrow><mrow><msub><mrow><mi>q</mi></mrow><mrow><mi>a</mi></mrow></msub>
+     </mrow></msubsup><msub><mrow><mi>t</mi></mrow><mrow><mi>a</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>q</mi></mrow><mrow><mi>a</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mspace class='thinspace' width='0.17em'></mspace><mi mathvariant='italic'>dq</mi><mo class='MathClass-punc' stretchy='false'>.</mo></mtd>
+   </mtr>                                                                                       </mtable>
+                                                                                         <mstyle class='label' id='x1-1002r0'></mstyle><!-- endlabel -->
+</mrow></math></td><td class='eq-no'>(23)<a id='x1-1003r0'></a></td></tr></table>
+<!-- l. 23 --><p class='noindent'>This is the formulation on physical PDF page 15 (printed page 13) of Tran, Keyvan-Ekbatani,
+Ngoduy and Watling, <span class='cmti-10'>Stochasticity and environmental cost inclusion for electric vehicles
+fast-charging facility deployment</span>, accepted version (2021). The displayed definition of
+<!-- l. 23 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>Z</mi></math> is the
+expression inside the printed argmin, separated here only for layout. In particular, the printed integrand
+<!-- l. 23 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>t</mi></mrow><mrow><mi>a</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>q</mi></mrow><mrow><mi>a</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math> and differential
+<!-- l. 23 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi mathvariant='italic'>dq</mi></mrow></math> are retained; the integrand
+has not been changed to <!-- l. 23 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>t</mi></mrow><mrow><mi>a</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>q</mi><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math>.
+</p><!-- l. 25 --><p class='noindent'>
+</p>
+   <h3 class='likesectionHead' id='locating-feasible-space-and-stochastic-range'><a id='x1-2000'></a>Locating feasible space and stochastic range</h3>
+<!-- l. 26 --><p class='noindent'>The paper explicitly defines <!-- l. 26 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi mathvariant='normal'>Ω</mi></math>
+by the following rows on physical page 13:
+
+</p><!-- tex4ht:inline --><!-- l. 34 --><math display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mtable class='align' columnalign='left' displaystyle='true'>
+                 <mtr><mtd class='align-odd' columnalign='right'><msub><mrow><mi>u</mi></mrow><mrow><mi>k</mi></mrow></msub></mtd>                     <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>≤</mo> <mi>m</mi><msub><mrow><mi>x</mi></mrow><mrow><mi>k</mi></mrow></msub><mspace width='2em'></mspace></mtd>                          <mtd class='align-odd' columnalign='right'></mtd>                 <mtd class='align-even'><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>K</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                                                                                 <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(6)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-2006r0'></mstyle><!-- endlabel -->
+                 </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><msubsup><mrow><mi>𝔾</mi></mrow><mrow><mi>s</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>p</mi></mrow><mrow><mi>w</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi></mrow></msubsup></mtd>                 <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>≤</mo> <mi>α</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <mo class='MathClass-open' stretchy='false'>(</mo><mn>1</mn> <mo class='MathClass-bin' stretchy='false'>−</mo> <msubsup><mrow><mi>y</mi></mrow><mrow>
+<mi>p</mi></mrow><mrow><mi>w</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi></mrow></msubsup><mo class='MathClass-close' stretchy='false'>)</mo><mspace width='2em'></mspace></mtd>                 <mtd class='align-odd' columnalign='right'></mtd>                 <mtd class='align-even'><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>w</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>W</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>N</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>p</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msup><mrow><mi>P</mi></mrow><mrow><mi>w</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                                                                    <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(7)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-2007r0'></mstyle><!-- endlabel -->
+                 </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><msub><mrow><mi>x</mi></mrow><mrow><mi>k</mi></mrow></msub></mtd>                     <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>{</mo><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>}</mo><mspace width='2em'></mspace></mtd>                         <mtd class='align-odd' columnalign='right'></mtd>                 <mtd class='align-even'><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>K</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                                                                                 <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(8)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-2008r0'></mstyle><!-- endlabel -->
+                 </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><msubsup><mrow><mi>y</mi></mrow><mrow><mi>p</mi></mrow><mrow><mi>w</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi></mrow></msubsup></mtd>                   <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>{</mo><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>}</mo><mspace width='2em'></mspace></mtd>                         <mtd class='align-odd' columnalign='right'></mtd>                 <mtd class='align-even'><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>w</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>W</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>N</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>p</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msup><mrow><mi>P</mi></mrow><mrow><mi>w</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                                                                    <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(9)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-2009r0'></mstyle><!-- endlabel -->
+                 </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><msub><mrow><mi>u</mi></mrow><mrow><mi>k</mi></mrow></msub></mtd>                     <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mn>0</mn><mspace width='2em'></mspace></mtd>                             <mtd class='align-odd' columnalign='right'></mtd>                 <mtd class='align-even'><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>K</mi><mo class='MathClass-punc' stretchy='false'>.</mo><mspace width='2em'></mspace></mtd>                                                                                 <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(10)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-2010r0'></mstyle><!-- endlabel -->
+   </mtd></mtr></mtable></math>
+<!-- l. 35 --><p class='noindent'>The probability appearing in (7) is defined by </p><table class='equation'><tr><td>
+<!-- l. 36 --><p class='indent'>
+</p><!-- l. 36 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                             <mstyle class='label' id='x1-2011r1'></mstyle><!-- endlabel --><msubsup><mrow><mi>𝔾</mi></mrow><mrow><mi>s</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>p</mi></mrow><mrow><mi>w</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo> <mi>ℙ</mi> <mrow><mo fence='true' form='prefix'> (</mo><mrow><msup><mrow><mi>D</mi></mrow><mrow><mi>n</mi></mrow></msup> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msubsup><mrow><mi>l</mi></mrow><mrow>
+<mi>s</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>p</mi></mrow><mrow><mi>w</mi></mrow></msubsup></mrow><mo fence='true' form='postfix'>)</mo></mrow> <mo class='MathClass-rel' stretchy='false'>=</mo> <msup><mrow><mi>G</mi></mrow><mrow><mi>n</mi></mrow></msup><mo class='MathClass-open' stretchy='false'>(</mo><msubsup><mrow><mi>l</mi></mrow><mrow>
+<mi>s</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>p</mi></mrow><mrow><mi>w</mi></mrow></msubsup><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>.</mo>
+                                                                                         <mstyle class='label' id='x1-2012r0'></mstyle><!-- endlabel -->
+</mrow></math></td><td class='eq-no'>(3)<a id='x1-2013r0'></a></td></tr></table>
+<!-- l. 40 --><p class='indent'>   Here <!-- l. 40 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mrow><mi>𝔾</mi></mrow><mrow><mi>s</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>p</mi></mrow><mrow><mi>w</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi></mrow></msubsup></math> is a
+probability, whereas <!-- l. 40 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msup><mrow><mi>G</mi></mrow><mrow><mi>n</mi></mrow></msup></math>
+is the distribution function of the random driving range. Under assumption (I), for a given realization
+<!-- l. 40 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>ω</mi></math>, the
+value <!-- l. 40 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msup><mrow><mi>D</mi></mrow><mrow><mi>n</mi></mrow></msup><mo class='MathClass-open' stretchy='false'>(</mo><mi>ω</mi><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math> is
+the same for each sub-path. The supplied assumption states </p><table class='equation-star'><tr><td>
+<!-- l. 41 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                                  <msup><mrow><mi>G</mi></mrow><mrow><mi>n</mi></mrow></msup> <mo class='MathClass-punc' stretchy='false'>:</mo> <msubsup><mrow><mi>ℜ</mi></mrow><mrow>
+<mo class='MathClass-bin' stretchy='false'>+</mo></mrow><mrow><mi>n</mi></mrow></msubsup><mo class='MathClass-rel' stretchy='false'>→</mo><mo class='MathClass-open' stretchy='false'>[</mo><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>]</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mi>α</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mo class='MathClass-open' stretchy='false'>[</mo><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>]</mo><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 44 --><p class='indent'>   The driving range is the maximum distance a vehicle can travel with a full battery. For a
+given set of charging stations, sub-paths run from the origin to the first charging station, between
+successive charging stations, and from the last charging station to the destination. The quantity
+<!-- l. 44 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mrow><mi>l</mi></mrow><mrow><mi>s</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>p</mi></mrow><mrow><mi>w</mi></mrow></msubsup></math> is the length of
+sub-path <!-- l. 44 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>s</mi></math> of
+path <!-- l. 44 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>p</mi></math> between
+O-D pair <!-- l. 44 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>w</mi></math>.
+Physical page 12 describes depletion risk as the probability that driving range is smaller than the longest sub-path
+length.
+
+</p><!-- l. 46 --><p class='indent'>   The selected stochastic constraint (7) repeats (4), which the authors expressly use to replace the deterministic
+constraints (1) and (2). Those superseded constraints are not imposed here. The threshold applies to the probability
+in (3), with the non-strict inequality printed in (7).
+</p>
+<!-- l. 48 --><p class='noindent'><span class='paragraphHead' id='printed-scope-and-inconsistencies'><a id='x1-3000'></a><span class='cmbx-10'>Printed scope and inconsistencies.</span></span>
+   Equations (8) and (9) print equality to <!-- l. 49 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mo class='MathClass-open' stretchy='false'>{</mo><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>}</mo></mrow></math>,
+not set membership; these signs have been retained. Although
+<!-- l. 49 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>u</mi></mrow><mrow><mi>k</mi></mrow></msub></math> is called
+the number of chargers, (6)–(10) do not print an integrality restriction for it. Equation (7) has an
+<!-- l. 49 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>s</mi></math> subscript but its printed
+quantifiers cover only <!-- l. 49 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>w</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>p</mi></mrow></math>;
+no missing quantifier is supplied here. The opening paragraph of physical page 13 calls depletion risk the
+“smallest probability that the driving range exceeds” a sub-path length, then calls it the probability
+of being smaller than the longest sub-path. These event descriptions conflict. The explanation after
+(10) also describes successful completion, rather than depletion, as having probability at most
+<!-- l. 49 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>α</mi></math>. The
+operative probability remains the printed definition (3). The prose calls (6) a limit on the number of stations
+according to a budget, while its printed row bounds chargers at each node; no budget constraint is
+added.
+</p><!-- l. 51 --><p class='noindent'>
+</p>
+   <h3 class='likesectionHead' id='pathflow-feasible-space'><a id='x1-4000'></a>Path-flow feasible space</h3>
+<!-- l. 52 --><p class='noindent'>Physical page 15 states that <!-- l. 52 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>Θ</mi></math>
+is defined by flow conservation and the following constraints, with
+<!-- l. 52 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>M</mi></math> a large
+positive number:
+</p><!-- tex4ht:inline --><!-- l. 58 --><math display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mtable class='align' columnalign='left' displaystyle='true'>
+                   <mtr><mtd class='align-odd' columnalign='right'><msubsup><mrow><mi>f</mi></mrow><mrow><mi>p</mi></mrow><mrow><mi>w</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi></mrow></msubsup></mtd>                   <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>≤</mo> <mi>M</mi><msubsup><mrow><mi>y</mi></mrow><mrow>
+<mi>p</mi></mrow><mrow><mi>w</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi></mrow></msubsup><mspace width='2em'></mspace></mtd>                   <mtd class='align-odd' columnalign='right'></mtd>                   <mtd class='align-even'><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>w</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>W</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>N</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>p</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msup><mrow><mi>P</mi></mrow><mrow><mi>w</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                                                                            <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(21)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-4003r0'></mstyle><!-- endlabel -->
+                   </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><msubsup><mrow><mi>f</mi></mrow><mrow><mi>p</mi></mrow><mrow><mi>w</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi></mrow></msubsup></mtd>                   <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mn>0</mn><mspace width='2em'></mspace></mtd>                         <mtd class='align-odd' columnalign='right'></mtd>                   <mtd class='align-even'><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>w</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>W</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>N</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>p</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msup><mrow><mi>P</mi></mrow><mrow><mi>w</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>.</mo><mspace width='2em'></mspace></mtd>                                                                            <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(22)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-4004r0'></mstyle><!-- endlabel -->
+   </mtd></mtr></mtable></math>
+<!-- l. 59 --><p class='noindent'>Flow conservation is retained as the authors’ stated condition on
+<!-- l. 59 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>Θ</mi></math>.
+No explicit flow-conservation row is displayed in the supplied model pages; an explicit defining row
+elsewhere is unverified. In particular, no inferred demand-sum equation is substituted for that source
+reference.
+
+</p><!-- l. 61 --><p class='noindent'>
+</p>
+   <h3 class='likesectionHead' id='demand-route-choice-and-network-mappings'><a id='x1-5000'></a>Demand, route choice and network mappings</h3>
+<!-- l. 62 --><p class='noindent'>Under assumption (II), demands of vehicle class <!-- l. 62 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>n</mi></math>
+between O-D pairs <!-- l. 62 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>w</mi></math>
+follow independent stationary Poisson distributions with constant mean and variance
+<!-- l. 62 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msup><mrow><mi>q</mi></mrow><mrow><mi>w</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi></mrow></msup> <mo class='MathClass-rel' stretchy='false'>&gt;</mo> <mn>0</mn></mrow></math>. In the
+notation of that assumption, </p><table class='equation-star'><tr><td>
+<!-- l. 63 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                      <msup><mrow><mi>Q</mi></mrow><mrow><mi>w</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi></mrow></msup> <mo class='MathClass-rel' stretchy='false'>∼</mo><mtext class='qopname'> Poisson</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo><!-- nolimits --><mo class='MathClass-open' stretchy='false'>(</mo><msup><mrow><mi>q</mi></mrow><mrow><mi>w</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi></mrow></msup><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mi>𝔼</mi><mo class='MathClass-open' stretchy='false'>[</mo><msup><mrow><mi>Q</mi></mrow><mrow><mi>w</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi></mrow></msup><mo class='MathClass-close' stretchy='false'>]</mo> <mo class='MathClass-rel' stretchy='false'>=</mo><mtext class='qopname'> Var</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo><!-- nolimits --><mo class='MathClass-open' stretchy='false'>(</mo><msup><mrow><mi>Q</mi></mrow><mrow><mi>w</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi></mrow></msup><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>=</mo> <msup><mrow><mi>q</mi></mrow><mrow><mi>w</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi></mrow></msup> <mo class='MathClass-rel' stretchy='false'>&gt;</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 67 --><p class='indent'>   Travellers decide independently between alternative paths
+<!-- l. 67 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>p</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msup><mrow><mi>P</mi></mrow><mrow><mi>w</mi></mrow></msup></mrow></math> with
+probabilities <!-- l. 67 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mrow><mi>ℙ</mi></mrow><mrow><mi>p</mi></mrow><mrow><mi>w</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi></mrow></msubsup></math>
+for each <!-- l. 67 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>n</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>N</mi></mrow></math>
+and <!-- l. 67 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>w</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>W</mi></mrow></math>.
+Physical page 14 additionally prints </p><table class='equation-star'><tr><td>
+<!-- l. 68 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                      <msup><mrow><mi>Q</mi></mrow><mrow><mi>w</mi></mrow></msup> <mo class='MathClass-rel' stretchy='false'>∼</mo><mtext class='qopname'> Poisson</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo><!-- nolimits --><mo class='MathClass-open' stretchy='false'>(</mo><msup><mrow><mi>q</mi></mrow><mrow><mi>w</mi></mrow></msup><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><msubsup><mrow><mi>F</mi></mrow><mrow>
+<mi>p</mi></mrow><mrow><mi>w</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>∼</mo><mtext class='qopname'> Poisson</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo><!-- nolimits --><mo class='MathClass-open' stretchy='false'>(</mo><msubsup><mrow><mi>f</mi></mrow><mrow>
+<mi>p</mi></mrow><mrow><mi>w</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi></mrow></msubsup><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mstyle mathvariant='bold'><mi>f</mi></mstyle> <mo class='MathClass-rel' stretchy='false'>=</mo> <mstyle mathvariant='bold'><mi>f</mi></mstyle><mo class='MathClass-open' stretchy='false'>(</mo><mstyle mathvariant='bold'><mi>X</mi></mstyle><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 73 --><p class='indent'>   The path-flow random variables are stated to be independent. An explicit relation between
+<!-- l. 73 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msup><mrow><mi>q</mi></mrow><mrow><mi>w</mi></mrow></msup></math> and
+<!-- l. 73 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msup><mrow><mi>q</mi></mrow><mrow><mi>w</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi></mrow></msup></math> is not
+provided in the supplied model-bearing passages and is not inferred.
+</p><!-- l. 75 --><p class='indent'>   The route-choice probability is defined on physical page 14 by </p><table class='equation'><tr><td>
+<!-- l. 76 --><p class='indent'>
+
+</p><!-- l. 76 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                          <mstyle class='label' id='x1-5001r1'></mstyle><!-- endlabel --><msubsup><mrow><mi>ℙ</mi></mrow><mrow><mi>p</mi></mrow><mrow><mi>w</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo> <mi>ℙ</mi> <mrow><mo fence='true' form='prefix'> (</mo><mrow><msubsup><mrow><mi>t</mi></mrow><mrow>
+<mi>p</mi></mrow><mrow><mi>w</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msubsup><mrow><mi>t</mi></mrow><mrow>
+<mi>l</mi></mrow><mrow><mi>w</mi></mrow></msubsup><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>l</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msup><mrow><mi>P</mi></mrow><mrow><mi>w</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><mi>l</mi><mo class='MathClass-rel' stretchy='false'>≠</mo><mi>p</mi><mo class='MathClass-rel' stretchy='false'>∣</mo><msubsup><mrow><mi>y</mi></mrow><mrow>
+<mi>p</mi></mrow><mrow><mi>w</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn></mrow><mo fence='true' form='postfix'>)</mo></mrow><mo class='MathClass-punc' stretchy='false'>.</mo>
+                                                                                         <mstyle class='label' id='x1-5002r0'></mstyle><!-- endlabel -->
+</mrow></math></td><td class='eq-no'>(15)<a id='x1-5003r0'></a></td></tr></table>
+<!-- l. 81 --><p class='indent'>   The associated equilibrium characterization printed immediately before it is </p><table class='equation'><tr><td>
+<!-- l. 82 --><p class='indent'>
+</p><!-- l. 82 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                        <mstyle class='label' id='x1-5004r1'></mstyle><!-- endlabel --><msubsup><mrow><mi>f</mi></mrow><mrow><mi>p</mi></mrow><mrow><mi>w</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo> <msup><mrow><mi>q</mi></mrow><mrow><mi>w</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi></mrow></msup><msubsup><mrow><mi>ℙ</mi></mrow><mrow>
+<mi>p</mi></mrow><mrow><mi>w</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi></mrow></msubsup> <mrow><mo fence='true' form='prefix'> (</mo><mrow><msup><mrow><mstyle mathvariant='bold'><mi>t</mi></mstyle></mrow><mrow><mi>w</mi></mrow></msup><mo class='MathClass-open' stretchy='false'>(</mo><mi>f</mi><mo class='MathClass-close' stretchy='false'>)</mo></mrow><mo fence='true' form='postfix'>)</mo></mrow><mspace class='qquad' width='2em'></mspace><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>w</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>W</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>N</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>p</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msup><mrow><mi>P</mi></mrow><mrow><mi>w</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>.</mo>
+                                                                                         <mstyle class='label' id='x1-5005r0'></mstyle><!-- endlabel -->
+</mrow></math></td><td class='eq-no'>(14)<a id='x1-5006r0'></a></td></tr></table>
+<!-- l. 86 --><p class='indent'>   Equation (14) identifies the stochastic equilibrium that the authors represent by the lower-level equivalent
+minimization in (23); it is not an additional replacement optimization problem or an extra condition imposed on the
+argmin. The selected lower level remains (23).
+</p><!-- l. 88 --><p class='indent'>   The link-flow mappings are
+</p><!-- tex4ht:inline --><!-- l. 94 --><math display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mtable class='align' columnalign='left' displaystyle='true'>
+                    <mtr><mtd class='align-odd' columnalign='right'><msub><mrow><mi>Q</mi></mrow><mrow><mi>a</mi></mrow></msub></mtd>                    <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>=</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>w</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>W</mi></mrow></munder><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>p</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msup><mrow><mi>P</mi></mrow><mrow><mi>w</mi></mrow></msup></mrow></munder><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>n</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>N</mi></mrow></munder><msubsup><mrow><mi>δ</mi></mrow><mrow><mi>a</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>p</mi></mrow><mrow><mi>w</mi></mrow></msubsup><msubsup><mrow><mi>F</mi></mrow><mrow>
+<mi>p</mi></mrow><mrow><mi>w</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi></mrow></msubsup><mspace width='2em'></mspace></mtd>                    <mtd class='align-odd' columnalign='right'></mtd>                    <mtd class='align-even'><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>a</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>A</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                                                                                <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(16)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-5009r0'></mstyle><!-- endlabel -->
+                    </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><msub><mrow><mi>q</mi></mrow><mrow><mi>a</mi></mrow></msub></mtd>                    <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>=</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>w</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>W</mi></mrow></munder><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>p</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msup><mrow><mi>P</mi></mrow><mrow><mi>w</mi></mrow></msup></mrow></munder><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>n</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>N</mi></mrow></munder><msubsup><mrow><mi>δ</mi></mrow><mrow><mi>a</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>p</mi></mrow><mrow><mi>w</mi></mrow></msubsup><msubsup><mrow><mi>f</mi></mrow><mrow>
+<mi>p</mi></mrow><mrow><mi>w</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi></mrow></msubsup><mspace width='2em'></mspace></mtd>                    <mtd class='align-odd' columnalign='right'></mtd>                    <mtd class='align-even'><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>a</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>A</mi><mo class='MathClass-punc' stretchy='false'>.</mo><mspace width='2em'></mspace></mtd>                                                                                <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(17)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-5010r0'></mstyle><!-- endlabel -->
+   </mtd></mtr></mtable></math>
+<!-- l. 95 --><p class='noindent'>The link-flow random variables <!-- l. 95 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>Q</mi></mrow><mrow><mi>a</mi></mrow></msub></math> are stated
+to be marginally Poisson with means <!-- l. 95 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>q</mi></mrow><mrow><mi>a</mi></mrow></msub></math>.
+</p><!-- l. 97 --><p class='noindent'>
+</p>
+   <h3 class='likesectionHead' id='traveltime-functions'><a id='x1-6000'></a>Travel-time functions</h3>
+<!-- l. 98 --><p class='noindent'>The unnumbered polynomial relation and the selected quadratic order on physical page 14 are </p><table class='equation-star'><tr><td>
+
+<!-- l. 99 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                                <msub><mrow><mi>t</mi></mrow><mrow><mi>a</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>q</mi></mrow><mrow><mi>a</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>=</mo><munderover accent='false' accentunder='false'><mrow><mo> ∑</mo>
+  </mrow><mrow><mi>j</mi><mo class='MathClass-rel' stretchy='false'>=</mo><mn>0</mn></mrow><mrow><mi>e</mi></mrow></munderover><msub><mrow><mi>b</mi></mrow><mrow>
+<mi mathvariant='italic'>ja</mi></mrow></msub><msubsup><mrow><mi>q</mi></mrow><mrow><mi>a</mi></mrow><mrow><mi>j</mi></mrow></msubsup><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mi>e</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>2</mn><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 102 --><p class='indent'>   The authors adopt the BPR function and state that Taylor-series approximation is used to calculate
+<!-- l. 102 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>b</mi></mrow><mrow><mi mathvariant='italic'>ja</mi></mrow></msub></math>. Their
+displayed travel-time family is
+</p><!-- tex4ht:inline --><!-- l. 109 --><math display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mtable class='align' columnalign='left' displaystyle='true'>
+                    <mtr><mtd class='align-odd' columnalign='right'><msub><mrow><mi>t</mi></mrow><mrow><mi>a</mi></mrow></msub></mtd>                     <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>=</mo> <msubsup><mrow><mi>t</mi></mrow><mrow><mi>a</mi></mrow><mrow><mn>0</mn></mrow></msubsup> <mrow><mo fence='true' form='prefix'> [</mo><mrow><mn>1</mn> <mo class='MathClass-bin' stretchy='false'>+</mo> <mn>0.15</mn><msup><mrow> <mrow><mo fence='true' form='prefix'> (</mo><mrow> <mfrac><mrow><msub><mrow><mi>q</mi></mrow><mrow><mi>a</mi></mrow></msub></mrow>
+<mrow><msub><mrow><mi>C</mi></mrow><mrow><mi>a</mi></mrow></msub></mrow></mfrac> </mrow><mo fence='true' form='postfix'>)</mo></mrow> </mrow><mrow><mn>4</mn></mrow></msup></mrow><mo fence='true' form='postfix'>]</mo></mrow><mspace width='2em'></mspace></mtd>                    <mtd class='align-odd' columnalign='right'></mtd>                    <mtd class='align-even'><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>a</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>A</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                                                                                 <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(18)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-6004r0'></mstyle><!-- endlabel -->
+                    </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><msub><mrow><mover accent='true'><mrow><mi>t</mi></mrow><mo accent='true'>^</mo></mover></mrow><mrow><mi>a</mi></mrow></msub></mtd>                    <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>=</mo> <msub><mrow><mi>t</mi></mrow><mrow><mi>a</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>b</mi></mrow><mrow><mn>2</mn><mi>a</mi></mrow></msub><msub><mrow><mi>q</mi></mrow><mrow><mi>a</mi></mrow></msub><mspace width='2em'></mspace></mtd>                          <mtd class='align-odd' columnalign='right'></mtd>                    <mtd class='align-even'><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>a</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>A</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                                                                                 <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(19)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-6005r0'></mstyle><!-- endlabel -->
+                    </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><msubsup><mrow><mi>t</mi></mrow><mrow><mi>p</mi></mrow><mrow><mi>w</mi></mrow></msubsup></mtd>                    <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>=</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>a</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>A</mi></mrow></munder><msub><mrow><mover accent='true'><mrow><mi>t</mi></mrow><mo accent='true'>^</mo></mover></mrow><mrow><mi>a</mi></mrow></msub><msubsup><mrow><mi>δ</mi></mrow><mrow><mi>a</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>p</mi></mrow><mrow><mi>w</mi></mrow></msubsup><mspace width='2em'></mspace></mtd>                      <mtd class='align-odd' columnalign='right'></mtd>                    <mtd class='align-even'><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>p</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msup><mrow><mi>P</mi></mrow><mrow><mi>w</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>.</mo><mspace width='2em'></mspace></mtd>                                                                                <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(20)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-6006r0'></mstyle><!-- endlabel -->
+   </mtd></mtr></mtable></math>
+<!-- l. 110 --><p class='noindent'>Perceived path travel times are stated to be identical for all vehicle classes, with the mean defined in (20). Table 2
+gives </p><table class='equation-star'><tr><td>
+<!-- l. 111 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msup><mrow>
+                                       <mstyle mathvariant='bold'><mi>t</mi></mstyle></mrow><mrow><mi>w</mi></mrow></msup> <mo class='MathClass-rel' stretchy='false'>=</mo> <msup><mrow><mo class='MathClass-open' stretchy='false'>(</mo><msubsup><mrow><mi>t</mi></mrow><mrow>
+<mi>p</mi></mrow><mrow><mi>w</mi></mrow></msubsup><mo class='MathClass-close' stretchy='false'>)</mo></mrow><mrow><mi>T</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 114 --><p class='indent'>   The coefficients <!-- l. 114 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>b</mi></mrow><mrow><mi mathvariant='italic'>ja</mi></mrow></msub></math>
+remain abstract: the supplied pages do not specify a Taylor expansion point or explicit coefficient formulas. The
+polynomial approximation and the BPR expression are retained in the roles described by the authors, rather than
+replacing the fourth power in (18) by a quadratic.
+
+</p>
+<!-- l. 116 --><p class='noindent'><span class='paragraphHead' id='notation-as-printed'><a id='x1-7000'></a><span class='cmbx-10'>Notation as printed.</span></span>
+   Table 2 calls <!-- l. 117 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mrow><mi>t</mi></mrow><mrow><mi>p</mi></mrow><mrow><mi>w</mi></mrow></msubsup></math> the mean of
+the random path travel time <!-- l. 117 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mrow><mi>T</mi></mrow><mrow><mi>p</mi></mrow><mrow><mi>w</mi></mrow></msubsup></math>,
+while (15) and the expectation in (23) use the same lowercase
+<!-- l. 117 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mrow><mi>t</mi></mrow><mrow><mi>p</mi></mrow><mrow><mi>w</mi></mrow></msubsup></math>
+inside probability expressions. Those printed symbols are retained. The perception-error
+distribution is actually specified in Appendix A, final paragraph, physical PDF page 24 (printed
+page 22), and is included below; it is not an unavailable external definition. The capacity is
+<!-- l. 117 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>c</mi></mrow><mrow><mi>a</mi></mrow></msub></math> in Table
+2 and <!-- l. 117 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>C</mi></mrow><mrow><mi>a</mi></mrow></msub></math> in
+(18); the displayed uppercase symbol is retained without adding an equality between the two notations.
+</p>
+<!-- l. 119 --><p class='noindent'><span class='paragraphHead' id='perceptionerror-distribution-from-appendix-a'><a id='x1-8000'></a><span class='cmbx-10'>Perception-error distribution from Appendix A.</span></span>
+   The link perception errors are independent across links and have the same distribution
+specification for all vehicle classes. Giving the otherwise unnamed link error the auxiliary symbol
+<!-- l. 120 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>𝜀</mi></mrow><mrow><mi>a</mi></mrow></msub></math>, the
+printed normal law is </p><table class='equation-star'><tr><td>
+<!-- l. 121 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                      <msub><mrow><mi>𝜀</mi></mrow><mrow><mi>a</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>∼</mo><mstyle mathvariant='script'><mi>N</mi></mstyle><mspace class='negthinspace' width='-0.17em'></mspace> <mrow><mo fence='true' form='prefix'> (</mo><mrow><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><msup><mrow><mrow><mo class='MathClass-open' fence='true' mathsize='1.19em'>(</mo><mrow><mi>ϕ</mi><msub><mrow><mi>t</mi></mrow><mrow><mi>a</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mn>0</mn><mo class='MathClass-close' stretchy='false'>)</mo></mrow><mo class='MathClass-close' fence='true' mathsize='1.19em'>)</mo></mrow></mrow><mrow><mn>2</mn></mrow></msup></mrow><mo fence='true' form='postfix'>)</mo></mrow> <mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mi>a</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>A</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mo class='MathClass-open' stretchy='false'>{</mo><msub><mrow><mi>𝜀</mi></mrow><mrow>
+<mi>a</mi></mrow></msub> <mo class='MathClass-punc' stretchy='false'>:</mo> <mi>a</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>A</mi><mo class='MathClass-close' stretchy='false'>}</mo><mstyle class='text'><mtext> independent</mtext></mstyle><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 126 --><p class='indent'>   Here <!-- l. 126 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>t</mi></mrow><mrow><mi>a</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mn>0</mn><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math> is the zero-flow link travel
+time and <!-- l. 126 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>ϕ</mi></math> is the perception-error
+scale. The paper uses <!-- l. 126 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>ϕ</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0.3</mn></mrow></math>
+in its numerical tests; that value is not imposed on the general formulation. “Same for all vehicle classes” describes
+the common link-error law; no additional independence between vehicle classes or between overlapping paths is
+asserted. This law, together with the Poisson-corrected link travel times and the path incidences, supplies the probit
+perception model named in (14)–(15). The printed use of lowercase path-time symbols in (15) and (23) is not
+silently corrected by adding a different formula there.
+</p><!-- l. 128 --><p class='indent'>   Assumption (III), physical page 10 (printed page 8), states that travellers consider path feasibility and link travel
+times when choosing a route because charging-station waiting time is assumed insignificant for that choice. Thus
+station waiting time remains in the upper-level cost, but is not added to the perceived path time in
+(20).
+</p><!-- l. 130 --><p class='noindent'>
+</p>
+   <h3 class='likesectionHead' id='charging-congestion'><a id='x1-9000'></a>Charging congestion</h3>
+<!-- l. 131 --><p class='noindent'>The unnumbered functional dependencies in the assumptions and upper-level definition are </p><table class='equation-star'><tr><td>
+
+<!-- l. 132 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                                <mi>λ</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mi>λ</mi><mo class='MathClass-open' stretchy='false'>(</mo><mstyle mathvariant='bold'><mi>f</mi></mstyle><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><msub><mrow><mi>W</mi></mrow><mrow><mi>k</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <msub><mrow><mi>W</mi></mrow><mrow><mi>k</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>u</mi></mrow><mrow><mi>k</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>λ</mi></mrow><mrow><mi>k</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>μ</mi></mrow><mrow><mi>k</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 136 --><p class='indent'>   Arrival rates at charging stations are stated to be inferred from the corresponding SUE flows.
+Each charger has an independently and identically distributed exponential charging time, denoted
+<!-- l. 136 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>μ</mi></math> in the
+assumption. For a stationary distribution, the arrival rate is assumed to be strictly smaller than the service rate.
+This strict premise is retained as stated; it is not weakened to a non-strict comparison or replaced by an invented
+station-indexed inequality.
+</p><!-- l. 138 --><p class='indent'>   The recursive expected-time calculation on physical page 14 is
+</p><!-- tex4ht:inline --><!-- l. 144 --><math display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mtable class='align' columnalign='left' displaystyle='true'>
+                          <mtr><mtd class='align-odd' columnalign='right'><msub><mrow><mi>a</mi></mrow><mrow><mn>1</mn></mrow></msub></mtd>                                 <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>;</mo><mspace class='qquad' width='2em'></mspace><msub><mrow><mi>a</mi></mrow><mrow><mi>i</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn> <mo class='MathClass-bin' stretchy='false'>+</mo> <mfrac><mrow><mi>μ</mi></mrow> 
+<mrow><mi>λ</mi></mrow></mfrac><mo class='MathClass-open' stretchy='false'>(</mo><mi>i</mi> <mo class='MathClass-bin' stretchy='false'>−</mo> <mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo><msub><mrow><mi>a</mi></mrow><mrow><mi>i</mi><mo class='MathClass-bin' stretchy='false'>−</mo><mn>1</mn></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                                                        <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(11)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-9003r0'></mstyle><!-- endlabel -->
+                          </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><mi>W</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>u</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>λ</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>μ</mi><mo class='MathClass-close' stretchy='false'>)</mo></mtd>                          <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>=</mo>                <mfrac><mrow><mi>λ</mi></mrow> 
+<mrow><msup><mrow><mo class='MathClass-open' stretchy='false'>(</mo><mi mathvariant='italic'>uμ</mi> <mo class='MathClass-bin' stretchy='false'>−</mo> <mi>λ</mi><mo class='MathClass-close' stretchy='false'>)</mo></mrow><mrow><mn>2</mn></mrow></msup> <mrow><mo fence='true' form='prefix'> [</mo><mrow><msub><mrow><mi>a</mi></mrow><mrow><mi>u</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <mstyle displaystyle='true'><mfrac><mrow>    <mi>λ</mi>
+</mrow><mrow><mi mathvariant='italic'>uμ</mi> <mo class='MathClass-bin' stretchy='false'>−</mo> <mi>λ</mi></mrow></mfrac></mstyle></mrow><mo fence='true' form='postfix'>]</mo></mrow></mrow></mfrac> <mo class='MathClass-bin' stretchy='false'>+</mo> <mfrac><mrow><mn>1</mn></mrow> 
+<mrow><mi>μ</mi></mrow></mfrac><mo class='MathClass-punc' stretchy='false'>.</mo><mspace width='2em'></mspace></mtd>                                                    <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(12)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-9004r0'></mstyle><!-- endlabel -->
+   </mtd></mtr></mtable></math>
+<!-- l. 145 --><p class='noindent'>Here <!-- l. 145 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>u</mi></math>,
+<!-- l. 145 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>λ</mi></math> and
+<!-- l. 145 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>μ</mi></math>
+are the station-level arguments of the waiting-time function, and
+<!-- l. 145 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>a</mi></mrow><mrow><mi>i</mi></mrow></msub></math> are the recursion quantities,
+distinct from the link index <!-- l. 145 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>a</mi></math>. No
+range for <!-- l. 145 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>i</mi></math> is printed beside (11). The
+physical-page-13 definition calls <!-- l. 145 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>μ</mi></mrow><mrow><mi>k</mi></mrow></msub></math>
+the station service rate, whereas Table 2 calls it charging (service) time; (11)–(12) and their
+service-rate usage are retained without introducing a reciprocal redefinition. Table 2 prints lowercase
+<!-- l. 145 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>w</mi></mrow><mrow><mi>k</mi></mrow></msub></math>
+for expected waiting time; the objective and the functional definition print uppercase
+<!-- l. 145 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>W</mi></mrow><mrow><mi>k</mi></mrow></msub></math>.
+
+</p>
+<!-- l. 147 --><p class='noindent'><span class='paragraphHead' id='arrivalrate-construction-from-appendix-b'><a id='x1-10000'></a><span class='cmbx-10'>Arrival-rate construction from Appendix B.</span></span>
+   Appendix B, physical PDF pages 24–25 (printed pages 22–23), specifies how EV path flows determine station arrivals. It defines
+<!-- l. 148 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>l</mi></math> as the maximum
+length for which <!-- l. 148 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>ℙ</mi><mo class='MathClass-open' stretchy='false'>(</mo><msup><mrow><mi>D</mi></mrow><mrow><mi>n</mi></mrow></msup> <mo class='MathClass-rel' stretchy='false'>≤</mo> <mi>l</mi><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math>
+is smaller than <!-- l. 148 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>α</mi></math>.
+For a path with its installed charging stations, identify the preceding charging locations from which each subsequent
+charging location or the destination can be reached within this range. Travellers are divided in equal
+proportions between these feasible preceding recharge choices. Apply the same reasoning backwards along
+the path, adding all the contributions that require recharging at each station. The aggregate station
+arrival rate is the sum of its arrival rates from the individual EV paths. Mere passage through a station
+does not imply recharging there, so the construction is not the sum of all path flows incident on the
+station.
+</p><!-- l. 150 --><p class='indent'>   For precision, the following unnumbered bookkeeping restates the appendix’s backward
+equal-proportion construction; its auxiliary symbols are editorial notation, not additional planning
+decisions or newly attributed equation numbers. Fix one EV path and class, with path flow
+<!-- l. 150 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>f</mi></mrow><mrow><mi>p</mi></mrow></msub></math>, and list in
+path order the origin, the installed charging-station occurrences, and the destination. For each non-origin occurrence
+<!-- l. 150 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>j</mi></math>, let
+<!-- l. 150 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>B</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>j</mi><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math> be its
+feasible predecessors: earlier charging occurrences, or the full-battery origin, from which the along-path distance to
+<!-- l. 150 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>j</mi></math> is at most the appendix’s
+range <!-- l. 150 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>l</mi></math>. Set the required arrival
+mass at the destination to <!-- l. 150 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>r</mi></mrow><mrow><mi>d</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <msub><mrow><mi>f</mi></mrow><mrow><mi>p</mi></mrow></msub></mrow></math>,
+and initialize every earlier mass to zero. Visit the destination and then the charging occurrences in reverse path order. At
+each occurrence <!-- l. 150 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>j</mi></math>,
+distribute its accumulated mass by </p><table class='equation-star'><tr><td>
+<!-- l. 151 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                               <msub><mrow><mi>r</mi></mrow><mrow><mi>i</mi></mrow></msub><mspace class='nbsp' width='0.33em'></mspace> <mo class='MathClass-rel' stretchy='false'>←</mo><mspace class='nbsp' width='0.33em'></mspace><msub><mrow><mi>r</mi></mrow><mrow><mi>i</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo>    <mfrac><mrow><msub><mrow><mi>r</mi></mrow><mrow><mi>j</mi></mrow></msub></mrow> 
+<mrow><mo class='MathClass-rel' stretchy='false'>|</mo><mi>B</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>j</mi><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-rel' stretchy='false'>|</mo></mrow></mfrac><mspace class='qquad' width='2em'></mspace><mstyle class='text'><mtext>for each </mtext></mstyle><mi>i</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>B</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>j</mi><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 155 --><p class='indent'>   The origin terminates the backward accounting and is not a charging arrival merely
+because it is the origin. The path’s arrival contribution to a charging occurrence
+<!-- l. 155 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>j</mi></math> is its
+accumulated <!-- l. 155 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>r</mi></mrow><mrow><mi>j</mi></mrow></msub></math>.
+If a node has multiple charging occurrences, their contributions are summed. Applying this construction to each
+EV class with its own range and flow, then summing over paths, O-D pairs and EV classes, gives
+<!-- l. 155 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>λ</mi></mrow><mrow><mi>k</mi></mrow></msub></math>. This
+last summation is the appendix’s stated aggregation, not an assumption that every EV visiting node
+<!-- l. 155 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>k</mi></math> charges
+there. A feasible charging chain is required for this construction; the paper does not define an arbitrary arrival rate
+when a required predecessor set is empty.
+</p><!-- l. 157 --><p class='indent'>   The printed example has node sequence <!-- l. 157 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>2</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>3</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>4</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>5</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>6</mn></mrow></math>,
+charging stations <!-- l. 157 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>2</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>3</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>4</mn></mrow></math>,
+consecutive link lengths <!-- l. 157 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>25</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>30</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>10</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>10</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>25</mn></mrow></math>
+
+km, path flow <!-- l. 157 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>f</mi></mrow><mrow><mi>p</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>100</mn></mrow></math> vehicles/hour
+and <!-- l. 157 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>l</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>50</mn></mrow></math> km. The destination
+<!-- l. 157 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mn>6</mn></math> can be reached after
+charging at either <!-- l. 157 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mn>3</mn></math> or
+<!-- l. 157 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mn>4</mn></math>, in equal proportions.
+Station <!-- l. 157 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mn>4</mn></math> can be reached
+after charging at either <!-- l. 157 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mn>2</mn></math>
+or <!-- l. 157 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mn>3</mn></math>, again in equal
+proportions; station <!-- l. 157 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mn>3</mn></math>
+requires charging at <!-- l. 157 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mn>2</mn></math>.
+Accordingly, </p><table class='equation-star'><tr><td>
+<!-- l. 158 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+              <msub><mrow><mi>λ</mi></mrow><mrow><mn>4</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mi>p</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mstyle displaystyle='false'><mfrac><mrow><mn>1</mn>
+</mrow><mrow><mn>2</mn></mrow></mfrac></mstyle><mo class='MathClass-open' stretchy='false'>(</mo><mn>100</mn><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>50</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><msub><mrow><mi>λ</mi></mrow><mrow><mn>3</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mi>p</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mstyle displaystyle='false'><mfrac><mrow><mn>1</mn>
+</mrow><mrow><mn>2</mn></mrow></mfrac></mstyle><mo class='MathClass-open' stretchy='false'>(</mo><mn>100</mn><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-bin' stretchy='false'>+</mo> <mstyle displaystyle='false'><mfrac><mrow><mn>1</mn>
+</mrow><mrow><mn>2</mn></mrow></mfrac></mstyle><mo class='MathClass-open' stretchy='false'>(</mo><mn>50</mn><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>75</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><msub><mrow><mi>λ</mi></mrow><mrow><mn>2</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mi>p</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>75</mn> <mo class='MathClass-bin' stretchy='false'>+</mo> <mstyle displaystyle='false'><mfrac><mrow><mn>1</mn>
+</mrow><mrow><mn>2</mn></mrow></mfrac></mstyle><mo class='MathClass-open' stretchy='false'>(</mo><mn>50</mn><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>100</mn><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 163 --><p class='indent'>   These are the rates printed in Figure B.11. This example illustrates the general rule; its numerical flow, link
+lengths and range are not fixed inputs of every instance.
+</p>
+<!-- l. 165 --><p class='noindent'><span class='paragraphHead' id='retained-source-boundary-issues'><a id='x1-11000'></a><span class='cmbx-10'>Retained source boundary issues.</span></span>
+   Appendix B says “smaller than” <!-- l. 166 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>α</mi></math>,
+whereas the operative constraint (7) uses <!-- l. 166 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow> <mo class='MathClass-rel' stretchy='false'>≤</mo> <mi>α</mi></mrow></math>.
+It also calls <!-- l. 166 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>l</mi></math>
+a maximum, without a convention for a nonattained strict-threshold endpoint. Both source statements are recorded;
+no inverse-CDF endpoint rule is invented to reconcile them. Equations (11)–(12) do not state values at
+<!-- l. 166 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>λ</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn></mrow></math> or
+<!-- l. 166 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>u</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn></mrow></math>; no limiting-value convention
+or positive lower bound on <!-- l. 166 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>u</mi></mrow><mrow><mi>k</mi></mrow></msub></math>
+is supplied here.
+</p><!-- l. 168 --><p class='noindent'>
+</p>
+   <h3 class='likesectionHead' id='gasolinevehicle-emissions'><a id='x1-12000'></a>Gasoline-vehicle emissions</h3>
+<!-- l. 169 --><p class='noindent'>The emissions function and its fixed coefficients are </p><table class='equation'><tr><td>
+<!-- l. 170 --><p class='indent'>
+
+</p><!-- l. 170 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                                   <mstyle class='label' id='x1-12001r1'></mstyle><!-- endlabel --><msubsup><mrow><mi>e</mi></mrow><mrow><mi>a</mi></mrow><mrow><mi>g</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo> <msub><mrow><mi>ρ</mi></mrow><mrow>
+<mn>1</mn></mrow></msub><msub><mrow><mover accent='true'><mrow><mi>t</mi></mrow><mo accent='true'>^</mo></mover></mrow><mrow><mi>a</mi></mrow></msub><mtext class='qopname'> exp</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo><!-- nolimits --> <mrow><mo fence='true' form='prefix'> (</mo><mrow><msub><mrow><mi>ρ</mi></mrow><mrow><mn>2</mn></mrow></msub>  <mfrac><mrow><msub><mrow><mi>l</mi></mrow><mrow><mi>a</mi></mrow></msub></mrow> 
+<mrow><msub><mrow><mover accent='true'><mrow><mi>t</mi></mrow><mo accent='true'>^</mo></mover></mrow><mrow><mi>a</mi></mrow></msub></mrow></mfrac> </mrow><mo fence='true' form='postfix'>)</mo></mrow> <mo class='MathClass-punc' stretchy='false'>.</mo>
+                                                                                         <mstyle class='label' id='x1-12002r0'></mstyle><!-- endlabel -->
+</mrow></math></td><td class='eq-no'>(13)<a id='x1-12003r0'></a></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 173 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                                <msub><mrow><mi>ρ</mi></mrow><mrow><mn>1</mn></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>11</mn><mo class='MathClass-punc' stretchy='false'>.</mo><mn>063927</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><msub><mrow><mi>ρ</mi></mrow><mrow><mn>2</mn></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0.008493</mn><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 176 --><p class='indent'>   The quantity <!-- l. 176 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mrow><mi>e</mi></mrow><mrow><mi>a</mi></mrow><mrow><mi>g</mi></mrow></msubsup></math>
+is the average amount of CO emitted by gasoline vehicles on link
+<!-- l. 176 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>a</mi></math>. The objective uses
+their mean link flow <!-- l. 176 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mrow><mi>q</mi></mrow><mrow><mi>a</mi></mrow><mrow><mi>g</mi></mrow></msubsup></math>
+and the CO unit cost <!-- l. 176 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>v</mi></mrow><mrow><mn>2</mn></mrow></msub></math>.
+EVs are treated as zero-emission vehicles in this on-road calculation. Table 2 defines
+<!-- l. 176 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mrow><mi>q</mi></mrow><mrow><mi>a</mi></mrow><mrow><mi>n</mi></mrow></msubsup></math> as mean link flow of vehicle
+class <!-- l. 176 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>n</mi></math>; a separate class-specific
+path-to-link summation for <!-- l. 176 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mrow><mi>q</mi></mrow><mrow><mi>a</mi></mrow><mrow><mi>g</mi></mrow></msubsup></math>
+is not displayed in the supplied model pages. It is not replaced here by an inferred formula or an assumed enumeration of
+<!-- l. 176 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>N</mi></math>.
+</p><!-- l. 178 --><p class='noindent'>
+</p>
+   <h3 class='likesectionHead' id='sets-fixed-inputs-and-variable-roles'><a id='x1-13000'></a>Sets, fixed inputs and variable roles</h3>
+<!-- l. 179 --><p class='noindent'>The following are the operative meanings from Table 2 (physical pages 9–10) and the adjoining model
+text.
+     </p><dl class='description'><dt class='description'>
+<span class='cmbx-10'>Network sets.</span> </dt><dd class='description'>
+     <!-- l. 181 --><p class='noindent'><!-- l. 181 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>K</mi></math>
+     is the set of nodes, with <!-- l. 181 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>K</mi></mrow></math>;
+     <!-- l. 181 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>A</mi></math>
+     is the set of links, with <!-- l. 181 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>a</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>A</mi></mrow></math>;
+     <!-- l. 181 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>W</mi></math>
+     is the set of O-D pairs, with <!-- l. 181 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>w</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>W</mi></mrow></math>;
+     <!-- l. 181 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>N</mi></math>
+     is the set of vehicle classes, with <!-- l. 181 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>n</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>N</mi></mrow></math>;
+     <!-- l. 181 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msup><mrow><mi>P</mi></mrow><mrow><mi>w</mi></mrow></msup></math>
+     is the set of paths between O-D pair <!-- l. 181 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>w</mi></math>,
+     with <!-- l. 181 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>p</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msup><mrow><mi>P</mi></mrow><mrow><mi>w</mi></mrow></msup></mrow></math>.
+     These symbols denote sets, not their cardinalities. No particular number or enumeration of vehicle
+     classes is imposed.
+
+     </p></dd><dt class='description'>
+<span class='cmbx-10'>Network inputs.</span> </dt><dd class='description'>
+     <!-- l. 182 --><p class='noindent'><!-- l. 182 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mrow><mi>t</mi></mrow><mrow><mi>a</mi></mrow><mrow><mn>0</mn></mrow></msubsup></math> is free-flow link
+     travel time; <!-- l. 182 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>c</mi></mrow><mrow><mi>a</mi></mrow></msub></math> is link
+     capacity in Table 2; <!-- l. 182 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>l</mi></mrow><mrow><mi>a</mi></mrow></msub></math>
+     is link length; <!-- l. 182 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mrow><mi>l</mi></mrow><mrow><mi>p</mi></mrow><mrow><mi>w</mi></mrow></msubsup></math>
+     is path length; <!-- l. 182 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mrow><mi>l</mi></mrow><mrow><mi>s</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>p</mi></mrow><mrow><mi>w</mi></mrow></msubsup></math>
+     is sub-path length. The incidences are defined by </p><table class='equation-star'><tr><td>
+     <!-- l. 183 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msubsup><mrow>
+<mi>δ</mi></mrow><mrow><mi>k</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>p</mi></mrow><mrow><mi>w</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo> <mrow class='cases'> <mrow><mo fence='true' form='prefix'> {</mo><mrow> <mtable align='axis' class='array' columnlines='none' displaystyle='true' equalcolumns='false' equalrows='false' style=''> <mtr class='array-row'><mtd class='array-td' columnalign='left'><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace></mtd><mtd class='array-td' columnalign='left'><mstyle class='text'><mtext>node </mtext></mstyle><mi>k</mi><mstyle class='text'><mtext> is on path </mtext></mstyle><mi>p</mi><mstyle class='text'><mtext> between pair </mtext></mstyle><mi>w</mi><mo class='MathClass-punc' stretchy='false'>,</mo></mtd></mtr>  <!-- @{}l@{\quad }l@{} --></mtable>                                                                                                                        </mrow><mo fence='true' form='postfix'></mo></mrow></mrow><mspace class='qquad' width='2em'></mspace><msubsup><mrow><mi>δ</mi></mrow><mrow><mi>a</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>p</mi></mrow><mrow><mi>w</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo> <mrow class='cases'> <mrow><mo fence='true' form='prefix'> {</mo><mrow> <mtable align='axis' class='array' columnlines='none' displaystyle='true' equalcolumns='false' equalrows='false' style=''> <mtr class='array-row'><mtd class='array-td' columnalign='left'><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace></mtd><mtd class='array-td' columnalign='left'><mstyle class='text'><mtext>link </mtext></mstyle><mi>a</mi><mstyle class='text'><mtext> is on path </mtext></mstyle><mi>p</mi><mstyle class='text'><mtext> between pair </mtext></mstyle><mi>w</mi><mo class='MathClass-punc' stretchy='false'>,</mo></mtd></mtr>  <!-- @{}l@{\quad }l@{} --></mtable>                                                                                                                        </mrow><mo fence='true' form='postfix'></mo></mrow></mrow>
+</mrow></math></td></tr></table>
+     </dd><dt class='description'>
+<span class='cmbx-10'>Planning and cost inputs.</span> </dt><dd class='description'>
+     <!-- l. 190 --><p class='noindent'><!-- l. 190 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>m</mi></math>
+     is the maximum number of chargers at each station; <!-- l. 190 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>c</mi></mrow><mrow><mi>k</mi></mrow></msub></math>
+     is the fixed cost of opening a station at node <!-- l. 190 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>k</mi></math>;
+     <!-- l. 190 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>h</mi></mrow><mrow><mi>k</mi></mrow></msub></math>
+     is the unit cost of installing one charger there; <!-- l. 190 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>v</mi></mrow><mrow><mn>1</mn></mrow></msub></math>
+     is the monetary value of travel time; <!-- l. 190 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>v</mi></mrow><mrow><mn>2</mn></mrow></msub></math>
+     is the unit cost of CO per ton. These are fixed data, not optimizing variables. The demand means,
+     driving-range distributions, risk threshold and charging parameters have the restrictions stated above;
+     no further parameter-sign restrictions are supplied.
+     </p></dd><dt class='description'>
+<span class='cmbx-10'>Planning decisions.</span> </dt><dd class='description'>
+     <!-- l. 191 --><p class='noindent'><!-- l. 191 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>x</mi></mrow><mrow><mi>k</mi></mrow></msub></math>
+     indicates whether a station is located at <!-- l. 191 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>k</mi></math>;
+     <!-- l. 191 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>u</mi></mrow><mrow><mi>k</mi></mrow></msub></math>
+     is the number of chargers placed there; <!-- l. 191 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mrow><mi>y</mi></mrow><mrow><mi>p</mi></mrow><mrow><mi>w</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi></mrow></msubsup></math>
+     indicates whether path <!-- l. 191 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>p</mi></math>
+     between pair <!-- l. 191 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>w</mi></math>
+     is feasible for class <!-- l. 191 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>n</mi></math>.
+     Their vectors are <!-- l. 191 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mstyle mathvariant='bold'><mi>x</mi></mstyle><mo class='MathClass-punc' stretchy='false'>,</mo><mstyle mathvariant='bold'><mi>u</mi></mstyle><mo class='MathClass-punc' stretchy='false'>,</mo><mstyle mathvariant='bold'><mi>y</mi></mstyle></mrow></math>,
+     and <!-- l. 191 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mstyle mathvariant='bold'><mi>X</mi></mstyle></math>
+     collects those three vectors. Table 2 writes the path-feasibility symbol as <!-- l. 191 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mrow><mi>y</mi></mrow><mrow><mi>p</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi></mrow><mrow><mi>w</mi></mrow></msubsup></math>,
+     whereas the operative equations use <!-- l. 191 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mrow><mi>y</mi></mrow><mrow><mi>p</mi></mrow><mrow><mi>w</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi></mrow></msubsup></math>.
+     </p></dd><dt class='description'>
+<span class='cmbx-10'>Equilibrium quantities.</span> </dt><dd class='description'>
+     <!-- l. 192 --><p class='noindent'><!-- l. 192 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mrow><mi>F</mi></mrow><mrow><mi>p</mi></mrow><mrow><mi>w</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi></mrow></msubsup></math>
+     is random class-specific path flow, <!-- l. 192 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mrow><mi>f</mi></mrow><mrow><mi>p</mi></mrow><mrow><mi>w</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi></mrow></msubsup></math>
+     its mean, and <!-- l. 192 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mstyle mathvariant='bold'><mi>f</mi></mstyle></math>
+
+     the vector of all mean path flows. <!-- l. 192 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>Q</mi></mrow><mrow><mi>a</mi></mrow></msub></math>
+     is random aggregate link flow and <!-- l. 192 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>q</mi></mrow><mrow><mi>a</mi></mrow></msub></math>
+     its mean. <!-- l. 192 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>T</mi></mrow><mrow><mi>a</mi></mrow></msub></math>
+     is random link travel time and <!-- l. 192 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>t</mi></mrow><mrow><mi>a</mi></mrow></msub></math>
+     its mean in Table 2; <!-- l. 192 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mrow><mi>T</mi></mrow><mrow><mi>p</mi></mrow><mrow><mi>w</mi></mrow></msubsup></math>
+     is random path travel time and <!-- l. 192 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mrow><mi>t</mi></mrow><mrow><mi>p</mi></mrow><mrow><mi>w</mi></mrow></msubsup></math>
+     its  mean.  The  selected  formulation  determines  these  through  the  lower-level  equilibrium  and  the
+     displayed network functions, rather than treating all of them as independent planning decisions.
+     </p></dd><dt class='description'>
+<span class='cmbx-10'>Charging quantities.</span> </dt><dd class='description'>
+     <!-- l. 193 --><p class='noindent'><!-- l. 193 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>λ</mi></mrow><mrow><mi>k</mi></mrow></msub></math>
+     is the mean EV arrival rate at station <!-- l. 193 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>k</mi></math>,
+     dependent on equilibrium flows. <!-- l. 193 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>W</mi></mrow><mrow><mi>k</mi></mrow></msub></math>
+     is the expected time used in the objective, evaluated through the station function and (11)–(12).</p></dd></dl>
+<!-- l. 196 --><p class='noindent'><span class='paragraphHead' id='verification-boundary'><a id='x1-14000'></a><span class='cmbx-10'>Verification boundary.</span></span>
+   The selected formulas and their linked definitions have been checked against the original PDF images, including the
+main formulation on physical pages 13–15, the notation and assumptions on pages 9–11, and the actual Appendix
+A/B content on pages 23–25. The two appendix definitions above are part of this same supplied PDF, not a separate
+unverified supplement. The source’s numbered mathematical expressions are retained; the added normal-law
+notation, backward arrival accounting and arithmetic example are explicitly identified as transcriptions of its stated
+definitions. Numerical-network assumptions on page 17, including Gamma driving ranges and a risk threshold of
+<!-- l. 197 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>0.05</mn></mrow></math>,
+are case-study choices and are not imposed on (23). Likewise, Appendix A’s experimental
+<!-- l. 197 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>ϕ</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0.3</mn></mrow></math> is
+identified without fixing the general parameter. The CEM and MSA solution algorithms are not substituted for the
+selected lower-level minimization. External references for equivalent minimization, travel-time approximation and
+queueing formulas have not independently been supplied and remain unverified beyond the expressions and
+definitions printed in this PDF. Preserving and annotating the source’s inconsistencies establishes
+fidelity to the selected formulation, not a claim that those source inconsistencies are mathematically
+resolved.
+</p>
+<!-- l. 200 --><p class='noindent'><span class='paragraphHead' id='additional-originalsource-evidence-for-the-discrete-charger-domain'><a id='x1-15000'></a><span class='cmbx-10'>Additional original-source evidence for the discrete charger domain.</span></span>
+   The inequality (6) does not itself specify integrality. In Appendix A, (A.1) indexes the probability matrix by the count at a node, from zero to
+<!-- l. 202 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>m</mi></mrow></math>. On physical PDF page 24 the authors
+minimize over all <!-- l. 203 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mstyle mathvariant='bold'><mi>X</mi></mstyle> <mo class='MathClass-rel' stretchy='false'>∈</mo><mi mathvariant='normal'>Ω</mi></mrow></math> in (A.2), and
+specify the intervention at a site as <!-- l. 204 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>X</mi></mrow><mrow><mi>i</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mi>j</mi></mrow></math>
+with probability <!-- l. 205 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>γ</mi></mrow><mrow><mi>i</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>j</mi></mrow></msub></mrow></math>
+for <!-- l. 205 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>j</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mi>m</mi></mrow></math>. A
+closed site has no chargers. The benchmarks have positive EV demand forcing every candidate site open via the
+journey chance constraints (3),(7). The queue recursion is applied at these integer counts. Each benchmark supplies
+its own Taylor center; the unique route and its strictly separated feasible and infeasible range comparisons allow
+direct probability checks at the finitely many actual subpath distances. No continuous maximum for an open
+uniform-CDF sublevel set is needed to evaluate these finite paths, and no queue value at a fractional charger count
+is assumed.
+</p>
+    
+</body> 
+</html>

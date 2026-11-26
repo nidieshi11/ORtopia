@@ -1,0 +1,79 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+\title{$N-1$-secure day-ahead flow-based market coupling with exact projection}
+\date{}
+\maketitle
+
+\paragraph{Source} PDF pages 50--51 and 54--55, (EC.3)--(EC.6) and (EC.22)--(EC.29). Only day-ahead clearing is retained.
+\section*{Sets, mappings, and parameters}
+Let $N$ be the set of nodes, $Z$ the set of zones, $C$ the set of consumers, $R$ the set of reserve control areas, and $G=G^{\mathrm{SLOW}}\mathbin{\dot\cup}G^{\mathrm{FAST}}$ the set of generators. Generator $g$ has production bids $I(g)$, with $I=\mathop{\dot\bigcup}_{g\in G}I(g)$. The node and zone mappings are $n(g),z(g),n(c),z(c)$, and $G(r)=\{g:r(g)=r\}$. The sets $G^{\mathrm{SLOW}}(a)$, $I(a)$, and $C(a)$ contain the corresponding generators, bids, and consumers at node or zone $a$.
+
+The day-ahead parameters are $K_g,Q_g^L,Q_g^R,Q_g^U,P_i,Q_i,P_c,Q_c,P_r,Q_r$, together with a valid source-prescribed $M_g$ for every $g\in G^{\mathrm{SLOW}}$. Let $\mathcal F=\mathcal F(\mathcal P_{N-1}^{\mathrm{FB-EP}})$ be the complete finite facet family of the exact projected $N-1$ flow-based domain, with supplied coefficients $V_{f,z}$ and $W_f$. This projection is constructed while ignoring slow-generator technical minima.
+
+\section*{Day-ahead FBMC clearing}
+The decision variables are $u_g,v_i,w_g,x_c,y_r,p_z,\sigma_g,\varsigma_i,\tau_g,\nu_g,\rho_z,\pi_r,\phi$, and $\gamma_f$. Their domains include
+\[
+ u_g\in\{0,1\}\ (g\in G^{\mathrm{SLOW}}),\quad v_i\geq0\ (i\in I(g),g\in G^{\mathrm{SLOW}}),\quad w_g\geq0\ (g\in G^{\mathrm{SLOW}}),
+\]
+\[
+0\leq v_i\leq1,\ 0\leq w_g\leq1\ (g\in G^{\mathrm{FAST}}),\quad0\leq x_c\leq1,\ \sigma_c\geq0\ (c\in C),
+\]
+\[
+0\leq y_r\leq1,\ \sigma_r\geq0,\ \pi_r\geq0\ (r\in R),\quad \sigma_g,\tau_g,\nu_g,\varsigma_i\geq0,
+\]
+with $p_z,\rho_z,\phi\in\mathbb R$ and $\gamma_f\geq0$.
+
+The day-ahead problem is
+\begin{align}
+\min\quad &\sum_{g\in G^{\mathrm{SLOW}}}K_gu_g+\sum_{i\in I}P_iQ_iv_i+\sum_{c\in C}P_cQ_cx_c+\sum_{r\in R}P_rQ_ry_r.\tag{EC.22}
+\end{align}
+Subject to, for slow generators,
+\begin{align}
+v_i&\leq u_g &&(g\in G^{\mathrm{SLOW}},i\in I(g)),\\
+w_g&\leq u_g &&(g\in G^{\mathrm{SLOW}}),\\
+Q_g^Lu_g+\sum_{i\in I(g)}Q_iv_i+Q_g^Rw_g&\leq Q_g^U &&(g\in G^{\mathrm{SLOW}}),\\
+\sigma_g&\geq Q_g^L\rho_{z(g)}+\sum_{i\in I(g)}\varsigma_i+\tau_g-Q_g^L\nu_g-K_g-M_g(1-u_g) &&(g\in G^{\mathrm{SLOW}}).
+\end{align}
+For all generators and fast-generator capacity,
+\begin{align}
+\varsigma_i&\geq Q_i(\rho_{z(g)}-\nu_g-P_i) &&(g\in G, i\in I(g)),\\
+\tau_g&\geq Q_g^R(\pi_{r(g)}-\nu_g) &&(g\in G),\\
+\sum_{i\in I(g)}Q_iv_i+Q_g^Rw_g&\leq Q_g^U &&(g\in G^{\mathrm{FAST}}).
+\end{align}
+For consumers and reserves,
+\begin{align}
+\sigma_c&\geq Q_c(\rho_{z(c)}-P_c) &&(c\in C),\\
+\sum_{g\in G(r)}Q_g^Rw_g&\geq Q_r(1-y_r) &&(r\in R),\\
+\sigma_r&\geq Q_r(\pi_r-P_r) &&(r\in R).
+\end{align}
+The zonal network constraints are
+\begin{align}
+p_z&=\sum_{g\in G^{\mathrm{SLOW}}(z)}Q_g^Lu_g+\sum_{i\in I(z)}Q_iv_i-\sum_{c\in C(z)}Q_c(1-x_c) &&(z\in Z),\\
+\rho_z+\phi+\sum_{f\in\mathcal F}V_{f,z}\gamma_f&=0 &&(z\in Z),\\
+\sum_{z\in Z}p_z&=0,\\
+\sum_{z\in Z}V_{f,z}p_z&\leq W_f &&(f\in\mathcal F).
+\end{align}
+European pricing support requires
+\begin{align}
+&\sum_{g\in G^{\mathrm{SLOW}}}K_gu_g+\sum_{i\in I}P_iQ_iv_i+\sum_{c\in C}P_cQ_cx_c+\sum_{r\in R}P_rQ_ry_r\\
+&\leq\sum_{z\in Z}\rho_z\sum_{c\in C(z)}Q_c+\sum_{r\in R}Q_r\pi_r-\Biggl(\sum_{g\in G^{\mathrm{SLOW}}}\sigma_g-\sum_{g\in G^{\mathrm{FAST}}}\left(\sum_{i\in I(g)}\varsigma_i+\tau_g\right)\\
+&\qquad+\sum_{g\in G}Q_g^U\nu_g+\sum_{c\in C}\sigma_c+\sum_{r\in R}\sigma_r+\sum_{f\in\mathcal F}W_f\gamma_f\Biggr).
+\end{align}
+
+
+\section*{Economic meanings and input obligations}
+$K_g$ is the slow-generator parent block cost; $Q_g^L,Q_g^R,Q_g^U$ are
+minimum production, reserve offer and total capacity. $P_i,Q_i$ denote production bid price and quantity.
+$P_c,Q_c$ and $P_r,Q_r$ describe consumer and reserve-response bids.
+$u$ accepts the parent block, $v,w$ accept production/reserve fractions, and $x,y$ accept demand/reserve response fractions.
+$p$ denotes zonal net export. $\rho,\pi$ are zonal energy and reserve prices.
+The nonnegative $\sigma,\varsigma,\tau,\nu,\gamma$ and free $\phi$ support European pricing and
+the associated surplus relations. The complete facet coefficients $(V,W)$ and valid $M_g$ must
+be supplied with their projected-domain definitions.
+The full projected domain is supplied as input.
+The minus sign on the fast-generator surplus inside the parenthesis in (EC.29)
+is retained as printed in the cited zonal formulation.
+\end{document}

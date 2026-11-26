@@ -1,0 +1,94 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,longtable}
+\emergencystretch=4em
+\usepackage{geometry}
+\geometry{paperwidth=370mm,paperheight=650mm,hmargin=18mm,vmargin=19mm}
+\begin{document}
+\section*{P41: Current complete mathematical model (as of 2026-10-20)}
+\section*{Basis and scope of the revision}According to pages 5–9 of the source text, the recovery of sets/variable boundaries and flight time should be maintained at zero. The energy of unselected arcs is zero, and the upper limit of energy activation is determined by the maximum physical energy of all arcs. All customer requirements and limited vehicle capacity are still retained.
+
+
+\section*{Problem: This is a complex variant of the **Vehicle Routing Problem (VRP)**. Specifically, it involves a multi-visit drone-based routing problem with pickup and delivery operations. The problem is modeled using a Mixed Integer Linear Programming (MILP) approach, and it belongs to the category of **NP-hard** combinatorial optimization problems.}
+
+
+
+\subsection*{Decision Variables}
+\begin{align*}
+&x0k_{ij}, x1k_{ij}, x2k_{ij} \in \{0, 1\} && \forall k \in [1:K], (i,j) \in A \\
+&z1k_i, z2k_i \in \{0, 1\} && \forall k \in [1:K], i \in N_c \\
+&s1k_i, s'1k_i, s2k_i, s'2k_i \ge 0 && \forall k \in [1:K], i \in N \\
+&e_k^{ij}, t_k^{ij} \ge 0 && \forall k \in [1:K], (i,j) \in A \\
+&tk_{h,i} \ge 0 && \forall k \in [1:K], i \in N_c \\
+&wk_i, wdk_i, vk_i, e_k^i \ge 0 && \forall k \in [1:K], i \in N \\
+&1\le l_k^i\le n && \forall k \in [1:K], i \in N_c \\
+&t_k^i \in \{0, 1\} && \forall k \in [1:K], i \in N_c
+\end{align*}
+
+\subsection*{Objective Function}
+\[
+\min \quad c_T \sum_{k \in [1:K]} \sum_{(i,j) \in A \setminus (0,n+1)} (x0k_{ij} + x1k_{ij}) r_{ij} + c_F \sum_{k \in [1:K]} \left( \sum_{(i,j) \in A} e_k^{ij} + P \bullet \sum_{i \in N_d} z2k_i u'_i + P \sum_{i \in N_c} tk_{h,i} \right) + c_0 \sum_{k \in [1:K]} (1 - x0k_{0,n+1})
+\]
+
+\subsection*{Constraints}
+\begin{align*}
+&\text{(2a)} \quad \sum_{j \in N_e} (x0k_{0j} + x1k_{0j}) = \sum_{i \in N_o} (x0k_{i,n+1} + x1k_{i,n+1}) = 1, \quad k \in [1 : K] \\
+&\text{(2b)} \quad \sum_{j \in N_e} (x0k_{0j} + x2k_{0j}) = \sum_{i \in N_o} (x0k_{i,n+1} + x2k_{i,n+1}) = 1, \quad k \in [1 : K] \\
+&\text{(3)} \quad \sum_{k \in [1:K]} (x0k_{ij} + x1k_{ij} + x2k_{ij}) \leq 1, \quad (i, j) \in A \setminus (0, n + 1) \\
+&\text{(4a)} \quad \sum_{i \in N_o} (x0k_{ij} + x1k_{ij}) = \sum_{i \in N_e} (x0k_{ji} + x1k_{ji}) = z1k_j, \quad j \in N_c, k \in [1 : K] \\
+&\text{(4b)} \quad \sum_{i \in N_o} (x0k_{ij} + x2k_{ij}) = \sum_{i \in N_e} (x0k_{ji} + x2k_{ji}), \quad j \in N_c, k \in [1 : K] \\
+&\text{(5a)} \quad 2 * z2k_j \leq \sum_{i \in N_o} x2k_{ij} + \sum_{i \in N_e} x2k_{ji}, \quad j \in N_d, k \in [1 : K] \\
+&\text{(5b)} \quad \sum_{k \in [1:K]} (z1k_j + z2k_j) = 1, \quad j \in N_c \\
+&\text{(5c)} \quad \sum_{k \in [1:K]} z1k_j = 1, \quad j \in N_c\setminus N_d \\
+&\text{(5d)} \quad z1k_i \geq \sum_{j \in N_e} x2k_{ij} - z2k_i, \quad i \in N_c, k \in [1 : K] \\
+&\text{(5e)} \quad z1k_i \geq \sum_{j \in N_o} x2k_{ji} - z2k_i, \quad i \in N_c, k \in [1 : K] \\
+&\text{(5f)} \quad z2k_j \geq x2k_{ij} + \sum_{j' \in N_e} x0k_{ij'} + \sum_{j' \in N_e} x1k_{ij'} - 1, \quad i \in N_o, j \in N_c, k \in [1 : K] \\
+&\text{(6a)} \quad \sum_{k \in [1:K]} \sum_{j \in N_e} x2k_{ij} \leq 1, \quad i \in N_c \\
+&\text{(6b)} \quad \sum_{k \in [1:K]} \sum_{j \in N_o} x2k_{ji} \leq 1, \quad i \in N_c \\
+&\text{(7a)} \quad s'1k_i + \frac{r_{ij}}{v_T} + M(1 - x0k_{ij} - x1k_{ij}) \geq s1k_j \geq s'1k_i + \frac{r_{ij}}{v_T} - M(1 - x0k_{ij} - x1k_{ij}), \quad (i, j) \in A, k \in [1 : K] \\
+&\text{(7b)} \quad s'1k_i \geq s1k_i + u_i \cdot z1k_i + BR \cdot \sum_{j \in N_d} x2k_{ji}, \quad i \in N_c, k \in [1 : K] \\
+&\text{(7c)} \quad s'2k_i + t^k_{ij} + M(1 - x2k_{ij}) \geq s2k_j \geq s'2k_i + t^k_{ij} - M(1 - x2k_{ij}), \quad (i, j) \in A, k \in [1 : K] \\
+&\text{(7d)} \quad s2k_i + u'_i + M(1 - z2k_i) \geq s'2k_i \geq s2k_i + u'_i - M(1 - z2k_i), \quad i \in N_d, k \in [1 : K] \\
+&\text{(7e)} \quad s'2k_i \geq s2k_i + BR - M(3 - \sum_{j \in N_o} x1k_{ji} - \sum_{j \in N_d} x2k_{ji} - \sum_{j \in N_d} x2k_{ij}), \quad i \in N_c, k \in [1 : K] \\
+&\text{(7f)} \quad s2k_i \geq s'2k_i - M(3 - \sum_{j \in N_o} x0k_{ji} - \sum_{j \in N_d} x2k_{ij} - \sum_{j \in N_d} x2k_{ji}), \quad i \in N_c, k \in [1 : K] \\
+&\text{(7g)} \quad s'1k_i \geq s'2k_i - M(2 - \sum_{j \in N_e} x0k_{ij} - \sum_{j \in N_e} x1k_{ij} - \sum_{j \in N_d} x2k_{ij}), \quad i \in N_o, k \in [1 : K] \\
+&\text{(7h)} \quad s'2k_i \geq s1k_i + BR \cdot \sum_{j \in N_d} x2k_{ji} - M(2 - z1k_i - \sum_{j \in N_d} x2k_{ij}), \quad i \in N_c, k \in [1 : K] \\
+&\text{(7i)} \quad s'1k_i \geq s2k_i + BR - M(2 - \sum_{j \in N_d} x2k_{ji} - z1k_i), \quad i \in N_c, k \in [1 : K] \\
+&\text{(8a)} \quad 0 \leq e^k_{ij} \leq E \cdot x2k_{ij}, \quad (i, j) \in A, k \in [1 : K] \\
+&\text{(8b)} \quad \alpha \cdot (w_0 + w^k_i) \cdot r'_{ij} - M_E(1 - x2k_{ij}) \leq e^k_{ij} \leq \alpha \cdot (w_0 + w^k_i) \cdot r'_{ij}, \quad (i, j) \in A, k \in [1 : K] \\
+&\text{(9a)} \quad 0 \leq tk_{h,j} \leq \frac{E}{P} \cdot t^k_j, \quad j \in N_c, k \in [1 : K] \\
+&\text{(9b)} \quad s1k_j \geq s2k_j - M(1 - t^k_j), \quad s1k_j \leq s2k_j + M \cdot t^k_j, \quad j \in N_c, k \in [1 : K] \\
+&\text{(9c)} \quad (s1k_j - s2k_j) - M(1 - t^k_j) \leq tk_{h,j} \leq (s1k_j - s2k_j) + M(1 - t^k_j), \quad j \in N_c, k \in [1 : K] \\
+&\text{(10)} \quad 0 \leq e^k_i \leq E(2 - \sum_{j \in N_e} x0k_{ij} - \sum_{j \in N_e} x1k_{ij} - \sum_{j \in N_d} x2k_{ij}), \quad i \in N_o, k \in [1 : K] \\
+&\text{(11)} \quad e^k_i + e^k_{ij} + P \cdot u'_j - M(2 - x2k_{ij} - z2k_j) \leq e^k_j, \quad i \in N_o, j \in N_d, k \in [1 : K] \\
+&\text{(12)} \quad e^k_i + e^k_{ij} + P \cdot tk_{h,j} \cdot z1k_j - M(2 - x2k_{ij} - \sum_{i \in N_o} x0k_{ij} - \sum_{i \in N_o} x1k_{ij}) \leq E, \quad i \in N_d, j \in N_e, k \in [1 : K] \\
+&\text{(13a)} \quad wdk_i - W(2 - \sum_{j \in N_e} x0k_{ij} - \sum_{j \in N_e} x1k_{ij} - \sum_{j \in N_d} x2k_{ij}) \leq wk_i \leq wdk_i + W(2 - \sum_{j \in N_e} x0k_{ij} - \sum_{j \in N_e} x1k_{ij} - \sum_{j \in N_d} x2k_{ij}), \quad i \in N_o, k \in [1 : K] \\
+&\text{(13b)} \quad 0 \leq wdk_i \leq W(2 - x2k_{ij} - \sum_{i \in N_o} x0k_{ij} - \sum_{i \in N_o} x1k_{ij}), \quad i \in N_d, j \in N_e, k \in [1 : K] \\
+&\text{(13c)} \quad wdk_i - d_j - M(2 - x2k_{ij} - z2k_j) \leq wdk_j \leq wdk_i - d_j + M(2 - x2k_{ij} - z2k_j), \quad i \in N_o, j \in N_d, k \in [1 : K] \\
+&\text{(13d)} \quad wk_i - d_j + p_j - M(2 - x2k_{ij} - z2k_j) \leq wk_j \leq wk_i - d_j + p_j + M(2 - x2k_{ij} - z2k_j), \quad i \in N_o, j \in N_d, k \in [1 : K] \\
+&\text{(14a)} \quad \sum_{i \in N_c} z1k_i d_i + \sum_{i \in N_d} z2k_i d_i - wk_0 \sum_{i \in N_d} x2k_{0i} \leq vk_0 \leq Q(\sum_{i \in N_c} x0k_{0i} + \sum_{i \in N_c} x1k_{0i}), \quad k \in [1 : K] \\
+&\text{(14b)} \quad vk_i + (p_j - d_j) - M(1 + \sum_{i \in N_d} x2k_{ji} + \sum_{i \in N_d} x2k_{ij} - x0k_{ij} - x1k_{ij}) \leq vk_j \leq vk_i + (p_j - d_j) + M(1 + \sum_{i \in N_d} x2k_{ji} + \sum_{i \in N_d} x2k_{ij} - x0k_{ij} - x1k_{ij}), \quad i \in N_o, j \in N_c, k \in [1 : K] \\
+&\text{(14c)} \quad vk_i + (p_j - d_j - wk_j) - M(2 + \sum_{i \in N_d} x2k_{ij} - \sum_{i \in N_d} x2k_{ji} - x0k_{ij}) \leq vk_j \leq vk_i + (p_j - d_j - wk_j) + M(2 + \sum_{i \in N_d} x2k_{ij} - \sum_{i \in N_d} x2k_{ji} - x0k_{ij}), \quad i \in N_o, j \in N_c, k \in [1 : K] \\
+&\text{(14d)} \quad vk_i + (p_j - d_j + wk_{i'}) - M(2 + \sum_{i \in N_d} x2k_{ji} - x2k_{i'j} - x1k_{ij}) \leq vk_j \leq vk_i + (p_j - d_j + wk_{i'}) + M(2 + \sum_{i \in N_d} x2k_{ji} - x2k_{i'j} - x1k_{ij}), \quad i' \in N_d, i \in N_o, j \in N_c, k \in [1 : K] \\
+&\text{(14e)} \quad vk_i + (p_j - d_j + wk_{i'} - wk_j) - M(3 - x2k_{i'j} - \sum_{i \in N_d} x2k_{ji} - x0k_{ij} - x1k_{ij}) \leq vk_j \leq vk_i + (p_j - d_j + wk_{i'} - wk_j) + M(3 - x2k_{i'j} - \sum_{i \in N_d} x2k_{ji} - x0k_{ij} - x1k_{ij}), \quad i' \in N_d, i \in N_o, j \in N_c, k \in [1 : K] \\
+&\text{(20a)} \quad x0k_{0,n+1} + z1k_j \leq 1, \quad j \in N_c, k \in [1 : K] \\
+&\text{(20b)} \quad x0k_{0,n+1} + z2k_j \leq 1, \quad j \in N_d, k \in [1 : K]
+\end{align*}
+
+
+
+\section*{Complete physical definition}
+$N_c$ represents all customers, $N_d\subset N_c$ represents customers with available drone services, $N_o=\{0\}\cup N_c,N_e=N_c\cup\{n+1\}$ and $A=\{(i,j):i\in N_o,j\in N_e,i\ne j\}$ are consistent with Table 2 on page 6 of the original PDF. The set of all nodes is $N=\{0\}\cup N_c\cup\{n+1\}$. The sum of all arcs automatically excludes self-cycles and arcs that do not belong to $A$; explicit arc subscripts that are not summed in the constraints are also taken as $A$. (14d)--(14e) requires $(i,j),(i^{\prime},j)\in A$. $x0,x1$ represents arcs where trucks are equipped with/don't have drones, and $x2$ represents drone flight arcs. The actual flight time for each $k$ and arc is $t^k_{ij}=e^k_{ij}/P$; unselected arcs are zero.
+\[
+M_E=\max_{(i,j)\in A}\alpha(w_0+W)r'_{ij},\qquad
+t^k_{h,n+1}=0,\quad
+0\le t^k_{h,j}\le E/P,\quad0\le w_i^k,w_{di}^k\le W,\quad0\le v_i^k\le Q,\quad0\le e_i^k\le E.
+\]
+The “Truck-only” type 5c is used for $N_c\setminus N_d$. The time variable adopts a non-negative real domain and satisfies the aforementioned temporal relationships. The time, energy, and load of non-service nodes are not always cleared; they are only determined based on the listed boundaries and activation constraints. The limited $M$ restrictions remain when not activated. Page 9 of the source text stipulates that the destination does not hover; to ensure that (12) closes at the destination, a constant $z1k_{n+1}=0$ is defined. Thus, the product of hover at the destination is zero, and no new service decisions are made. $M$ is a common finite positive value given to instances; $r_{ij}$ takes the Manhattan distance, and $r'_{ij}$ takes the Euclidean distance. The service duration is calculated by adding the durations for delivering and picking up goods separately. The $b_k^{ij}$ statement that was not used in the original extraction has been removed. $l_k^i$ represents the current implementation of the customer access sequence. The effective path restrictions and the numbering conventions for homogeneous combinations are completed.
+\begin{align*}
+ l_k^j&\ge l_k^i+1-(n+1)(1-x0k_{ij}-x1k_{ij})
+ &&i,j\in N_c,\ i\ne j,\ k\in[1:K],\\
+ x0k_{0,n+1}&\le x0(k+1)_{0,n+1} && k\in[1:K-1].
+\end{align*}
+In the last line, $x0(k+1)_{0,n+1}$ represents the similar arc variable of the next combination; it places the unused combinations after the used ones. If the combinations are the same and the costs are also the same, renumbering does not change any operational plan or costs. Sequential auxiliary variables are prohibited from forming loops within the parking area; customers who have not been visited can still be assigned a sequential value within $[1,n]$, without the requirement to reset to zero. The above two types of auxiliary rules already exist in the current solution entry, and no new service policies have been added.
+
+\end{document}

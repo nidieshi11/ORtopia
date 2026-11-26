@@ -1,0 +1,193 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\section*{Integrated transit-aware dynamic dispatch and idle-vehicle relocation}
+
+\subsection*{Dispatch objective and relocation objective with its subject-to block}
+The inherited dispatch rule is
+\begin{equation}
+\{v^*,x_t^{v^*}\}=\operatorname*{argmin}_{v,x}
+\bigl[c(v,x_t^v)-c(v,x)\bigr].\tag{1}
+\end{equation}
+The search is among practically nearby vehicles and their updated routes after insertion of the new request. Its route cost is
+\begin{equation}
+c(v,x)=\gamma T(v,x)+(1-\gamma)
+\left[\beta T(v,x)^2+\sum_{n\in P_v}Y_n(v,x)\right].\tag{2}
+\end{equation}
+At relocation epoch $h$, the relocation objective is
+\begin{equation}
+\Phi=\min\;\sum_{i\in\bar N}\sum_{j\in\bar N}\lambda_i t_{ij}X_{ij}
++\theta\sum_{i\in\bar N}\sum_{j\in\bar N}r_{ij}W_{ij}.\tag{3}
+\end{equation}
+Subject to:
+\begin{align}
+\sum_{j\in\bar N}X_{ij}&=1,
+&&\forall i\in\bar N,\tag{4}\\
+Y_{jm}&\leq Y_{j,m-1},
+&&\forall j\in\bar N,\quad m=2,3,\ldots,C_j,\tag{5}\\
+\sum_{i\in\bar N}\lambda_iX_{ij}
+&\leq\mu_j\left[Y_{j1}\rho_{\eta j1}
++\sum_{m=2}^{C_j}Y_{jm}(\rho_{\eta jm}-\rho_{\eta j,m-1})\right],
+&&\forall j\in\bar N,\tag{6}\\
+X_{ij}&\leq Y_{j1},&&\forall i,j\in\bar N,\tag{7}\\
+\sum_{j\in\bar N}\sum_{m=1}^{C_j}Y_{jm}&=B,\tag{8}\\
+\sum_{j\in\bar N}W_{ij}&=S_i,&&\forall i\in\bar N,\tag{9}\\
+\sum_{i\in\bar N}W_{ij}&=D_j,&&\forall j\in\bar N,\tag{10}\\
+S_j&\leq y_j,&&\forall j\in\bar N,\tag{11}\\
+-D_j+S_j-y_j+\sum_{m=1}^{C_j}Y_{jm}&\leq0,
+&&\forall j\in\bar N,\tag{12}\\
+X_{ij}&\in\{0,1\},\tag{13}\\
+0\leq Y_{jm}&\leq1,\tag{14}\\
+D_j,S_j&\geq0,\qquad W_{ij}\in Z^+.\tag{15}
+\end{align}
+The two objectives are components of an event-driven operating policy, not terms of a single aggregate objective. The transit-aware dispatch construction below is P1; relocation is P2. Equations (11)--(12) are the authors' replacement inequalities, accounting for both inflow and outflow at a node. The superseded flow-conservation equations are not imposed.
+
+\subsection*{Decision roles, fixed inputs, and routing conditions}
+In (1)--(2), $v$ is the vehicle and $x$ its tour; $x_t^v$ is the new tour after inserting a request. $T(v,x)$ is tour length measured in time. $P_v$ is the set of passengers assigned to vehicle $v$, and $Y_n(v,x)$ is passenger $n$'s journey time, namely waiting time plus in-vehicle travel time. This passenger-time function is distinct from the relocation variable $Y_{jm}$. The coefficient $\gamma$ converts between customer and system cost, and $\beta$ is the degree-of-look-ahead parameter. The dispatch queue-delay approximation is parameterized as $\beta T(v,x)^2$; the motivating M/M/1 expression printed on page 4 is
+\[
+\frac{\mu\lambda}{2(\mu-\lambda)}T(v,x)^2.
+\]
+This does not define $\beta$ to equal that coefficient. The printed boundary case is $\beta=0$, for which dispatch becomes purely myopic; it is not the selected non-myopic version. No calibrated numerical value of $\beta$ or $\gamma$ is fixed here.
+
+The routing network is the complete graph
+\[
+G(N,E),\qquad N=N_T\cup N_P\cup N_Z,
+\qquad V=\{v_1,v_2,\ldots,v_{|V|}\}.
+\]
+$N_T$ is the set of transit stations, $N_P$ the request pickup/drop-off points, and $N_Z$ the zone centroids at which a vehicle may position itself. $E$ is the set of links. For routing, $t_{ij}$ is the shortest-path travel time from node $i$ to node $j$. $V$ is a homogeneous capacitated fleet, and $P$ is the set of all passengers. A request specifies its pickup location, drop-off location, and desired pickup time. Arrivals at each node $i\in N$ are assumed to follow a Poisson process with arrival rate $\lambda_i$.
+
+Tour construction must satisfy pickup-before-drop-off precedence and vehicle capacity. The paper obtains $T(v,x)$ and $x$ through a traveling salesman problem with pickups and drop-offs. It supplies an insertion heuristic, rather than a separate algebraic feasible-set formulation. No request time-window constraints are imposed. All requests are served, and users do not cancel requests while waiting. These assumptions are retained without adding rejection thresholds or waiting-time bounds.
+
+For transit trips there are at most two intermodal transfers. A transfer directly between two different rideshare vehicles is not allowed. Each pre-transit or post-transit segment is supported by one rideshare vehicle or by walking. In-transit travel-time estimates use fixed public-transport schedules. Transit-vehicle capacity is not constrained, on the stated assumption that rideshare users constitute only a small fraction of general transit passengers.
+
+The service region $\mathcal A$ is divided into the set of relocation zones $\bar N$. Relocation uses zone-to-zone $t_{ij}$, distinct in scope from node-to-node routing travel times. Its fixed inputs at an epoch are:
+\begin{description}
+\item[$\lambda_i$] Arrival rate at zone $i$ during the preceding relocation epoch $h-1$ in Table 2; P2 uses predicted rates for epoch $h$, including anticipated exit-station arrivals, as described below.
+\item[$\mu_j$] Service rate at zone $j$ during the preceding relocation epoch $h-1$ in Table 2; the integrated policy updates service-rate estimates online.
+\item[$r_{ij}$] Relocation cost from zone $i$ to zone $j$.
+\item[$B$] Total number of idle vehicles at the beginning of epoch $h$.
+\item[$C_j$] Maximum possible number of idle vehicles at zone $j$.
+\item[$y_j$] Number of idle vehicles at zone $j$ at the beginning of epoch $h$.
+\item[$\theta$] Conversion scalar in the relocation objective.
+\item[$\rho_{\eta jm}$] Exogenous queue-intensity coefficient for reliability $\eta$ and $m$ servers at zone $j$. Table 2 lists the notation $\rho_{\eta m}$; (6) includes the zone index.
+\end{description}
+The epoch index is suppressed in (3)--(15). The relocation decisions are $W_{ij}$, the flow of idle vehicles from zone $i$ to zone $j$; $X_{ij}$, equal to one when customers arriving at zone $i$ are served from zone $j$; $Y_{jm}$, indicating the $m$th idle vehicle at zone $j$ coming to serve customers, with the continuous relaxation (14); and the dummy supply and demand variables $S_i,D_j$. Their zone indices range over $\bar N$ and the vehicle-position index ranges from $1$ to $C_j$. Equations (13)--(15) are printed without repeated quantifiers; $Z^+$ is retained as printed.
+
+All customers in zone $i$ are assigned to one serving zone $j$. Equation (5) orders the vehicle positions. Equation (8) fixes their system-wide sum to the integer number $B$. The authors justify relaxing $Y_{jm}$ from binary to continuous in (14) by the piecewise-linear queue constraints and this integer total; no additional zone-wise integrality conditions are added. The selection retains (6), rather than the myopic alternative that relaxes it. The appendix describes the relocation approximation as M/M/$s$ with exponentially distributed service times.
+
+\subsection*{Exogenous queue-intensity construction}
+For each combination of the user-defined reliability $\eta$, number of servers $m$, and number $b$ of other customers waiting, the paper says to determine the intensity coefficient exogenously by finding the root of (16) and then input it into (6):
+\begin{equation}
+\sum_{k=0}^{m-1}
+\left(\frac{(m-k)m!\,m^b}{k!}\right)
+\left(\frac{1}{\rho^{m+b+1-k}}\right)
+\geq\frac{1}{1-\eta}.\tag{16}
+\end{equation}
+Here $k$ is the summation index, not the number of nearest stations used by P1. The stated meaning of (6) is that no more than $b$ other customers wait in line with probability more than the service reliability $\eta$.
+
+\paragraph{Printed qualification.}
+Although the accompanying prose says ``finding the root,'' (16) is printed as an inequality. The displayed inequality is retained. The positive equality boundary is used for the coefficients in the operative replay: the paper describes a root, and all 40 values supplied in the authors' public coefficient table match this boundary under rounding. It is a parameter-construction relation, not a constraint on the relocation decision variables. The further derivation referred to Marianov and Serra (2002) is not supplied and remains unverified. The experimental choices $\eta=0.95$ and $b=0$ are not general input restrictions for this formulation.
+
+\subsection*{P1: transit-aware dispatch and route updating}
+On arrival of a new request $n$ from $o$ to $d$, update every vehicle's position and service status from the time of request $n-1$. For each of a number of nearby vehicles, consider rideshare-only ($r$), rideshare--transit--rideshare ($rtr$), and rideshare--transit--walk or its reverse ($rtw$, $wtr$). The paper denotes the corresponding costs by
+\[
+C_r^n,\qquad C_{rtr}^n,\qquad C_{rtw}^n.
+\]
+For a transit option, examine each pair $(s_1,s_2)$ of $k$-nearest entry stations to $o$ and $k$-nearest exit stations to $d$. The multimodal travel time is the sum of origin-to-entry mode-specific travel time, entry-station transfer waiting time, in-transit travel time, exit-station waiting time, and exit-to-destination mode-specific travel time. The second rideshare segment is approximated using the current system state. P1 says to choose the shortest multimodal travel time over these station pairs and to compute a fastest option and its assigned vehicle.
+
+The transit cost used in P1 is
+\[
+\text{transit cost}
+=\tfrac12\,\text{headway}+\text{travel time in the transit system}.
+\]
+P1, Step 2(a), prints the following cost-minimization instructions:
+\begin{itemize}
+\item For $r$, solve using (2) for $(o,d)$ so that
+\[
+[c(v,x)-c(v,x_t^v)]
+\]
+is minimized.
+\item For $rtr$, solve using (2) for each $(o,s_1)$ and $(s_2,d)$ so that the sum of
+\[
+[c(v,x)-c(v,x_t^v)]
+\]
+for each trip, plus transit cost, is minimized.
+\item For $rtw$ ($wtr$), solve using (2) for each $(o,s_1)$ (or $(s_2,d)$) so that
+\[
+[c(v,x)-c(v,x_t^v)]
+\]
+for the rideshare trip, plus transit and walking egress cost, is minimized.
+\end{itemize}
+After selecting the service option, update the request's pickup or drop-off point when it uses a transit option, and update the assigned vehicle's tour.
+
+\paragraph{Printed dispatch inconsistency.}
+P1 on page 9 minimizes $c(v,x)-c(v,x_t^v)$, the negative of the insertion-cost expression in (1), while the definition of $x_t^v$ as the updated tour is unchanged. Both printed signs are evaluated separately. The primary operational replay selects the positive updated-minus-old cost in (1), which agrees with the source prose that minimizes additional insertion cost. The literal printed P1 negative-cost alternative is reported in parallel. The paper also describes selection as ``fastest'' while prescribing these cost minimizations. No replacement selection criterion is introduced. The page-8 reference to obtaining $T(v,x)$ and $x$ ``for Eq. (3)'' points to an equation that does not contain those symbols; their printed route-cost definition is (2).
+
+\subsection*{P2 and the transit--relocation interface}
+A vehicle becomes idle when it completes service. At the beginning of a relocation epoch $h$, P2 identifies the idle vehicles and their current zones, and predicts $\lambda$ for epoch $h$, including anticipated arrivals at transit exit stations requiring rideshare service. It solves the relocation model (3)--(15) with the exogenous coefficients constructed from (16). If an idle vehicle is assigned to a different zone, that zone's new location is appended to its tour.
+
+An $rtr$ choice does not immediately commit a vehicle to the post-transit trip. P1 includes its expected rideshare cost, and the choice increases demand at the exit station for the expected arrival time. Upon the passenger's exit-station arrival, a new rideshare-only dispatch carries the passenger to the final destination. Thus dispatch runs on customer arrivals, whereas relocation runs on predefined epochs; the transit schedules connect the two time frames.
+
+The implementation on pages 11--12 updates vehicles and passengers to the current request time. When a passenger is dropped at the entry station, it computes the wait for the next train. For an $rtr$ passenger, it generates a new request with the exit station as pickup and the final destination as drop-off, setting its desired pickup time to the expected arrival time at the exit station. The request is inserted into the request list, which is sorted by pickup time. An $rtw$ passenger takes the next train and then walks to the destination. No immediate reservation of the post-transit vehicle is added.
+
+The selected en-route-switching version allows idle vehicles in relocation to pick up new customers, as in the reported integrated-policy experiments and Appendix 4. At an idle vehicle's arrival at its assigned relocation location, its status becomes available and it is removed from the in-transition idle-vehicle list. For a relocation calculation, the implementation updates the idle-vehicle list excluding vehicles still in transition.
+
+With relocation interval length $\Delta$, warm-up period $T_{\mathrm{warm}}$, current simulation time $t$, and epoch counter $h$, the implementation initializes
+\[
+t=0,\qquad h=0,\qquad
+\mu_i=\mu_0\quad\text{for each zone }i=1,\ldots,\bar N.
+\]
+After updating the state and dispatching at a request arrival, its printed relocation trigger and epoch update are
+\[
+t>\max(h\Delta,T_{\mathrm{warm}}),\qquad h:=h+1.
+\]
+When this strict trigger holds, arrival rates $\lambda_i^h$, service rates $\mu_i^h$, and zone centers $(x_i^{*h},y_i^{*h})$ are updated by the three-step moving-average method, and P2 determines $W_{ij}$. Requests are processed until all new requests have been served; the clock then advances through the remaining tours until all customers have been served. No instance-specific interval, warm-up duration, initial depot location, or fleet size is fixed here.
+
+\subsection*{Online rates and dynamically updated relocation centroids}
+For $i\in N_Z$, the realized average service rate is defined over a time interval as
+\[
+\mu_i=
+\frac{\text{total customers served with pickup in zone }i}
+{\text{total in-vehicle time of those served customers}}.
+\]
+The policy uses a three-step moving average to learn service rates and avoid oscillation between relocation intervals. Arrival rates, service rates, and centroid updates in the implementation use averages over the three preceding relocation epochs. The service rate depends on dispatch and routing policy, customer arrival rates, and vehicle positions. These rates are estimated inputs to P2, not additional optimization variables.
+
+The demand-weighted gravity-center calculation is
+\begin{equation}
+x_i^*=\frac{\sum_{s=1}^{m}\lambda_s x_s}{\sum_{s=1}^{m}\lambda_s},
+\qquad
+y_i^*=\frac{\sum_{s=1}^{m}\lambda_s y_s}{\sum_{s=1}^{m}\lambda_s},
+\qquad\forall s\in i,\quad\text{for }i=1,\ldots,\bar N.
+\tag{17}
+\end{equation}
+Here $x_s,y_s$ are the coordinates of pickup points $s$ within zone $i$, and $\lambda_s$ is the arrival rate at $s$. The zone centroids used for relocation are separate from the customer-origin and customer-destination locations used for pickup and drop-off. They are updated each epoch to reflect the spatiotemporal distribution of customer demand.
+
+\paragraph{Printed scope and exceptional-case limitations.}
+Equation (17) retains the printed scope $\forall s\in i$ and the range $i=1,\ldots,\bar N$, although Table 2 defines $\bar N$ as a set, not a cardinality. Its summation upper limit $m$ is used in the pickup-point calculation without a separate local definition in the accompanying paragraph; it is not identified there with the server index of (5)--(6) and (16). The available formulation supplies no zero-denominator rule for (17) or the service-rate ratio, and no startup rule for an incomplete three-epoch averaging history. None is added.
+
+\paragraph{Source scope.}
+The operative construction is from Ma, Rasulkhani, Chow, and Klein, \emph{A dynamic ridesharing dispatch and idle vehicle repositioning strategy with integrated transit transfers}, DOI: 10.1016/j.tre.2019.07.002, physical pages 4--12, with the queueing assumption and selected en-route policy supported by the supplied appendix. Equations (16)--(17) and P1/P2 are available in the supplied main-paper material. External papers cited for the inherited dispatch, queueing derivation, and tour-construction methods have not been supplied and remain unverified; no additional formulations from them are imported. Experimental calibrations, benchmark relocation policies, and their objectives are outside this selected form.
+
+
+\paragraph{Finite execution evidence.}
+The authors' public table \texttt{rho\_0\_95\_m\_40\_b0.txt} at repository
+\texttt{BUILTNYU/data\_bimodal\_ridesharing}, commit
+\texttt{303f8806add13cdc7390a0efee268be0eb7c0d2a}, confirms the positive
+root convention for all forty server counts at reliability \(0.95\).
+The supplied inputs keep their own \(\eta=1/2\) and use rational isolating
+intervals for the corresponding roots. Both \(W_{ij}\ge0\) integral and
+\(W_{ij}\ge1\) integral are evaluated. Request arrivals are sampled from
+two marked Poisson processes on three exogenous admission periods. The
+strict event trigger may fire again for an induced request after ordinary
+admission closes. A physically completed finite trace reports stage-optimal
+relocations and heuristic source dispatch, never a nonexistent centralized optimum.
+For walk--transit--rideshare the operator books the only car immediately and
+the passenger cannot board before the actual exit train arrival. The car may
+receive further insertions respecting this release. For rideshare--transit--rideshare
+only the first car is committed during initial dispatch; the second car is
+dispatched at the train exit. Walk arrivals are actual final events.
+\end{document}
+

@@ -1,0 +1,109 @@
+% Mathematical Model - paper
+% Auto-generated at 2026-01-12T15:04:28.992088
+% Model Source: Directly Extracted
+% This model is directly extracted from the paper
+
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\emergencystretch=4em
+\usepackage{geometry}
+\geometry{paperwidth=235mm,paperheight=297mm,hmargin=18mm,vmargin=19mm}
+\begin{document}
+
+\section*{Problem: Mixed-Integer Linear Programming (MILP), specifically a static network flow-based Vehicle Routing Problem with Pickup and Delivery and Split Deliveries (VRP with PD and SD). The model outputs vehicle and material flows, which must be parsed into specific routes. The paper proposes a Hierarchical Clustering and Routing method (HOGCR) for solution.}
+
+\textbf{Model Source}: Directly Extracted
+
+\subsection*{Decision Variables}
+\begin{align*}
+& UZ_{aop} \ge 0 && \forall a \in A, o, p \in C \\
+& LZ_{op} \ge 0 \text{ and integer} && \forall o, p \in C \\
+& UDEV_{ao} \ge 0 && \forall a \in A, o \in CD \\
+& LDEV_{o} \ge 0 && \forall o \in CD \\
+& Y_{opv} \ge 0 \text{ and integer} && \forall (o, p) \in N, v \in V \\
+& SUP_{ao} \ge 0 && \forall a \in A, o \in CS
+\end{align*}
+
+\subsection*{Objective Function}
+\[
+\text{Minimize } \sum_{v \in V} \sum_{(o,p) \in N} d_{op} Y_{opv} \quad (0)
+\]
+
+\subsection*{Constraints}
+\begin{align}
+& \sum_{p \in C} UZ_{apo} - \sum_{p \in C} UZ_{aop} + UDEV_{ao} = uq_{ao} && \forall a \in A, o \in CD \quad (1) \\
+& -\sum_{p \in C} LZ_{po} + \sum_{p \in C} LZ_{op} + LDEV_{o} = lq_{o} && \forall o \in CD \quad (2) \\
+& -\sum_{p \in C} UZ_{apo} + \sum_{p \in C} UZ_{aop} \leq SUP_{ao} && \forall a \in A, o \in CS \quad (3) \\
+& \sum_{p \in C} LZ_{po} - \sum_{p \in C} LZ_{op} \leq lsq_{o} && \forall o \in CH \quad (4) \\
+& \sum_{o \in CD} UDEV_{ao} = \max \left\{ \sum_{o \in CD} uq_{ao} - tsup_{a}, 0 \right\} && \forall a \in A \quad (5) \\
+& \sum_{o \in CD} LDEV_{o} = \max \left\{ \sum_{o \in CD} lq_{o} - \sum_{o \in CH} lsq_{o}, 0 \right\} && \quad (6) \\
+& \sum_{o \in CS} SUP_{ao} \leq tsup_{a} && \forall a \in A \quad (7) \\
+& \sum_{a \in A} UZ_{aop} \le \sum_{v \in V} capu_{zv} Y_{opv} && \forall (o, p) \in N \quad (8a) \\
+& LZ_{op} \le \sum_{v \in V} capl_{zv} Y_{opv} && \forall (o, p) \in N \quad (8b) \\
+& \sum_{p \in C} Y_{opv} = \sum_{p \in C} Y_{pov} && \forall o \in CD, v \in V \quad (9) \\
+& \sum_{p \in C} \sum_{o \in CS \cup CH} Y_{opv} \le mv_{v} && \forall v \in V \quad (10)
+\end{align}
+
+\subsection*{Complete Mathematical Model}
+
+\begin{align*}
+& A && \text{(Set of resources or commodities of type A)} \\
+& V && \text{(Set of vehicles or transport units)} \\
+& C && \text{(Set of all nodes)} \\
+& N \subseteq C \times C && \text{(Set of traversable arcs)} \\
+& CD \subseteq C && \text{(Set of demand nodes)} \\
+& CS \subseteq C && \text{(Set of supply nodes)} \\
+& CH \subseteq C && \text{(Set of processing nodes)}
+\end{align*}
+
+
+\begin{align*}
+& d_{op} && \forall (o,p) \in N && \text{The distance or cost between points o and p} \\
+& uq_{ao} && \forall a \in A, o \in CD && \text{The demand for product a from node o} \\
+& lq_{o} && \forall o \in CD && \text{Another demand for node o} \\
+& lsq_{o} && \forall o \in CH && \text{The processing capacity of node o} \\
+& tsup_{a} && \forall a \in A && \text{The total capacity of supply for commodity A} \\
+& capu_{zv} && \forall v \in V && \text{The transport capacity of vehicle v for goods A} \\
+& capl_{zv} && \forall v \in V && \text{The transport capacity of vehicle v for another type of cargo} \\
+& mv_{v} && \forall v \in V && \text{The maximum number of trips that vehicle v can make (e.g., the number of times it can visit nodes).}
+\end{align*}
+
+
+\begin{align*}
+& UZ_{aop} \ge 0 && \forall a \in A, o, p \in C && \text{The quantity of goods a transported from node o to p} \\
+& LZ_{op} \ge 0 \text{ and integer} && \forall o, p \in C && \text{The quantity of another type of cargo transported from node o to p} \\
+& UDEV_{ao} \ge 0 && \forall a \in A, o \in CD && \text{The amount of demand for product a that node o cannot satisfy} \\
+& LDEV_{o} \ge 0 && \forall o \in CD && \text{The other requirements of node o are not satisfied.} \\
+& Y_{opv} \ge 0 \text{ and integer} && \forall (o, p) \in N, v \in V && \text{The number of times vehicle v uses the arc (o,p)} \\
+& SUP_{ao} \ge 0 && \forall a \in A, o \in CS && \text{The quantity of product A supplied by node O}
+\end{align*}
+
+
+\[
+\text{Minimize } \sum_{v \in V} \sum_{(o,p) \in N} d_{op} Y_{opv} \quad (0)
+\]
+
+
+\begin{align}
+& \sum_{p \in C} UZ_{apo} - \sum_{p \in C} UZ_{aop} + UDEV_{ao} = uq_{ao} && \forall a \in A, o \in CD \quad (1) \\
+& -\sum_{p \in C} LZ_{po} + \sum_{p \in C} LZ_{op} + LDEV_{o} = lq_{o} && \forall o \in CD \quad (2) \\
+& -\sum_{p \in C} UZ_{apo} + \sum_{p \in C} UZ_{aop} \leq SUP_{ao} && \forall a \in A, o \in CS \quad (3) \\
+& \sum_{p \in C} LZ_{po} - \sum_{p \in C} LZ_{op} \leq lsq_{o} && \forall o \in CH \quad (4) \\
+& \sum_{o \in CD} UDEV_{ao} = \max \left\{ \sum_{o \in CD} uq_{ao} - tsup_{a}, 0 \right\} && \forall a \in A \quad (5) \\
+& \sum_{o \in CD} LDEV_{o} = \max \left\{ \sum_{o \in CD} lq_{o} - \sum_{o \in CH} lsq_{o}, 0 \right\} && \quad (6) \\
+& \sum_{o \in CS} SUP_{ao} \leq tsup_{a} && \forall a \in A \quad (7) \\
+& \sum_{a \in A} UZ_{aop} \le \sum_{v \in V} capu_{zv} Y_{opv} && \forall (o, p) \in N \quad (8a) \\
+& LZ_{op} \le \sum_{v \in V} capl_{zv} Y_{opv} && \forall (o, p) \in N \quad (8b) \\
+& \sum_{p \in C} Y_{opv} = \sum_{p \in C} Y_{pov} && \forall o \in CD, v \in V \quad (9) \\
+& \sum_{p \in C} \sum_{o \in CS \cup CH} Y_{opv} \le mv_{v} && \forall v \in V \quad (10)
+\end{align}
+
+\paragraph{Explicit data definitions and arc domain.}
+$CH$ is supplied explicitly; $tsup_a$ is supplied as the aggregate available quantity of commodity $a$.
+$SUP_{ao}$ allocates this aggregate supply among supply nodes.
+Set $UZ_{aop}=LZ_{op}=0$ whenever $(o,p)\notin N$, including self-arcs.
+All sums over $Y$ use only declared arcs; other entries are zero.
+$mv_v$ bounds the number of available departures from supply/hospital nodes.
+\end{document}

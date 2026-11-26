@@ -1,0 +1,103 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\begin{document}
+\section*{Complete partitioned-McCormick planning model}
+This single MILP is the partitioned-envelope relaxation of the paper's QMPPB,
+including the constraints that the paper references by equation number.
+The objective is defined for this screening relaxation. All clinical transition and initial-population data
+are explicit inputs.
+
+Let$I=\{0,\ldots,13\}, I_W=\{0,\ldots,6\},I_o=\{7,\ldots,13\}$,
+$J=I\setminus\{0\},I_a=I\setminus\{13\}$,risk$r\in\{1,2\}$,
+and$t=1,\ldots,H=12T$. There are state variables$U,W,E,M,D\ge0$at
+$t=1,\ldots,H+1$, service variables$R,I^{care},ID,IM\ge0$and
+$V\ge0$at$t=1,\ldots,H$,screening$0\le S_{rt}\le1$,
+integer staffing$n_{kl}\ge1$,and binary partition selectors$\xi$.
+Staff types $k$ range over physician, nurse, counselor and laboratory worker,
+and locations $l$ range over $\{P,L,S\}$. The staffing variables, lower bounds
+and wage sum include all twelve type--location pairs. The supplied subsets
+$K_l$ index the capacity inequalities, while the wage sum uses its stated index set.
+The supplied stochastic matrices$\theta^{ji}_{r,u},\theta^{ji}_{r,d}$
+describe untreated and treated monthly transitions. Their rows sum to1,
+state13 is absorbing, and$q^{13}=0$. Set$\gamma=\alpha\beta\in(0,1]$.
+
+Maximize
+\[
+\sum_{t=1}^H\sum_r\sum_{i\in I}q^i
+(U^i_{rt}+W^i_{rt}+E^i_{rt}+M^i_{rt}+D^i_{rt}).
+\]
+Fix all five state arrays at$t=1$to their supplied initial values.
+For all$i,r,t$restore source equations(1)--(7),using$V$in place of
+$\alpha\beta SU$:
+\begin{align*}
+U^i_{r,t+1}
+ &=\sum_{j\in I_W}\theta^{ji}_{r,u}(U^j_{rt}-V^j_{rt})
+      +N^i_{r,t+1}+R^0_{rt}\theta^{0i}_{r,u},\\
+W^i_{r,t+1}
+ &=\sum_{j\in I}\theta^{ji}_{r,u}W^j_{rt}
+    +\sum_{j\in I_W}\theta^{ji}_{r,u}V^j_{rt}
+    +\sum_{j\in I_o}\theta^{ji}_{r,u}U^j_{rt}
+    -\sum_{j\in I}\theta^{ji}_{r,u}R^j_{rt},\\
+E^i_{r,t+1}
+ &=\sum_{j\in J}\theta^{ji}_{r,u}(R^j_{rt}+E^j_{rt}-IM^j_{rt})
+    -\sum_{j\in J}\theta^{ji}_{r,d}ID^j_{rt},\\
+ID^i_{rt}&=z^i I^{care,i}_{rt},\qquad
+IM^i_{rt}=(1-z^i)I^{care,i}_{rt},\\
+M^i_{r,t+1}
+ &=\sum_{j\in J}\theta^{ji}_{r,u}(M^j_{rt}+IM^j_{rt})
+    -\sum_{j\in J}\theta^{ji}_{r,d}z^jM^j_{rt},\\
+D^i_{r,t+1}
+ &=\sum_{j\in J}\theta^{ji}_{r,d}(D^j_{rt}+z^jM^j_{rt}+ID^j_{rt}).
+\end{align*}
+The treated-transition coefficients in the subtraction terms of the E/M
+equations are retained exactly as printed in source(3),(6). 
+The first two equations correct indexing typos in the paper's later
+restatement(1'),(2') by following its primitive(1),(2) and Figure1.
+
+Make the service-variable meanings explicit: a result cannot be returned
+before a sample is available, and initiation cannot exceed patients who
+are waiting or newly linked to care:
+\begin{align*}
+R^i_{rt}&\le W^i_{rt}+V^i_{rt}&&i\in I_W,\\
+R^i_{rt}&\le W^i_{rt}+U^i_{rt}&&i=7,\ldots,12,\\
+I^{care,i}_{rt}&\le E^i_{rt}+R^i_{rt}&&i=1,\ldots,12,\\
+R^{13}_{rt}&=I^{care,0}_{rt}=I^{care,13}_{rt}=0.
+\end{align*}
+These complete the queue domains using the meanings in source Table2 and
+Figure1, without creating patients.
+
+For each year$\tau$,with its12months$\mathcal M_\tau$,restore(8'):
+\[
+\sum_{r,t\in\mathcal M_\tau}
+\left[\sum_{i\in I_W}C_S^iV^i_{rt}
++\sum_{i=7}^{12}C_S^iU^i_{rt}
++\sum_{i\in I_a}\sum_{X\in\{U,W,E,M,D\}}C_X^iX^i_{rt}\right]
++12\sum_{k,l}w_kn_{kl}\le B_\tau .
+\]
+Define$d_{kl}=A_{kl}/y_{kl}$and$c_l=\ln(1-\alpha_l)/\tau_l<0$,
+with$0<\alpha_l<1,\tau_l>0,y_{kl}>0$for the supplied worker sets$K_l$.
+Restore all three service locations(9')--(11):
+\begin{align*}
+\sum_r\left[\sum_{i\in I_W}V^i_{rt}
++\sum_{i=7}^{12}U^i_{rt}\right]&\le d_{kP}n_{kP}+c_P&&k\in K_P,\\
+\sum_r\sum_{i\in I_a}R^i_{rt}&\le d_{kL}n_{kL}+c_L&&k\in K_L,\\
+\sum_r\sum_{i\in I_a}(\eta_M^iM^i_{rt}+\eta_D^iD^i_{rt})
+ &\le d_{kS}n_{kS}+c_S&&k\in K_S.
+\end{align*}
+The global patient bound$P_{rt}$is the initial population in risk group$r$
+plus all supplied arrivals before$t$. Nonnegative states and the restored
+conservation equations imply every individual state is at most$P_{rt}$.
+Use$0\le U^i_{rt}\le P_{rt}$with equally spaced points
+$a_m=(m-1)P_{rt}/m_{\rm part}$,and choose supplied$K\ge2\gamma\max_{r,t}P_{rt}+1$.
+For every$i,r,t,m$,retain the original partitioned McCormick inequalities:
+\begin{align*}
+\sum_m\xi_m&=1,\quad U\ge a_m\xi_m,\quad
+U\le P_{rt}+(a_{m+1}-P_{rt})\xi_m,\\
+V&\ge\gamma a_mS-K(1-\xi_m),\\
+V&\le\gamma a_{m+1}S+K(1-\xi_m),\\
+V&\ge\gamma a_{m+1}S+\gamma U-\gamma a_{m+1}-K(1-\xi_m),\\
+V&\le\gamma a_mS+\gamma U-\gamma a_m+K(1-\xi_m).
+\end{align*}
+All states also have the redundant upper bound$P_{rt}$,which prevents
+irrelevant zero-utility death-state variables from becoming free.
+\end{document}

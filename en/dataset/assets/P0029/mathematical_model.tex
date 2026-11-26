@@ -1,0 +1,64 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\title{Core Mathematical Model}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Chance-Constrained Multiple Bin Packing}
+
+Assume the random item sizes admit an explicitly enumerated finite support
+$\Omega$ with realization $\xi_i^\omega$ and probability $p_\omega$ for each
+$\omega \in \Omega$. Then the chance constraint admits the following exact
+mixed-integer reformulation, which is the solver-ready form used by Gurobi.
+
+\begin{equation}
+\text{(CBP-IP)} \qquad \min_{\boldsymbol{x}, \boldsymbol{y}, \boldsymbol{z}}
+\sum_{j \in \mathcal{J}} c_j^a x_j
++ \sum_{i \in \mathcal{I}} \sum_{j \in \mathcal{J}} c_{ij}^b y_{ij}
+\tag{1a}
+\end{equation}
+
+\begin{equation}
+y_{ij} \le x_j,
+\qquad \forall i \in \mathcal{I},\ j \in \mathcal{J}
+\tag{1b}
+\end{equation}
+
+\begin{equation}
+\sum_{j \in \mathcal{J}} y_{ij} = 1,
+\qquad \forall i \in \mathcal{I}
+\tag{1c}
+\end{equation}
+
+\begin{equation}
+\sum_{i \in \mathcal{I}} \xi_i^\omega y_{ij}
++ \left(M_j^\omega - t_j\right) z_j^\omega
+\le M_j^\omega,
+\qquad \forall j \in \mathcal{J},\ \omega \in \Omega
+\tag{1d}
+\end{equation}
+
+\begin{equation}
+\sum_{\omega \in \Omega} p_\omega z_j^\omega \ge 1 - \varepsilon,
+\qquad \forall j \in \mathcal{J}
+\tag{1e}
+\end{equation}
+
+\begin{equation}
+x_j \in \{0,1\}, \quad y_{ij} \in \{0,1\}, \quad z_j^\omega \in \{0,1\},
+\qquad \forall i \in \mathcal{I},\ j \in \mathcal{J},\ \omega \in \Omega
+\tag{1f}
+\end{equation}
+
+Here, $z_j^\omega = 1$ means that bin $j$ satisfies its capacity constraint in
+scenario $\omega$, and $M_j^\omega$ is any valid big-$M$ coefficient. A safe
+choice is $M_j^\omega \ge \sum_{i \in \mathcal{I}} \xi_i^\omega$; tighter
+strengthened values may be substituted when available.
+
+\end{document}

@@ -1,0 +1,148 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\title{Core Mathematical Model}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{MILP1 for Fixed OR and PACU Capacities}
+
+The solver implements the paper's original MILP1 from Section 4.2.1 for a
+single weekday. The operating-room and PACU capacities $R_1$ and $R_2$ are
+fixed input parameters, exactly as in the paper. 
+
+Let $\mathcal{S} = \{1,2\}$, where stage $1$ is OR and stage $2$ is PACU. For
+stage $s \in \mathcal{S}$, let $\mathcal{R}_s = \{1,\ldots,R_s\}$ be the set of
+rooms, and let the time horizon be discretized as $\{0,\ldots,K\}$.
+
+\begin{equation}
+\min \; \Pi =
+\sum_{s \in \mathcal{S}} \sum_{r \in \mathcal{R}_s} C_s^o h_{sr}
++
+\sum_{s \in \mathcal{S}} C_s^e R_s
+\tag{1}
+\end{equation}
+
+\begin{equation}
+\sum_{r \in \mathcal{R}_s} \sum_{t=0}^{K-p_{is}} x_{isr}^t = 1,
+\qquad
+\forall i \in \mathcal{I},\ \forall s \in \mathcal{S}
+\tag{2}
+\end{equation}
+
+\begin{equation}
+\sum_{i \in \mathcal{I}} \sum_{\tau=\max\{0,t-p_{is}\}}^{t-1} x_{isr}^{\tau} \le 1,
+\qquad
+\forall s \in \mathcal{S},\ \forall r \in \mathcal{R}_s,\ \forall t = 1,\ldots,K
+\tag{3}
+\end{equation}
+
+\begin{equation}
+\sum_{\tau=t}^{\min\{K-1,t+p_{is}-1\}} y_{isr}^{\tau} \ge p_{is} x_{isr}^t,
+\qquad
+\forall i \in \mathcal{I},\ \forall s \in \mathcal{S},\ \forall r \in \mathcal{R}_s,\ \forall t = 0,\ldots,K-p_{is}
+\tag{4}
+\end{equation}
+
+\begin{equation}
+\sum_{i \in \mathcal{I}} \sum_{r \in \mathcal{R}_s} y_{isr}^t = z_s^t,
+\qquad
+\forall s \in \mathcal{S},\ \forall t = 0,\ldots,K-1
+\tag{5}
+\end{equation}
+
+\begin{equation}
+\sum_{t=0}^{K-1} z_s^t = \sum_{i \in \mathcal{I}} p_{is},
+\qquad
+\forall s \in \mathcal{S}
+\tag{6}
+\end{equation}
+
+\begin{equation}
+\sum_{r \in \mathcal{R}_s} \sum_{t=0}^{K-p_{is}} (t+p_{is}) x_{isr}^t = f_{is},
+\qquad
+\forall i \in \mathcal{I},\ \forall s \in \mathcal{S}
+\tag{7}
+\end{equation}
+
+\begin{equation}
+\sum_{r \in \mathcal{R}_2} \sum_{t=0}^{K-p_{i2}} t \, x_{i2r}^t \ge f_{i1},
+\qquad
+\forall i \in \mathcal{I}
+\tag{8}
+\end{equation}
+
+\begin{equation}
+f_{i2} - (f_{i1} + p_{i2}) \le 0,
+\qquad
+\forall i \in \mathcal{I}
+\tag{9}
+\end{equation}
+
+\begin{equation}
+(t+1-g_{sr}) \le K\omega_{sr}^t,
+\qquad
+\forall s \in \mathcal{S},\ \forall r \in \mathcal{R}_s,\ \forall t = 0,\ldots,K-1
+\tag{10}
+\end{equation}
+
+\begin{equation}
+\sum_{i \in \mathcal{I}} y_{isr}^t \le K(1-\omega_{sr}^t),
+\qquad
+\forall s \in \mathcal{S},\ \forall r \in \mathcal{R}_s,\ \forall t = 0,\ldots,K-1
+\tag{11}
+\end{equation}
+
+\begin{equation}
+g_{sr} - T \le h_{sr},
+\qquad
+\forall s \in \mathcal{S},\ \forall r \in \mathcal{R}_s
+\tag{12}
+\end{equation}
+
+\begin{equation}
+z_s^t \le R_s,
+\qquad
+\forall s \in \mathcal{S},\ \forall t = 0,\ldots,K-1
+\tag{13}
+\end{equation}
+
+\begin{equation}
+x_{isr}^t,\ y_{isr}^t,\ \omega_{sr}^t \in \{0,1\},
+\qquad
+\forall i \in \mathcal{I},\ \forall s \in \mathcal{S},\ \forall r \in \mathcal{R}_s,\ \forall t = 0,\ldots,K-1
+\tag{14}
+\end{equation}
+
+\begin{equation}
+z_s^t,\ f_{is},\ g_{sr},\ h_{sr} \ge 0,
+\qquad
+\forall i \in \mathcal{I},\ \forall s \in \mathcal{S},\ \forall r \in \mathcal{R}_s,\ \forall t = 0,\ldots,K-1
+\tag{15}
+\end{equation}
+
+Constraints (2)--(7) assign each patient and prevent overlap, including
+the first occupied slot. Equation (3) uses the original paper's window
+$[\max(0,t-p_{is}),t-1]$ at $t=1,\ldots,K$ (PDF page 15).
+Completion variable $f_{is}$ equals actual completion; this makes (8)--(9)
+enforce the no-wait transfer described in the source (PDF pages 14--15).
+
+
+\paragraph{Start-time domain clarification (2026-10-23).}
+Each $p_{is}$ is a positive integer number of slots. Define $x_{isr}^t=0$
+for $K-p_{is}<t\le K-1$; only $0\le t\le K-p_{is}$ are start decisions.
+Every sum that formally contains a later start uses this zero convention.
+The original PDF page 15 imposes its service-covering inequality (4) at
+all start times: for a late start fewer than $p_{is}$ binary occupancy
+slots remain, so that inequality already forces the start to zero.
+This explicit convention restores that boundary after restricting (4) to
+service-completable times, and matches the current solver's start-variable range.
+It removes only redundant late records from the previously extracted model;
+setting those records to zero preserves every actual schedule and its objective.
+
+\end{document}

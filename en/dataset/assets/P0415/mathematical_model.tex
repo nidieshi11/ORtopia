@@ -1,0 +1,25 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,longtable}
+\emergencystretch=4em
+\begin{document}
+\section*{P415: Current complete mathematical model (2026-10-20)}
+\section*{Basis and scope of the revision}Complete the source and destination station times and the entire FIFO travel function; fix the departure time 0, traverse all feasible request sequences using finite state labels, integer route selection is equivalent to a complete repair model, and there is no heuristic label truncation.
+
+\section*{Complete time-varying routing model}
+Request set $R$. Pickup $i$ and delivery $i+|R|$; source and destination $0,2|R|+1$; up to $K$ carts available. Each cart is used for one journey from source to destination. No loops are allowed, and the same customer cannot be served more than once. The departure time is set to 0. Requests can be rejected. If accepted, goods will be picked up first and delivered later, and this can only happen once. Service begins at $s_i\in[e_i,l_i]$, ends at $d_i=s_i+\sigma_i$, and reaches $s_j\ge d_i+\tau_{ij}(d_i)$. All selected arcs include both source and destination arcs, and all requirements must be met. The load starts at 0. Pickup increases by $q_i$, while delivery decreases by $q_i$. The entire process must take place within $[0,Q]$, and the cart must return without any load. The travel duration varies dynamically, but must always meet certain conditions.
+\[
+\int_t^{t+\tau_{ij}(t)}v(u)\,du=dist_{ij}.
+\]
+$v(u)>0$ represents the speed of the instance across 7 different time zones. This value is obtained through continuous integration across various time zones. Ultimately, this speed continues to be utilized during the planned period. Therefore, the FIFO mechanism is effectively implemented.
+\[
+\max \sum_{i\text{served}}profit_i-c_t\sum_{k\text{used}}return_k-Z\,\#\{\text{vehicles used}\}.
+\]
+\section*{Form of equivalent finite route selection}
+For each feasible service subset $A$, enumerate all possible delivery sequences, and select the one with the earliest return time $T_A$. The labels refer to the “already delivered set”, “already sent set”, and “last node”. Only those with later departure times will be removed from the list. Since waiting is allowed, FIFO principles apply, and non-negative time costs are considered. Thus, the “early label” can effectively prioritize all subsequent actions. This approach ensures precise control over the process.
+\[
+z_A\in\{0,1\},\quad\sum_Az_A\le K,\quad\sum_{A\ni i}z_A\le1,\quad
+\max\sum_A\left(\sum_{i\in A}profit_i-c_tT_A-Z\right)z_A.
+\]
+Heuristic truncation is applied to the number of unlabeled data points and routes. All 4 sets of data are processed independently, considering 5 different speed scenarios. The results are not combined across different instances.
+
+\end{document}

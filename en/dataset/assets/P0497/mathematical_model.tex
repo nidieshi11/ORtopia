@@ -1,0 +1,361 @@
+\documentclass[10pt]{article}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[margin=0.65in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\section*{Waste collection inventory-routing problem}
+\begin{equation}
+\begin{aligned}
+(\mathrm{WCIRP})\qquad &\min\quad z=\mathrm{RC}+\mathrm{ESOEDC}+\mathrm{ERFC}\\
+&\mathrm{s.t.}\quad\text{constraints (18)--(47), expanded below, and (55).}
+\end{aligned}\tag{54}
+\end{equation}
+The selected formulation is Section 6.3 of Markov, Bierlaire, Cordeau, Maknoon and Varone, \emph{A Unified Framework for Rich Routing Problems with Stochastic Demands}, February 27, 2018, physical PDF pages 18--19. Collection is interpreted as distribution of empty space: $\mathcal P$ is the set of waste containers and $\mathcal D$ the set of disposal facilities. No alternative chance constraints are imposed.
+
+\subsection*{Subject to: inherited constraints}
+\begin{align}
+\sum_{o'\in\mathcal O'_{kt}}\sum_{j\in\mathcal N_{kt}}x_{o'jkt}
+&=\sum_{i\in\mathcal N_{kt}}\sum_{o''\in\mathcal O''_{kt}}x_{io''kt},
+&&\forall t\in\mathcal T,\ k\in\mathcal K.\tag{18}\\
+\sum_{i\in\mathcal N_{kt}}x_{io'kt}&=0,
+&&\forall t\in\mathcal T,\ k\in\mathcal K,\ o'\in\mathcal O'_{kt}.\tag{19}\\
+\sum_{j\in\mathcal N_{kt}}x_{o''jkt}&=0,
+&&\forall t\in\mathcal T,\ k\in\mathcal K,\ o''\in\mathcal O''_{kt}.\tag{20}\\
+\sum_{i\in\mathcal N_{kt}}x_{iokt}
+&=\sum_{j\in\mathcal N_{k(t+1)}}x_{ojk(t+1)},
+&&\forall t\in\mathcal T,\ k\in\mathcal K,\ o\in\mathcal O''_{kt}\cap\mathcal O'_{k(t+1)}.\tag{21}\\
+ y_{ikt}&=\sum_{j\in\mathcal N_{kt}}x_{ijkt},
+&&\forall t\in\mathcal T,\ k\in\mathcal K,\ i\in\mathcal N_{kt}\setminus\mathcal O''_{kt}.\tag{22}\\
+ y_{jkt}&=\sum_{i\in\mathcal N_{kt}}x_{ijkt},
+&&\forall t\in\mathcal T,\ k\in\mathcal K,\ j\in\mathcal O''_{kt}.\tag{23}\\
+\sum_{k\in\mathcal K}y_{ikt}&\leqslant1,
+&&\forall t\in\mathcal T,\ i\in\mathcal P.\tag{24}\\
+ y_{ikt}&\leqslant\alpha_{ikt},
+&&\forall t\in\mathcal T,\ k\in\mathcal K,\ i\in\mathcal P\cup\mathcal D.\tag{25}\\
+\sum_{i\in\mathcal N_{kt}}x_{ijkt}&=\sum_{i\in\mathcal N_{kt}}x_{jikt},
+&&\forall t\in\mathcal T,\ k\in\mathcal K,\ j\in\mathcal P\cup\mathcal D.\tag{26}\\
+\sum_{r\in\mathcal C_i}c_{ir}&=1,
+&&\forall i\in\mathcal P.\tag{27}\\
+\sum_{k\in\mathcal K}y_{ikt}-\sum_{r\in\mathcal C_i}\alpha_{rt}c_{ir}&=0,
+&&\forall t\in\mathcal T,\ i\in\mathcal P.\tag{28}\\
+ I_{it}&=I_{i(t-1)}+\sum_{k\in\mathcal K}q_{ik(t-1)}-\mathbb E(\rho_{i(t-1)}),
+&&\forall t\in\mathcal T^+,\ i\in\mathcal P.\tag{29}\\
+ I_{it}&\geqslant0,
+&&\forall t\in\mathcal T^+,\ i\in\mathcal P.\tag{30}\\
+ -I_{i0}&\leqslant\omega_i\sum_{k\in\mathcal K}y_{ik0},
+&&\forall i\in\mathcal P.\tag{31}\\
+\sum_{k\in\mathcal K}y_{ikt}-\sum_{r\in\mathcal L_i}\ell_{irt}&=0,
+&&\forall t\in\mathcal T,\ i\in\mathcal P.\tag{32}\\
+ q_{ikt}&\geqslant\sum_{r\in\mathcal L_i}r\ell_{irt}-I_{it}-M(1-y_{ikt}),
+&&\forall t\in\mathcal T,\ k\in\mathcal K,\ i\in\mathcal P.\tag{33}\\
+ q_{ikt}&\leqslant\sum_{r\in\mathcal L_i}r\ell_{irt}-I_{it}+\omega_i(1-y_{ikt}),
+&&\forall t\in\mathcal T,\ k\in\mathcal K,\ i\in\mathcal P.\tag{34}\\
+ q_{ikt}&\leqslant My_{ikt},
+&&\forall t\in\mathcal T,\ k\in\mathcal K,\ i\in\mathcal P.\tag{35}\\
+ q_{ikt}&\leqslant Q_{ikt}\leqslant\Omega_k,
+&&\forall t\in\mathcal T,\ k\in\mathcal K,\ i\in\mathcal P.\tag{36}\\
+ Q_{ikt}&=0,
+&&\forall t\in\mathcal T,\ k\in\mathcal K,\ i\in\mathcal D.\tag{37}\\
+ Q_{ikt}+q_{jkt}&\leqslant Q_{jkt}+\Omega_k(1-x_{ijkt}),
+&&\forall t\in\mathcal T,\ k\in\mathcal K,\ i\in\mathcal N_{kt},\ j\in\mathcal N_{kt}\setminus\mathcal D.\tag{38}\\
+ Q_{o'k(t+1)}&\geqslant Q_{o''kt},
+&&\forall t\in\mathcal T,\ k\in\mathcal K,\ o'\in\mathcal O'_{kt},\ o''\in\mathcal O''_{kt}.\tag{39}\\
+ S_{ikt}+\delta_i+\tau_{ijkt}
+&\leqslant S_{jkt}+(\mu_i+\delta_i+\tau_{ijkt})(1-x_{ijkt}),
+&&\forall t\in\mathcal T,\ k\in\mathcal K,\ i\in\mathcal N_{kt},\ j\in\mathcal N_{kt}.\tag{40}\\
+\lambda_i y_{ikt}&\leqslant S_{ikt}\leqslant\mu_i y_{ikt},
+&&\forall t\in\mathcal T,\ k\in\mathcal K,\ i\in\mathcal N_{kt}.\tag{41}\\
+\underline b_{kt}&\leqslant\sum_{o''\in\mathcal O''_{kt}}S_{o''kt}
+-\sum_{o'\in\mathcal O'_{kt}}S_{o'kt}\leqslant\bar b_{kt},
+&&\forall t\in\mathcal T,\ k\in\mathcal K.\tag{42}\\
+\bar b_{kt}&\leqslant\mathrm H_{kt}z_{kt},
+&&\forall t\in\mathcal T,\ k\in\mathcal K.\tag{43}\\
+\underline B&\leqslant\sum_{t\in\mathcal T}\underline b_{kt},
+&&\forall k\in\mathcal K.\tag{44}\\
+\bar B&\geqslant\sum_{t\in\mathcal T}\bar b_{kt},
+&&\forall k\in\mathcal K.\tag{45}
+\end{align}
+\begin{align}
+ x_{ijkt},y_{ikt},z_{kt},c_{ir'},\ell_{ir''t}&\in\{0,1\},
+&&\forall t\in\mathcal T,\ k\in\mathcal K,\ i,j\in\mathcal N_{kt},\ r'\in\mathcal C_i,\ r''\in\mathcal L_i.\tag{46}\\
+ q_{ikt},Q_{ikt},I_{it},S_{ikt},\underline b_{kt},\bar b_{kt},\underline B,\bar B&\geqslant0,
+&&\forall t\in\mathcal T,\ k\in\mathcal K,\ i\in\mathcal N_{kt}.\tag{47}
+\end{align}
+The big-$M$ in (33) and (35) has the point- and period-dependent values specified in the prose on PDF page 16:
+\[
+ M=\begin{cases}2\omega_i,&t=0,\\\omega_i,&\text{otherwise}.\end{cases}
+\]
+\subsection*{Additional WCIRP constraint}
+\begin{equation}
+ Q_{o''kt}=0,\qquad\forall t\in\mathcal T,\ k\in\mathcal K,\ o''\in\mathcal O''_{kt}.\tag{55}
+\end{equation}
+The authors state that (55), together with (37)--(38), forces a disposal-facility visit immediately before the destination depot. This statement does not add an arc restriction to the printed model.
+
+\section*{Sets, fixed data, and decision roles}
+The definitions are from Section 3 and Table 1 (PDF pages 6--8) and Section 5 (page 13).
+\begin{gather*}
+\mathcal T=\{0,\ldots,u\},\qquad
+\mathcal T^+=\{1,\ldots,u,u+1\},\\
+\mathcal O'_{kt}\subseteq\mathcal O,\qquad
+\mathcal O''_{kt}\subseteq\mathcal O,\\
+\mathcal N_{kt}=\mathcal O'_{kt}\cup\mathcal O''_{kt}\cup\mathcal P\cup\mathcal D,\\
+\mathcal A_{kt}=\{(i,j):\ \forall i,j\in\mathcal N_{kt},\ i\ne j\},\qquad
+G_{kt}(\mathcal N_{kt},\mathcal A_{kt}),\quad k\in\mathcal K,\ t\in\mathcal T.
+\end{gather*}
+$\mathcal K$ is a fixed heterogeneous fleet; $\mathcal O$ contains all origin and destination depots, and $\mathcal O'_{kt}$ and $\mathcal O''_{kt}$ are the origin and destination choices for vehicle $k$ in period $t$. The set $\mathcal D$ contains sufficiently many replications of each supply point to allow repeated visits by a vehicle within a period. The distance matrix is asymmetric. $\pi_{ij}$ is the length of arc $(i,j)\in\mathcal A_{kt}$; $\tau_{ijkt}$ is its vehicle- and period-specific travel time.
+
+For $k\in\mathcal K$, $\varphi_k$ is the per-period deployment cost, $\beta_k$ the unit-distance running cost, $\theta_k$ the unit-time running cost, and $\Omega_k$ the capacity. For $i\in\mathcal O\cup\mathcal P\cup\mathcal D$, $[\lambda_i,\mu_i]$ is the start-of-service time window and $\delta_i$ the service duration. The following fixed-data conditions are stated:
+\[
+\delta_i=0\quad(i\in\mathcal O),\qquad
+\mathcal O''_{kt}\cap\mathcal O'_{k(t+1)}\ne\varnothing.
+\]
+A vehicle arriving before $\lambda_i$ waits; service may not start after $\mu_i$. $\mathrm H_{kt}$ is its maximum tour duration. If $\mathrm H_{kt}=0$, the vehicle is unavailable, and the depot sets must permit idling:
+\[
+\mathrm H_{kt}=0\ \Longrightarrow\
+\exists o'\in\mathcal O'_{kt},\ o''\in\mathcal O''_{kt}\ \text{such that }\pi_{o'o''}=0.
+\]
+The depot compatibility and idling conditions are stated for the vehicle-period depot sets in Section 3; no terminal-period convention is added here.
+
+For $i\in\mathcal P$, $\omega_i$ is inventory capacity. $\mathcal C_i$ contains allowable visit-period combinations, possibly with different frequencies. The fixed binary $\alpha_{rt}$ is one if period $t$ belongs to combination $r\in\mathcal C_i$, and zero otherwise. The separate fixed binary $\alpha_{ikt}$ is one if point $i\in\mathcal P\cup\mathcal D$ is accessible to vehicle $k$ in period $t$, and zero otherwise; it also expresses continuity of service. Demand points are served at most once per period. The general notation introduces a minimum visit count $\nu_i$, but the selected WCIRP block contains (27)--(28), not an additional minimum-count inequality.
+
+The selected inventory policy is the discretized maximum-level policy. $\mathcal L_i$ is the given set of allowable discrete inventory levels after regular delivery. The source does not prescribe a numerical discretization. The order-up-to policy is the special case $\mathcal L_i=\{\omega_i\}$ for every $i\in\mathcal P$; this special case is not imposed here. Emergency deliveries always use the order-up-to policy.
+
+The fixed monetary parameters $\chi_i$ and $\zeta_i$ are, respectively, the stock-out and emergency-delivery costs; for collection they price overflow and emergency collection. The route-failure cost multiplier satisfies
+\[
+\psi\in[0,1].
+\]
+$C_{\mathcal S}$ is the average routing cost of going from the demand points of trip $\mathcal S$ to their nearest supply point and back. It remains the source-defined abstract cost; the paper gives no further algebraic formula for it.
+
+The binary decision roles are: $x_{ijkt}=1$ for traversal of arc $(i,j)$ by vehicle $k$ in period $t$; $y_{ikt}=1$ for a visit to point $i$; $z_{kt}=1$ for use of vehicle $k$; $c_{ir}=1$ for assignment of visit combination $r$ to point $i$; and $\ell_{irt}=1$ for selection of discrete level $r\in\mathcal L_i$ at point $i$ in period $t$. Each is zero otherwise.
+
+The continuous variables are $q_{ikt}$, the expected delivery quantity to demand point $i$; $Q_{ikt}$, the expected cumulative quantity delivered by vehicle $k$ arriving at point $i$; $I_{it}$, the expected inventory at the start of period $t$, before delivery; and $S_{ikt}$, the start-of-service time. The variables $\underline b_{kt},\bar b_{kt}$ bound tour duration, while $\underline B,\bar B$ bound each vehicle's total workload over the horizon. The selected objective does not price workload balancing, but (42)--(47) remain inherited. The known initial inventory $I_{i0}$ is fixed data, not a freely chosen initial state.
+
+\section*{Cost definitions used by (54)}
+\begin{equation}
+\mathrm{RC}=\sum_{t\in\mathcal T}\sum_{k\in\mathcal K}
+\left(\varphi_kz_{kt}+\beta_k\sum_{i\in\mathcal N_{kt}}\sum_{j\in\mathcal N_{kt}}\pi_{ij}x_{ijkt}
++\theta_k\left(\sum_{o''\in\mathcal O''_{kt}}S_{o''kt}-\sum_{o'\in\mathcal O'_{kt}}S_{o'kt}\right)\right).
+\tag{13}
+\end{equation}
+\begin{equation}
+\mathrm{ESOEDC}=\sum_{t\in\mathcal T\cup\mathcal T^+}\sum_{i\in\mathcal P}
+\left(\chi_i+\zeta_i-\zeta_i\sum_{k\in\mathcal K}y_{ikt}\right)\mathsf p^{\mathrm{DP}}_{it}.
+\tag{15}
+\end{equation}
+\begin{equation}
+\mathrm{ERFC}=\sum_{k\in\mathcal K}\sum_{\mathcal S\in\mathfrak S_k}
+\psi C_{\mathcal S}\mathsf p^{\mathrm{RF}}_{\mathcal S,k}.
+\tag{16}
+\end{equation}
+Here $\mathfrak S_k$ is the solution-dependent set of supply-point-delimited trips of vehicle $k$, $\mathcal S$ is a particular trip, and $\mathcal S_t\in\mathcal S$ is the set of its demand points visited in period $t$. Supply points delimiting a trip can be visited in different periods. These sets are distinct from the start-of-service variable $S_{ikt}$.
+
+In a stock-out period, (15) charges $\chi_i$ when a regular visit occurs and $\chi_i+\zeta_i$ otherwise. Initial stock-outs are charged even though the initial inventory is known. The scope $\mathcal T\cup\mathcal T^+$ includes the first period after the horizon because its stock-out probability is determined by horizon decisions.
+
+\paragraph{Cost-model qualification (Assumption 4, PDF pages 14--15).}
+All objective terms except ESOEDC ignore the cost effect of demand points stocking out earlier than expected. A reaction policy means changes later in the horizon in response to recourse, ranging from doing nothing to re-optimization; it is not an additional decision block here. In the absence of inventory holding cost, Proposition 2 states that this objective overestimates real cost. In particular, emergency delivery can reduce a later trip's delivery quantity and route-failure probability, an effect omitted by (8) and (16).
+
+\section*{Demand, inventory action sequence, and stock-out probabilities}
+Demands are the only stochastic inputs; all other parameters are deterministic. They may be non-stationary. For $i\in\mathcal P$ and $t\in\mathcal T$,
+\begin{equation}
+\rho_{it}=\mathbb E(\rho_{it})+\varepsilon_{it}.
+\tag{1}
+\end{equation}
+The source writes the vector of errors as
+\begin{equation}
+\varepsilon=(\varepsilon_{11},\ldots,\varepsilon_{1|\mathcal T|},\varepsilon_{21},\ldots,\varepsilon_{|\mathcal P||\mathcal T|}).
+\tag{2}
+\end{equation}
+\[
+\varepsilon\sim\Phi,\qquad\operatorname{var}(\varepsilon)=K.
+\]
+Here $K$ is a covariance structure, not the fleet $\mathcal K$. Definition 1 requires the forecasting model to provide $\mathbb E(\rho_{it})$ for every $t\in\mathcal T,i\in\mathcal P$ and the joint error distribution $\Phi$. The latter may be theoretical or empirical but must be simulatable. No normality restriction is imposed in this formulation.
+
+\paragraph{Initial state and timing (Definitions 2--3).}
+For every $i\in\mathcal P$, $I_{i0}$ is observed and known with certainty and may be positive, zero, or negative. Consequently its initial stock-out probability is either zero or one. In each period $t\in\mathcal T$, deliveries occur before demand realizations. A regular delivery in period $t$ means $y_{ikt}=1$ for some $k\in\mathcal K$. The random state flag $\sigma_{it}$ is one for stock-out and zero otherwise; it is not a routing decision. An emergency delivery occurs when
+\[
+\sigma_{it}=1\quad\text{and}\quad y_{ikt}=0\ \text{for all }k\in\mathcal K,
+\]
+and restores inventory to $\omega_i$. The limited-backorder policy requires delivery in the same period as a stock-out.
+
+Let $\Lambda_{ig}$ denote inventory after a regular delivery to point $i$ in period $g$. Its discrete choice is represented by $\ell_{irg}$:
+\[
+\Lambda_{ig}\in\mathcal L_i.
+\]
+When no delivery to point $i$ occurs during the planning horizon, the source specifies $\Lambda_{i0}=I_{i0}$. In (7), period zero is also returned when no earlier regular delivery exists.
+
+\paragraph{Assumption 1.}
+A regular delivery to $i\in\mathcal P$ in $t\in\mathcal T$ discards any inventory above its chosen level $\Lambda_{it}$. This is the selected rule for handling a realized inventory above a discretized maximum-level target; neither skipping delivery nor picking up excess inventory replaces it.
+
+For a regular delivery to point $i$ in period $g\in\mathcal T$, the four stock-out transition probabilities are:
+\begin{equation}
+\mathbb P(\Lambda_{ig}-\rho_{ig}\leqslant0)
+=\mathbb P\bigl(\varepsilon_{ig}\geqslant\Lambda_{ig}-\mathbb E(\rho_{ig})\bigr).
+\tag{3}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+&\mathbb P\left(\Lambda_{ig}-\sum_{t=g}^{h}\rho_{it}\leqslant0\ \middle|\ \Lambda_{ig}-\sum_{t=g}^{h-1}\rho_{it}>0\right)\\
+&\quad=\mathbb P\left(\sum_{t=g}^{h}\varepsilon_{it}\geqslant\Lambda_{ig}-\sum_{t=g}^{h}\mathbb E(\rho_{it})\ \middle|\ \sum_{t=g}^{h-1}\varepsilon_{it}<\Lambda_{ig}-\sum_{t=g}^{h-1}\mathbb E(\rho_{it})\right),\qquad\forall h>g.
+\end{aligned}\tag{4}
+\end{equation}
+\begin{equation}
+\mathbb P(\omega_i-\rho_{ig'}\leqslant0)
+=\mathbb P\bigl(\varepsilon_{ig'}\geqslant\omega_i-\mathbb E(\rho_{ig'})\bigr),\qquad\forall g'>g.
+\tag{5}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+&\mathbb P\left(\omega_i-\sum_{t=g'}^{h}\rho_{it}\leqslant0\ \middle|\ \omega_i-\sum_{t=g'}^{h-1}\rho_{it}>0\right)\\
+&\quad=\mathbb P\left(\sum_{t=g'}^{h}\varepsilon_{it}\geqslant\omega_i-\sum_{t=g'}^{h}\mathbb E(\rho_{it})\ \middle|\ \sum_{t=g'}^{h-1}\varepsilon_{it}<\omega_i-\sum_{t=g'}^{h-1}\mathbb E(\rho_{it})\right),\qquad\forall h>g'>g.
+\end{aligned}\tag{6}
+\end{equation}
+Equations (3)--(4) concern transitions from a regular delivery; (5)--(6) concern transitions from a subsequent stock-out followed by an emergency delivery to capacity. The binary tree in Figure 1 (PDF page 10) assigns these probabilities to branches entering state one and the corresponding positive-inventory probabilities to branches entering state zero. For example, the printed state-zero branches include
+\begin{gather*}
+\mathbb P(\Lambda_{ig}-\rho_{ig}>0),\\
+\mathbb P(\Lambda_{ig}-\rho_{ig}-\rho_{i(g+1)}>0\mid\Lambda_{ig}-\rho_{ig}>0),\\
+\mathbb P(\omega_i-\rho_{i(g+1)}>0),\\
+\mathbb P(\omega_i-\rho_{i(g+1)}-\rho_{i(g+2)}>0\mid\omega_i-\rho_{i(g+1)}>0).
+\end{gather*}
+The stock-out probability at $t>g$ is the sum of the probabilities of all tree paths from the root inventory $\Lambda_{ig}$ in period $g$ to state $\sigma_{it}=1$. The probability in period $g$ comes from the preceding tree, or is zero or one when $g=0$. The resulting definition is
+\begin{equation}
+\mathsf p^{\mathrm{DP}}_{it}
+=\mathbb P\left(\sigma_{it}=1\ \middle|\ \Lambda_{im}:\ m=\max(0,g\in\mathcal T:g<t:\exists k\in\mathcal K:y_{ikg}=1)\right).
+\tag{7}
+\end{equation}
+The index $m$ identifies the most recent earlier regular delivery, with zero as the printed fallback. Under the discretized maximum-level policy these probabilities can be precomputed for each $r\in\mathcal L_i$; emergency deliveries remain order-up-to.
+
+\section*{Trip construction and route-failure probability}
+Algorithm 1 (PDF page 12) defines the solution-dependent trip sets used in (8)--(9) and (16). Its printed input is a solution with values $x_{ijkt}$ for all $i,j\in\mathcal P,t\in\mathcal T$ for vehicle $k$; its output is $\mathfrak S_k$. The following reproduces its operations, including its input scope and successor expressions.
+\begin{enumerate}
+\item $\mathcal S\leftarrow\mathfrak S_k\leftarrow\varnothing$.
+\item For $t\in\mathcal T$:
+\begin{enumerate}
+\item $\mathcal S_t\leftarrow\varnothing$.
+\item $c\leftarrow j:\displaystyle\sum_{o'\in\mathcal O'_{kt}}\sum_{j\in\mathcal N_{kt}}x_{o'jkt}=1$.
+\item While $c\notin\mathcal O''_{kt}$:
+\begin{enumerate}
+\item If $c\in\mathcal D$, add $\mathcal S_t$ as an element of $\mathcal S$; add $\mathcal S$ as an element of $\mathfrak S_k$; then $\mathcal S_t\leftarrow\mathcal S\leftarrow\varnothing$.
+\item Else if $c\in\mathcal P$, add $c$ as an element of $\mathcal S_t$.
+\item $c\leftarrow j:\displaystyle\sum_{j\in\mathcal N_{kt}}x_{cjkt}=1$.
+\end{enumerate}
+\item Add $\mathcal S_t$ as an element of $\mathcal S$.
+\end{enumerate}
+\end{enumerate}
+For each trip $\mathcal S\in\mathfrak S_k$, the delivered quantity is defined by
+\begin{equation}
+\begin{aligned}
+\Gamma_{\mathcal S}
+={}&\sum_{\mathcal S_0\in\mathcal S}\sum_{s\in\mathcal S_0}(\Lambda_{s0}-I_{s0})\\
+&+\sum_{t\in\mathcal T\setminus\{0\}}\sum_{\mathcal S_t\in\mathcal S}\sum_{s\in\mathcal S_t}
+\left(\Lambda_{st}-\Lambda_{sm}+\sum_{h=m}^{t-1}\rho_{sh}\right),\\
+&\text{where }m=\max(0,g\in\mathcal T:g<t:\exists k'\in\mathcal K:y_{sk'g}=1).
+\end{aligned}\tag{8}
+\end{equation}
+The first summand is certain, being delivered in period zero. The second uses the most recent regular delivery, the action sequence of Definition 3, and Assumption 1. The route-failure probability is
+\begin{equation}
+\mathsf p^{\mathrm{RF}}_{\mathcal S,k}=\mathbb P(\Gamma_{\mathcal S}>\Omega_k).
+\tag{9}
+\end{equation}
+Recourse is a supply-point visit. The paper describes (9) as capturing the probability of multiple failures in a trip; its printed expression is the single exceedance probability above, not an expected failure count.
+
+\paragraph{Assumption 2: restriction for route-failure calculation only.}
+The errors used to calculate route-failure probabilities are independent and identically distributed, drawn from any marginal distribution $\Phi'$. The paper stipulates
+\begin{equation}
+\Phi(\varepsilon)=\prod_{t\in\mathcal T}\prod_{i\in\mathcal P}\Phi'(\varepsilon_{it}),
+\tag{10}
+\end{equation}
+where $\Phi'$ is the marginal cumulative distribution function. This iid assumption is not imposed on the general stock-out calculation. Under it, the cumulative error distribution depends on the number of summed errors, bounded above by $|\mathcal P|(|\mathcal T|-1)$. Demands realized in the last horizon period cannot be served during the horizon because delivery precedes demand realization.
+
+\paragraph{Assumption 3.}
+Supply points have unlimited inventories. No supply-inventory tracking constraint is introduced.
+
+\section*{Collection interpretation: Appendix A}
+Appendix A (PDF pages 28--29) defines $\Lambda'_{ig}$ as waste inventory after a regular collection in period $g$, distinct from the empty-space inventory used in the operative model:
+\[
+\Lambda_{ig}=\omega_i-\Lambda'_{ig}.
+\]
+The printed equivalences are
+\begin{equation}
+\mathbb P(\Lambda'_{ig}+\rho_{ig}\geqslant\omega_i)
+=\mathbb P\bigl((\omega_i-\Lambda'_{ig})-\rho_{ig}\leqslant0\bigr)
+=\mathbb P(\Lambda_{ig}-\rho_{ig}\leqslant0).
+\tag{A.1}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+&\mathbb P\left(\Lambda'_{ig}+\sum_{t=g}^{h}\rho_{it}\geqslant\omega_i\ \middle|\ \Lambda'_{ig}+\sum_{t=g}^{h-1}\rho_{it}<\omega_i\right)\\
+&=\mathbb P\left((\omega_i-\Lambda'_{ig})-\sum_{t=g}^{h}\rho_{it}\leqslant0\ \middle|\ (\omega_i-\Lambda'_{ig})-\sum_{t=g}^{h-1}\rho_{it}>0\right)\\
+&=\mathbb P\left(\Lambda_{ig}-\sum_{t=g}^{h}\rho_{it}\leqslant0\ \middle|\ \Lambda_{ig}-\sum_{t=g}^{h-1}\rho_{it}>0\right),\qquad\forall h>g.
+\end{aligned}\tag{A.2}
+\end{equation}
+The emergency-collection cases follow as the special cases corresponding to (5)--(6). These identities justify the empty-space interpretation; they do not impose a second inventory system.
+
+\section*{Probability evaluation definitions in Appendices B--C}
+The appendices supply probability-evaluation constructions, not replacement optimization subproblems. Their simulation sample size $M$ is unrelated to the big-$M$ coefficient in (33) and (35).
+
+\subsection*{Appendix B: stock-out probabilities}
+Choose a sufficiently large $M$. For $m\in\{1,\ldots,M\}$, draw the error vector from $\Phi$:
+\begin{equation}
+ e^m=(e^m_{11},\ldots,e^m_{1|\mathcal T|},e^m_{21},\ldots,e^m_{|\mathcal P||\mathcal T|}).
+\tag{B.1}
+\end{equation}
+The printed evaluation formulas are
+\begin{equation}
+\mathbb P(\Lambda_{ig}-\rho_{ig}\leqslant0)
+=\mathbb P(\varepsilon_{ig}\geqslant\Lambda_{ig}-\mathbb E(\rho_{ig}))
+=\frac{\sum_{m=1}^{M}\operatorname{IF}(e^m_{it}\geqslant\Lambda_{ig}-\mathbb E(\rho_{ig}),1,0)}{M}.
+\tag{B.2}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+&\mathbb P\left(\Lambda_{ig}-\sum_{t=g}^{h}\rho_{it}\leqslant0\ \middle|\ \Lambda_{ig}-\sum_{t=g}^{h-1}\rho_{it}>0\right)\\
+&=\mathbb P\left(\sum_{t=g}^{h}\varepsilon_{it}\geqslant\Lambda_{ig}-\sum_{t=g}^{h}\mathbb E(\rho_{it})\ \middle|\ \sum_{t=g}^{h-1}\varepsilon_{it}<\Lambda_{ig}-\sum_{t=g}^{h-1}\mathbb E(\rho_{it})\right)\\
+&=\frac{\mathbb P\left(\sum_{t=g}^{h}\varepsilon_{it}\geqslant\Lambda_{ig}-\sum_{t=g}^{h}\mathbb E(\rho_{it}),\ \sum_{t=g}^{h-1}\varepsilon_{it}<\Lambda_{ig}-\sum_{t=g}^{h-1}\mathbb E(\rho_{it})\right)}
+{\mathbb P\left(\sum_{t=g}^{h-1}\varepsilon_{it}<\Lambda_{ig}-\sum_{t=g}^{h-1}\mathbb E(\rho_{it})\right)}\\
+&=\frac{\displaystyle\sum_{m=1}^{M}\operatorname{IF}\left(\sum_{t=g}^{h}e^m_{it}\geqslant\Lambda_{ig}-\sum_{t=g}^{h}\mathbb E(\rho_{it})\ \mathrm{AND}\ \sum_{t=g}^{h-1}e^m_{it}<\Lambda_{ig}-\sum_{t=g}^{h-1}\mathbb E(\rho_{it}),1,0\right)}
+{\displaystyle\sum_{m=1}^{M}\operatorname{IF}\left(\sum_{t=g}^{h-1}e^m_{it}<\Lambda_{ig}-\sum_{t=g}^{h-1}\mathbb E(\rho_{it}),1,0\right)},\qquad\forall h>g.
+\end{aligned}\tag{B.3}
+\end{equation}
+$\operatorname{IF}([\text{condition}],1,0)$ equals one if the condition holds and zero otherwise. Equations (5)--(6) are evaluated as the special cases of (B.2)--(B.3) with capacity after emergency delivery. The equal signs to finite-sample frequencies and the subscript $it$ in (B.2) are retained as printed; the latter leaves $t$ unspecified in an expression about period $g$. No zero-denominator convention is supplied for (B.3).
+
+\subsection*{Appendix C: route-failure probabilities}
+\begin{equation}
+\begin{aligned}
+\mathbb P(\Gamma_{\mathcal S}>\Omega_k)
+&=\mathbb P(\mathbb E(\Gamma_{\mathcal S})+E>\Omega_k)\\
+&=\mathbb P(E>\Omega_k-\mathbb E(\Gamma_{\mathcal S})).
+\end{aligned}\tag{C.1}
+\end{equation}
+Here plain $E$ denotes the cumulative random error, distinct from the expectation operator $\mathbb E$:
+\begin{equation}
+ E=\sum_{t\in\mathcal T\setminus\{0\}}\sum_{\mathcal S_t\in\mathcal S}\sum_{s\in\mathcal S_t}\sum_{h=m}^{t-1}\varepsilon_{sh},
+\tag{C.2}
+\end{equation}
+with $m$ as in (8). Under Assumption 2, the number of iid errors is bounded by
+\[
+ N=|\mathcal P|(|\mathcal T|-1).
+\]
+For sufficiently large sample size $M$, and $m\in\{1,\ldots,M\}$, simulate
+\begin{equation}
+ e^m_g=\sum_{t=1}^{g}\varepsilon_{it},\qquad\forall g\in\{1,\ldots,N\},
+\tag{C.3}
+\end{equation}
+by drawing $\varepsilon_{it}$ from $\Phi'$ for any $i\in\mathcal P$. For each $g$, derive the empirical distribution function $\Phi^{\mathrm{emp}}_g$ of $\{e^1_g,\ldots,e^M_g\}$. The appendix states
+\[
+\exists g\in\{1,\ldots,N\}\ \text{such that }E\sim\Phi^{\mathrm{emp}}_g,
+\]
+and uses these empirical distributions at runtime for (C.1). This is the printed simulation-based characterization; no exact-distribution identity or zero-summand extension is added.
+
+\section*{Brief notes on the retained printed scope}
+\begin{itemize}
+\item Equation (18) equates depot departures and arrivals but does not set either sum to one, despite the routing prose and Algorithm 1 presupposing a tour origin and destination. No missing equality is inserted.
+\item Equations (21) and (39) quantify over all $t\in\mathcal T$, hence include $t=u$ and refer to period $u+1$. Equation (39) also prints $o'\in\mathcal O'_{kt}$, not $\mathcal O'_{k(t+1)}$. These scopes are retained. Equation (15) likewise uses $y_{ik(u+1)}$, whereas (46) gives visit-variable domains only on $\mathcal T$. No terminal values are stipulated in the supplied formulation.
+\item Definition 2 allows negative fixed $I_{i0}$, while (47) imposes $I_{it}\geqslant0$ for all $t\in\mathcal T$, including zero. Both statements are retained; no initial-inventory exception is inserted into (47).
+\item The arc set excludes $i=j$, whereas several sums and (40), (46) range over all $i,j\in\mathcal N_{kt}$. The printed domains (46)--(47) also extend demand-point quantities or sets to all nodes. Equation (38) uses $q_{jkt}$ at depots, although its verbal definition is a demand-point delivery quantity. No diagonal-arc convention, depot-delivery value, or narrowed quantifier is added.
+\item The prose defines stock-out as inventory becoming negative, but (3)--(6) and Appendix A use nonpositive empty-space inventory, including equality. Those printed probability boundaries are retained. Equation (2) and (B.1) index error-vector coordinates from one through $|\mathcal T|$ although $\mathcal T$ starts at zero; no reindexing rule is introduced.
+\item Algorithm 1's printed input restricts $i,j$ to $\mathcal P$, although its operations use depot and supply-point arcs. Its successor notation sums over the index it seeks to select, and it does not explicitly append the remaining trip to $\mathfrak S_k$ after the outer loop. These are retained rather than repaired.
+\item The statement that (55) forces a disposal visit is stronger than its algebra in zero-load cases: the equality itself does not prohibit a zero-load predecessor outside $\mathcal D$. The operative model retains (55), not an added disposal-predecessor arc constraint.
+\end{itemize}
+The supplied main paper and its Appendices A--C provide the dependencies reproduced here. The separately cited Markov et al. (2016a) report is not supplied and is unverified; no additional formulation or numerical assumptions from it are imported.
+\end{document}

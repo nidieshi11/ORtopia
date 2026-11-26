@@ -1,0 +1,76 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\begin{document}
+\section*{Shuttle assignment, trips and station times}
+The requested pickup$e_p$,actual origin arrival$b_p$,and destination arrival$c_p$
+are distinct. This restores source Table2/3 and(1a); the original extracted
+The objective is the total cost expression (1a).
+Let$B=B_L\dot\cup B_D\dot\cup B_T$denote idle,dwelling,travelling vehicles,
+$P=P_N\dot\cup P_U$new and onboard groups,trip$k=1,\ldots,K$,stop$i=1,\ldots,I$.
+All groups have one origin and one strictly later destination; their indicator
+data are$\beta_{pi},\gamma_{pi}$and group size$z_p>0$.
+Input includes current time$t_0$,current/next stop$\tilde i_b$,historical stop
+arrival$h_{bi}$,remaining distance$r_b$,segment distance$d_i$,speed bounds,
+capacity$C_b$,cost$f_b$,boarding/alighting seconds$a,e$,turnaround$\tau_I$,
+maximum dwell$\tau_{\max}$,departure window$T_W$,and finite$M$.
+Onboard group$p$has fixed$(\hat b_p,\hat k_p)$and historic pickup$h_p$.
+Variables$\alpha_{bk},x_{bkp}\in\{0,1\}$,station arrival$A_{bki}$,
+departure$D_{bki}$,load$Y_{bki}$,dwell$\delta_{bki}$,and$b_p,c_p,\Psi$
+are nonnegative continuous except the binaries.
+Define
+\[
+Q^+_{bki}=\sum_{p\in P}z_p\beta_{pi}x_{bkp},\quad
+Q^N_{bki}=\sum_{p\in P_N}z_p\beta_{pi}x_{bkp},\quad
+Q^-_{bki}=\sum_{p\in P}z_p\gamma_{pi}x_{bkp}.
+\]
+For$(b,k)$let$s_{bk}=\tilde i_b$if$k=1,b\in B_D\cup B_T$,otherwise1;
+let$J_{bk}=\{s_{bk},\ldots,I\}$and
+$Dwell_{bk}=\{s_{bk}+1,\ldots,I\}$if$k=1,b\in B_D$,otherwise$J_{bk}$.
+Minimize
+\[
+w_1\sum_{p\in P_N}z_p(b_p-e_p)+w_2\sum_{p\in P}z_p(c_p-b_p)
++w_3\sum_{b,k}f_b\alpha_{bk}.
+\]
+The complete constraints implemented by the current code are
+\begin{align*}
+b_p-e_p&\le\Psi,\quad b_p\ge e_p&&p\in P_N,\\
+b_p&=h_p,\quad c_p\ge t_0&&p\in P_U,\\
+A_{b,1,1}&\ge\max(t_0,h_{bI}+\tau_I)&&b\in B_L,\\
+r_b/v_b^{\max}&\le A_{b,1,\tilde i_b}-t_0\le r_b/v_b^{\min}&&b\in B_T,\\
+A_{b,1,\tilde i_b}&=h_{b,\tilde i_b}&&b\in B_D,\\
+D_{b,1,\tilde i_b}&\ge t_0,\quad
+D_{b,1,\tilde i_b}\ge h_{b,\tilde i_b}+aQ^+_{b,1,\tilde i_b}&&b\in B_D,\\
+D_{b,1,\tilde i_b}&\ge h_{b,\tilde i_b}+eQ^-_{b,1,\tilde i_b},\quad
+D_{b,1,\tilde i_b}\le h_{b,\tilde i_b}+\tau_{\max}&&b\in B_D,\\
+\alpha_{b,k+1}&\le\alpha_{bk}&&b\in B,k<K,\\
+\alpha_{bk}&\le\sum_p x_{bkp}&&b\in B_L\text{ or }k>1,\\
+\alpha_{b1}&=1&&b\in B_D\cup B_T,\\
+\sum_{b,k}x_{bkp}&=1,\quad x_{bkp}\le\alpha_{bk}&&p\in P,\\
+x_{\hat b_p,\hat k_p,p}&=1&&p\in P_U,\\
+x_{b1p}&\le1-\sum_{i<\tilde i_b}\beta_{pi}&&b\in B_D\cup B_T,p\in P_N,\\
+Y_{bki}&\le C_b&&i\in J_{bk},\\
+Y_{bk1}&=Q^+_{bk1},\quad Y_{bkI}=0,\\
+Y_{bki}-Y_{bk,i-1}&=Q^+_{bki}-Q^-_{bki}&&2\le i<I,\\
+t_0-M(1-\alpha_{bk})&\le A_{bk1}\le t_0+T_W+M(1-\alpha_{bk})
+&&b\in B_L\text{ or }k>1,\\
+A_{b,k+1,1}&\ge D_{bkI}+\tau_I&&k<K,\\
+D_{bki}-A_{bki}&=\delta_{bki}&&i\in Dwell_{bk},\\
+\delta_{bki}&\ge aQ^N_{bki},\quad\delta_{bki}\ge eQ^-_{bki}
+&&i\in Dwell_{bk},\\
+\delta_{bki}&\le M(Q^N_{bki}+Q^-_{bki}),\quad
+\delta_{bki}\le\tau_{\max}&&i\in Dwell_{bk},\\
+d_i/v_b^{\max}&\le A_{bk,i+1}-D_{bki}\le d_i/v_b^{\min}
+&&s_{bk}\le i<I,\\
+-M(2-\beta_{pi}-x_{bkp})&\le b_p-A_{bki}\le M(2-\beta_{pi}-x_{bkp})
+&&p\in P_N,i\in J_{bk},\\
+-M(2-\gamma_{pi}-x_{bkp})&\le c_p-A_{bki}\le M(2-\gamma_{pi}-x_{bkp})
+&&p\in P,i\in J_{bk}.
+\end{align*}
+Origin/destination times link to station arrivals, as specified in the
+source equations. In this(1a)variant
+$\Psi$ is an unpenalized upper bound on waiting time.
+Replacing the maximum in(2c)/(2d)by both lower bounds is exact.
+Historic pickup and current dwelling arrival are fixed input state.
+Four supplied concrete instances have5,10,15,20new groups respectively.
+
+\end{document}

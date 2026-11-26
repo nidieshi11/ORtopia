@@ -6,11 +6,26 @@
   <meta name="theme-color" content="#f6f5ee">
   <title>A Utopia for AI-Native Operations Research</title>
   <script>
+    const preferenceKey = 'ortopia.cover.language';
+    function preferredLanguage() {
+      const requested = new URLSearchParams(location.search).get('lang');
+      if (requested === 'en' || requested === 'zh') return requested;
+      try {
+        const saved = localStorage.getItem(preferenceKey);
+        if (saved === 'en' || saved === 'zh') return saved;
+      } catch {}
+      return /^zh(?:-|$)/i.test(navigator.language) ? 'zh' : 'en';
+    }
+    function sectionPath(section, lang) {
+      return (lang === 'en' ? 'en/' : '') + section + '/';
+    }
+    const language = preferredLanguage();
+    document.documentElement.lang = language === 'zh' ? 'zh-CN' : 'en';
     // Older links used the fragment to select a simulation or a catalog view.
     if (/^#(?:(?:\/problem\/)?P\d{4}(?:\/[1-9]\d*)?|scene\/.+|remaining|world20|lab20)$/.test(location.hash)) {
-      location.replace('simulation/' + location.search + location.hash);
+      location.replace(sectionPath('simulation', language) + location.search + location.hash);
     } else if (/^#\/(?:domains|library|domain\/[^/]+(?:\/[^/]+)?|case\/P\d{4})$/.test(location.hash)) {
-      location.replace('dataset/' + location.search + location.hash);
+      location.replace(sectionPath('dataset', language) + location.search + location.hash);
     }
   </script>
   <style>
@@ -125,28 +140,32 @@
   <main>
     <h1><span class="copy-en" lang="en">A Utopia for <em>AI-Native</em><br> Operations Research</span><span class="copy-zh" lang="zh-CN">AI 原生运筹优化的理想国</span></h1>
     <nav aria-label="ORtopia">
-      <a href="dataset/"><span><span class="copy-en" lang="en">Dataset</span><span class="copy-zh" lang="zh-CN">数据集</span></span><span class="arrow" aria-hidden="true"></span></a>
-      <a href="simulation/"><span><span class="copy-en" lang="en">Simulation</span><span class="copy-zh" lang="zh-CN">仿真</span></span><span class="arrow" aria-hidden="true"></span></a>
+      <a data-section="dataset" href="en/dataset/"><span><span class="copy-en" lang="en">Dataset</span><span class="copy-zh" lang="zh-CN">数据集</span></span><span class="arrow" aria-hidden="true"></span></a>
+      <a data-section="simulation" href="en/simulation/"><span><span class="copy-en" lang="en">Simulation</span><span class="copy-zh" lang="zh-CN">仿真</span></span><span class="arrow" aria-hidden="true"></span></a>
     </nav>
   </main>
   <script>
     (() => {
       const button = document.getElementById('language-switch');
-      const preference = 'ortopia.cover.language';
-      function show(chinese) {
+      function show(lang) {
+        const chinese = lang === 'zh';
         document.documentElement.lang = chinese ? 'zh-CN' : 'en';
         document.title = chinese ? 'AI 原生运筹优化的理想国' : 'A Utopia for AI-Native Operations Research';
+        document.querySelectorAll('nav a[data-section]').forEach(link => {
+          link.href = sectionPath(link.dataset.section, lang);
+        });
         button.title = chinese ? '切换到英文 (English)' : 'Switch to Chinese (中文)';
         button.setAttribute('aria-label', button.title);
+        try { localStorage.setItem(preferenceKey, lang); } catch {}
       }
-      let saved;
-      try { saved = localStorage.getItem(preference); } catch {}
-      show(saved === 'zh' || (saved !== 'en' && /^zh(?:-|$)/i.test(navigator.language)));
+      show(language);
       button.hidden = false;
       button.addEventListener('click', () => {
-        const chinese = document.documentElement.lang === 'en';
-        show(chinese);
-        try { localStorage.setItem(preference, chinese ? 'zh' : 'en'); } catch {}
+        const lang = document.documentElement.lang === 'en' ? 'zh' : 'en';
+        const url = new URL(location.href);
+        url.searchParams.set('lang', lang);
+        history.replaceState(history.state, '', url);
+        show(lang);
       });
     })();
   </script>

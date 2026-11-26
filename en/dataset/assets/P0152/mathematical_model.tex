@@ -1,0 +1,97 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,longtable}
+\emergencystretch=4em
+\usepackage{geometry}
+\geometry{paperwidth=235mm,paperheight=297mm,hmargin=18mm,vmargin=19mm}
+\begin{document}
+\section*{P152: Current complete mathematical model (as of 2026-10-20)}
+\section*{Basis and scope of the revision}Current primary standard selection from the original construction mode 1: collect lambda1 once per vehicle per departure; remove the redundant warehouse summation from equation 48 to achieve a truly equivalent reconstruction. Historical two branches and differences are retained; only the results calculated by the original \_ objective \_ 1 are referenced, without mixing objectives.
+
+
+
+
+% --- Page 5 ---
+\section*{Page 5}
+
+\subsection*{Objective Functions}
+\begin{equation}
+    \text{ID 1: } min \sum_{k \in K} \lambda_0 \bullet V_k + \sum_{k \in K} \sum_{i \in I} \lambda_1 \bullet U_{k,i} + \sum_{k \in K} \sum_{i \in I} \sum_{p \in P} \lambda_2 \bullet s_p \bullet \left| A_{p}^{k,i} - b_p \bullet Z_{p}^{k,i} \right| + \sum_{k \in K} \sum_{i \in I} \sum_{n \in N} \sum_{n' \in N} \lambda_3 \bullet t_{n,n'} \bullet X_{n,n'}^{k,i} + \sum_{k \in K} \sum_{i \in I} \lambda_4 \bullet C_{k,i} \tag{1}
+\end{equation}
+
+\subsection*{Constraints}
+\begin{align}
+    \text{ID 2: } & Y_{d}^{k,0} = \sigma_{k,d}, \forall k \in K, d \in D \tag{2} \\
+    \text{ID 3: } & C_{k,0} = 0, \forall k \in K \tag{3} \\
+    \text{ID 4: } & A_{d}^{k,0} = 0, \forall k \in K, d \in D \tag{4} \\
+    \text{ID 5: } & U_{k,i} \leq V_k, \forall i \in I_k, k \in K, i \neq 0 \tag{5} \\
+    \text{ID 6: } & Z_{p}^{k,i} \leq U_{k,i}, \forall p \in P, i \in I_k, k \in K, i \neq 0 \tag{6} \\
+    \text{ID 7: } & \sum_{d \in D} Y_{d}^{k,i} \leq U_{k,i}, \forall i \in I_k, k \in K, i \neq 0 \tag{7} \\
+    \text{ID 8: } & A_{p}^{k,i} \leq M \bullet Z_{p}^{k,i}, \forall p \in P, i \in I_k, k \in K \tag{8} \\
+    \text{ID 9: } & A_{d}^{k,i} \leq M \bullet Y_{d}^{k,i}, \forall i \in I_k, k \in K, d \in D \tag{9} \\
+    \text{ID 10: } & \sum_{k \in K} \sum_{i \in I \setminus \{0\}} Z_{p}^{k,i} = 1, \forall p \in P \tag{10} \\
+    \text{ID 11: } & \sum_{p \in P} Z_{p}^{k,i} \bullet s_p \leq \vartheta_{cap}, \forall i \in I_k, k \in K, i \neq 0 \tag{11}
+\end{align}
+
+% --- Page 6 ---
+\section*{Page 6}
+
+\subsection*{Constraints}
+\begin{align}
+    \text{ID 12: } & \sum_{d \in D} Y_{d}^{k,i} \bullet d + M \bullet (1 - Z_{p}^{k,i}) \geq u_p, \forall p \in P, i \in I_k, k \in K, i \neq 0 \tag{12} \\
+    \text{ID 13: } & \sum_{d \in D} Y_{d}^{k,i} \bullet d \leq u_p + M \bullet (1 - Z_{p}^{k,i}), \forall p \in P, i \in I_k, k \in K, i \neq 0 \tag{13} \\
+    \text{ID 14: } & M \bullet (1 - Y_{d}^{k,i}) + M \bullet (1 - Y_{d'}^{k,i+1}) + A_{d}^{k,i} + W_{k,i} + C_{k,i} + \tau_{k,i+1} \geq A_{d'}^{k,i+1}, \forall i \in I_k, k \in K, d, d' \in D \tag{14} \\
+    \text{ID 15: } & A_{d}^{k,i} + W_{k,i} + C_{k,i} + \tau_{k,i+1} \leq A_{d'}^{k,i+1} + M \bullet (1 - Y_{d}^{k,i}) + M \bullet (1 - Y_{d'}^{k,i+1}), \forall i \in I_k, k \in K, d, d' \in D \tag{15} \\
+    \text{ID 16: } & A_{d'}^{k,i+1} - A_{d}^{k,i} \leq T_{max}, \forall i \in I_k, k \in K, d, d' \in D \tag{16} \\
+    \text{ID 17: } & SOC_{k,1}^{DEP} = \epsilon^{up}, \forall k \in K \tag{17} \\
+    \text{ID 18: } & \epsilon^{lo} \leq SOC_{k,i}^{DEP} \leq \epsilon^{up}, \forall i \in I_k, k \in K \tag{18} \\
+    \text{ID 19: } & \epsilon^{lo} \leq SOC_{k,i}^{ARR} \leq \epsilon^{up}, \forall i \in I_k, k \in K \tag{19} \\
+    \text{ID 20: } & C_{k,i} \leq \varphi_d \bullet M, \forall d \in D, i \in I_k, k \in K \tag{20} \\
+    \text{ID 21: } & \frac{(\epsilon^{up} - SOC_{k,i}^{ARR})B_{cap}}{\theta} - C_{k,i} \leq h_{k,i} + M \bullet (1 - h_{k,i}), \forall i \in I_k, k \in K, i \neq 0 \tag{21} \\
+    \text{ID 22: } & \frac{(\epsilon^{up} - SOC_{k,i}^{ARR})B_{cap}}{\theta} - C_{k,i} \geq 1 \bullet (1 - h_{k,i}), \forall i \in I_k, k \in K, i \neq 0 \tag{22} \\
+    \text{ID 23: } & W_{k,i} \leq h_{k,i} \bullet M, \forall i \in I_k, k \in K, i \neq 0 \tag{23} \\
+    \text{ID 24: } & SOC_{k,i}^{ARR} B_{cap} = SOC_{k,i}^{DEP} B_{cap} - e_{k,i}, \forall i \in I_k, k \in K \tag{24} \\
+    \text{ID 25: } & SOC_{k,i+1}^{DEP} B_{cap} = SOC_{k,i}^{ARR} B_{cap} + \theta C_{k,i}, \forall i \in I_k, k \in K \tag{25}
+\end{align}
+
+% --- Page 7 ---
+\section*{Page 7}
+
+\subsection*{Constraints}
+\begin{align}
+    \text{ID 26: } & X_{n,p}^{k,i} \leq Z_{p}^{k,i}, \forall p \in P, n \in N, i \in I_k, k \in K, i \neq 0 \tag{26} \\
+    \text{ID 27: } & X_{p,n}^{k,i} \leq Z_{p}^{k,i}, \forall p \in P, n \in N, i \in I_k, k \in K, i \neq 0 \tag{27} \\
+    \text{ID 28: } & \sum_{p \in P} X_{d,p}^{k,i} + (1 - U_{k,i}) \bullet M \geq Y_{d}^{k,i-1}, \forall d \in D, i \in I_k, k \in K, i \neq 0 \tag{28} \\
+    \text{ID 29: } & \sum_{p \in P} X_{d,p}^{k,i} - (1 - U_{k,i}) \bullet M \leq Y_{d}^{k,i-1}, \forall d \in D, i \in I_k, k \in K, i \neq 0 \tag{29} \\
+    \text{ID 30: } & \sum_{p \in P} X_{p,d}^{k,i} + (1 - U_{k,i}) \bullet M \geq Y_{d}^{k,i}, \forall d \in D, i \in I_k, k \in K, i \neq 0 \tag{30} \\
+    \text{ID 31: } & \sum_{p \in P} X_{p,d}^{k,i} - (1 - U_{k,i}) \bullet M \leq Y_{d}^{k,i}, \forall d \in D, i \in I_k, k \in K, i \neq 0 \tag{31} \\
+    \text{ID 32: } & \sum_{p \in N} X_{p,q}^{k,i} = Z_{q}^{k,i}, \forall q \in P, i \in I_k, k \in K, i \neq 0 \tag{32} \\
+    \text{ID 33: } & \mu_p - \mu_q + |H + 2| \cdot X_{p,q}^{k,i} \leq |H + 1| , \forall p, q \in P_i, i \in I_k, k \in K \tag{33} \\
+    \text{ID 34: } & \sum_{p \in N} X_{p,q}^{k,i} - \sum_{p' \in N} X_{q,p'}^{k,i} = 0, \forall q \in P, i \in I_k, k \in K \tag{34} \\
+    \text{ID 35: } & A_p^{k,i} - (A_d^{k,i-1} + C_{k,i-1} + W_{k,i-1}) + \left(1 - X_{d,p}^{k,i}\right) \times M \geq t_{d,p}, \forall p \in P, d \in D, i \in I_k, k \in K, i \neq 0\# \tag{35} \\
+    \text{ID 36: } & A_p^{k,i} - (A_d^{k,i-1} + C_{k,i-1} + W_{k,i-1}) - \left(1 - X_{d,p}^{k,i}\right) \times M \leq t_{d,p}, \forall p \in P, d \in D, i \in I_k, k \in K, i \neq 0\# \tag{36} \\
+    \text{ID 37: } & A_q^{k,i} - A_p^{k,i} + \left(1 - X_{p,q}^{k,i}\right) \times M \geq t_{p,q}, \forall p, q \in P, i \in I_k, k \in K \tag{37} \\
+    \text{ID 38: } & A_q^{k,i} - A_p^{k,i} - \left(1 - X_{p,q}^{k,i}\right) \times M \leq t_{p,q}, \forall p, q \in P, i \in I_k, k \in K \tag{38} \\
+    \text{ID 39: } & A_d^{k,i} - A_p^{k,i} + \left(1 - X_{p,d}^{k,i}\right) \times M \geq t_{p,d}, \forall p \in P, d \in D, i \in I_k, k \in K \tag{39} \\
+    \text{ID 40: } & A_d^{k,i} - A_p^{k,i} - \left(1 - X_{p,d}^{k,i}\right) \times M \leq t_{p,d}, \forall p \in P, d \in D, i \in I_k, k \in K \tag{40} \\
+    \text{ID 41: } & \tau_{k,i} = \sum_{d \in D} \sum_{p \in P} t_{d,p} \bullet X_{d,p}^{k,i} + \sum_{p \in P} \sum_{q \in P} t_{p,q} \bullet X_{p,q}^{k,i} + \sum_{d \in D} \sum_{q \in P} t_{q,d} \bullet X_{q,d}^{k,i}, \forall i \in I_k, k \in K \tag{41} \\
+    \text{ID 42: } & L_{d,p}^{k,i} = 0, \forall d \in D, p \in P, i \in I_k, k \in K \tag{42} \\
+    \text{ID 43: } & L_{n,n'}^{k,i} \leq M \bullet X_{n,n'}^{k,i}, \forall n, n' \in N, i \in I_k, k \in K \tag{43}
+\end{align}
+
+% --- Page 8 ---
+\section*{Page 8}
+
+\subsection*{Constraints}
+\begin{align}
+    \text{ID 44: } & \sum_{p \in N} L_{p,q}^{k,i} + s_q \bullet \sum_{p \in N} X_{p,q}^{k,i} = \sum_{p' \in N} L_{q,p'}^{k,i}, \forall q \in P, i \in I_k, k \in K \tag{44} \\
+    \text{ID 45: } & e_{k,i} = \sum_{d \in D} \sum_{p \in P} (\alpha \bullet \omega' + \beta) \bullet X_{d,p}^{k,i} \bullet t_{d,p} + \sum_{p \in P} \sum_{n \in N} [\alpha (\omega \bullet L_{p,n}^{k,i} + \omega' \bullet X_{p,n}^{k,i}) + \beta \bullet X_{p,n}^{k,i}] \bullet t_{p,n}, \forall i \in I_k, k \in K \tag{45} \\
+    \text{ID 46: } & V_k, U_{k,i}, X_{n,n'}^{k,i}, Y_d^{k,i}, Z_p^{k,i}, h_{k,i} \in \{0, 1\} \tag{46} \\
+    \text{ID 47: } & A_n^{k,i}, C_{k,i}, W_{k,i}, L_{n,n'}^{k,i}, e_{k,i}, \tau_{k,i}, F_p^{k,i}, \mu_p \geq 0, 0 \leq SOC_{k,i}^{DEP} \leq 1, 0 \leq SOC_{k,i}^{ARR} \leq 1 \tag{47}
+\end{align}
+
+
+\section*{Equivalent linearization of targets and complete indexing}
+$F_p^{ki}\ge A_p^{ki}-b_pZ_p^{ki}$ and $F_p^{ki}\ge b_pZ_p^{ki}-A_p^{ki}$. In the original objective (1), replace the absolute value by $F$, keeping all other coefficients and summation ranges exactly as stated. The departure fee is $\lambda_1\sum_{k,i}U_{ki}$, with no multiplication by $|D|$. The depot sum printed in equation 48 duplicates a charge and is corrected here. The historical printed\_reformulation results are outside the current objective. $I=\{0,\ldots,\pi_{\max}\}$. Successors $i+1$ are used only within their defined domain. Trip 0 records the initial state only, $X=Z=U=0$. A terminal state of charge with the same domain is defined separately for the last trip in equation 25. $H=|P|$ is a valid counting big-M constant, $P_i=P$. Self-loops and depot-to-depot service arcs are prohibited. Original physical energy consumption is converted to kWh using minutes (divide $\alpha,\beta$ by 60), and the charging rate is in kWh per minute. All parameters, time windows, capacities, batteries, vehicle types, requests, and maximum numbers of trips are given by the completed instance.
+
+
+\end{document}

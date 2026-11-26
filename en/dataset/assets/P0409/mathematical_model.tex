@@ -1,0 +1,83 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,geometry}
+\geometry{margin=22mm}
+\begin{document}
+
+\section*{P409: rolling-stock allocation and a discrete timetable}
+This is the fully specified time-expanded MILP executed by the current
+\texttt{05\_solver\_repaired.py}. Source: paper Table 1 and model (5), pp.7--8.
+The missing nonnegative integer allocation variable is restored. This is a
+completed two-terminal network instance with the constraints of model (5).
+
+\paragraph{Network and data.}
+$D=\{d_1,d_2\}$, $L=\{l_1,l_2\}$, and
+$\mathcal T=\{0,\ldots,H\}$ are depots, lines and one-minute time points.
+The completed instances have $H=480$ and service start horizon $H_s=420$.
+For each line use station states $A^\uparrow,B^\uparrow,
+B^\downarrow,A^\downarrow$.
+At each integer time create one-minute waiting arcs at these states,
+service arcs $A^\uparrow\to B^\uparrow$ and
+$B^\downarrow\to A^\downarrow$ of duration $v_l$ starting before $H_s$,
+and turnaround arcs $B^\uparrow\to B^\downarrow$ and
+$A^\downarrow\to A^\uparrow$ of duration $\tau$.
+Pull-out arcs $d_1\to A^\uparrow,d_2\to B^\downarrow$ start before
+$H_s$; pull-in arcs $A^\downarrow\to d_1,B^\uparrow\to d_2$
+are allowed until $H$. Their duration is $\eta_l$.
+Keep only arcs ending no later than $H$.
+Every arc has one binary capacity. These rules define $A$ completely;
+the six physical template arcs expand into time-indexed arcs by these rules.
+Both depots serve both lines in the completed inputs.
+
+$c_d$ is depot capacity, $Z_{\max}=\sum_dc_d$,
+$\lambda_d=50000$, and $h_l=\lceil h_l^{\rm sec}/60\rceil$.
+Period $k$ is the half-open interval $[b_k,e_k)$ in supplied order.
+$A^i_{lk}$ is the set of direction-$i$ service arcs starting in that
+period, and $\alpha^i_{lk}$ is the supplied service-count target
+(the same input count is used in both directions).
+Cost weights $\omega_1,\omega_2$ are explicit instance data.
+The raw-cost and normalized-cost inputs are two different objective
+parameterizations and are reported separately.
+
+\paragraph{Variables and objective.}
+\[
+x_a\in\{0,1\},\quad
+z_d\in\{0,\ldots,c_d\},\quad
+r_{dl}\in\mathbb Z_+,\quad \phi^i_{lk}\ge0.
+\]
+\[
+\min\quad
+\omega_1\sum_{d\in D}\lambda_d z_d+
+\omega_2\sum_{l,k}\sum_{i=0}^1\phi^i_{lk}.
+\]
+Let $\delta^\pm(v)$ be the incoming/outgoing arcs at a non-depot
+time-expanded station node, with $+$ denoting outgoing.
+Let $P^+_{dl}(t)$ be pull-out arcs of depot $d$, line $l$ starting
+at time at most $t$, and $P^-_{dl}(t)$ the corresponding pull-ins
+ending at time at most $t$. Let $E^{i,+}_{l}(t)$ and
+$E^{i,-}_{l}(t)$ be direction-$i$ service starts and ends in
+$[t,\min(H+1,t+h_l))$.
+The complete feasible domain is
+\begin{align}
+&\sum_d z_d\le Z_{\max},&
+&\sum_l r_{dl}\le z_d &&(d\in D),\\
+&\sum_{a\in P^+_{dl}(t)}x_a-\sum_{a\in P^-_{dl}(t)}x_a
+ \le r_{dl} &&&&(d,l,\ t<H),\\
+&\sum_{a\in P^+_{dl}(H)}x_a-\sum_{a\in P^-_{dl}(H)}x_a=0
+ &&&&(d,l),\\
+&\sum_{a\in\delta^+(v)}x_a-\sum_{a\in\delta^-(v)}x_a=0
+ &&&&(\text{all non-depot nodes }v),\\
+&\sum_{a\in E^{i,+}_l(t)}x_a\le1,\qquad
+ \sum_{a\in E^{i,-}_l(t)}x_a\le1 &&&&(l,i,t),\\
+&\phi^i_{lk}\ge\alpha^i_{lk}-\sum_{a\in A^i_{lk}}x_a,\qquad
+ \phi^i_{lk}\ge\sum_{a\in A^i_{lk}}x_a-\alpha^i_{lk}
+ &&&&(l,i,k).
+\end{align}
+Empty arc sums are zero. Positive arc durations and station conservation
+make the depot inventory inequality a physical availability constraint.
+Integer-minute separation $h_l$ enforces the supplied second-based minimum
+headway exactly on this grid. The optimum is defined on this discrete time grid.
+All coefficients, graph rules and constraints above correspond to code
+lines 6--50; result checks at lines 53--75 independently reconstruct
+station balances, depot inventories, headways, fleet and objective.
+
+\end{document}

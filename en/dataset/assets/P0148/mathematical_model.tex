@@ -1,0 +1,51 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,longtable}
+\emergencystretch=4em
+\usepackage{geometry}
+\geometry{paperwidth=235mm,paperheight=297mm,hmargin=18mm,vmargin=19mm}
+\begin{document}
+\section*{P148: Current complete mathematical model (2026-10-20)}
+\section*{Basis and scope of the revision}Activate charging and stop driving based on actual conditions. Keep all constraints related to vehicle models, parking lots, shifts, SOC values, and degradation levels. The historical data for literal\_energy\_definition is considered invalid for diagnosis purposes. The current model involves complete physical-based repairs; therefore, only the results from executed conditional\_energy\_repair will be considered.
+
+\section*{Sets, arcs, and variables}
+Shifts: $I=\{1,\ldots,n\}$, sorted by time. Parking lots: $W$, vehicle types: $K$. Source location: $0,n+1$. Allowable arcs: $(0,j),(i,n+1),(i,j):i<j$. $x_{wkij}\in\{0,1\}$; $e^-_{wki},e^+_{wki}\in[\underline s_kE_k,\bar s_kE_k]$. Continued charging amount: $c_{wkij}\ge0$, charging duration: $t_{wkij}\ge0$, billing amount: $\delta_{wkij}\ge0$.
+\[
+\sum_jx_{wk0j}\le f_{wk},\quad\sum_ix_{wki,n+1}\le f_{wk},\quad
+v_{wki}:=\sum_{j>i}x_{wkij}=\sum_{j<i}x_{wkji},\quad
+\sum_{wk}\sum_{i<j}x_{wkij}=1\quad(j\in I).
+\]
+\[
+|(\bar s_kE_k-e^-_{wki})-E^{start}_{wki}|\le M(1-x_{wk0i}),\quad
+e^-_{wki}-e^+_{wki}=E^{trip}_{ki}v_{wki}.
+\]
+For each instance where $i<j$ is followed by $a=x_{wkij}$, record the energy consumption during idling as $D_{kij}$, along with the time spent in idling state as $\tau_{ij}$:
+\[
+b_j-a_i-\theta-\tau_{ij}-t_{wkij}\ge M_t(a-1),
+\]
+\[
+-M(1-a)\le e^-_{wkj}-e^+_{wki}-\sigma t_{wkij}+aD_{kij}\le M(1-a),
+\]
+\[
+c_{wkij}=\sigma t_{wkij},\quad
+-M(1-a)\le c_{wkij}-e^-_{wkj}+e^+_{wki}-aD_{kij}\le M(1-a),
+\]
+\[
+0\le c_{wkij}\le Ma,\quad
+0\le\delta_{wkij}\le c_{wkij},\quad
+\delta_{wkij}\ge c_{wkij}-M(1-a).
+\]
+Specify the vehicle types for each shift, setting the prohibited routes from off-peak hours to peak hours to zero. All SOC limits will be retained for the shift variables within the original domain.
+\section*{A complete definition of piecewise degeneration}
+Each energy process is represented by $\mathcal B(Q,U,L,\chi)$, which indicates a set of newly added continuous values. Additionally, there are $s_h\ge0$ and $f_h$ binary values, along with various constraints. $[l_h,u_h]$ and costs $c_h$ are determined based on the given SOC range.
+\[
+\sum_hs_h=Q,\quad s_h\le(u_h-l_h)f_h,\quad
+s_h\le U-l_h+1-f_h,\quad s_h\le u_h-L+1-f_h.
+\]
+If activating $\chi$ is required, then $f_h\le\chi$ must also be activated. The cost of this process is $E_k\sum_hc_hs_h$. The shift usage is managed through $(Q,U,L)=((e^-_i-e^+_i)/E_k,e^-_i/E_k,e^+_i/E_k)$. Each subsequent charging session requires $(c/E_k,(e^-_j+D)/E_k,e^+_i/E_k,a)$; empty trips require $(aD/E_k,(e^-_j+D)/E_k,e^-_j/E_k,a)$. The initial empty trip costs are $(x_{wk0i}E^{start}_{wki}/E_k,\bar s_k,e^-_i/E_k,x_{wk0i})$. The auxiliary constraints remain in place, but the initial degradation costs are not calculated based on the selected targets.
+\[
+\min\sum_{wki}F_kx_{wk0i}+\beta\sum_{wkij}\delta_{wkij}
++\sum_{\text{scheduled services, charging, and connecting deadhead trips}}E_k\sum_hc_hs_h.
+\]
+When the arc is selected, the charging and degradation mechanisms are activated. If no arc is selected, the value will be set to $c=t=0$. All records where the old branch is not valid are considered as evidence of model defects. The current value represents the fully activated state after repairs have been made.
+
+\end{document}

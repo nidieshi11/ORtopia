@@ -1,0 +1,39 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\emergencystretch=4em
+\usepackage{geometry}
+\geometry{paperwidth=235mm,paperheight=297mm,hmargin=18mm,vmargin=19mm}
+\begin{document}
+\section*{Truck and delivery robot collaborative path planning: A complete operational model}
+Correct the extraction errors in old version 02 at pages 4--5 of the original paper (sections (1)--(10)). The node sets: $V=\{v_0\}\cup C$ and $v_0$ represent warehouses, with each customer having one package. The truck and the robot both start and return from the warehouse together. The coordinate unit is km, the speed is km/h, and all operation times are in seconds; $d^T_{ab}=3600D_{ab}/v_T$ and $d^R_{ab}=3600D_{ab}/v_R$. The input complete distance matrix is obtained from the Euclidean distances of the existing coordinates. The customer service time is $t_s$, while the warehouse does not have customer service. The loading and unloading robots take time at rates of $t_l,t_u$ respectively, and the robot can carry up to $p$ items.
+
+\subsection*{Feasibility and cost estimates}
+An operation $o=(s_o,H_o,J_o,e_o)$ involves a common starting point and repeated nodes. It also includes an ordered sequence of internal customers: $H_o$ for trucks, and $J_o$ for robots. The internal customers are distinct and do not overlap with each other. Additionally, $|J_o|\le p$ is also involved. When the robot is empty, it travels along with the vehicle. The set of operations $O$ includes all valid such operations, and is not limited to those explicitly listed in the algorithm. Let $P^T_o=(s_o,H_o,e_o)$ and $P^R_o=(s_o,J_o,e_o)$ be…
+\[
+ T_o=\sum_{(a,b)\in P^T_o}d^T_{ab}
+       +t_s(|H_o|+\mathbf1_{\{e_o\ne v_0\}}),\qquad
+ R_o=\begin{cases}
+ \sum_{(a,b)\in P^R_o}d^R_{ab}+|J_o|t_s+t_l+t_u,&J_o\ne\varnothing,\\
+ 0,&J_o=\varnothing,
+ \end{cases}\quad c_o=\max(T_o,R_o).
+\]
+The summation here is performed based on the adjacent arcs along the path. At the end point, customer services are recorded in the previous operation, to avoid duplicate billing due to consecutive operations. The absence of services in the warehouse represents a data boundary.
+
+\subsection*{Decisions and constraints}
+$x_o$ represents the selection operation, while $y_v$ indicates a common node serving as the boundary of operations. $O(v)$ includes the operation that accesses $v$; $O^-(v)$ starts from $v$, and $O^+(v)$ ends at $v$. $O^+(S)$ is the operation that transitions from $V\setminus S$ to $S$.
+\begin{align*}
+\min\quad &\sum_{o\in O}c_ox_o\\
+\text{s.t.}\quad
+&\sum_{o\in O(v)}x_o\ge1 &&v\in V,\\
+&\sum_{o\in O^-(v)}x_o\le y_v &&v\in V,\\
+&\sum_{o\in O^-(v)}x_o=\sum_{o\in O^+(v)}x_o &&v\in V,\\
+&\sum_{o\in O^+(S)}x_o\ge y_v
+ &&\varnothing\ne S\subseteq V\setminus\{v_0\},\ v\in S,\\
+&\sum_{o\in O^+(v_0)}x_o\ge1,\qquad y_{v_0}=1,\\
+&x_o,y_v\in\{0,1\}.
+\end{align*}
+Coverage for old version 02: $\le1$, connectivity at the right endpoint: $\sum_{v\in S}y_v$, along with several equal signs. This does not match the original text. Therefore, corrections are necessary based on the original text. The client was involved in the process only once, so the requirement of “at least one coverage” is also satisfied.
+
+\subsection*{Algorithms and certificates}
+The code first builds a closed truck route through all customers, then applies 2-opt and dynamic programming over local operations. The search spans at most 7 route positions and uses nearest-neighbor ordering for long robot sequences. These search rules generate candidate operation sequences. The delivered sequence is a single closed chain with no repeated operation-boundary nodes, so it satisfies all connectivity cuts without enumerating exponentially many sets. Customer coverage, capacity, costs, and endpoint continuity are checked separately. Each instance has a budget of 3600 seconds; a feasible upper bound is returned, without any proof of optimality being provided.
+\end{document}

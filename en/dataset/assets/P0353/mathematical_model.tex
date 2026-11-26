@@ -1,0 +1,116 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,geometry}
+\geometry{margin=22mm}
+\begin{document}
+
+\section*{P353: deterministic multimode railway freight model}
+This is the complete currently executed model M0 for one supplied demand
+scenario, with explicit OD and deadline eligibility repairs. It is a mixed
+integer quadratically constrained problem: products
+$\alpha\eta$ and $\delta\theta$ are retained exactly and handled by global
+nonconvex optimization. Each demand scenario has its own decisions and is solved independently.
+
+\paragraph{Sets and fixed parameters.}
+$Y$ is the OD-pair set, $R$ the freight-class set and $K$ the train set.
+$K_y^1,K_y^2,K_y^3$ are the compatible piggyback, reserved-coach and
+dedicated-freight trains for $y$. Each current train belongs to its specified
+OD. $O,D,N$ are separate origin-role, destination-role and intermediate
+station sets; $I=O\cup D\cup N$. Different roles at one physical station
+have explicit distance/time mappings in the input.
+All $p,q,a,u^1,u^2,u_3,u_4,w,l,c_1,c_2,c_3,c_4,c_5,c_6,
+d_1,d_2,t_1,t_2,t_3,t_4,t_5,t_6,t_7,M$ are supplied numerical parameters,
+with exactly the indices in the following formulas.
+In particular $c_1,c_6,t_5$ are scalars, $a_{yi}$ is OD endpoint incidence,
+$l_{kr}$ is a fixed feasibility flag for a fixed train's scheduled arrival,
+$t_1^r$ is freight availability and $t_7^r$ its deadline.
+The source-style positive domains are deliberate: $\beta_k\in\{1,2,3\}$
+and $\iota\in\mathbb Z_{\ge1}$, with the stated positive-integer domains.
+Dedicated-train path variables obey the stated rows for both used and unused paths.
+\subsection*{Decision Variables}
+\[
+\begin{aligned}
+& \alpha_{ykr} && \text{quantity of freights of type $r$ transported by high-speed train $k$ of OD pair $y$.} \\
+& \beta_{k} && \text{quantity of reserved coaches for reserved-coach train $k$, $k \in K^2_y$.} \\
+& \gamma_{k} && \text{binary; equals one if freight train $k$ is arranged for express delivery, otherwise zero, $k \in K^3_y$.} \\
+& \delta_{ykr} && \text{binary; equals one if freights of type $r$ are transported by high-speed train $k$ of OD pair $y$, otherwise zero.} \\
+& \zeta_{ykri} && \text{binary; equals one if OD pair $y$'s freight train $k$, which transports freights of type $r$, passes through station $i$, otherwise zero, $k \in K^3_y$.} \\
+& \eta_{ykrii'} && \text{binary; equals one if OD pair $y$'s freight train $k$, which transports freights of type $r$, passes through station $i'$ after passing through station $i$, otherwise zero, $k \in K^3_y$.} \\
+& \theta_{k} && \text{departure time of freight train $k$, $k \in K^3_y$.} \\
+& \iota_{ykri} && \text{sequence number of station $i$, through which OD pair $y$'s freight train $k$ passes, $k \in K^3_y$; the train transports freights of type $r$.}
+\end{aligned}
+\]
+
+\subsection*{Objective Function}
+\[
+\begin{aligned}
+\text{Maximize} \quad & \sum_{y \in Y} \sum_{k \in K} \sum_{r \in R} p_r \alpha_{ykr} \\
+& - \sum_{y \in Y} \sum_{k \in K} \sum_{r \in R} 2c_1 \alpha_{ykr} \\
+& - \sum_{y \in Y} \sum_{k \in K^2_y} \sum_{r \in R} c_2^k d_1^k \alpha_{ykr} \\
+& - \sum_{y \in Y} \sum_{k \in K^2_y} c_3 \beta_k \\
+& - \sum_{y \in Y} \sum_{k \in K^3_y} \sum_{r \in R} \sum_{i \in N \cup O} \sum_{i' \in N \cup D} c_2^k d_2^{ii'} \alpha_{ykr} \eta_{ykrii'} \\
+& - \sum_{y \in Y} \sum_{k \in K^3_y} c_4^k \gamma_k \\
+& - \sum_{y \in Y} \sum_{r \in R} c_5^r \left( q_{yr} - \sum_{k \in K} \alpha_{ykr} \right) \\
+& - \sum_{y \in Y} \sum_{k \in K^1_y \cup K^2_y} \sum_{r \in R} c_6 \delta_{ykr} (t_2^k - t_1^r) \\
+& - \sum_{y \in Y} \sum_{k \in K^3_y} \sum_{r \in R} c_6 \delta_{ykr} (\theta_k - t_1^r)
+\end{aligned}
+\]
+
+\subsection*{Constraints}
+\[
+\begin{aligned}
+& \sum_{k \in K} \alpha_{ykr} \leq q_{yr} && \forall y \in Y, r \in R && (2) \\
+& \alpha_{ykr} \leq M \delta_{ykr} && \forall y \in Y, k \in K, r \in R && (3) \\
+& \sum_{y \in Y} \sum_{k \in K} \sum_{r \in R} a_{yi} \alpha_{ykr} \leq u_i^1 && \forall i \in O \cup D && (4) \\
+& \sum_{r \in R} \alpha_{ykr} \leq u_k^2 && \forall y \in Y, k \in K^1_y \cup K^3_y && (5) \\
+& \sum_{r \in R} a_{yi} \alpha_{ykr} \leq t_{ki}^3 w_i && \forall y \in Y, k \in K^1_y \cup K^2_y, i \in O \cup D && (6) \\
+& \delta_{ykr} (t_1^r - t_2^k) \leq 0 && \forall y \in Y, k \in K^1_y \cup K^2_y, r \in R && (7) \\
+& (t_2^k + t_4^k + 2 t_5 \alpha_{ykr}) l_{kr} \leq t_7^r && \forall y \in Y, k \in K^1_y \cup K^2_y, r \in R && (8) \\
+& \delta_{ykr} \leq \beta_k && \forall y \in Y, k \in K^2_y, r \in R && (9) \\
+& \beta_k \leq 3 && \forall y \in Y, k \in K^2_y && (10) \\
+& \sum_{r \in R} \alpha_{ykr} \leq u_3 \beta_k && \forall y \in Y, k \in K^2_y && (11) \\
+& \delta_{ykr} \leq \gamma_k && \forall y \in Y, k \in K^3_y, r \in R && (12) \\
+& \delta_{ykr} (t_1^r - \theta_k) \leq 0 && \forall y \in Y, k \in K^3_y, r \in R && (13) \\
+& \sum_{i' \in N} \eta_{ykrii'} = a_{yi} && \forall y \in Y, k \in K^3_y, r \in R, i \in O && (14) \\
+& \sum_{i \in N} \eta_{ykrii'} = a_{yi'} && \forall y \in Y, k \in K^3_y, r \in R, i' \in D && (15) \\
+& \sum_{i' \in N \cup O} \eta_{ykri'i} = \zeta_{ykri} && \forall y \in Y, k \in K^3_y, r \in R, i \in N && (16) \\
+& \sum_{i' \in N \cup D} \eta_{ykrii'} = \zeta_{ykri} && \forall y \in Y, k \in K^3_y, r \in R, i \in N && (17) \\
+& \iota_{ykri} - M (1 - \eta_{ykrii'}) + 1 \leq \iota_{ykri'} && \forall y \in Y, k \in K^3_y, r \in R, i, i' \in N && (18) \\
+& \theta_k + \sum_{i \in N \cup O} \sum_{i' \in N \cup D} t_6^{ii'} \eta_{ykrii'} + 2 t_5 \alpha_{ykr} \leq t_7^r && \forall y \in Y, k \in K^3_y, r \in R && (19) \\
+& \sum_{y \in Y} \sum_{k \in K^3_y} \sum_{r \in R} \alpha_{ykr} \eta_{ykrii'} \leq u_4^{ii'} && \forall i, i' \in I && (20) \\
+& \alpha_{ykr} \geq 0 && \forall y \in Y, k \in K, r \in R && (21) \\
+& \beta_k \in \mathbb{N}^+ && \forall y \in Y, k \in K^2_y && (22) \\
+& \delta_{ykr} \in \{0, 1\} && \forall y \in Y, k \in K, r \in R && (23) \\
+& \gamma_k, \zeta_{ykri}, \eta_{ykrii'} \in \{0, 1\} && \forall y \in Y, k \in K^3_y, r \in R, i, i' \in I && (24) \\
+& \theta_k \geq 0 && \forall y \in Y, k \in K^3_y && (25) \\
+& \iota_{ykri} \in \mathbb{N}^+ && \forall y \in Y, k \in K^3_y, r \in R, i \in I && (26)
+\end{aligned}
+\]
+
+
+\subsection*{Explicit eligibility repairs}
+In addition to every displayed objective term, constraint and domain above,
+impose
+\[
+\alpha_{ykr}=\delta_{ykr}=0
+\quad(k\notin K_y^1\cup K_y^2\cup K_y^3),
+\]
+\[
+\alpha_{ykr}=\delta_{ykr}=0
+\quad(k\in K_y^1\cup K_y^2,\ l_{kr}=0).
+\]
+In the current completed inputs,
+$l_{kr}=0$ exactly when $t_2^k+t_4^k>t_7^r$.
+These are repairs to omissions in the extracted model, supported by the
+source's OD train definitions and deadline requirements (pp.7--8);
+the repaired index definitions are used throughout.
+All original rows (2)--(26) are retained, including row (8)'s fixed $l_{kr}$.
+
+\paragraph{Implementation and evidence.}
+Current code lines 23--49 implement input axes, domains and all objective
+terms; lines 50--76 implement (2)--(26), and lines 77--84 implement the two
+repairs. It evaluates all instantiated linear and quadratic constraints,
+all variable domains and the objective independently at the returned point.
+ Each recorded
+scenario has its own objective and result; a weighted summary aggregates these scenario-specific results.
+
+\end{document}

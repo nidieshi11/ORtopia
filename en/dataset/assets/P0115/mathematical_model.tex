@@ -1,0 +1,68 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,geometry}
+\geometry{margin=22mm}
+\begin{document}
+
+\section*{P115: completed finite-horizon ridesharing MDP}
+The model is a finite-horizon tabular MDP with the transition kernel and reward table supplied by the instance. 
+
+\paragraph{Data and domains.}
+There are three regions and 180 vehicles in the completed scenario.
+$H=12$ hourly decision stages are $t=0,\ldots,11$; thus the original inclusive
+terminal reward index is $T=H-1=11$.
+The nonterminal states are $s=(t,u,v)$ with $u,v\in\{0,1,2\}$,
+the demand and vehicle-availability regimes. Each state's request, vacant,
+occupied and previous-demand quantities are explicitly stored in
+\texttt{model\_data.states}. Add one absorbing terminal state $\dagger$.
+There are $108+1=109$ states.
+The action sets contain all regional price/wage combinations
+\[
+\mathcal A=\{2.4,2.8,3.3\}^{3}\times\{1.3,1.65\}^{3},
+\qquad |\mathcal A|=216.
+\]
+The action list order is the index used by each state's transition table.
+Let $r_{sa}$ be the table's expected net revenue, and let $P_{sas'}$
+be its next-state probability. The table also records expected served counts
+for reporting.
+The reward table is the completed income-minus-wage reward, with finite
+availability and heterogeneous demand/trip inputs recorded in its generator.
+$P_{sas'}\ge0$ and $\sum_{s'}P_{sas'}=1$.
+Every nonterminal transition advances the clock by one, and all transitions
+from $t=11$ end at $\dagger$. All these entries are fixed input data.
+Initial distribution $\mu$ is explicitly supplied on the nine $t=0$ states,
+$\mu\ge0$, $\sum_s\mu_s=1$; $\gamma=0.97$.
+
+\paragraph{Policy optimization.}
+Choose one distribution $\pi(\cdot\mid s)$ for each clock-augmented state:
+\[
+\pi(a\mid s)\ge0,\qquad \sum_{a\in\mathcal A}\pi(a\mid s)=1.
+\]
+With $V^\pi_\dagger=0$, impose all Bellman equalities
+\[
+V^\pi_s=\sum_a\pi(a\mid s)
+ \left(r_{sa}+\gamma\sum_{s'}P_{sas'}V^\pi_{s'}\right)
+ \quad(s\ne\dagger),
+\qquad
+\max_\pi J=\sum_s\mu_sV^\pi_s.
+\]
+Equivalently,
+$J=E_\pi[\sum_{t=0}^{11}\gamma^t r_{s_ta_t}]$.
+Clock augmentation makes a stationary table $\pi(a\mid s)$ capable of
+representing every admissible nonstationary policy in the original
+finite-horizon state description.
+
+\paragraph{Exact solution and verification.}
+Reverse-time dynamic programming computes
+\[
+V^*_\dagger=0,\qquad
+V^*_s=\max_a\{r_{sa}+\gamma\sum_{s'}P_{sas'}V^*_{s'}\},
+\qquad \pi^*_s\in\arg\max_a(\cdot).
+\]
+A deterministic maximizing action exists because each action set is finite.
+The implementation separately propagates $\mu$ forward under that policy,
+recomputes the discounted objective and tests every alternative action's
+Bellman inequality. Transition normalization and terminal probability are
+also checked. The recorded value is an exact finite-table optimum up to
+floating-point roundoff for the stated finite tabular model.
+
+\end{document}

@@ -1,0 +1,207 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\title{Core Mathematical Model}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Cloud Server Deployment Under Demand Uncertainty}
+
+Source: Section 3.2, PDF pp.10--14, (1)--(18), and Section 5.2, PDF p.23.
+This is one finite-scenario, CVaR version of the complete two-stage cloud
+server deployment model. It retains both stages as one coupled problem.
+
+\paragraph{Sets and data.}
+$\mathcal L$ denotes data centers, $\mathcal S$ suppliers,
+$\mathcal D^1$ known cluster requests, and $\mathcal D^2_\omega$ the newly
+revealed requests in scenario $\omega\in\Omega$. The scenarios are equally
+weighted, as in the source's sampled formulation and the retained input.
+$\mathcal T=\{0,\ldots,T\}$, $\mathcal T_1=\{0,\ldots,T_1\}$ and
+$\mathcal T_2=\{T_1+1,\ldots,T\}$. A row ordered now becomes available only
+in $\mathcal T_2$. $\mathcal L(d),\mathcal S(d)$ and their scenario-indexed
+versions are compatible data centers and suppliers. $\mathcal H$ contains
+pairs $(p,t)$, where $p\subseteq\mathcal L$ is a possibly overlapping
+hierarchical throughput group. $c_{d,t},u_d,h_{d,s}$ are nonnegative
+early/late docking, unfulfilled-demand and shipping costs; superscript
+$\omega$ denotes the scenario data. $b_\ell$ is the row-building cost,
+$\zeta_\ell$ total row capacity, and $\rho_{\ell,1},\sigma_{s,1},
+\delta_{p,t,1}$ are initial free rows, supplier inventory and throughput.
+The capacity data are nonnegative integers. Incompatible variables are
+absent and count as zero in sums.
+
+\paragraph{Variables.}
+$x_\ell$ is the number of new rows. Binary
+$z_{d,\ell,t}$ docks a cluster request and $w_{d,s}$ selects its supplier.
+The second-stage counterparts carry superscript $\omega$. Residual
+resources $\rho_2,\sigma_2,\delta_2$ are shared by all scenarios and cannot
+anticipate their realizations. $q_\omega$ is the full nonnegative scenario
+cost. $\eta\in\mathbb R$, $e_\omega\ge0$, and $\theta\in\mathbb R$ define
+CVaR at confidence level $\alpha\in[0,1)$. The paper's tail-mass notation
+is $1-\alpha$.
+
+\paragraph{Single deterministic equivalent.}
+\begin{equation}
+\min
+\sum_{d\in \mathcal{D}^1}
+\left[
+\sum_{\ell\in \mathcal{L}(d)} \sum_{t\in \mathcal{T}} c_{d,t} z_{d,\ell,t}
++ u_d \left(1 - \sum_{\ell\in \mathcal{L}(d)} \sum_{t\in \mathcal{T}} z_{d,\ell,t}\right)
++ \sum_{s\in \mathcal{S}(d)} h_{d,s} w_{d,s}
+\right]
++ \sum_{\ell\in \mathcal{L}} b_\ell x_\ell
++ \theta
+\tag{1}
+\end{equation}
+
+\begin{equation}
+\sum_{\ell\in \mathcal{L}(d)} \sum_{t\in \mathcal{T}} z_{d,\ell,t} \le 1,
+\qquad \forall d \in \mathcal{D}^1
+\tag{2}
+\end{equation}
+
+\begin{equation}
+\sum_{\ell\in \mathcal{L}(d)} \sum_{t\in \mathcal{T}} z_{d,\ell,t}
+=
+\sum_{s\in \mathcal{S}(d)} w_{d,s},
+\qquad \forall d \in \mathcal{D}^1
+\tag{3}
+\end{equation}
+
+\begin{equation}
+\delta_{p,t,1}
+\ge
+\sum_{d\in \mathcal{D}^1} \sum_{\ell\in p \cap \mathcal{L}(d)} z_{d,\ell,t},
+\qquad \forall (p,t) \in \mathcal{H}:\ t \in \mathcal{T}_1
+\tag{4}
+\end{equation}
+
+\begin{equation}
+\delta_{p,t,2}
+=
+\delta_{p,t,1}
+- \sum_{d\in \mathcal{D}^1} \sum_{\ell\in p \cap \mathcal{L}(d)} z_{d,\ell,t},
+\qquad \forall (p,t) \in \mathcal{H}:\ t \in \mathcal{T}_2
+\tag{5}
+\end{equation}
+
+\begin{equation}
+\rho_{\ell,1}
+\ge
+\sum_{d\in \mathcal{D}^1:\ell\in \mathcal{L}(d)} \sum_{t\in \mathcal{T}_1} z_{d,\ell,t},
+\qquad \forall \ell \in \mathcal{L}
+\tag{6}
+\end{equation}
+
+\begin{equation}
+\rho_{\ell,2}
+=
+\rho_{\ell,1} + x_\ell
+- \sum_{d\in \mathcal{D}^1:\ell\in \mathcal{L}(d)} \sum_{t\in \mathcal{T}} z_{d,\ell,t},
+\qquad \forall \ell \in \mathcal{L}
+\tag{7}
+\end{equation}
+
+\begin{equation}
+\zeta_\ell \ge \rho_{\ell,1} + x_\ell,
+\qquad \forall \ell \in \mathcal{L}
+\tag{8}
+\end{equation}
+
+\begin{equation}
+\sigma_{s,2}
+=
+\sigma_{s,1} - \sum_{d\in \mathcal{D}^1:s\in\mathcal S(d)} w_{d,s},
+\qquad \forall s \in \mathcal{S}
+\tag{9}
+\end{equation}
+
+\begin{equation}
+\rho_{\ell,2},\ \delta_{p,t,2},\ \sigma_{s,2} \ge 0
+\tag{10}
+\end{equation}
+
+\begin{equation}
+z_{d,\ell,t},\ w_{d,s} \in \{0,1\},
+\qquad
+x_\ell \in \mathbb{Z}_+
+\tag{11}
+\end{equation}
+
+\begin{equation}
+q_\omega
+=
+\sum_{d\in \mathcal{D}^2_\omega}
+\left[
+\sum_{\ell\in \mathcal{L}_\omega(d)} \sum_{t\in \mathcal{T}_2} c^\omega_{d,t} z^\omega_{d,\ell,t}
++ u^\omega_d \left(1 - \sum_{\ell\in \mathcal{L}_\omega(d)} \sum_{t\in \mathcal{T}_2} z^\omega_{d,\ell,t}\right)
++ \sum_{s\in \mathcal{S}_\omega(d)} h^\omega_{d,s} w^\omega_{d,s}
+\right],
+\qquad \forall \omega \in \Omega
+\tag{12}
+\end{equation}
+
+\begin{equation}
+q_\omega \ge 0,
+\qquad \forall \omega \in \Omega
+\tag{12a}
+\end{equation}
+
+\begin{equation}
+\sum_{\ell\in \mathcal{L}_\omega(d)} \sum_{t\in \mathcal{T}_2} z^\omega_{d,\ell,t} \le 1,
+\qquad \forall d \in \mathcal{D}^2_\omega,\ \forall \omega \in \Omega
+\tag{13}
+\end{equation}
+
+\begin{equation}
+\sum_{\ell\in \mathcal{L}_\omega(d)} \sum_{t\in \mathcal{T}_2} z^\omega_{d,\ell,t}
+=
+\sum_{s\in \mathcal{S}_\omega(d)} w^\omega_{d,s},
+\qquad \forall d \in \mathcal{D}^2_\omega,\ \forall \omega \in \Omega
+\tag{14}
+\end{equation}
+
+\begin{equation}
+\delta_{p,t,2}
+\ge
+\sum_{d\in \mathcal{D}^2_\omega} \sum_{\ell\in p \cap \mathcal{L}_\omega(d)} z^\omega_{d,\ell,t},
+\qquad \forall (p,t) \in \mathcal{H}:\ t \in \mathcal{T}_2,\ \forall \omega \in \Omega
+\tag{15}
+\end{equation}
+
+\begin{equation}
+\rho_{\ell,2}
+\ge
+\sum_{d\in \mathcal{D}^2_\omega:\ell\in \mathcal{L}_\omega(d)} \sum_{t\in \mathcal{T}_2} z^\omega_{d,\ell,t},
+\qquad \forall \ell \in \mathcal{L},\ \forall \omega \in \Omega
+\tag{16}
+\end{equation}
+
+\begin{equation}
+\sigma_{s,2}
+\ge
+\sum_{d\in \mathcal{D}^2_\omega:\ s\in \mathcal{S}_\omega(d)} w^\omega_{d,s},
+\qquad \forall s \in \mathcal{S},\ \forall \omega \in \Omega
+\tag{17}
+\end{equation}
+
+\begin{equation}
+z^\omega_{d,\ell,t},\ w^\omega_{d,s} \in \{0,1\},
+\qquad \forall d,\ell,t,s,\omega
+\tag{18}
+\end{equation}
+
+
+\begin{align}
+\theta&=\eta+\frac{1}{(1-\alpha)|\Omega|}\sum_{\omega\in\Omega}e_\omega,\tag{19}\\
+e_\omega&\ge q_\omega-\eta,\quad e_\omega\ge0 &&\omega\in\Omega,\tag{20}\\
+\eta,\theta&\in\mathbb R.\tag{21}
+\end{align}
+The first-stage objective (1) is minimized once, jointly over all these
+variables and constraints.  The full
+missed-demand constants are retained in every scenario cost.
+\end{document}

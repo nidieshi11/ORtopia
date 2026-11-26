@@ -1,0 +1,70 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,mathtools,geometry}
+\geometry{a4paper,margin=20mm}\allowdisplaybreaks
+\emergencystretch=4em
+\begin{document}
+\section*{Path planning and charging model for heterogeneous electric vehicles with minimal energy consumption}
+
+\paragraph{Source} Pages 5–8 of the PDF document, sections 2.1–2.2. Energy consumption formulas (1), constraints (3)–(21). The expressions from (5) to (8) should be written as recursive formulas that only take effect when certain arcs are selected. This prevents unselected arcs from being forced to have a value of zero.
+\subsection*{Enter and access the replica.}
+$W$ represents heterogeneous fleets, $V$ represents customers who require guaranteed service, while $D$ represents routes that involve detours to charging stations. Separate start and end locations are used in $o,e$; sufficient copies of the charging stations and storage facilities are provided for multiple visits. These should be distinguished from the destination charging stations, which require a maximum of one visit per customer. The set of copies is denoted as $F$. $A$ represents all self-looping arcs allowed on $\{o\}\cup V\cup F\cup\{e\}$. These arcs neither enter $o$ nor leave $e$. The fleet can use the empty route $(o,e)$, which has zero time/distance/energy consumption. The number of copies must cover all possible visits within the specified time range. If there is a limit on the number of copies, then this model only considers instances within that limit.
+
+The mapping from a time to its travel period is $H(t)$. The travel time, estimated energy consumption, and distance in period $h$ are given by $\tau_{hij},e_{hij},d_{hij}$, respectively. $\tau_i^s,q_i$ gives service time and customer demand, both zero at non-customer nodes. For vehicle $v$, the departure time $\underline T^v$, depot return deadline $\overline T^v$, post-return charging deadline $\overline T_c^v$, battery bounds $\underline B^v,\overline B^v$, initial and terminal battery levels $B_{\rm ini}^v,B_{\rm ter}^v$, payload limit $\overline Q^v$, and charging power $P_c^v$ are given. The charging power at a node is $P_n^i$, with effective power $p_i^v=\min(P_c^v,P_n^i)$. Charging time is undefined at nodes without charging, where $C_i^v=E_i^v=0$ is enforced. $\tau_f$ is the charging setup time. There is no queueing, and all times use a common time coordinate.
+\subsection*{Variables}
+$x_{ij}^v,C_i^v\in\{0,1\}$ Used for selecting arcs and initiating charging processes. $T_i^v,B_i^v,D_i^v,Q_i^v$ Displays information regarding arrival time, battery status, total distance traveled, and total number of tasks completed. $E_i^v\ge0$ Used for replenishing battery power. $b_{ij}^v\ge0$ Used for tracking power consumption during driving. $a_i^v=\sum_jx_{ij}^v$ Used as a pointer to related functions. The status of the vehicle when it’s empty is the same as when it’s loaded with cargo.
+\subsection*{Complete core model}
+\[
+\min\ J_E=\sum_{v\in W}\left(B_o^v-B_e^v+
+ \sum_{i\in\{o\}\cup V\cup F}E_i^v\right).\tag{1}
+\]
+\begin{align}
+\sum_{v\in W,j:(i,j)\in A}x_{ij}^v&=1 &&i\in V,\\
+\sum_{j:(o,j)\in A}x_{oj}^v&=1,\quad \sum_{i:(i,e)\in A}x_{ie}^v=1 &&v\in W,\\
+\sum_{j:(i,j)\in A}x_{ij}^v&=\sum_{j:(j,i)\in A}x_{ji}^v\le1
+&&v\in W,\ i\in V\cup F,\\
+C_i^v&\le a_i^v,\qquad E_i^v\ge0 &&v\in W,\ i\ne e.
+\end{align}
+For each selected arc $(i,j)$, the following conditional constraints are applied (no constraints for unselected arcs):
+\begin{align}
+x_{ij}^v=1&\ \Longrightarrow\
+T_j^v=T_i^v+\tau_i^s+\tau_{H(T_i^v),ij}+E_i^v/p_i^v+\tau_f C_i^v,\tag{5}\\
+x_{ij}^v=1&\ \Longrightarrow\ B_j^v=B_i^v-b_{ij}^v+E_i^v,\tag{6}\\
+x_{ij}^v=1&\ \Longrightarrow\ D_j^v=D_i^v+d_{H(T_i^v),ij},\tag{7}\\
+x_{ij}^v=1&\ \Longrightarrow\ Q_j^v=Q_i^v+q_i,\tag{8}\\
+x_{ij}^v=1&\ \Longrightarrow\ b_{ij}^v\ge e_{H(T_i^v),ij},
+\qquad x_{ij}^v=0\Longrightarrow b_{ij}^v=0.\tag{9}
+\end{align}
+The $E_i^v/p_i^v$ item on non-rechargeable nodes is defined as zero; therefore, $0/0$ is not calculated. The time required to complete the entire journey, without any charging steps, as well as the predicted power consumption, are also not calculated.
+\[
+A_v=\sum_{(k,j)\in A}x_{kj}^v(\tau_k^s+\tau_{H(T_k^v),kj}),\qquad
+L_v=\sum_{(k,j)\in A}x_{kj}^v e_{H(T_k^v),kj}.
+\]
+For each rechargeable node $i\ne e$:
+\begin{align}
+0\le E_i^v&\le C_i^vp_i^v
+\left[\overline T^v-\underline T^v-A_v
+-\sum_{q\ne i,\ q\ne e}\left(\tau_f C_q^v+E_q^v/p_q^v\right)\right],\tag{10}\\
+E_i^v&\le C_i^v(\overline B^v-B_i^v),\tag{11}\\
+E_i^v&\le C_i^v\max\left\{0,\max(\underline B^v,B_{\rm ter}^v)
+-B_{\rm ini}^v+L_v-\sum_{q\ne i,\ q\ne e}E_q^v\right\}.\tag{12}
+\end{align}
+Equation (10) is expressed in terms of the total duration of the process. This means that the time origin of the original equation is shifted to the moment of departure. Equation (5), on the other hand, is still considered as part of the charging preparation time.
+\begin{align}
+T_o^v&=\underline T^v,\quad B_o^v=B_{\rm ini}^v,\quad Q_o^v=D_o^v=0,\tag{13--16}\\
+T_e^v&\le\overline T^v,\tag{17}\\
+B_{\rm ter}^v-B_e^v&\le
+\min(P_c^v,P_n^{\rm depot})(\overline T_c^v-T_e^v),\tag{18}\\
+\underline B^v\le B_i^v&\le\overline B^v,\qquad
+0\le Q_i^v\le\overline Q^v,\quad D_i^v\ge0,\quad T_i^v\ge0,\tag{19--20}\\
+x_{ij}^v,C_i^v&\in\{0,1\}.\tag{21}
+\end{align}
+All non-empty routes must be connected from $o$ to $e$. Connectivity cuts can be explicitly applied here.
+\[
+\sum_{i\in U,j\notin U:(i,j)\in A}x_{ij}^v\ge a_k^v
+\quad(\varnothing\ne U\subseteq V\cup F,\ k\in U,\ v\in W).
+\]
+The above-mentioned relationship defines a closed journey that starts from the warehouse and returns to the warehouse.
+\paragraph{Transcription and clarification}
+(17) The printout reads "by the latest arrival time"; this should be interpreted as a deadline inequality. (4) The cross-vehicle aggregated flow is calculated per vehicle to ensure that each vehicle path is considered; all these modifications are based on the physical routes defined in §2.1. The goal of energy conservation should not be replaced by the shortest time objective.
+
+\end{document}

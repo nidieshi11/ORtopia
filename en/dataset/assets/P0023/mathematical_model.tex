@@ -1,0 +1,124 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\allowdisplaybreaks
+
+\geometry{a4paper, margin=1in}
+
+\title{Core Solvable Mathematical Model}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+This file retains a single-duration mixed-integer linear variant for the Robust Appointment Scheduling Problem with Waiting Time Guarantees and \(k\) show-ups. The single-duration structure is given in Appendix B. The max-recursion from the PDF is written here in an equivalent big-\(M\) linearized form so that the retained model is directly solvable as an MILP, with \(M\) understood as a valid upper bound large enough to preserve equivalence without being unnecessarily loose.
+
+
+\section*{Index and input conventions (reconciled 2026-10-23)}
+For an integer $r$, $[r]=\{1,\ldots,r\}$, with $[0]=\varnothing$;
+all reversed summation ranges are empty. Inputs satisfy $n\ge1$, $0\le k\le n$,
+$L\ge0$, $M>0$, $c_i,c_o,\bar p_j,W_j\ge0$.
+The retained finite-$M$ model uses the single supplied service-duration vector
+$\bar p$ in all its expressions; the duration input is the supplied vector $\bar p$.
+The finite threshold $1/M$ in the breakpoint constraints is retained explicitly.
+For early labels, zero attendance applies to positions before the label. This corrects the inconsistent range printed in Appendix
+B (66), using its explanation on PDF page 47.
+Breakpoint variables are defined for real planned positions $i\in[n]$ and
+breakpoints $l\in[n+1]$. The extraneous reference to $i=n+1$ is removed;
+it has no other links and can equivalently be extended by zero.
+All other comparison inequalities and their signs are retained as written.
+
+\section{General RASWTG MILP}
+
+\begin{equation}
+\min \quad U
+\tag{58}
+\end{equation}
+
+\begin{align*}
+\text{s.t.}\quad
+& U \ge \sum_{i=2}^{i^*} c_i \Delta_{i^* i} + c_o \sigma_{i^*}
+&& \forall i^* \in [n+1], \\
+& \Delta_{i^* i} \ge A_i - \bar C_{i^*,i-1}
+&& \forall i^* \in [n+1],\ \forall i \in [n+1], \\
+& \bar C_{i^* i} \ge A_i + \sum_{j=1}^{n} \lambda_{i^* i j}\bar p_j
+&& \forall i^* \in [n+1],\ \forall i \in [n], \\
+& \bar C_{i^* i} \ge \bar C_{i^*,i-1} + \sum_{j=1}^{n} \lambda_{i^* i j}\bar p_j
+&& \forall i^* \in [n+1],\ \forall i \in [n], \\
+& \bar C_{i^* i} \le A_i + \sum_{j=1}^{n} \lambda_{i^* i j}\bar p_j + M z_{i^* i}
+&& \forall i^* \in [n+1],\ \forall i \in [n], \\
+& \bar C_{i^* i} \le \bar C_{i^*,i-1} + \sum_{j=1}^{n} \lambda_{i^* i j}\bar p_j + M(1-z_{i^* i})
+&& \forall i^* \in [n+1],\ \forall i \in [n], \\
+& \sigma_{i^*} \ge A_{i^*} + \sum_{k=i^*}^{n} \sum_{j=1}^{n} \lambda_{i^* k j}\bar p_j - L
+&& \forall i^* \in [n], \\
+& \lambda_{i^* i j} \le \pi_{ij}
+&& \forall i^* \in [n+1],\ \forall i,j \in [n], \\
+& \sum_{i=1}^{n} \sum_{j=1}^{n} \lambda_{i^* i j} = k
+&& \forall i^* \in [n+1], \\
+& \sum_{j=1}^{n} \lambda_{i^* i j} = 1
+&& \forall i^* \in [n+1-k,n+1],\ \forall i \in [i^*,n], \\
+& \sum_{j=1}^{n} \lambda_{i^* i j} = 0
+&& \forall i^* \in [n-k],\ \forall i \in [i^*-1], \\
+& \sum_{i=1}^{n} \lambda_{i^* i j_2} - \sum_{i=1}^{n} \lambda_{i^* i j_1} \le w_{i^* j_1 j_2}
+&& \forall i^* \in [n+1],\ \forall j_1,j_2 \in [n], \\
+& w_{i^* j_1 j_2} \le 1-\sum_{i=1}^{n} \lambda_{i^* i j_1}
+&& \forall i^* \in [n+1],\ \forall j_1,j_2 \in [n], \\
+& w_{i^* j_1 j_2} \le \sum_{i=1}^{n} \lambda_{i^* i j_2}
+&& \forall i^* \in [n+1],\ \forall j_1,j_2 \in [n], \\
+& \sum_{l=1}^{n+1} c_l \left(\pi^{(c)}_{i^* j_2 l}\bar p_{j_2} - \pi^{(c)}_{i^* j_1 l}\bar p_{j_1}\right)
+\le M(1-w_{i^* j_1 j_2})
+&& \forall i^* \in [n+1-k,n+1],\ \forall j_1,j_2 \in [n], \\
+& \bar p_{j_2} - \bar p_{j_1} \le M(1-w_{i^* j_1 j_2})
+&& \forall i^* \in [n-k],\ \forall j_1,j_2 \in [n], \\
+& \gamma_{i l}^{(i^*)} \le M \Delta_{i^* l}
+&& \forall i^* \in [n+1],\ \forall i \in [n],\ \forall l \in [n], \\
+& \sum_{\alpha=i}^{l-1} \Delta_{i^* \alpha} \le L\left(1-\gamma_{i l}^{(i^*)}\right)
+&& \forall i^* \in [n+1],\ \forall i \in [n],\ \forall l \in [n], \\
+& \sum_{l=1}^{i-1} \gamma_{i l}^{(i^*)} = 0
+&& \forall i^* \in [n+1],\ \forall i \in [n], \\
+& \sum_{l=i}^{n+1} \gamma_{i l}^{(i^*)} = 1
+&& \forall i^* \in [n+1],\ \forall i \in [n], \\
+& -1 + \pi_{ij} + \gamma_{i l}^{(i^*)} \le \pi^{(c)}_{i^* j l}
+&& \forall i^* \in [n+1],\ \forall i,j \in [n],\ \forall l \in [n+1], \\
+& A_l + \sum_{k=l}^{i-1} \sum_{j=1}^{n} \pi_{k j}\bar p_j - A_i
+\le \sum_{j=1}^{n} \pi_{ij} W_j
+&& \forall i \in [n],\ \forall l \in [i-1]: i-l \le k-1, \\
+& A_l + (k-1)\alpha_{i,l} + \sum_{\sigma=l}^{i-1} p_{i l \sigma} - A_i
+\le \sum_{j=1}^{n} \pi_{ij} W_j
+&& \forall i \in [n],\ \forall l \in [i-1]: i-l > k-1, \\
+& \alpha_{i,l} + p_{i l \sigma} \ge \sum_{j=1}^{n} \pi_{\sigma j}\bar p_j
+&& \forall i,l,\sigma \in [n], \\
+& \sum_{j=1}^{n} \pi_{ij} = 1
+&& \forall i \in [n], \\
+& \sum_{i=1}^{n} \pi_{ij} = 1
+&& \forall j \in [n], \\
+& \sum_{l=1}^{n+1} \pi^{(c)}_{i^* j l} = 1
+&& \forall i^* \in [n+1],\ \forall j \in [n], \\
+& A_1 = 0,\quad \bar C_{i^* 0} = 0,\quad A_{n+1} = L
+&& \forall i^* \in [n+1], \\
+& A_i \ge 0
+&& \forall i \in [n+1], \\
+& \bar C_{i^* i} \ge 0
+&& \forall i^* \in [n+1],\ \forall i \in [n], \\
+& \Delta_{i^* i} \ge 0
+&& \forall i^* \in [n+1],\ \forall i \in [n+1], \\
+& \sigma_{i^*} \ge 0
+&& \forall i^* \in [n+1], \\
+& \alpha_{i,l},\ p_{i l \sigma} \ge 0
+&& \forall i,l,\sigma \in [n], \\
+& \pi_{ij} \in \{0,1\}
+&& \forall i,j \in [n], \\
+& \lambda_{i^* i j},\ w_{i^* j_1 j_2} \in \{0,1\}
+&& \forall i^* \in [n+1],\ \forall i,j,j_1,j_2 \in [n], \\
+& \pi^{(c)}_{i^* j l} \in \{0,1\}
+&& \forall i^* \in [n+1],\ \forall j \in [n],\ \forall l \in [n+1], \\
+& \gamma_{i l}^{(i^*)} \in \{0,1\}
+&& \forall i^* \in [n+1],\ \forall i \in [n],\ \forall l \in [n+1], \\
+& z_{i^* i} \in \{0,1\}
+&& \forall i^* \in [n+1],\ \forall i \in [n].
+\end{align*}
+
+\end{document}

@@ -1,0 +1,213 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\section*{Selected bilevel formulation}
+\begin{equation}
+\begin{aligned}
+\min_{(\mathbf X,\mathbf f)}\quad
+\mathrm{PI}(\mathbf X,\mathbf f)
+={}&\sum_{k\in K}(c_kx_k+h_ku_k)\\
+&+v_1\left(\sum_{w\in W}\sum_{p\in P^w}\sum_{n\in N}t_p^wf_p^{w,n}
++\sum_{k\in K}W_k\lambda_k\right)
++v_2\sum_{a\in A}q_a^ge_a^g,\\
+\text{s.t.}\quad&\mathbf X(\mathbf x,\mathbf u,\mathbf y)\in\Omega,\\
+&\mathbf f\in\operatorname*{argmin}\left\{Z(\mathbf f):\mathbf f\in\Theta\right\},\\
+Z(\mathbf f)={}&-\sum_{w\in W}\sum_{n\in N}q^{w,n}
+\mathbb E\left[\min_{p\in P^w}\{t_p^w\}\mid\mathbf t^w(\mathbf f)\right]\\
+&+\sum_{a\in A}q_at_a(q_a)-\sum_{a\in A}\int_0^{q_a}t_a(q_a)\,dq.
+\end{aligned}\tag{23}
+\end{equation}
+This is the formulation on physical PDF page 15 (printed page 13) of Tran, Keyvan-Ekbatani, Ngoduy and Watling, \emph{Stochasticity and environmental cost inclusion for electric vehicles fast-charging facility deployment}, accepted version (2021). The displayed definition of $Z$ is the expression inside the printed argmin, separated here only for layout. In particular, the printed integrand $t_a(q_a)$ and differential $dq$ are retained; the integrand has not been changed to $t_a(q)$.
+
+\section*{Locating feasible space and stochastic range}
+The paper explicitly defines $\Omega$ by the following rows on physical page 13:
+\begin{align}
+u_k&\leq mx_k &&\forall k\in K,\tag{6}\\
+\mathbb G_{s,p}^{w,n}&\leq\alpha+(1-y_p^{w,n})
+&&\forall w\in W,n\in N,p\in P^w,\tag{7}\\
+x_k&=\{0,1\} &&\forall k\in K,\tag{8}\\
+y_p^{w,n}&=\{0,1\} &&\forall w\in W,n\in N,p\in P^w,\tag{9}\\
+u_k&\geq0 &&\forall k\in K.\tag{10}
+\end{align}
+The probability appearing in (7) is defined by
+\begin{equation}
+\mathbb G_{s,p}^{w,n}=\mathbb P\left(D^n\leq l_{s,p}^w\right)
+=G^n(l_{s,p}^w).\tag{3}
+\end{equation}
+Here $\mathbb G_{s,p}^{w,n}$ is a probability, whereas $G^n$ is the distribution function of the random driving range. Under assumption (I), for a given realization $\omega$, the value $D^n(\omega)$ is the same for each sub-path. The supplied assumption states
+\[
+G^n:\Re_+^n\longrightarrow[0,1],\qquad \alpha\in[0,1].
+\]
+The driving range is the maximum distance a vehicle can travel with a full battery. For a given set of charging stations, sub-paths run from the origin to the first charging station, between successive charging stations, and from the last charging station to the destination. The quantity $l_{s,p}^w$ is the length of sub-path $s$ of path $p$ between O-D pair $w$. Physical page 12 describes depletion risk as the probability that driving range is smaller than the longest sub-path length.
+
+The selected stochastic constraint (7) repeats (4), which the authors expressly use to replace the deterministic constraints (1) and (2). Those superseded constraints are not imposed here. The threshold applies to the probability in (3), with the non-strict inequality printed in (7).
+
+\paragraph{Printed scope and inconsistencies.}
+Equations (8) and (9) print equality to $\{0,1\}$, not set membership; these signs have been retained. Although $u_k$ is called the number of chargers, (6)--(10) do not print an integrality restriction for it. Equation (7) has an $s$ subscript but its printed quantifiers cover only $w,n,p$; no missing quantifier is supplied here. The opening paragraph of physical page 13 calls depletion risk the ``smallest probability that the driving range exceeds'' a sub-path length, then calls it the probability of being smaller than the longest sub-path. These event descriptions conflict. The explanation after (10) also describes successful completion, rather than depletion, as having probability at most $\alpha$. The operative probability remains the printed definition (3). The prose calls (6) a limit on the number of stations according to a budget, while its printed row bounds chargers at each node; no budget constraint is added.
+
+\section*{Path-flow feasible space}
+Physical page 15 states that $\Theta$ is defined by flow conservation and the following constraints, with $M$ a large positive number:
+\begin{align}
+f_p^{w,n}&\leq My_p^{w,n}
+&&\forall w\in W,n\in N,p\in P^w,\tag{21}\\
+f_p^{w,n}&\geq0
+&&\forall w\in W,n\in N,p\in P^w.\tag{22}
+\end{align}
+Flow conservation is retained as the authors' stated condition on $\Theta$. No explicit flow-conservation row is displayed in the supplied model pages; an explicit defining row elsewhere is unverified. In particular, no inferred demand-sum equation is substituted for that source reference.
+
+\section*{Demand, route choice and network mappings}
+Under assumption (II), demands of vehicle class $n$ between O-D pairs $w$ follow independent stationary Poisson distributions with constant mean and variance $q^{w,n}>0$. In the notation of that assumption,
+\[
+Q^{w,n}\sim\operatorname{Poisson}(q^{w,n}),\qquad
+\mathbb E[Q^{w,n}]=\operatorname{Var}(Q^{w,n})=q^{w,n}>0.
+\]
+Travellers decide independently between alternative paths $p\in P^w$ with probabilities $\mathbb P_p^{w,n}$ for each $n\in N$ and $w\in W$. Physical page 14 additionally prints
+\[
+Q^w\sim\operatorname{Poisson}(q^w),\qquad
+F_p^{w,n}\sim\operatorname{Poisson}(f_p^{w,n}),\qquad
+\mathbf f=\mathbf f(\mathbf X).
+\]
+The path-flow random variables are stated to be independent. An explicit relation between $q^w$ and $q^{w,n}$ is not provided in the supplied model-bearing passages and is not inferred.
+
+The route-choice probability is defined on physical page 14 by
+\begin{equation}
+\mathbb P_p^{w,n}
+=\mathbb P\left(t_p^w\leq t_l^w,\ \forall l\in P^w,l\ne p
+\mid y_p^{w,n}=1\right).\tag{15}
+\end{equation}
+The associated equilibrium characterization printed immediately before it is
+\begin{equation}
+f_p^{w,n}=q^{w,n}\mathbb P_p^{w,n}\left(\mathbf t^w(f)\right)
+\qquad\forall w\in W,n\in N,p\in P^w.\tag{14}
+\end{equation}
+Equation (14) identifies the stochastic equilibrium that the authors represent by the lower-level equivalent minimization in (23); it is not an additional replacement optimization problem or an extra condition imposed on the argmin. The selected lower level remains (23).
+
+The link-flow mappings are
+\begin{align}
+Q_a&=\sum_{w\in W}\sum_{p\in P^w}\sum_{n\in N}
+\delta_{a,p}^wF_p^{w,n} &&\forall a\in A,\tag{16}\\
+q_a&=\sum_{w\in W}\sum_{p\in P^w}\sum_{n\in N}
+\delta_{a,p}^wf_p^{w,n} &&\forall a\in A.\tag{17}
+\end{align}
+The link-flow random variables $Q_a$ are stated to be marginally Poisson with means $q_a$.
+
+\section*{Travel-time functions}
+The unnumbered polynomial relation and the selected quadratic order on physical page 14 are
+\[
+t_a(q_a)=\sum_{j=0}^{e}b_{ja}q_a^j,\qquad e=2.
+\]
+The authors adopt the BPR function and state that Taylor-series approximation is used to calculate $b_{ja}$. Their displayed travel-time family is
+\begin{align}
+t_a&=t_a^0\left[1+0.15\left(\frac{q_a}{C_a}\right)^4\right]
+&&\forall a\in A,\tag{18}\\
+\hat t_a&=t_a+b_{2a}q_a &&\forall a\in A,\tag{19}\\
+t_p^w&=\sum_{a\in A}\hat t_a\delta_{a,p}^w
+&&\forall p\in P^w.\tag{20}
+\end{align}
+Perceived path travel times are stated to be identical for all vehicle classes, with the mean defined in (20). Table 2 gives
+\[
+\mathbf t^w=(t_p^w)^T.
+\]
+The coefficients $b_{ja}$ remain abstract: the supplied pages do not specify a Taylor expansion point or explicit coefficient formulas. The polynomial approximation and the BPR expression are retained in the roles described by the authors, rather than replacing the fourth power in (18) by a quadratic.
+
+\paragraph{Notation as printed.}
+Table 2 calls $t_p^w$ the mean of the random path travel time $T_p^w$, while (15) and the expectation in (23) use the same lowercase $t_p^w$ inside probability expressions. Those printed symbols are retained. The perception-error distribution is actually specified in Appendix A, final paragraph, physical PDF page 24 (printed page 22), and is included below; it is not an unavailable external definition. The capacity is $c_a$ in Table 2 and $C_a$ in (18); the displayed uppercase symbol is retained without adding an equality between the two notations.
+
+\paragraph{Perception-error distribution from Appendix A.}
+The link perception errors are independent across links and have the same distribution specification for all vehicle classes. Giving the otherwise unnamed link error the auxiliary symbol $\varepsilon_a$, the printed normal law is
+\[
+\varepsilon_a\sim\mathcal N\!\left(0,\bigl(\phi t_a(0)\bigr)^2\right),
+\qquad a\in A,
+\qquad \{\varepsilon_a:a\in A\}\text{ independent}.
+\]
+Here $t_a(0)$ is the zero-flow link travel time and $\phi$ is the perception-error scale. The paper uses $\phi=0.3$ in its numerical tests; that value is not imposed on the general formulation. ``Same for all vehicle classes'' describes the common link-error law; no additional independence between vehicle classes or between overlapping paths is asserted. This law, together with the Poisson-corrected link travel times and the path incidences, supplies the probit perception model named in (14)--(15). The printed use of lowercase path-time symbols in (15) and (23) is not silently corrected by adding a different formula there.
+
+Assumption (III), physical page 10 (printed page 8), states that travellers consider path feasibility and link travel times when choosing a route because charging-station waiting time is assumed insignificant for that choice. Thus station waiting time remains in the upper-level cost, but is not added to the perceived path time in (20).
+
+\section*{Charging congestion}
+The unnumbered functional dependencies in the assumptions and upper-level definition are
+\[
+\lambda=\lambda(\mathbf f),\qquad
+W_k=W_k(u_k,\lambda_k,\mu_k).
+\]
+Arrival rates at charging stations are stated to be inferred from the corresponding SUE flows. Each charger has an independently and identically distributed exponential charging time, denoted $\mu$ in the assumption. For a stationary distribution, the arrival rate is assumed to be strictly smaller than the service rate. This strict premise is retained as stated; it is not weakened to a non-strict comparison or replaced by an invented station-indexed inequality.
+
+The recursive expected-time calculation on physical page 14 is
+\begin{align}
+a_1&=1;\qquad a_i=1+\frac{\mu}{\lambda}(i-1)a_{i-1},\tag{11}\\
+W(u,\lambda,\mu)&=
+\frac{\lambda}{(u\mu-\lambda)^2
+\left[a_u+\dfrac{\lambda}{u\mu-\lambda}\right]}+\frac{1}{\mu}.\tag{12}
+\end{align}
+Here $u$, $\lambda$ and $\mu$ are the station-level arguments of the waiting-time function, and $a_i$ are the recursion quantities, distinct from the link index $a$. No range for $i$ is printed beside (11). The physical-page-13 definition calls $\mu_k$ the station service rate, whereas Table 2 calls it charging (service) time; (11)--(12) and their service-rate usage are retained without introducing a reciprocal redefinition. Table 2 prints lowercase $w_k$ for expected waiting time; the objective and the functional definition print uppercase $W_k$.
+
+\paragraph{Arrival-rate construction from Appendix B.}
+Appendix B, physical PDF pages 24--25 (printed pages 22--23), specifies how EV path flows determine station arrivals. It defines $l$ as the maximum length for which $\mathbb P(D^n\leq l)$ is smaller than $\alpha$. For a path with its installed charging stations, identify the preceding charging locations from which each subsequent charging location or the destination can be reached within this range. Travellers are divided in equal proportions between these feasible preceding recharge choices. Apply the same reasoning backwards along the path, adding all the contributions that require recharging at each station. The aggregate station arrival rate is the sum of its arrival rates from the individual EV paths. Mere passage through a station does not imply recharging there, so the construction is not the sum of all path flows incident on the station.
+
+For precision, the following unnumbered bookkeeping restates the appendix's backward equal-proportion construction; its auxiliary symbols are editorial notation, not additional planning decisions or newly attributed equation numbers. Fix one EV path and class, with path flow $f_p$, and list in path order the origin, the installed charging-station occurrences, and the destination. For each non-origin occurrence $j$, let $B(j)$ be its feasible predecessors: earlier charging occurrences, or the full-battery origin, from which the along-path distance to $j$ is at most the appendix's range $l$. Set the required arrival mass at the destination to $r_d=f_p$, and initialize every earlier mass to zero. Visit the destination and then the charging occurrences in reverse path order. At each occurrence $j$, distribute its accumulated mass by
+\[
+ r_i\ \leftarrow\ r_i+\frac{r_j}{|B(j)|}
+ \qquad \text{for each }i\in B(j).
+\]
+The origin terminates the backward accounting and is not a charging arrival merely because it is the origin. The path's arrival contribution to a charging occurrence $j$ is its accumulated $r_j$. If a node has multiple charging occurrences, their contributions are summed. Applying this construction to each EV class with its own range and flow, then summing over paths, O-D pairs and EV classes, gives $\lambda_k$. This last summation is the appendix's stated aggregation, not an assumption that every EV visiting node $k$ charges there. A feasible charging chain is required for this construction; the paper does not define an arbitrary arrival rate when a required predecessor set is empty.
+
+The printed example has node sequence $1,2,3,4,5,6$, charging stations $2,3,4$, consecutive link lengths $25,30,10,10,25$ km, path flow $f_p=100$ vehicles/hour and $l=50$ km. The destination $6$ can be reached after charging at either $3$ or $4$, in equal proportions. Station $4$ can be reached after charging at either $2$ or $3$, again in equal proportions; station $3$ requires charging at $2$. Accordingly,
+\[
+\lambda_{4,p}=\tfrac12(100)=50,\qquad
+\lambda_{3,p}=\tfrac12(100)+\tfrac12(50)=75,\qquad
+\lambda_{2,p}=75+\tfrac12(50)=100.
+\]
+These are the rates printed in Figure B.11. This example illustrates the general rule; its numerical flow, link lengths and range are not fixed inputs of every instance.
+
+\paragraph{Retained source boundary issues.}
+Appendix B says ``smaller than'' $\alpha$, whereas the operative constraint (7) uses $\leq\alpha$. It also calls $l$ a maximum, without a convention for a nonattained strict-threshold endpoint. Both source statements are recorded; no inverse-CDF endpoint rule is invented to reconcile them. Equations (11)--(12) do not state values at $\lambda=0$ or $u=0$; no limiting-value convention or positive lower bound on $u_k$ is supplied here.
+
+\section*{Gasoline-vehicle emissions}
+The emissions function and its fixed coefficients are
+\begin{equation}
+e_a^g=\rho_1\hat t_a\exp\left(\rho_2\frac{l_a}{\hat t_a}\right).\tag{13}
+\end{equation}
+\[
+\rho_1=11.063927,\qquad \rho_2=0.008493.
+\]
+The quantity $e_a^g$ is the average amount of CO emitted by gasoline vehicles on link $a$. The objective uses their mean link flow $q_a^g$ and the CO unit cost $v_2$. EVs are treated as zero-emission vehicles in this on-road calculation. Table 2 defines $q_a^n$ as mean link flow of vehicle class $n$; a separate class-specific path-to-link summation for $q_a^g$ is not displayed in the supplied model pages. It is not replaced here by an inferred formula or an assumed enumeration of $N$.
+
+\section*{Sets, fixed inputs and variable roles}
+The following are the operative meanings from Table 2 (physical pages 9--10) and the adjoining model text.
+\begin{description}
+\item[Network sets.] $K$ is the set of nodes, with $k\in K$; $A$ is the set of links, with $a\in A$; $W$ is the set of O-D pairs, with $w\in W$; $N$ is the set of vehicle classes, with $n\in N$; $P^w$ is the set of paths between O-D pair $w$, with $p\in P^w$. These symbols denote sets, not their cardinalities. No particular number or enumeration of vehicle classes is imposed.
+\item[Network inputs.] $t_a^0$ is free-flow link travel time; $c_a$ is link capacity in Table 2; $l_a$ is link length; $l_p^w$ is path length; $l_{s,p}^w$ is sub-path length. The incidences are defined by
+\[
+\delta_{k,p}^w=
+\begin{cases}1,&\text{node }k\text{ is on path }p\text{ between pair }w,\\0,&\text{otherwise},\end{cases}
+\qquad
+\delta_{a,p}^w=
+\begin{cases}1,&\text{link }a\text{ is on path }p\text{ between pair }w,\\0,&\text{otherwise}.\end{cases}
+\]
+\item[Planning and cost inputs.] $m$ is the maximum number of chargers at each station; $c_k$ is the fixed cost of opening a station at node $k$; $h_k$ is the unit cost of installing one charger there; $v_1$ is the monetary value of travel time; $v_2$ is the unit cost of CO per ton. These are fixed data, not optimizing variables. The demand means, driving-range distributions, risk threshold and charging parameters have the restrictions stated above; no further parameter-sign restrictions are supplied.
+\item[Planning decisions.] $x_k$ indicates whether a station is located at $k$; $u_k$ is the number of chargers placed there; $y_p^{w,n}$ indicates whether path $p$ between pair $w$ is feasible for class $n$. Their vectors are $\mathbf x,\mathbf u,\mathbf y$, and $\mathbf X$ collects those three vectors. Table 2 writes the path-feasibility symbol as $y_{p,n}^w$, whereas the operative equations use $y_p^{w,n}$.
+\item[Equilibrium quantities.] $F_p^{w,n}$ is random class-specific path flow, $f_p^{w,n}$ its mean, and $\mathbf f$ the vector of all mean path flows. $Q_a$ is random aggregate link flow and $q_a$ its mean. $T_a$ is random link travel time and $t_a$ its mean in Table 2; $T_p^w$ is random path travel time and $t_p^w$ its mean. The selected formulation determines these through the lower-level equilibrium and the displayed network functions, rather than treating all of them as independent planning decisions.
+\item[Charging quantities.] $\lambda_k$ is the mean EV arrival rate at station $k$, dependent on equilibrium flows. $W_k$ is the expected time used in the objective, evaluated through the station function and (11)--(12).
+\end{description}
+
+\paragraph{Verification boundary.}
+The selected formulas and their linked definitions have been checked against the original PDF images, including the main formulation on physical pages 13--15, the notation and assumptions on pages 9--11, and the actual Appendix A/B content on pages 23--25. The two appendix definitions above are part of this same supplied PDF, not a separate unverified supplement. The source's numbered mathematical expressions are retained; the added normal-law notation, backward arrival accounting and arithmetic example are explicitly identified as transcriptions of its stated definitions. Numerical-network assumptions on page 17, including Gamma driving ranges and a risk threshold of $0.05$, are case-study choices and are not imposed on (23). Likewise, Appendix A's experimental $\phi=0.3$ is identified without fixing the general parameter. The CEM and MSA solution algorithms are not substituted for the selected lower-level minimization. External references for equivalent minimization, travel-time approximation and queueing formulas have not independently been supplied and remain unverified beyond the expressions and definitions printed in this PDF. Preserving and annotating the source's inconsistencies establishes fidelity to the selected formulation, not a claim that those source inconsistencies are mathematically resolved.
+
+
+\paragraph{Additional original-source evidence for the discrete charger domain.}
+The inequality (6) does not itself specify integrality. In Appendix A, (A.1)
+indexes the probability matrix by the count at a node, from zero to \(m\).
+On physical PDF page 24 the authors minimize over all \(\mathbf X\in\Omega\)
+in (A.2), and specify the intervention at a site as \(X_i=j\) with
+probability \(\gamma_{i,j}\) for \(j=1,\ldots,m\). A closed site has no chargers.
+The benchmarks have positive EV demand forcing every candidate site open via
+the journey chance constraints (3),(7). The queue recursion is applied at these
+integer counts. Each benchmark supplies its own Taylor center; the unique route
+and its strictly separated feasible and infeasible range comparisons allow
+direct probability checks at the finitely many actual subpath distances.
+No continuous maximum for an open uniform-CDF sublevel set is needed to evaluate
+these finite paths, and no queue value at a fractional charger count is assumed.
+\end{document}

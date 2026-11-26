@@ -1,0 +1,57 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,mathtools,geometry}
+\geometry{a4paper,margin=20mm}\allowdisplaybreaks
+\emergencystretch=4em
+\geometry{paperwidth=235mm,paperheight=297mm,hmargin=18mm,vmargin=19mm}
+\begin{document}
+\section*{Single station, single period rolling bus scheduling using RHMILP algorithm}
+
+\paragraph{Source and scope} Pages 10–12 of the PDF document, section 3.2: RHMILP(33)–(55). This is a complete scheduling model for a terminal station and a rolling time period. The model takes into account the environmental conditions of other terminal stations, as well as the empty-run targets specified by DRL.
+\subsection*{Combining with known parameters}
+$\mathbf B$ Represents scheduled bus routes. $\mathbf K$ Refers to the route at that terminal station. $\mathbf H=\{1,\ldots,H_{\max}\}$ Indicates the order in which buses depart. $\mathbf N=\{1,\ldots,H_{\max}\}$ Represents candidates for the number of buses to be dispatched. $\mathbf Y^{\mathbf I}=\{1,\ldots,m\}$ Represents equal-length charging intervals. $v>0$ Represents the duration of the current segment. $S_k,a_k$ Representing the service frequency and the target number of vehicles available for service. $\lambda_b$ Represents the known arrival time at the station. $\beta_b\in[0,100]$ Represents the known percentage of SOC at the station/initial state. $\mu_k^s,\mu_k^d$ Represents the required operating volume for both service and vehicle movement. $\zeta$ Represents the conversion to SOC consumption. $\tau\ge0$ Represents the safety margin for service operations. $W$ Represents the SOC charging rate per unit time. $|\Psi|$ Represents the number of charging points available. $C^s,C^d,\rho_1,\rho_2\ge0$ Represents the weight of deviation penalties/rewards. $M$ Represents a valid large constant that covers all time and SOC scenarios. The discrete charging zones must be fixed:
+\[
+\gamma_i^C=(i-1)v/m,\qquad \lambda_i^C=iv/m,\qquad i=1,\ldots,m.
+\]
+These two symbols indicate the fixed start and end points of the discrete time intervals.
+\subsection*{Variables}
+$I_{bhk}$ represents the departure time of vehicles. $\kappa_{hk}$ indicates the service shift (relative to the empty driving hours). $N^B_{nk}$ refers to the selection of the number of shifts. $\nu_{bi}$ denotes the duration during which the vehicle is occupied for charging. $\gamma^H,\gamma^B$ specifies the departure time for each shift/vehicle. $\phi_b$ indicates the additional SOC available for charging. $N_k,P_k$ shows the total number of departures and the interval between each shift. $G_k^s,G_k^d,G^b$ reflects any deviations and the maximum amount of energy that can be lost during charging. $P_k$ uses equations (41) and (55) to determine continuous, non-negative intervals between shifts. The value $N_k$ is a natural number resulting from binary choices.
+\subsection*{Complete RHMILP}
+\[
+\begin{aligned}
+\text{(RHMILP)} : \quad & \min \sum_{k \in \mathbf{K}} C^s G_k^s + \sum_{k \in \mathbf{K}} C^d G_k^d - \rho_1 \sum_{b \in \mathbf{B}} \phi_b + \rho_2 G^b \\
+\text{s.t.} \quad & \\
+& -G_k^s \leq \left( S_k - \sum_{h \in \mathbf{H}} \kappa_{hk} \right) \leq G_k^s & \forall k \in \mathbf{K} \\
+& -G_k^d \leq \left[ a_k - \left( \sum_{b \in \mathbf{B}, h \in \mathbf{H}} I_{bhk} - \sum_{h \in \mathbf{H}} \kappa_{hk} \right) \right] \leq G_k^d & \forall k \in \mathbf{K} \\
+& (100 - \phi_b - \beta_b) - M[1 - (I_{bhk} - 2\kappa_{hk})] \leq G^b & \forall b \in \mathbf{B}, h \in \mathbf{H}, k \in \mathbf{K} \\
+& \sum_{h \in \mathbf{H}, k \in \mathbf{K}} I_{bhk} \leq 1 & \forall b \in \mathbf{B} \\
+& \sum_{b \in \mathbf{B}} I_{b(h+1)k} \leq \sum_{b \in \mathbf{B}} I_{bhk} \leq 1 & \forall k \in \mathbf{K}, h \in \mathbf{H} \setminus |\mathbf{H}| \\
+& \sum_{b \in \mathbf{B}, h \in \mathbf{H}} I_{bhk} = \sum_{n \in \mathbf{N}} n N_{nk}^B = N_k & \forall k \in \mathbf{K} \\
+& \sum_{n \in \mathbf{N}} N_{nk}^B \leq 1 & \forall k \in \mathbf{K} \\
+& \sum_{n \in \mathbf{N}} \frac{v}{n} N_{nk}^B = P_k & \forall k \in \mathbf{K} \\
+& v \left( 1 - \sum_{b \in \mathbf{B}} I_{bhk} \right) - M \sum_{b \in \mathbf{B}} I_{bhk} \leq \gamma_{hk}^H \leq P_k(h - 0.5) + M \left( 1 - \sum_{b \in \mathbf{B}} I_{bhk} \right) & \forall h \in \mathbf{H}, k \in \mathbf{K} \\
+& P_k(h - 0.5) - M \left( 1 - \sum_{b \in \mathbf{B}} I_{bhk} \right) \leq \gamma_{hk}^H \leq v \left( 1 - \sum_{b \in \mathbf{B}} I_{bhk} \right) + M \sum_{b \in \mathbf{B}} I_{bhk} & \forall h \in \mathbf{H}, k \in \mathbf{K} \\
+& \gamma_{hk}^H - M(1 - I_{bhk}) \leq \gamma_b^B \leq \gamma_{hk}^H + M(1 - I_{bhk}) & \forall b \in \mathbf{B}, h \in \mathbf{H}, k \in \mathbf{K} \\
+& \lambda_b - M(1 - I_{bhk}) \leq \gamma_{hk}^H & \forall b \in \mathbf{B}, h \in \mathbf{H}, k \in \mathbf{K}
+\end{aligned}
+\]
+
+
+\[
+\begin{aligned}
+& \sum_{h \in \mathbf{H}} \kappa_{hk} \leq \sum_{b \in \mathbf{B}, h \in \mathbf{H}} I_{bhk} & \forall k \in \mathbf{K} \\
+& - M(1 - \kappa_{hk}) + h \leq \sum_{b \in \mathbf{B}, h_1 \in \mathbf{H}} I_{bh_1k} & \forall h \in \mathbf{H}, k \in \mathbf{K} \\
+& v \left( 1 - \sum_{h \in \mathbf{H}, k \in \mathbf{K}} I_{bhk} \right) - M \sum_{h \in \mathbf{H}, k \in \mathbf{K}} I_{bhk} \leq \gamma_b^B \leq v \left( 1 - \sum_{h \in \mathbf{H}, k \in \mathbf{K}} I_{bhk} \right) + M \sum_{h \in \mathbf{H}, k \in \mathbf{K}} I_{bhk} & \forall b \in \mathbf{B} \\
+& \zeta \left[ (1 + \tau) \mu_k^s \kappa_{hk} + \mu_k^d (1 - \kappa_{hk}) \right] - M(1 - I_{bhk}) \leq \beta_b + \phi_b \leq 100 & \forall b \in \mathbf{B}, h \in \mathbf{H}, k \in \mathbf{K} \\
+& \sum_{b \in \mathbf{B}} \nu_{bi} \leq |\Psi| & \forall i \in \mathbf{Y}^{\mathbf{I}}, b \in \mathbf{B} \\
+& \nu_{bi} \leq \max \{0, \gamma_i^C - \lambda_b\} & \forall i \in \mathbf{Y}^{\mathbf{I}}, b \in \mathbf{B} \\
+& \nu_{bi} \leq \max \{0, -\lambda_i^C + \gamma_b^B\} & \forall i \in \mathbf{Y}^{\mathbf{I}}, b \in \mathbf{B} \\
+& 0 \leq \phi_b \leq \frac{vW}{|\mathbf{Y}^{\mathbf{I}}|} \sum_{i \in \mathbf{Y}^{\mathbf{I}}} \nu_{bi} & \forall b \in \mathbf{B} \\
+& I_{bhk}, \kappa_{hk}, N_{nk}^B, \nu_{bi} \in \{0, 1\} & \forall b \in \mathbf{B}, h \in \mathbf{H}, k \in \mathbf{K}, n \in \mathbf{N}, i \in \mathbf{Y}^{\mathbf{I}} \\
+& \gamma_{hk}^H, \gamma_b^B, \phi_b, N_k, P_k, G_k^d, G^b, G_k^s, \gamma_i^C, \lambda_i^C \geq 0 & \forall b \in \mathbf{B}, h \in \mathbf{H}, k \in \mathbf{K}, n \in \mathbf{N}, i \in \mathbf{Y}^{\mathbf{I}}
+\end{aligned}
+\]
+
+
+equations (51)–(52) retain the time differences as described in the original paper, and compare them with binary quantities. The unit of time should be consistent with the discretization convention used in the model. The time grids, $\lambda_b$ and $\beta_b$ are both given parameters.
+
+\end{document}

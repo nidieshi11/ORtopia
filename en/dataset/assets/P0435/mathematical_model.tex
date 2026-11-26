@@ -1,0 +1,63 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage[a4paper,margin=1in]{geometry}
+
+\title{Alpha--Beta--Gamma Graph Formulation}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Notation and data}
+Let $G=(V,E)$ be an undirected graph, where $V$ is the vertex set and $E\subseteq\{\{i,j\}:i,j\in V,\ i\neq j\}$ is the edge set. Let $C$ be the set of colors, and let $V^c\subseteq V$ denote the set of vertices having color $c\in C$. For each $i\in V$, let
+\[
+N(i)=\{j\in V:\{i,j\}\in E\}
+\]
+denote the neighborhood of $i$. For each $U\subseteq V$, define the induced edge set and cut set by
+\[
+E(U)=\{\{i,j\}\in E:i\in U,\ j\in U\},
+\qquad
+\delta(U)=\{\{i,j\}\in E:\lvert\{i,j\}\cap U\rvert=1\}.
+\]
+For every $W\subseteq V$, let $t_W$ be the given edge-connectivity parameter of the induced graph $G[W]$. The displayed constraints involving $1/|N(i)|$ and $1/|V^c|$ are defined for indices with $|N(i)|>0$ and $|V^c|>0$.
+
+\section*{Decision variables}
+For every $i\in V$, define binary variables
+\[
+\alpha_i=\begin{cases}
+1,&\text{if vertex $i$ belongs to the selected component }V_B,\\
+0,&\text{otherwise,}
+\end{cases}
+\qquad
+\beta_i=\begin{cases}
+1,&\text{if vertex $i$ belongs to the boundary-neighbor set }H,\\
+0,&\text{otherwise.}
+\end{cases}
+\]
+For every $\{i,j\}\in E$, define the binary variable $\gamma_{ij}$, where $\gamma_{ij}=1$ if edge $\{i,j\}$ belongs to one of the two selected spanning trees.
+
+\section*{Mathematical formulation}
+\begin{align}
+\max_{\alpha,\beta,\gamma}\quad
+&\sum_{\{i,j\}\in E}\left(\alpha_i\beta_j+\alpha_j\beta_i\right) \\[-1mm]
+\text{s.t.}\quad
+&\sum_{i\in V}\alpha_i\ge 1, \label{eq:nonempty-alpha}\\
+&\sum_{i\in V}\beta_i\ge 1, \label{eq:nonempty-beta}\\
+&\beta_i\le 1-\alpha_i &&\forall i\in V, \label{eq:beta-disjoint}\\
+&\beta_i\le \sum_{j\in N(i)}\alpha_j &&\forall i\in V, \label{eq:beta-adjacent}\\
+&\beta_i\ge \frac{1}{|N(i)|}\sum_{j\in N(i)}\alpha_j-\alpha_i &&\forall i\in V, \label{eq:beta-forced}\\
+&\frac{1}{|V^c|}\sum_{i\in V^c}\beta_i
+  \le \sum_{i\in V^c}\alpha_i\le 1 &&\forall c\in C, \label{eq:color}\\
+&\sum_{\{i,j\}\in E}\gamma_{ij}=|V|-2, \label{eq:tree-count}\\
+&\sum_{\{i,j\}\in E(U)}\gamma_{ij}\le |U|-1 &&\forall \varnothing\ne U\subseteq V, \label{eq:acyclicity}\\
+&\alpha_i+\alpha_j-2\alpha_i\alpha_j\le 1-\gamma_{ij}
+ &&\forall\{i,j\}\in E, \label{eq:same-component}\\
+&\sum_{i\notin W}\alpha_i+\sum_{i\in W}(1-\alpha_i)\ge 1
+ &&\forall W\subseteq V:\ t_W\le |\delta(W)|, \label{eq:nogood}\\
+&\alpha_i\in\{0,1\} &&\forall i\in V, \label{eq:alpha-domain}\\
+&\beta_i\in\{0,1\} &&\forall i\in V, \label{eq:beta-domain}\\
+&\gamma_{ij}\in\{0,1\} &&\forall\{i,j\}\in E. \label{eq:gamma-domain}
+\end{align}
+
+\end{document}

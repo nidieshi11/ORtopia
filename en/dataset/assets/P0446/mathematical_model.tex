@@ -1,0 +1,116 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\begin{document}
+
+\section*{Adapted stochastic network revenue-management control}
+
+\begin{equation}
+\begin{aligned}
+J_k(x)&=\max E\left[\sum_{t=1}^{k}R_tu_t\right],\\
+&\sum_{t=1}^{k}Au_t\leq x\qquad\text{(a.s.)},\\
+&u_t\in E_n.
+\end{aligned}\tag{6}
+\end{equation}
+The maximization is over acceptance processes for the given starting capacity vector $x$ and time-to-go $k$. The action condition applies at each $t=1,\ldots,k$. The accompanying information restriction is
+\[
+\mathcal{F}_t=\sigma(\{R_k;\ T\geq k\geq t\}),
+\qquad
+u_t\text{ is }\mathcal{F}_t\text{-measurable},\quad t=1,\ldots,k.
+\]
+The authors describe this as adaptation to the history of requests from $k$ to $t$. Optimizing this process provides a policy only for states reachable from $(x,k)$, which suffices to determine $J_k(x)$.
+
+\paragraph{Printed information-index qualification.}
+The filtration above retains the printed $T$ and the use of $k$ inside the generating set. The surrounding prose instead describes history beginning at the starting time $k$. The formulation passages do not define $T$ or explicitly relate it to that starting time; no replacement of $T$ by $k$ is made here.
+
+\subsection*{Fixed network data, state, and time}
+There are $m$ legs and $n$ origin--destination itineraries, indexed by $i=1,\ldots,m$ and $j=1,\ldots,n$. The fixed network matrix is
+\[
+A=[a_{ij}],\qquad
+ a_{ij}=\text{number of seats on leg }i\text{ used by itinerary }j,
+\]
+with $a_{ij}=0$ if leg $i$ is not part of itinerary $j$. The notation $A^j$ denotes column $j$, and $A_i$ denotes row $i$. The notation $i\in A^j$ means that leg $i$ is used by itinerary $j$, and $j\in A_i$ means that itinerary $j$ uses leg $i$.
+
+Each column $A^j$ is a multiple of the incidence vector of its itinerary; it is the incidence vector itself for a one-seat request. Requests need not use just one seat. Group requests can be represented by separate columns for possible group sizes, with the nonzero column entries equal to the group size and the itinerary revenue equal to the total group revenue.
+
+The state is the vector of leg capacities
+\[
+x=(x^1,\ldots,x^m).
+\]
+Selling itinerary $j$ changes the state to $x-A^j$. The selected interpretation assumes no cancellations or no-shows and no overselling of legs. No additional numerical state domain is imposed beyond the source's description of $x$ as leg capacities.
+
+Time is discrete and counted backwards: $k$ is the current number of periods remaining before departure, and $t$ denotes an arbitrary time-to-go. At most one itinerary request arrives in a period. Superscripts denote vector components and subscripts denote time, except for the explicitly defined matrix-row notation. The paper does not distinguish row and column vectors.
+
+\subsection*{Request support and distribution assumptions}
+Define
+\[
+E_n=\{e_0,e_1,\ldots,e_n\},
+\qquad e_0=0,
+\]
+where $e_j$ is the $j$th unit $n$-vector for $j=1,\ldots,n$, and $e_0$ is the zero $n$-vector. The request support is
+\[
+\mathcal{S}=\{R:R=\alpha e,\ e\in E_n,\ \alpha\geq0\}.
+\]
+The exogenous request vector satisfies
+\[
+R_t=(R_t^1,\ldots,R_t^n)\in\mathcal{S},\qquad t\geq1.
+\]
+A component $R_t^j>0$ means that a request for itinerary $j$ occurred with revenue $R_t^j$; $R_t^j=0$ means that no request for that itinerary occurred. The realization $R_t=0$ means that no itinerary request occurred. Thus at most one component of $R_t$ is positive.
+
+The sequence $\{R_t;t\geq1\}$ is independent, with known joint distributions $F_t(r)$ supported on $\mathcal{S}$. Its marginal distributions satisfy
+\[
+F_t^j(r)=P(R_t^j\leq r),\qquad
+F_t^j\text{ is continuous on }(0,+\infty),\qquad
+E[R_t^j]<\infty,
+\quad t\geq1,\ j=1,\ldots,n.
+\]
+No particular order of arrival is assumed. The distributions may depend on time. The accompanying distribution interpretation is printed as
+\[
+P(R_t^j>0)=1-F_t^j(0),
+\qquad
+P(R_t^j\leq r\mid R_t^j>0)
+=\frac{F_t^j(r)}{1-F_t^j(0)}.
+\]
+\emph{Printed inconsistency:} with the preceding definition of $F_t^j$, the displayed conditional-distribution expression does not remove the mass at zero from its numerator. It is retained as printed, without repair; the passage supplies no exceptional-case convention for a zero denominator.
+
+The additional bounded-support premise $P(R_t^j\leq C)=1$ for some constant $C$ is expressly required for the paper's asymptotic results, not for the adapted control problem (6), and is not imposed here.
+
+\subsection*{Acceptance decisions and inherited feasible-action definition}
+For a current state $x$ and realized request $r=(r^1,\ldots,r^n)\in\mathcal{S}$, the acceptance decision is an $n$-vector with the interpretation
+\[
+u_k^j=\begin{cases}
+1,&\text{if a request for itinerary }j\text{ is accepted at time }k,\\
+0,&\text{otherwise},
+\end{cases}
+\qquad j=1,\ldots,n.
+\]
+The source describes the decision's dependence by
+\[
+u_k^j=u_k^j(x,r^j),\qquad
+u_k=u_k(x,r),\qquad r\in\mathcal{S}.
+\]
+At most one request can be accepted in a period, and acceptance cannot oversell a leg. The source-defined feasible-action set at the current inventory is
+\[
+\mathcal{U}(x)=\{e\in E_n:Ae\leq x\},
+\qquad u_k(x,r)\in\mathcal{U}(x).
+\]
+Here $x$ in $\mathcal{U}(x)$ is the inventory at the decision epoch, whereas $x$ in (6) is the given starting inventory. The cumulative almost-sure capacity constraint in (6) is retained; no additional request-matching constraint is introduced.
+
+\subsection*{Inherited value-function definition and boundary condition}
+The quantity $J_k(x)$ is the maximum expected revenue for seat inventory $x$ and time-to-go $k$. Its defining Bellman characterization in the original formulation is
+\begin{equation}
+\begin{aligned}
+J_k(x)={}&\max_{u_k(\cdot)\in\mathcal{U}(x)}
+E\bigl[R_ku_k(x,R_k)\\
+&\hspace{25mm}{}+J_{k-1}(x-Au_k(x,R_k))\bigr].
+\end{aligned}\tag{2}
+\end{equation}
+This characterizes the same value used in (6), rather than introducing another set of decision variables or a relaxation. Its boundary condition is
+\begin{equation}
+J_0(x)=0,\qquad\forall x.\tag{3}
+\end{equation}
+
+\paragraph{Source.}
+Talluri and van Ryzin, \emph{An Analysis of Bid-Price Controls for Network Revenue Management}, Management Science 44(11), Part 1 (1998): physical PDF pages 3--4 (printed pages 1579--1580) for the network, request, action, and value definitions, and physical PDF page 7 (printed page 1583) for the selected adapted formulation. The cited Bellman-equation reference, Bertsekas (1995), p.~18, was not supplied and is unverified; the relevant equations are printed in the supplied paper itself.
+
+\end{document}

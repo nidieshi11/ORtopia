@@ -1,0 +1,623 @@
+<!DOCTYPE html> 
+<html lang='en-US' xml:lang='en-US'> 
+<head><title>P0452 · Home Care Referral Acceptance, Visit Scheduling, Diversion and Nurse Routing · Mathematical model</title> 
+<meta charset='utf-8' /> 
+<meta content='TeX4ht (https://tug.org/tex4ht/)' name='generator' /> 
+<meta content='width=device-width,initial-scale=1' name='viewport' /> 
+<style> 
+/* start css.sty */
+.cmr-5{font-size:50%;}
+.cmr-7{font-size:70%;}
+.cmmi-5{font-size:50%;font-style: italic;}
+.cmmi-7{font-size:70%;font-style: italic;}
+.cmmi-10{font-style: italic;}
+.cmsy-5{font-size:50%;}
+.cmsy-7{font-size:70%;}
+.cmbx-10{ font-weight: bold;}
+.cmbsy-10{font-weight: bold;}
+.cmbsy-10{font-weight: bold;}
+.cmbsy-10{font-weight: bold;}
+.cmbsy-7{font-size:70%;font-weight: bold;}
+.cmbsy-7{font-weight: bold;}
+.cmbsy-7{font-weight: bold;}
+.cmbsy-5{font-size:50%;font-weight: bold;}
+.cmbsy-5{font-weight: bold;}
+.cmbsy-5{font-weight: bold;}
+.cmex-7{font-size:70%;}
+.cmex-7x-x-71{font-size:49%;}
+.msam-7{font-size:70%;}
+.msam-5{font-size:50%;}
+.msbm-7{font-size:70%;}
+.msbm-5{font-size:50%;}
+.cmti-10{ font-style: italic;}
+p{margin-top:0;margin-bottom:0}
+p.indent{text-indent:0;}
+p + p{margin-top:1em;}
+p + div, p + pre {margin-top:1em;}
+div + p, pre + p {margin-top:1em;}
+a { overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; hyphens: auto; }
+@media print {div.crosslinks {visibility:hidden;}}
+table.tabular{border-collapse: collapse; border-spacing: 0;}
+a img { border-top: 0; border-left: 0; border-right: 0; }
+center { margin-top:1em; margin-bottom:1em; }
+td center { margin-top:0em; margin-bottom:0em; }
+.Canvas { position:relative; }
+math { text-indent: 0em; }
+body{ margin:1em auto; max-width:80ch; padding:0 .62em; }
+h1,h2,h3,h4,h5 { line-height:1.2; }
+@media print{ body{ max-width:none } }
+.partHead, .likepartHead { font-size: 2em; }
+.chapterHead, .likechapterHead { font-size: 1.7411em; }
+.sectionHead, .likesectionHead { font-size: 1.5157em; }
+.subsectionHead, .likesubsectionHead { font-size: 1.3195em; }
+.subsubsectionHead, .likesubsubsectionHead { font-size: 1.1487em; }
+ @media (prefers-color-scheme: dark) { img[src^="model"]{filter: invert(1); } } 
+li p.indent { text-indent: 0em }
+li p:first-child{ margin-top:0em; }
+li p:last-child, li div:last-child { margin-bottom:0.5em; }
+li p:first-child{ margin-bottom:0; }
+li p~ul:last-child, li p~ol:last-child{ margin-bottom:0.5em; }
+.enumerate1 {list-style-type:decimal;}
+.enumerate2 {list-style-type:lower-alpha;}
+.enumerate3 {list-style-type:lower-roman;}
+.enumerate4 {list-style-type:upper-alpha;}
+div.newtheorem { margin-bottom: 2em; margin-top: 2em;}
+div.newtheorem .head{font-weight: bold;}
+.obeylines-h,.obeylines-v {white-space: nowrap; }
+div.obeylines-v p { margin-top:0; margin-bottom:0; }
+.overline{ text-decoration:overline; }
+.overline img{ border-top: 1px solid black; }
+td.displaylines {text-align:center; white-space:nowrap;}
+.centerline {text-align:center;}
+.rightline {text-align:right;}
+pre.verbatim {font-family: monospace,monospace; text-align:left; clear:both; }
+.fbox {padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+div.fbox {display:table}
+div.center div.fbox {text-align:center; clear:both; padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+div.minipage{width:100%;}
+div.center, div.center div.center {text-align: center; margin-left:1em; margin-right:1em;}
+div.center div {text-align: left;}
+div.flushright, div.flushright div.flushright {text-align: right;}
+div.flushright div {text-align: left;}
+div.flushleft {text-align: left;}
+.underline{ text-decoration:underline; }
+.underline img{ border-bottom: 1px solid black; margin-bottom:1pt; }
+.framebox-c, .framebox-l, .framebox-r { padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+.framebox-c {text-align:center;}
+.framebox-l {text-align:left;}
+.framebox-r {text-align:right;}
+span.thank-mark{ vertical-align: super }
+span.footnote-mark sup.textsuperscript, span.footnote-mark a sup.textsuperscript{ font-size:80%; }
+code.verb{font-family:monospace,monospace;}
+div.tabular, div.center div.tabular {text-align: center; margin-top:0.5em; margin-bottom:0.5em; }
+table.tabular td p{margin-top:0em;}
+table.tabular {margin-left: auto; margin-right: auto;}
+td p:first-child{ margin-top:0em; }
+td p:last-child{ margin-bottom:0em; }
+div.td00{ margin-left:0pt; margin-right:0pt; }
+div.td01{ margin-left:0pt; margin-right:5pt; }
+div.td10{ margin-left:5pt; margin-right:0pt; }
+div.td11{ margin-left:5pt; margin-right:5pt; }
+table[rules] {border-left:solid black 0.4pt; border-right:solid black 0.4pt; }
+td.td00{ padding-left:0pt; padding-right:0pt; }
+td.td01{ padding-left:0pt; padding-right:5pt; }
+td.td10{ padding-left:5pt; padding-right:0pt; }
+td.td11{ padding-left:5pt; padding-right:5pt; }
+table[rules] {border-left:solid black 0.4pt; border-right:solid black 0.4pt; }
+.hline hr, .cline hr{ height : 0px; margin:0px; }
+.hline td, .cline td{ padding: 0; }
+.hline hr, .cline hr{border:none;border-top:1px solid black;}
+.hline {border-top: 1px solid black;}
+.hline + .vspace:last-child{display:none;}
+.hline:first-child{border-bottom:1px solid black;border-top:none;}
+.tabbing-right {text-align:right;}
+div.float, div.figure {margin-left: auto; margin-right: auto;}
+div.float img {text-align:center;}
+div.figure img {text-align:center;}
+.marginpar,.reversemarginpar {width:20%; float:right; text-align:left; margin-left:auto; margin-top:0.5em; font-size:85%; text-decoration:underline;}
+.marginpar p,.reversemarginpar p{margin-top:0.4em; margin-bottom:0.4em;}
+.reversemarginpar{float:left;}
+.equation td{text-align:center; vertical-align:middle; }
+td.eq-no{ width:5%; }
+table.equation { width:100%; } 
+div.math-display, div.par-math-display{text-align:center;}
+.array-hline,.array-cline{ border-top: 1px solid black; height:0px; }
+.array-hline + .array-vspace:last-child{display:none;}
+.hline-mtd, .array-hline td{ display:none }
+.array-hline + .array-row:last-child{display:none;}
+.array-hline:first-child{border-bottom:1px solid black;border-top:none;}
+math .texttt { font-family: monospace; }
+math .textit { font-style: italic; }
+math .textsl { font-style: oblique; }
+math .textsf { font-family: sans-serif; }
+math .textbf { font-weight: bold; }
+mo.MathClass-op + mi{margin-left:0.3em}
+mi + mo.MathClass-op{margin-left:0.3em}
+ math mstyle[mathvariant="bold"] { font-weight: bold; font-style: normal; } 
+ math mstyle[mathvariant="normal"] { font-weight: normal; font-style: normal; } 
+.partToc a, .partToc, .likepartToc a, .likepartToc {line-height: 200%; font-weight:bold; font-size:110%;}
+.index-item, .index-subitem, .index-subsubitem {display:block}
+div.caption {text-indent:-2em; margin-left:3em; margin-right:1em; text-align:left;}
+div.caption span.id{font-weight: bold; white-space: nowrap; }
+h1.partHead{text-align: center}
+p.bibitem { text-indent: -2em; margin-left: 2em; margin-top:0.6em; margin-bottom:0.6em; }
+p.bibitem-p { text-indent: 0em; margin-left: 2em; margin-top:0.6em; margin-bottom:0.6em; }
+.subsubsectionHead, .likesubsubsectionHead { font-size: 1em; }
+.paragraphHead, .likeparagraphHead { margin-top:2em; font-weight: bold;}
+.subparagraphHead, .likesubparagraphHead { font-weight: bold;}
+.verse{white-space:nowrap; margin-left:2em}
+div.maketitle {text-align:center;}
+h2.titleHead{text-align:center;}
+div.maketitle{ margin-bottom: 2em; }
+div.author, div.date {text-align:center;}
+div.thanks{text-align:left; margin-left:10%; font-size:85%; font-style:italic; }
+div.author{white-space: nowrap;}
+div.abstract p {margin-left:5%; margin-right:5%;}
+div.abstract {width:100%;}
+.abstracttitle{text-align:center;margin-bottom:1em;}
+.subsectionToc, .likesubsectionToc {margin-left:1em;}
+.subsubsectionToc, .likesubsubsectionToc {margin-left:2em;}
+.paragraphToc, .likeparagraphToc {margin-left:3em;}
+.subparagraphToc, .likesubparagraphToc {margin-left:4em;}
+figure.float, div.figure {margin-left: auto; margin-right: auto;}
+figure.figure {text-align:center;}
+figcaption.caption {text-indent:-2em; margin-left:3em; margin-right:1em; text-align:center;}
+figcaption.caption span.id{font-weight: bold; white-space: nowrap; }
+p + figcaption, img + figcaption{margin-top: 1em;}
+.abstract{margin:1em;}
+.equation-star td{text-align:center; vertical-align:middle; }
+table.equation-star { width:100%; } 
+.boxed{border: 1px solid black; padding-left:2px; padding-right:2px;}
+mtd.align-odd{margin-left:2em; text-align:right;}
+mtd.align-even{margin-right:2em; text-align:left;}
+/* end css.sty */
+
+
+html{background:#fff;color:#243833}body{padding:clamp(.55rem,2vw,1.25rem);margin:0;line-height:1.5;overflow-wrap:break-word}
+h1,h2,h3,h4,h5,h6{line-height:1.22;color:#193d35}p{margin:.5rem 0}math[display=block]{overflow-x:auto;max-width:100%}
+@media print{body{padding:0;color:#000}}
+</style> 
+<meta content='model.tex' name='src' /> 
+</head><body>
+   <h3 class='likesectionHead' id='full-dalp-and-its-singlenurse-greedy-policy'><a id='x1-1000'></a>Full D-ALP and its single-nurse greedy policy</h3>
+   <table class='equation'><tr><td>
+<!-- l. 8 --><p class='indent'>
+</p><!-- l. 8 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                           <mstyle class='label' id='x1-1001r1'></mstyle><!-- endlabel --><mstyle mathvariant='bold'><mi>D</mi><mstyle class='text'><mtext>-</mtext></mstyle><mi>ALP</mi></mstyle> <mo class='MathClass-punc' stretchy='false'>:</mo> <mspace class='quad' width='1em'></mspace><munder class='msub'><mrow><mtext class='qopname'>min</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow><mrow><mover accent='true'><mrow><mi>β</mi></mrow><mo accent='true'>→</mo></mover></mrow></munder><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>s</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>S</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='thinspace' width='0.17em'></mspace><mi>a</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mi>A</mi></mrow><mrow><mi>s</mi></mrow></msub></mrow></munder><mi>β</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>s</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>a</mi><mo class='MathClass-close' stretchy='false'>)</mo><mi>c</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>s</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>a</mi><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>.</mo>
+                                                                                         <mstyle class='label' id='x1-1002r0'></mstyle><!-- endlabel -->
+</mrow></math></td><td class='eq-no'>(20a)<a id='x1-1003r0'></a></td></tr></table>
+<!-- l. 13 --><p class='noindent'>Subject to
+</p><!-- tex4ht:inline --><!-- l. 23 --><math display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mtable class='align' columnalign='left' displaystyle='true'>
+              <mtr><mtd class='align-odd' columnalign='right'><mo class='MathClass-open' stretchy='false'>(</mo><mn>1</mn> <mo class='MathClass-bin' stretchy='false'>−</mo> <mi>γ</mi><mo class='MathClass-close' stretchy='false'>)</mo><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>s</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>S</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='thinspace' width='0.17em'></mspace><mi>a</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mi>A</mi></mrow><mrow><mi>s</mi></mrow></msub></mrow></munder><mi>β</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>s</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>a</mi><mo class='MathClass-close' stretchy='false'>)</mo></mtd>                              <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                                   <mtd class='align-odd' columnalign='right'></mtd>                   <mtd class='align-even'><mspace width='2em'></mspace></mtd>              <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(20b)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-1008r0'></mstyle><!-- endlabel -->
+              </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>s</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>S</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='thinspace' width='0.17em'></mspace><mi>a</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mi>A</mi></mrow><mrow><mi>s</mi></mrow></msub></mrow></munder><mi>β</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>s</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>a</mi><mo class='MathClass-close' stretchy='false'>)</mo><mrow><mo class='MathClass-open' fence='true' mathsize='1.19em'>(</mo><mrow><msub><mrow><mi>x</mi></mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <mi mathvariant='italic'>γ𝔼</mi><mo class='MathClass-open' stretchy='false'>[</mo><msubsup><mrow><mi>X</mi></mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow><mrow><mi>′</mi></mrow></msubsup><mo class='MathClass-open' stretchy='false'>(</mo><mi>s</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>a</mi><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-close' stretchy='false'>]</mo></mrow><mo class='MathClass-close' fence='true' mathsize='1.19em'>)</mo></mrow></mtd>              <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>≥</mo> <msub><mrow><mi>𝔼</mi></mrow><mrow>
+<mi>α</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>[</mo><msub><mrow><mi>X</mi></mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>]</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>              <mtd class='align-odd' columnalign='right'></mtd>              <mtd class='align-even'><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi mathvariant='italic'>tklj</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                                                        <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(20c)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-1009r0'></mstyle><!-- endlabel -->
+              </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>s</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>S</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='thinspace' width='0.17em'></mspace><mi>a</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mi>A</mi></mrow><mrow><mi>s</mi></mrow></msub></mrow></munder><mi>β</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>s</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>a</mi><mo class='MathClass-close' stretchy='false'>)</mo><mrow><mo class='MathClass-open' fence='true' mathsize='1.19em'>(</mo><mrow><msub><mrow><mi>y</mi></mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <mi mathvariant='italic'>γ𝔼</mi><mo class='MathClass-open' stretchy='false'>[</mo><msub><mrow><mi>Y</mi> </mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>]</mo></mrow><mo class='MathClass-close' fence='true' mathsize='1.19em'>)</mo></mrow></mtd>                      <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>≥</mo> <msub><mrow><mi>𝔼</mi></mrow><mrow><mi>α</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>[</mo><msub><mrow><mi>Y</mi> </mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>]</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>               <mtd class='align-odd' columnalign='right'></mtd>              <mtd class='align-even'><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi mathvariant='italic'>kl</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                                                         <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(20d)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-1010r0'></mstyle><!-- endlabel -->
+              </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><mover accent='true'><mrow><mi>β</mi></mrow><mo accent='true'>→</mo></mover></mtd>                                                 <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>.</mo><mspace width='2em'></mspace></mtd>                                   <mtd class='align-odd' columnalign='right'></mtd>                   <mtd class='align-even'><mspace width='2em'></mspace></mtd>              <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(20e)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-1011r0'></mstyle><!-- endlabel -->
+   </mtd></mtr></mtable></math>
+<!-- l. 24 --><p class='noindent'>Here </p><table class='equation-star'><tr><td>
+<!-- l. 25 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                                <mover accent='true'><mrow><mi>β</mi></mrow><mo accent='true'>→</mo></mover> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>{</mo><mi>β</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>s</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>a</mi><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>;</mo><mspace class='nbsp' width='0.33em'></mspace><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>s</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>S</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>a</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msub><mrow><mi>A</mi></mrow><mrow><mi>s</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>}</mo><mo class='MathClass-punc' stretchy='false'>,</mo>
+</mrow></math></td></tr></table>
+
+<!-- l. 28 --><p class='indent'>   and <!-- l. 28 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>β</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>s</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>a</mi><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math>
+is the dual variable for a state–action pair. The state–action pairs index the full model, not a restricted column set.
+The parameters used by the policy are the optimal dual prices of (20b), (20c), and (20d), respectively
+<!-- l. 28 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msup><mrow><mi>η</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>∗</mo></mrow></msup></math>,
+<!-- l. 28 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mrow><mi>τ</mi></mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>∗</mo></mrow></msubsup></math>, and
+<!-- l. 28 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mrow><mi>ρ</mi></mrow><mrow><mi mathvariant='italic'>kl</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>∗</mo></mrow></msubsup></math>. No
+two-index or one-dimensional heuristic reduction is imposed.
+</p><!-- l. 30 --><p class='noindent'>
+</p>
+   <h3 class='likesectionHead' id='fixed-problem-data-and-index-scope'><a id='x1-2000'></a>Fixed problem data and index scope</h3>
+<!-- l. 31 --><p class='noindent'>The source is Khorasanian, Patrick, and Sauré, <span class='cmti-10'>Dynamic Home Care Routing and Scheduling with Uncertain
+Number of Visits per Referral</span>, preprint dated March 12, 2024, Sections 2–4 and Electronic Companion EC.1.
+Equation numbers below are the source numbers.
+</p><!-- l. 33 --><p class='indent'>   There are <!-- l. 33 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>K</mi></math>
+service types and <!-- l. 33 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>L</mi></math>
+regions. Regions are equal-sized squares, with their centers used as patient locations. Location
+<!-- l. 33 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mn>0</mn></math>
+is the depot. The described area is a circular grid with Manhattan distances; the authors also
+allow asymmetric areas. Each day’s route starts and ends at the depot. Known travel times are
+<!-- l. 33 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>d</mi></mrow><mrow><mi>l</mi><msup><mrow><mi>l</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></msub></math>, for
+<!-- l. 33 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>l</mi><mo class='MathClass-punc' stretchy='false'>,</mo><msup><mrow><mi>l</mi></mrow><mrow><mi>′</mi></mrow></msup><mo class='MathClass-rel' stretchy='false'>∈</mo><mo class='MathClass-open' stretchy='false'>{</mo><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mi>L</mi><mo class='MathClass-close' stretchy='false'>}</mo><mo class='MathClass-bin' stretchy='false'>∪</mo><mo class='MathClass-open' stretchy='false'>{</mo><mn>0</mn><mo class='MathClass-close' stretchy='false'>}</mo></mrow></math>. For service
+type <!-- l. 33 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>k</mi></math>,
+<!-- l. 33 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>h</mi></mrow><mrow><mi>k</mi></mrow></msub></math> is the constant number of days
+between consecutive visits, <!-- l. 33 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>T</mi></mrow><mrow><mi>k</mi></mrow></msub></math>
+is the maximum wait for an accepted referral’s first visit,
+<!-- l. 33 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>e</mi></mrow><mrow><mi>k</mi></mrow></msub></math> is the deterministic service time
+per visit, and <!-- l. 33 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>Ĵ</mi></mrow><mrow><mi>k</mi></mrow></msub></math> is the random
+required number of visits, at most <!-- l. 33 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>J</mi></mrow><mrow><mi>k</mi></mrow></msub></math>.
+The distribution of <!-- l. 33 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>Ĵ</mi></mrow><mrow><mi>k</mi></mrow></msub></math>
+is input data. The service time includes a small fixed allowance for travel between actual patient locations and the
+region-center approximation.
+</p><!-- l. 35 --><p class='indent'>   The regular daily shift length is <!-- l. 35 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>χ</mi></math> and
+the maximum allowable overtime is <!-- l. 35 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msup><mrow><mi>χ</mi></mrow><mrow><mi>′</mi></mrow></msup></math>.
+The geographical accessibility premise is </p><table class='equation-star'><tr><td>
+<!-- l. 36 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                                <msub><mrow><mi>d</mi></mrow><mrow><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mi>l</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo><munder class='msub'><mrow><mtext class='qopname'> max</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow><mrow><mi>k</mi></mrow></munder><mo class='MathClass-open' stretchy='false'>{</mo><msub><mrow><mi>e</mi></mrow><mrow><mi>k</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>}</mo> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>d</mi></mrow><mrow><mi>l</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mn>0</mn></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≤</mo> <mi>χ</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>l</mi><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 39 --><p class='indent'>   Decisions are made once daily before work starts. A referral arriving during a day does not require a visit that
+same day. The rolling planning horizon is </p><table class='equation-star'><tr><td>
+
+<!-- l. 40 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                              <mi>T</mi> <mo class='MathClass-rel' stretchy='false'>=</mo><mtext class='qopname'> max</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo><mo class='MathClass-open' stretchy='false'>{</mo><munder class='msub'><mrow><mtext class='qopname'>max</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow><mrow><mi>k</mi></mrow></munder><mo class='MathClass-open' stretchy='false'>{</mo><msub><mrow><mi>h</mi></mrow><mrow><mi>k</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>}</mo><mo class='MathClass-punc' stretchy='false'>,</mo><munder class='msub'><mrow><mtext class='qopname'>max</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow><mrow><mi>k</mi></mrow></munder><mo class='MathClass-open' stretchy='false'>{</mo><msub><mrow><mi>T</mi></mrow><mrow><mi>k</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>}</mo><mo class='MathClass-close' stretchy='false'>}</mo><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 43 --><p class='indent'>   Day <!-- l. 43 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>t</mi></math>
+becomes day <!-- l. 43 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>t</mi> <mo class='MathClass-bin' stretchy='false'>−</mo> <mn>1</mn></mrow></math>
+at the next epoch. Index ranges are </p><table class='equation-star'><tr><td>
+<!-- l. 44 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                        <mi>t</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mi>T</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mi>K</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mi>l</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mi>L</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mi>j</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>J</mi></mrow><mrow><mi>k</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 48 --><p class='indent'>   Unqualified sums and quantifiers over these indices have these ranges; in particular the range of
+<!-- l. 48 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>j</mi></math> depends on
+<!-- l. 48 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>k</mi></math>. In the routing constraints,
+<!-- l. 48 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>l</mi><mo class='MathClass-punc' stretchy='false'>,</mo><msup><mrow><mi>l</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></math> denote regions; depot travel is
+written explicitly using index <!-- l. 48 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mn>0</mn></math>.
+</p><!-- l. 50 --><p class='indent'>   New referrals have known, steady-state daily distributions for each service type and region.
+<!-- l. 50 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>Y</mi> </mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub></math> denotes the corresponding
+referral count, and <!-- l. 50 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>𝔼</mi><mo class='MathClass-open' stretchy='false'>[</mo><msub><mrow><mi>Y</mi> </mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>]</mo></mrow></math>
+its expected value. These distributions remain abstract in the general model. The Poisson
+arrivals, numerical discount factor, service-type ranges, and cost-weight values of Section 7 are
+experimental settings, not additional restrictions of this full general formulation. The symbol
+<!-- l. 50 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>γ</mi></math> is the
+daily discount factor of the discounted infinite-horizon model; Sections 2–4 do not print a numerical interval for
+it.
+</p><!-- l. 52 --><p class='indent'>   Only new referrals can be rejected. Once accepted, a patient must be served until discharge. Visits have no
+within-day appointment-time restriction. Only the immediate next visit is scheduled: whether another visit is needed
+becomes known at the preceding visit. A diverted visit is served by an on-call nurse, assumed available near every
+location; diversion does not discharge the patient.
+</p><!-- l. 54 --><p class='noindent'>
+</p>
+   <h3 class='likesectionHead' id='states-and-structural-zeros'><a id='x1-3000'></a>States and structural zeros</h3>
+<!-- l. 55 --><p class='noindent'>The state is <!-- l. 55 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>s</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>(</mo><mover accent='true'><mrow><mi>x</mi></mrow><mo accent='true'>→</mo></mover><mo class='MathClass-punc' stretchy='false'>,</mo><mover accent='true'><mrow><mi>y</mi></mrow><mo accent='true'>→</mo></mover><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math>,
+where </p><table class='equation-star'><tr><td>
+
+<!-- l. 56 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+            <mover accent='true'><mrow><mi>x</mi></mrow><mo accent='true'>→</mo></mover> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>{</mo><msub><mrow><mi>x</mi></mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>;</mo><mspace class='nbsp' width='0.33em'></mspace><mi>t</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mi>T</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mi>K</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><mi>l</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mi>L</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><mi>j</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>J</mi></mrow><mrow><mi>k</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <mn>1</mn><mo class='MathClass-close' stretchy='false'>}</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mover accent='true'><mrow><mi>y</mi></mrow><mo accent='true'>→</mo></mover> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>{</mo><msub><mrow><mi>y</mi></mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>;</mo><mspace class='nbsp' width='0.33em'></mspace><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi mathvariant='italic'>kl</mi><mo class='MathClass-close' stretchy='false'>}</mo><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 61 --><p class='indent'>   Here <!-- l. 61 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>x</mi></mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow></msub></math> counts
+patients of type <!-- l. 61 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>k</mi></math>
+in region <!-- l. 61 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>l</mi></math> with
+<!-- l. 61 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>j</mi></math> visits completed
+before day <!-- l. 61 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>t</mi></math> and
+visit <!-- l. 61 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>j</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <mn>1</mn></mrow></math> assigned to
+day <!-- l. 61 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>t</mi></math>. Patients with
+<!-- l. 61 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>J</mi></mrow><mrow><mi>k</mi></mrow></msub></math> completed visits have left
+the system. The count <!-- l. 61 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>y</mi></mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub></math>
+is the number of new referrals awaiting a decision. The finite upper bounds
+<!-- l. 61 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mrow><mi>x</mi></mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow><mrow><mtext class='qopname'>max</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow></msubsup></math> and
+<!-- l. 61 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mrow><mi>y</mi></mrow><mrow><mi mathvariant='italic'>kl</mi></mrow><mrow><mtext class='qopname'>max</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow></msubsup></math> are
+fixed input values, left abstract by the authors. </p><table class='equation'><tr><td>
+<!-- l. 62 --><p class='indent'>
+</p><!-- l. 62 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mstyle class='label' id='x1-3001r1'></mstyle><!-- endlabel -->   <mtable class='equation'><mtr><mtd>
+   <mtable class='split' columnalign='right left'>
+<mtr class='split-mtr'><mtd class='split-mtd'> <mi>S</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>{</mo><mo class='MathClass-open' stretchy='false'>(</mo><mover accent='true'><mrow><mi>x</mi></mrow><mo accent='true'>→</mo></mover><mo class='MathClass-punc' stretchy='false'>,</mo><mover accent='true'><mrow><mi>y</mi></mrow><mo accent='true'>→</mo></mover><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-rel' stretchy='false'>∣</mo></mtd><mtd class='split-mtd'><msub><mrow><mi>x</mi></mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msubsup><mrow><mi>x</mi></mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow><mrow><mtext class='qopname'>max</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow></msubsup><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi mathvariant='italic'>tklj</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><msub><mrow><mi>y</mi></mrow><mrow>
+<mi mathvariant='italic'>kl</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msubsup><mrow><mi>y</mi></mrow><mrow><mi mathvariant='italic'>kl</mi></mrow><mrow><mtext class='qopname'>max</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow></msubsup><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi mathvariant='italic'>kl</mi><mo class='MathClass-punc' stretchy='false'>,</mo></mtd>
+</mtr><mtr class='split-mtr'><mtd class='split-mtd'>             </mtd><mtd class='split-mtd'><msub><mrow><mi>x</mi></mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msub><mrow><mi>ℤ</mi></mrow><mrow><mo class='MathClass-rel' stretchy='false'>≥</mo><mn>0</mn></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi mathvariant='italic'>tklj</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><msub><mrow><mi>y</mi></mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msub><mrow><mi>ℤ</mi></mrow><mrow><mo class='MathClass-rel' stretchy='false'>≥</mo><mn>0</mn></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi mathvariant='italic'>kl</mi><mo class='MathClass-close' stretchy='false'>}</mo><mo class='MathClass-punc' stretchy='false'>.</mo></mtd>
+   </mtr></mtable>                                                                                       </mtd><mtd><mstyle class='label' id='x1-3002r0'></mstyle><!-- endlabel -->
+   </mtd></mtr></mtable>
+</mrow></math></td><td class='eq-no'>(1)<a id='x1-3003r0'></a></td></tr></table><p>
+   The accompanying state-defining prose additionally specifies
+
+</p><!-- tex4ht:inline --><!-- l. 74 --><math display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mtable class='align-star' columnalign='left' displaystyle='true'>
+                    <mtr><mtd class='align-odd' columnalign='right'><msub><mrow><mi>x</mi></mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow></msub></mtd>                      <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                    <mtd class='align-odd' columnalign='right'></mtd>                    <mtd class='align-even'><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi mathvariant='italic'>tklj</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><mi>t</mi> <mo class='MathClass-rel' stretchy='false'>≥</mo> <msub><mrow><mi>h</mi></mrow><mrow><mi>k</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><mi>j</mi> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                    <mtd class='align-label' columnalign='right'></mtd>                    <mtd class='align-label'><mspace width='2em'></mspace></mtd>                    <mtd class='align-label' columnalign='right'></mtd>                    <mtd class='align-label'>
+                    <mspace width='2em'></mspace></mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><msub><mrow><mi>x</mi></mrow><mrow><msub><mrow><mi>T</mi></mrow><mrow><mi>k</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mi mathvariant='italic'>kl</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mn>0</mn></mrow></msub></mtd>                    <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                    <mtd class='align-odd' columnalign='right'></mtd>                    <mtd class='align-even'><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi mathvariant='italic'>kl</mi><mo class='MathClass-punc' stretchy='false'>.</mo><mspace width='2em'></mspace></mtd>                                    <mtd class='align-label' columnalign='right'></mtd>                    <mtd class='align-label'><mspace width='2em'></mspace></mtd>                    <mtd class='align-label' columnalign='right'></mtd>                    <mtd class='align-label'>
+   <mspace width='2em'></mspace></mtd></mtr></mtable></math>
+<!-- l. 75 --><p class='noindent'>First-visit state entries <!-- l. 75 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>x</mi></mrow><mrow><mi mathvariant='italic'>tkl</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mn>0</mn></mrow></msub></math>
+can be nonzero only for <!-- l. 75 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>t</mi> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msub><mrow><mi>T</mi></mrow><mrow><mi>k</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <mn>1</mn></mrow></math>.
+The source writes the set of always-zero indices as </p><table class='equation-star'><tr><td>
+<!-- l. 76 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                      <mi>Θ</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>{</mo><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi mathvariant='italic'>tklj</mi><mo class='MathClass-rel' stretchy='false'>∣</mo><mo class='MathClass-open' stretchy='false'>(</mo><mi>t</mi> <mo class='MathClass-rel' stretchy='false'>≥</mo> <msub><mrow><mi>h</mi></mrow><mrow><mi>k</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mi>j</mi> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-bin' stretchy='false'>∪</mo> <mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>T</mi></mrow><mrow><mi>k</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≤</mo> <mi>t</mi> <mo class='MathClass-rel' stretchy='false'>≤</mo> <mi>T</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>j</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-close' stretchy='false'>}</mo><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 79 --><p class='indent'>   Thus <!-- l. 79 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>x</mi></mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn></mrow></math> for
+indices in <!-- l. 79 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>Θ</mi></math>,
+as specified by that prose. These are state restrictions, not restrictions forcing the ALP coefficients
+<!-- l. 79 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>τ</mi></mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow></msub></math> to
+zero.
+</p><!-- l. 81 --><p class='noindent'>
+</p>
+   <h3 class='likesectionHead' id='actions-and-the-inherited-feasible-action-set'><a id='x1-4000'></a>Actions and the inherited feasible action set</h3>
+<!-- l. 82 --><p class='noindent'>For a given state, the action is </p><table class='equation-star'><tr><td>
+<!-- l. 83 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+        <mi>a</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>(</mo><mover accent='true'><mrow><mi>r</mi></mrow><mo accent='true'>→</mo></mover><mo class='MathClass-punc' stretchy='false'>,</mo><mover accent='true'><mrow><mi>n</mi></mrow><mo accent='true'>→</mo></mover><mo class='MathClass-punc' stretchy='false'>,</mo><mover accent='true'><mrow><mi>z</mi></mrow><mo accent='true'>→</mo></mover><mo class='MathClass-punc' stretchy='false'>,</mo><mover accent='true'><mrow><mi>o</mi></mrow><mo accent='true'>→</mo></mover><mo class='MathClass-punc' stretchy='false'>,</mo><mi>u</mi><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mover accent='true'><mrow><mi>r</mi></mrow><mo accent='true'>→</mo></mover> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>{</mo><msub><mrow><mi>r</mi></mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>;</mo><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi mathvariant='italic'>kl</mi><mo class='MathClass-close' stretchy='false'>}</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><mover accent='true'><mrow><mi>n</mi></mrow><mo accent='true'>→</mo></mover> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>{</mo><msub><mrow><mi>n</mi></mrow><mrow><mi mathvariant='italic'>tkl</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>;</mo><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi mathvariant='italic'>tkl</mi><mo class='MathClass-close' stretchy='false'>}</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><mover accent='true'><mrow><mi>z</mi></mrow><mo accent='true'>→</mo></mover> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>{</mo><msub><mrow><mi>z</mi></mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>;</mo><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi mathvariant='italic'>kl</mi><mo class='MathClass-close' stretchy='false'>}</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><mover accent='true'><mrow><mi>o</mi></mrow><mo accent='true'>→</mo></mover> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>{</mo><msub><mrow><mi>o</mi></mrow><mrow><mi>l</mi><msup><mrow><mi>l</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></msub><mo class='MathClass-punc' stretchy='false'>;</mo><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>l</mi><msup><mrow><mi>l</mi></mrow><mrow><mi>′</mi></mrow></msup><mo class='MathClass-close' stretchy='false'>}</mo><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 90 --><p class='indent'>   The quantities <!-- l. 90 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>r</mi></mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub></math>,
+<!-- l. 90 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>n</mi></mrow><mrow><mi mathvariant='italic'>tkl</mi></mrow></msub></math>, and
+<!-- l. 90 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>z</mi></mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub></math>
+are, respectively, numbers of rejected new referrals, accepted new referrals assigned to day
+<!-- l. 90 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>t</mi></math>, and diverted
+visits. First visits of accepted referrals are assigned within their respective wait-time targets. The binary variable
+<!-- l. 90 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>o</mi></mrow><mrow><mi>l</mi><msup><mrow><mi>l</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></msub></math> takes value one if the
+
+nurse serves location <!-- l. 90 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>l</mi></math>
+before <!-- l. 90 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msup><mrow><mi>l</mi></mrow><mrow><mi>′</mi></mrow></msup></math>. The
+quantity <!-- l. 90 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>u</mi></math>
+is overtime. Diversion, routing, and overtime concern only day 1, and diversion concerns one visit of each patient at
+a time.
+</p><!-- l. 92 --><p class='indent'>   The auxiliary variable <!-- l. 92 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>w</mi></mrow><mrow><mi>l</mi></mrow></msub></math>
+indicates a location to be visited, <!-- l. 92 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>f</mi></mrow><mrow><mi>l</mi></mrow></msub></math>
+represents accumulated travel time from the depot to location
+<!-- l. 92 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>l</mi></math>,
+<!-- l. 92 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>q</mi></math> is the day’s total travel
+time, and <!-- l. 92 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>g</mi></math> is the day’s tour
+length. The fixed coefficient <!-- l. 92 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>M</mi></math>
+is described only as a big number.
+</p><!-- tex4ht:inline --><!-- l. 107 --><math display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mtable class='align' columnalign='left' displaystyle='true'>
+      <mtr><mtd class='align-odd' columnalign='right'><msub><mrow><mi>r</mi></mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub></mtd>                                <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>=</mo> <msub><mrow><mi>y</mi></mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo><munderover accent='false' accentunder='false'><mrow><mo>∑</mo>
+  </mrow><mrow><mi>t</mi><mo class='MathClass-rel' stretchy='false'>=</mo><mn>1</mn></mrow><mrow><msub><mrow><mi>T</mi></mrow><mrow><mi>k</mi></mrow></msub>
+         </mrow></munderover><msub><mrow><mi>n</mi></mrow><mrow><mi mathvariant='italic'>tkl</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                           <mtd class='align-odd' columnalign='right'></mtd>      <mtd class='align-even'><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi mathvariant='italic'>kl</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                           <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(2)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-4012r0'></mstyle><!-- endlabel -->
+      </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><msub><mrow><mi>z</mi></mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub></mtd>                               <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>≤</mo><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>j</mi></mrow></munder><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mi mathvariant='italic'>klj</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>n</mi></mrow><mrow><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mi mathvariant='italic'>kl</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                            <mtd class='align-odd' columnalign='right'></mtd>      <mtd class='align-even'><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi mathvariant='italic'>kl</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                           <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(3)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-4013r0'></mstyle><!-- endlabel -->
+      </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi mathvariant='italic'>kj</mi></mrow></munder><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mi mathvariant='italic'>klj</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>k</mi></mrow></munder><msub><mrow><mi>n</mi></mrow><mrow><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mi mathvariant='italic'>kl</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>k</mi></mrow></munder><msub><mrow><mi>z</mi></mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub></mtd>      <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>≤</mo> <mi>M</mi><msub><mrow><mi>w</mi></mrow><mrow><mi>l</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                                       <mtd class='align-odd' columnalign='right'></mtd>      <mtd class='align-even'><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>l</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                            <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(4)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-4014r0'></mstyle><!-- endlabel -->
+      </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><msub><mrow><mi>w</mi></mrow><mrow><mi>l</mi></mrow></msub></mtd>                                <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>∈</mo><mo class='MathClass-open' stretchy='false'>{</mo><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>}</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                                      <mtd class='align-odd' columnalign='right'></mtd>      <mtd class='align-even'><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>l</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                            <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(5)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-4015r0'></mstyle><!-- endlabel -->
+      </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><msub><mrow><mi>f</mi></mrow><mrow><mi>l</mi></mrow></msub></mtd>                                <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>≥</mo> <msub><mrow><mi>d</mi></mrow><mrow><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mi>l</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                                        <mtd class='align-odd' columnalign='right'></mtd>      <mtd class='align-even'><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>l</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                            <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(6)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-4016r0'></mstyle><!-- endlabel -->
+      </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><msub><mrow><mi>f</mi></mrow><mrow><mi>l</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <mi>M</mi><mo class='MathClass-open' stretchy='false'>(</mo><mn>2</mn> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>o</mi></mrow><mrow><mi>l</mi><msup><mrow><mi>l</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></msub><mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>w</mi></mrow><mrow><mi>l</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>w</mi></mrow><mrow><msup><mrow><mi>l</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo></mtd>           <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>≥</mo> <msub><mrow><mi>f</mi></mrow><mrow><msup><mrow><mi>l</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>d</mi></mrow><mrow><msup><mrow><mi>l</mi></mrow><mrow><mi>′</mi></mrow></msup><mi>l</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                                    <mtd class='align-odd' columnalign='right'></mtd>      <mtd class='align-even'><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>l</mi><msup><mrow><mi>l</mi></mrow><mrow><mi>′</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><mi>l</mi><mo class='MathClass-rel' stretchy='false'>≠</mo><msup><mrow><mi>l</mi></mrow><mrow><mi>′</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                        <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(7)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-4017r0'></mstyle><!-- endlabel -->
+      </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><msub><mrow><mi>o</mi></mrow><mrow><mi>l</mi><msup><mrow><mi>l</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></msub></mtd>                               <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>∈</mo><mo class='MathClass-open' stretchy='false'>{</mo><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>}</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                                      <mtd class='align-odd' columnalign='right'></mtd>      <mtd class='align-even'><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>l</mi><msup><mrow><mi>l</mi></mrow><mrow><mi>′</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                           <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(8)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-4018r0'></mstyle><!-- endlabel -->
+      </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><msub><mrow><mi>f</mi></mrow><mrow><mi>l</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>d</mi></mrow><mrow><mi>l</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mn>0</mn></mrow></msub></mtd>                           <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>≤</mo> <mi>q</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <mi>M</mi><mo class='MathClass-open' stretchy='false'>(</mo><mn>1</mn> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>w</mi></mrow><mrow><mi>l</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                               <mtd class='align-odd' columnalign='right'></mtd>      <mtd class='align-even'><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>l</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                            <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(9)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-4019r0'></mstyle><!-- endlabel -->
+      </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><mi>g</mi></mtd>                                 <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>=</mo> <mi>q</mi> <mo class='MathClass-bin' stretchy='false'>+</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>k</mi></mrow></munder> <mrow><mo fence='true' form='prefix'> (</mo><mrow><munder class='msub'><mrow><mo>∑</mo>
+  </mrow><mrow><mi mathvariant='italic'>lj</mi></mrow></munder><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mi mathvariant='italic'>klj</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>l</mi></mrow></munder><msub><mrow><mi>n</mi></mrow><mrow><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mi mathvariant='italic'>kl</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>l</mi></mrow></munder><msub><mrow><mi>z</mi></mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub></mrow><mo fence='true' form='postfix'>)</mo></mrow> <msub><mrow><mi>e</mi></mrow><mrow><mi>k</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>            <mtd class='align-odd' columnalign='right'></mtd>             <mtd class='align-even'><mspace width='2em'></mspace></mtd>      <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(10)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-4020r0'></mstyle><!-- endlabel -->
+      </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><mi>g</mi></mtd>                                 <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>≤</mo> <mi>χ</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <mi>u</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                                            <mtd class='align-odd' columnalign='right'></mtd>             <mtd class='align-even'><mspace width='2em'></mspace></mtd>      <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(11)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-4021r0'></mstyle><!-- endlabel -->
+      </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><mi>u</mi></mtd>                                 <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msup><mrow><mi>χ</mi></mrow><mrow><mi>′</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>.</mo><mspace width='2em'></mspace></mtd>                                               <mtd class='align-odd' columnalign='right'></mtd>             <mtd class='align-even'><mspace width='2em'></mspace></mtd>      <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(12)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-4022r0'></mstyle><!-- endlabel -->
+   </mtd></mtr></mtable></math>
+<!-- l. 108 --><p class='noindent'>The source defines <!-- l. 108 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>A</mi></mrow><mrow><mi>s</mi></mrow></msub></math> as the set
+of all feasible actions for state <!-- l. 108 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>s</mi></math>
+satisfying (1)–(12), with the state and action meanings just stated. At the action-generation stage
+<!-- l. 108 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>s</mi></math> is fixed;
+the action and auxiliary routing quantities are selected.
+</p>
+<!-- l. 110 --><p class='noindent'><span class='paragraphHead' id='printedscope-note'><a id='x1-5000'></a><span class='cmbx-10'>Printed-scope note.</span></span>
+   The action prose identifies referral and visit quantities as counts and the time quantities
+by their physical roles. Unlike the state domains in (1) and the binary domains (5), (8),
+the printed action block does not separately list integer/nonnegative domain rows for
+<!-- l. 111 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>r</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>z</mi></mrow></math> or nonnegative time-domain rows.
+
+No extra domain rows or big-<!-- l. 111 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>M</mi></math>
+bound are supplied here. Also, (7)–(8) print no relation linking
+<!-- l. 111 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>o</mi></mrow><mrow><mi>l</mi><msup><mrow><mi>l</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></msub></math> to
+<!-- l. 111 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>o</mi></mrow><mrow><msup><mrow><mi>l</mi></mrow><mrow><mi>′</mi></mrow></msup><mi>l</mi></mrow></msub></math>: the
+stated precedence interpretation is not enforced by an additional ordering equation in that block. The printed
+routing rows are retained without repair.
+</p><!-- l. 113 --><p class='noindent'>
+</p>
+   <h3 class='likesectionHead' id='stochastic-transitions-and-their-expectations'><a id='x1-6000'></a>Stochastic transitions and their expectations</h3>
+<!-- l. 114 --><p class='noindent'>After <!-- l. 114 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>j</mi></math> completed visits, the
+probability that a type-<!-- l. 114 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>k</mi></math> patient
+needs at least one more visit is <!-- l. 114 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>p</mi></mrow><mrow><mi>k</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>j</mi><mo class='MathClass-bin' stretchy='false'>+</mo><mn>1</mn></mrow></msub></math>.
+Its printed definition is </p><table class='equation-star'><tr><td>
+<!-- l. 115 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                             <msub><mrow><mi>p</mi></mrow><mrow><mi mathvariant='italic'>kj</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mi>ℙ</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>Ĵ</mi></mrow><mrow><mi>k</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mi>j</mi><mo class='MathClass-rel' stretchy='false'>∣</mo><msub><mrow><mi>Ĵ</mi></mrow><mrow><mi>k</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mi>j</mi> <mo class='MathClass-bin' stretchy='false'>−</mo> <mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>j</mi> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 118 --><p class='indent'>   The symbol <!-- l. 118 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>B</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>x</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>p</mi><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math> denotes a
+binomial random variable with <!-- l. 118 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>x</mi></math>
+trials and success probability <!-- l. 118 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>p</mi></math>.
+For the next state <!-- l. 118 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msup><mrow><mi>s</mi></mrow><mrow><mi>′</mi></mrow></msup> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>(</mo><msup><mrow><mover accent='true'><mrow><mi>x</mi></mrow><mo accent='true'>→</mo></mover></mrow><mrow><mi>′</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><msup><mrow><mover accent='true'><mrow><mi>y</mi></mrow><mo accent='true'>→</mo></mover></mrow><mrow><mi>′</mi></mrow></msup><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math>, the random
+vector corresponding to <!-- l. 118 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msup><mrow><mover accent='true'><mrow><mi>x</mi></mrow><mo accent='true'>→</mo></mover></mrow><mrow><mi>′</mi></mrow></msup></math>
+is <!-- l. 118 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msup><mrow><mover accent='true'><mrow><mi>X</mi></mrow><mo accent='true'>→</mo></mover></mrow><mrow><mi>′</mi></mrow></msup></math>,
+defined by </p><table class='equation'><tr><td>
+<!-- l. 119 --><p class='indent'>
+</p><!-- l. 119 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mstyle class='label' id='x1-6001r1'></mstyle><!-- endlabel --><msubsup><mrow><mi>X</mi></mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow><mrow><mi>′</mi></mrow></msubsup><mo class='MathClass-open' stretchy='false'>(</mo><mi>s</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>a</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>=</mo> <mrow class='cases'> <mrow><mo fence='true' form='prefix'> {</mo><mrow> <mtable align='axis' class='array' columnlines='none' displaystyle='true' equalcolumns='false' equalrows='false' style=''> <mtr class='array-row'><mtd class='array-td' columnalign='left'><mi>B</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mi mathvariant='italic'>kl</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mn>0</mn></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>n</mi></mrow><mrow><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mi mathvariant='italic'>kl</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>p</mi></mrow><mrow><mi>k</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mn>2</mn></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace></mtd><mtd class='array-td' columnalign='left'><mi>j</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><mi>t</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <msub><mrow><mi>h</mi></mrow><mrow><mi>k</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo>              </mtd>
+</mtr>  <mtr class='array-row'><mtd class='array-td' columnalign='left'><mi>B</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mi mathvariant='italic'>kl</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>j</mi><mo class='MathClass-bin' stretchy='false'>−</mo><mn>1</mn></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>p</mi></mrow><mrow><mi>k</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>j</mi><mo class='MathClass-bin' stretchy='false'>+</mo><mn>1</mn></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>,</mo>   <mspace class='quad' width='1em'></mspace></mtd><mtd class='array-td' columnalign='left'><mi>j</mi> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mn>2</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><mi>t</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <msub><mrow><mi>h</mi></mrow><mrow><mi>k</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo>              </mtd>
+</mtr>  <mtr class='array-row'><mtd class='array-td' columnalign='left'><msub><mrow><mi>x</mi></mrow><mrow><mi>t</mi><mo class='MathClass-bin' stretchy='false'>+</mo><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mi mathvariant='italic'>klj</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo>                <mspace class='quad' width='1em'></mspace></mtd><mtd class='array-td' columnalign='left'><mi>j</mi><mo class='MathClass-rel' stretchy='false'>≠</mo><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><mi>t</mi> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msub><mrow><mi>h</mi></mrow><mrow><mi>k</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo>           </mtd>
+</mtr>  <mtr class='array-row'><mtd class='array-td' columnalign='left'><msub><mrow><mi>x</mi></mrow><mrow><mi>t</mi><mo class='MathClass-bin' stretchy='false'>+</mo><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mi mathvariant='italic'>kl</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mn>0</mn></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>n</mi></mrow><mrow><mi>t</mi><mo class='MathClass-bin' stretchy='false'>+</mo><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mi mathvariant='italic'>kl</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo>     <mspace class='quad' width='1em'></mspace></mtd><mtd class='array-td' columnalign='left'><mi>j</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><mi>t</mi> <mo class='MathClass-rel' stretchy='false'>&lt;</mo> <msub><mrow><mi>T</mi></mrow><mrow><mi>k</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo>             </mtd>
+</mtr>   <!-- @{}l@{\quad }l@{} --></mtable>                                                                 </mrow><mo fence='true' form='postfix'></mo></mrow></mrow><mspace class='quad' width='1em'></mspace><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>s</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>S</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>a</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msub><mrow><mi>A</mi></mrow><mrow><mi>s</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi mathvariant='italic'>tklj</mi><mo class='MathClass-punc' stretchy='false'>.</mo>
+                                                                                         <mstyle class='label' id='x1-6002r0'></mstyle><!-- endlabel -->
+</mrow></math></td><td class='eq-no'>(13)<a id='x1-6003r0'></a></td></tr></table>
+<!-- l. 131 --><p class='indent'>   The accompanying explanation gives </p><table class='equation-star'><tr><td>
+
+<!-- l. 132 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                                <msub><mrow><mi>x</mi></mrow><mrow><mi>t</mi><mo class='MathClass-bin' stretchy='false'>+</mo><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mi mathvariant='italic'>klj</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>t</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <msub><mrow><mi>h</mi></mrow><mrow><mi>k</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><mi mathvariant='italic'>kl</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><mi>j</mi> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo>
+</mrow></math></td></tr></table>
+<!-- l. 135 --><p class='indent'>   as the reason no such carried-over term appears in the first two branches. The binomial counts include patients
+whose current visit is diverted, since those visits are still served.
+</p><!-- l. 137 --><p class='indent'>   Let <!-- l. 137 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mover accent='true'><mrow><mi>ξ</mi></mrow><mo accent='true'>→</mo></mover> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>{</mo><msub><mrow><mi>ξ</mi></mrow><mrow><mi mathvariant='italic'>klj</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>;</mo><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi mathvariant='italic'>klj</mi><mo class='MathClass-close' stretchy='false'>}</mo></mrow></math> denote the numbers
+of patients visited on the previous day who need at least one more visit. The authors assume independence among the elements of
+<!-- l. 137 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mover accent='true'><mrow><mi>ξ</mi></mrow><mo accent='true'>→</mo></mover></math>, among the arrival counts across
+types and regions, and between <!-- l. 137 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mover accent='true'><mrow><mi>ξ</mi></mrow><mo accent='true'>→</mo></mover></math>
+and <!-- l. 137 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msup><mrow><mover accent='true'><mrow><mi>y</mi></mrow><mo accent='true'>→</mo></mover></mrow><mrow><mi>′</mi></mrow></msup></math>.
+Their transition-probability expression is </p><table class='equation-star'><tr><td>
+<!-- l. 138 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                      <mi>ℙ</mi><mo class='MathClass-open' stretchy='false'>(</mo><msup><mrow><mi>s</mi></mrow><mrow><mi>′</mi></mrow></msup><mo class='MathClass-rel' stretchy='false'>∣</mo><mi>s</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>a</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>=</mo> <mi>ℙ</mi><mo class='MathClass-open' stretchy='false'>(</mo><mover accent='true'><mrow><mi>ξ</mi></mrow><mo accent='true'>→</mo></mover><mo class='MathClass-close' stretchy='false'>)</mo><mi>ℙ</mi><mo class='MathClass-open' stretchy='false'>(</mo><msup><mrow><mover accent='true'><mrow><mi>y</mi></mrow><mo accent='true'>→</mo></mover></mrow><mrow><mi>′</mi></mrow></msup><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>=</mo><munder class='msub'><mrow><mo> ∏</mo>
+  </mrow><mrow><mi mathvariant='italic'>klj</mi></mrow></munder><mi>ℙ</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>ξ</mi></mrow><mrow><mi mathvariant='italic'>klj</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-bin' stretchy='false'>×</mo><munder class='msub'><mrow><mo>∏</mo>
+  </mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></munder><mi>ℙ</mi><mo class='MathClass-open' stretchy='false'>(</mo><msubsup><mrow><mi>y</mi></mrow><mrow><mi mathvariant='italic'>kl</mi></mrow><mrow><mi>′</mi></mrow></msubsup><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 143 --><p class='indent'>   The next day’s referral distribution is the fixed daily referral distribution. The expected transition used in (20c)
+and the greedy objective is </p><table class='equation'><tr><td>
+<!-- l. 144 --><p class='indent'>
+</p><!-- l. 144 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mstyle class='label' id='x1-6004r1'></mstyle><!-- endlabel --><mi>𝔼</mi><mo class='MathClass-open' stretchy='false'>[</mo><msubsup><mrow><mi>X</mi></mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow><mrow><mi>′</mi></mrow></msubsup><mo class='MathClass-open' stretchy='false'>(</mo><mi>s</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>a</mi><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-close' stretchy='false'>]</mo> <mo class='MathClass-rel' stretchy='false'>=</mo> <mrow class='cases'> <mrow><mo fence='true' form='prefix'> {</mo><mrow> <mtable align='axis' class='array' columnlines='none' displaystyle='true' equalcolumns='false' equalrows='false' style=''> <mtr class='array-row'><mtd class='array-td' columnalign='left'><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mi mathvariant='italic'>kl</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mn>0</mn></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>n</mi></mrow><mrow><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mi mathvariant='italic'>kl</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><msub><mrow><mi>p</mi></mrow><mrow><mi>k</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mn>2</mn></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace></mtd><mtd class='array-td' columnalign='left'><mi>j</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><mi>t</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <msub><mrow><mi>h</mi></mrow><mrow><mi>k</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo>  </mtd>
+</mtr>  <mtr class='array-row'><mtd class='array-td' columnalign='left'><msub><mrow><mi>x</mi></mrow><mrow><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mi mathvariant='italic'>kl</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>j</mi><mo class='MathClass-bin' stretchy='false'>−</mo><mn>1</mn></mrow></msub><msub><mrow><mi>p</mi></mrow><mrow><mi>k</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>j</mi><mo class='MathClass-bin' stretchy='false'>+</mo><mn>1</mn></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo>     <mspace class='quad' width='1em'></mspace></mtd><mtd class='array-td' columnalign='left'><mi>j</mi> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mn>2</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><mi>t</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <msub><mrow><mi>h</mi></mrow><mrow><mi>k</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo>  </mtd>
+</mtr>  <mtr class='array-row'><mtd class='array-td' columnalign='left'><msub><mrow><mi>x</mi></mrow><mrow><mi>t</mi><mo class='MathClass-bin' stretchy='false'>+</mo><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mi mathvariant='italic'>klj</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo>             <mspace class='quad' width='1em'></mspace></mtd><mtd class='array-td' columnalign='left'><mi>j</mi><mo class='MathClass-rel' stretchy='false'>≠</mo><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><mi>t</mi> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msub><mrow><mi>h</mi></mrow><mrow><mi>k</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo></mtd>
+</mtr>  <mtr class='array-row'><mtd class='array-td' columnalign='left'><msub><mrow><mi>x</mi></mrow><mrow><mi>t</mi><mo class='MathClass-bin' stretchy='false'>+</mo><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mi mathvariant='italic'>kl</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mn>0</mn></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>n</mi></mrow><mrow><mi>t</mi><mo class='MathClass-bin' stretchy='false'>+</mo><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mi mathvariant='italic'>kl</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo> <mspace class='quad' width='1em'></mspace></mtd><mtd class='array-td' columnalign='left'><mi>j</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><mi>t</mi> <mo class='MathClass-rel' stretchy='false'>&lt;</mo> <msub><mrow><mi>T</mi></mrow><mrow><mi>k</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo>  </mtd>
+</mtr>   <!-- @{}l@{\quad }l@{} --></mtable>                                                                               </mrow><mo fence='true' form='postfix'></mo></mrow></mrow><mspace class='quad' width='1em'></mspace><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>s</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>S</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>a</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msub><mrow><mi>A</mi></mrow><mrow><mi>s</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi mathvariant='italic'>tklj</mi><mo class='MathClass-punc' stretchy='false'>.</mo>
+                                                                                         <mstyle class='label' id='x1-6005r0'></mstyle><!-- endlabel -->
+</mrow></math></td><td class='eq-no'>(19)<a id='x1-6006r0'></a></td></tr></table>
+<!-- l. 156 --><p class='indent'>   No truncation or overflow rule reconciling these transitions with the abstract finite state bounds is specified in
+the defining passages; none is added here. The conditional probability definition is retained without an added
+convention for conditioning events of probability zero.
+
+</p><!-- l. 158 --><p class='noindent'>
+</p>
+   <h3 class='likesectionHead' id='immediate-cost-and-fixed-cost-coefficients'><a id='x1-7000'></a>Immediate cost and fixed cost coefficients</h3>
+   <table class='equation'><tr><td>
+<!-- l. 159 --><p class='indent'>
+</p><!-- l. 159 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                 <mstyle class='label' id='x1-7001r1'></mstyle><!-- endlabel --><mi>c</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>s</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>a</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>=</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></munder><msub><mrow><mi>R</mi></mrow><mrow><mi>k</mi></mrow></msub><msub><mrow><mi>r</mi></mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></munder><msub><mrow><mi>Z</mi></mrow><mrow><mi>k</mi></mrow></msub><msub><mrow><mi>z</mi></mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <mi mathvariant='italic'>Uu</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <mi mathvariant='italic'>Qq</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>s</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>a</mi><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>s</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>S</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><mi>a</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msub><mrow><mi>A</mi></mrow><mrow><mi>s</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>.</mo>
+                                                                                         <mstyle class='label' id='x1-7002r0'></mstyle><!-- endlabel -->
+</mrow></math></td><td class='eq-no'>(14)<a id='x1-7003r0'></a></td></tr></table>
+<!-- l. 164 --><p class='noindent'>Here <!-- l. 164 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>R</mi></mrow><mrow><mi>k</mi></mrow></msub></math> is the cost of rejecting
+a whole referral of type <!-- l. 164 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>k</mi></math>,
+<!-- l. 164 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>Z</mi></mrow><mrow><mi>k</mi></mrow></msub></math> is the cost of diverting one
+visit of that type, <!-- l. 164 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>U</mi></math> is the
+unit overtime cost, and <!-- l. 164 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>Q</mi></math>
+is the unit travel-time cost. The fixed coefficient definitions are </p><table class='equation-star'><tr><td>
+<!-- l. 165 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                          <msub><mrow><mi>R</mi></mrow><mrow><mi>k</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <msup><mrow><mi>ζ</mi></mrow><mrow><mi>r</mi></mrow></msup><mi>𝔼</mi><mo class='MathClass-open' stretchy='false'>[</mo><msub><mrow><mi>Ĵ</mi></mrow><mrow>
+<mi>k</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>]</mo><msub><mrow><mi>e</mi></mrow><mrow><mi>k</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><msub><mrow><mi>Z</mi></mrow><mrow><mi>k</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <msup><mrow><mi>ζ</mi></mrow><mrow><mi>z</mi></mrow></msup><msub><mrow><mi>e</mi></mrow><mrow>
+<mi>k</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mi>U</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <msup><mrow><mi>ζ</mi></mrow><mrow><mi>u</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mi>Q</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <msup><mrow><mi>ζ</mi></mrow><mrow><mi>q</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 170 --><p class='indent'>   The weights <!-- l. 170 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msup><mrow><mi>ζ</mi></mrow><mrow><mi>r</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><msup><mrow><mi>ζ</mi></mrow><mrow><mi>z</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><msup><mrow><mi>ζ</mi></mrow><mrow><mi>u</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><msup><mrow><mi>ζ</mi></mrow><mrow><mi>q</mi></mrow></msup></mrow></math>
+are chosen according to stakeholder preferences. Rejection cost represents the expected lost profit of not serving all visits of a
+referral. Diversion cost accounts for on-call service and the violation of continuity of care, and does not depend on location.
+The notation <!-- l. 170 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>q</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>s</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>a</mi><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math>
+refers to the travel-time quantity in (9)–(10), not a separate input coefficient.
+</p><!-- l. 172 --><p class='noindent'>
+</p>
+   <h3 class='likesectionHead' id='affine-value-function-and-the-source-of-the-policy-parameters'><a id='x1-8000'></a>Affine value function and the source of the policy parameters</h3>
+<!-- l. 173 --><p class='noindent'>The affine approximation is </p><table class='equation'><tr><td>
+<!-- l. 174 --><p class='indent'>
+
+</p><!-- l. 174 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                        <mstyle class='label' id='x1-8001r1'></mstyle><!-- endlabel --><mover accent='true'><mrow><mi>v</mi></mrow><mo accent='true'>~</mo></mover><mo class='MathClass-open' stretchy='false'>(</mo><mi>s</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>=</mo> <mi>η</mi> <mo class='MathClass-bin' stretchy='false'>+</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow></munder><msub><mrow><mi>τ</mi></mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow></msub><msub><mrow><mi>x</mi></mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></munder><msub><mrow><mi>ρ</mi></mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub><msub><mrow><mi>y</mi></mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>s</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>S</mi><mo class='MathClass-punc' stretchy='false'>.</mo>
+                                                                                         <mstyle class='label' id='x1-8002r0'></mstyle><!-- endlabel -->
+</mrow></math></td><td class='eq-no'>(17)<a id='x1-8003r0'></a></td></tr></table>
+<!-- l. 179 --><p class='indent'>   The parameter domains and vectors are </p><table class='equation-star'><tr><td>
+<!-- l. 180 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                            <msub><mrow><mi>τ</mi></mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msub><mrow><mi>ℝ</mi></mrow><mrow><mo class='MathClass-rel' stretchy='false'>≥</mo><mn>0</mn></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi mathvariant='italic'>tklj</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><msub><mrow><mi>ρ</mi></mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msub><mrow><mi>ℝ</mi></mrow><mrow><mo class='MathClass-rel' stretchy='false'>≥</mo><mn>0</mn></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi mathvariant='italic'>kl</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mi>η</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>ℝ</mi><mo class='MathClass-punc' stretchy='false'>,</mo>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 185 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                              <mover accent='true'><mrow><mi>τ</mi></mrow><mo accent='true'>→</mo></mover> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>{</mo><msub><mrow><mi>τ</mi></mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>;</mo><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi mathvariant='italic'>tklj</mi><mo class='MathClass-close' stretchy='false'>}</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mover accent='true'><mrow><mi>ρ</mi></mrow><mo accent='true'>→</mo></mover> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>{</mo><msub><mrow><mi>ρ</mi></mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>;</mo><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi mathvariant='italic'>kl</mi><mo class='MathClass-close' stretchy='false'>}</mo><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 189 --><p class='indent'>   The coefficients <!-- l. 189 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>τ</mi></mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow></msub></math>
+and <!-- l. 189 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>ρ</mi></mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub></math>
+represent marginal expected infinite-horizon discounted costs of an additional scheduled visit and an additional
+referral, respectively. They are optimization parameters when solving the ALP and fixed coefficients when taking a
+daily greedy action.
+</p><!-- l. 191 --><p class='indent'>   For completeness of the dual-price linkage, the parent ALP whose dual is (20) is printed as follows; it is not an
+additional action-feasibility restriction: </p><table class='equation'><tr><td>
+<!-- l. 192 --><p class='indent'>
+
+</p><!-- l. 192 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                  <mstyle class='label' id='x1-8004r1'></mstyle><!-- endlabel --><mstyle mathvariant='bold'><mi>ALP</mi></mstyle> <mo class='MathClass-punc' stretchy='false'>:</mo> <mspace class='quad' width='1em'></mspace><munder class='msub'><mrow><mtext class='qopname'>max</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow><mrow><mi>η</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mover accent='true'><mrow><mi>τ</mi></mrow><mo accent='true'>→</mo></mover><mo class='MathClass-punc' stretchy='false'>,</mo><mover accent='true'><mrow><mi>ρ</mi></mrow><mo accent='true'>→</mo></mover></mrow></munder> <mrow><mo fence='true' form='prefix'> {</mo><mrow><mi>η</mi> <mo class='MathClass-bin' stretchy='false'>+</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow></munder><msub><mrow><mi>τ</mi></mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow></msub><msub><mrow><mi>𝔼</mi></mrow><mrow><mi>α</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>[</mo><msub><mrow><mi>X</mi></mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>]</mo> <mo class='MathClass-bin' stretchy='false'>+</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></munder><msub><mrow><mi>ρ</mi></mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub><msub><mrow><mi>𝔼</mi></mrow><mrow><mi>α</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>[</mo><msub><mrow><mi>Y</mi> </mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>]</mo></mrow><mo fence='true' form='postfix'>}</mo></mrow><mo class='MathClass-punc' stretchy='false'>.</mo>
+                                                                                         <mstyle class='label' id='x1-8005r0'></mstyle><!-- endlabel -->
+</mrow></math></td><td class='eq-no'>(18a)<a id='x1-8006r0'></a></td></tr></table>
+<!-- l. 199 --><p class='indent'>   Subject to </p><table class='equation'><tr><td>
+<!-- l. 200 --><p class='indent'>
+</p><!-- l. 200 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mstyle class='label' id='x1-8007r1'></mstyle><!-- endlabel -->   <mtable class='equation'><mtr><mtd>
+   <mtable class='split' columnalign='right left'>
+<mtr class='split-mtr'><mtd class='split-mtd'> <mo class='MathClass-open' stretchy='false'>(</mo><mn>1</mn> <mo class='MathClass-bin' stretchy='false'>−</mo> <mi>γ</mi><mo class='MathClass-close' stretchy='false'>)</mo><mi>η</mi> <mo class='MathClass-bin' stretchy='false'>+</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow></munder><msub><mrow><mi>τ</mi></mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow></msub><mrow><mo class='MathClass-open' fence='true' mathsize='1.19em'>(</mo><mrow><msub><mrow><mi>x</mi></mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <mi mathvariant='italic'>γ𝔼</mi><mo class='MathClass-open' stretchy='false'>[</mo><msubsup><mrow><mi>X</mi></mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow><mrow><mi>′</mi></mrow></msubsup><mo class='MathClass-open' stretchy='false'>(</mo><mi>s</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>a</mi><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-close' stretchy='false'>]</mo></mrow><mo class='MathClass-close' fence='true' mathsize='1.19em'>)</mo></mrow> <mo class='MathClass-bin' stretchy='false'>+</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></munder><msub><mrow><mi>ρ</mi></mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub><mrow><mo class='MathClass-open' fence='true' mathsize='1.19em'>(</mo><mrow><msub><mrow><mi>y</mi></mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <mi mathvariant='italic'>γ𝔼</mi><mo class='MathClass-open' stretchy='false'>[</mo><msub><mrow><mi>Y</mi> </mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>]</mo></mrow><mo class='MathClass-close' fence='true' mathsize='1.19em'>)</mo></mrow> <mo class='MathClass-rel' stretchy='false'>≤</mo> <mi>c</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>s</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>a</mi><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>,</mo></mtd>
+</mtr><mtr class='split-mtr'><mtd class='split-mtd'>                                                           <mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>s</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>S</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>a</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msub><mrow><mi>A</mi></mrow><mrow><mi>s</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo></mtd>
+   </mtr></mtable>                                                                                       </mtd><mtd><mstyle class='label' id='x1-8008r0'></mstyle><!-- endlabel -->
+   </mtd></mtr></mtable>
+</mrow></math></td><td class='eq-no'>(18b)<a id='x1-8009r0'></a></td></tr></table>
+   <table class='equation'><tr><td>
+<!-- l. 210 --><p class='indent'>
+</p><!-- l. 210 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                                 <mstyle class='label' id='x1-8010r1'></mstyle><!-- endlabel --><msub><mrow><mi>τ</mi></mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi mathvariant='italic'>tklj</mi><mo class='MathClass-punc' stretchy='false'>;</mo><mspace class='qquad' width='2em'></mspace><msub><mrow><mi>ρ</mi></mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi mathvariant='italic'>kl</mi><mo class='MathClass-punc' stretchy='false'>.</mo>
+                                                                                         <mstyle class='label' id='x1-8011r0'></mstyle><!-- endlabel -->
+</mrow></math></td><td class='eq-no'>(18c)<a id='x1-8012r0'></a></td></tr></table>
+<!-- l. 216 --><p class='noindent'>
+</p>
+   <h4 class='likesubsectionHead' id='staterelevance-coefficients'><a id='x1-9000'></a>State-relevance coefficients</h4>
+<!-- l. 217 --><p class='noindent'>The source introduces strictly positive state-relevance weights for its exact-LP argument: </p><table class='equation-star'><tr><td>
+
+<!-- l. 218 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                                      <mi>α</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>s</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>&gt;</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>s</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>S</mi><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 221 --><p class='indent'>   The retained coefficient definitions on page 14 are </p><table class='equation-star'><tr><td>
+<!-- l. 222 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                      <msub><mrow><mi>𝔼</mi></mrow><mrow><mi>α</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>[</mo><msub><mrow><mi>X</mi></mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>]</mo> <mo class='MathClass-rel' stretchy='false'>=</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>s</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>S</mi></mrow></munder><mi>α</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>s</mi><mo class='MathClass-close' stretchy='false'>)</mo><msub><mrow><mi>x</mi></mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><msub><mrow><mi>𝔼</mi></mrow><mrow><mi>α</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>[</mo><msub><mrow><mi>Y</mi> </mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>]</mo> <mo class='MathClass-rel' stretchy='false'>=</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>s</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>S</mi></mrow></munder><mi>α</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>s</mi><mo class='MathClass-close' stretchy='false'>)</mo><msub><mrow><mi>y</mi></mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 226 --><p class='indent'>   These are distinct from the arrival expectation <!-- l. 226 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>𝔼</mi><mo class='MathClass-open' stretchy='false'>[</mo><msub><mrow><mi>Y</mi> </mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>]</mo></mrow></math>
+and the conditional transition expectation <!-- l. 226 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>𝔼</mi><mo class='MathClass-open' stretchy='false'>[</mo><msubsup><mrow><mi>X</mi></mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow><mrow><mi>′</mi></mrow></msubsup><mo class='MathClass-open' stretchy='false'>(</mo><mi>s</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>a</mi><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-close' stretchy='false'>]</mo></mrow></math>.
+</p><!-- l. 228 --><p class='indent'>   The coefficient choice specified on page 16 and repeated in EC.1 is retained: </p><table class='equation-star'><tr><td>
+<!-- l. 229 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow>
+<mi>𝔼</mi></mrow><mrow><mi>α</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>[</mo><msub><mrow><mi>X</mi></mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>]</mo> <mo class='MathClass-rel' stretchy='false'>=</mo> <mrow class='cases'> <mrow><mo fence='true' form='prefix'> {</mo><mrow> <mtable align='axis' class='array' columnlines='none' displaystyle='true' equalcolumns='false' equalrows='false' style=''> <mtr class='array-row'><mtd class='array-td' columnalign='left'><mi>𝜀</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace></mtd><mtd class='array-td' columnalign='left'><mi mathvariant='italic'>tklj</mi><mo class='MathClass-rel' stretchy='false'>∉</mo><mi>Θ</mi><mo class='MathClass-punc' stretchy='false'>,</mo>  </mtd></mtr>   <!-- @{}l@{\quad }l@{} --></mtable>                                                                                                          </mrow><mo fence='true' form='postfix'></mo></mrow></mrow><mspace class='qquad' width='2em'></mspace><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi mathvariant='italic'>tklj</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><msub><mrow><mi>𝔼</mi></mrow><mrow><mi>α</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>[</mo><msub><mrow><mi>Y</mi> </mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>]</mo> <mo class='MathClass-rel' stretchy='false'>=</mo> <mi>𝔼</mi><mo class='MathClass-open' stretchy='false'>[</mo><msub><mrow><mi>Y</mi> </mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>]</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi mathvariant='italic'>kl</mi><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 239 --><p class='indent'>   Here <!-- l. 239 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>𝜀</mi></math> is an
+unknown constant to be tuned, not a D-ALP decision variable. EC.1 tunes it through simulation-based policy comparisons and
+explicitly includes <!-- l. 239 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>𝜀</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn></mrow></math>.
+It does not replace the full D-ALP rows or prescribe a universal numerical value for
+<!-- l. 239 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>𝜀</mi></math>; its
+example value is not imposed here.
+
+</p>
+<!-- l. 241 --><p class='noindent'><span class='paragraphHead' id='printed-relevanceweight-qualifications'><a id='x1-10000'></a><span class='cmbx-10'>Printed relevance-weight qualifications.</span></span>
+   The source prints coefficient one on <!-- l. 242 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>η</mi></math>
+in (18a), and hence right-hand side one in (20b), but does not explicitly print a normalization of
+<!-- l. 242 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>α</mi></math> in the
+defining passage. Those coefficients are retained without adding such a normalization. Strict positivity of
+<!-- l. 242 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>α</mi></math> in the exact-LP discussion
+cannot produce <!-- l. 242 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>𝔼</mi></mrow><mrow><mi>α</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>[</mo><msub><mrow><mi>X</mi></mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>]</mo> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn></mrow></math>
+for a coordinate positive in any state. Thus the explicitly allowed tuning endpoint
+<!-- l. 242 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>𝜀</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn></mrow></math>
+need not have the strictly positive-weight interpretation of that preceding discussion. The printed
+moment coefficients, including that endpoint, are retained rather than repaired by a new restriction on
+<!-- l. 242 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>𝜀</mi></math>.
+</p><!-- l. 244 --><p class='noindent'>
+</p>
+   <h3 class='likesectionHead' id='greedy-daily-action-selection'><a id='x1-11000'></a>Greedy daily action selection</h3>
+<!-- l. 245 --><p class='noindent'>For a given observed state <!-- l. 245 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>s</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>S</mi></mrow></math>
+and the parameter set </p><table class='equation-star'><tr><td>
+<!-- l. 246 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                                    <msup><mrow><mi>π</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>∗</mo></mrow></msup> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>(</mo><msup><mrow><mi>η</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>∗</mo></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><msubsup><mrow><mi>τ</mi></mrow><mrow>
+<mi mathvariant='italic'>tklj</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>∗</mo></mrow></msubsup><mo class='MathClass-punc' stretchy='false'>,</mo><msubsup><mrow><mi>ρ</mi></mrow><mrow>
+<mi mathvariant='italic'>kl</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>∗</mo></mrow></msubsup><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>,</mo>
+</mrow></math></td></tr></table>
+<!-- l. 249 --><p class='indent'>   the source’s ALP policy obtains its action by solving </p><table class='equation'><tr><td>
+<!-- l. 250 --><p class='indent'>
+</p><!-- l. 250 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                 <mstyle class='label' id='x1-11001r1'></mstyle><!-- endlabel --><munder class='msub'><mrow><mtext class='qopname'>min</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow><mrow><mi>a</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mi>A</mi></mrow><mrow><mi>s</mi></mrow></msub></mrow></munder> <mrow><mo fence='true' form='prefix'> {</mo><mrow><mi>c</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>s</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>a</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-bin' stretchy='false'>+</mo> <mi>γ</mi> <mrow><mo fence='true' form='prefix'> (</mo><mrow><mi>η</mi> <mo class='MathClass-bin' stretchy='false'>+</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow></munder><msubsup><mrow><mi>τ</mi></mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>∗</mo></mrow></msubsup><mi>𝔼</mi><mo class='MathClass-open' stretchy='false'>[</mo><msubsup><mrow><mi>X</mi></mrow><mrow>
+<mi mathvariant='italic'>tklj</mi></mrow><mrow><mi>′</mi></mrow></msubsup><mo class='MathClass-close' stretchy='false'>]</mo> <mo class='MathClass-bin' stretchy='false'>+</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></munder><msubsup><mrow><mi>ρ</mi></mrow><mrow><mi mathvariant='italic'>kl</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>∗</mo></mrow></msubsup><mi>𝔼</mi><mo class='MathClass-open' stretchy='false'>[</mo><msub><mrow><mi>Y</mi> </mrow><mrow>
+<mi mathvariant='italic'>kl</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>]</mo></mrow><mo fence='true' form='postfix'>)</mo></mrow></mrow><mo fence='true' form='postfix'>}</mo></mrow><mo class='MathClass-punc' stretchy='false'>.</mo>
+                                                                                         <mstyle class='label' id='x1-11002r0'></mstyle><!-- endlabel -->
+</mrow></math></td><td class='eq-no'>(22)<a id='x1-11003r0'></a></td></tr></table>
+<!-- l. 258 --><p class='indent'>   The expectation of <!-- l. 258 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mrow><mi>X</mi></mrow><mrow><mi mathvariant='italic'>tklj</mi></mrow><mrow><mi>′</mi></mrow></msubsup></math>
+in this expression is (19) for the current state and candidate action. The inherited set
+<!-- l. 258 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>A</mi></mrow><mrow><mi>s</mi></mrow></msub></math> is the
+complete set defined above, not a reduced scheduling or routing subproblem. Equation (22) prints an unstarred
+<!-- l. 258 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>η</mi></math> despite the preceding
+definition of <!-- l. 258 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msup><mrow><mi>π</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>∗</mo></mrow></msup></math>;
+that notation is preserved. This term is constant with respect to the selected action.
+
+</p><!-- l. 260 --><p class='indent'>   The authors’ expansion, after collecting action-independent terms, is </p><table class='equation'><tr><td>
+<!-- l. 261 --><p class='indent'>
+</p><!-- l. 261 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mstyle class='label' id='x1-11004r1'></mstyle><!-- endlabel -->   <mtable class='equation'><mtr><mtd>
+   <mtable class='split' columnalign='right left'>
+<mtr class='split-mtr'><mtd class='split-mtd'> <munder class='msub'><mrow><mtext class='qopname'>min</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow><mrow><mi>a</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mi>A</mi></mrow><mrow><mi>s</mi></mrow></msub></mrow></munder><mrow><mo class='MathClass-open' fence='true' mathsize='2.45em'>{</mo><mrow><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></munder><msub><mrow><mi>R</mi></mrow><mrow><mi>k</mi></mrow></msub><msub><mrow><mi>r</mi></mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></munder><msub><mrow><mi>Z</mi></mrow><mrow><mi>k</mi></mrow></msub><msub><mrow><mi>z</mi></mrow><mrow><mi mathvariant='italic'>kl</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <mi mathvariant='italic'>Uu</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <mi mathvariant='italic'>Qq</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <mi>γ</mi><mrow><mo class='MathClass-open' fence='true' mathsize='2.45em'>(</mo><mrow><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi mathvariant='italic'>tkl</mi><mo class='MathClass-punc' stretchy='false'>;</mo><mspace class='thinspace' width='0.17em'></mspace><mi>t</mi><mo class='MathClass-rel' stretchy='false'>=</mo><msub><mrow><mi>h</mi></mrow><mrow><mi>k</mi></mrow></msub></mrow></munder><msubsup><mrow><mi>τ</mi></mrow><mrow><mi mathvariant='italic'>tkl</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mn>1</mn></mrow><mrow><mo class='MathClass-bin' stretchy='false'>∗</mo></mrow></msubsup><msub><mrow><mi>p</mi></mrow><mrow>
+<mi>k</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mn>2</mn></mrow></msub><msub><mrow><mi>n</mi></mrow><mrow><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mi mathvariant='italic'>kl</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi mathvariant='italic'>tkl</mi><mo class='MathClass-punc' stretchy='false'>;</mo><mspace class='thinspace' width='0.17em'></mspace><mi>t</mi><mo class='MathClass-rel' stretchy='false'>≤</mo><msub><mrow><mi>T</mi></mrow><mrow><mi>k</mi></mrow></msub><mo class='MathClass-bin' stretchy='false'>−</mo><mn>1</mn></mrow></munder><msubsup><mrow><mi>τ</mi></mrow><mrow><mi mathvariant='italic'>tkl</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mn>0</mn></mrow><mrow><mo class='MathClass-bin' stretchy='false'>∗</mo></mrow></msubsup><msub><mrow><mi>n</mi></mrow><mrow>
+<mi>t</mi><mo class='MathClass-bin' stretchy='false'>+</mo><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mi mathvariant='italic'>kl</mi></mrow></msub></mrow><mo class='MathClass-close' fence='true' mathsize='2.45em'>)</mo></mrow></mrow><mo class='MathClass-close' fence='true' mathsize='2.45em'>}</mo></mrow> <mo class='MathClass-bin' stretchy='false'>+</mo> <mstyle class='text'><mtext>constant</mtext></mstyle><mo class='MathClass-punc' stretchy='false'>.</mo></mtd>
+   </mtr></mtable>                                                                                                     </mtd><mtd><mstyle class='label' id='x1-11005r0'></mstyle><!-- endlabel -->
+   </mtd></mtr></mtable>
+</mrow></math></td><td class='eq-no'>(23)<a id='x1-11006r0'></a></td></tr></table><p>
+   The source leaves the collected constant abstract. Equation (23) is an expansion
+of (22), not a second optimization imposed alongside it. Its first sum prints a
+</p><!-- l. 273 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>j</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn></mrow></math><p> coefficient without an explicit
+exception for </p><!-- l. 273 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>J</mi></mrow><mrow><mi>k</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn></mrow></math><p>, although the
+stated coefficient index range is </p><!-- l. 273 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>j</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>J</mi></mrow><mrow><mi>k</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <mn>1</mn></mrow></math><p>.
+No out-of-range coefficient convention or added lower bound on
+</p><!-- l. 273 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>J</mi></mrow><mrow><mi>k</mi></mrow></msub></math><p> is
+introduced here.
+    
+</p></body> 
+</html>

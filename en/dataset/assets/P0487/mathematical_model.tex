@@ -1,0 +1,143 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\section*{General dynamic pricing under terminal debt}
+
+\[
+\mathbf p^{\dagger}\in
+\underset{\mathbf p\in\mathcal Q}{\arg\max}\,
+\mathbb E\bigl[(\mathcal R(\mathbf p)-B)^+\bigr].
+\]
+The admissibility conditions defining the policy set in this objective are
+\[
+\begin{aligned}
+\mathbf p&=(p_1,\ldots,p_T),\\
+p_t&\in\mathcal P, &&t=1,\ldots,T,\\
+p_t&\text{ is }\mathcal F_t\text{-measurable}, &&t=1,\ldots,T,\\
+\mathcal F_t&=\sigma(\mathcal W_1,\ldots,\mathcal W_{t-1}),
+&&t=1,\ldots,T.
+\end{aligned}
+\]
+Here \(\mathcal Q\) consists of all such nonanticipating pricing policies. The price is selected at the beginning of the period, before that period's customer willingness to pay is realized.
+
+\subsection*{Fixed inputs, demand, and revenue}
+
+There are \(T\) discrete selling periods and a given initial inventory \(Y\in\mathbb N\) of a single product. The terminal debt repayment \(B\) is fixed, rather than a decision variable. The feasible price interval is
+\[
+\mathcal P=[\underline p,\bar p]\subseteq\mathbb R.
+\]
+A single customer arrives in each period \(t\in\{1,\ldots,T\}\). The willingness-to-pay random variables \(\mathcal W_1,\ldots,\mathcal W_T\) are independent and identically distributed. Their demand function satisfies
+\[
+\lambda:\mathcal P\longrightarrow[0,1],
+\qquad
+\lambda(p_t)=\mathbb P(\mathcal W_t\ge p_t).
+\]
+Endnote 5 imposes the additional assumption
+\[
+\lambda(p)>0\qquad\forall p\in\operatorname{int}(\mathcal P).
+\]
+That endnote also allows unbounded support: if \(\bar p=\infty\), the price interval is instead
+\[
+\mathcal P=[\underline p,\infty).
+\]
+No linear-demand, differentiability, or log-concavity assumption is imposed in the general formulation (2)--(3).
+
+The number of units remaining at the start of period \(t\) is the random state \(\mathcal Y_t\). Its printed dynamics are
+\[
+\mathcal Y_1=Y,\qquad
+\mathcal Y_{t+1}
+=\bigl(\mathcal Y_t-\mathbf 1\{\mathcal W_t\ge p_t\}\bigr)^+,
+\qquad t=1,\ldots,T-1.
+\]
+Unmet demand is lost without penalty. Unsold units are discarded at the end of the horizon without salvage value. Total revenue is defined by
+\[
+\mathcal R(\mathbf p):=
+\sum_{t=1}^{T}p_t(\mathcal Y_t-\mathcal Y_{t+1}).
+\]
+\emph{Printed endpoint omission (p.~5).} The inventory transition is printed only for \(t=1,\ldots,T-1\), whereas the revenue sum uses \(\mathcal Y_{T+1}\). The displayed inventory definition therefore does not specify that final term. Both printed scopes are retained here, without extending the transition.
+
+Revenue first services the terminal debt. Limited liability gives the decision maker the terminal payoff
+\[
+(\mathcal R(\mathbf p)-B)^+.
+\]
+The debt is paid off, or covered, on the event
+\[
+\mathcal R(\mathbf p)\ge B.
+\]
+The decision maker receives zero when revenue is insufficient to cover the debt, and incurs no additional loss or penalty. Thus the objective is expected equity value, not expected total revenue. There is no discounting; equivalently, the risk-free interest rate is zero. The superscript \({}^+\) denotes the positive part and \(\mathbf 1\{\cdot\}\) denotes an event indicator.
+
+\subsection*{Outstanding debt and the Bellman formulation}
+
+The authors restrict attention to Markov policies without loss of generality. A sufficient state at the start of period \(t\) is the remaining inventory \(\mathcal Y_t\) together with the outstanding debt \(\mathcal B_t\). Outstanding debt is the initial debt less the revenue generated in periods \(1,\ldots,t-1\), and its printed transition is
+\[
+\begin{aligned}
+\mathcal B_1&=B,\\
+\mathcal B_{t+1}
+&=\mathcal B_t-p_t\mathbf 1\{\mathcal W_t\ge p_t,\mathcal Y_t>0\},
+\qquad t=1,\ldots,T-1.
+\end{aligned}
+\]
+Positive \(\mathcal B_t\) is the additional revenue needed in periods \(t,\ldots,T\) to cover the debt. Negative \(\mathcal B_t\) means that the debt has already been covered and that \(-\mathcal B_t\) is a payoff already secured. In particular, the debt state is not truncated at zero.
+
+Let \(V_t(b,y)\) denote the decision maker's optimal expected payoff at the start of period \(t\), with outstanding debt \(b\) and \(y\) remaining inventory units. Here \(b\) is a signed real debt state and \(y\) is an inventory count, including zero. The Bellman recursion is
+\begin{equation}
+\begin{aligned}
+V_t(b,y)
+&=\max_{p\in\mathcal P}
+\bigl\{\lambda(p)V_{t+1}(b-p,y-1)
+ +(1-\lambda(p))V_{t+1}(b,y)\bigr\},\\
+&\hspace{4cm}y\ge1,\quad t=1,\ldots,T.
+\end{aligned}
+\tag{2}
+\end{equation}
+Its boundary conditions are
+\begin{equation}
+\begin{aligned}
+V_t(b,0)&=(-b)^+,
+&&t=1,\ldots,T+1,\\
+V_{T+1}(b,y)&=(-b)^+.
+\end{aligned}
+\tag{3}
+\end{equation}
+The initial state is \((B,Y)\); hence the initial optimal expected payoff represented by this formulation is
+\[
+V_1(B,Y)=\max_{\mathbf p\in\mathcal Q}
+\mathbb E\bigl[(\mathcal R(\mathbf p)-B)^+\bigr].
+\]
+
+\subsection*{Policy recovery and debt-state conventions}
+
+For a selling period \(t\), the decision maker's price is recovered as
+\[
+p_t^{\dagger}(b,y)\in
+\underset{p\in\mathcal P}{\arg\max}
+\bigl\{\lambda(p)
+[V_{t+1}(b-p,y-1)-V_{t+1}(b,y)]\bigr\},
+\qquad y\ge1.
+\]
+For nonpositive outstanding debt, the authors identify this price with the revenue-maximizing price \(p_t^{\star}(y)\):
+\[
+p_t^{\dagger}(b,y)=p_t^{\star}(y)
+\qquad\text{for }b\le0.
+\]
+Here \(p_t^{\star}(y)\) denotes the price for a seller with no remaining debt claim on future revenue. The case \(B=0\) of (2)--(3) is the classical expected-revenue-maximizing case; no separate benchmark optimization is imposed on the debt-facing policy.
+
+The authors also state that, if for some \(t\)
+\[
+b\ge\min\{y,T-t+1\}\bar p,
+\qquad
+\bar p=\sup_{p\in\mathcal P}p,
+\]
+the decision maker's payoff is zero almost surely, and they take, without loss of generality,
+\[
+p_t^{\dagger}(b)=\bar p.
+\]
+\emph{Printed notation (p.~7).} This last convention is printed with the argument \(b\) alone, although the general policy and its threshold depend on \(y\). The printed expression is retained rather than silently supplying the missing inventory argument.
+
+\paragraph{Source scope.}
+Besbes, Iancu, and Trichakis, \emph{Dynamic Pricing Under Debt: Spiraling Distortions and Efficiency Losses}, Sections 2--3, physical PDF pp.~5--7, and endnote 5 on p.~17. The endnote is available in the supplied original text and supplies both the strict interior positivity assumption and the unbounded-price exception. The online appendix is not supplied and is unverified; no appendix-dependent extension is included in this general terminal-debt formulation.
+
+\end{document}

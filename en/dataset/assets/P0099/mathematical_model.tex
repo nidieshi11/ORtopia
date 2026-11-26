@@ -1,0 +1,87 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+
+\title{Core Solvable Mathematical Model}
+\author{Paper 1}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section*{Retained Core Model}
+According to the \texttt{tex} formulas and the PDF, the directly solvable core model is the
+single-level MILP on Page 6 for learning a DNF classifier. The subproblem $(SP)^u$ and
+master problems $(MP)^u$ and $(MP)$ are part of the IRELAND heuristic framework and are
+therefore omitted here.
+
+\paragraph{Sets and parameters.}
+Let $\mathcal{N}_1$ be the set of positive samples, $\mathcal{N}_0$ the set of negative
+samples, $\mathcal{N}=\mathcal{N}_0 \cup \mathcal{N}_1$, $\mathcal{J}$ the feature set, and
+$\mathcal{K}$ the set of AND clauses. Let $K = |\mathcal{K}|$. The parameter $X_{nj}\in\{0,1\}$
+indicates whether feature $j$ is active in sample $n$, $w_n \ge 0$ is the sample weight, and
+$M$ is the maximum number of features allowed in one AND clause.
+
+\paragraph{Decision variables.}
+$\hat{y}_n \in \{0,1\}$ indicates the predicted label of sample $n$,
+$t_{nk} \in \{0,1\}$ indicates whether sample $n$ satisfies clause $k$, and
+$s_{kj} \in \{0,1\}$ indicates whether feature $j$ is included in clause $k$.
+
+\section*{MILP Formulation}
+Constraint \textup{(BP4-f)} is retained as a strengthening constraint used in the solver-side
+formulation. It enforces the binary DNF semantics used by the solver formulation.
+
+\begin{equation}
+\max \sum_{n \in \mathcal{N}_1} w_n \hat{y}_n
++ \sum_{n \in \mathcal{N}_0} w_n (1 - \hat{y}_n)
+\tag{BP4-Obj}
+\end{equation}
+
+\begin{equation}
+t_{nk} + (1 - X_{nj}) s_{kj} \le 1
+\quad \forall j \in \mathcal{J},\ \forall k \in \mathcal{K},\ \forall n \in \mathcal{N}_1
+\tag{BP4-a}
+\end{equation}
+
+\begin{equation}
+t_{nk} + \sum_{j \in \mathcal{J}} (1 - X_{nj}) s_{kj} \ge 1
+\quad \forall k \in \mathcal{K},\ \forall n \in \mathcal{N}_0
+\tag{BP4-b}
+\end{equation}
+
+\begin{equation}
+\hat{y}_n - \sum_{k \in \mathcal{K}} t_{nk} \le 0
+\quad \forall n \in \mathcal{N}_1
+\tag{BP4-c}
+\end{equation}
+
+\begin{equation}
+K \hat{y}_n - \sum_{k \in \mathcal{K}} t_{nk} \ge 0
+\quad \forall n \in \mathcal{N}_0
+\tag{BP4-d}
+\end{equation}
+
+\begin{equation}
+\sum_{j \in \mathcal{J}} s_{kj} \le M
+\quad \forall k \in \mathcal{K}
+\tag{BP4-e}
+\end{equation}
+
+\begin{equation}
+\hat{y}_n \ge 1 - \sum_{j \in \mathcal{J}} (1 - X_{nj}) s_{kj}
+\quad \forall k \in \mathcal{K},\ \forall n \in \mathcal{N}_0
+\tag{BP4-f}
+\end{equation}
+
+\begin{equation}
+\hat{y}_n,\, t_{nk},\, s_{kj} \in \{0,1\}
+\quad \forall n \in \mathcal{N},\ \forall k \in \mathcal{K},\ \forall j \in \mathcal{J}
+\tag{BP4-g}
+\end{equation}
+
+\end{document}

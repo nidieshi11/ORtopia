@@ -1,0 +1,61 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\emergencystretch=4em
+\begin{document}
+\section*{Two-level vehicle routing model with drones}
+This file represents the complete model for handling the current set of problems. The objectives of the original model remain unchanged, along with all 24 constraints. Additionally, a new constraint has been added: each unmanned aerial vehicle can only be assigned to one truck. The issue of using the same drone number multiple times has also been resolved. This constraint ensures that each unmanned aerial vehicle has unique resources. The original model and its results are stored in the parent directory. The current code is located in the 05\_solver.py file in this directory.
+
+\subsection*{Conventions regarding groups, parameters, and boundaries}
+$V=\{0\}\cup Z$, where 0 is the unique depot and $Z^d\subseteq Z$ is the set of customers serviceable by a drone. $A\subseteq\{(i,j)\in V^2:i\ne j\}$. The sets of physical trucks and physical drones are $K^v$ and $K^d$, respectively. $\Gamma$ is the maximum number of drones carried per truck. The travel time is $t^v,t^d$, the service time is $s^v,s^d$, and the launch preparation time is $t_0$. The demand is $q_i$, the weight of drones and support equipment is $q_1^d$, and truck capacity is $Q$. The round-trip energy feasibility indicator is $E_{ij}$, the latest service start time is $l_i$, and the end of the planning horizon for return to the depot is $l_0$. Each family $M$ consists of valid relaxation upper bounds explicitly provided by the instance. Treat $x$ outside $A$ as zero, and treat $u_{ij}$ as zero when $j\notin Z^d$. $a_0$ is a uniform upper bound on the return time. $\varphi_i$ includes the time spent at the stop serving customers and waiting for drones. $\omega_i^k$ is a nonnegative upper bound for load accounting. The constraints require it to cover at least the assigned demand, and its value is jointly determined by the load lower bounds and capacity constraints.
+
+\subsection*{Variable fields}
+\[
+\begin{aligned}
+&x^k_{ij} \in \{0, 1\} && \forall (i,j) \in A, k \in K^v \\
+&y^k_d \in \{0, 1\} && \forall k \in K^v, d \in K^d \\
+&h^k_i \in \{0, 1\} && \forall i \in Z, k \in K^v \\
+&u_{ij} \in \{0, 1\} && \forall i \in Z, j \in Z^d \\
+&z_{ij} \in \{0, 1\} && \forall i \in Z, j \in Z^d \\
+&\omega^k_i \ge 0 && \forall i \in Z, k \in K^v \\
+&a_i \ge 0 && \forall i \in V \\
+&\varphi_i \ge 0 && \forall i \in Z
+\end{aligned}
+\]
+\subsection*{Target}
+\[
+\min\quad\sum_{(i,j)\in A}\sum_{k\in K^v}t^v_{ij}x^k_{ij}
++\sum_{i\in Z}\varphi_i
+\]
+\subsection*{Complete constraints}
+\[
+\begin{aligned}
+&\sum_{i \in V} \sum_{k \in K^v} x^k_{ij} + \sum_{i \in Z} u_{ij} = 1 && \forall j \in Z, \\
+&\sum_{j \in Z} x^k_{0j} \le 1 && \forall k \in K^v, \\
+&\sum_{i \in V} x^k_{ij} = \sum_{i \in V} x^k_{ji} && \forall j \in V, k \in K^v, \\
+&u_{ij} \le \sum_{k \in K^v} h^k_i && \forall i \in Z, j \in Z^d, \\
+&h^k_i \le \sum_{d \in K^d} y^k_d && \forall i \in Z, k \in K^v, \\
+&h^k_i \le \sum_{j \in V} x^k_{ji} && \forall i \in Z, k \in K^v, \\
+&\sum_{d \in K^d} y^k_d \le \Gamma && \forall k \in K^v, \\
+&u_{ij} \le E_{ij} && \forall i \in Z, j \in Z^d, \\
+&\sum_{i \in Z} u_{ij} = \sum_{i \in Z} z_{ij} && \forall j \in Z^d, \\
+&z_{ij} + \sum_{k \in K^v} h^k_i \le 1 + u_{ij} && \forall i \in Z^d, j \in Z^d, \\
+&z_{ij} \le u_{ij} && \forall i \in Z \setminus Z^d, j \in Z^d, \\
+&u_{li} - u_{lj} \le 1 + \sum_{k \in K^v} h^k_i - z_{ij} && \forall i \in Z^d, j \in Z^d, l \in Z, \\
+&z_{ij} \le \sum_{l \in Z} u_{li} + \sum_{k \in K^v} h^k_i && \forall i \in Z^d, j \in Z^d, \\
+&\sum_{j \in Z^d} z_{ij} \le \sum_{d \in K^d} y^k_d + M(1 - h^k_i) && \forall i \in Z, k \in K^v, \\
+&\sum_{j \in Z^d} z_{ij} \le 1 + M' \sum_{k \in K^v} h^k_i && \forall i \in Z, \\
+&q_j + \sum_{i \in Z^d} q_i u_{ji} - \omega^k_j \le M_j(1 - \sum_{i \in V} x^k_{ij}) && \forall j \in Z, k \in K^v, \\
+&\sum_{j \in Z} \omega^k_j + q^d_1 \sum_{d \in K^d} y^k_d \le Q && \forall k \in K^v, \\
+&t^v_{0j} - a_j \le M'_j(1 - \sum_{k \in K^v} x^k_{0j}) && \forall j \in Z, \\
+&a_i + \varphi_i + t^v_{ij} - a_j \le M_{ij}(1 - \sum_{k \in K^v} x^k_{ij}) && \forall i \in Z, j \in V, \\
+&a_i + t_0 + t^d_{ij} - a_j \le M'_{ij}(2 - z_{ij} - u_{ij}) && \forall i \in Z, j \in Z^d, \\
+&a_i + s^d_i + t^d_{il} + t_0 + t^d_{lj} - a_j \le M_{ijl}(2 - z_{ij} - u_{li}) && \forall l \in Z, i \in Z^d, j \in Z^d, \\
+&\varphi_i \ge s^v_i \sum_{j \in V} \sum_{k \in K^v} x^k_{ji} && \forall i \in Z, \\
+&a_j + s^d_j + t^d_{ji} - a_i - \varphi_i \le M''_{ij}(1 - u_{ij}) && \forall i \in Z, j \in Z^d, \\
+&a_i \le l_i && \forall i \in V, \\
+&\sum_{k\in K^v}y_d^k\le 1 && \forall d\in K^d.
+\end{aligned}
+\]
+\subsection*{The implications of this amendment}
+Constraint $\sum_k y_d^k\le1$ prohibits a single entity from having drones belonging to different trucks simultaneously. The original 24 constraints are only satisfied through the number of drones per truck, $\sum_d y_d^k$, using $y$. If $|K^d|\ge |K^v|\Gamma$ is satisfied, each original feasible solution can be renumbered without changing the number of drones per truck or other variables and target values, thereby satisfying the new constraint. This batch of 10 instances meets this sufficient condition; the current code will still be used to re-solve and verify each instance individually. This equivalence applies to instances that meet the above inventory conditions.
+\end{document}

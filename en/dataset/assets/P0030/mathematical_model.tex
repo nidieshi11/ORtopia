@@ -1,0 +1,92 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,geometry}
+\geometry{margin=22mm}
+\emergencystretch=4em
+\geometry{paperwidth=235mm,paperheight=297mm,hmargin=18mm,vmargin=19mm}
+\begin{document}
+\section*{P30: Two-stage stochastic production and distribution model, version 2-BF}
+\paragraph{Source and scope}According to pages 1, 4, 5, 6, 7, and 8 of the original paper PDF, items (1)–(19) are as follows:
+\subsection*{Ranges, sets, and parameters}
+It is recommended to choose the 2-BF stochastic production and distribution model for this paper. In the first stage, production schedules and vehicle routes are determined before the demand is known. In the second stage, production volumes, distribution quantities, inventory levels, and any unmet demand requirements are determined after the entire demand scenario is known. Since these calculations can rely on the entire demand profile, no additional constraints related to unforeseen situations are required in this document.
+
+Node $N=\{0,1,\ldots,n\}$, factory 0, customer $N_c=N\setminus\{0\}$; $E=\{(i,j):i,j\in N,i<j\}$ represents a completely undirected edge set, $\delta(i)$ represents associated edges, and $E(S)$ represents edges that connect both ends of the edge in $S$. Period $T=\{1,\ldots,\ell\}$; homogeneous vehicles $K=\{1,\ldots,m\}$. Limited demand scenarios $\Omega$, along with probabilities $\rho_\omega\geq0$ and $\sum_\omega\rho_\omega=1$.
+
+Parameters include scenario requirements $d_{it\omega}\geq0$, production capacity per period $C$, vehicle capacity $Q$, storage capacity $L_i$, initial common inventory $I_i^0$, unit production cost $u$, production activation cost per period $f$, driving cost $c_{ij}$, inventory cost $h_i$, and unmet demand penalty $\sigma_i$. All costs are non-negative. Definition.
+\[
+M_{t\omega}=\min\{C,\sum_{s=t}^{\ell}\sum_{i\in N_c}d_{is\omega}\},\qquad
+M'_{it\omega}=\min\{L_i,Q,\sum_{s=t}^{\ell}d_{is\omega}\}.
+\]
+\subsection*{Variables}
+$y_t$ indicates production activation; $z_{ikt}$ represents the vehicle $k$ visiting node $i$ on period $t$ (where $z_{0kt}$ indicates the use of the vehicle); $x_{ijkt}$ represents the number of traversals of the vehicle without edges. In the second phase, $p_{t\omega}$ represents output, $I_{it\omega}$ represents ending inventory, $q_{ikt\omega}$ represents the delivery volume to customer $i$, and $e_{it\omega}$ represents the demand gap; $q,e$ applies only to customer definitions. The gap is penalized over time and does not accumulate to the next period. Given $I_{i0\omega}=I_i^0$.
+\subsection*{The only complete model available}
+
+\begin{align}
+\min\quad &
+\sum_{t \in T} \left( f y_t + \sum_{(i,j) \in E} \sum_{k \in K} c_{ij} x_{ijkt} \right)
++\sum_{t \in T}\sum_{\omega \in \Omega} \rho_{\omega}
+\left(
+u p_{t\omega} + \sum_{i \in N} h_i I_{it\omega} + \sum_{i \in N_c} \sigma_i e_{it\omega}
+\right)
+\\[1mm]
+\text{s.t.}\quad
+&I_{0,t-1,\omega} + p_{t\omega} =
+\sum_{i \in N_c} \sum_{k \in K} q_{ikt\omega} + I_{0t\omega}
+&& \forall t \in T,\forall \omega \in \Omega
+\\
+&I_{i,t-1,\omega} +
+\sum_{k \in K} q_{ikt\omega} + e_{it\omega} =
+d_{it\omega} + I_{it\omega}
+&& \forall i \in N_c,\forall t \in T,\forall \omega \in \Omega
+\\
+&I_{0t\omega} \leq L_0
+&& \forall t \in T,\forall \omega \in \Omega
+\\
+&I_{it\omega} + d_{it\omega} \leq L_i
+&& \forall i \in N_c,\forall t \in T,\forall \omega \in \Omega
+\\
+&p_{t\omega} \leq M_{t\omega} y_t
+&& \forall t \in T,\forall \omega \in \Omega
+\\
+&\sum_{i \in N_c} q_{ikt\omega} \leq Q z_{0kt}
+&& \forall k \in K,\forall t \in T,\forall \omega \in \Omega
+\\
+&q_{ikt\omega} \leq M'_{it\omega} z_{ikt}
+&& \forall i \in N_c,\forall k \in K,\forall t \in T,\forall \omega \in \Omega
+\\
+&\sum_{k \in K} z_{ikt} \leq 1
+&& \forall i \in N_c,\forall t \in T
+\\
+&\sum_{(j,j') \in \delta(i)} x_{jj'kt} = 2 z_{ikt}
+&& \forall i \in N,\forall k \in K,\forall t \in T
+\\
+&\sum_{(i,j) \in E(S)} x_{ijkt} \leq
+\sum_{i \in S} z_{ikt} - z_{ekt}
+&& \forall S \subseteq N_c:\ |S| \geq 2,\forall e \in S,\forall k \in K,\forall t \in T
+\\
+&z_{ikt} \leq z_{0kt}
+&& \forall i \in N_c,\forall k \in K,\forall t \in T
+\\
+&x_{ijkt} \leq z_{ikt},\qquad x_{ijkt} \leq z_{jkt}
+&& \forall (i,j) \in E(N_c),\forall k \in K,\forall t \in T
+\\
+&z_{0kt} \geq z_{0,k+1,t}
+&& \forall 1 \leq k \leq m-1,\forall t \in T
+\\
+&\sum_{i=1}^{j} 2^{\,j-i} z_{ikt} \geq \sum_{i=1}^{j} 2^{\,j-i} z_{i,k+1,t}
+&& \forall j \in N_c,\forall 1 \leq k \leq m-1,\forall t \in T
+\\
+&p_{t\omega},I_{it\omega} \geq 0,\quad e_{jt\omega},q_{jkt\omega}\geq0
+&& \forall i\in N,j\in N_c,k\in K,t\in T,\omega\in\Omega
+\\
+&y_t,z_{ikt} \in \{0,1\}
+&& \forall i \in N,\forall k \in K,\forall t \in T
+\\
+&x_{ijkt} \in \{0,1\}
+&& \forall (i,j) \in E:\ i \neq 0,\forall k \in K,\forall t \in T
+\\
+&x_{0jkt} \in \{0,1,2\}
+&& \forall j \in N_c,\forall k \in K,\forall t \in T
+\end{align}
+
+
+\end{document}

@@ -1,0 +1,87 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{geometry}
+\geometry{margin=1in}
+
+\title{Core Solvable Model}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Big-M-Free Reformulation of the Wasserstein DRCCP}
+This file retains the paper's equivalent big-\(M\)-free mixed-integer convex reformulation of the type-1 Wasserstein DRCCP under the assumptions that \(\mathcal{X}=\{x: D^\top x \le d\}\) and \(\|a_i(x)\|_* = \|a_1(x)\|_*\) for all \(i\in[I]\). The earlier big-\(M\) formulation and the VaR outer approximation are omitted.
+
+\begin{equation}
+\min_{x,u,w,z,\gamma,s,y,\bar y}\quad \bar y
+\tag{11a}
+\end{equation}
+
+\begin{equation}
+\bar y \ge c^\top u_j + \ell_1(1-z_j),
+\qquad
+\bar y \ge c^\top w_j + \ell_1 z_j
+\quad \forall j\in[N]
+\tag{11b}
+\end{equation}
+
+\begin{equation}
+\theta \|a_1(x)\|_* - \varepsilon \gamma
+\le
+\frac{1}{N}\sum_{j\in[N]} y_j
+\tag{11c}
+\end{equation}
+
+\begin{equation}
+D^\top u_j \le d\,z_j,\qquad
+D^\top w_j \le d\,(1-z_j)
+\quad \forall j\in[N]
+\tag{11d}
+\end{equation}
+
+\begin{equation}
+x = u_j + w_j
+\qquad \forall j\in[N]
+\tag{11e}
+\end{equation}
+
+\begin{equation}
+\begin{aligned}
+& y_j + \gamma \le s_j
+&& \forall j\in[N], \\
+& z_j\, a_i\!\left(\frac{u_j}{z_j}\right)^\top \hat\xi^{\,j} + s_j
+\le
+z_j\, b_i\!\left(\frac{u_j}{z_j}\right)
+&& \forall i\in[I],\ \forall j\in[N].
+\end{aligned}
+\tag{11f}
+\end{equation}
+
+\begin{equation}
+\sum_{j\in[N]} z_j \ge N-\lfloor N\varepsilon \rfloor + \mathbb{I}\{\theta>0\}
+\tag{11g}
+\end{equation}
+
+\begin{equation}
+z_j\in\{0,1\},\qquad
+\gamma \ge 0,\qquad
+s_j \ge 0,\qquad
+y_j \le 0
+\quad \forall j\in[N].
+\tag{11h}
+\end{equation}
+
+\noindent
+Here \(\ell_1\) is any valid lower bound for the original DRCCP objective. The terms
+\(
+z_j a_i(u_j/z_j)
+\)
+and
+\(
+z_j b_i(u_j/z_j)
+\)
+in \((11f)\) are the closed perspective functions, so the constraint remains well-defined when \(z_j=0\).
+
+\end{document}

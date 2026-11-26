@@ -1,0 +1,75 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,longtable}
+\emergencystretch=4em
+\usepackage{geometry}
+\geometry{paperwidth=235mm,paperheight=297mm,hmargin=18mm,vmargin=19mm}
+\begin{document}
+\section*{P78: Current complete mathematical model (2026-10-20)}
+\section*{Basis and scope of the revision}The current issue involves the original selection of 24 periods for the SCUC model. All original records have been mapped into 16 separate 24-period instances, with each instance having its own initial state, objectives, and results. There is no claim of continuity across different days, and the model for a single 24-period period has not been simplified by eliminating certain days from the calculation.
+
+
+
+
+This file retains the complete Appendix A SCUC MILP, which is the directly solvable core formulation used in the paper. The compact summary in the main text is omitted because it suppresses essential unit-commitment constraints and auxiliary variables.
+
+\section{Security-Constrained Unit Commitment}
+
+\begin{equation}
+\min \quad \sum_{g\in G} \sum_{t\in T} \left[c_g^S z_{gt} + c_g^0 x_{gt} + \sum_{k\in K} c_g^k y_{gt}^k\right]
+\tag{11}
+\end{equation}
+
+\begin{equation*}
+\begin{aligned}
+\text{s.t.}\quad
+& \sum_{g\in G} y_{gt} = \sum_{b\in B} d_{bt}
+&& \forall t\in T, \\
+& \sum_{g\in G} r_{gt} \ge R_t
+&& \forall t\in T, \\
+& \sum_{k\in K} y_{gt}^k + r_{gt}
+\le (P_g^{\max}-P_g^{\min})x_{gt} - (P_g^{\max}-RU_g)z_{gt} - (P_g^{\max}-RD_g)w_{g,t+1}
+&& \forall g\in G,\ \forall t\in\{1,\dots,23\}: UT_g>1, \\
+& \sum_{k\in K} y_{gt}^k + r_{gt}
+\le (P_g^{\max}-P_g^{\min})x_{gt} - (P_g^{\max}-RU_g)z_{gt} - \max\{RU_g-RD_g,0\}w_{g,t+1}
+&& \forall g\in G,\ \forall t\in\{1,\dots,23\}: UT_g=1, \\
+& \sum_{k\in K} y_{gt}^k + r_{gt}
+\le (P_g^{\max}-P_g^{\min})x_{gt} - (P_g^{\max}-RD_g)w_{g,t+1} - \max\{RD_g-RU_g,0\}z_{gt}
+&& \forall g\in G,\ \forall t\in\{1,\dots,23\}: UT_g=1, \\
+& \sum_{k\in K} y_{g,24}^k + r_{g,24}
+\le (P_g^{\max}-P_g^{\min})x_{g,24} - (P_g^{\max}-RU_g)z_{g,24}
+&& \forall g\in G, \\
+& y_{gt} \le y_{g,t-1} + RU_g
+&& \forall g\in G,\ \forall t\in\{2,\dots,24\}, \\
+& y_{gt} \ge y_{g,t-1} - RD_g
+&& \forall g\in G,\ \forall t\in\{2,\dots,24\}, \\
+& \sum_{i=\max\{1,t-UT_g+1\}}^{t} z_{gi} \le x_{gt}
+&& \forall g\in G,\ \forall t\in T, \\
+& \sum_{i=\max\{1,t-DT_g+1\}}^{t} z_{gi} \le 1 - x_{g,\max\{1,t-DT_g\}}
+&& \forall g\in G,\ \forall t\in T, \\
+& -F_l^0 \le \sum_{b\in B} \delta_{lb}^0 \left(\sum_{g\in G_b} y_{gt} - d_{bt}\right) \le F_l^0
+&& \forall l\in L,\ \forall t\in T, \\
+& -F_l^c \le \sum_{b\in B} \delta_{lb}^c \left(\sum_{g\in G_b} y_{gt} - d_{bt}\right) \le F_l^c
+&& \forall c\in L,\ \forall l\in L,\ \forall t\in T, \\
+& y_{gt}^k \le P_g^k
+&& \forall k\in K,\ \forall g\in G,\ \forall t\in T, \\
+& y_{gt} = P_g^{\min}x_{gt} + \sum_{k\in K} y_{gt}^k
+&& \forall g\in G,\ \forall t\in T, \\
+& x_{gt} - x_{g,t-1} = z_{gt} - w_{gt}
+&& \forall g\in G,\ \forall t\in\{2,\dots,24\}, \\
+& x_{gt},\ z_{gt},\ w_{gt} \in \{0,1\}
+&& \forall g\in G,\ \forall t\in T, \\
+& r_{gt},\ y_{gt},\ y_{gt}^k \ge 0
+&& \forall k\in K,\ \forall g\in G,\ \forall t\in T.
+\end{aligned}
+\end{equation*}
+
+
+\section*{Instance boundaries}
+The currently selected model consists of exactly 24 sequential hours. Multiple day objects in the input represent independent 24-period instances, each retaining the initial state rules of this model, with goals and optimality values recorded separately. The optimal values for each day correspond to their respective independent plans. All original hour mappings and missing hour completions are recorded item by item in the repair \_ manifest.
+
+
+
+\section*{Source text correction: 21 corrections for initial closure.}
+On page 31 of the source PDF, the left side of form (21) contains the startup variable $z_{gi}$; the right side contains $1-x_{g,\max(1,t-DT_g)}$, with no errors in the original text. This historical startup state expression, along with state recursion, limits premature restarts after a shutdown. If the previously extracted file mistakenly changed the left side to $w$, it will incorrectly prohibit normal shutdowns. Each independent day does not have a default state for the 0th period; the initial state for the starting day is the decision variable $x_{g1},y_{g1}$. The initial startup/stop variable is taken as $z_{g1}=w_{g1}=0$. $z_{g1}=0$ is already implied by the original (20)+(21) and does not participate in any valid constraints or costs. $w_{g1}$, which does not involve any costs, can be normalized to 0 without loss. Each 24-day period uses the independent initial state of this model and network security constraints. The residual minimum startup/stop time required for day-to-day transitions needs to be determined separately.
+
+\end{document}

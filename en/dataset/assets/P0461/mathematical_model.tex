@@ -1,0 +1,321 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\section*{Ghost-kitchen integrated scheduling and delivery policy optimization}
+
+\begin{equation}
+\min_{\pi\in\Pi}\mathbb{E}\left[\left.\sum_{k=0}^{K}D^{\Delta}(S_k,\pi(S_k))\,\right|\,S_0\right].
+\tag{5}
+\end{equation}
+The policy is subject to feasible integrated preparation and delivery decisions and the sequential state evolution described below:
+\begin{align*}
+\pi(S_k)&=x_k\in\mathcal{X}(S_k), &&k=0,\ldots,K,\\
+S_{k+1}&=S^M(S_k,x_k,W_{k+1}), &&k=0,\ldots,K-1,\\
+S_0&=(0,\emptyset,\emptyset,\emptyset,\emptyset,\emptyset,\emptyset).
+\end{align*}
+Here \(\Pi\) is the set of policies, a policy being a mapping assigning each state \(S_k\) a decision \(\pi(S_k)=x_k\). The objective is the expected sum of delay, expressed in (5) as the expected sum of marginal costs. Equation (5) prints \(D^\Delta\) without the subscript \(k\); the immediate-cost definition (3) below prints \(D_k^\Delta\).
+
+\section*{Inputs and decision epochs}
+
+There is an order-capture phase \([0,T^c]\) and an operation phase \([0,T]\), with
+\[
+T>T^c,
+\]
+where \(T\) is sufficiently large to permit fulfillment of all placed orders. Orders are unknown until placed, and their realizations follow known probability distributions in time and space. These distributions remain abstract in the model.
+
+The fixed resource and order notation is as follows.
+\begin{itemize}
+\item \(I\): the set of all possible orders.
+\item \(F\): the set of food types. Each kitchen is associated with one fixed ghost restaurant, called a food type, and prepares only orders of that food type. Each order contains only one food type and is prepared entirely in its corresponding kitchen.
+\item \(C\): the set of cooks; \(C^f\) is the subset working on food type \(f\in F\). Kitchens have dedicated cooks.
+\item \(V\): the joint fleet of delivery vehicles.
+\item \(\delta_f\), \(f\in F\): the freshness time, described as the maximum time allowed between completion of preparation and delivery at the customer's location.
+\item \(\tau\in\mathbb{R}\): the promised delivery time after order placement. Exceeding this promise incurs delay cost; it is not a hard delivery deadline.
+\item \(\kappa\in\mathbb{N}\): vehicle capacity, measured as the maximum number of orders carried simultaneously.
+\item Location \(0\) denotes the ghost kitchen. Travel times satisfy
+\[
+t^t_{ij}\in\mathbb{R}_{\geq 0},\qquad i,j\in I\cup\{0\}.
+\]
+\end{itemize}
+
+A decision point occurs whenever a new order is placed and at the end of the capture phase, at time \(T^c\), when no more orders will arrive. The number of decision points \(K\) is a random variable. The objective uses the index range \(k=0,\ldots,K\). The final state is \(S_K\) at \(T^c\); the process terminates after its decision is made.
+
+\section*{State and schedule definitions}
+
+A state \(S_k\in\mathcal{S}\) is
+\begin{equation}
+S_k=\bigl(\underbrace{t_k,I_k}_{\text{Orders}},
+\underbrace{\Psi_k,t^s_k}_{\text{Cooks}},
+\underbrace{\Theta_k,t^d_k,t^r_k}_{\text{Vehicles}}\bigr).
+\tag{1}
+\end{equation}
+The current time is \(t_k\). Except for the final state, the state contains a new order \(i_k\). The open-order set \(I_k\) consists of orders already placed but not yet departed from the ghost kitchen for delivery, including the new order \(i_k\). For each \(i\in I_k\), its revealed order data are
+\[
+(f_i,t^o_i,t^p_i,l_i),\qquad
+f_i\in F,\quad t^o_i\in[0,T^c],\quad t^p_i\in\mathbb{R}_{\geq0},
+\]
+where \(f_i\) is the food type, \(t^o_i\) the placement time, \(t^p_i\) the known meal-preparation time, and \(l_i\) the customer location. These order attributes are not scheduling decisions.
+
+\paragraph{Currently planned cook schedules.}
+These schedules were decided at decision point \(k-1\) and pruned during the transition. They include the orders in \(I_k\) other than the new order \(i_k\). For each cook,
+\begin{align*}
+\psi_{kc}&=(i^c_1,i^c_2,\ldots)\subset I_k\setminus\{i_k\}, &&c\in C,\\
+\Psi_k&=\{\psi_{kc}\mid c\in C\},\\
+t^s_{ki}&\in[t^o_i,T], &&i\in I_k\setminus\{i_k\},\\
+t^s_k&=\{t^s_{ki}\mid i\in I_k\setminus\{i_k\}\}.
+\end{align*}
+Here \(\psi_{kc}\) is the planned preparation sequence of cook \(c\), and \(t^s_{ki}\) is the planned starting time of preparation of order \(i\). The superscript \(s\) is a label.
+
+\paragraph{Currently planned vehicle schedules.}
+These schedules also result from the previous decision and pruning, and contain all orders in \(I_k\) except \(i_k\). Their definitions are
+\begin{align*}
+\Theta_{kv}&=(\theta_{kv1},\theta_{kv2},\ldots), &&v\in V,\\
+\theta&=(i^\theta_1,i^\theta_2,\ldots)\subset I_k\setminus\{i_k\}, &&\theta\in\Theta_{kv},\\
+\Theta_k&=\{\Theta_{kv}\mid v\in V\},\\
+t^d_{k\theta}&\in[t_k,T], &&\theta\in\Theta_k,\\
+t^d_k&=\{t^d_{k\theta}\mid\theta\in\Theta_k\},\\
+t^r_{kv}&\in[t_k,T], &&v\in V.
+\end{align*}
+The sequence \(\Theta_{kv}\) lists vehicle \(v\)'s planned trips, each trip listing its orders in delivery order. The time \(t^d_{k\theta}\) is the planned departure time of trip \(\theta\); \(d\) is a label. The time \(t^r_{kv}\) is vehicle \(v\)'s next return time: it equals \(t_k\) if the vehicle is idling, and otherwise is the return time from its last trip departing before \(t_k\). That already-departed trip itself is not part of \(S_k\). The set of vehicle return times is denoted by \(t^r_k\); \(r\) is a label.
+
+\paragraph{Printed collection notation.}
+The source defines \(\Theta_k\) as the collection of vehicle trip sequences, but writes \(\theta\in\Theta_k\) in the departure-time definitions and in the open-order transition below. Those expressions are retained. In (2), the source explicitly uses \(\bigcup\Theta\) for the union of all sets of trips contained in \(\Theta\).
+
+\section*{Integrated decisions and feasibility}
+
+A decision updates the current plan:
+\[
+x_k=(\Psi^x_k,t^{s,x}_k,\Theta^x_k,t^{d,x}_k)
+\in\mathcal{X}(S_k),
+\qquad
+(\Psi_k,t^s_k,\Theta_k,t^d_k)
+\longmapsto
+(\Psi^x_k,t^{s,x}_k,\Theta^x_k,t^{d,x}_k).
+\]
+The decision variables are the updated cook preparation sequences and starting times, and the updated vehicle trip sequences and departure times. The update must integrate \(i_k\), except at the final state \(S_K\) at \(T^c\). It may also reassign and reschedule other orders to cooks or vehicles.
+
+Section 3.3.3 gives the following main-paper descriptions of feasibility. They are retained as source descriptions; the complete formal A.1 representation follows below. Where the two source representations conflict, the main-paper wording is not stacked as an extra constraint on the selected appendix rows.
+\begin{enumerate}
+\item Each order is scheduled for preparation and delivery by exactly one cook and one vehicle. Preparation takes place in the kitchen associated with that order's food type.
+\item The freshness constraint is satisfied: for each order \(i\), the time between the end of preparation and its scheduled delivery is less than \(\delta_{f_i}\).
+\item Already started preparations remain unchanged.
+\item Each order's preparation finishes before its delivery trip departs.
+\item Only one order is prepared by a cook at a time.
+\item Each trip of a vehicle departs only after the return from its previous trip.
+\item Vehicles satisfy the capacity constraint of at most \(\kappa\) orders carried simultaneously.
+\item Trips are elementary tours starting and ending at the ghost kitchen.
+\end{enumerate}
+
+\paragraph{Freshness wording.}
+Section 3.3.3, physical PDF page 7, states ``less than \(\delta_{f_i}\),'' which is the strict wording retained here. Section 3.1, physical PDF page 4, instead says that ready-to-door time ``does not exceed'' an order-specific duration, and Section 3.3 describes \(\delta_f\) as a maximum. These differ at equality; no boundary repair is imposed.
+
+\section*{Official defining appendix: the complete decision space}
+
+The selected policy problem remains (5), with (1)--(4) unchanged. Online Appendix A.1 explicitly defines \(\mathcal X(S_k)\); it is neither a different objective nor a heuristic. The auxiliary variables, all twenty-one numbered rows, and the stated recovery of the action are included below. Source inconsistencies are identified after the original rows. No new objective is imposed on this feasibility representation.
+
+\paragraph{Appendix notation and time indices.}
+At the fixed current state, \(I_{kf}=\{i\in I_k:f_i=f\}\) denotes the open orders of food type \(f\), and \(C_f\) is the appendix's notation for the main-paper cook subset \(C^f\). The appendix introduces preparation periods
+\[
+t_k\leq t\leq T,\qquad t\in\mathbb N.
+\]
+The time-indexed departure and adjacency variables use the same period index. No time unit or rounding rule for real-valued input times is supplied, and none is introduced here. The individual rows' printed ranges are retained even where they disagree with the introductory range.
+
+\paragraph{Auxiliary variables as introduced in A.1.}
+\begin{itemize}
+\item \(z_{ict}\in\{0,1\}\): cook \(c\in C_f\) starts preparing order \(i\in I_{kf}\) at period \(t\).
+\item \(y_{ivt}\in\{0,1\}\): vehicle \(v\in V\) departs the ghost kitchen at period \(t\) to deliver order \(i\in I_k\). Several orders may share a departure subject to the printed capacity and sequence rows.
+\item \(t_i^a\in[t_k,T]\): arrival time at the destination of order \(i\in I_k\).
+\item The introductory prose gives \(t_{vt}^r\in[0,T]\): return time of vehicle \(v\) dispatched at \(t\), with no significance if no dispatch occurs at that time. Row (A21) instead gives \([t_k,T]\); that displayed domain is retained below.
+\item \(q_{ijt}\in\{0,1\}\): orders \(i,j\in I_k\) share a trip departing at \(t\), with \(j\) immediately after \(i\).
+\end{itemize}
+The current-state next-return time \(t_{kv}^r\) is a given input, distinct from auxiliary \(t_{vt}^r\) indexed by departure period. No additional integer domain is imposed on the interval-valued \(t_i^a,t_{vt}^r\).
+
+\paragraph{Delivery and preparation.}
+\begin{align}
+\sum_{v\in V}\sum_{t=t_i^o}^{T}y_{ivt}
+ &=1 &&i\in I_k, \tag{A1}\\
+\sum_{c\in C_f}\sum_{t=t_i^o}^{T}z_{ict}
+ &=1 &&i\in I_k, \tag{A2}\\
+\sum_{i\in I_{kf}}z_{ict}
+ &\leq 1 &&f\in F,\ c\in C_f,\ t_k\leq t\leq T, \tag{A3}\\
+\sum_{c\in C_f}\sum_{t=1}^{T}t\cdot z_{ict}
+   +t_i^p\cdot z_{ict}
+ &\leq \sum_{v\in V}\sum_{t=1}^{T}t\cdot y_{ivt}
+ &&i\in I_k, \tag{A4}\\
+t_i^a-\sum_{c\in C_f}\sum_{t=1}^{T}(t+t_i^p)\cdot z_{ict}
+ &\leq \delta_f &&f\in F,\ i\in I_{kf}. \tag{A5}
+\end{align}
+These rows are described as one delivery/preparation per order, at most one start per cook per period, preparation before dispatch, and freshness. In (A2) and (A4), \(f\) is printed in the sum without a separate row quantifier; the order's food type supplies its stated context. In (A4), the duration term is printed without parentheses grouping it into the double sum. That scope ambiguity is retained rather than silently repaired.
+
+\paragraph{Vehicle timing, capacity, and within-trip sequence.}
+\begin{align}
+(y_{ivt}-1)\cdot T+t_i^a+t_{i0}^t
+ &\leq t_{vt}^r
+ &&i\in I_k,\ v\in V,\ t_k\leq t\leq T, \tag{A6}\\
+t_{vt'}^r
+ &\leq y_{ivt}\cdot t+T(1-y_{ivt})
+ &&i\in I_k,\ v\in V,\ t_k\leq t'<t\leq T, \tag{A7}\\
+\sum_{i\in I_k}y_{ivt}
+ &\leq\kappa
+ &&v\in V,\ t_k\leq t\leq T, \tag{A8}\\
+\sum_{i\in I_k}y_{ivt}-1
+ &\leq\sum_{i\in I_k}\sum_{\substack{j\in I_k\\j\ne i}}q_{jit}
+ &&v\in V,\ t_k\leq t\leq T, \tag{A9}\\
+2\cdot q_{jit}
+ &\leq y_{ivt}+y_{jvt}
+ &&i,j\in I_k,\ v\in V,\ t_k\leq t\leq T, \tag{A10}\\
+(q_{ijt}-1)\cdot T+t_{ij}^t
+ &\leq t_j^a-t_i^a
+ &&i,j\in I_k,\ i\ne j,\ t_k\leq t\leq T, \tag{A11}\\
+t\cdot y_{ivt}+t_{0i}^t
+ &\leq t_i^a
+ &&i\in I_k,\ v\in V,\ t_k\leq t\leq T. \tag{A12}
+\end{align}
+The source uses horizon \(T\) in these implications; no replacement big-\(M\) or additional activation term is inserted. It describes (A6)--(A7) as return/departure timing, (A8) as capacity, (A9)--(A10) as sequencing, and (A11)--(A12) as arrival timing and elimination of subtours.
+
+\paragraph{Cook timing, release restrictions, and preserved preparations.}
+\begin{align}
+\sum_{j\in I_{kf}}(t'+t_j^p)z_{jct'}
+ &\leq T+z_{ict}(t-T)
+ &&f\in F,\ i\in I_{kf},\ c\in C_f,\ t_k\leq t'<t\leq T, \tag{A13}\\
+z_{ict}&=0
+ &&i\in I_k,\ c\in C,\ t_k\leq t\leq t_i^o, \tag{A14}\\
+y_{ivt}&=0
+ &&i\in I_k,\ v\in V,\ t_{i_k}^o\leq t\leq t_i^o, \tag{A15}\\
+z_{ict}&=1
+ &&c\in C,\ i\in\psi_{kc},\ t=t_{ik}^s\leq t_k. \tag{A16}
+\end{align}
+The source describes (A13) as cook availability, (A14)--(A15) as release restrictions, and (A16) as preserving already-started preparations. The reversed indices \(t_{ik}^s\) are printed in the appendix; the main-paper state uses \(t_{ki}^s\) for that start time.
+
+\paragraph{Complete printed variable domains.}
+\begin{align}
+z_{ict}&\in\{0,1\}
+ &&i\in I_k,\ c\in C,\ t_k\leq t\leq T, \tag{A17}\\
+y_{ivt}&\in\{0,1\}
+ &&i\in I_k,\ v\in V,\ t_{kv}^r\leq t\leq T, \tag{A18}\\
+q_{ijt}&\in\{0,1\}
+ &&i,j\in I_k,\ t_k\leq t\leq T, \tag{A19}\\
+t_i^a&\in[t_k,T]
+ &&i\in I_k, \tag{A20}\\
+t_{vt}^r&\in[t_k,T]
+ &&v\in V,\ t\in[t_k,T]. \tag{A21}
+\end{align}
+Arrival and trip-return upper bounds \(T\) are explicit. (A18) refers to the current vehicle-return time, not only the epoch. No binary decision is relaxed. The conflicting index ranges in the introduction and individual rows remain source qualifications, rather than being replaced by an unreported extension of the variable arrays.
+
+\paragraph{Recovering the policy action.}
+A.1 recovers the same \(x_k=(\Psi_k^x,t_k^{s,x},\Theta_k^x,t_k^{d,x})\) from its auxiliary solution. For a cook \(c\), it orders start periods and corresponding orders:
+\[
+t_c=(t_{cn})_{n\in\mathbb N},\qquad
+\sum_{i\in I_k}z_{ict}=1\quad(t\in t_c),\qquad
+i_c=(i_n^c)_{n\in\mathbb N},
+\]
+with corresponding active \(z\)'s, and sets
+\[
+\psi_{kc}^x=i_c,\qquad
+t_{ik}^{s,x}=t_{cn}\quad\hbox{when }i_n^c=i.
+\]
+For vehicle \(v\), the appendix orders departure periods \(t_v=(t_{vn})_{n\in\mathbb N}\), recovers the orders and their adjacency from \(y,q\), and sets the \(m\)th trip \(\theta_{kvm}\) and departure time \(t_{k\theta}^{d,x}=t\); repeating over vehicles yields \(\Theta_k^x,t_k^{d,x}\). This is the stated connection to the action in (3) and (5), not a new decision hierarchy.
+
+The printed vehicle-recovery paragraph uses \(\sum_{i\in I_k}y_{ivt}=1\) at selected departures, although (A8) permits several orders. It refers to \(t\in t_c\) for a vehicle sequence, uses malformed \(y_{i_n,c,t,k}\), and suppresses the time index on \(q_{i_n,i_{n+1}}\). These original defects are recorded without silently replacing the condition by a positive-load test or inventing a path-extraction rule. The preparation paragraph also prints \(z_{ictk}\) once despite defining three-index \(z_{ict}\). The correspondence just described reports the source's intended recovery, not a claim that these printed indices constitute a consistent implementation.
+
+\paragraph{Source conflicts retained in A.1.}
+\begin{itemize}
+\item Freshness: (A5) is non-strict, unlike the main-paper description above. The displayed A.1 block is the chosen formal representation; the main-paper wording documents the discrepancy and is not an additional strict row stacked on (A5).
+\item Time scope: the initial \(z\) definition and (A17) start at \(t_k\), whereas (A1)--(A2) start summing at release, (A4)--(A5) at \(1\), and (A16) may refer to earlier starts. No consistent all-period extension or fixed-history convention is specified. All printed rows are retained. Initial \(y\) and most rows use \(t_k\), whereas (A18) starts at \(t_{kv}^r\); earlier-period values are not silently set to zero.
+\item Release equality: the prose describes periods before release, but (A14)--(A15) also prohibit equality with \(t_i^o\). Their inclusive bounds are retained. Integer-indexed decisions coexist with real-valued revealed times in the main model, without a supplied conversion rule.
+\item Routing quantifiers: \(q_{ijt}\) has no vehicle index, but (A10) holds for every \(v\). With multiple vehicles, a trip arc is therefore restricted by other vehicles' zero assignments. (A9) uses one global adjacency sum on each vehicle row. These are substantive source formulation issues; no missing vehicle index or new flow/degree equations are supplied.
+\item Expression scope: (A4)'s unparenthesized term and the recovery indices have the ambiguities stated above. (A12) leaves \(t_{0i}^t\) active when \(y_{ivt}=0\); it is not reconditioned. Self-pair domains in (A10) and (A19) are not narrowed, because \(i\ne j\) is printed only where shown.
+\item The return interval is \([0,T]\) in the introduction but \([t_k,T]\) in (A21). Both source statements are recorded. The appendix travel rows do not silently repair the main-paper delay and transition formulas (2) and (4).
+\end{itemize}
+This is a complete source-faithful record of the selected policy and its defining appendix, with original defects exposed. It does not assert that the uncorrected published MILP is internally consistent or numerically executable without a separately documented resolution of those defects.
+
+\section*{Postdecision state}
+
+The postdecision state is the state immediately after choosing the updated plan and before the next order arrives:
+\[
+S^x_k=(t_k,I_k,\Psi^x_k,t^{s,x}_k,\Theta^x_k,t^{d,x}_k,t^r_k)
+\in\mathcal{S}^x.
+\]
+
+\section*{Delay and marginal cost}
+
+For a plan \((\Psi,t^s,\Theta,t^d)\), the printed total planned delay is
+\begin{equation}
+D(\Theta,t^d)
+=
+\sum_{\theta\in\bigcup\Theta}
+\sum_{j=1}^{|\theta|}
+\max\left(
+0,\ t^d_\theta+
+\left(\sum_{l=1}^{j-1}t^t_{i^\theta_l,i^\theta_{l+1}}\right)
+-t^o_{i^\theta_j}-\tau
+\right).
+\tag{2}
+\end{equation}
+Here \(\bigcup\Theta\) is the union of all sets of trips contained in \(\Theta\), so that the outer sum ranges over all trips of all vehicles; \(|\theta|\) is the number of orders in trip \(\theta\). The source describes the summand as the maximum of zero and the difference between click-to-door time and the promised delivery time.
+
+The immediate marginal cost is
+\begin{equation}
+D^\Delta_k(S_k,x_k)
+=D(\Theta^x_k,t^{d,x}_k)-D(\Theta_k,t^d_k).
+\tag{3}
+\end{equation}
+It may be negative when the updated plan has less delay than the previous plan. The paper states that the sum of marginal costs over all realized states coincides with the sum of realized delays over all orders.
+
+\paragraph{Printed travel-term omission in (2).}
+The original page image confirms that the travel sum in (2) starts at \(l=1\). With \(i^\theta_1\) defined as the first order and \(t^d_\theta\) defined as the ghost-kitchen departure time, (2) contains no ghost-kitchen-to-first-order travel term. The displayed formula is retained without inserting such a term.
+
+\section*{Stochastic information and transition}
+
+The stochastic information \(W_{k+1}\in\Omega\) consists of the newly realized order \(i_{k+1}\) and its attributes
+\[
+f_{i_{k+1}},\qquad t^o_{i_{k+1}},\qquad
+ t^p_{i_{k+1}},\qquad l_{i_{k+1}}.
+\]
+In the special case
+\[
+W_{k+1}=\emptyset,
+\]
+no further orders are realized, and the process moves to the final state at \(T^c\). This case is distinct from the ordinary new-order transition.
+
+The transition mapping is
+\[
+S^M:\mathcal{S}\times\mathcal{X}\times\Omega\longrightarrow\mathcal{S},
+\qquad
+S_{k+1}=S^M(S_k,x_k,W_{k+1}).
+\]
+For a newly realized order the printed updates are
+\begin{align*}
+t_{k+1}&=t^o_{i_{k+1}},\\
+I_{k+1}&=
+\bigcup_{\theta\in\Theta^x_k}
+\{i\in\theta\mid t^{d,x}_{k\theta}>t_{k+1}\}
+\cup\{i_{k+1}\}.
+\end{align*}
+For every \(c\in C\), the cook's schedule is truncated to include only orders in \(I_{k+1}\). For every \(v\in V\), the new planned trip sequence is obtained by truncating trips \(\theta\in\Theta^x_{kv}\) with
+\[
+t^{d,x}_{k\theta}<t_{k+1}.
+\]
+The vehicle return times are updated according to
+\begin{equation}
+t^r_{k+1,v}
+=\max\left(
+ t_{k+1},\
+ \max_{\substack{\theta\in\Theta^x_{kv}\mid\ t^{d,x}_{k\theta}<t_{k+1}}}
+ t^{d,x}_{k\theta}
+ +t^t_{i^\theta_{|\theta|},0}
+ +\sum_{j=1}^{|\theta|-1}t^t_{i^\theta_j,i^\theta_{j+1}}
+\right),\qquad v\in V.
+\tag{4}
+\end{equation}
+
+\paragraph{Printed transition qualifications.}
+The open-order update retains only trips with departure strictly after \(t_{k+1}\), whereas the trip-sequence pruning removes trips with departure strictly before \(t_{k+1}\). Thus the printed rules do not treat departure exactly at \(t_{k+1}\) consistently. Both strict comparisons are retained. The original page image also confirms that (4) includes customer-to-customer travel and the final return to location \(0\), but no travel from location \(0\) to the first order. Its inner maximization uses only trips in \(\Theta^x_{kv}\) departing before \(t_{k+1}\); no empty-index-set convention or explicit carry-forward of an already-underway trip's return time is printed there. No additional term, boundary rule, or convention has been supplied.
+
+\paragraph{Source scope.}
+The operative transcription above is the policy formulation (5) and its available defining chain in Sections 3.1 and 3.3, physical PDF pages 4--7 (journal pages 436--439), of Neria, Hildebrandt, Tzur, and Ulmer, \emph{The Restaurant Meal Delivery Problem with Ghost Kitchens}, \emph{Transportation Science} 59(2), 433--450, DOI: 10.1287/trsc.2024.0510. The official Online Appendix A.1, pages 1--3, is now included as the defining feasibility representation (A1)--(A21), including its original domains and action recovery. It was read at the publisher's supplemental-material URL for DOI 10.1287/trsc.2024.0510; the displayed equations were also visually checked in the authors' arXiv:2408.07417v1, pages 22--23. The main-paper numbered formulas are unchanged. No condensed decision representation, assignment-and-timing subproblem, heuristic, or value-function approximation is substituted for this policy model.
+
+\end{document}

@@ -1,0 +1,143 @@
+% Mathematical Model - 1-s2.0-S1366554521003203-main
+% Auto-generated at 2025-12-16T00:30:45.052591
+% Model Source: Directly Extracted
+% This model is directly extracted from the paper
+
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\emergencystretch=4em
+\usepackage{geometry}
+\geometry{paperwidth=310mm,paperheight=470mm,hmargin=18mm,vmargin=19mm}
+\begin{document}
+
+\section*{**Problem Type**: This is a pickup and delivery problem with synchronized transfers along the way, denoted as PDPSET. It belongs to the extended variant of the Vehicle Routing Problem (VRP). **Mathematical Model**: The problem is modeled using Mixed Integer Linear Programming (MILP), with decisions involving binary variables (path selection, assignment, transfer points) and continuous variables (time, waiting time). **Complexity**: NP-hard. The problem becomes increasingly difficult as the number of nodes, vehicles, and requests increases.}
+
+\textbf{Model Source}: Directly Extracted
+
+\subsection*{Decision Variables}
+\[
+\begin{aligned}
+& X_{ijk} \in \{0, 1\}, && \forall (i, j) \in A, \forall k \in K \\
+& Y_{ijkr} \in \{0, 1\}, && \forall (i, j) \in A, \forall k \in K, \forall r \in R \\
+& TV_{ik} \geq 0, && \forall i \in N, \forall k \in K \\
+& TP_{ir} \geq 0, && \forall i \in N, \forall r \in R \\
+& U_{ik} \geq 0, && \forall i \in N, \forall k \in K \\
+& S_{ijk} \geq 0, && \forall (i, j) \in A, \forall k \in K \\
+& Z_{ijk} \geq 0, && \forall (i, j) \in A, \forall k \in K \\
+& F_{rikl} \in \{0, 1\}, && \forall r \in R, \forall i \in N, \forall k, l \in K, k \neq l \\
+& V_{kr} \in \{0, 1\}, && \forall k \in K, \forall r \in R \\
+& W_{kr} \geq 0, && \forall k \in K, \forall r \in R
+\end{aligned}
+\]
+
+\subsection*{Objective Function}
+\[
+\text{Min : } \alpha \sum_{k \in K} \sum_{(i,j) \in A} c_{ij} X_{ijk} + \beta \sum_{r \in R} q_r TP_{p(r)r} + \theta \sum_{k \in K} \sum_{r \in R} \sum_{(i,j) \in A} c_{ij} q_r Y_{ijkr} + \delta \sum_{k \in K} \sum_{i \in N} U_{ik}
+\]
+
+\subsection*{Constraints}
+\[
+\begin{aligned}
+&\text{Subject to:} \\
+& \sum_{(i,j) \in A_{d_i}} X_{ijk} = 1, && \forall k \in K, i = O(k) \\
+& \sum_{(j,i) \in A_{u_i}} X_{jik} = 1, && \forall k \in K, i = D(k) \\
+& \sum_{(i,j) \in A_{d_i}} X_{ijk} - \sum_{(j,i) \in A_{u_i}} X_{jik} = 0, && \forall k \in K, \forall i \in N \setminus \{O(k), D(k)\} \\
+& \sum_{k \in K} \sum_{(i,j) \in A_{d_i}} Y_{ijkr} = 1, && \forall r \in R, i = p(r) \\
+& \sum_{k \in K} \sum_{(j,i) \in A_{u_i}} Y_{jikr} = 1, && \forall r \in R, i = d(r) \\
+& \sum_{k \in K} \sum_{(i,j) \in A_{d_i}} Y_{ijkr} - \sum_{k \in K} \sum_{(j,i) \in A_{u_i}} Y_{jikr} = 0, && \forall r \in R, \forall i \in N \setminus \{p(r), d(r)\} \\
+& \sum_{r \in R} q_r Y_{ijkr} \leq u_k X_{ijk}, && \forall (i, j) \in A, \forall k \in K \\
+& \sum_{k \in K} Y_{ijkr} \leq 1, && \forall (i, j) \in A, \forall r \in R \\
+& \sum_{r \in R} \sum_{(j,i) \in A_{u_i}} Y_{jikr} = 0, && \forall k \in K, i = D(k) \\
+& TP_{ir} + t_{ij} \leq TP_{jr} + \left( 1 - \sum_{k \in K} Y_{ijkr} \right) M, && \forall r \in R, \forall (i, j) \in A \\
+& TP_{ir} \leq TP_{jr}, && \forall r \in R, i = p(r), j = d(r) \\
+& X_{ijk} \in \{0, 1\}, && \forall (i, j) \in A, \forall k \in K \\
+& Y_{ijkr} \in \{0, 1\}, && \forall (i, j) \in A, \forall k \in K, \forall r \in R \\
+& TV_{ik} \geq 0, && \forall i \in N, \forall k \in K \\
+& TP_{ir} \geq 0, && \forall i \in N, \forall r \in R \\
+& Z_{ijk} \geq 0, && \forall (i, j) \in A, \forall k \in K \\
+& F_{rikl} \in \{0, 1\}, && \forall r \in R, \forall i \in N, \forall k, l \in K, k \neq l \\
+& 0 \leq U_{ik} \leq d_{\max}, && \forall i \in N, \forall k \in K \\
+& 0 \leq S_{ijk} \leq d_{\max}, && \forall (i, j) \in A, \forall k \in K \\
+& V_{kr} \in \{0, 1\}, && \forall k \in K, \forall r \in R \\
+& W_{kr} \geq 0, && \forall k \in K, \forall r \in R \\
+& TV_{ik} = 0, && \forall k \in K, i \in O(k) \\
+& TV_{ik} \leq \left( \sum_{(j,i) \in A_{u_i}} X_{jik} + \sum_{(i,j) \in A_{d_i}} X_{ijk} \right) M, && \forall i \in N, \forall k \in K \\
+& Z_{ijk} - Z_{jik} = 0, && \forall k \in K, \forall (i, j) \in A \\
+& Z_{ijk} \leq (X_{ijk} + X_{jik}) M, && \forall k \in K, \forall (i, j) \in A \\
+& Z_{ijk} \leq TV_{ik} + t_{ij}X_{ijk} + S_{ijk}, && \forall k \in K, \forall (i, j) \in A \\
+& Z_{ijk} \geq TV_{ik} + t_{ij}X_{ijk} + S_{ijk} - \left[ 1 - (X_{ijk} + X_{jik}) \right] M, && \forall k \in K, \forall (i, j) \in A \\
+& Z_{jik} \leq (X_{ijk} + X_{jik}) M, && \forall k \in K, \forall (i, j) \in A \\
+& Z_{jik} \leq TV_{jk} + t_{ji}X_{jik} + S_{jik}, && \forall k \in K, \forall (i, j) \in A \\
+& Z_{jik} \geq TV_{jk} + t_{ji}X_{jik} + S_{jik} - \left[ 1 - (X_{ijk} + X_{jik}) \right] M, && \forall k \in K, \forall (i, j) \in A \\
+& S_{ijk} \leq X_{ijk} M, && \forall k \in K, \forall (i, j) \in A \\
+& S_{ijk} \leq U_{ik}, && \forall k \in K, \forall (i, j) \in A \\
+& S_{ijk} \geq U_{ik} - (1 - X_{ijk}) M, && \forall k \in K, \forall (i, j) \in A \\
+& V_{kr} = \sum_{(i,j) \in A_{d_i}} Y_{ijkr}, && \forall k \in K, \forall r \in R, i = p(r) \\
+& TP_{ir} = \sum_{k \in K} W_{kr}, && \forall r \in R, i = p(r) \\
+& W_{kr} \leq V_{kr} M, && \forall k \in K, \forall r \in R \\
+& W_{kr} \leq TV_{ik}, && \forall k \in K, \forall r \in R, i = p(r) \\
+& W_{kr} \geq TV_{ik} - (1 - V_{kr}) M, && \forall k \in K, \forall r \in R, i = p(r) \\
+& \sum_{(j,i) \in A_{u_i}} Y_{jikr} + \sum_{(i,j) \in A_{d_i}} Y_{ijlr} \leq F_{rikl} + 1, && \forall r \in R, \forall i \in N, \forall k, l \in K, k \neq l \\
+& F_{rikl} \leq \sum_{(j,i) \in A_{u_i}} Y_{jikr}, && \forall r \in R, \forall i \in N, \forall k, l \in K, k \neq l \\
+& F_{rikl} \leq \sum_{(i,j) \in A_{d_i}} Y_{ijlr}, && \forall r \in R, \forall i \in N, \forall k, l \in K, k \neq l \\
+& U_{ik} \leq \left[ \sum_{r \in R} \sum_{l \in K, l \neq k} (F_{rikl} + F_{rilk}) \right] M, && \forall i \in N, \forall k \in K \\
+& TV_{ik} - (TV_{il} + U_{il}) \leq (1 - F_{rikl}) M, && \forall i \in N, \forall k, l \in K, k \neq l, \forall r \in R \\
+& TV_{il} - (TV_{ik} + U_{ik}) \leq (1 - F_{rikl}) M, && \forall i \in N, \forall k, l \in K, k \neq l, \forall r \in R
+\end{aligned}
+\]
+
+\subsection*{Complete Mathematical Model}
+\[
+\begin{aligned}
+&\text{Min : } \alpha \sum_{k \in K} \sum_{(i,j) \in A} c_{ij} X_{ijk} + \beta \sum_{r \in R} q_r TP_{p(r)r} + \theta \sum_{k \in K} \sum_{r \in R} \sum_{(i,j) \in A} c_{ij} q_r Y_{ijkr} + \delta \sum_{k \in K} \sum_{i \in N} U_{ik} \\
+&\text{Subject to:} \\
+& \sum_{(i,j) \in A_{d_i}} X_{ijk} = 1, && \forall k \in K, i = O(k) \\
+& \sum_{(j,i) \in A_{u_i}} X_{jik} = 1, && \forall k \in K, i = D(k) \\
+& \sum_{(i,j) \in A_{d_i}} X_{ijk} - \sum_{(j,i) \in A_{u_i}} X_{jik} = 0, && \forall k \in K, \forall i \in N \setminus \{O(k), D(k)\} \\
+& \sum_{k \in K} \sum_{(i,j) \in A_{d_i}} Y_{ijkr} = 1, && \forall r \in R, i = p(r) \\
+& \sum_{k \in K} \sum_{(j,i) \in A_{u_i}} Y_{jikr} = 1, && \forall r \in R, i = d(r) \\
+& \sum_{k \in K} \sum_{(i,j) \in A_{d_i}} Y_{ijkr} - \sum_{k \in K} \sum_{(j,i) \in A_{u_i}} Y_{jikr} = 0, && \forall r \in R, \forall i \in N \setminus \{p(r), d(r)\} \\
+& \sum_{r \in R} q_r Y_{ijkr} \leq u_k X_{ijk}, && \forall (i, j) \in A, \forall k \in K \\
+& \sum_{k \in K} Y_{ijkr} \leq 1, && \forall (i, j) \in A, \forall r \in R \\
+& \sum_{r \in R} \sum_{(j,i) \in A_{u_i}} Y_{jikr} = 0, && \forall k \in K, i = D(k) \\
+& TP_{ir} + t_{ij} \leq TP_{jr} + \left( 1 - \sum_{k \in K} Y_{ijkr} \right) M, && \forall r \in R, \forall (i, j) \in A \\
+& TP_{ir} \leq TP_{jr}, && \forall r \in R, i = p(r), j = d(r) \\
+& X_{ijk} \in \{0, 1\}, && \forall (i, j) \in A, \forall k \in K \\
+& Y_{ijkr} \in \{0, 1\}, && \forall (i, j) \in A, \forall k \in K, \forall r \in R \\
+& TV_{ik} \geq 0, && \forall i \in N, \forall k \in K \\
+& TP_{ir} \geq 0, && \forall i \in N, \forall r \in R \\
+& Z_{ijk} \geq 0, && \forall (i, j) \in A, \forall k \in K \\
+& F_{rikl} \in \{0, 1\}, && \forall r \in R, \forall i \in N, \forall k, l \in K, k \neq l \\
+& 0 \leq U_{ik} \leq d_{\max}, && \forall i \in N, \forall k \in K \\
+& 0 \leq S_{ijk} \leq d_{\max}, && \forall (i, j) \in A, \forall k \in K \\
+& V_{kr} \in \{0, 1\}, && \forall k \in K, \forall r \in R \\
+& W_{kr} \geq 0, && \forall k \in K, \forall r \in R \\
+& TV_{ik} = 0, && \forall k \in K, i \in O(k) \\
+& TV_{ik} \leq \left( \sum_{(j,i) \in A_{u_i}} X_{jik} + \sum_{(i,j) \in A_{d_i}} X_{ijk} \right) M, && \forall i \in N, \forall k \in K \\
+& Z_{ijk} - Z_{jik} = 0, && \forall k \in K, \forall (i, j) \in A \\
+& Z_{ijk} \leq (X_{ijk} + X_{jik}) M, && \forall k \in K, \forall (i, j) \in A \\
+& Z_{ijk} \leq TV_{ik} + t_{ij}X_{ijk} + S_{ijk}, && \forall k \in K, \forall (i, j) \in A \\
+& Z_{ijk} \geq TV_{ik} + t_{ij}X_{ijk} + S_{ijk} - \left[ 1 - (X_{ijk} + X_{jik}) \right] M, && \forall k \in K, \forall (i, j) \in A \\
+& Z_{jik} \leq (X_{ijk} + X_{jik}) M, && \forall k \in K, \forall (i, j) \in A \\
+& Z_{jik} \leq TV_{jk} + t_{ji}X_{jik} + S_{jik}, && \forall k \in K, \forall (i, j) \in A \\
+& Z_{jik} \geq TV_{jk} + t_{ji}X_{jik} + S_{jik} - \left[ 1 - (X_{ijk} + X_{jik}) \right] M, && \forall k \in K, \forall (i, j) \in A \\
+& S_{ijk} \leq X_{ijk} M, && \forall k \in K, \forall (i, j) \in A \\
+& S_{ijk} \leq U_{ik}, && \forall k \in K, \forall (i, j) \in A \\
+& S_{ijk} \geq U_{ik} - (1 - X_{ijk}) M, && \forall k \in K, \forall (i, j) \in A \\
+& V_{kr} = \sum_{(i,j) \in A_{d_i}} Y_{ijkr}, && \forall k \in K, \forall r \in R, i = p(r) \\
+& TP_{ir} = \sum_{k \in K} W_{kr}, && \forall r \in R, i = p(r) \\
+& W_{kr} \leq V_{kr} M, && \forall k \in K, \forall r \in R \\
+& W_{kr} \leq TV_{ik}, && \forall k \in K, \forall r \in R, i = p(r) \\
+& W_{kr} \geq TV_{ik} - (1 - V_{kr}) M, && \forall k \in K, \forall r \in R, i = p(r) \\
+& \sum_{(j,i) \in A_{u_i}} Y_{jikr} + \sum_{(i,j) \in A_{d_i}} Y_{ijlr} \leq F_{rikl} + 1, && \forall r \in R, \forall i \in N, \forall k, l \in K, k \neq l \\
+& F_{rikl} \leq \sum_{(j,i) \in A_{u_i}} Y_{jikr}, && \forall r \in R, \forall i \in N, \forall k, l \in K, k \neq l \\
+& F_{rikl} \leq \sum_{(i,j) \in A_{d_i}} Y_{ijlr}, && \forall r \in R, \forall i \in N, \forall k, l \in K, k \neq l \\
+& U_{ik} \leq \left[ \sum_{r \in R} \sum_{l \in K, l \neq k} (F_{rikl} + F_{rilk}) \right] M, && \forall i \in N, \forall k \in K \\
+& TV_{ik} - (TV_{il} + U_{il}) \leq (1 - F_{rikl}) M, && \forall i \in N, \forall k, l \in K, k \neq l, \forall r \in R \\
+& TV_{il} - (TV_{ik} + U_{ik}) \leq (1 - F_{rikl}) M, && \forall i \in N, \forall k, l \in K, k \neq l, \forall r \in R
+\end{aligned}
+\]
+
+\end{document}

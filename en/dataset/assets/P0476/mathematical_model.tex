@@ -1,0 +1,377 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\newcommand{\uv}{\underline{\mathbf{u}}}
+\newcommand{\xv}{\underline{\mathbf{x}}}
+\newcommand{\xh}{\underline{\hat{\mathbf{x}}}}
+\newcommand{\zh}{\underline{\hat{\mathbf{z}}}_{tt}}
+\newcommand{\sh}{\underline{\hat{\sigma}}}
+\newcommand{\Am}{\underline{\underline{\mathcal A}}}
+\newcommand{\Bm}{\underline{\underline{\mathcal B}}}
+\newcommand{\Cm}{\underline{\underline{\mathcal C}}}
+\newcommand{\Dm}{\underline{\underline{\mathcal D}}}
+\newcommand{\Qm}{\underline{\underline{\mathcal Q}}}
+\newcommand{\Rm}{\underline{\underline{\mathcal R}}}
+\begin{document}
+
+\section*{Spatially discretized chance-constrained shrinking-horizon bus trajectory MPC}
+\begin{equation}
+\min_{\uv}\left[\frac12\uv^T\Phi\uv+\Omega^T\uv\right].
+\tag{33}
+\end{equation}
+Subject to:
+\begin{align}
+v_{min}&\leq v_{des}(k)\leq v_{max}, \tag{34}\\
+\left|z_{tt}(k+N\mid k)\right|&<\varepsilon, \tag{35}\\
+\left|v(k+N\mid k)\right|&=0, \tag{36}\\
+v(k+i\mid k)&=v_J=0,
+\quad\text{if }x(k+i\mid k)\in\hat R_J(t,\omega),
+\quad\forall i=1,\ldots,N, \tag{37}\\
+v(k+i\mid k)&=v_c,
+\quad\text{if }x(k+i\mid k)\in\hat R_C(t,\omega),
+\quad\forall i=1,\ldots,N. \tag{38}
+\end{align}
+The decision vector is the stacked desired-velocity input \(\uv\) defined below. The states and tracking errors are its predictions from the measured current state. The source prints \(v_c\) in (38), whereas its definition of the critical velocity uses \(v_C\). The bounds in (34) are printed with the argument \(k\), without an additional prediction-index quantifier; the accompanying text describes a control-input bound constant within a horizon.
+
+\subsection*{Bus dynamics, reference, and horizon: (22)--(26)}
+\begin{equation}
+\overbrace{\begin{bmatrix}v(k+1)\\x(k+1)\end{bmatrix}}^{X(k+1)}
+=
+\overbrace{\begin{bmatrix}1-\dfrac{\Delta t}{\tau}&0\\\Delta t&1\end{bmatrix}}^{A}
+\overbrace{\begin{bmatrix}v(k)\\x(k)\end{bmatrix}}^{X(k)}
++
+\overbrace{\begin{bmatrix}\dfrac{\Delta t}{\tau}\\0\end{bmatrix}}^{B}
+v_{des}(k).
+\tag{22}
+\end{equation}
+Here \(v(k)\) is bus velocity, \(x(k)\) is bus position relative to the start of the network, and \(v_{des}(k)\) is the desired velocity, the control input. Equation (22) is evaluated over \([k,k+1]\Delta t\), with
+\[
+k=0,1,2,\ldots,\qquad \Delta t=2\,\mathrm{s},\qquad
+X(k)=[v(k),x(k)]^T.
+\]
+The fixed relaxation parameter \(\tau\) captures drivers' sensitivity to changes in desired velocity; the source requires calibration between \(1.25\,\mathrm{s}\) and \(2.5\,\mathrm{s}\).
+\begin{equation}
+z_{tt}(k)=
+\overbrace{\begin{bmatrix}0&-1\end{bmatrix}}^{C}
+\overbrace{\begin{bmatrix}v(k)\\x(k)\end{bmatrix}}^{X(k)}
++x_{tt}(k).
+\tag{23}
+\end{equation}
+The external signal \(x_{tt}(k)\) is an idealized reference trajectory based on the timetable. The timetable specifies points in time and space at which the bus is to be at a given stop. No interpolation formula for \(x_{tt}\) is supplied.
+
+The prediction starts at \(t_0\); \(t_{ETA}\) is the desired arrival time at the next bus stop. The scheduled interval is split into \(N\) equidistant steps. The horizon decreases by one at each time step, subject to the printed lower-bound construction
+\begin{equation}
+N=\max\left\{N_{min},\frac{t_{ETA}-t_0}{\Delta t}\right\},
+\qquad N_{min}=5.
+\tag{24}
+\end{equation}
+The lower bound addresses lateness and proximity to the stop. Although \(N\) is used as a number of steps and a matrix dimension, (24) gives no rounding operation or divisibility condition; none is added here.
+
+The state \(X(k)\) is measured at time step \(k\). In \(X(k+i\mid k)\), the right argument is the current time, and the left argument is the prediction time, with \(i=1,2,\ldots,N\). The stacked prediction is
+\begin{equation}
+\overbrace{\begin{bmatrix}
+X(k+1\mid k)\\X(k+2\mid k)\\\vdots\\X(k+N\mid k)
+\end{bmatrix}}^{\xh}
+=
+\overbrace{\begin{bmatrix}A\\A^2\\\vdots\\A^N\end{bmatrix}}^{\Am}
+\overbrace{X(k\mid k)}^{\xv}
++
+\overbrace{\begin{bmatrix}
+B&0&\cdots&0\\
+AB&B&\cdots&0\\
+\vdots&\vdots&\ddots&\vdots\\
+A^{N-1}B&A^{N-2}B&\cdots&B
+\end{bmatrix}}^{\Bm}
+\overbrace{\begin{bmatrix}
+v_{des}(k\mid k)\\v_{des}(k+1\mid k)\\\vdots\\v_{des}(k+N-1\mid k)
+\end{bmatrix}}^{\uv}.
+\tag{25}
+\end{equation}
+Thus \(\xv\) is the measured initial state, not a free initial-state decision. The output and fixed reference stacks are
+\begin{equation}
+\overbrace{\begin{bmatrix}
+z_{tt}(k+1\mid k)\\z_{tt}(k+2\mid k)\\\vdots\\z_{tt}(k+N\mid k)
+\end{bmatrix}}^{\zh}
+=
+\overbrace{\begin{bmatrix}
+C&0&\cdots&0\\0&C&\cdots&0\\\vdots&\vdots&\ddots&\vdots\\0&0&\cdots&C
+\end{bmatrix}}^{\Cm}
+\overbrace{\begin{bmatrix}
+X(k+1\mid k)\\X(k+2\mid k)\\\vdots\\X(k+N\mid k)
+\end{bmatrix}}^{\xh}
++
+\overbrace{\begin{bmatrix}
+1&0&\cdots&0\\0&1&\cdots&0\\\vdots&\vdots&\ddots&\vdots\\0&0&\cdots&1
+\end{bmatrix}}^{\Dm}
+\overbrace{\begin{bmatrix}
+x_{tt}(k+1\mid k)\\x_{tt}(k+2\mid k)\\\vdots\\x_{tt}(k+N\mid k)
+\end{bmatrix}}^{\sh_{tt}}.
+\tag{26}
+\end{equation}
+The reference indices in (26) are retained. The preceding prose instead mentions \(x_{tt}(k+i-1\mid k)\). Only the first optimized input is applied before the measured-state prediction is repeated.
+
+\subsection*{Objective coefficients and fixed input bounds: (27)--(28)}
+The objective construction is
+\begin{equation}
+J(k)=\frac12\left[\zh^T\Qm\zh+\uv^T\Rm\uv\right].
+\tag{27}
+\end{equation}
+The weighting matrices \(\Qm\) and \(\Rm\) are \(N\times N\), diagonal, and positive definite. Each diagonal value corresponds to one prediction step. They weight timetable-tracking error and desired velocity, respectively; their numerical values are left abstract.
+\begin{equation}
+\begin{aligned}
+J(k)={}&\frac12\uv^T
+\left(\Bm^T\Cm^T\Qm\Cm\Bm+\Rm\right)\uv\\
+&+\left(\xv^T\Am^T\Cm^T\Qm\Cm\Bm
++\sh^T\Dm^T\Qm\Cm\Bm\right)\uv\\
+={}&\frac12\uv^T\Phi\uv+\Omega^T\uv.
+\end{aligned}
+\tag{28}
+\end{equation}
+Consequently, the coefficient definitions used by (33) are
+\[
+\Phi=\Bm^T\Cm^T\Qm\Cm\Bm+\Rm,
+\qquad
+\Omega^T=\xv^T\Am^T\Cm^T\Qm\Cm\Bm
++\sh^T\Dm^T\Qm\Cm\Bm.
+\]
+Equation (28) prints \(\sh\) without the \(tt\) subscript attached to the reference stack in (26); it arises by the stated substitution of (25)--(26). The equality between (27) and (28) omits the input-independent term in the quadratic expansion. The selected objective (33) is retained exactly, without adding that term.
+
+The fixed bound data and terminal tolerance are specified in the surrounding prose as
+\[
+v_{min}=0\,\mathrm{km/h},\qquad
+v_{max}=\min\bigl(v_{btl}(k),v_{lim}\bigr),\qquad
+\varepsilon\approx 2\,\mathrm{m}.
+\]
+Here \(v_{lim}\) is the legal speed limit on the link and \(v_{btl}(k)\) is the bottleneck speed imposed by other vehicles on a congested link. The velocity bound is assumed constant within one prediction horizon. The paper's \(50\,\mathrm{km/h}\) legal-speed value is an example, not a universal input restriction.
+
+\subsection*{Continuous stochastic regions underlying the spatial discretization}
+The following are the region tests printed in Section 4.2, from which the hatted regions in (37)--(38) are constructed:
+\begin{equation}
+x(k)\in R_J(t,\omega)\quad\text{if}\quad
+\begin{cases}
+x(k)<l_l,\\
+x(k)>l_l+W_2\bigl(t-(t_2+ct_{cyc})\bigr),\\
+x(k)<l_{s,c}(t_{s,c},\omega)+W_3(t,\omega)\bigl(t-t_{s,c}(t,\omega)\bigr),\\
+x(k)>l_l+W_4\bigl(t-(t_1+(c+1)t_{cyc})\bigr).
+\end{cases}
+\tag{29}
+\end{equation}
+\begin{equation}
+x(k)\in R_C(t,\omega)\quad\text{if}\quad
+\begin{cases}
+x(k)<l_l,\\
+x(k)>l_l+W_4\bigl(t-(t_1+ct_{cyc})\bigr),\\
+x(k)>l_{r,c-1}(t_{r,c},\omega)+W_1(t,\omega)\bigl(t-t_{r,c-1}(t,\omega)\bigr),\\
+x(k)<l_l+W_2\bigl(t-(t_2+ct_{cyc})\bigr).
+\end{cases}
+\tag{30}
+\end{equation}
+The time-sampling relation is
+\[
+k=\operatorname{floor}\left(\frac{t}{\Delta t}\right).
+\]
+The source states that stochasticity occurs only in the third line of each test, the tail-of-queue boundary. Its conditional probability expressions are
+\begin{equation}
+\begin{aligned}
+&\mathbb P\{\omega:x(k)\in R_C(t,\omega)\}\\
+&=\mathbb P\Bigl\{
+\{\omega:l_{r,c-1}(t_{r,c},\omega)
++W_1\bigl(t-t_{r,c-1}(t,\omega)\bigr)>x(k)\}\,\Bigm|\\
+&\hspace{2em}\{x(k)<l_l\}\wedge
+\{x(k)>l_l+W_4(t-(t_1+ct_{cyc}))\}\wedge
+\{x(k)<l_l+W_2(t-(t_2+ct_{cyc}))\}
+\Bigr\}.
+\end{aligned}
+\tag{31}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+&\mathbb P\{\omega:x(k)\in R_J(t,\omega)\}\\
+&=\mathbb P\Bigl\{
+\{\omega:l_{s,c}(t_{s,c}\omega)
++W_3(t,\omega)\bigl(t-t_{s,c}(t,\omega)\bigr)>x(k)\}\,\Bigm|\\
+&\hspace{2em}\{x(k)<l_l\}\wedge
+\{x(k)>l_l+W_2(t-(t_2+ct_{cyc}))\}\wedge
+\{x(k)>l_l+W_4(t-(t_1+(c+1)t_{cyc}))\}
+\Bigr\}.
+\end{aligned}
+\tag{32}
+\end{equation}
+The stated region-probability CDFs are denoted
+\[
+F_{x(k)\in R_J(t,\omega)}(\varphi),\qquad
+F_{x(k)\in R_C(t,\omega)}(\varphi).
+\]
+\paragraph{Printed discrepancies in the region chain.}
+The third inequality of (30) places \(x(k)\) above the stochastic boundary, whereas (31) places the boundary above \(x(k)\). Equation (31) also suppresses the \((t,\omega)\) arguments of \(W_1\), and (32) prints \(l_{s,c}(t_{s,c}\omega)\) without the comma present in (29). These expressions are retained, not made into an additional pair of simultaneous decision constraints. Moreover, the labels in (29)--(30) conflict with the jam/discharge boundary assignments in Table 1 below. The selected (37)--(38) and the immediately preceding Section 4.2 definitions are retained without exchanging \(J\) and \(C\).
+
+\subsection*{Source-defined construction of \(\hat R_J\) and \(\hat R_C\)}
+The paper discretizes queue length by discretizing the vehicle arrival rate \(Q_A(t,\omega)\) according to \(F_{Q_A}(t,\varphi)\), that is, by using discrete numbers of vehicles. Applying this discretization to the continuous stochastic regions \(R_J(t,\omega)\) and \(R_C(t,\omega)\) gives, respectively, \(\hat R_J(t,\omega)\) and \(\hat R_C(t,\omega)\). The introducing remark to (33) specifies that these spatially discretized regions impose finitely many nonlinear constraints through fixed probability levels for every prediction step.
+
+The accompanying sampling discussion describes independent instances
+\[
+\omega^{(1)},\omega^{(2)},\ldots,\omega^{(M)}\in\Omega,
+\qquad\text{distributed according to }\mathbb P,
+\]
+and discusses removing \(m\) constraints. It explains the discretization, but is not a second optimization problem imposed here. The supplied main paper gives no explicit grid, quantile formula, prescribed values of the fixed probability levels, or rule selecting \(M\) and \(m\) for (33)--(38). Those quantities are not filled in. In particular, no additional inequality of the form of a probability lower bound is appended to the printed subject-to block.
+
+\subsection*{Traffic inputs and premises inherited from Section 2}
+The selected traffic-input version is the paper's independent-inflow, static-signal version. It assumes no queue spillover and does not use the optional network extension of Appendix A. For each modeled intersection, \(l_l\) is the known traffic-light location. The stochastic regions and waves use an elementary event \(\omega\) in the probability space
+\[
+[\Omega,\mathcal A,\mathbb P],\qquad \omega\in\Omega,
+\]
+where \(\Omega\) is the sample space, \(\mathcal A\) is a sigma-algebra, and \(\mathbb P\) is the probability measure. This sample space \(\Omega\) is distinct in role from the objective coefficient vector \(\Omega\) in (28) and (33).
+
+The known mean inflow and known CDF are
+\[
+Q_A(t)=\mathbb E[Q_A(t,\omega)],\qquad
+F_{Q_A}(t,\varphi)=\mathbb P\{\omega:Q_A(t,\omega)\leq\varphi\}.
+\]
+Assumption 1 describes truncation at zero flow and peak capacity flow. The stronger explicit restriction in Section 2.4 is that the flow must be greater than zero and smaller than \(Q_C\):
+\[
+0<Q_A(t,\omega)<Q_C.
+\]
+Simple independent distributions are used in the selected version; Poisson and binomial arrivals are possible choices rather than mandatory distributions. Hourly and cycle-averaged traffic flows need not be proportional; ergodicity is not assumed. The randomness in the cycle inflow is represented by \(F_{Q_A}\).
+
+The link fundamental diagram is assumed known in mean value and triangular. Its defining points are actual flow \([\rho_A(t,\omega),Q_A(t,\omega)]\), peak capacity \([\rho_C,Q_C]\), and jam \([\rho_J,0]\). Flow is assumed constant over short intervals; a time-independent \(Q_A(\omega)\) produces linear shockwave profiles and polygonal regions. The traffic model is discretized in passenger car equivalents (PCE). The network layout and bus frequency are assumed such that buses have only a minor effect on the link fundamental diagram. Velocity control is intended where the bus is sufficiently far from the intersection and traffic is not too dense, or overtaking space exists.
+
+The three physical traffic states are free flow at desired vehicle speed \(v_A(t)\), jam \(R_J(t,\omega)\) at density \(\rho_J\) and
+\[
+v_J=0,
+\]
+and saturated queue discharge \(R_C(t,\omega)\) at critical velocity \(v_C\). Outside the two constrained regions, vehicles travel at their desired speed \(v_A(t)\). The paper leaves the critical velocity as traffic data rather than providing an extra formula for it here.
+
+The signal program must be known and frozen over the MPC prediction horizon. With cycle counter \(c\), red-phase start \(t_{1,c}\), red-phase end \(t_{2,c}\), and cycle time \(t_{cyc,c}\), the defining relations are
+\[
+t_{red,c}=t_{2,c}-t_{1,c},\qquad
+t_{green,c}=t_{cyc,c}-t_{red,c},\qquad
+t_{cyc,c}=t_{red,c}+t_{green,c}.
+\]
+For the static timing used in the deductions,
+\[
+t_{green}=t_{cyc}-(t_2-t_1).
+\]
+The notation \(ct_{cyc}\) denotes time elapsed since an arbitrary initial instant. The selected version does not replace it with the varying-cycle alternative.
+
+\subsection*{Shockwaves, intersection points, and queue process: (1)--(10)}
+The four wave velocities, indexed by \(i=1,\ldots,4\), are
+\begin{align}
+W_1(t,\omega)&=-\frac{Q_A(t,\omega)}{\rho_J-\rho_A(t,\omega)}, \tag{1}\\
+W_2&=-\frac{Q_C}{\rho_J-\rho_C}, \tag{2}\\
+W_3(t,\omega)&=\frac{Q_C-Q_A(t,\omega)}{\rho_C-\rho_A(t,\omega)}, \tag{3}\\
+W_4&=-\frac{Q_C}{\rho_J-\rho_C}. \tag{4}
+\end{align}
+Here \(W_1\) is the queuing wave, \(W_2\) is the deterministic discharge wave, \(W_3\) is the departure wave, and \(W_4\) is the pressure wave. The pressure wave is present only when the queue cannot fully discharge during a green interval. The source states that a triangular fundamental diagram also makes \(W_3\) deterministic.
+
+The intersection of the queuing and discharge waves is \([t_{s,c}(t,\omega),l_{s,c}(t,\omega)]\). The source describes \(t_{r,c}(t,\omega)\) as the time when the queue starts growing again in the next green phase and \(l_{r,c}(t,\omega)\) as the residual queue length. Their recursive formulas are
+\begin{align}
+t_{s,c}(t,\omega)
+&=\frac{-W_1(t,\omega)t_{r,c-1}(t,\omega)
++W_2(t_{2,c}+ct_{cyc})+l_{r,c-1}(t,\omega)-l_l}
+{W_2-W_1(t,\omega)}, \tag{5}\\
+l_{s,c}(t,\omega)
+&=W_1(t,\omega)\bigl(t_{s,c}(t,\omega)-t_{r,c-1}(t,\omega)\bigr)
++l_{r,c-1}(t,\omega), \tag{6}\\
+t_{r,c}(t,\omega)
+&=\min\left(
+ t_{1,c}+ct_{cyc},
+ \frac{-W_3(t,\omega)t_{s,c}(t,\omega)
+ +W_4(t_{1,c}+ct_{cyc})+l_{s,c}(t,\omega)-l_l}
+ {W_4-W_3(t,\omega)}
+\right), \tag{7}\\
+l_{r,c}(t,\omega)
+&=\min\left(l_l,
+W_3(t,\omega)\bigl(t_{r,c}(t,\omega)-t_{s,c}(t,\omega)\bigr)
++l_{s,c}(t,\omega)\right). \tag{8}
+\end{align}
+The source explains the minima as limiting shockwaves upstream of \(l_l\). No initial value for the residual-wave recursion is supplied in these defining passages.
+\begin{equation}
+c=\operatorname{floor}\left(\frac{t}{t_{cyc}}\right).
+\tag{9}
+\end{equation}
+The tail of the queue is the stochastic process
+\begin{equation}
+l_q(t,\omega)=
+\begin{cases}
+W_1(t,\omega)\bigl(t-t_{r,c-1}(t,\omega)\bigr)+l_{r,c-1}(t,\omega),
+& t_{r,c-1}(t,\omega)\leq t<t_{s,c}(t,\omega),\\[2mm]
+\max\left(l_l,W_3(t,\omega)\bigl(t-t_{s,c}(t,\omega)\bigr)+l_{s,c}(t,\omega)\right),
+& t_{s,c}(t,\omega)\leq t<t_{r,c}(t,\omega).
+\end{cases}
+\tag{10}
+\end{equation}
+The first branch is queuing and the second is departure. The printed maximum in the departure branch is retained; unlike the minimum in (8), it is not an upstream cap at \(l_l\).
+
+\subsection*{Table 1: defining boundary rows}
+These are the upstream boundary descriptions referenced by Section 4.2, not a second set of bus constraints. The differing cycle subscripts and time offsets are retained as printed.
+\paragraph{Jam region \(R_J(t,\omega)\).}
+\begin{align*}
+\text{Stop line during red:}\quad &l_l,
+&&\text{between }t_{1,c}+ct_{cyc}\text{ and }t_{2,c}+ct_{cyc};\\
+\text{Pressure wave, if it exists:}\quad
+&l_l+W_4\bigl(t-(t_{1,c}+ct_{cyc})\bigr);\\
+\text{Queuing wave:}\quad
+&l_{r,c-1}(t,\omega)+W_1(t,\omega)\bigl(t-t_{r,c-1}(t,\omega)\bigr);\\
+\text{Discharge wave:}\quad
+&l_l+W_2\bigl(t-(t_{2,c}+ct_{cyc})\bigr).
+\end{align*}
+\paragraph{Discharge region \(R_C(t,\omega)\).}
+\begin{align*}
+\text{Stop line during green:}\quad &l_l,
+&&\text{between }t_{2,c}+ct_{cyc}\text{ and }
+\min\bigl(t_1+ct_{cyc},t_{r,c}(t,\omega)\bigr);\\
+\text{Discharge wave:}\quad
+&l_l+W_2\bigl(t-(t_2+ct_{cyc})\bigr);\\
+\text{Departure wave:}\quad
+&l_{s,c}(t,\omega)+W_3(t,\omega)\bigl(t-t_{s,c}(t,\omega)\bigr);\\
+\text{Pressure wave, if it exists:}\quad
+&l_l+W_4\bigl(t-(t_1+ct_{cyc})\bigr).
+\end{align*}
+In particular, the green stop-line row retains the printed \(t_1+ct_{cyc}\), not a next-cycle replacement.
+
+\subsection*{Distribution definitions used by the stochastic construction: (14)--(21)}
+The source uses the following transformation theorem. For a random variable \(\xi(\omega)\) with CDF \(F_\xi(\varphi)\) and \(\eta(\omega)=g(\xi(\omega))\), if \(g\) has a unique inverse,
+\begin{equation}
+F_\eta(\varphi)=
+\begin{cases}
+F_\xi\bigl(g^{-1}(\varphi)\bigr),&\text{if }g(\varphi)\text{ is monotonically increasing},\\
+1-F_\xi\bigl(g^{-1}(\varphi)\bigr),&\text{if }g(\varphi)\text{ is monotonically decreasing}.
+\end{cases}
+\tag{14}
+\end{equation}
+The second branch is reproduced at its printed strength; for distributions with atoms it does not specify a left-limit correction.
+
+Assuming free flow at the beginning of the link, with free-flow velocity \(v_f\),
+\begin{equation}
+\rho_A(t,\omega)=\frac{1}{v_f}Q_A(t,\omega).
+\tag{15}
+\end{equation}
+With \(g\) the relation in (15),
+\begin{align}
+F_{\rho_A}(t,\varphi)&=F_{Q_A}\bigl(t,g^{-1}(\varphi)\bigr), \tag{16}\\
+F_{\rho_A}(t,\varphi)&=F_{Q_A}(t,v_f\varphi). \tag{17}
+\end{align}
+The dependent wave expressions are
+\begin{align}
+W_1(t,\omega)
+&=\frac{Q_J-Q_A(t,\omega)}{\rho_J-\rho_A(t,\omega)}
+=-\frac{Q_A(t,\omega)}{\rho_J-\frac{1}{v_f}Q_A(t,\omega)}, \tag{18}\\
+W_3(t,\omega)
+&=\frac{Q_C-Q_A(t,\omega)}{\rho_C-\rho_A(t,\omega)}
+=\frac{Q_C-Q_A(t,\omega)}{\rho_C-\frac{1}{v_f}Q_A(t,\omega)}. \tag{19}
+\end{align}
+The jam point \([\rho_J,0]\) supplies the zero jam flow appearing as \(Q_J\) in (18). The printed CDF expressions are
+\begin{align}
+F_{W_1}(t,\varphi)
+&=1-F_{Q_A}\left(t,-\frac{\rho_J-\frac{1}{v_f}\varphi}{\varphi}\right), \tag{20}\\
+F_{W_3}(t,\varphi)
+&=F_{Q_A}\left(t,\frac{\rho_C-\frac{1}{v_f}\varphi}{\rho_C-\varphi}\right), \tag{21}
+\end{align}
+with the stated premise that \(Q_A(t,\omega)\) is nonzero. Section 2.4 describes \(W_1\) as decreasing and \(W_3\) as increasing in arrivals. The latter conflicts with the earlier statement that \(W_3\) is deterministic under the triangular fundamental diagram. Equations (20)--(21) are retained as printed; their displayed arguments do not give the algebraic inverses of (18)--(19). No repaired CDF is substituted.
+
+After substituting the shockwaves and recursively computed intersection points into (10), the source describes \(l_q(t,\omega)\) as a piecewise, truncated, first-order rational function of \(Q_A(t,\omega)\). It denotes its CDF by \(F_{l_q}(t,\varphi)\), obtainable using (14), but explicitly omits the resulting long expression. The hatted-region construction uses the arrival-rate distribution as stated above; it is not replaced here by a deterministic queue model.
+
+\paragraph{Source scope and verification.}
+This reconstruction uses Varga, Tettamanti, Kulcs\'ar and Qu, \emph{Public transport trajectory planning with probabilistic guarantees}, Transportation Research Part B 139 (2020), 81--101, DOI: 10.1016/j.trb.2020.06.005, physical PDF pages 5--13, including the supplied original images for pages 10--13. The optional network-SPM extension, vehicle-count comparison model, simulation instances, and solver subproblems are not imposed on the selected form. The paper's online supplementary material was not supplied and remains unverified. The external detailed derivation cited as Varga et al. (2018) also remains unverified; the objective coefficients above are those explicitly available in (28).
+\end{document}

@@ -1,0 +1,68 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,mathtools,geometry}
+\geometry{a4paper,margin=20mm}\allowdisplaybreaks
+\emergencystretch=4em
+\begin{document}
+\section*{Multiple trucks and drones working together for collaborative delivery; linearized M2 model}
+
+\paragraph{Source} Pages 4–7 of the PDF document: M2 models (33), (31)–(32); as well as all constraints shared by M1, namely (2)–(30).
+\subsection*{Collections, parameters, and variables}
+$K$ Refer to the truck group. Each group is equipped with drones from the set of IDs $D$. $O=\{0,1,\ldots,o,o+1\}$ Represent roads that are accessible to trucks. Here, $0,o+1$ refers to the departure/return copies within the same warehouse. $O_-=O\setminus\{o+1\}$, $O_+=O\setminus\{0\}$, $O_0=O\setminus\{0,o+1\}$… $C$ Refer to customers who only receive services provided by drones. $N=O\cup C$ All arcs are excluded from loops; undefined/non-existent arcs have variable values set to zero. $t^K_{ij}$ Represents the travel time on roads. $t^D_{ic}=t^D_{ci}$ Represents the flight time between road nodes and customers. $s^G,s^K,s^D,s^T\ge0$ Represents costs associated with driving, flying, and delayed arrivals. $q_c$ Represents demand. $m^K$ Represents truck capacity. $e_c$ Represents the expected latest arrival time for customers. $M$ Is a constant that has been verified to be sufficiently large relative to the time limit. Under the assumptions outlined in this document, the batteries are sufficient to support one-way flights for each customer. Battery charging times are ignored; this model does not optimize battery levels separately.
+
+$\alpha_{ijk}$ represents the arc of the truck; $\beta_{ijdk}$ refers to the arc of the drone (used for routes where the vehicle carries the drone along with it). $\varepsilon_k$ indicates that the truck group is enabled. $\delta_{ik}\ge0$ represents the synchronization moment of the group at a specific node. $\mu_{ik},\varphi_{idk}$ is the integer indicating the order of access. $\tau_{ck}^{1+},\tau_{ck}^{1-}\ge0$ represents the amount of linearization for late/early arrivals. For groups that aren’t used, $0\to o+1$ represents a virtual arc with zero time consumption and zero cost.
+\subsection*{Complete M2}
+
+\begin{align}
+\min\quad&\sum_{k\in K}s^G\varepsilon_k+
+\sum_{k\in K,i\in O_-,j\in O_+}s^Kt^K_{ij}\alpha_{ijk}\notag\\
+&+\sum_{k\in K,d\in D,i\in O_-,c\in C}s^Dt^D_{ic}\beta_{icdk}
++\sum_{k\in K,d\in D,j\in O_+,c\in C}s^Dt^D_{jc}\beta_{cjdk}
++\sum_{k\in K,c\in C}s^T\tau_{ck}^{1+}.\tag{33}
+\end{align}
+\begin{align}
+& \sum_{j \in O_+} \alpha_{0jk} = 1 \quad k \in K \\
+& \sum_{i \in O_-} \alpha_{i(o+1)k} = 1 \quad k \in K \\
+& \sum_{i \in O_-} \alpha_{ijk} = \sum_{i \in O_+} \alpha_{jik} \le 1 \quad j \in O_0, k \in K
+\end{align}
+
+\begin{align}
+& \sum_{j \in O_{+} \cup C} \beta_{0jdk} = 1 \quad k \in K, d \in D \\
+& \sum_{i \in O_{-} \cup C} \beta_{i(o+1)dk} = 1 \quad k \in K, d \in D \\
+& \sum_{i \in O_{-} \cup C} \beta_{ijdk} = \sum_{i \in O_{+} \cup C} \beta_{jidk} \le 1 \quad j \in O_{0} \cup C, k \in K, d \in D \\
+& \sum_{k \in K} \sum_{i \in O_{-}} \sum_{d \in D} \beta_{icdk} = 1 \quad c \in C \\
+& \sum_{k \in K} \sum_{j \in O_{+}} \sum_{d \in D} \beta_{cjdk} = 1 \quad c \in C \\
+& \beta_{ijdk} = 0 \quad i \in C, j \in C, k \in K, d \in D \\
+& \sum_{c \in C} \beta_{icdk} \le 1 \quad i \in O_{-}, k \in K, d \in D \\
+& \sum_{c \in C} \beta_{c j d k} \leq 1 \quad j \in O_{+}, k \in K, d \in D \\
+& \delta_{0 k}=0 \quad k \in K \\
+& \delta_{j k} \geq \delta_{i k}+t_{i j}^{K}-M(1-\alpha_{i j k}) \quad i \in O_{-}, j \in O_{+}, k \in K \\
+& \delta_{c k} \geq \delta_{i k}+t_{i c}^{D}-M(1-\beta_{i c d k}) \quad i \in O_{-}, c \in C, k \in K, d \in D \\
+& \delta_{j k} \geq \delta_{c k}+t_{j c}^{D}-M(1-\beta_{c j d k}) \quad c \in C, j \in O_{+}, k \in K, d \in D \\
+& \delta_{j k} \geq \delta_{i k}+t_{i j}^{K}-M(1-\beta_{i j d k}) \quad i \in O_{-}, j \in O_{+}, d \in D, k \in K \\
+& \delta_{j k} \geq \delta_{i k}-M(2-\beta_{i c d k}-\beta_{c j d k}) \quad c \in C, i \in O_{-}, j \in O_{+}, k \in K, d \in D \\
+& \beta_{i j d k} \leq \alpha_{i j k} \quad i \in O_{-}, j \in O_{+}, k \in K, d \in D \\
+& \beta_{i c d k} \leq \sum_{j \in O_{+}} \alpha_{i j k} \quad c \in C, i \in O_{-}, k \in K, d \in D \\
+& \beta_{c j d k} \leq \sum_{i \in O_{-}} \alpha_{i j k} \quad c \in C, j \in O_{+}, k \in K, d \in D \\
+& \sum_{i \in O_{-}} \sum_{c \in C} \sum_{d \in D} q_{c} \beta_{i c d k} \leq m^{K} \quad k \in K \\
+& \alpha_{0(o+1) k}=1-\varepsilon_{k} \quad k \in K \\
+& \varepsilon_{k} \geq \sum_{i \in O_{-}} \beta_{i c d k} \quad c \in C, k \in K, d \in D \\
+& \varphi_{i d k}-\varphi_{j d k} \leq(|O|+|C|)(1-\beta_{i j d k})-1 \quad i \in O_{-} \cup C, j \in O_{+} \cup C, k \in K, d \in D \\
+& \mu_{i k}-\mu_{j k} \leq|O|(1-\alpha_{i j k})-1 \quad i \in O_{-}, j \in O_{+}, k \in K \\
+& \delta_{i k} \geq 0 \quad i \in N, k \in K \\
+& 0 \leq \varphi_{i d k} \leq|O|+|C| \quad i \in N, k \in K, d \in D \\
+& 0 \leq \mu_{i k} \leq|O| \quad i \in N, k \in K \\
+& \alpha_{i j k}, \beta_{i j d k}, \varepsilon_{k} \in\{0,1\} \quad i, j \in N, k \in K, d \in D
+\end{align}
+
+\begin{align}
+& \delta_{ck} - e_{c} \sum_{d \in D} \sum_{i \in O_{-}} \beta_{icdk} = \tau_{ck}^{1+} - \tau_{ck}^{1-} \quad c \in C, k \in K \\
+& \tau_{ck}^{1+}, \tau_{ck}^{1-} \ge 0 \quad c \in C, k \in K
+\end{align}
+
+
+\[
+\mu_{ik}\in\mathbb Z_{\ge0},\qquad \varphi_{idk}\in\mathbb Z_{\ge0}.
+\]
+All the arc indices in the above formula only consider those pairs of nodes that are allowed to be traversed. The remaining elements in the matrix are treated as zero variables. M2 is equivalent to M1, with the positive penalty component. Here, we only provide a complete model for M2.
+
+\end{document}

@@ -1,0 +1,58 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\emergencystretch=4em
+\begin{document}
+\section*{Two-stage stochastic programming for fixed routes and demand-responsive transportation}
+This document fully defines the probability model for the given scenario selected in the old 02 version. The title of the paper includes “DRO”, but the objective of the old 02 version is actually “$\sum_w\rho_w OBJ_w$”. This weighted objective defines the stochastic planning process under the given demand conditions. Please refer to pages 9–12 of the original text for corrections regarding the starting time, the integer domain of groups, and the total passenger flow in this scenario.
+
+\subsection*{Enter the time of the first stage and the stops.}
+Station $U=\{0,\ldots,S-1\}$ and trains $I$ are numbered according to the planned sequence of arrival times. Time intervals $\mathcal T=\{1,\ldots,T_{\max}\}$ are measured in minutes, while $\Delta=1$ represents other time-related parameters. The passenger group $p\in P_w$ includes information such as the starting point $O_p$, destination $D_p>O_p$, arrival time $AT_p\ge1$, and number of passengers $n_p$. The probabilities of various scenarios are non-negative and sum to 1. Module capacity $C$ and the maximum number of trains per formation $M_f$ are also important considerations. Initial modules at intermediate stations $N_u^0$ and storage capacity $\widehat N_u$ are limited. The arrival time at the first station $\bar a_i$ is separate from the decision-making process $a_{i0}$.
+\begin{align*}
+ a_{i0}&=\bar a_i+\iota_i,&\underline\iota_i\le\iota_i&\le\bar\iota_i,\\
+ d_{iu}&=a_{iu}+s_{iu},&
+ \underline s_{iu}y_{iu}\le s_{iu}&\le\bar s_{iu}y_{iu},\\
+ a_{i,u+1}&=d_{iu}+r_{iu},&
+ r_{iu}&=\sum_t\widehat r_{u,u+1,t}h_{iut}
+            -r^{acc}_{iu}(1-y_{iu})-r^{dec}_{i,u+1}(1-y_{i,u+1}),\\
+ d_{i+1,u}-d_{iu}&\ge h,& y_{i0}=y_{i,S-1}&=1.
+\end{align*}
+$a,d,s$ represents non-negative integer minutes; $y$ represents a binary variable indicating whether there is a stop at a certain station. $e_{iut}=\mathbf1_{\{t<a_{iu}\}}$, $z_{iut}=\mathbf1_{\{t<d_{iu}\}}$, $g_{iut}=\mathbf1_{\{t=a_{iu}\}}$, $h_{iut}=\mathbf1_{\{t=d_{iu}\}}$. Therefore, $e,z$ remains unchanged with respect to $t$; $g_{iu1}=1-e_{iu1}$, $g_{iut}=e_{iu,t-1}-e_{iut}$, and $h$ follow the same pattern. $a_{iu}=1+\sum_te_{iut}$, $d_{iu}=1+\sum_tz_{iut}$. The current input $\underline s=\bar s=$ indicates the duration of each stop, with the running time along the route being constant. The unavailable deceleration and acceleration savings from skipping a station are set to 0. The algorithm assumes that all stations are visited; however, the complete model still allows skipping some stations along the way. The time domain is chosen to be an explicit, finite integer interval that covers all possible stops and the end of the journey.
+
+\subsection*{Second stage: service selection and capacity allocation}
+The FLS group consists of $x_{iu}^w=\sum_{m=1}^{M_f}m q_{ium}^w$, $\sum_mq_{ium}^w=1$, and $q$. Therefore, $x\in\{1,\ldots,M_f\}$ is also included. The DRT variable $\pi_{uvtm}^w$ represents a binary value, while $\eta_{uvt}^w=\sum_m\pi_{uvtm}^w\in\{0,1\}$ represents another binary value. The DRT travel time is $\widehat r_{uvt}>0$; the current value is $(v-u)r$. The available services for group $p$ include those related to its starting and ending points, as well as the FLS provided by $d_{i,O_p}\ge AT_p$, and the DRT offered by $\eta_{O_p,D_p,t}^w=1,\ t\ge AT_p$. There must be at least one available service for each group. Each group is assigned to the earliest departing service. Following the old 02 strict selection criteria, if there are multiple candidates with the same earliest departure time, then no such candidate can be selected. Let $\varphi_{pk}^w$ represent this candidate; otherwise…
+\[
+\sum_{k\in A_p^w}\varphi_{pk}^w=1,\quad
+WT_p^w=\min_{k\in A_p^w}(\operatorname{dep}_k-AT_p),\quad
+\varphi_{pk}^w=1\Longrightarrow
+ \operatorname{dep}_k-AT_p=WT_p^w,
+\]
+Moreover, the waiting time for all unavailable services is significantly longer (at least 1 integer minute longer). $TP_p^w=\sum_k\varphi_{pk}^w\operatorname{ride}_{pk}$, FLS travel time: $a_{i,D_p}-d_{i,O_p}$; DRT: $\widehat r_{O_p,D_p,t}$. For services that are not used, the candidate waiting time is set to a sufficiently large value, as specified in $M$. This corresponds to the auxiliary variable associated with old version 02.
+\[
+ b^w_{iu}=\sum_{p:O_p=u}n_p\varphi_{pi}^w,\quad
+ l^w_{iu}=\sum_{p:D_p=u}n_p\varphi_{pi}^w,\quad
+ o^w_{iu}=\sum_{p:O_p\le u<D_p}n_p\varphi_{pi}^w
+ \le Cx^w_{iu}.
+\]
+The passenger capacity of the last station is 0. Number of DRT members: $b^w_{uvt}=\sum_{p:(O_p,D_p)=(u,v)}n_p\varphi^w_{p,uvt}
+\le C\sum_m m\pi^w_{uvtm}$.
+
+\subsection*{Limited vehicle inventory}
+At each intermediate station $1\le u\le S-2$, all events are merged based on their net changes at the same time:
+\begin{align*}
+ N^w_{ut}&=N^w_{u,t-1}+AV^w_{ut}-DV^w_{ut},&
+ 0\le N^w_{ut}&\le\widehat N_u,\qquad N^w_{u0}=N_u^0,\\
+ AV^w_{ut}&=\sum_i x^w_{i,u-1}g_{iut}
+ +\sum_{\substack{v,\tau,m:\\\tau+\widehat r_{vu\tau}=t}}m\pi^w_{vu\tau m},\\
+ DV^w_{ut}&=\sum_i x^w_{iu}h_{iut}+\sum_{v,m}m\pi^w_{uvtm}.
+\end{align*}
+Always use the travel time corresponding to $\tau$ as a reference. This helps to avoid issues caused by the backward time indexing used in the old system (02). The departure variable is set to 0 in this case. According to the old system (02), inventory restrictions apply only at intermediate stations. The supply at both ends of the journey is not limited by the capacity of intermediate stations.
+
+\subsection*{Objectives and algorithms}
+\[
+\min\sum_w\rho_w\left\{
+\zeta_{pa}\varphi_T\sum_{p\in P_w}n_p(\xi_1WT_p^w+\xi_2TP_p^w)
++\zeta_{op}\left[\sum_{i,u,m}\varphi_{u,u+1,m}q^w_{ium}
++\sum_{u,v,t,m}\varphi_{uvm}\pi^w_{uvtm}\right]\right\}.
+\]
+Currently, the completion cost is set at $\varphi_{uvm}=(0.55+0.35m)\widehat r_{uv}$. The time value is 0.25 per minute, with a waiting/time-charging ratio of 2/1. All values are based on the values retained by the instances. The code selects a schedule where all stops are completed simultaneously. For each scenario, feasible candidates are generated first, and then improvements to the DRT are proposed. The candidate generation method uses the same train formation for the entire journey. The results provide the actual weighted costs and all possible passenger flow/capacity scenarios, with the upper bound for SP being determined accordingly. The results are recorded as the upper bounds for SP. The actual budget for each instance is 3600 seconds; all instances will be rerun from the current entry point.
+\end{document}

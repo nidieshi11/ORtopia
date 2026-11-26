@@ -1,0 +1,158 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\begin{document}
+
+\section*{Known-demand stochastic dynamic pricing with financial milestone penalties}
+
+Select a nonanticipating pricing policy $\{p(t):t\in[0,T]\}$ to maximize
+\begin{equation}
+\mathbb{E}\left[
+\int_0^T p(t)\,dS(t)
+-\sum_{i=1}^{m}\left[
+\beta_{1,i}(\xi_i-S(\tau_i))^{+}
++\beta_{2,i}(\zeta_i-R(\tau_i))^{+}
+\right]\right],
+\tag{3}
+\end{equation}
+subject to
+\begin{equation}
+S(T)\le C\qquad\text{almost surely}.
+\tag{4}
+\end{equation}
+For every $t\in[0,T]$, nonanticipation means that $p(t)$ is allowed to depend only on past demand observations and price realizations. The decision is the pricing policy; sales and revenues are the resulting stochastic processes. The paper defines $J^*$ as the supremum of (3) over all nonanticipating pricing policies satisfying (4).
+
+\section*{Demand and cumulative processes}
+
+The seller starts with $C$ units of a homogeneous good to sell over a horizon $T$. Potential customers arrive according to a homogeneous Poisson process with instantaneous rate $\Lambda$. Each customer has willingness to pay $v$ for one unit, independently drawn from the cumulative distribution function $F(\cdot)$. In this selected version, $\Lambda$ and $F(\cdot)$ are known to the decision-maker. A customer arriving at time $t$ purchases one unit if $v\ge p(t)$ and otherwise leaves without purchasing. The resulting instantaneous arrival rate is
+\begin{equation}
+\lambda(p(t)):=\Lambda\mathbb{P}(v\ge p(t))
+=\Lambda\bar F(p(t)),
+\tag{1}
+\end{equation}
+where
+\[
+\bar F(\cdot):=1-F(\cdot).
+\]
+For every $t\in[0,T]$, $S(t)$ is the number of units sold in $[0,t]$, and $R(t)$ is the revenue accumulated up to time $t$. All time processes are right continuous with left limits. Revenue used in milestone comparisons is actual sales revenue, excluding penalties: an incurred penalty does not reduce the revenue used for future revenue targets.
+
+\section*{Milestone data and penalties}
+
+Before combining the milestone grids, the sales targets are specified by
+\[
+0<t_1<t_2<\cdots<t_k\le T,
+\qquad
+\xi_1\le\xi_2\le\cdots\le\xi_k\le C,
+\]
+and the revenue targets by
+\[
+0<t'_1<t'_2<\cdots<t'_{k'}\le T,
+\qquad
+\zeta_1\le\zeta_2\le\cdots\le\zeta_{k'}.
+\]
+Here $\xi_i$ is the minimum number of units targeted for sale by $t_i$, and $\zeta_i$ is the cumulative revenue targeted by $t'_i$.
+
+The paper places both types of targets on the common grid
+\[
+\tau_0=0<\tau_1<\tau_2<\cdots<\tau_m=T,
+\qquad \xi_0=0,\qquad\zeta_0=0.
+\]
+On this common grid, the corresponding target is set to zero whenever a sales or revenue constraint is absent at $\tau_i$. Thus the preceding monotonicity statements describe the original target sequences, not additional monotonicity constraints on the zero-filled common-grid arrays. Targets at $\tau_m=T$ are optional; the paper does not require either complete sellout or a positive terminal revenue target.
+
+The fixed penalty parameters satisfy
+\[
+\beta_{1,i}>0,\qquad\beta_{2,i}>0,
+\qquad i=1,\ldots,m.
+\]
+The sales and revenue milestone conditions referred to in the penalty definition are, respectively,
+\[
+S(\tau_i)\ge\xi_i,
+\qquad R(\tau_i)\ge\zeta_i,
+\qquad i=1,\ldots,m.
+\]
+These are targets that may be violated, not additional hard feasibility constraints in (3)--(4). Their respective shortfall penalties are
+\begin{equation}
+\beta_{1,i}(\xi_i-S(\tau_i))^+
+\qquad\text{and}\qquad
+\beta_{2,i}(\zeta_i-R(\tau_i))^+,
+\qquad i=1,\ldots,m.
+\tag{2}
+\end{equation}
+The penalty is proportional to the amount by which the target is missed.
+
+\section*{Input assumptions and their defining quantities}
+
+The paper introduces the following assumptions as holding throughout the paper. They are restrictions on the demand model and fixed input data, rather than additional sample-path milestone constraints.
+
+\paragraph{Assumption 1.}
+The willingness-to-pay distribution has support in $[0,\bar p]$, where
+\[
+0<\bar p<\infty,
+\]
+and $\bar F(\cdot)$ is continuously differentiable on $[0,\bar p]$.
+
+Let $\psi(\cdot)$ denote the inverse of $\bar F(\cdot)$ over $[0,1]$. Define the revenue function by
+\[
+r(\lambda):=\lambda\psi(\lambda/\Lambda),
+\qquad \lambda\in[0,\Lambda].
+\]
+
+\paragraph{Assumption 2.}
+(i) $r(\lambda)$ is strictly concave for $\lambda\in[0,\Lambda]$.
+
+(ii) Define the revenue-maximizing price and its corresponding sales rate by
+\[
+p^*=\operatorname*{arg\,max}_{p\in[0,\bar p]}p\bar F(p),
+\qquad \lambda^*=\lambda(p^*).
+\]
+For some $\sigma>0$, capacity and targets satisfy
+\[
+\lambda^*-\sigma\ge\frac{C}{T},
+\qquad
+\lambda^*-\sigma\ge\frac{\xi_i}{\tau_i},
+\qquad
+p^*\lambda^*-\sigma\ge\frac{\zeta_i}{\tau_i},
+\qquad i=1,\ldots,m.
+\]
+
+\paragraph{Associated definitions in the explanation of Assumption 2.}
+The inverse revenue function is
+\begin{equation}
+\varphi(u):=\min\{\lambda:r(\lambda)=u\},
+\tag{5}
+\end{equation}
+with codomain $[0,\lambda^*]$. It gives the sales rate achieving expected revenue rate $u$. The prices associated with capacity depletion and the individual targets are
+\[
+p_0=\psi\!\left(\frac{C}{T\Lambda}\right),
+\qquad
+p_i^s=\psi\!\left(\frac{\xi_i}{\tau_i\Lambda}\right),
+\qquad
+p_i^r=\psi\!\left(\frac{\varphi(\zeta_i/\tau_i)}{\Lambda}\right),
+\qquad i=1,\ldots,m.
+\]
+Here $p_0$ is the price that would deplete capacity exactly at $T$, not a prescribed initial value of the stochastic pricing policy. The paper states that Assumption 2(ii) implies elasticity of $\lambda(p)$ for prices
+\[
+p\ge\min(p_0,p_1^s,\ldots,p_m^s,p_1^r,\ldots,p_m^r).
+\]
+This is an explanatory property of the demand function, not a restriction imposing this lower bound on the decision process $p(t)$.
+
+\paragraph{Assumption 3.}
+For some $\underline K,\bar K,\underline\kappa>0$,
+\[
+\underline K\le F'(p)\le\bar K
+\qquad\text{on }[p^*,\bar p],
+\qquad
+r'\!\left(\lambda^*-\frac{\sigma}{2}\right)
+\ge\underline\kappa,
+\]
+where $\sigma$ is the value used in Assumption 2.
+
+\section*{Source scope and limitations}
+
+The formulation and definitions above are from Besbes and Maglaras, \emph{Dynamic Pricing with Financial Milestones: Feedback-Form Policies}, Management Science 58(9), 2012, Section 2, pp.~1717--1719 (physical PDF pages 3--5).
+
+The printed policy statement in (3)--(4) does not separately specify a pointwise admissible-price interval for $p(t)$. The interval $[0,\bar p]$ is explicitly stated for willingness-to-pay support, differentiability, and the maximization defining $p^*$. No extra policy bound is inserted here. Likewise, the inverse in (5) is retained with its printed codomain without adding an unprinted convention for an empty level set.
+
+The hard-target deterministic formulation, its feasibility criterion, and the later sufficiently-large-penalty condition are not imposed on this stochastic penalized formulation. The online companion cited for the later feedback-policy proofs was not supplied and remains unverified; no formulas from it are used here.
+
+\end{document}

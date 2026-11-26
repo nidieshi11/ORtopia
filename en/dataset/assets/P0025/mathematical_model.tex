@@ -1,0 +1,50 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,geometry}
+\geometry{margin=22mm}
+\emergencystretch=4em
+\begin{document}
+\section*{P25: Three-stage robust staffing planning for anesthesiologists across multiple hospitals – SPP}
+\paragraph{Source and scope}According to pages 1, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, and 17 of the original paper's PDF file, (1)–(7).
+\subsection*{Ranges, sets, and parameters}
+The selected paper describes a three-stage robust personnel allocation method called SPP(7). Using the surgical day $t$ as an example, the personnel allocation for each day is optimized accordingly. $I$ represents the list of anesthesiologists, while $S$ represents the list of hospital locations.
+
+$u_{i,t}\in\{0,1\}$ indicates availability on that day, $v_{i,s}\in\{0,1\}$ represents the regularly allocated feasible locations; $r_{i,j,t}\in\{0,1\}$ indicates that the duty sequence requires physician $i$ to enter standby and be called before $j$. $t_r,t_q\geq0$ represents the available service hours for regular and standby shifts, respectively; $c_L,c_N,c_O,c_I\geq0$ represents standby calls, uncalled periods, unit overtime, and unit idle costs. Regular wages are fixed costs for the day's plan and are not included in the comparison objective. The binary sorting constraint is sufficient with $M=1$.
+
+The hospital reported a personnel requirement vector $D=(D_s)_{s\in S}$ three days before the operation, which comes from a given non-empty finite set.
+\[
+\mathcal D_t=\left\{D\in\mathbb Z_+^{|S|}:D_s=\bar D_{s,t}+f_s\widehat D_{s,t},\ |f_s|\leq1,\ \sum_{s\in S}|f_s|\leq\tau\right\}.
+\]
+$\bar D_{s,t}\geq0$ represents the prediction, $\widehat D_{s,t}\geq0$ represents the maximum deviation, while $\tau\in[0,|S|]$ controls the combined uncertainty budget. After determining $D$, the final bill for labor hours will be $B=(B_s)_{s\in S}$.
+\[
+\mathcal B_t(D)=\prod_{s\in S}[\beta_{1,L}D_s+\beta_{0,s,t}^{L},\ \beta_{1,U}D_s+\beta_{0,s,t}^{U}],
+\]
+All intervals must be non-empty and non-negative. $\beta$ represents the parameters obtained through fitting external historical data.
+\subsection*{Decision-making, information, and feasible domains}
+Six weeks before the surgery, $x_{i,s,t}\in\{0,1\}$ indicates that the patient has been assigned to a regular treatment location, while $p_{i,t}\in\{0,1\}$ indicates that the patient is on the waiting list. The complete set of feasible outcomes is defined by the following formula: $X_t$
+\begin{align}
+x_{i,s,t}&\leq u_{i,t}v_{i,s}&&i\in I,s\in S,\\
+p_{i,t}&\leq\sum_{s\in S}u_{i,t}v_{i,s}&&i\in I,\\
+p_{j,t}&\leq p_{i,t}+1-r_{i,j,t}&&i,j\in I,\\
+p_{i,t}+\sum_{s\in S}x_{i,s,t}&\leq1&&i\in I,\\
+x_{i,s,t},p_{i,t}&\in\{0,1\}&&i\in I,s\in S.
+\end{align}
+In the second stage, after $D$ is revealed but before $B$ is revealed, selecting $q_{i,s,t}(D)\in\{0,1\}$ means summoning a doctor from the waiting list to the location $s$. This can rely on the complete requirement vector $D$, but cannot rely on any unobserved elements in $B$. When $p$ is provided, the feasible range becomes $P_t(p)$.
+\begin{align}
+q_{i,s,t}(D)&\leq p_{i,t}&&i\in I,s\in S,\\
+q_{j,s,t}(D)&\leq q_{i,s,t}(D)+1-r_{i,j,t}&&i,j\in I,s\in S,\\
+\sum_{s\in S}q_{i,s,t}(D)&\leq1&&i\in I,\\
+q_{i,s,t}(D)&\in\{0,1\}&&i\in I,s\in S.
+\end{align}
+The feasible region for scheduling is defined based on the constraints outlined in papers (5b)–(5e). Regular assignments and scheduling arrangements are determined using the corresponding location constraints.
+\subsection*{The only complete and robust model available}
+For $[z]^+=\max\{z,0\}$, the provided man-hours are as follows. For $H_s(x,q)=\sum_{i\in I}(t_rx_{i,s,t}+t_qq_{i,s,t})$, the following two costs are defined by expressions alone:
+\begin{align*}
+C_t(p,q)&=c_L\sum_{i\in I,s\in S}q_{i,s,t}+c_N\sum_{i\in I}\left(p_{i,t}-\sum_{s\in S}q_{i,s,t}\right),\\
+U_t(B,x,q)&=\sum_{s\in S}\left(c_O[B_s-H_s(x,q)]^++c_I[H_s(x,q)-B_s]^+\right).
+\end{align*}
+\begin{equation}
+\boxed{V_t=\min_{(x,p)\in X_t}\ \max_{D\in\mathcal D_t}\ \min_{q\in P_t(p)}\left\{C_t(p,q)+\max_{B\in\mathcal B_t(D)}U_t(B,x,q)\right\}.}
+\end{equation}
+The aforementioned nested sequence is an indivisible three-stage application model: preconfiguration, call after requirement revelation, and final cost settlement. $X_t,P_t,\mathcal D_t,\mathcal B_t$ defines the decision-making domains for each stage and the complete set of uncertain requirements. The optimal values correspond to the three-stage nested problem described above.
+
+\end{document}

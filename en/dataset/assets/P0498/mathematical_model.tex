@@ -1,0 +1,255 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\section*{Algorithm 1: privacy-aware dynamic personalized pricing}
+
+\subsection*{Revenue objective and price-selection rule}
+The retailer seeks to maximize
+\[
+\mathbb E\!\left[\sum_{t=1}^{T}p_ty_t\right],
+\qquad p_t\in[0,1],\quad t=1,\ldots,T.
+\]
+The selected policy is Algorithm 1, not a claim that its prices exactly maximize this cumulative objective. Its price-selection row is
+\[
+p_n=\arg\max_{p\in[0,1]}\min\left\{1,
+ p f\!\left(\phi_n^{\top}\widehat\theta^{p}\right)
+ +\gamma\sqrt{\phi_n^{\top}(\Lambda^{p})^{-1}\phi_n}\right\},
+\qquad \phi_n=\phi(x_n,p_n),
+\quad n=T_0+1,\ldots,T.
+\]
+The states and releases in this row are defined below. The setting is a single product with unlimited inventories (pp.~2--3).
+
+\paragraph{Printed price notation.}
+Algorithm 1, line 10, defines $\phi_n$ using $p_n$, not the optimization variable $p$. This printed dependence is retained; it is not replaced by $\phi(x_n,p)$.
+
+\subsection*{Demand, information, and fixed model assumptions}
+We retain the abstract exponential-family model of Section 3 (pp.~9--10), without specializing to either of its illustrative likelihood examples. At periods $t=1,\ldots,T$, $x_t$ is the arriving customer's personal information, $p_t$ is the offered price, and $y_t\in\mathbb R$ is realized demand. The known feature map and unknown fixed model satisfy
+\[
+\phi_t=\phi(x_t,p_t)\in\mathbb R^d,
+\qquad \theta^*\in\mathbb R^d.
+\]
+No particular dimension or coordinate domain for $x_t$ is specified in this abstract formulation. The distribution-family components $\zeta,m(\cdot),h(\cdot)$ remain abstract. The printed demand model is
+\begin{equation}
+\Pr[y_t=y\mid p_t,x_t,\theta^*]
+=\exp\!\left\{\zeta\left(y\phi_t^{\top}\theta^*
+-m(\phi_t^{\top}\theta^*)\right)+h(y)\right\}.
+\tag{1}
+\end{equation}
+Its conditional mean and noise representation are
+\[
+f(\phi_t^{\top}\theta^*):=m'(\phi_t^{\top}\theta^*)
+=\mathbb E[y_t\mid p_t,x_t,\theta^*],
+\]
+\begin{equation}
+y_t=f(\phi_t^{\top}\theta^*)+\xi_t.
+\tag{2}
+\end{equation}
+The paragraph following (2) states that $\phi_t=\phi(x_t,p_t)$ and $\xi_t$ are independent random variables satisfying
+\[
+\mathbb E[\xi_t\mid p_t,x_t]=0.
+\]
+The history and subsequent conditional centering are
+\[
+\mathcal F_t=\{(x_\tau,y_\tau,p_\tau)\}_{\tau=1}^{t},
+\qquad
+\mathbb E[\xi_t\mid x_t,p_t,\mathcal F_{t-1}]=0.
+\]
+In the general setting used here, $x_1,\ldots,x_T$ are arbitrarily chosen before pricing starts (the oblivious-adversary setting). The policy chooses $p_t$ conditioned on $\mathcal F_{t-1}$ and $x_t$, after which demand is realized according to (2).
+
+The source imposes the following model assumptions throughout the paper. They concern fixed inputs and the demand process, not additional optimization constraints on the estimator:
+\begin{align*}
+& B_Y<\infty,\qquad |y_t|\le B_Y
+&&\text{for every period }t\text{ in every database }D;\\
+&\|\phi(x,p)\|_2\le1,\qquad \|\theta^*\|_2\le1
+&&\text{for all }x,p;\\
+&\mathbb E[\xi_t\mid x_t,p_t,\mathcal F_{t-1}]=0,\\
+&\text{there exists }s<\infty\text{ such that }
+\mathbb E[e^{\lambda\xi_t}\mid x_t,p_t,\mathcal F_{t-1}]
+\le e^{\lambda^2s^2/2}
+&&\text{for all }\lambda\in\mathbb R;\\
+&f=m':\mathbb R\longrightarrow[0,1],
+\qquad f\text{ continuously differentiable and strictly increasing};\\
+&1\le K<\infty,\qquad K^{-1}\le f'(z)\le K
+&&\text{for all }|z|\le2;\\
+&1\le G<\infty,\qquad G^{-1}\le\zeta\le G.
+\end{align*}
+Here $B_Y,s,K,G$ are model parameters. In the likelihood notation used by Algorithm 3, the family in (1), evaluated at the candidate parameter $\theta$, is
+\[
+p(y_t\mid\phi_t,\theta)
+=\exp\!\left\{\zeta\left(y_t\phi_t^{\top}\theta
+-m(\phi_t^{\top}\theta)\right)+h(y_t)\right\}.
+\]
+The likelihood symbol $p(\,\cdot\mid\cdot\,)$ is distinct from the scalar price $p$. This uses the Section 3 family, rather than the differently written recap on p.~25.
+
+\subsection*{Algorithm 1 inputs, initialization, and sequential updates}
+The fixed algorithmic inputs on p.~20 are
+\[
+\varepsilon_1,\delta_1,\varepsilon_2,\delta_2>0,
+\qquad \rho\ge1,\qquad \gamma>0,
+\]
+together with the number of pure-exploration periods $T_0$ and the maximum number of \textsc{PrivateMLE} calls $D_\infty$. The output is $p_1,p_2,\ldots,p_T$. The quantities $\widehat\theta^p$, $\Lambda^p$, and $D_{\mathrm{MLE}}$ are maintained algorithmic states, not fixed inputs; the superscript $p$ marks privatized quantities.
+
+Initialize, exactly as in line 3,
+\[
+\delta'_2=\frac{\delta_2}{2D_\infty},
+\qquad
+\varepsilon'_2\leftarrow
+\frac{\varepsilon_2}{2\sqrt{2D_\infty\ln(1/\delta'_2)}},
+\qquad
+\Lambda^p=\rho I_d,
+\qquad \widehat\theta^p=0,
+\qquad D_{\mathrm{MLE}}=0.
+\]
+For the first $T_0$ periods, offer prices uniformly at random:
+\[
+p_t\sim U[0,1],\qquad t=1,\ldots,T_0.
+\]
+For each $n=T_0+1,\ldots,T$, first obtain
+\[
+\Sigma^p_{\mathrm{used},n}\leftarrow R_{n-1},\quad R_j:=\text{the output of iteration }j\text{ of the single horizon-}T\text{ covariance tree},
+\qquad \Lambda_n^p=\Sigma^p_{\mathrm{used},n}+\rho I_d.
+\]
+If
+\[
+\det(\Lambda_n^p)>2\det(\Lambda^p)
+\quad\text{and}\quad D_{\mathrm{MLE}}<D_\infty,
+\]
+perform the assignments
+\[
+\widehat\theta^p\leftarrow
+\textsc{PrivateMLE}(n,\rho,\varepsilon'_2,\delta'_2),
+\qquad \Lambda^p\leftarrow\Lambda_n^p,
+\qquad D_{\mathrm{MLE}}\leftarrow D_{\mathrm{MLE}}+1.
+\]
+Otherwise retain these states. Then offer the price given by the price-selection row above. Here $I_d$ is the $d$-dimensional identity matrix, and the covariance-related matrices have dimension $d\times d$.
+
+Remark 4 (pp.~20--21) permits omitting forced exploration, with $T_0=0$. No theorem-specific tuning or stochastic-context assumption is imposed on the parameterized Algorithm 1 reproduced here.
+
+\subsection*{Algorithm 2: \textsc{PrivateCov}}
+Algorithm 2 (p.~21) has the signature
+\[
+\textsc{PrivateCov}(T,\varepsilon,\delta)
+\quad\text{returns}\quad\Sigma_1^p,\ldots,\Sigma_{T-1}^p.
+\]
+Its local parameters and initial states are
+\begin{align*}
+\delta'&\leftarrow\frac{\delta}{2\lceil\log_2T\rceil},
+&\varepsilon'&\leftarrow
+\frac{\varepsilon}{2\lceil\log_2T\rceil\ln(1/\delta')},\\
+\sigma_{\varepsilon',\delta'}^2
+&=\frac{2\ln(1.25/\delta')}{(\varepsilon')^2},
+&m&=\lceil\log_2T\rceil,\\
+\Sigma(\ell)&=\widehat\Sigma(\ell)=0,
+&&\ell=0,\ldots,m-1.
+\end{align*}
+Here the local integer $m$ is the binary-tree depth, distinct from the distribution-family function $m(\cdot)$.
+
+For $n=1,2,\ldots,T-1$, express $n$ in binary and identify its least significant nonzero bit:
+\[
+n=\sum_{\ell=0}^{m-1}b_n(\ell)2^\ell,
+\qquad b_n(\ell)\in\{0,1\},
+\qquad \ell_n\leftarrow\min\{\ell:b_n(\ell)=1\}.
+\]
+Update and reset in the printed order:
+\[
+\Sigma(\ell_n)\leftarrow
+\phi_n\phi_n^{\top}+\sum_{\ell<\ell_n}\Sigma(\ell),
+\qquad
+\Sigma(\ell)\leftarrow\widehat\Sigma(\ell)\leftarrow0
+\quad\text{for all }\ell<\ell_n.
+\]
+Calibrate noise and release:
+\[
+\widehat\Sigma(\ell_n)\leftarrow\Sigma(\ell_n)+W^n,
+\qquad
+W^n_{ij}=W^n_{ji}\overset{\mathrm{i.i.d.}}{\sim}
+\mathcal N(0,\sigma_{\varepsilon',\delta'}^2),
+\]
+\[
+\Sigma_n^p=\sum_{\ell=0}^{m-1}b_n(\ell)\widehat\Sigma(\ell).
+\]
+The source describes $W^n$ as a symmetric random Gaussian matrix; its displayed symmetry and i.i.d. notation are retained without adding a sampling convention. Section 6.1 (p.~22) defines the corresponding unperturbed sample covariance by
+\[
+\Sigma_n=\sum_{t=1}^{n}\phi_t\phi_t^{\top},
+\qquad n=1,\ldots,T-1.
+\]
+
+\paragraph{Printed release-time conflict.}
+Section 6.1 on p.~21 states that
+$\textsc{PrivateCov}(n,\varepsilon,\delta)$ is the $\Sigma_n^p$ matrix released at the end of iteration $n-1$. Algorithm 2 instead labels its release at iteration $n$ by $\Sigma_n^p$ and incorporates $\phi_n\phi_n^{\top}$ in that iteration. Algorithm 1 calls $\textsc{PrivateCov}(n,\varepsilon_1,\delta_1)$ before selecting $p_n$, whereas Section 5.1 requires releasers used at time $n$ to access only earlier observations. The printed conflict is preserved here as provenance. The selected version uses the Section 6.1 sentence: the covariance available for decision $n$ is the one released at the end of iteration $n-1$. The tree retains its printed iteration indices and uses every historical row once. In particular, Algorithm 2 does not specify an iteration-zero release for the permitted $T_0=0$ case.
+
+\subsection*{Algorithm 3: \textsc{PrivateMLE}}
+At a requested call,
+\[
+\textsc{PrivateMLE}(n,\rho,\varepsilon,\delta)
+\quad\text{returns}\quad\widehat\theta_n^p.
+\]
+Algorithm 1 supplies $(\varepsilon,\delta)=(\varepsilon'_2,\delta'_2)$. Algorithm 3 (p.~24) first makes the assignments
+\[
+B_1\leftarrow(B_Y+1)G,
+\qquad B_2\leftarrow KG,
+\qquad \rho\leftarrow\max\{\rho,2B_2/\varepsilon\},
+\]
+\[
+\nu_{\varepsilon,\delta}^{2}\leftarrow
+\frac{B_1^2\bigl(8\ln(2/\delta)+4\varepsilon\bigr)}{\varepsilon^2},
+\qquad
+w\sim\mathcal N(0,\nu_{\varepsilon,\delta}^{2}I_d).
+\]
+It then returns
+\[
+\widehat\theta_n^p
+=\arg\min_{\|\theta\|_2\le2}
+\left\{\left(\sum_{t<n}-\ln p(y_t\mid\phi_t,\theta)\right)
++\frac{\rho}{2}\|\theta\|_2^2+w^{\top}\theta\right\}.
+\]
+Here $\theta\in\mathbb R^d$ is the estimation variable, $w\in\mathbb R^d$ is the sampled perturbation, and $t<n$ ranges over the observed periods preceding the call. The radius-two estimation constraint is distinct from the fixed-model assumption $\|\theta^*\|_2\le1$. The reassignment of $\rho$ is reproduced within Algorithm 3; no additional reassignment of Algorithm 1's covariance states is inserted.
+
+\paragraph{Printed privacy-allocation discrepancy.}
+Algorithm 1's allocation above retains the factor $2$ outside the square root in the denominator of $\varepsilon'_2$. Corollary 3 on p.~23 omits that factor in its stated allocation. Its alternate allocation is not substituted into Algorithm 1.
+
+\subsection*{Privacy definition attached to the policy}
+For the privacy definition (pp.~12--14), write
+\[
+D=\{o_t\}_{t=1}^{T},\qquad o_t=(x_t,y_t),
+\qquad D'=\{o'_t\}_{t=1}^{T}.
+\]
+Neighboring databases differing at time $t$ satisfy
+\[
+o_t\ne o'_t,\qquad o_\tau=o'_\tau\quad\text{for all }\tau\ne t.
+\]
+For $\varepsilon,\delta>0$, anticipating $(\varepsilon,\delta)$-differential privacy requires, for every such pair and every measurable set $\mathcal P_{>t}$,
+\begin{equation}
+\Pr[p_{t+1},\ldots,p_T\in\mathcal P_{>t}\mid\pi,D]
+\le e^{\varepsilon}
+\Pr[p_{t+1},\ldots,p_T\in\mathcal P_{>t}\mid\pi,D']+\delta.
+\tag{3}
+\end{equation}
+The private releasers use historical data only, and the price optimizer uses their outputs and the current $x_t$, not historical sensitive data directly (pp.~17--18). The claimed composite privacy levels are
+\[
+\varepsilon=\varepsilon_1+\varepsilon_2,
+\qquad \delta=\delta_1+\delta_2.
+\]
+This privacy definition is model-free; the demand assumptions above are used for utility analysis, not to define privacy. Corollary 4 on p.~23 calls the resulting price sequence ``differentially private'' without the word ``anticipating,'' although its cited Proposition 2 concludes anticipating differential privacy. The definition retained here is (3), not the stronger full-price-sequence requirement.
+
+\paragraph{Source scope.}
+The operative formulation is the parameterized Algorithm 1 and its Algorithms 2--3 dependencies, with the Section 3 demand family. Gaussian and logistic examples, theorem-specific parameter choices, regret-analysis inequalities, and simulation settings are not additional operative constraints. The paper refers proofs to an online supplement; the published electronic companion, EC.2, uses the history of summaries through period $t-1$ in the price at $t$. EC.3.1 uses a single horizon-based tree depth. The supplied page images for pp.~3, 20, 21, and 24 support the objective and algorithm rows reproduced above.
+
+
+\paragraph{Selection on the archived benchmark inputs.}
+For the ten supplied scalar inputs, \(T_0\geq2\) and a release exists before every
+adaptive decision including the last. The implementation chooses the largest
+maximizer in the printed price selector. Each case has price-independent
+\(\phi(x,p)=(1+x)/2\) and the logistic mean. At initialization the scalar
+accepted matrix is positive; the strict doubling gate preserves positivity.
+Consequently the capped optimistic score is nondecreasing in the offered
+price on each realized history, and price one is a maximizing choice.
+Uniform exploratory offers remain mandatory. These instance facts do not
+specify price-dependent or multidimensional cases. Only future public offers
+enter the anticipating-privacy statement. The archived seeded diagnostic
+paths, noisy releases, purchases and estimates support reproduction and are
+not a public release with an asserted privacy guarantee.
+\end{document}

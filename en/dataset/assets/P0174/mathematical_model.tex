@@ -1,0 +1,67 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,mathtools,geometry}
+\geometry{a4paper,margin=20mm}\allowdisplaybreaks
+\emergencystretch=4em
+\begin{document}
+\section*{AMR works together with sorters to select the appropriate M0 integration models.}
+
+\paragraph{Source} Pages 5–9 of the PDF document, sections 3–4. Equations M0(4.1)–(4.42) remain intact. Only the main model is integrated directly; the SRMP and the other set of position assignment algorithms are not included in the integration process.
+\subsection*{Collections and parameters}
+$I,R,P,S,U$ Represents orders, robots, pickers, shelves, and SKU collections respectively. $o(s),e(s)$ Represents the virtual start and end points of each route. $o(r),e(r)$ Represents the virtual end points of the robot service sequences on shelves. These symbols are index labels. All path arcs do not contain self-loops. $q^I$ Represents the maximum number of orders per robot. $n^O_{iu}$ Represents order requirements. $n^S_{su}$ Represents shelf inventory levels. $w^U_u,v^U_u$ Represents the weight/volume per SKU unit. $w^R,v^R$ Represents the maximum capacity of a robot. $t^R_{ss^{\prime}},t^P_{ss^{\prime}}$ Represents the walking time between robots/pickers and shelves (including endpoints). $t^{R0}_{rs},t^{P0}_{ps}$ Represents the time required to reach the first station from the current position. $h$ Represents the processing time for each type of SKU being picked: explicitly mentioned in sections (4.27), (4.29), and (4.31). $h\sum_u\mu_{rsu}$ Represents the amount of time required to perform operations at the listed shelves. $\dot M,\ddot M,M^{27}_{ss^{\prime}},M^{29}_{ss^{\prime}},M^{30}_s,M^{31}$ Represents a sufficiently large upper limit for effective operations.
+\subsection*{Variables and their meanings}
+$\alpha$ indicates the order being assigned to a robot/fulfillment worker for processing. $\beta,\gamma$ indicates whether the SKU has been picked from the shelves. $\#_{rsu}$ represents the quantity of items to be picked. $\mu$ indicates whether the SKU has been picked at all. $\delta,\varepsilon$ refers to the path taken by the robot/fulfillment worker during picking. $\sigma$ indicates the order in which robots pick items from the same shelf. Numbers with a wave symbol indicate the corresponding integer sequence. $\epsilon,\theta$ represents the arrival time. $\rho$ indicates the start time for picking items.
+\[\begin{aligned}&\alpha_{i, r} \in \{0, 1\} && \forall i \in I, r \in R\end{aligned}\]
+\[\begin{aligned}&\beta_{r, s} \in \{0, 1\} && \forall r \in R, s \in S\end{aligned}\]
+\[\begin{aligned}&\gamma_{p, s} \in \{0, 1\} && \forall p \in P, s \in S\end{aligned}\]
+\[\begin{aligned}&\#_{r, s, u} \ge 0 && \forall r \in R, s \in S, u \in U\end{aligned}\]
+\[\begin{aligned}&\mu_{r, s, u} \in \{0, 1\} && \forall r \in R, s \in S, u \in U\end{aligned}\]
+\[\begin{aligned}&\delta_{r, s, s^{\prime}} \in \{0, 1\} && \forall r \in R, s \in S \cup \{o(s)\}, s^{\prime} \in S \cup \{e(s)\}\end{aligned}\]
+\[\begin{aligned}&\varepsilon_{p, s, s^{\prime}} \in \{0, 1\} && \forall p \in P, s \in S \cup \{o(s)\}, s^{\prime} \in S \cup \{e(s)\}\end{aligned}\]
+\[\begin{aligned}&\sigma_{s, r, r^{\prime}} \in \{0, 1\} && \forall s \in S, r \in R \cup \{o(r)\}, r^{\prime} \in R \cup \{e(r)\}\end{aligned}\]
+\[\begin{aligned}&\epsilon_{r, s} \ge 0 && \forall r \in R, s \in S \cup \{o(s), e(s)\}\end{aligned}\]
+\[\begin{aligned}&\theta_{p, s} \ge 0 && \forall p \in P, s \in S \cup \{o(s), e(s)\}\end{aligned}\]
+\[\begin{aligned}&\rho_{r, s} \ge 0 && \forall r \in R, s \in S\end{aligned}\]
+\[\begin{aligned}&\tilde{\delta}_{r, s} \in \mathbb{Z}_{\ge0} && \forall r \in R, s \in S \cup \{o(s), e(s)\}\end{aligned}\]
+\[\begin{aligned}&\tilde{\varepsilon}_{p, s} \in \mathbb{Z}_{\ge0} && \forall p \in P, s \in S \cup \{o(s), e(s)\}\end{aligned}\]
+\[\begin{aligned}&\tilde{\sigma}_{s, r} \in \mathbb{Z}_{\ge0} && \forall s \in S, r \in R \cup \{o(r), e(r)\}\end{aligned}\]
+\subsection*{The only goal and all the constraints}
+\[\min\ \max_{r\in R}\epsilon_{r,e(s)}.\tag{4.1}\]
+\[\begin{aligned}&\text{Order allocation and robot path planning:}\end{aligned}\]
+\[\begin{aligned}& \sum_{r \in R} \alpha_{i, r} = 1 \quad \forall i \in I\end{aligned}\]
+\[\begin{aligned}& \sum_{i \in I} \alpha_{i, r} \le q^I \quad \forall r \in R\end{aligned}\]
+\[\begin{aligned}& \sum_{p \in P} \gamma_{p, s} \le 1 \quad \forall s \in S\end{aligned}\]
+\[\begin{aligned}& \sum_{p \in P} \gamma_{p, s} \le \sum_{r \in R} \beta_{r, s} \quad \forall s \in S\end{aligned}\]
+\[\begin{aligned}& \beta_{r, s} \le \sum_{p \in P} \gamma_{p, s} \quad \forall r \in R, s \in S\end{aligned}\]
+\[\begin{aligned}& \mu_{r, s, u} \le \#_{r, s, u} \le n^S_{s, u} \mu_{r, s, u} \quad \forall r \in R, s \in S, u \in U\end{aligned}\]
+\[\begin{aligned}& \#_{r, s, u} \le n^S_{s, u} \beta_{r, s} \quad \forall r \in R, s \in S, u \in U\end{aligned}\]
+\[\begin{aligned}& \beta_{r, s} \le \sum_{u \in U} \mu_{r, s, u} \quad \forall r \in R, s \in S\end{aligned}\]
+\[\begin{aligned}& \sum_{i \in I} n^O_{i, u} \alpha_{i, r} = \sum_{s \in S} \#_{r, s, u} \quad \forall r \in R, u \in U\end{aligned}\]
+\[\begin{aligned}& \sum_{r \in R} \#_{r, s, u} \le n^S_{s, u} \quad \forall s \in S, u \in U\end{aligned}\]
+\[\begin{aligned}& \sum_{s \in S} \sum_{u \in U} w^U_u \#_{r, s, u} \le w^R \quad \forall r \in R\end{aligned}\]
+\[\begin{aligned}& \sum_{s \in S} \sum_{u \in U} v^U_u \#_{r, s, u} \le v^R \quad \forall r \in R\end{aligned}\]
+\[\begin{aligned}& \sum_{s \in S \cup \{o(s)\}} \delta_{r, s, s^{\prime}} = \sum_{s \in S \cup \{e(s)\}} \delta_{r, s^{\prime}, s} = \beta_{r, s^{\prime}} \quad \forall r \in R, s^{\prime} \in S\end{aligned}\]
+\[\begin{aligned}& \sum_{s \in S \cup \{o(s)\}} \delta_{r, s, e(s)} = \sum_{s \in S \cup \{e(s)\}} \delta_{r, o(s), s} = 1 \quad \forall r \in R\end{aligned}\]
+\[\begin{aligned}& \tilde{\delta}_{r, s} + 1 - \dot{M}(1 - \delta_{r, s, s^{\prime}}) \le \tilde{\delta}_{r, s^{\prime}} \quad \forall r \in R, s \in S \cup \{o(s)\}, s^{\prime} \in S \cup \{e(s)\}\end{aligned}\]
+\[\begin{aligned}& \tilde{\delta}_{r, s} \le \sum_{s^{\prime} \in S} \beta_{r, s^{\prime}} \quad \forall r \in R, s \in S\end{aligned}\]
+\[\begin{aligned}& \sum_{s \in S \cup \{o(s)\}} \varepsilon_{p, s, s^{\prime}} = \sum_{s \in S \cup \{e(s)\}} \varepsilon_{p, s^{\prime}, s} = \gamma_{p, s^{\prime}} \quad \forall p \in P, s^{\prime} \in S\end{aligned}\]
+\[\begin{aligned}& \sum_{s \in S \cup \{o(s)\}} \varepsilon_{p, s, e(s)} = \sum_{s \in S \cup \{e(s)\}} \varepsilon_{p, o(s), s} = 1 \quad \forall p \in P\end{aligned}\]
+\[\begin{aligned}& \tilde{\varepsilon}_{p, s} + 1 - \dot{M}(1 - \varepsilon_{p, s, s^{\prime}}) \le \tilde{\varepsilon}_{p, s^{\prime}} \quad \forall p \in P, s \in S \cup \{o(s)\}, s^{\prime} \in S \cup \{e(s)\}\end{aligned}\]
+\[\begin{aligned}& \tilde{\varepsilon}_{p, s} \le \sum_{s^{\prime} \in S} \gamma_{p, s^{\prime}} \quad \forall p \in P, s \in S\end{aligned}\]
+\[\begin{aligned}& \sum_{r \in R \cup \{o(r)\}} \sigma_{s, r, r^{\prime}} = \sum_{r \in R \cup \{e(r)\}} \sigma_{s, r^{\prime}, r} = \beta_{r^{\prime}, s} \quad \forall s \in S, r^{\prime} \in R\end{aligned}\]
+\[\begin{aligned}& \sum_{r \in R \cup \{o(r)\}} \sigma_{s, r, e(r)} = \sum_{r \in R \cup \{e(r)\}} \sigma_{s, o(r), r} = 1 \quad \forall s \in S\end{aligned}\]
+\[\begin{aligned}& \tilde{\sigma}_{s, r} + 1 - \ddot{M}(1 - \sigma_{s, r, r^{\prime}}) \le \tilde{\sigma}_{s, r^{\prime}} \quad \forall s \in S, r \in R \cup \{o(r)\}, r^{\prime} \in R \cup \{e(r)\}\end{aligned}\]
+\[\begin{aligned}& \tilde{\sigma}_{s, r} \le \sum_{r^{\prime} \in R} \beta_{r^{\prime}, s} \quad \forall r \in R, s \in S\end{aligned}\]
+\[\begin{aligned}& \sum_{s \in S} s \gamma_{p, s} \le \sum_{s \in S} s \gamma_{p^{\prime}, s} \quad \forall p, p^{\prime} \in P, p < p^{\prime}\end{aligned}\]
+\[\begin{aligned}& \sum_{i \in I} i \alpha_{i, r} \le \sum_{i \in I} i \alpha_{i, r^{\prime}} \quad \forall r, r^{\prime} \in R, r < r^{\prime}\end{aligned}\]\[\begin{aligned}&\text{Time constraints:}\end{aligned}\]
+\[\begin{aligned}& \epsilon_{r, s} \ge t^{R0}_{r, s} \delta_{r, o(s), s} \quad \forall r \in R, s \in S \cup \{e(s)\}\end{aligned}\]
+\[\begin{aligned}& \epsilon_{r, s^{\prime}} \ge \rho_{r, s} + h \sum_{u \in U} \mu_{r, s, u} + t^R_{s, s^{\prime}} - \overset{\cdots}{M}^{27}_{s, s^{\prime}}(1 - \delta_{r, s, s^{\prime}}) \quad \forall r \in R, s \in S, s^{\prime} \in S \cup \{e(s)\}\end{aligned}\]
+\[\begin{aligned}& \theta_{p, s} \ge t^{P0}_{p, s} \varepsilon_{p, o(s), s} \quad \forall p \in P, s \in S \cup \{e(s)\}\end{aligned}\]
+\[\begin{aligned}& \theta_{p, s^{\prime}} \ge \rho_{r, s} + h \sum_{u \in U} \mu_{r, s, u} + t^P_{s, s^{\prime}} - \overset{\cdots}{M}^{29}_{s, s^{\prime}}(1 - \varepsilon_{p, s, s^{\prime}}) \quad \forall r \in R, p \in P, s \in S, s^{\prime} \in S \cup \{e(s)\}\end{aligned}\]
+\[\begin{aligned}& \rho_{r, s} \ge \max\{\epsilon_{r, s}, \theta_{p, s}\} - \overset{\cdots}{M}^{30}_s (2 - \beta_{r, s} - \gamma_{p, s}) \quad \forall r \in R, s \in S, p \in P\end{aligned}\]
+\[\begin{aligned}& \rho_{r^{\prime}, s} \ge \rho_{r, s} + h \sum_{u \in U} \mu_{r, s, u} - \overset{\cdots}{M}^{31} (1 - \sigma_{s, r, r^{\prime}}) \quad \forall r, r^{\prime} \in R, s \in S\end{aligned}\]
+\[\begin{aligned}& \epsilon_{r, s} \le \overset{\cdots}{M}^{30}_s \beta_{r, s} \quad \forall r \in R, s \in S\end{aligned}\]
+\[\begin{aligned}& \theta_{p, s} \le \overset{\cdots}{M}^{30}_s \gamma_{p, s} \quad \forall p \in P, s \in S\end{aligned}\]
+\[\begin{aligned}& \rho_{r, s} \le \overset{\cdots}{M}^{30}_s \beta_{r, s} \quad \forall r \in R, s \in S\end{aligned}\]
+The order value of the route starting point is fixed at zero; the virtual end point can be set to “actual visits plus one”. An empty route refers to a virtual starting point directly leading to the end point. When the actual shelves are not visited, the related arrival and service times are fixed to zero according to the above formula. All quantity domains are continuous and non-negative as stated in (4.38). $\mathbb Z^+$ is represented as a non-negative integer in this arrangement. No additional integer restrictions on picking are added, as not present in the original text. The symmetric breaking method from (4.35)–(4.36) applies to homogeneous resources where the initial state can be exchanged.
+
+\end{document}

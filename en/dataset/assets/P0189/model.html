@@ -1,0 +1,329 @@
+<!DOCTYPE html> 
+<html lang='en-US' xml:lang='en-US'> 
+<head><title>P0189 · Coordinated deliveries by multiple trucks and drones · Mathematical model</title> 
+<meta charset='utf-8' /> 
+<meta content='TeX4ht (https://tug.org/tex4ht/)' name='generator' /> 
+<meta content='width=device-width,initial-scale=1' name='viewport' /> 
+<style> 
+/* start css.sty */
+.cmr-10x-x-109{}
+.cmbx-10x-x-109{ font-weight: bold;}
+.cmbsy-10x-x-109{font-weight: bold;}
+.cmbsy-10x-x-109{font-weight: bold;}
+.cmbsy-10x-x-109{font-weight: bold;}
+.cmbsy-8{font-size:72%;font-weight: bold;}
+.cmbsy-8{font-weight: bold;}
+.cmbsy-8{font-weight: bold;}
+.cmbsy-6{font-size:54%;font-weight: bold;}
+.cmbsy-6{font-weight: bold;}
+.cmbsy-6{font-weight: bold;}
+.cmex-10x-x-109{}
+.cmex-8{font-size:72%;}
+.cmex-7x-x-85{font-size:54%;}
+.msam-10x-x-109{}
+.msam-10x-x-80{font-size:72%;}
+.msam-7x-x-85{font-size:54%;}
+.msbm-10x-x-109{}
+.msbm-10x-x-80{font-size:72%;}
+.msbm-7x-x-85{font-size:54%;}
+.cmr-8{font-size:72%;}
+.cmr-6{font-size:54%;}
+.cmmi-10x-x-109{font-style: italic;}
+.cmmi-8{font-size:72%;font-style: italic;}
+.cmmi-6{font-size:54%;font-style: italic;}
+.cmsy-10x-x-109{}
+.cmsy-8{font-size:72%;}
+.cmsy-6{font-size:54%;}
+p{margin-top:0;margin-bottom:0}
+p.indent{text-indent:0;}
+p + p{margin-top:1em;}
+p + div, p + pre {margin-top:1em;}
+div + p, pre + p {margin-top:1em;}
+a { overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; hyphens: auto; }
+@media print {div.crosslinks {visibility:hidden;}}
+table.tabular{border-collapse: collapse; border-spacing: 0;}
+a img { border-top: 0; border-left: 0; border-right: 0; }
+center { margin-top:1em; margin-bottom:1em; }
+td center { margin-top:0em; margin-bottom:0em; }
+.Canvas { position:relative; }
+math { text-indent: 0em; }
+body{ margin:1em auto; max-width:80ch; padding:0 .62em; }
+h1,h2,h3,h4,h5 { line-height:1.2; }
+@media print{ body{ max-width:none } }
+.partHead, .likepartHead { font-size: 2em; }
+.chapterHead, .likechapterHead { font-size: 1.7411em; }
+.sectionHead, .likesectionHead { font-size: 1.5157em; }
+.subsectionHead, .likesubsectionHead { font-size: 1.3195em; }
+.subsubsectionHead, .likesubsubsectionHead { font-size: 1.1487em; }
+ @media (prefers-color-scheme: dark) { img[src^="model"]{filter: invert(1); } } 
+li p.indent { text-indent: 0em }
+li p:first-child{ margin-top:0em; }
+li p:last-child, li div:last-child { margin-bottom:0.5em; }
+li p:first-child{ margin-bottom:0; }
+li p~ul:last-child, li p~ol:last-child{ margin-bottom:0.5em; }
+.enumerate1 {list-style-type:decimal;}
+.enumerate2 {list-style-type:lower-alpha;}
+.enumerate3 {list-style-type:lower-roman;}
+.enumerate4 {list-style-type:upper-alpha;}
+div.newtheorem { margin-bottom: 2em; margin-top: 2em;}
+div.newtheorem .head{font-weight: bold;}
+.obeylines-h,.obeylines-v {white-space: nowrap; }
+div.obeylines-v p { margin-top:0; margin-bottom:0; }
+.overline{ text-decoration:overline; }
+.overline img{ border-top: 1px solid black; }
+td.displaylines {text-align:center; white-space:nowrap;}
+.centerline {text-align:center;}
+.rightline {text-align:right;}
+pre.verbatim {font-family: monospace,monospace; text-align:left; clear:both; }
+.fbox {padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+div.fbox {display:table}
+div.center div.fbox {text-align:center; clear:both; padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+div.minipage{width:100%;}
+div.center, div.center div.center {text-align: center; margin-left:1em; margin-right:1em;}
+div.center div {text-align: left;}
+div.flushright, div.flushright div.flushright {text-align: right;}
+div.flushright div {text-align: left;}
+div.flushleft {text-align: left;}
+.underline{ text-decoration:underline; }
+.underline img{ border-bottom: 1px solid black; margin-bottom:1pt; }
+.framebox-c, .framebox-l, .framebox-r { padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+.framebox-c {text-align:center;}
+.framebox-l {text-align:left;}
+.framebox-r {text-align:right;}
+span.thank-mark{ vertical-align: super }
+span.footnote-mark sup.textsuperscript, span.footnote-mark a sup.textsuperscript{ font-size:80%; }
+code.verb{font-family:monospace,monospace;}
+div.tabular, div.center div.tabular {text-align: center; margin-top:0.5em; margin-bottom:0.5em; }
+table.tabular td p{margin-top:0em;}
+table.tabular {margin-left: auto; margin-right: auto;}
+td p:first-child{ margin-top:0em; }
+td p:last-child{ margin-bottom:0em; }
+div.td00{ margin-left:0pt; margin-right:0pt; }
+div.td01{ margin-left:0pt; margin-right:5pt; }
+div.td10{ margin-left:5pt; margin-right:0pt; }
+div.td11{ margin-left:5pt; margin-right:5pt; }
+table[rules] {border-left:solid black 0.4pt; border-right:solid black 0.4pt; }
+td.td00{ padding-left:0pt; padding-right:0pt; }
+td.td01{ padding-left:0pt; padding-right:5pt; }
+td.td10{ padding-left:5pt; padding-right:0pt; }
+td.td11{ padding-left:5pt; padding-right:5pt; }
+table[rules] {border-left:solid black 0.4pt; border-right:solid black 0.4pt; }
+.hline hr, .cline hr{ height : 0px; margin:0px; }
+.hline td, .cline td{ padding: 0; }
+.hline hr, .cline hr{border:none;border-top:1px solid black;}
+.hline {border-top: 1px solid black;}
+.hline + .vspace:last-child{display:none;}
+.hline:first-child{border-bottom:1px solid black;border-top:none;}
+.tabbing-right {text-align:right;}
+div.float, div.figure {margin-left: auto; margin-right: auto;}
+div.float img {text-align:center;}
+div.figure img {text-align:center;}
+.marginpar,.reversemarginpar {width:20%; float:right; text-align:left; margin-left:auto; margin-top:0.5em; font-size:85%; text-decoration:underline;}
+.marginpar p,.reversemarginpar p{margin-top:0.4em; margin-bottom:0.4em;}
+.reversemarginpar{float:left;}
+.equation td{text-align:center; vertical-align:middle; }
+td.eq-no{ width:5%; }
+table.equation { width:100%; } 
+div.math-display, div.par-math-display{text-align:center;}
+.array-hline,.array-cline{ border-top: 1px solid black; height:0px; }
+.array-hline + .array-vspace:last-child{display:none;}
+.hline-mtd, .array-hline td{ display:none }
+.array-hline + .array-row:last-child{display:none;}
+.array-hline:first-child{border-bottom:1px solid black;border-top:none;}
+math .texttt { font-family: monospace; }
+math .textit { font-style: italic; }
+math .textsl { font-style: oblique; }
+math .textsf { font-family: sans-serif; }
+math .textbf { font-weight: bold; }
+mo.MathClass-op + mi{margin-left:0.3em}
+mi + mo.MathClass-op{margin-left:0.3em}
+ math mstyle[mathvariant="bold"] { font-weight: bold; font-style: normal; } 
+ math mstyle[mathvariant="normal"] { font-weight: normal; font-style: normal; } 
+.partToc a, .partToc, .likepartToc a, .likepartToc {line-height: 200%; font-weight:bold; font-size:110%;}
+.index-item, .index-subitem, .index-subsubitem {display:block}
+div.caption {text-indent:-2em; margin-left:3em; margin-right:1em; text-align:left;}
+div.caption span.id{font-weight: bold; white-space: nowrap; }
+h1.partHead{text-align: center}
+p.bibitem { text-indent: -2em; margin-left: 2em; margin-top:0.6em; margin-bottom:0.6em; }
+p.bibitem-p { text-indent: 0em; margin-left: 2em; margin-top:0.6em; margin-bottom:0.6em; }
+.subsubsectionHead, .likesubsubsectionHead { font-size: 1em; }
+.paragraphHead, .likeparagraphHead { margin-top:2em; font-weight: bold;}
+.subparagraphHead, .likesubparagraphHead { font-weight: bold;}
+.verse{white-space:nowrap; margin-left:2em}
+div.maketitle {text-align:center;}
+h2.titleHead{text-align:center;}
+div.maketitle{ margin-bottom: 2em; }
+div.author, div.date {text-align:center;}
+div.thanks{text-align:left; margin-left:10%; font-size:85%; font-style:italic; }
+div.author{white-space: nowrap;}
+div.abstract p {margin-left:5%; margin-right:5%;}
+div.abstract {width:100%;}
+.abstracttitle{text-align:center;margin-bottom:1em;}
+.subsectionToc, .likesubsectionToc {margin-left:1em;}
+.subsubsectionToc, .likesubsubsectionToc {margin-left:2em;}
+.paragraphToc, .likeparagraphToc {margin-left:3em;}
+.subparagraphToc, .likesubparagraphToc {margin-left:4em;}
+figure.float, div.figure {margin-left: auto; margin-right: auto;}
+figure.figure {text-align:center;}
+figcaption.caption {text-indent:-2em; margin-left:3em; margin-right:1em; text-align:center;}
+figcaption.caption span.id{font-weight: bold; white-space: nowrap; }
+p + figcaption, img + figcaption{margin-top: 1em;}
+.abstract{margin:1em;}
+.equation-star td{text-align:center; vertical-align:middle; }
+table.equation-star { width:100%; } 
+.boxed{border: 1px solid black; padding-left:2px; padding-right:2px;}
+mtd.align-odd{margin-left:2em; text-align:right;}
+mtd.align-even{margin-right:2em; text-align:left;}
+/* end css.sty */
+
+
+html{background:#fff;color:#243833}body{padding:clamp(.55rem,2vw,1.25rem);margin:0;line-height:1.5;overflow-wrap:break-word}
+h1,h2,h3,h4,h5,h6{line-height:1.22;color:#193d35}p{margin:.5rem 0}math[display=block]{overflow-x:auto;max-width:100%}
+@media print{body{padding:0;color:#000}}
+</style> 
+<meta content='model.tex' name='src' /> 
+</head><body>
+   <h3 class='likesectionHead' id='multiple-trucks-and-drones-working-together-for-collaborative-delivery-linearized-m-model'><a id='x1-1000'></a>Multiple trucks and drones working together for collaborative delivery; linearized M2 model</h3>
+<!-- l. 8 --><p class='noindent'><span class='paragraphHead' id='source'><a id='x1-2000'></a><span class='cmbx-10x-x-109'>Source</span></span>
+   Pages 4–7 of the PDF document: M2 models (33), (31)–(32); as well as all constraints shared by M1,
+namely (2)–(30).
+</p>
+   <h4 class='likesubsectionHead' id='collections-parameters-and-variables'><a id='x1-3000'></a>Collections, parameters, and variables</h4>
+<!-- l. 10 --><p class='noindent'><!-- l. 10 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>K</mi></math>
+Refer to the truck group. Each group is equipped with drones from the set of IDs
+<!-- l. 10 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>D</mi></math>.
+<!-- l. 10 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>O</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>{</mo><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mi>o</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>o</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <mn>1</mn><mo class='MathClass-close' stretchy='false'>}</mo></mrow></math> Represent roads that are
+accessible to trucks. Here, <!-- l. 10 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mi>o</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <mn>1</mn></mrow></math>
+refers to the departure/return copies within the same warehouse.
+<!-- l. 10 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>−</mo></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mi>O</mi> <mo class='MathClass-bin' stretchy='false'>∖</mo><mo class='MathClass-open' stretchy='false'>{</mo><mi>o</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <mn>1</mn><mo class='MathClass-close' stretchy='false'>}</mo></mrow></math>,
+<!-- l. 10 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>+</mo></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mi>O</mi> <mo class='MathClass-bin' stretchy='false'>∖</mo><mo class='MathClass-open' stretchy='false'>{</mo><mn>0</mn><mo class='MathClass-close' stretchy='false'>}</mo></mrow></math>,
+<!-- l. 10 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>O</mi></mrow><mrow><mn>0</mn></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mi>O</mi> <mo class='MathClass-bin' stretchy='false'>∖</mo><mo class='MathClass-open' stretchy='false'>{</mo><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mi>o</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <mn>1</mn><mo class='MathClass-close' stretchy='false'>}</mo></mrow></math>…
+<!-- l. 10 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>C</mi></math>
+Refer to customers who only receive services provided by drones.
+<!-- l. 10 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>N</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mi>O</mi> <mo class='MathClass-bin' stretchy='false'>∪</mo> <mi>C</mi></mrow></math>
+All arcs are excluded from loops; undefined/non-existent arcs have variable values set to zero.
+<!-- l. 10 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mrow><mi>t</mi></mrow><mrow><mi mathvariant='italic'>ij</mi></mrow><mrow><mi>K</mi></mrow></msubsup></math> Represents the
+travel time on roads. <!-- l. 10 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msubsup><mrow><mi>t</mi></mrow><mrow><mi mathvariant='italic'>ic</mi></mrow><mrow><mi>D</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo> <msubsup><mrow><mi>t</mi></mrow><mrow><mi mathvariant='italic'>ci</mi></mrow><mrow><mi>D</mi></mrow></msubsup></mrow></math>
+Represents the flight time between road nodes and customers.
+<!-- l. 10 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msup><mrow><mi>s</mi></mrow><mrow><mi>G</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><msup><mrow><mi>s</mi></mrow><mrow><mi>K</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><msup><mrow><mi>s</mi></mrow><mrow><mi>D</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><msup><mrow><mi>s</mi></mrow><mrow><mi>T</mi> </mrow></msup> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mn>0</mn></mrow></math>
+Represents costs associated with driving, flying, and delayed arrivals.
+<!-- l. 10 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>q</mi></mrow><mrow><mi>c</mi></mrow></msub></math> Represents demand.
+<!-- l. 10 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msup><mrow><mi>m</mi></mrow><mrow><mi>K</mi></mrow></msup></math> Represents truck capacity.
+<!-- l. 10 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>e</mi></mrow><mrow><mi>c</mi></mrow></msub></math> Represents the expected latest
+arrival time for customers. <!-- l. 10 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>M</mi></math>
+Is a constant that has been verified to be sufficiently large relative to the time limit. Under the
+assumptions outlined in this document, the batteries are sufficient to support one-way flights for
+each customer. Battery charging times are ignored; this model does not optimize battery levels
+separately.
+</p><!-- l. 12 --><p class='indent'>   <!-- l. 12 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>α</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow></msub></math> represents the
+arc of the truck; <!-- l. 12 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>β</mi></mrow><mrow><mi mathvariant='italic'>ijdk</mi></mrow></msub></math>
+refers to the arc of the drone (used for routes where the vehicle carries the drone along with it).
+<!-- l. 12 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>𝜀</mi></mrow><mrow><mi>k</mi></mrow></msub></math> indicates that the truck
+group is enabled. <!-- l. 12 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>δ</mi></mrow><mrow><mi mathvariant='italic'>ik</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mn>0</mn></mrow></math>
+represents the synchronization moment of the group at a specific node.
+<!-- l. 12 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>μ</mi></mrow><mrow><mi mathvariant='italic'>ik</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>φ</mi></mrow><mrow><mi mathvariant='italic'>idk</mi></mrow></msub></mrow></math> is the integer indicating
+the order of access. <!-- l. 12 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msubsup><mrow><mi>τ</mi></mrow><mrow><mi mathvariant='italic'>ck</mi></mrow><mrow><mn>1</mn><mo class='MathClass-bin' stretchy='false'>+</mo></mrow></msubsup><mo class='MathClass-punc' stretchy='false'>,</mo><msubsup><mrow><mi>τ</mi></mrow><mrow><mi mathvariant='italic'>ck</mi></mrow><mrow><mn>1</mn><mo class='MathClass-bin' stretchy='false'>−</mo></mrow></msubsup><mo class='MathClass-rel' stretchy='false'>≥</mo> <mn>0</mn></mrow></math>
+represents the amount of linearization for late/early arrivals. For groups that aren’t used,
+<!-- l. 12 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>0</mn> <mo class='MathClass-rel' stretchy='false'>→</mo> <mi>o</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <mn>1</mn></mrow></math>
+represents a virtual arc with zero time consumption and zero cost.
+</p>
+   <h4 class='likesubsectionHead' id='complete-m'><a id='x1-4000'></a>Complete M2</h4>
+<!-- l. 15 --><p class='noindent'>
+</p><!-- tex4ht:inline --><!-- l. 21 --><math display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mtable class='align' columnalign='left' displaystyle='true'>
+        <mtr><mtd class='align-odd' columnalign='right'><mtext class='qopname'>min</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo><mspace class='quad' width='1em'></mspace></mtd>        <mtd class='align-even'><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>k</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>K</mi></mrow></munder><msup><mrow><mi>s</mi></mrow><mrow><mi>G</mi></mrow></msup><msub><mrow><mi>𝜀</mi></mrow><mrow>
+<mi>k</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>k</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>K</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>i</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>−</mo></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mi>j</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>+</mo></mrow></msub></mrow></munder><msup><mrow><mi>s</mi></mrow><mrow><mi>K</mi></mrow></msup><msubsup><mrow><mi>t</mi></mrow><mrow>
+<mi mathvariant='italic'>ij</mi></mrow><mrow><mi>K</mi></mrow></msubsup><msub><mrow><mi>α</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow></msub><mspace width='2em'></mspace></mtd>                                                    <mtd class='align-label' columnalign='right'></mtd>        <mtd class='align-label'>
+        <mspace width='2em'></mspace></mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>            <mtd class='align-even'> <mo class='MathClass-bin' stretchy='false'>+</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>k</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>K</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>d</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>D</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>i</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>−</mo></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mi>c</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>C</mi></mrow></munder><msup><mrow><mi>s</mi></mrow><mrow><mi>D</mi></mrow></msup><msubsup><mrow><mi>t</mi></mrow><mrow>
+<mi mathvariant='italic'>ic</mi></mrow><mrow><mi>D</mi></mrow></msubsup><msub><mrow><mi>β</mi></mrow><mrow>
+<mi mathvariant='italic'>icdk</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>k</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>K</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>d</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>D</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>j</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>+</mo></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mi>c</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>C</mi></mrow></munder><msup><mrow><mi>s</mi></mrow><mrow><mi>D</mi></mrow></msup><msubsup><mrow><mi>t</mi></mrow><mrow>
+<mi mathvariant='italic'>jc</mi></mrow><mrow><mi>D</mi></mrow></msubsup><msub><mrow><mi>β</mi></mrow><mrow>
+<mi mathvariant='italic'>cjdk</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>k</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>K</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>c</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>C</mi></mrow></munder><msup><mrow><mi>s</mi></mrow><mrow><mi>T</mi> </mrow></msup><msubsup><mrow><mi>τ</mi></mrow><mrow>
+<mi mathvariant='italic'>ck</mi></mrow><mrow><mn>1</mn><mo class='MathClass-bin' stretchy='false'>+</mo></mrow></msubsup><mo class='MathClass-punc' stretchy='false'>.</mo><mspace width='2em'></mspace></mtd>                <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(33)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-4002r0'></mstyle><!-- endlabel -->
+   </mtd></mtr></mtable></math>
+<!-- tex4ht:inline --><!-- l. 26 --><math display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mtable class='align' columnalign='left' displaystyle='true'>
+                           <mtr><mtd class='align-odd' columnalign='right'></mtd>                           <mtd class='align-even'><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>j</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>+</mo></mrow></msub></mrow></munder><msub><mrow><mi>α</mi></mrow><mrow><mn>0</mn><mi mathvariant='italic'>jk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mspace class='quad' width='1em'></mspace><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>K</mi><mspace width='2em'></mspace></mtd>                                                                           <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-4003r1'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(1)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+                           </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>                           <mtd class='align-even'><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>i</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>−</mo></mrow></msub></mrow></munder><msub><mrow><mi>α</mi></mrow><mrow><mi>i</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>o</mi><mo class='MathClass-bin' stretchy='false'>+</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo><mi>k</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mspace class='quad' width='1em'></mspace><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>K</mi><mspace width='2em'></mspace></mtd>                                                                        <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-4004r2'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(2)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+                           </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>                           <mtd class='align-even'><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>i</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>−</mo></mrow></msub></mrow></munder><msub><mrow><mi>α</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>i</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>+</mo></mrow></msub></mrow></munder><msub><mrow><mi>α</mi></mrow><mrow><mi mathvariant='italic'>jik</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≤</mo> <mn>1</mn><mspace class='quad' width='1em'></mspace><mi>j</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msub><mrow><mi>O</mi></mrow><mrow><mn>0</mn></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>K</mi><mspace width='2em'></mspace></mtd>                                                      <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-4005r3'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(3)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+   </mtd></mtr></mtable></math>
+<!-- l. 28 --><p class='noindent'>
+
+</p><!-- tex4ht:inline --><!-- l. 55 --><math display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mtable class='align' columnalign='left' displaystyle='true'>
+          <mtr><mtd class='align-odd' columnalign='right'></mtd>          <mtd class='align-even'><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>j</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>+</mo></mrow></msub><mo class='MathClass-bin' stretchy='false'>∪</mo><mi>C</mi></mrow></munder><msub><mrow><mi>β</mi></mrow><mrow><mn>0</mn><mi mathvariant='italic'>jdk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mspace class='quad' width='1em'></mspace><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>K</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>d</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>D</mi><mspace width='2em'></mspace></mtd>                                                           <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-4006r4'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(4)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+          </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>          <mtd class='align-even'><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>i</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>−</mo></mrow></msub><mo class='MathClass-bin' stretchy='false'>∪</mo><mi>C</mi></mrow></munder><msub><mrow><mi>β</mi></mrow><mrow><mi>i</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>o</mi><mo class='MathClass-bin' stretchy='false'>+</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo><mi mathvariant='italic'>dk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mspace class='quad' width='1em'></mspace><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>K</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>d</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>D</mi><mspace width='2em'></mspace></mtd>                                                         <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-4007r5'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(5)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+          </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>          <mtd class='align-even'><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>i</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>−</mo></mrow></msub><mo class='MathClass-bin' stretchy='false'>∪</mo><mi>C</mi></mrow></munder><msub><mrow><mi>β</mi></mrow><mrow><mi mathvariant='italic'>ijdk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>i</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>+</mo></mrow></msub><mo class='MathClass-bin' stretchy='false'>∪</mo><mi>C</mi></mrow></munder><msub><mrow><mi>β</mi></mrow><mrow><mi mathvariant='italic'>jidk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≤</mo> <mn>1</mn><mspace class='quad' width='1em'></mspace><mi>j</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msub><mrow><mi>O</mi></mrow><mrow><mn>0</mn></mrow></msub> <mo class='MathClass-bin' stretchy='false'>∪</mo> <mi>C</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>K</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>d</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>D</mi><mspace width='2em'></mspace></mtd>                                <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-4008r6'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(6)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+          </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>          <mtd class='align-even'><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>k</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>K</mi></mrow></munder><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>i</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>−</mo></mrow></msub></mrow></munder><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>d</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>D</mi></mrow></munder><msub><mrow><mi>β</mi></mrow><mrow><mi mathvariant='italic'>icdk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mspace class='quad' width='1em'></mspace><mi>c</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>C</mi><mspace width='2em'></mspace></mtd>                                                       <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-4009r7'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(7)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+          </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>          <mtd class='align-even'><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>k</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>K</mi></mrow></munder><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>j</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>+</mo></mrow></msub></mrow></munder><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>d</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>D</mi></mrow></munder><msub><mrow><mi>β</mi></mrow><mrow><mi mathvariant='italic'>cjdk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mspace class='quad' width='1em'></mspace><mi>c</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>C</mi><mspace width='2em'></mspace></mtd>                                                      <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-4010r8'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(8)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+          </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>          <mtd class='align-even'><msub><mrow><mi>β</mi></mrow><mrow><mi mathvariant='italic'>ijdk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn><mspace class='quad' width='1em'></mspace><mi>i</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>C</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>j</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>C</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>K</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>d</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>D</mi><mspace width='2em'></mspace></mtd>                                                          <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-4011r9'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(9)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+          </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>          <mtd class='align-even'><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>c</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>C</mi></mrow></munder><msub><mrow><mi>β</mi></mrow><mrow><mi mathvariant='italic'>icdk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≤</mo> <mn>1</mn><mspace class='quad' width='1em'></mspace><mi>i</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>−</mo></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>K</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>d</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>D</mi><mspace width='2em'></mspace></mtd>                                                        <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-4012r10'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(10)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+          </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>          <mtd class='align-even'><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>c</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>C</mi></mrow></munder><msub><mrow><mi>β</mi></mrow><mrow><mi mathvariant='italic'>cjdk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≤</mo> <mn>1</mn><mspace class='quad' width='1em'></mspace><mi>j</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>+</mo></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>K</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>d</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>D</mi><mspace width='2em'></mspace></mtd>                                                        <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-4013r11'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(11)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+          </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>          <mtd class='align-even'><msub><mrow><mi>δ</mi></mrow><mrow><mn>0</mn><mi>k</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn><mspace class='quad' width='1em'></mspace><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>K</mi><mspace width='2em'></mspace></mtd>                                                                              <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-4014r12'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(12)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+          </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>          <mtd class='align-even'><msub><mrow><mi>δ</mi></mrow><mrow><mi mathvariant='italic'>jk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≥</mo> <msub><mrow><mi>δ</mi></mrow><mrow><mi mathvariant='italic'>ik</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msubsup><mrow><mi>t</mi></mrow><mrow><mi mathvariant='italic'>ij</mi></mrow><mrow><mi>K</mi></mrow></msubsup> <mo class='MathClass-bin' stretchy='false'>−</mo> <mi>M</mi><mo class='MathClass-open' stretchy='false'>(</mo><mn>1</mn> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>α</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mspace class='quad' width='1em'></mspace><mi>i</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>−</mo></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mi>j</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>+</mo></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>K</mi><mspace width='2em'></mspace></mtd>                                          <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-4015r13'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(13)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+          </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>          <mtd class='align-even'><msub><mrow><mi>δ</mi></mrow><mrow><mi mathvariant='italic'>ck</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≥</mo> <msub><mrow><mi>δ</mi></mrow><mrow><mi mathvariant='italic'>ik</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msubsup><mrow><mi>t</mi></mrow><mrow><mi mathvariant='italic'>ic</mi></mrow><mrow><mi>D</mi></mrow></msubsup> <mo class='MathClass-bin' stretchy='false'>−</mo> <mi>M</mi><mo class='MathClass-open' stretchy='false'>(</mo><mn>1</mn> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>β</mi></mrow><mrow>
+<mi mathvariant='italic'>icdk</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mspace class='quad' width='1em'></mspace><mi>i</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>−</mo></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mi>c</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>C</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>K</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>d</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>D</mi><mspace width='2em'></mspace></mtd>                                     <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-4016r14'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(14)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+          </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>          <mtd class='align-even'><msub><mrow><mi>δ</mi></mrow><mrow><mi mathvariant='italic'>jk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≥</mo> <msub><mrow><mi>δ</mi></mrow><mrow><mi mathvariant='italic'>ck</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msubsup><mrow><mi>t</mi></mrow><mrow><mi mathvariant='italic'>jc</mi></mrow><mrow><mi>D</mi></mrow></msubsup> <mo class='MathClass-bin' stretchy='false'>−</mo> <mi>M</mi><mo class='MathClass-open' stretchy='false'>(</mo><mn>1</mn> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>β</mi></mrow><mrow>
+<mi mathvariant='italic'>cjdk</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mspace class='quad' width='1em'></mspace><mi>c</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>C</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>j</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>+</mo></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>K</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>d</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>D</mi><mspace width='2em'></mspace></mtd>                                    <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-4017r15'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(15)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+          </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>          <mtd class='align-even'><msub><mrow><mi>δ</mi></mrow><mrow><mi mathvariant='italic'>jk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≥</mo> <msub><mrow><mi>δ</mi></mrow><mrow><mi mathvariant='italic'>ik</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msubsup><mrow><mi>t</mi></mrow><mrow><mi mathvariant='italic'>ij</mi></mrow><mrow><mi>K</mi></mrow></msubsup> <mo class='MathClass-bin' stretchy='false'>−</mo> <mi>M</mi><mo class='MathClass-open' stretchy='false'>(</mo><mn>1</mn> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>β</mi></mrow><mrow>
+<mi mathvariant='italic'>ijdk</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mspace class='quad' width='1em'></mspace><mi>i</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>−</mo></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mi>j</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>+</mo></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mi>d</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>D</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>K</mi><mspace width='2em'></mspace></mtd>                                   <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-4018r16'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(16)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+          </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>          <mtd class='align-even'><msub><mrow><mi>δ</mi></mrow><mrow><mi mathvariant='italic'>jk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≥</mo> <msub><mrow><mi>δ</mi></mrow><mrow><mi mathvariant='italic'>ik</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <mi>M</mi><mo class='MathClass-open' stretchy='false'>(</mo><mn>2</mn> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>β</mi></mrow><mrow><mi mathvariant='italic'>icdk</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>β</mi></mrow><mrow><mi mathvariant='italic'>cjdk</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mspace class='quad' width='1em'></mspace><mi>c</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>C</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>i</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>−</mo></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mi>j</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>+</mo></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>K</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>d</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>D</mi><mspace width='2em'></mspace></mtd>                            <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-4019r17'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(17)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+          </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>          <mtd class='align-even'><msub><mrow><mi>β</mi></mrow><mrow><mi mathvariant='italic'>ijdk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msub><mrow><mi>α</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow></msub><mspace class='quad' width='1em'></mspace><mi>i</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>−</mo></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mi>j</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>+</mo></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>K</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>d</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>D</mi><mspace width='2em'></mspace></mtd>                                                     <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-4020r18'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(18)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+          </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>          <mtd class='align-even'><msub><mrow><mi>β</mi></mrow><mrow><mi mathvariant='italic'>icdk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≤</mo><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>j</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>+</mo></mrow></msub></mrow></munder><msub><mrow><mi>α</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow></msub><mspace class='quad' width='1em'></mspace><mi>c</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>C</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>i</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>−</mo></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>K</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>d</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>D</mi><mspace width='2em'></mspace></mtd>                                               <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-4021r19'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(19)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+          </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>          <mtd class='align-even'><msub><mrow><mi>β</mi></mrow><mrow><mi mathvariant='italic'>cjdk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≤</mo><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>i</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>−</mo></mrow></msub></mrow></munder><msub><mrow><mi>α</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow></msub><mspace class='quad' width='1em'></mspace><mi>c</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>C</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>j</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>+</mo></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>K</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>d</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>D</mi><mspace width='2em'></mspace></mtd>                                               <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-4022r20'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(20)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+          </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>          <mtd class='align-even'><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>i</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>−</mo></mrow></msub></mrow></munder><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>c</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>C</mi></mrow></munder><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>d</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>D</mi></mrow></munder><msub><mrow><mi>q</mi></mrow><mrow><mi>c</mi></mrow></msub><msub><mrow><mi>β</mi></mrow><mrow><mi mathvariant='italic'>icdk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msup><mrow><mi>m</mi></mrow><mrow><mi>K</mi></mrow></msup><mspace class='quad' width='1em'></mspace><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>K</mi><mspace width='2em'></mspace></mtd>                                                  <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-4023r21'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(21)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+          </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>          <mtd class='align-even'><msub><mrow><mi>α</mi></mrow><mrow><mn>0</mn><mo class='MathClass-open' stretchy='false'>(</mo><mi>o</mi><mo class='MathClass-bin' stretchy='false'>+</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo><mi>k</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>𝜀</mi></mrow><mrow><mi>k</mi></mrow></msub><mspace class='quad' width='1em'></mspace><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>K</mi><mspace width='2em'></mspace></mtd>                                                                     <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-4024r22'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(22)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+          </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>          <mtd class='align-even'><msub><mrow><mi>𝜀</mi></mrow><mrow><mi>k</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≥</mo><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>i</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>−</mo></mrow></msub></mrow></munder><msub><mrow><mi>β</mi></mrow><mrow><mi mathvariant='italic'>icdk</mi></mrow></msub><mspace class='quad' width='1em'></mspace><mi>c</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>C</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>K</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>d</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>D</mi><mspace width='2em'></mspace></mtd>                                                        <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-4025r23'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(23)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+          </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>          <mtd class='align-even'><msub><mrow><mi>φ</mi></mrow><mrow><mi mathvariant='italic'>idk</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>φ</mi></mrow><mrow><mi mathvariant='italic'>jdk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≤</mo> <mo class='MathClass-open' stretchy='false'>(</mo><mo class='MathClass-rel' stretchy='false'>|</mo><mi>O</mi><mo class='MathClass-rel' stretchy='false'>|</mo> <mo class='MathClass-bin' stretchy='false'>+</mo> <mo class='MathClass-rel' stretchy='false'>|</mo><mi>C</mi><mo class='MathClass-rel' stretchy='false'>|</mo><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-open' stretchy='false'>(</mo><mn>1</mn> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>β</mi></mrow><mrow><mi mathvariant='italic'>ijdk</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-bin' stretchy='false'>−</mo> <mn>1</mn><mspace class='quad' width='1em'></mspace><mi>i</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>−</mo></mrow></msub><mo class='MathClass-bin' stretchy='false'>∪</mo> <mi>C</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>j</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>+</mo></mrow></msub> <mo class='MathClass-bin' stretchy='false'>∪</mo> <mi>C</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>K</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>d</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>D</mi><mspace width='2em'></mspace></mtd>                    <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-4026r24'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(24)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+          </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>          <mtd class='align-even'><msub><mrow><mi>μ</mi></mrow><mrow><mi mathvariant='italic'>ik</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>μ</mi></mrow><mrow><mi mathvariant='italic'>jk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≤</mo><mo class='MathClass-rel' stretchy='false'>|</mo><mi>O</mi><mo class='MathClass-rel' stretchy='false'>|</mo><mo class='MathClass-open' stretchy='false'>(</mo><mn>1</mn> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>α</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-bin' stretchy='false'>−</mo> <mn>1</mn><mspace class='quad' width='1em'></mspace><mi>i</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>−</mo></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mi>j</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>+</mo></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>K</mi><mspace width='2em'></mspace></mtd>                                            <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-4027r25'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(25)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+          </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>          <mtd class='align-even'><msub><mrow><mi>δ</mi></mrow><mrow><mi mathvariant='italic'>ik</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mn>0</mn><mspace class='quad' width='1em'></mspace><mi>i</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>N</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>K</mi><mspace width='2em'></mspace></mtd>                                                                        <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-4028r26'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(26)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+          </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>          <mtd class='align-even'><mn>0</mn> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msub><mrow><mi>φ</mi></mrow><mrow><mi mathvariant='italic'>idk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≤</mo><mo class='MathClass-rel' stretchy='false'>|</mo><mi>O</mi><mo class='MathClass-rel' stretchy='false'>|</mo> <mo class='MathClass-bin' stretchy='false'>+</mo> <mo class='MathClass-rel' stretchy='false'>|</mo><mi>C</mi><mo class='MathClass-rel' stretchy='false'>|</mo><mspace class='quad' width='1em'></mspace><mi>i</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>N</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>K</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>d</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>D</mi><mspace width='2em'></mspace></mtd>                                                      <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-4029r27'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(27)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+          </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>          <mtd class='align-even'><mn>0</mn> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msub><mrow><mi>μ</mi></mrow><mrow><mi mathvariant='italic'>ik</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≤</mo><mo class='MathClass-rel' stretchy='false'>|</mo><mi>O</mi><mo class='MathClass-rel' stretchy='false'>|</mo><mspace class='quad' width='1em'></mspace><mi>i</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>N</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>K</mi><mspace width='2em'></mspace></mtd>                                                                  <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-4030r28'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(28)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+          </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>          <mtd class='align-even'><msub><mrow><mi>α</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>β</mi></mrow><mrow><mi mathvariant='italic'>ijdk</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>𝜀</mi></mrow><mrow><mi>k</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>∈</mo><mo class='MathClass-open' stretchy='false'>{</mo><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>}</mo><mspace class='quad' width='1em'></mspace><mi>i</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>j</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>N</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>K</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>d</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>D</mi><mspace width='2em'></mspace></mtd>                                                   <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-4031r29'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(29)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+   </mtd></mtr></mtable></math>
+<!-- l. 57 --><p class='noindent'>
+</p><!-- tex4ht:inline --><!-- l. 60 --><math display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mtable class='align' columnalign='left' displaystyle='true'>
+                        <mtr><mtd class='align-odd' columnalign='right'></mtd>                        <mtd class='align-even'><msub><mrow><mi>δ</mi></mrow><mrow><mi mathvariant='italic'>ck</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>e</mi></mrow><mrow><mi>c</mi></mrow></msub><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>d</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>D</mi></mrow></munder><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>i</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mi>O</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>−</mo></mrow></msub></mrow></munder><msub><mrow><mi>β</mi></mrow><mrow><mi mathvariant='italic'>icdk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <msubsup><mrow><mi>τ</mi></mrow><mrow><mi mathvariant='italic'>ck</mi></mrow><mrow><mn>1</mn><mo class='MathClass-bin' stretchy='false'>+</mo></mrow></msubsup> <mo class='MathClass-bin' stretchy='false'>−</mo> <msubsup><mrow><mi>τ</mi></mrow><mrow>
+<mi mathvariant='italic'>ck</mi></mrow><mrow><mn>1</mn><mo class='MathClass-bin' stretchy='false'>−</mo></mrow></msubsup><mspace class='quad' width='1em'></mspace><mi>c</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>C</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>K</mi><mspace width='2em'></mspace></mtd>                                                <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-4032r30'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(30)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+                        </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>                        <mtd class='align-even'><msubsup><mrow><mi>τ</mi></mrow><mrow><mi mathvariant='italic'>ck</mi></mrow><mrow><mn>1</mn><mo class='MathClass-bin' stretchy='false'>+</mo></mrow></msubsup><mo class='MathClass-punc' stretchy='false'>,</mo><msubsup><mrow><mi>τ</mi></mrow><mrow>
+<mi mathvariant='italic'>ck</mi></mrow><mrow><mn>1</mn><mo class='MathClass-bin' stretchy='false'>−</mo></mrow></msubsup><mo class='MathClass-rel' stretchy='false'>≥</mo> <mn>0</mn><mspace class='quad' width='1em'></mspace><mi>c</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>C</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>K</mi><mspace width='2em'></mspace></mtd>                                                                          <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-4033r31'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(31)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+   </mtd></mtr></mtable></math>
+   <table class='equation-star'><tr><td>
+<!-- l. 63 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                                    <msub><mrow><mi>μ</mi></mrow><mrow><mi mathvariant='italic'>ik</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msub><mrow><mi>ℤ</mi></mrow><mrow><mo class='MathClass-rel' stretchy='false'>≥</mo><mn>0</mn></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><msub><mrow><mi>φ</mi></mrow><mrow><mi mathvariant='italic'>idk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msub><mrow><mi>ℤ</mi></mrow><mrow><mo class='MathClass-rel' stretchy='false'>≥</mo><mn>0</mn></mrow></msub><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 66 --><p class='noindent'>All the arc indices in the above formula only consider those pairs of nodes that are allowed to be traversed.
+The remaining elements in the matrix are treated as zero variables. M2 is equivalent to M1, with the positive
+penalty component. Here, we only provide a complete model for M2.
+</p>
+    
+</body> 
+</html>

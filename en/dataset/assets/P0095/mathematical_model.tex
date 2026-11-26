@@ -1,0 +1,121 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\title{Core Mathematical Model}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Constrained Assortment Optimization under CNL}
+
+Assume the feasible assortment set admits a linear description
+$\mathcal{X} = \{x \in \{0,1\}^m : Fx \le g\}$. To obtain a model that can be
+solved directly by Gurobi, we apply the Charnes-Cooper transformation and
+Glover linearization to the linear-fractional approximation. Let
+$w = 1/(c + \sum_{n,k} d_{nk} z_{nk})$, define
+$\tilde{x}_i = w x_i$, $\tilde{y}_{nk} = w y_{nk}$,
+$\tilde{z}_{nk} = w z_{nk}$, and $\tilde{s}_{ink} = w s_{ink}$, and let
+$L_w = 1/(c + \sum_{n,k} d_{nk})$, $U_w = 1/c$.
+The solver in this folder implements the following Assort-MILP directly,
+
+
+\begin{equation}
+\max
+\left\{
+\sum_{i \in [m],\,n \in [N]} a_{in}\tilde{x}_i
++ \sum_{i \in [m],\,n \in [N],\,k \in [K_n]} b_{ink}\tilde{s}_{ink}
+\right\}
+\tag{Assort-MILP}
+\end{equation}
+
+\begin{equation}
+c w + \sum_{n \in [N],\,k \in [K_n]} d_{nk}\tilde{z}_{nk} = 1
+\tag{6a}
+\end{equation}
+
+\begin{equation}
+v_{0n} w + \sum_{i \in S_n} \alpha_{in} v_i \tilde{x}_i
+= L_n w + \sum_{k \in [K_n]} \Delta_{nk} \tilde{z}_{nk},
+\qquad \forall n \in [N]
+\tag{6b}
+\end{equation}
+
+\begin{equation}
+\tilde{y}_{n,k+1} \le \tilde{y}_{nk} \le \tilde{z}_{nk},
+\qquad \forall n \in [N],\ k \in [K_n-1]
+\tag{7}
+\end{equation}
+
+\begin{equation}
+\tilde{z}_{n,k+1} \le \tilde{y}_{nk},
+\qquad \forall n \in [N],\ k \in [K_n-2]
+\tag{8}
+\end{equation}
+
+\begin{equation}
+\tilde{s}_{ink} \le \tilde{x}_i,
+\quad
+\tilde{s}_{ink} \le \tilde{z}_{nk},
+\qquad \forall i \in [m],\ n \in [N],\ k \in [K_n]
+\tag{9}
+\end{equation}
+
+\begin{equation}
+\tilde{s}_{ink} \ge \tilde{x}_i + \tilde{z}_{nk} - w,
+\qquad \forall i \in [m],\ n \in [N],\ k \in [K_n]
+\tag{10}
+\end{equation}
+
+\begin{equation}
+F \tilde{x} \le g\,w
+\tag{11}
+\end{equation}
+
+Constraint \textnormal{(11)} is the transformed representation of the original
+assortment feasibility system. The solver in this folder enforces the equivalent
+original linear constraints $Fx \le g$ on $x$ directly, together with
+\textnormal{(12)}, representing $F\tilde{x} \le g\,w$.
+
+\begin{equation}
+w - U_w(1-x_i) \le \tilde{x}_i \le w,
+\qquad
+\tilde{x}_i \ge 0,
+\qquad
+\tilde{x}_i \le U_w x_i,
+\qquad \forall i \in [m]
+\tag{12}
+\end{equation}
+
+\begin{equation}
+w - U_w(1-y_{nk}) \le \tilde{y}_{nk} \le w,
+\qquad
+\tilde{y}_{nk} \ge 0,
+\qquad
+\tilde{y}_{nk} \le U_w y_{nk},
+\qquad \forall n \in [N],\ k \in [K_n]
+\tag{13}
+\end{equation}
+
+\begin{equation}
+x_i \in \{0,1\},
+\quad
+y_{nk} \in \{0,1\},
+\quad
+L_w \le w \le U_w,
+\qquad \forall i \in [m],\ n \in [N],\ k \in [K_n]
+\tag{14}
+\end{equation}
+
+\begin{equation}
+0 \le \tilde{z}_{nk} \le w,
+\quad
+0 \le \tilde{s}_{ink} \le w,
+\qquad \forall i \in [m],\ n \in [N],\ k \in [K_n]
+\tag{15}
+\end{equation}
+
+\end{document}

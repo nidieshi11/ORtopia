@@ -1,0 +1,26 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\emergencystretch=4em
+\begin{document}
+\section*{Public transportation freight transportation strategy planning: Path flow model}
+
+This document uses the path-based representation for describing the selected models. Site flows and line status flows are represented separately, and they are not combined into a single model along with the path-based representation. The symbols used in the representation are based on pages 5, 6, and 8 of the original paper. $F,L,S,K$ represents teams, lines, sites, and products; $f(\ell)$ represents the team to which the line belongs; $L_f=\{\ell:f(\ell)=f\}$ and $L_s=\{\ell:s\in S_\ell\}$ represent other relevant elements. For each directed line, $S_\ell^{in}$ occurs before $S_\ell^{out}$ on the path. Neither of these two elements intersects with each other. $S_{\ell k}^{in}=S_\ell^{in}\cap S_k^{in}$ and $S_{\ell k}^{out}=S_\ell^{out}\cap S_k^{out}$ represent additional elements related to the line. $\mathcal W=\{(k,\ell,s,t):s\in S_{\ell k}^{in},t\in S_{\ell k}^{out}\}$ is defined as such. The variable $x_s,y_\ell,z_f$ ranges from 0 to 1. $w_{k\ell st}\in\mathbb Z_{\ge0}$ is only defined in relation to $\mathcal W$. Values outside the summation range are treated as 0.
+\begin{align*}
+\max\quad &\sum_{(k,\ell,s,t)\in\mathcal W}w_{k\ell st}\\
+\text{s.t.}\quad&
+\sum_s V_sx_s+\sum_\ell V_\ell y_\ell+\sum_f V_fz_f\le B,\\
+&\sum_s x_s\le\mathrm{maxstops},\quad
+\sum_\ell y_\ell\le\mathrm{maxlines},\quad\sum_fz_f\le\mathrm{maxfleets},\\
+&y_\ell\le z_{f(\ell)}&&(\ell\in L),\\
+&x_s\le\sum_{\ell\in L_s}y_\ell&&(s\in S),\\
+&y_\ell\le\sum_{s\in S_\ell^{in}}x_s,\quad
+y_\ell\le\sum_{s\in S_\ell^{out}}x_s&&(\ell\in L),\\
+&z_f\le\sum_{\ell\in L_f}y_\ell&&(f\in F),\\
+&\sum_{(\ell,s,t):(k,\ell,s,t)\in\mathcal W}w_{k\ell st}\le P_k&&(k\in K),\\
+&\sum_{(k,s,t):(k,\ell,s,t)\in\mathcal W}w_{k\ell st}\le C_\ell y_\ell&&(\ell\in L),\\
+&\sum_{(k,\ell,u,v)\in\mathcal W}
+(\mathbf1_{\{u=s\}}+\mathbf1_{\{v=s\}})w_{k\ell uv}\le C_sx_s&&(s\in S).
+\end{align*}
+The completed instance retains the order of stations along the route, as well as information regarding requirements, capacity, and budget. For those routes where certain stations are not covered, each route’s first half of stations will be designated as “loading stations”, while the second half will be designated as “unloading stations”. This provides clear operational data for reference. Station roles are defined based on the above data. It is prohibited to load or unload goods at the same station, or to transport goods in reverse order. The maximum coverage model allows for some goods to not be covered at all.
+
+\end{document}

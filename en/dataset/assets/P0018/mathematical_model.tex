@@ -1,0 +1,175 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+
+\title{Core Solvable Mathematical Model}
+\author{Paper 8}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section*{Retained Core Model}
+According to the \texttt{tex} formulas and the PDF, the retained directly solvable core model is
+the compact MILP reformulation $R$-MILP for the case $M=2$, given by Theorem 3 (Pages 14 and
+18). The earlier formulations B-IFP and R-BFP are omitted because they are fractional/nonlinear
+intermediate models, while the later outer-approximation algorithms are solution methods rather
+than the core model itself.
+
+\paragraph{Decision variables.}
+$x_j \in \{0,1\}$ opens drone base $j$, $y_{ij}\in\{0,1\}$ assigns overdose request location $i$
+to base $j$, and $\gamma_j^{(m)}\in\{0,1\}$ indicates whether exactly $m$ drones are positioned
+at base $j$ for $m=1,2$. The remaining variables
+$U_j^{(1)},U_j^{(2)},z_{jlt},\mu_{lj}^{(m)},\tau_{jlt},\omega_{ij}^{(m)}$
+are standard auxiliary variables introduced by the exact linearization.
+Let $\bar U_j^{(m)}$ be a valid upper bound on $U_j^{(m)}$, and let
+$\bar\mu_{ij}^{(1)}$ be a valid upper bound on $\mu_{ij}^{(1)}$.
+
+\paragraph{Base feasible set.}
+The binary feasible set $\mathcal B$ is defined by the assignment and resource constraints
+\begin{align}
+\sum_{i \in I_j} \lambda_i y_{ij}\mathbb{E}[S_{ij}] &\le \sum_{m=1}^{2} m\gamma_j^{(m)} - \epsilon
+&& \forall j \in J \tag{9b}\\
+x_j \le \sum_{m=1}^{2} m\gamma_j^{(m)} &\le 2x_j
+&& \forall j \in J \tag{9c}\\
+\sum_{j \in J} \sum_{m=1}^{2} m\gamma_j^{(m)} &= p \tag{9d}\\
+\sum_{m=1}^{2} \gamma_j^{(m)} &\le 1
+&& \forall j \in J \tag{9e}\\
+\sum_{j \in J_i} y_{ij} &= 1
+&& \forall i \in I \tag{8c}\\
+y_{ij} &\le x_j
+&& \forall i \in I,\ \forall j \in J_i \tag{8d}\\
+\sum_{j \in J} x_j &\le q \tag{8e}\\
+x_j,\ y_{ij},\ \gamma_j^{(m)} &\in \{0,1\}
+&& \forall i \in I,\ \forall j \in J_i,\ \forall j \in J,\ m=1,2 \tag{8h/9f}
+\end{align}
+
+\section*{Compact MILP Reformulation ($M=2$)}
+\begin{equation}
+\min
+\sum_{i \in I} \sum_{j \in J_i} \frac{y_{ij} d_{ij} \lambda_i}{v \sum_{l \in I} \lambda_l}
++
+\sum_{i \in I} \sum_{j \in J_i}
+\left[
+\frac{\omega_{ij}^{(1)}}{2} + \frac{\omega_{ij}^{(2)}}{2}
+\right]
+\frac{\lambda_i}{\sum_{l \in I} \lambda_l}
+\tag{13a}
+\end{equation}
+
+\begin{equation}
+(x,y,\gamma) \in \mathcal B
+\tag{13b}
+\end{equation}
+
+\begin{equation}
+U_j^{(1)} =
+\sum_{l \in I_j} \lambda_l \mu_{lj}^{(1)} \tilde S_{lj}
++
+\sum_{l \in I_j} \lambda_l y_{lj} \tilde S_{lj}^{2}
+\quad \forall j \in J
+\tag{13c}
+\end{equation}
+
+\begin{equation}
+4U_j^{(2)} =
+\sum_{l \in I_j} \lambda_l^2 \tilde S_{lj}
+\left(\mu_{lj}^{(2)} \tilde S_{lj} + y_{lj}\tilde S_{lj}^{2}\right)
++
+2\sum_{(l,t)\in D_j}\lambda_l\lambda_t \tilde S_{tj}
+\left(z_{jlt}\tilde S_{lj}^{2} + \tau_{jlt}\tilde S_{lj}\right)
+\quad \forall j \in J
+\tag{13d}
+\end{equation}
+
+\begin{equation}
+(y_{lj}, y_{tj}, z_{jlt}) \in \mathcal F_y^z
+\quad \forall (l,t)\in D_j,\ \forall j \in J
+\tag{13e}
+\end{equation}
+
+\begin{equation}
+(y_{lj}, U_j^{(m)}, \mu_{lj}^{(m)}) \in \mathcal M_{yU}^{\mu}
+\quad \forall l \in I_j,\ \forall j \in J,\ m=1,2
+\tag{13f}
+\end{equation}
+
+\begin{equation}
+(z_{jlt}, U_j^{(2)}, \tau_{jlt}) \in \mathcal M_{zU}^{\tau}
+\quad \forall (l,t)\in D_j,\ \forall j \in J
+\tag{13g}
+\end{equation}
+
+\begin{equation}
+(\gamma_j^{(1)}, \mu_{ij}^{(1)}, \omega_{ij}^{(1)}) \in {\mathcal M'}_{\gamma\mu}^{\omega}
+\quad \forall i \in I,\ \forall j \in J_i
+\tag{13h}
+\end{equation}
+
+\begin{equation}
+\omega_{ij}^{(2)} = \mu_{ij}^{(2)}
+\quad \forall i \in I,\ \forall j \in J_i
+\tag{13i}
+\end{equation}
+
+\section*{Expanded Linearization Sets}
+\begin{equation}
+z_{jlt} \ge 0,\qquad
+z_{jlt} \ge y_{lj} + y_{tj} - 1,\qquad
+z_{jlt} \le y_{lj},\qquad
+z_{jlt} \le y_{tj}
+\quad \forall (l,t)\in D_j,\ \forall j \in J
+\tag{Lin-F}
+\end{equation}
+
+\begin{equation}
+\mu_{lj}^{(m)} \ge 0,\qquad
+\mu_{lj}^{(m)} \ge \bar U_j^{(m)}(y_{lj}-1) + U_j^{(m)},\qquad
+\mu_{lj}^{(m)} \le \bar U_j^{(m)} y_{lj},\qquad
+\mu_{lj}^{(m)} \le U_j^{(m)}
+\quad \forall l \in I_j,\ \forall j \in J,\ m=1,2
+\tag{Lin-mu}
+\end{equation}
+
+\begin{equation}
+\tau_{jlt} \ge 0,\qquad
+\tau_{jlt} \ge \bar U_j^{(2)}(z_{jlt}-1) + U_j^{(2)},\qquad
+\tau_{jlt} \le \bar U_j^{(2)} z_{jlt},\qquad
+\tau_{jlt} \le U_j^{(2)}
+\quad \forall (l,t)\in D_j,\ \forall j \in J
+\tag{Lin-tau}
+\end{equation}
+
+\begin{equation}
+\omega_{ij}^{(1)} \ge 0,\qquad
+\omega_{ij}^{(1)} \ge \bar\mu_{ij}^{(1)}(\gamma_j^{(1)}-1) + \mu_{ij}^{(1)},\qquad
+\omega_{ij}^{(1)} \le \bar\mu_{ij}^{(1)} \gamma_j^{(1)},\qquad
+\omega_{ij}^{(1)} \le \mu_{ij}^{(1)}
+\quad \forall i \in I,\ \forall j \in J_i
+\tag{Lin-omega}
+\end{equation}
+
+\section*{Strengthening Cuts Retained with the Model}
+\begin{equation}
+\gamma_j^{(1)} + \gamma_j^{(2)} \ge U_j^{(m)} / \bar U_j^{(m)}
+\quad \forall j \in J,\ m=1,2
+\tag{20}
+\end{equation}
+
+\begin{equation}
+U_j^{(1)} \ge U_j^{(2)}
+\quad \forall j \in J
+\tag{21}
+\end{equation}
+
+\begin{equation}
+\gamma_j^{(1)} + \gamma_j^{(2)} = x_j
+\quad \forall j \in J
+\tag{22}
+\end{equation}
+
+\end{document}

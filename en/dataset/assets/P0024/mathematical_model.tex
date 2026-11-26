@@ -1,0 +1,161 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,longtable}
+\emergencystretch=4em
+\begin{document}
+\section*{P24: Current complete mathematical model (2026-10-20)}
+\section*{Basis and scope of the revision}Restoring the conservation of energy throughout the entire network by taking into account the inflow and outflow values on page 21 of the original text. This approach also helps to address issues related to limited procurement/transportation capabilities, as well as limitations in the training domain of the predictor. The local nutrition distribution model provides a framework for managing limited business boundaries.
+
+
+
+
+\section*{Retained Core Model}
+The World Food Programme food-basket model on page 21 embeds a learned nutritional constraint in a mixed-integer optimization problem. It is directly solvable \emph{after} the
+predictive function $\hat h(\boldsymbol{x})$ is instantiated by any trained MIO-representable
+learner supported by the paper (e.g., linear model, tree, forest, or ReLU network).
+
+\paragraph{Decision variables.}
+$x_k$ denotes the quantity of food item $k$, $F_{ijk}$ is the commodity flow variable on the
+supply/transportation network, and $y$ is the predicted palatability score (or predicted learned
+constraint output) produced by the embedded model $\hat h(\boldsymbol{x})$.
+
+\paragraph{Sets and parameters.}
+$\mathcal N_{\mathcal S}$, $\mathcal N_{\mathcal T}$, and $\mathcal N_{\mathcal D}$ are source,
+transshipment, and demand-node sets. $\mathcal K$ is the commodity set and $\mathcal L$ is the
+nutrient set. The costs $p_{ik}^P$ and $p_{ijk}^T$ are procurement and transportation costs,
+$\gamma$ is a conversion factor, $d_i$ is daily demand, $days$ is the number of planning days,
+$Nutval_{kl}$ is the nutrient content of food $k$ for nutrient $l$, $Nutreq_l$ is the required
+amount of nutrient $l$, and $t$ is the minimum acceptable learned-score threshold. To make the
+retained model fully solvable, we instantiate the learned mapping $\hat h(\boldsymbol{x})$ with a
+trained ReLU network, which is one of the MIO-representable learners explicitly supported by the
+paper. Let $\mathcal R_\ell$ be the neuron
+set of hidden layer $\ell=1,\dots,H$, with trained weights $W_{rq}^{(\ell)}$, biases
+$b_r^{(\ell)}$, and valid pre-activation bounds $L_r^{(\ell)} \le s_r^{(\ell)} \le U_r^{(\ell)}$.
+
+\section*{Application-Level Core Formulation}
+\begin{equation}
+\min_{\boldsymbol{x},\, y,\, \boldsymbol{F}}
+\sum_{i \in \mathcal{N}_{\mathcal S}}
+\sum_{j \in \mathcal{N}_{\mathcal T} \cup \mathcal{N}_{\mathcal D}}
+\sum_{k \in \mathcal K} p_{ik}^P F_{ijk}
++
+\sum_{i \in \mathcal{N}_{\mathcal S} \cup \mathcal{N}_{\mathcal T}}
+\sum_{j \in \mathcal{N}_{\mathcal T} \cup \mathcal{N}_{\mathcal D}}
+\sum_{k \in \mathcal K} p_{ijk}^T F_{ijk}
+\tag{6a}
+\end{equation}
+
+\begin{equation}
+\sum_{j \in \mathcal N_{\mathcal T}\cup\mathcal N_{\mathcal D}} F_{ijk}
+=
+\sum_{j \in \mathcal N_{\mathcal S}\cup\mathcal N_{\mathcal T}} F_{jik}
+\quad \forall i \in \mathcal N_{\mathcal T},\ \forall k \in \mathcal K
+\tag{6b}
+\end{equation}
+
+\begin{equation}
+\sum_{j \in \mathcal N_{\mathcal S} \cup \mathcal N_{\mathcal T}} \gamma F_{jik}
+= d_i x_k \, days
+\quad \forall i \in \mathcal N_{\mathcal D},\ \forall k \in \mathcal K
+\tag{6c}
+\end{equation}
+
+\begin{equation}
+\sum_{k \in \mathcal K} Nutval_{kl} x_k \ge Nutreq_l
+\quad \forall l \in \mathcal L
+\tag{6d}
+\end{equation}
+
+\begin{equation}
+x_{\mathrm{salt}} = 5
+\tag{6e}
+\end{equation}
+
+\begin{equation}
+x_{\mathrm{sugar}} = 20
+\tag{6f}
+\end{equation}
+
+\begin{equation}
+y \ge t
+\tag{6g}
+\end{equation}
+
+\begin{equation}
+y = \hat h(\boldsymbol{x})
+\tag{6h}
+\end{equation}
+
+\begin{equation}
+F_{ijk},\, x_k \ge 0
+\quad \forall i,j \in \mathcal N,\ \forall k \in \mathcal K
+\tag{6i}
+\end{equation}
+
+\section*{Explicit MIO Embedding of $\hat h(\boldsymbol{x})$}
+\begin{equation}
+a_k^{(0)} = x_k
+\quad \forall k \in \mathcal K
+\tag{Emb-a}
+\end{equation}
+
+\begin{equation}
+s_r^{(\ell)} =
+\sum_{q \in \mathcal R_{\ell-1}} W_{rq}^{(\ell)} a_q^{(\ell-1)} + b_r^{(\ell)}
+\quad \forall \ell=1,\dots,H,\ \forall r \in \mathcal R_\ell
+\tag{Emb-b}
+\end{equation}
+
+\begin{equation}
+a_r^{(\ell)} \ge s_r^{(\ell)}
+\quad \forall \ell=1,\dots,H,\ \forall r \in \mathcal R_\ell
+\tag{Emb-c}
+\end{equation}
+
+\begin{equation}
+a_r^{(\ell)} \le s_r^{(\ell)} - L_r^{(\ell)} \left(1-\delta_r^{(\ell)}\right)
+\quad \forall \ell=1,\dots,H,\ \forall r \in \mathcal R_\ell
+\tag{Emb-d}
+\end{equation}
+
+\begin{equation}
+a_r^{(\ell)} \le U_r^{(\ell)} \delta_r^{(\ell)}
+\quad \forall \ell=1,\dots,H,\ \forall r \in \mathcal R_\ell
+\tag{Emb-e}
+\end{equation}
+
+\begin{equation}
+a_r^{(\ell)} \ge 0
+\quad \forall \ell=1,\dots,H,\ \forall r \in \mathcal R_\ell
+\tag{Emb-f}
+\end{equation}
+
+\begin{equation}
+y =
+\sum_{q \in \mathcal R_H} W_q^{(H+1)} a_q^{(H)} + b^{(H+1)}
+\tag{Emb-g}
+\end{equation}
+
+\begin{equation}
+\delta_r^{(\ell)} \in \{0,1\}
+\quad \forall \ell=1,\dots,H,\ \forall r \in \mathcal R_\ell
+\tag{Emb-h}
+\end{equation}
+
+\section*{Interpretation}
+The application-level model on Page 21 becomes a complete standalone MIO once constraint
+(6h) is replaced by the explicit predictor embedding above. The paper supports other
+MIO-representable learners as well, but the trained ReLU network is a fully specified retained
+instantiation and therefore closes the previously missing learned-constraint block.
+
+
+
+\section*{Limited business data domain}
+The instance provides information such as directed transportation arcs, prices, nutritional characteristics of foods, demand levels, maximum procurement quantities $Cap^P$, maximum arc capacity $Cap^T$, maximum quantities of certain foods $U$, as well as the set of categories $K_g$ and the upper and lower limits of those categories $L_g,U_g$.
+\[
+\sum_jF_{ijk}\le Cap^P_{ik}\ (i\in N_S),\quad
+\sum_kF_{ijk}\le Cap^T_{ij},\quad0\le x_k\le U_k,\quad
+L_g\le\sum_{k\in K_g}x_k\le U_g.
+\]
+These parameters determine the effective input range for limited procurement capabilities, transportation capacities, and learning agents. The weights, biases, and threshold values of the ReLU activation function are specified layer by layer based on individual instances; all the embedding constraints mentioned above must also be satisfied simultaneously.
+
+\end{document}

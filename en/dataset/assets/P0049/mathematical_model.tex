@@ -1,0 +1,145 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,geometry}
+\geometry{margin=22mm}
+\emergencystretch=4em
+\begin{document}
+\section*{P49: Enhanced Linear Integer Model for Quantum Bit Configurations with Noise Perception}
+\paragraph{Source and scope}According to pages 1, 2, 3, 4, 10, 11, 12, 13, 14, 15, and 16 of the original paper’s PDF file, specifically section 3, equations (1b)–(1k) and (12)–(17). Crosstalk effects are modeled using the same type of McCormick linearization as described in equation (2).
+
+\subsection*{Collections, parameters, and variables}
+$Q$ represents a collection of logical quantum bits; $H=(V,A_H)$ represents a connected directed graph of hardware components. $|V|\ge|Q|$ indicates that the set of arcs is symmetric. $N\in\mathbb Z_{++}$ denotes the number of circuit layers. $L^t\subseteq Q\times Q$ refers to the dual-bit gates in the $t$th layer, where no two gates share the same logical quantum bit. $d_H(i,j)$ represents the shortest path distance in the hardware graph. $\lambda\in[0,1]$ indicates a given trade-off coefficient. $E_i\ge0$ represents the cost associated with single-bit gates/reading noise. $E_{i,j}\ge0$ represents the noise cost associated with directed dual-bit gates. These costs must be specified for each hardware component used in the system. Let $N_H(i)=\{j:(i,j)\in A_H\}$ and $N((i,j))=(N_H(i)\setminus\{j\})\cup(N_H(j)\setminus\{i\})$ represent certain parameters. Given a measured error rate ratio of $r_{(i,j)}^k\ge0$, the crosstalk coefficient is $E_{(i,j),k}=\max\{0,(r_{(i,j)}^k-1)E_k\}$. The variable $w_{q,i}^t$ indicates that the logical bit $q$ in layer $t$ occupies a hardware bit $i$. $x_{q,i,j}^t$ indicates that $q$ is transferred from $i$ to $j$ between adjacent layers. $z_{(p,q),(i,j)}^t$ indicates that the logical gate $(p,q)$ is executed via the hardware arc $(i,j)$. $u_{q,(r,s),(i,j),k}^t$ is a linearization variable of $w_{q,k}^tz_{(r,s),(i,j)}^t$. The complete index domain of $u$ is $1\le t\le N,(r,s)\in L^t,(i,j)\in A_H,k\in N((i,j)),q\in Q$. The initial layout is optimized automatically by the model, and all layers use the same hardware subgraphs. The following numbers, such as $1a$, are used in this documentation. The sources of these numbers are mentioned in the original text (1), (12)–(17).
+\subsection*{The complete linear integer formulation of noise-aware TAP}
+\begin{equation}
+\min \;
+(1-\lambda)c_{\mathrm{swap}} + \lambda c_{\mathrm{noise}}
+\tag{1a}
+\end{equation}
+
+\begin{equation}
+c_{\mathrm{swap}} =
+\sum_{t=1}^{N-1} \sum_{q\in Q} \sum_{i,j\in V\times V}
+d_H(i,j)x_{q,i,j}^t
+\tag{1b}
+\end{equation}
+
+\begin{equation}
+c_{\mathrm{noise}} =
+\sum_{i\in V} E_i \sum_{t=1}^N \sum_{q\in Q} w_{q,i}^t
++
+\sum_{(i,j)\in A_H} E_{i,j} \sum_{t=1}^N \sum_{(p,q)\in L^t} z_{(p,q),(i,j)}^t
++
+\sum_{(i,j)\in A_H} \sum_{k\in N((i,j))} E_{(i,j),k}
+\sum_{t=1}^N \sum_{(r,s)\in L^t} \sum_{q\in Q}
+u_{q,(r,s),(i,j),k}^t
+\tag{1c}
+\end{equation}
+
+\begin{equation}
+w_{q,i}^t = \sum_{j\in V} x_{q,i,j}^t,
+\qquad
+\forall 1 \le t \le N-1,\ \forall i \in V,\ \forall q \in Q
+\tag{1d}
+\end{equation}
+
+\begin{equation}
+w_{q,i}^{t+1} = \sum_{j\in V} x_{q,j,i}^t,
+\qquad
+\forall 1 \le t \le N-1,\ \forall i \in V,\ \forall q \in Q
+\tag{1e}
+\end{equation}
+
+\begin{equation}
+\sum_{i\in V} w_{q,i}^t = 1,
+\qquad
+\forall 1 \le t \le N,\ \forall q \in Q
+\tag{1f}
+\end{equation}
+
+\begin{equation}
+\sum_{q\in Q} w_{q,i}^t \le 1,
+\qquad
+\forall 1 \le t \le N,\ \forall i \in V
+\tag{1g}
+\end{equation}
+
+\begin{equation}
+\sum_{(i,j)\in A_H} z_{(p,q),(i,j)}^t = 1,
+\qquad
+\forall 1 \le t \le N,\ \forall (p,q) \in L^t
+\tag{1h}
+\end{equation}
+
+
+
+\begin{equation}
+\sum_{q\in Q} w_{q,i}^t = \sum_{q\in Q} w_{q,i}^1,
+\qquad
+\forall 2 \le t \le N,\ \forall i \in V
+\tag{1j}
+\end{equation}
+
+\begin{equation}
+\sum_{j:(i,j)\in A_H} z_{(p,q),(i,j)}^t = w_{p,i}^t,
+\qquad
+\forall 1 \le t \le N,\ \forall (p,q) \in L^t,\ \forall i \in V
+\tag{2a}
+\end{equation}
+
+\begin{equation}
+\sum_{i:(i,j)\in A_H} z_{(p,q),(i,j)}^t = w_{q,j}^t,
+\qquad
+\forall 1 \le t \le N,\ \forall (p,q) \in L^t,\ \forall j \in V
+\tag{2b}
+\end{equation}
+
+\begin{equation}
+u_{q,(r,s),(i,j),k}^t \le w_{q,k}^t,
+\qquad
+\forall t,(r,s),(i,j),k,q
+\tag{2c}
+\end{equation}
+
+\begin{equation}
+u_{q,(r,s),(i,j),k}^t \le z_{(r,s),(i,j)}^t,
+\qquad
+\forall t,(r,s),(i,j),k,q
+\tag{2d}
+\end{equation}
+
+\begin{equation}
+u_{q,(r,s),(i,j),k}^t \ge w_{q,k}^t + z_{(r,s),(i,j)}^t - 1,
+\qquad
+\forall t,(r,s),(i,j),k,q
+\tag{2e}
+\end{equation}
+
+\begin{equation}
+w_{q,i}^t \in \{0,1\},
+\qquad
+\forall 1 \le t \le N,\ \forall q \in Q,\ \forall i \in V
+\tag{3a}
+\end{equation}
+
+\begin{equation}
+x_{q,i,j}^t \in \{0,1\},
+\qquad
+\forall 1 \le t < N,\ \forall q \in Q,\ \forall (i,j) \in V \times V
+\tag{3b}
+\end{equation}
+
+\begin{equation}
+z_{(p,q),(i,j)}^t \in \{0,1\},
+\qquad
+\forall 1 \le t \le N,\ \forall (p,q) \in L^t,\ \forall (i,j) \in A_H
+\tag{3c}
+\end{equation}
+
+\begin{equation}
+u_{q,(r,s),(i,j),k}^t \in \{0,1\},
+\qquad
+\forall t,(r,s),(i,j),k,q
+\tag{3d}
+\end{equation}
+
+
+\end{document}

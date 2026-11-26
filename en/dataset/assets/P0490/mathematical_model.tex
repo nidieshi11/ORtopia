@@ -1,0 +1,70 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\begin{document}
+
+\section*{Finite-horizon lost-sales inventory policy optimization}
+
+\begin{equation}
+\inf_{\pi\in\Pi}\sum_{t=L+1}^{T+L}\mathbb{E}[C_t^\pi].
+\tag{1}
+\end{equation}
+The admissibility conditions and system relations defining this problem are the following (Section 2, physical PDF pages 4--5).
+
+\paragraph{Admissible policies.}
+The decision variable is the ordering policy $\pi\in\Pi$. The family $\Pi$ consists of all policies for which the order placed at time $t$ is a function, possibly a random function, only of
+\[
+T,\quad t,\quad I_t,\quad \mathbf{x}_t,\quad L,h,c,\mathcal{D}.
+\]
+Here $I_t$ and $\mathbf{x}_t$ are the inventory level and pipeline vector at the start of period $t$. The order is placed before seeing the demand of period $t$ and cannot depend on realizations of future demand. Ordering decisions are made only in periods $1,\ldots,T$. The order placed in period $t$ is appended to the pipeline as $x_{L,t+1}$; the prescribed zero orders after the ordering horizon therefore give
+\[
+x_{L,t+1}=0,\qquad t=T+1,\ldots,T+L.
+\]
+
+\paragraph{State, pipeline, inventory, lost demand, and cost.}
+For a generic admissible policy, the source writes the system relations without policy superscripts. The pipeline vector is
+\[
+\mathbf{x}_t=(x_{1,t},x_{2,t},\ldots,x_{L,t}).
+\]
+It contains orders placed before period $t$ but not received prior to that period. For each operating period $t=1,\ldots,T+L$, the pipeline shift, inventory recursion, lost-demand definition, and period-cost definition are
+\begin{align*}
+x_{i,t+1}&=x_{i+1,t}, &&i=1,2,\ldots,L-1,\\
+I_{t+1}&=(I_t+x_{1,t}-D_t)^+,\\
+N_t&\triangleq (I_t+x_{1,t}-D_t)^-,\\
+C_t&\triangleq hI_{t+1}+cN_t\\
+   &=h(I_t+x_{1,t}-D_t)^+ + c(I_t+x_{1,t}-D_t)^-.
+\end{align*}
+The front entry $x_{1,t}$ is received first, then the order is placed and the pipeline is shifted and appended, and only then is $D_t$ realized. The source states that $D_t$ is independent of $I_t+x_{1,t}$. At the end of the period, $I_{t+1}$ is excess inventory and $N_t$ is lost demand; at most one of these two quantities is positive. Unfulfilled demand is lost rather than backlogged. Holding and lost-sales charges are incurred at the end of the period, before period $t+1$ begins.
+
+The printed initial conditions are
+\[
+I_0=0,\qquad \mathbf{x}_0=\mathbf{0},
+\]
+where $\mathbf{0}$ is the all-zero vector of the dimension determined by context, here $L$ for the pipeline.
+
+\paragraph{Fixed inputs and their restrictions.}
+The fixed inputs are the per-unit holding cost $h$, the per-unit lost-demand penalty $c$, the planning horizon $T$, the constant lead time $L$, and the demand distribution $\mathcal{D}$. Time is slotted; $T$ and $L$ count periods, with
+\[
+c,h>0,\qquad T>L>0.
+\]
+The demands $D_t$ are independent and identically distributed according to the non-negative distribution $\mathcal{D}$. With $D$ denoting a random variable governed by $\mathcal{D}$, as defined at the beginning of Section 3.1,
+\[
+D\sim\mathcal{D},\qquad D\geq 0\ \text{almost surely},\qquad \mathbb{E}[D^3]<\infty.
+\]
+The distribution $\mathcal{D}$ is not deterministic. Inventory and pipeline entries represent amounts of goods, and orders represent amounts of additional inventory; Section 2 supplies no separate algebraic action-space domain or integrality restriction for these amounts.
+
+\paragraph{Policy-indexed random variables and objective scope.}
+For a policy $\pi$, the source denotes its associated random variables by
+\[
+\{N_t^\pi,C_t^\pi,I_t^\pi,\mathbf{x}_t^\pi;\ t=1,\ldots,T+L\},
+\]
+all constructed on the same probability space. The generic system relations above apply to these policy-indexed quantities. The expectation in (1) is over both random demand and any random decisions of $\pi$. Equivalently, the preceding prose states the expected cost as
+\[
+\mathbb{E}\!\left[\sum_{t=L+1}^{T+L}C_t\right].
+\]
+Costs in the first $L$ periods are not penalized. Costs through period $T+L$ are penalized, including the periods $[T,T+L]$ highlighted in the source. Orders in periods $T+1,\ldots,T+L$ have no effect on this objective, which is the stated reason for setting them to zero.
+
+\paragraph{Printed boundary-index issue.}
+The source explicitly prints $I_0=0$ and $\mathbf{x}_0=\mathbf{0}$, but specifies ordering periods beginning at $1$ and lists the policy-indexed random variables beginning at $1$. Section 2 does not explicitly specify a time-zero order or an initialization at $t=1$. The printed zero-indexed conditions are retained here without adding a time-zero decision, replacing them with conditions at $1$, or otherwise repairing this boundary-index gap. The reference to Zipkin [44] supporting the horizon convention is not supplied as an original document and remains unverified; no additional constraints are imported from it.
+
+\end{document}

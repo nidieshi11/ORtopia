@@ -1,0 +1,334 @@
+<!DOCTYPE html> 
+<html lang='en-US' xml:lang='en-US'> 
+<head><title>P0163 · Depot–Port Electric Truck Trips and Charging · Mathematical model</title> 
+<meta charset='utf-8' /> 
+<meta content='TeX4ht (https://tug.org/tex4ht/)' name='generator' /> 
+<meta content='width=device-width,initial-scale=1' name='viewport' /> 
+<style> 
+/* start css.sty */
+.cmr-5{font-size:50%;}
+.cmr-7{font-size:70%;}
+.cmmi-5{font-size:50%;font-style: italic;}
+.cmmi-7{font-size:70%;font-style: italic;}
+.cmmi-10{font-style: italic;}
+.cmsy-5{font-size:50%;}
+.cmsy-7{font-size:70%;}
+.cmbx-10{ font-weight: bold;}
+.cmbsy-10{font-weight: bold;}
+.cmbsy-10{font-weight: bold;}
+.cmbsy-10{font-weight: bold;}
+.cmbsy-7{font-size:70%;font-weight: bold;}
+.cmbsy-7{font-weight: bold;}
+.cmbsy-7{font-weight: bold;}
+.cmbsy-5{font-size:50%;font-weight: bold;}
+.cmbsy-5{font-weight: bold;}
+.cmbsy-5{font-weight: bold;}
+.cmex-7{font-size:70%;}
+.cmex-7x-x-71{font-size:49%;}
+.msam-7{font-size:70%;}
+.msam-5{font-size:50%;}
+.msbm-7{font-size:70%;}
+.msbm-5{font-size:50%;}
+p{margin-top:0;margin-bottom:0}
+p.indent{text-indent:0;}
+p + p{margin-top:1em;}
+p + div, p + pre {margin-top:1em;}
+div + p, pre + p {margin-top:1em;}
+a { overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; hyphens: auto; }
+@media print {div.crosslinks {visibility:hidden;}}
+table.tabular{border-collapse: collapse; border-spacing: 0;}
+a img { border-top: 0; border-left: 0; border-right: 0; }
+center { margin-top:1em; margin-bottom:1em; }
+td center { margin-top:0em; margin-bottom:0em; }
+.Canvas { position:relative; }
+math { text-indent: 0em; }
+body{ margin:1em auto; max-width:80ch; padding:0 .62em; }
+h1,h2,h3,h4,h5 { line-height:1.2; }
+@media print{ body{ max-width:none } }
+.partHead, .likepartHead { font-size: 2em; }
+.chapterHead, .likechapterHead { font-size: 1.7411em; }
+.sectionHead, .likesectionHead { font-size: 1.5157em; }
+.subsectionHead, .likesubsectionHead { font-size: 1.3195em; }
+.subsubsectionHead, .likesubsubsectionHead { font-size: 1.1487em; }
+ @media (prefers-color-scheme: dark) { img[src^="model"]{filter: invert(1); } } 
+li p.indent { text-indent: 0em }
+li p:first-child{ margin-top:0em; }
+li p:last-child, li div:last-child { margin-bottom:0.5em; }
+li p:first-child{ margin-bottom:0; }
+li p~ul:last-child, li p~ol:last-child{ margin-bottom:0.5em; }
+.enumerate1 {list-style-type:decimal;}
+.enumerate2 {list-style-type:lower-alpha;}
+.enumerate3 {list-style-type:lower-roman;}
+.enumerate4 {list-style-type:upper-alpha;}
+div.newtheorem { margin-bottom: 2em; margin-top: 2em;}
+div.newtheorem .head{font-weight: bold;}
+.obeylines-h,.obeylines-v {white-space: nowrap; }
+div.obeylines-v p { margin-top:0; margin-bottom:0; }
+.overline{ text-decoration:overline; }
+.overline img{ border-top: 1px solid black; }
+td.displaylines {text-align:center; white-space:nowrap;}
+.centerline {text-align:center;}
+.rightline {text-align:right;}
+pre.verbatim {font-family: monospace,monospace; text-align:left; clear:both; }
+.fbox {padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+div.fbox {display:table}
+div.center div.fbox {text-align:center; clear:both; padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+div.minipage{width:100%;}
+div.center, div.center div.center {text-align: center; margin-left:1em; margin-right:1em;}
+div.center div {text-align: left;}
+div.flushright, div.flushright div.flushright {text-align: right;}
+div.flushright div {text-align: left;}
+div.flushleft {text-align: left;}
+.underline{ text-decoration:underline; }
+.underline img{ border-bottom: 1px solid black; margin-bottom:1pt; }
+.framebox-c, .framebox-l, .framebox-r { padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+.framebox-c {text-align:center;}
+.framebox-l {text-align:left;}
+.framebox-r {text-align:right;}
+span.thank-mark{ vertical-align: super }
+span.footnote-mark sup.textsuperscript, span.footnote-mark a sup.textsuperscript{ font-size:80%; }
+code.verb{font-family:monospace,monospace;}
+div.tabular, div.center div.tabular {text-align: center; margin-top:0.5em; margin-bottom:0.5em; }
+table.tabular td p{margin-top:0em;}
+table.tabular {margin-left: auto; margin-right: auto;}
+td p:first-child{ margin-top:0em; }
+td p:last-child{ margin-bottom:0em; }
+div.td00{ margin-left:0pt; margin-right:0pt; }
+div.td01{ margin-left:0pt; margin-right:5pt; }
+div.td10{ margin-left:5pt; margin-right:0pt; }
+div.td11{ margin-left:5pt; margin-right:5pt; }
+table[rules] {border-left:solid black 0.4pt; border-right:solid black 0.4pt; }
+td.td00{ padding-left:0pt; padding-right:0pt; }
+td.td01{ padding-left:0pt; padding-right:5pt; }
+td.td10{ padding-left:5pt; padding-right:0pt; }
+td.td11{ padding-left:5pt; padding-right:5pt; }
+table[rules] {border-left:solid black 0.4pt; border-right:solid black 0.4pt; }
+.hline hr, .cline hr{ height : 0px; margin:0px; }
+.hline td, .cline td{ padding: 0; }
+.hline hr, .cline hr{border:none;border-top:1px solid black;}
+.hline {border-top: 1px solid black;}
+.hline + .vspace:last-child{display:none;}
+.hline:first-child{border-bottom:1px solid black;border-top:none;}
+.tabbing-right {text-align:right;}
+div.float, div.figure {margin-left: auto; margin-right: auto;}
+div.float img {text-align:center;}
+div.figure img {text-align:center;}
+.marginpar,.reversemarginpar {width:20%; float:right; text-align:left; margin-left:auto; margin-top:0.5em; font-size:85%; text-decoration:underline;}
+.marginpar p,.reversemarginpar p{margin-top:0.4em; margin-bottom:0.4em;}
+.reversemarginpar{float:left;}
+.equation td{text-align:center; vertical-align:middle; }
+td.eq-no{ width:5%; }
+table.equation { width:100%; } 
+div.math-display, div.par-math-display{text-align:center;}
+.array-hline,.array-cline{ border-top: 1px solid black; height:0px; }
+.array-hline + .array-vspace:last-child{display:none;}
+.hline-mtd, .array-hline td{ display:none }
+.array-hline + .array-row:last-child{display:none;}
+.array-hline:first-child{border-bottom:1px solid black;border-top:none;}
+math .texttt { font-family: monospace; }
+math .textit { font-style: italic; }
+math .textsl { font-style: oblique; }
+math .textsf { font-family: sans-serif; }
+math .textbf { font-weight: bold; }
+mo.MathClass-op + mi{margin-left:0.3em}
+mi + mo.MathClass-op{margin-left:0.3em}
+ math mstyle[mathvariant="bold"] { font-weight: bold; font-style: normal; } 
+ math mstyle[mathvariant="normal"] { font-weight: normal; font-style: normal; } 
+.partToc a, .partToc, .likepartToc a, .likepartToc {line-height: 200%; font-weight:bold; font-size:110%;}
+.index-item, .index-subitem, .index-subsubitem {display:block}
+div.caption {text-indent:-2em; margin-left:3em; margin-right:1em; text-align:left;}
+div.caption span.id{font-weight: bold; white-space: nowrap; }
+h1.partHead{text-align: center}
+p.bibitem { text-indent: -2em; margin-left: 2em; margin-top:0.6em; margin-bottom:0.6em; }
+p.bibitem-p { text-indent: 0em; margin-left: 2em; margin-top:0.6em; margin-bottom:0.6em; }
+.subsubsectionHead, .likesubsubsectionHead { font-size: 1em; }
+.paragraphHead, .likeparagraphHead { margin-top:2em; font-weight: bold;}
+.subparagraphHead, .likesubparagraphHead { font-weight: bold;}
+.verse{white-space:nowrap; margin-left:2em}
+div.maketitle {text-align:center;}
+h2.titleHead{text-align:center;}
+div.maketitle{ margin-bottom: 2em; }
+div.author, div.date {text-align:center;}
+div.thanks{text-align:left; margin-left:10%; font-size:85%; font-style:italic; }
+div.author{white-space: nowrap;}
+div.abstract p {margin-left:5%; margin-right:5%;}
+div.abstract {width:100%;}
+.abstracttitle{text-align:center;margin-bottom:1em;}
+.subsectionToc, .likesubsectionToc {margin-left:1em;}
+.subsubsectionToc, .likesubsubsectionToc {margin-left:2em;}
+.paragraphToc, .likeparagraphToc {margin-left:3em;}
+.subparagraphToc, .likesubparagraphToc {margin-left:4em;}
+figure.float, div.figure {margin-left: auto; margin-right: auto;}
+figure.figure {text-align:center;}
+figcaption.caption {text-indent:-2em; margin-left:3em; margin-right:1em; text-align:center;}
+figcaption.caption span.id{font-weight: bold; white-space: nowrap; }
+p + figcaption, img + figcaption{margin-top: 1em;}
+.abstract{margin:1em;}
+.equation-star td{text-align:center; vertical-align:middle; }
+table.equation-star { width:100%; } 
+.boxed{border: 1px solid black; padding-left:2px; padding-right:2px;}
+mtd.align-odd{margin-left:2em; text-align:right;}
+mtd.align-even{margin-right:2em; text-align:left;}
+/* end css.sty */
+
+
+html{background:#fff;color:#243833}body{padding:clamp(.55rem,2vw,1.25rem);margin:0;line-height:1.5;overflow-wrap:break-word}
+h1,h2,h3,h4,h5,h6{line-height:1.22;color:#193d35}p{margin:.5rem 0}math[display=block]{overflow-x:auto;max-width:100%}
+@media print{body{padding:0;color:#000}}
+</style> 
+<meta content='model.tex' name='src' /> 
+</head><body>
+   <h3 class='likesectionHead' id='p-fixed-depotport-joint-truck-routing-and-charging'><a id='x1-1000'></a>P163: fixed depot–port joint truck routing and charging</h3>
+<!-- l. 5 --><p class='noindent'>The model jointly schedules truck routing and charging. Source: paper.pdf, pp.6–11,
+Section2, assumptions1–8, equations(1)–(30). Each truck has a given depot
+<!-- l. 6 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>d</mi></mrow><mrow><mi>v</mi></mrow></msub></math> and
+port <!-- l. 6 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>h</mi></mrow><mrow><mi>v</mi></mrow></msub></math>.
+Initial charge may be below full (p.7 assumption2). Every depot/port has finite
+charging capacity (p.7 assumptions3–4). All original demand units must be delivered.
+Handling duration is negligible as stated on p.7 and footnote5 on p.9. Generated
+release/loading/unloading metadata are retained in the instance history, as
+diagnostics.
+</p><!-- l. 13 --><p class='noindent'>
+</p>
+   <h4 class='likesubsectionHead' id='input-and-exact-clock-convention'><a id='x1-2000'></a>Input and exact clock convention</h4>
+<!-- l. 14 --><p class='noindent'>Let <!-- l. 14 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>G</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>(</mo><mi>N</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>R</mi><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math> be the directed
+road network, <!-- l. 14 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>V</mi> </mrow></math> trucks,
+<!-- l. 14 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>J</mi></math> full-truckload product
+units. Unit <!-- l. 15 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>j</mi></math> belongs
+to product <!-- l. 15 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>g</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>j</mi><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math>, with fixed
+origin/destination <!-- l. 16 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>o</mi></mrow><mrow><mi>j</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>e</mi></mrow><mrow><mi>j</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math>,
+due period <!-- l. 16 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>D</mi></mrow><mrow><mi>g</mi></mrow></msub></math>,
+tardiness price <!-- l. 16 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>π</mi></mrow><mrow><mi>g</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mn>0</mn></mrow></math>.
+Truck <!-- l. 17 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>v</mi></math> has
+availability <!-- l. 17 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>A</mi></mrow><mrow><mi>v</mi></mrow></msub></math>,
+battery <!-- l. 17 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>B</mi></mrow><mrow><mi>v</mi></mrow></msub></math>, initial
+energy <!-- l. 17 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mrow><mi>E</mi></mrow><mrow><mi>v</mi></mrow><mrow><mn>0</mn></mrow></msubsup></math> and
+horizon <!-- l. 18 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>H</mi></mrow><mrow><mi>v</mi></mrow></msub></math>. A road
+<!-- l. 18 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>r</mi></math> has positive integer
+duration <!-- l. 18 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>T</mi></mrow><mrow><mi>r</mi></mrow></msub></math> and
+loaded/empty energy <!-- l. 19 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msubsup><mrow><mi>e</mi></mrow><mrow><mi>r</mi></mrow><mrow><mn>1</mn></mrow></msubsup><mo class='MathClass-punc' stretchy='false'>,</mo><msubsup><mrow><mi>e</mi></mrow><mrow><mi>r</mi></mrow><mrow><mn>0</mn></mrow></msubsup></mrow></math>.
+These are the input special case of time-dependent
+<!-- l. 20 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>T</mi></mrow><mrow><mi>r</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>p</mi></mrow></msub></math> in the paper. At node
+<!-- l. 20 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>n</mi></math>, charging supplies
+<!-- l. 20 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>q</mi></mrow><mrow><mi>n</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>&gt;</mo> <mn>0</mn></mrow></math> per occupied period and
+at most <!-- l. 21 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>C</mi></mrow><mrow><mi>n</mi></mrow></msub></math> trucks can charge.
+Its per-period price is <!-- l. 21 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>c</mi></mrow><mrow><mi>n</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>p</mi></mrow></msub></math>.
+Source periods are indexed from 0. Thus a road starting at period
+<!-- l. 22 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>b</mi></math> occupies
+<!-- l. 23 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mo class='MathClass-open' stretchy='false'>[</mo><mi>b</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>b</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>T</mi></mrow><mrow><mi>r</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math> and its source arrival
+index is <!-- l. 23 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>a</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mi>b</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>T</mi></mrow><mrow><mi>r</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <mn>1</mn></mrow></math>. Thus a
+subsequent departure at <!-- l. 24 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>a</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <mn>1</mn></mrow></math>
+
+is immediate at the next boundary. The objective retains the literal source difference
+“latest arrival index minus first departure index”.
+</p><!-- l. 28 --><p class='noindent'>
+</p>
+   <h4 class='likesubsectionHead' id='decision-domain-and-routing'><a id='x1-3000'></a>Decision domain and routing</h4>
+<!-- l. 29 --><p class='noindent'>Choose for each <!-- l. 29 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>v</mi></math>
+an even number <!-- l. 29 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>K</mi></mrow><mrow><mi>v</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>∈</mo><mo class='MathClass-open' stretchy='false'>{</mo><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>2</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mn>2</mn><mo class='MathClass-open' stretchy='false'>⌊</mo><msub><mrow><mi>H</mi></mrow><mrow><mi>v</mi></mrow></msub><mo class='MathClass-bin' stretchy='false'>∕</mo><mn>2</mn><mo class='MathClass-close' stretchy='false'>⌋</mo><mo class='MathClass-close' stretchy='false'>}</mo></mrow></math> of
+contiguous one-way trips. The bound follows from positive integer duration and the finite horizon.
+For <!-- l. 32 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>K</mi></mrow><mrow><mi>v</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <mn>1</mn></mrow></math> choose a simple
+directed path <!-- l. 33 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>P</mi></mrow><mrow><mi mathvariant='italic'>vk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>n</mi></mrow><mrow><mn>0</mn></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>n</mi></mrow><mrow><msub><mrow><mi>L</mi></mrow><mrow><mi mathvariant='italic'>vk</mi></mrow></msub></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math>
+satisfying </p><table class='equation-star'><tr><td>
+<!-- l. 34 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>n</mi></mrow><mrow><mn>0</mn></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>n</mi></mrow><mrow><msub><mrow><mi>L</mi></mrow><mrow><mi mathvariant='italic'>vk</mi></mrow></msub></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>=</mo>  <mrow><mo fence='true' form='prefix'> {</mo><mrow> <mtable align='axis' class='array' columnlines='none' displaystyle='true' equalcolumns='false' equalrows='false' style=''> <mtr class='array-row'><mtd class='array-td' columnalign='left'><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>d</mi></mrow><mrow><mi>v</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>h</mi></mrow><mrow><mi>v</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mspace class='quad' width='1em'></mspace></mtd><mtd class='array-td' columnalign='left'><mi>k</mi><mspace class='nbsp' width='0.33em'></mspace><mi mathvariant='italic'>even</mi><mo class='MathClass-punc' stretchy='false'>,</mo></mtd>
+</mtr>   <!-- @{}l@{\quad }l@{} --></mtable>                                                                       </mrow><mo fence='true' form='postfix'></mo></mrow><mspace class='qquad' width='2em'></mspace><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>n</mi></mrow><mrow><mi>i</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>n</mi></mrow><mrow><mi>i</mi><mo class='MathClass-bin' stretchy='false'>+</mo><mn>1</mn></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>R</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><msub><mrow><mi>n</mi></mrow><mrow><mi>i</mi></mrow></msub><mo class='MathClass-rel' stretchy='false'>≠</mo><msub><mrow><mi>n</mi></mrow><mrow><mi>j</mi></mrow></msub><mspace class='nbsp' width='0.33em'></mspace><mo class='MathClass-open' stretchy='false'>(</mo><mi>i</mi><mo class='MathClass-rel' stretchy='false'>≠</mo><mi>j</mi><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 39 --><p class='indent'>   All such paths are admissible. Choose
+<!-- l. 40 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>y</mi></mrow><mrow><mi mathvariant='italic'>vkj</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>∈</mo><mo class='MathClass-open' stretchy='false'>{</mo><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>}</mo></mrow></math> and
+<!-- l. 40 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>ℓ</mi></mrow><mrow><mi mathvariant='italic'>vk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>∈</mo><mo class='MathClass-open' stretchy='false'>{</mo><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>}</mo></mrow></math>:
+</p><table class='equation-star'><tr><td>
+<!-- l. 41 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+   <munder class='msub'><mrow><mo>∑</mo>
+  </mrow><mrow><mi>j</mi></mrow></munder><msub><mrow><mi>y</mi></mrow><mrow><mi mathvariant='italic'>vkj</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <msub><mrow><mi>ℓ</mi></mrow><mrow><mi mathvariant='italic'>vk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≤</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><msub><mrow><mi>y</mi></mrow><mrow><mi mathvariant='italic'>vkj</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>if </mtext></mstyle><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>o</mi></mrow><mrow><mi>j</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>e</mi></mrow><mrow><mi>j</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-rel' stretchy='false'>≠</mo><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>n</mi></mrow><mrow><mn>0</mn></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>n</mi></mrow><mrow><msub><mrow><mi>L</mi></mrow><mrow><mi mathvariant='italic'>vk</mi></mrow></msub></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>v</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>k</mi></mrow></munder><msub><mrow><mi>y</mi></mrow><mrow><mi mathvariant='italic'>vkj</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mspace class='quad' width='1em'></mspace><mo class='MathClass-open' stretchy='false'>(</mo><mi>j</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>J</mi><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+
+<!-- l. 46 --><p class='indent'>   A loaded/empty state is constant within each trip. Every used truck starts at its
+own depot, alternates endpoints, and finishes at the same depot. Unused trucks have
+no events and zero cost.
+</p><!-- l. 50 --><p class='noindent'>
+</p>
+   <h4 class='likesubsectionHead' id='timing-charging-and-exact-energy-continuity'><a id='x1-4000'></a>Timing, charging and exact energy continuity</h4>
+<!-- l. 51 --><p class='noindent'>For every road on each chosen path choose integer departure
+<!-- l. 51 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>b</mi></mrow><mrow><mi mathvariant='italic'>vki</mi></mrow></msub></math> and arrival
+<!-- l. 52 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>a</mi></mrow><mrow><mi mathvariant='italic'>vk</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>i</mi><mo class='MathClass-bin' stretchy='false'>+</mo><mn>1</mn></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <msub><mrow><mi>b</mi></mrow><mrow><mi mathvariant='italic'>vki</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>T</mi></mrow><mrow><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>n</mi></mrow><mrow><mi>i</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>n</mi></mrow><mrow><mi>i</mi><mo class='MathClass-bin' stretchy='false'>+</mo><mn>1</mn></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <mn>1</mn></mrow></math>. The first departure
+is at least <!-- l. 53 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>A</mi></mrow><mrow><mi>v</mi></mrow></msub></math>. Every
+later road departure is at least the preceding arrival plus1, including between trips. Final arrival
+is at most <!-- l. 55 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>H</mi></mrow><mrow><mi>v</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <mn>1</mn></mrow></math>.
+Waiting is permitted only at the current node. Choose at most one contiguous integer charging
+interval <!-- l. 57 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mo class='MathClass-open' stretchy='false'>[</mo><msub><mrow><mi>s</mi></mrow><mrow><mi mathvariant='italic'>vkn</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>f</mi></mrow><mrow><mi mathvariant='italic'>vkn</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math>
+at each visited node, possibly empty. Charging must follow an actual arrival and end
+before the next departure: </p><table class='equation-star'><tr><td>
+<!-- l. 59 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+      <msub><mrow><mi>a</mi></mrow><mrow><mi mathvariant='italic'>vkn</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <mn>1</mn> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msub><mrow><mi>s</mi></mrow><mrow><mi mathvariant='italic'>vkn</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msub><mrow><mi>f</mi></mrow><mrow><mi mathvariant='italic'>vkn</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msubsup><mrow><mi>b</mi></mrow><mrow><mi mathvariant='italic'>vkn</mi></mrow><mrow><mi mathvariant='italic'>next</mi></mrow></msubsup><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><msub><mrow><mi>c</mi></mrow><mrow>
+<mi mathvariant='italic'>vknp</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mstyle mathvariant='bold'><mn>1</mn></mstyle><mo class='MathClass-open' stretchy='false'>{</mo><msub><mrow><mi>s</mi></mrow><mrow><mi mathvariant='italic'>vkn</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≤</mo> <mi>p</mi> <mo class='MathClass-rel' stretchy='false'>&lt;</mo> <msub><mrow><mi>f</mi></mrow><mrow><mi mathvariant='italic'>vkn</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>}</mo><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 63 --><p class='indent'>   At a trip endpoint the interval belongs to the arriving trip and may precede the
+departure of the next trip. Initial energy is supplied for the first trip. Charging is absent at
+nodes with <!-- l. 64 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>C</mi></mrow><mrow><mi>n</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn></mrow></math>.
+For each period and node, </p><table class='equation-star'><tr><td>
+
+<!-- l. 66 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                         <munder class='msub'><mrow><mo>∑</mo>
+  </mrow><mrow><mi>v</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>k</mi></mrow></munder><msub><mrow><mi>c</mi></mrow><mrow><mi mathvariant='italic'>vknp</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msub><mrow><mi>C</mi></mrow><mrow><mi>n</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 69 --><p class='indent'>   Energy before the first road is <!-- l. 69 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mrow><mi>E</mi></mrow><mrow><mi>v</mi></mrow><mrow><mn>0</mn></mrow></msubsup></math>.
+Along a road <!-- l. 69 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>r</mi></math>,
+</p><table class='equation-star'><tr><td>
+<!-- l. 70 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msup><mrow>
+<mi>E</mi></mrow><mrow><mi mathvariant='italic'>arr</mi></mrow></msup> <mo class='MathClass-rel' stretchy='false'>=</mo> <msup><mrow><mi>E</mi></mrow><mrow><mi mathvariant='italic'>dep</mi></mrow></msup><mo class='MathClass-bin' stretchy='false'>−</mo><msub><mrow><mi>ℓ</mi></mrow><mrow>
+<mi mathvariant='italic'>vk</mi></mrow></msub><msubsup><mrow><mi>e</mi></mrow><mrow><mi>r</mi></mrow><mrow><mn>1</mn></mrow></msubsup><mo class='MathClass-bin' stretchy='false'>−</mo><mo class='MathClass-open' stretchy='false'>(</mo><mn>1</mn><mo class='MathClass-bin' stretchy='false'>−</mo><msub><mrow><mi>ℓ</mi></mrow><mrow>
+<mi mathvariant='italic'>vk</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><msubsup><mrow><mi>e</mi></mrow><mrow><mi>r</mi></mrow><mrow><mn>0</mn></mrow></msubsup><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><msup><mrow><mi>E</mi></mrow><mrow><mi mathvariant='italic'>dep</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi mathvariant='italic'>next</mi></mrow></msup> <mo class='MathClass-rel' stretchy='false'>=</mo> <msup><mrow><mi>E</mi></mrow><mrow><mi mathvariant='italic'>arr</mi></mrow></msup><mo class='MathClass-bin' stretchy='false'>+</mo><msub><mrow><mi>q</mi></mrow><mrow>
+<mi>n</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>f</mi></mrow><mrow><mi mathvariant='italic'>vkn</mi></mrow></msub><mo class='MathClass-bin' stretchy='false'>−</mo><msub><mrow><mi>s</mi></mrow><mrow><mi mathvariant='italic'>vkn</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mn>0</mn> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msup><mrow><mi>E</mi></mrow><mrow><mi mathvariant='italic'>arr</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><msup><mrow><mi>E</mi></mrow><mrow><mi mathvariant='italic'>dep</mi></mrow></msup> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msub><mrow><mi>B</mi></mrow><mrow>
+<mi>v</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 75 --><p class='indent'>   Waiting preserves energy. Energy carries exactly between trips. These equations give source SOC
+by division by <!-- l. 75 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>B</mi></mrow><mrow><mi>v</mi></mrow></msub></math>.
+Because road discharge and charging are monotone during their intervals, checking
+their endpoints also bounds SOC at every interior time.
+</p><!-- l. 79 --><p class='noindent'>
+</p>
+   <h4 class='likesubsectionHead' id='delivery-tardiness-objective'><a id='x1-5000'></a>Delivery, tardiness, objective</h4>
+<!-- l. 80 --><p class='noindent'>For product <!-- l. 80 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>g</mi></math>,
+let <!-- l. 80 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>u</mi></mrow><mrow><mi>g</mi></mrow></msub></math> be
+the latest unloading start, the arrival period of its latest delivered unit:
+</p><table class='equation-star'><tr><td>
+
+<!-- l. 82 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+       <msub><mrow><mi>u</mi></mrow><mrow><mi>g</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo><mtext class='qopname'> max</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo><mo class='MathClass-open' stretchy='false'>{</mo><msub><mrow><mi>a</mi></mrow><mrow><mi mathvariant='italic'>vk</mi><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>L</mi></mrow><mrow><mi mathvariant='italic'>vk</mi></mrow></msub></mrow></msub> <mo class='MathClass-punc' stretchy='false'>:</mo> <msub><mrow><mi>y</mi></mrow><mrow><mi mathvariant='italic'>vkj</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><mi>g</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>j</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>=</mo> <mi>g</mi><mo class='MathClass-close' stretchy='false'>}</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><msub><mrow><mi>τ</mi></mrow><mrow><mi>g</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo><mtext class='qopname'> max</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo><mo class='MathClass-open' stretchy='false'>(</mo><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>u</mi></mrow><mrow><mi>g</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>D</mi></mrow><mrow><mi>g</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 86 --><p class='indent'>   All product quantities are positive and hence this maximum is defined. With
+<!-- l. 87 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mrow><mi>a</mi></mrow><mrow><mi>v</mi></mrow><mrow><mi mathvariant='italic'>last</mi></mrow></msubsup></math> the final depot
+arrival period and <!-- l. 87 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mrow><mi>b</mi></mrow><mrow><mi>v</mi></mrow><mrow><mi mathvariant='italic'>first</mi></mrow></msubsup></math>
+the first departure period, minimize the source equation(29): </p><table class='equation-star'><tr><td>
+<!-- l. 89 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+    <mtext class='qopname'>min</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo><mspace class='quad' width='1em'></mspace><msup><mrow><mi>C</mi></mrow><mrow><mi mathvariant='italic'>lbr</mi></mrow></msup><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>v</mi><mo class='MathClass-punc' stretchy='false'>:</mo><msub><mrow><mi>K</mi></mrow><mrow><mi>v</mi></mrow></msub><mo class='MathClass-rel' stretchy='false'>&gt;</mo><mn>0</mn></mrow></munder><mo class='MathClass-open' stretchy='false'>(</mo><msubsup><mrow><mi>a</mi></mrow><mrow><mi>v</mi></mrow><mrow><mi mathvariant='italic'>last</mi></mrow></msubsup> <mo class='MathClass-bin' stretchy='false'>−</mo> <msubsup><mrow><mi>b</mi></mrow><mrow>
+<mi>v</mi></mrow><mrow><mi mathvariant='italic'>first</mi></mrow></msubsup><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-bin' stretchy='false'>+</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>v</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>k</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>p</mi></mrow></munder><msub><mrow><mi>c</mi></mrow><mrow><mi>n</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>p</mi></mrow></msub><msub><mrow><mi>c</mi></mrow><mrow><mi mathvariant='italic'>vknp</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>g</mi></mrow></munder><msub><mrow><mi>π</mi></mrow><mrow><mi>g</mi></mrow></msub><msub><mrow><mi>τ</mi></mrow><mrow><mi>g</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 96 --><p class='indent'>   Electricity costs cover actual charging periods, and every demand is served. The
+source’s malformed extracted big-M duplicates and swapped inbound/outbound
+names are replaced by the explicit equivalent path/event semantics above.
+</p><!-- l. 100 --><p class='noindent'>
+</p>
+   <h4 class='likesubsectionHead' id='algorithm-and-evidence-boundary'><a id='x1-6000'></a>Algorithm and evidence boundary</h4>
+<!-- l. 101 --><p class='noindent'>The accompanying code searches product assignments, orders and vehicle priority,
+then constructs feasible simple routes and finite-capacity charging intervals. Its route
+ranking and greedy interval selection are heuristic algorithm choices, used to
+construct candidates within the model. Each exported candidate is independently
+replayed against every group above. The result reports a feasible heuristic objective
+and records null for the full-model bound and gap. Time budget is3600 seconds.
+Input repair retains node/vehicle/product counts, quantities, due dates,
+penalties, battery capacities, initial energies and horizon. Illegal same-type OD
+endpoints and absent fixed vehicle endpoint mappings are repaired and logged.
+Missing depot chargers are finite. A common conservative road duration is
+restored because the source’s road duration does not depend on the loaded
+state.
+</p>
+
+    
+</body> 
+</html>

@@ -1,0 +1,275 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\section*{Full D-ALP and its single-nurse greedy policy}
+\begin{equation}
+\mathbf{D\text{-}ALP}:\quad
+\min_{\vec\beta}\sum_{s\in S,\,a\in A_s}\beta(s,a)c(s,a).
+\tag{20a}
+\end{equation}
+Subject to
+\begin{align}
+(1-\gamma)\sum_{s\in S,\,a\in A_s}\beta(s,a)&=1,\tag{20b}\\
+\sum_{s\in S,\,a\in A_s}\beta(s,a)
+\bigl(x_{tklj}-\gamma\mathbb E[X'_{tklj}(s,a)]\bigr)
+&\geq\mathbb E_\alpha[X_{tklj}],&&\forall tklj,\tag{20c}\\
+\sum_{s\in S,\,a\in A_s}\beta(s,a)
+\bigl(y_{kl}-\gamma\mathbb E[Y_{kl}]\bigr)
+&\geq\mathbb E_\alpha[Y_{kl}],&&\forall kl,\tag{20d}\\
+\vec\beta&\geq0.\tag{20e}
+\end{align}
+Here
+\[
+\vec\beta=\{\beta(s,a);\ \forall s\in S,\ \forall a\in A_s\},
+\]
+and $\beta(s,a)$ is the dual variable for a state--action pair. The state--action pairs index the full model, not a restricted column set. The parameters used by the policy are the optimal dual prices of (20b), (20c), and (20d), respectively $\eta^*$, $\tau^*_{tklj}$, and $\rho^*_{kl}$. No two-index or one-dimensional heuristic reduction is imposed.
+
+\section*{Fixed problem data and index scope}
+The source is Khorasanian, Patrick, and Saur\'e, \emph{Dynamic Home Care Routing and Scheduling with Uncertain Number of Visits per Referral}, preprint dated March 12, 2024, Sections 2--4 and Electronic Companion EC.1. Equation numbers below are the source numbers.
+
+There are $K$ service types and $L$ regions. Regions are equal-sized squares, with their centers used as patient locations. Location $0$ is the depot. The described area is a circular grid with Manhattan distances; the authors also allow asymmetric areas. Each day's route starts and ends at the depot. Known travel times are $d_{ll'}$, for $l,l'\in\{1,\ldots,L\}\cup\{0\}$. For service type $k$, $h_k$ is the constant number of days between consecutive visits, $T_k$ is the maximum wait for an accepted referral's first visit, $e_k$ is the deterministic service time per visit, and $\hat J_k$ is the random required number of visits, at most $J_k$. The distribution of $\hat J_k$ is input data. The service time includes a small fixed allowance for travel between actual patient locations and the region-center approximation.
+
+The regular daily shift length is $\chi$ and the maximum allowable overtime is $\chi'$. The geographical accessibility premise is
+\[
+d_{0,l}+\max_k\{e_k\}+d_{l,0}\leq\chi,\qquad\forall l.
+\]
+Decisions are made once daily before work starts. A referral arriving during a day does not require a visit that same day. The rolling planning horizon is
+\[
+T=\max\{\max_k\{h_k\},\max_k\{T_k\}\}.
+\]
+Day $t$ becomes day $t-1$ at the next epoch. Index ranges are
+\[
+t=1,\ldots,T,\qquad k=1,\ldots,K,\qquad
+l=1,\ldots,L,\qquad j=0,\ldots,J_k-1.
+\]
+Unqualified sums and quantifiers over these indices have these ranges; in particular the range of $j$ depends on $k$. In the routing constraints, $l,l'$ denote regions; depot travel is written explicitly using index $0$.
+
+New referrals have known, steady-state daily distributions for each service type and region. $Y_{kl}$ denotes the corresponding referral count, and $\mathbb E[Y_{kl}]$ its expected value. These distributions remain abstract in the general model. The Poisson arrivals, numerical discount factor, service-type ranges, and cost-weight values of Section 7 are experimental settings, not additional restrictions of this full general formulation. The symbol $\gamma$ is the daily discount factor of the discounted infinite-horizon model; Sections 2--4 do not print a numerical interval for it.
+
+Only new referrals can be rejected. Once accepted, a patient must be served until discharge. Visits have no within-day appointment-time restriction. Only the immediate next visit is scheduled: whether another visit is needed becomes known at the preceding visit. A diverted visit is served by an on-call nurse, assumed available near every location; diversion does not discharge the patient.
+
+\section*{States and structural zeros}
+The state is $s=(\vec x,\vec y)$, where
+\[
+\vec x=\{x_{tklj};\ t=1,\ldots,T,\ k=1,\ldots,K,\ l=1,\ldots,L,\ j=0,\ldots,J_k-1\},
+\qquad
+\vec y=\{y_{kl};\ \forall kl\}.
+\]
+Here $x_{tklj}$ counts patients of type $k$ in region $l$ with $j$ visits completed before day $t$ and visit $j+1$ assigned to day $t$. Patients with $J_k$ completed visits have left the system. The count $y_{kl}$ is the number of new referrals awaiting a decision. The finite upper bounds $x^{\max}_{tklj}$ and $y^{\max}_{kl}$ are fixed input values, left abstract by the authors.
+\begin{equation}
+\begin{split}
+S=\{(\vec x,\vec y)\mid{}&x_{tklj}\leq x^{\max}_{tklj},\ \forall tklj,
+\quad y_{kl}\leq y^{\max}_{kl},\ \forall kl,\\
+&x_{tklj}\in\mathbb Z_{\geq0},\ \forall tklj,
+\quad y_{kl}\in\mathbb Z_{\geq0},\ \forall kl\}.
+\end{split}\tag{1}
+\end{equation}
+The accompanying state-defining prose additionally specifies
+\begin{align*}
+x_{tklj}&=0,&&\forall tklj,\ t\geq h_k+1,\ j\geq1,\\
+x_{T_k,kl,0}&=0,&&\forall kl.
+\end{align*}
+First-visit state entries $x_{tkl,0}$ can be nonzero only for $t\leq T_k-1$. The source writes the set of always-zero indices as
+\[
+\Theta=\{\forall tklj\mid(t\geq h_k+1,j\geq1)\cup(T_k\leq t\leq T,j=0)\}.
+\]
+Thus $x_{tklj}=0$ for indices in $\Theta$, as specified by that prose. These are state restrictions, not restrictions forcing the ALP coefficients $\tau_{tklj}$ to zero.
+
+\section*{Actions and the inherited feasible action set}
+For a given state, the action is
+\[
+a=(\vec r,\vec n,\vec z,\vec o,u),\qquad
+\vec r=\{r_{kl};\forall kl\},\quad
+\vec n=\{n_{tkl};\forall tkl\},\quad
+\vec z=\{z_{kl};\forall kl\},\quad
+\vec o=\{o_{ll'};\forall ll'\}.
+\]
+The quantities $r_{kl}$, $n_{tkl}$, and $z_{kl}$ are, respectively, numbers of rejected new referrals, accepted new referrals assigned to day $t$, and diverted visits. First visits of accepted referrals are assigned within their respective wait-time targets. The binary variable $o_{ll'}$ takes value one if the nurse serves location $l$ before $l'$. The quantity $u$ is overtime. Diversion, routing, and overtime concern only day 1, and diversion concerns one visit of each patient at a time.
+
+The auxiliary variable $w_l$ indicates a location to be visited, $f_l$ represents accumulated travel time from the depot to location $l$, $q$ is the day's total travel time, and $g$ is the day's tour length. The fixed coefficient $M$ is described only as a big number.
+\begin{align}
+r_{kl}&=y_{kl}-\sum_{t=1}^{T_k}n_{tkl},&&\forall kl,\tag{2}\\
+z_{kl}&\leq\sum_jx_{1,klj}+n_{1,kl},&&\forall kl,\tag{3}\\
+\sum_{kj}x_{1,klj}+\sum_kn_{1,kl}-\sum_kz_{kl}
+&\leq Mw_l,&&\forall l,\tag{4}\\
+w_l&\in\{0,1\},&&\forall l,\tag{5}\\
+f_l&\geq d_{0,l},&&\forall l,\tag{6}\\
+f_l+M(2+o_{ll'}-w_l-w_{l'})
+&\geq f_{l'}+d_{l'l},&&\forall ll',\ l\neq l',\tag{7}\\
+o_{ll'}&\in\{0,1\},&&\forall ll',\tag{8}\\
+f_l+d_{l,0}&\leq q+M(1-w_l),&&\forall l,\tag{9}\\
+g&=q+\sum_k\left(\sum_{lj}x_{1,klj}+\sum_ln_{1,kl}-\sum_lz_{kl}\right)e_k,\tag{10}\\
+g&\leq\chi+u,\tag{11}\\
+u&\leq\chi'.\tag{12}
+\end{align}
+The source defines $A_s$ as the set of all feasible actions for state $s$ satisfying (1)--(12), with the state and action meanings just stated. At the action-generation stage $s$ is fixed; the action and auxiliary routing quantities are selected.
+
+\paragraph{Printed-scope note.}
+The action prose identifies referral and visit quantities as counts and the time quantities by their physical roles. Unlike the state domains in (1) and the binary domains (5), (8), the printed action block does not separately list integer/nonnegative domain rows for $r,n,z$ or nonnegative time-domain rows. No extra domain rows or big-$M$ bound are supplied here. Also, (7)--(8) print no relation linking $o_{ll'}$ to $o_{l'l}$: the stated precedence interpretation is not enforced by an additional ordering equation in that block. The printed routing rows are retained without repair.
+
+\section*{Stochastic transitions and their expectations}
+After $j$ completed visits, the probability that a type-$k$ patient needs at least one more visit is $p_{k,j+1}$. Its printed definition is
+\[
+p_{kj}=\mathbb P(\hat J_k\geq j\mid\hat J_k\geq j-1),\qquad\forall j\geq1.
+\]
+The symbol $B(x,p)$ denotes a binomial random variable with $x$ trials and success probability $p$. For the next state $s'=(\vec x',\vec y')$, the random vector corresponding to $\vec x'$ is $\vec X'$, defined by
+\begin{equation}
+X'_{tklj}(s,a)=
+\begin{cases}
+B(x_{1,kl,0}+n_{1,kl},p_{k,2}),&j=1,\ t=h_k,\\
+B(x_{1,kl,j-1},p_{k,j+1}),&j\geq2,\ t=h_k,\\
+x_{t+1,klj},&j\neq0,\ t\leq h_k-1,\\
+x_{t+1,kl,0}+n_{t+1,kl},&j=0,\ t<T_k,\\
+0,&\text{otherwise (i.e., }tklj\in\Theta\text{)},
+\end{cases}
+\quad\forall s\in S,\ \forall a\in A_s,\ \forall tklj.
+\tag{13}
+\end{equation}
+The accompanying explanation gives
+\[
+x_{t+1,klj}=0,\qquad\forall t=h_k,\ kl,\ j\geq1,
+\]
+as the reason no such carried-over term appears in the first two branches. The binomial counts include patients whose current visit is diverted, since those visits are still served.
+
+Let $\vec\xi=\{\xi_{klj};\forall klj\}$ denote the numbers of patients visited on the previous day who need at least one more visit. The authors assume independence among the elements of $\vec\xi$, among the arrival counts across types and regions, and between $\vec\xi$ and $\vec y'$. Their transition-probability expression is
+\[
+\mathbb P(s'\mid s,a)
+=\mathbb P(\vec\xi)\mathbb P(\vec y')
+=\prod_{klj}\mathbb P(\xi_{klj})\times\prod_{kl}\mathbb P(y'_{kl}).
+\]
+The next day's referral distribution is the fixed daily referral distribution. The expected transition used in (20c) and the greedy objective is
+\begin{equation}
+\mathbb E[X'_{tklj}(s,a)]=
+\begin{cases}
+(x_{1,kl,0}+n_{1,kl})p_{k,2},&j=1,\ t=h_k,\\
+x_{1,kl,j-1}p_{k,j+1},&j\geq2,\ t=h_k,\\
+x_{t+1,klj},&j\neq0,\ t\leq h_k-1,\\
+x_{t+1,kl,0}+n_{t+1,kl},&j=0,\ t<T_k,\\
+0,&\text{otherwise},
+\end{cases}
+\quad\forall s\in S,\ \forall a\in A_s,\ \forall tklj.
+\tag{19}
+\end{equation}
+No truncation or overflow rule reconciling these transitions with the abstract finite state bounds is specified in the defining passages; none is added here. The conditional probability definition is retained without an added convention for conditioning events of probability zero.
+
+\section*{Immediate cost and fixed cost coefficients}
+\begin{equation}
+c(s,a)=\sum_{kl}R_kr_{kl}+\sum_{kl}Z_kz_{kl}+Uu+Qq(s,a),
+\qquad\forall s\in S,\ a\in A_s.
+\tag{14}
+\end{equation}
+Here $R_k$ is the cost of rejecting a whole referral of type $k$, $Z_k$ is the cost of diverting one visit of that type, $U$ is the unit overtime cost, and $Q$ is the unit travel-time cost. The fixed coefficient definitions are
+\[
+R_k=\zeta^r\mathbb E[\hat J_k]e_k,\qquad
+Z_k=\zeta^z e_k,\qquad
+U=\zeta^u,\qquad Q=\zeta^q.
+\]
+The weights $\zeta^r,\zeta^z,\zeta^u,\zeta^q$ are chosen according to stakeholder preferences. Rejection cost represents the expected lost profit of not serving all visits of a referral. Diversion cost accounts for on-call service and the violation of continuity of care, and does not depend on location. The notation $q(s,a)$ refers to the travel-time quantity in (9)--(10), not a separate input coefficient.
+
+\section*{Affine value function and the source of the policy parameters}
+The affine approximation is
+\begin{equation}
+\widetilde v(s)=\eta+\sum_{tklj}\tau_{tklj}x_{tklj}+\sum_{kl}\rho_{kl}y_{kl},
+\qquad\forall s\in S.
+\tag{17}
+\end{equation}
+The parameter domains and vectors are
+\[
+\tau_{tklj}\in\mathbb R_{\geq0},\ \forall tklj,\qquad
+\rho_{kl}\in\mathbb R_{\geq0},\ \forall kl,\qquad
+\eta\in\mathbb R,
+\]
+\[
+\vec\tau=\{\tau_{tklj};\forall tklj\},\qquad
+\vec\rho=\{\rho_{kl};\forall kl\}.
+\]
+The coefficients $\tau_{tklj}$ and $\rho_{kl}$ represent marginal expected infinite-horizon discounted costs of an additional scheduled visit and an additional referral, respectively. They are optimization parameters when solving the ALP and fixed coefficients when taking a daily greedy action.
+
+For completeness of the dual-price linkage, the parent ALP whose dual is (20) is printed as follows; it is not an additional action-feasibility restriction:
+\begin{equation}
+\mathbf{ALP}:\quad
+\max_{\eta,\vec\tau,\vec\rho}
+\left\{\eta+\sum_{tklj}\tau_{tklj}\mathbb E_\alpha[X_{tklj}]
++\sum_{kl}\rho_{kl}\mathbb E_\alpha[Y_{kl}]\right\}.
+\tag{18a}
+\end{equation}
+Subject to
+\begin{equation}
+\begin{split}
+(1-\gamma)\eta
++\sum_{tklj}\tau_{tklj}\bigl(x_{tklj}-\gamma\mathbb E[X'_{tklj}(s,a)]\bigr)
++\sum_{kl}\rho_{kl}\bigl(y_{kl}-\gamma\mathbb E[Y_{kl}]\bigr)
+\leq c(s,a),\\
+\forall s\in S,\ \forall a\in A_s,
+\end{split}
+\tag{18b}
+\end{equation}
+\begin{equation}
+\tau_{tklj}\geq0,\quad\forall tklj;\qquad
+\rho_{kl}\geq0,\quad\forall kl.
+\tag{18c}
+\end{equation}
+
+\subsection*{State-relevance coefficients}
+The source introduces strictly positive state-relevance weights for its exact-LP argument:
+\[
+\alpha(s)>0,\qquad\forall s\in S.
+\]
+The retained coefficient definitions on page 14 are
+\[
+\mathbb E_\alpha[X_{tklj}]=\sum_{s\in S}\alpha(s)x_{tklj},\qquad
+\mathbb E_\alpha[Y_{kl}]=\sum_{s\in S}\alpha(s)y_{kl}.
+\]
+These are distinct from the arrival expectation $\mathbb E[Y_{kl}]$ and the conditional transition expectation $\mathbb E[X'_{tklj}(s,a)]$.
+
+The coefficient choice specified on page 16 and repeated in EC.1 is retained:
+\[
+\mathbb E_\alpha[X_{tklj}]=
+\begin{cases}
+\varepsilon,&tklj\notin\Theta,\\
+0,&tklj\in\Theta,
+\end{cases}
+\qquad\forall tklj,
+\qquad
+\mathbb E_\alpha[Y_{kl}]=\mathbb E[Y_{kl}],\quad\forall kl.
+\]
+Here $\varepsilon$ is an unknown constant to be tuned, not a D-ALP decision variable. EC.1 tunes it through simulation-based policy comparisons and explicitly includes $\varepsilon=0$. It does not replace the full D-ALP rows or prescribe a universal numerical value for $\varepsilon$; its example value is not imposed here.
+
+\paragraph{Printed relevance-weight qualifications.}
+The source prints coefficient one on $\eta$ in (18a), and hence right-hand side one in (20b), but does not explicitly print a normalization of $\alpha$ in the defining passage. Those coefficients are retained without adding such a normalization. Strict positivity of $\alpha$ in the exact-LP discussion cannot produce $\mathbb E_\alpha[X_{tklj}]=0$ for a coordinate positive in any state. Thus the explicitly allowed tuning endpoint $\varepsilon=0$ need not have the strictly positive-weight interpretation of that preceding discussion. The printed moment coefficients, including that endpoint, are retained rather than repaired by a new restriction on $\varepsilon$.
+
+\section*{Greedy daily action selection}
+For a given observed state $s\in S$ and the parameter set
+\[
+\pi^*=(\eta^*,\tau^*_{tklj},\rho^*_{kl}),
+\]
+the source's ALP policy obtains its action by solving
+\begin{equation}
+\min_{a\in A_s}
+\left\{c(s,a)+\gamma\left(
+\eta+\sum_{tklj}\tau^*_{tklj}\mathbb E[X'_{tklj}]
++\sum_{kl}\rho^*_{kl}\mathbb E[Y_{kl}]
+\right)\right\}.
+\tag{22}
+\end{equation}
+The expectation of $X'_{tklj}$ in this expression is (19) for the current state and candidate action. The inherited set $A_s$ is the complete set defined above, not a reduced scheduling or routing subproblem. Equation (22) prints an unstarred $\eta$ despite the preceding definition of $\pi^*$; that notation is preserved. This term is constant with respect to the selected action.
+
+The authors' expansion, after collecting action-independent terms, is
+\begin{equation}
+\begin{split}
+\min_{a\in A_s}\Biggl\{
+\sum_{kl}R_kr_{kl}+\sum_{kl}Z_kz_{kl}+Uu+Qq
++\gamma\Biggl(
+\sum_{tkl;\,t=h_k}\tau^*_{tkl,1}p_{k,2}n_{1,kl}
++\sum_{tkl;\,t\leq T_k-1}\tau^*_{tkl,0}n_{t+1,kl}
+\Biggr)\Biggr\}
++\text{constant}.
+\end{split}
+\tag{23}
+\end{equation}
+The source leaves the collected constant abstract. Equation (23) is an expansion of (22), not a second optimization imposed alongside it. Its first sum prints a $j=1$ coefficient without an explicit exception for $J_k=1$, although the stated coefficient index range is $j=0,\ldots,J_k-1$. No out-of-range coefficient convention or added lower bound on $J_k$ is introduced here.
+
+\end{document}

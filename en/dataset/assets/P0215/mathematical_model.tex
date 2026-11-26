@@ -1,0 +1,58 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\begin{document}
+\section*{Selection-and-routing model}
+
+Let $\mathcal M$, $\Pi$, $\mathcal L$, and $\mathcal Q$ be finite sets of mines, ports, granularities, and attributes. The planning periods are $1,\ldots,T$. Mine $m$ has $N_m$ fixed candidate schedules $\vec s_{m,j}$, indexed by $j=1,\ldots,N_m$; $N_{\pi,l}$ is the set of products of granularity $l$ at port $\pi$. The given integer-valued routing-window endpoints satisfy $1\leq f(t)\leq t$ and $t'\leq g(t')\leq T$.
+
+The scalar parameters are $\beta_1,\beta_2,T_R$, the candidate values $P_j^m$, port capacities $C_\pi^t$, product quality bounds $L_{\pi,l,n,q}^{t}$ and $U_{\pi,l,n,q}^{t}$, and attribute-deviation coefficients $\lambda_q^{+}$. For each fixed candidate schedule, $\tau_l^m(\vec s_{m,j},t')$ is its production and $v_{l,q}^{m,t'}(\vec s_{m,j})$ is its composition value. 
+
+Define the routing index set
+\[
+\mathcal W=\{(t,t'):1\leq t'\leq t\leq T,\ f(t)\leq t'\}
+\cup\{(t,t'):1\leq t'\leq t\leq T,\ t\leq g(t')\}.
+\]
+The variables are binary schedule selections $s_{m,j}$, nonnegative routing quantities $r_{\pi,n,t}^{m,l,j,t'}$ for $(t,t')\in\mathcal W$, unrestricted affine-expression variables $z_{\pi,l,n,q}^{+,t},z_{\pi,l,n,q}^{-,t}$, and nonnegative positive-part variables $d_{\pi,l,n,q}^{+,t},d_{\pi,l,n,q}^{-,t}$. The $z$ and $d$ variables are indexed by $\pi\in\Pi$, $l\in\mathcal L$, $n\in N_{\pi,l}$, $q\in\mathcal Q$, and $t=1,\ldots,T$.
+
+\begin{align}
+\min\quad &\sum_{t=1}^{T}\left[
+\beta_1\sum_{\pi\in\Pi}\sum_{l\in\mathcal L}\sum_{n\in N_{\pi,l}}\sum_{q\in\mathcal Q}
+T_R\lambda_q^{+}\bigl(d_{\pi,l,n,q}^{+,t}+d_{\pi,l,n,q}^{-,t}\bigr)
+-\beta_2\sum_{m\in\mathcal M}\sum_{j=1}^{N_m}s_{m,j}P_j^m
+\right] \
+\text{subject to}\quad
+&\sum_{j=1}^{N_m}s_{m,j}=1
+&&\forall m\in\mathcal M,\\
+&\sum_{l\in\mathcal L}\sum_{n\in N_{\pi,l}}\sum_{m\in\mathcal M}
+\sum_{j=1}^{N_m}\sum_{t'=f(t)}^{t}T_Rr_{\pi,n,t}^{m,l,j,t'}
+\leq C_\pi^t
+&&\forall\pi\in\Pi,\ t=1,\ldots,T,\\
+&\sum_{\pi\in\Pi}\sum_{n\in N_{\pi,l}}
+\sum_{t=t'}^{g(t')}T_Rr_{\pi,n,t}^{m,l,j,t'}
+=s_{m,j}\tau_l^m(\vec s_{m,j},t')
+&&\forall m\in\mathcal M,\ j=1,\ldots,N_m,\ l\in\mathcal L,\ t'=1,\ldots,T,\\
+&z_{\pi,l,n,q}^{+,t}=
+\sum_{m\in\mathcal M}\sum_{j=1}^{N_m}\sum_{t'=f(t)}^{t}
+ r_{\pi,n,t}^{m,l,j,t'}v_{l,q}^{m,t'}(\vec s_{m,j})
+-U_{\pi,l,n,q}^{t}
+\sum_{m\in\mathcal M}\sum_{j=1}^{N_m}\sum_{t'=f(t)}^{t}r_{\pi,n,t}^{m,l,j,t'}
+&&\forall\pi,l,n,q,t,\\
+&z_{\pi,l,n,q}^{-,t}=
+L_{\pi,l,n,q}^{t}
+\sum_{m\in\mathcal M}\sum_{j=1}^{N_m}\sum_{t'=f(t)}^{t}r_{\pi,n,t}^{m,l,j,t'}
+-\sum_{m\in\mathcal M}\sum_{j=1}^{N_m}\sum_{t'=f(t)}^{t}
+ r_{\pi,n,t}^{m,l,j,t'}v_{l,q}^{m,t'}(\vec s_{m,j})
+&&\forall\pi,l,n,q,t,\\
+&d_{\pi,l,n,q}^{+,t}=\max\{0,z_{\pi,l,n,q}^{+,t}\},\qquad
+ d_{\pi,l,n,q}^{-,t}=\max\{0,z_{\pi,l,n,q}^{-,t}\}
+&&\forall\pi,l,n,q,t,\\
+&s_{m,j}\in\{0,1\}
+&&\forall m\in\mathcal M,\ j=1,\ldots,N_m,\\
+&r_{\pi,n,t}^{m,l,j,t'}\geq0
+&&\forall\pi\in\Pi,\ l\in\mathcal L,\ n\in N_{\pi,l},\ m\in\mathcal M,\ j=1,\ldots,N_m,\ (t,t')\in\mathcal W,\\
+&z_{\pi,l,n,q}^{+,t},z_{\pi,l,n,q}^{-,t}\in\mathbb R,\qquad
+ d_{\pi,l,n,q}^{+,t},d_{\pi,l,n,q}^{-,t}\geq0
+&&\forall\pi,l,n,q,t.
+\end{align}
+Here and above, $\forall\pi,l,n,q,t$ abbreviates $\pi\in\Pi$, $l\in\mathcal L$, $n\in N_{\pi,l}$, $q\in\mathcal Q$, and $t=1,\ldots,T$.
+\end{document}

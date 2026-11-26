@@ -1,0 +1,120 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,geometry}
+\geometry{margin=22mm}
+\emergencystretch=4em
+\geometry{paperwidth=370mm,paperheight=650mm,hmargin=18mm,vmargin=19mm}
+\begin{document}
+
+\section*{P191: complete stop-indexed collaborative truck/drone MILP}
+Input node set $\mathcal V$ contains depot $0$, every original customer
+$\mathcal C$, all finite candidate flexible stops, and a distinct terminal
+$v_{\rm end}=i_{N+F+1}$. The terminal shares depot coordinates but remains
+a distinct label. Customers partition into truck-only $\mathcal C_T$ and
+drone-eligible $\mathcal C_U$.
+Drone set $\mathcal U$ and consecutive stop positions
+$\mathcal S=\{0,\ldots,S_{\max}\}$ retain original fleet/scale.
+The final position denoted $s_{\hat S+1}$ below is $S_{\max}$;
+$s_{\hat S}=S_{\max}-1$ and $s_0=0$.
+
+Finite input arrays are truck road times $R^T_{ij}$, complete drone trip
+times $R^U_{ijku}$, endurance limits $E_{ijku}$,
+truck/drone customer service times $V^T_i,V^U_i$,
+launch/recovery durations $H_j,G_j$ and valid big-$M$.
+The code's functions $H(s),G(s)$ are respectively
+$\sum_j H_jy_{js}$ and $\sum_jG_jy_{js}$.
+Let $X_{is}=\sum_u x_{ius}$ and define $X_{i,-1}=0$ only where needed
+to describe the initial boundary.
+
+Binary $y_{is}$ assigns a truck location to a stop;
+binary $x_{ius}$ assigns a customer's drone service to the interval
+from stop $s$ to $s+1$. Binary $w_{ijs}$ orders active tasks at stop $s$.
+Their implemented domains are $y:\mathcal V\times\mathcal S$,
+$x:\mathcal C\times\mathcal U\times\mathcal S$,
+$w:\mathcal C\times\mathcal C\times\mathcal S$.
+All time variables and completion $\hat t$ are nonnegative.
+$b_i,e_i$ mean the start/end of truck service at customer $i$;
+the extracted table's superscripted $b_i^U,e_i^U$ is a naming inconsistency,
+using the same variable family.
+\subsection*{Objective Function}
+\[\min\ \hat t\]
+
+\subsection*{Constraints}
+\[\begin{aligned}
+&\text{1. Definition of completion time:} \\
+&\hat{t} \ge a^T_s \quad \forall s \in \{s_{\hat{S}+1}\} \subseteq \mathcal{S} \\
+&\hat{t} \ge a^U_i + \sum_{u \in \mathcal{U}} G_j x_{ius} \quad \forall i \in \mathcal{C}, j \in \{j_{N+F+1}\} \subseteq \mathcal{V}, s \in \{s_{\hat{S}}\} \subseteq \mathcal{S} \\
+\\
+&\text{2. Path-based scheduling and node allocation constraints:} \\
+&y_{is} = 1 \quad \forall i \in \{i_0\} \subseteq \mathcal{V}, s \in \{s_0\} \subseteq \mathcal{S} \\
+&y_{is} = 1 \quad \forall i \in \{i_{N+F+1}\} \subseteq \mathcal{V}, s \in \{s_{\hat{S}+1}\} \subseteq \mathcal{S} \\
+&\sum_{i \in \mathcal{V}} y_{is} = 1 \quad \forall s \in \mathcal{S} \\
+&\sum_{s \in \mathcal{S}} y_{is} \le 1 \quad \forall i \in \mathcal{V} \setminus \{i_{N+F+1}\} \\
+&y_{is} \le y_{i,s+1} \quad \forall i \in \{i_{N+F+1}\} \subseteq \mathcal{V}, s \in \mathcal{S} \setminus \{s_{\hat{S}+1}\} \\
+\\
+&\text{3. Constraints on customer service allocation:} \\
+&\sum_{s \in \mathcal{S}} y_{is} = 1 \quad \forall i \in \mathcal{C}_T \\
+&\sum_{u \in \mathcal{U}} \sum_{s \in \mathcal{S} \setminus \{s_{\hat{S}+1}\}} x_{ius} + \sum_{s \in \mathcal{S}} y_{is} = 1 \quad \forall i \in \mathcal{C}_U \\
+&\sum_{i \in \mathcal{C}} x_{ius} \le 1 \quad \forall u \in \mathcal{U}, s \in \mathcal{S} \\
+\\
+&\text{4. Constraints on truck timing and path continuity:} \\
+&a^T_{s+1} \ge d^T_s + R^T_{ij} - M(2 - y_{is} - y_{j,s+1}) \quad \forall i, j \in \mathcal{V}, s \in \mathcal{S} \setminus \{s_{\hat{S}+1}\} \\
+&d^T_s \ge a^T_s \quad \forall s \in \mathcal{S} \\
+\\
+&\text{5. Constraints on the synchronization between trucks and drones:} \\
+&d^T_s \ge a^U_i + \sum_{j \in \mathcal{V}} G_j y_{js} - M\left(1 - \sum_{u \in \mathcal{U}} x_{iu,s-1}\right) \quad \forall i \in \mathcal{C}, s \in \mathcal{S} \setminus \{s_0\} \\
+&d^T_s \ge d^U_i - M\left(1 - \sum_{u \in \mathcal{U}} x_{ius}\right) \quad \forall i \in \mathcal{C}, s \in \mathcal{S} \\
+&d^T_s \ge e_i - M(1 - y_{is}) \quad \forall i \in \mathcal{C}, s \in \mathcal{S} \setminus \{s_0\} \\
+&d^U_i \ge a^T_s + \sum_{j \in \mathcal{V}} H_j y_{js} - M\left(1 - \sum_{u \in \mathcal{U}} x_{ius}\right) \quad \forall i \in \mathcal{C}, s \in \mathcal{S} \\
+&d^U_j \ge a^U_i + \sum_{k \in \mathcal{V}} (G_k + H_k) y_{ks} - M(2 - x_{ius} - x_{ju,s+1}) \quad \forall i, j \in \mathcal{C}, u \in \mathcal{U}, s \in \mathcal{S} \setminus \{s_{\hat{S}+1}\} \\
+&a^U_j \ge d^U_j + \sum_{u \in \mathcal{U}} R^U_{ijku} x_{jus} + V^U_j - M\left(3 - \sum_{u \in \mathcal{U}} x_{jus} - y_{is} - y_{k,s+1}\right) \quad \forall i, k \in \mathcal{V}, j \in \mathcal{C}, s \in \mathcal{S} \setminus \{s_{\hat{S}+1}\} \\
+&a^U_i \ge a^T_{s+1} - M\left(1 - \sum_{u \in \mathcal{U}} x_{ius}\right) \quad \forall i \in \mathcal{C}, s \in \mathcal{S} \setminus \{s_{\hat{S}+1}\} \\
+\\
+&\text{6. UAV endurance constraints:} \\
+&a^U_j - d^U_j \le \sum_{u \in \mathcal{U}} E_{ijku} x_{jus} + M\left(3 - \sum_{u \in \mathcal{U}} x_{jus} - y_{is} - y_{k,s+1}\right) \quad \forall i, k \in \mathcal{V}, j \in \mathcal{C}, s \in \mathcal{S} \setminus \{s_{\hat{S}+1}\} \\
+\\
+&\text{7. Timing constraints for truck service customers:} \\
+&b_i \ge a^T_s - M(1 - y_{is}) \quad \forall i \in \mathcal{C}, s \in \mathcal{S} \\
+&e_i \ge b_i + V^T_i - M\left(1 - \sum_{s \in \mathcal{S}} y_{is}\right) \quad \forall i \in \mathcal{C} \\
+&b_i \le M \sum_{s \in \mathcal{S}} y_{is} \quad \forall i \in \mathcal{C} \\
+&e_i \le M \sum_{s \in \mathcal{S}} y_{is} \quad \forall i \in \mathcal{C} \\
+\\
+&\text{8. Resource conflicts and sorting constraints:} \\
+&w_{ijs} + w_{jis} \ge \sum_{u \in \mathcal{U}} x_{ius} + \sum_{u \in \mathcal{U}} x_{jus} + \sum_{u \in \mathcal{U}} x_{iu,s-1} + \sum_{u \in \mathcal{U}} x_{ju,s-1} + y_{is} + y_{js} - 1 \quad \forall i, j \in \mathcal{C}, s \in \mathcal{S} \setminus \{s_0\}, i > j \\
+&w_{ijs} + w_{jis} \ge \sum_{u \in \mathcal{U}} x_{ius} + \sum_{u \in \mathcal{U}} x_{jus}-1 \quad \forall i, j \in \mathcal{C}, s=s_0,\ i > j \\
+\\
+&\text{9. Time-order constraints based on sorting:} \\
+&a^U_i \ge a^U_j + \sum_{k \in \mathcal{V}} G_k y_{ks} - M\left(3 - w_{jis} - \sum_{u \in \mathcal{U}} x_{iu,s-1} - \sum_{u \in \mathcal{U}} x_{ju,s-1}\right) \quad \forall i, j \in \mathcal{C}, s \in \mathcal{S} \setminus \{s_0\} \\
+&d^U_i \ge d^U_j + \sum_{k \in \mathcal{V}} H_k y_{ks} - M\left(3 - w_{jis} - \sum_{u \in \mathcal{U}} x_{ius} - \sum_{u \in \mathcal{U}} x_{jus}\right) \quad \forall i, j \in \mathcal{C}, s \in \mathcal{S} \\
+&a^U_j \ge d^U_i - M\left(2 + w_{jis} - \sum_{u \in \mathcal{U}} x_{ju,s-1} - \sum_{u \in \mathcal{U}} x_{ius}\right) \quad \forall i, j \in \mathcal{C}, s \in \mathcal{S} \setminus \{s_0\} \\
+&d^U_i \ge a^U_j + \sum_{k \in \mathcal{V}} (G_k + H_k) y_{ks} - M\left(3 - w_{jis} - \sum_{u \in \mathcal{U}} x_{ju,s-1} - \sum_{u \in \mathcal{U}} x_{ius}\right) \quad \forall i, j \in \mathcal{C}, s \in \mathcal{S} \setminus \{s_0\} \\
+&a^U_i \ge e_j - M\left(3 - w_{jis} - \sum_{u \in \mathcal{U}} x_{iu,s-1} - y_{js}\right) \quad \forall i, j \in \mathcal{C}, s \in \mathcal{S} \setminus \{s_0\} \\
+&b_i \ge a^U_j + \sum_{k \in \mathcal{V}} G_k y_{ks} - M\left(3 - w_{jis} - \sum_{u \in \mathcal{U}} x_{ju,s-1} - y_{is}\right) \quad \forall i, j \in \mathcal{C}, s \in \mathcal{S} \setminus \{s_0\} \\
+&b_i \ge d^U_j - M\left(3 - w_{jis} - y_{is} - \sum_{u \in \mathcal{U}} x_{jus}\right) \quad \forall i, j \in \mathcal{C}, s \in \mathcal{S} \\
+&d^U_i \ge e_j + \sum_{k \in \mathcal{V}} H_k y_{ks} - M\left(3 - w_{jis} - \sum_{u \in \mathcal{U}} x_{ius} - y_{js}\right) \quad \forall i, j \in \mathcal{C}, s \in \mathcal{S}
+\end{aligned}\]
+
+
+\paragraph{Explicit boundary/domain completion.}
+Set $a^T_0=0$, $x_{iu,S_{\max}}=0$ for every customer/drone and
+$x_{ius}=0$ for every truck-only customer.
+The initial ordering row is
+$w_{ij0}+w_{ji0}\ge X_{i0}+X_{j0}-1$, as in source Eq.(29).
+Launches require a defined predecessor position.
+The terminal is absorbing, and completion includes final drone recovery.
+Every node/customer and finite input coefficient is retained.
+The preceding equations together with these boundaries are the full implemented
+MILP.
+
+\paragraph{Verification and interpretation.}
+The unchanged08 solver instantiates all source constraint families, with
+explicit customer and terminal domains above. Its all-truck construction is
+only a warm start; drone and flexible-stop decisions remain free.
+
+Generic execution evidence checks every row, domain and objective.
+An additional replay reconstructed launch intervals
+$[d_i^U-H(s),d_i^U]$, recovery intervals $[a_i^U,a_i^U+G(s)]$
+and truck-service intervals $[b_i,e_i]$ at every selected stop,
+confirming no overlap and containment in $[a_s^T,d_s^T]$ in all nineteen
+incumbents. The result records the solver termination status.
+
+\end{document}

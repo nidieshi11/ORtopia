@@ -1,0 +1,33 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,mathtools,geometry}
+\geometry{a4paper,margin=20mm}\allowdisplaybreaks
+\emergencystretch=4em
+\begin{document}
+\section*{Design of UAV network for relay charging stations using complete linear arc models}
+
+\paragraph{Source} Pages 6–9 of the PDF document, section 4, equations (8)–(20). The target method involves linearizing the product of equations (18)–(20).
+\subsection*{Collections, parameters, and variables}
+$S$ represents existing warehouses/hub stations. $I$ indicates candidate charging stations. $N$ refers to locations where charging is needed. $S\cap I=\varnothing$… $\Gamma=S\cup I$. $E$ represents feasible directed flight paths: from the hub to candidate stations, between candidate stations. The length of each segment is $l_e\le2R$. Paths that include obstacles are not allowed; paths that do not involve entering the hub or self-loops are also not allowed. $c_{in}=1$ When the distance between the candidate station $i$ and the destination point $n$ does not exceed $R$, then it is set to zero. $\theta\in[0,1]$ represents the weight of the path. $\beta_1,\beta_2>0$ represents the given normalization constant. $\delta^+(k),\delta^-(k)$ Each represents a path with $k$ as the starting/ending point. $x_k$ Indicates that the candidate station is available for use. $u_{si}$ Indicates that the terminal station $i$ is connected to the hub $s$. $y_e^{si}$ Indicates that the connection path uses the arc $e$, $z_e^{si}=y_e^{si}u_{si}$. All of these variables are binary in nature.
+\subsection*{Complete model}
+\begin{align}
+\min\quad&
+\frac{\theta}{\beta_1}\sum_{s\in S,i\in I,e\in E}l_e z_e^{si}
++\frac{1-\theta}{\beta_2}\sum_{k\in I}x_k,\\
+\sum_{e\in\delta^+(k)}y_e^{si}-\sum_{e\in\delta^-(k)}y_e^{si}
+&=\begin{cases}u_{si},&k=s,\\-u_{si},&k=i,\\0,&k\in\Gamma\setminus\{s,i\},\end{cases}
+&&s\in S,\ i\in I,\ k\in\Gamma,\\
+\sum_{e\in\delta^+(s)}y_e^{si}&\le1 &&s\in S,\ i\in I,\\
+y_e^{si}&\le u_{si} &&s\in S,\ i\in I,\ e\in E,\\
+\sum_{s\in S}u_{si}&\le1 &&i\in I,\\
+\sum_{s\in S,i\in I}c_{in}u_{si}&\ge1 &&n\in N,\\
+y_e^{si}&\le x_k &&s\in S,\ i\in I,\ k\in I,\ e\in\delta^-(k),\\
+z_e^{si}&\le y_e^{si},\qquad z_e^{si}\le u_{si}
+&&s\in S,\ i\in I,\ e\in E,\\
+z_e^{si}&\ge y_e^{si}+u_{si}-1 &&s\in S,\ i\in I,\ e\in E,\\
+x_k,u_{si},y_e^{si},z_e^{si}&\in\{0,1\}. &&
+\end{align}
+The feasible region is defined by the aforementioned set of complete arcs and various constraints. Candidate stations that have not been accessed can be disabled; all actual relay stations or terminal nodes must be enabled.
+\paragraph{Original text indexing clarified}
+The original formula (14) is represented as $\sum_{s,e}y_e^{si}\le Mx_i$. Only terminal index $i$ is used. However, the description on page 9 clearly requires that every candidate node reachable through this path be considered. The above formula expands this relationship between nodes into $y_e^{si}\le x_k$, thereby avoiding any oversight of relay stations. Flow conservation is explicitly enforced at all hubs/candidate nodes. It is prohibited for any commodity to steal flow from other hubs. The indices are derived from the aforementioned network nodes and commodity sets.
+
+\end{document}

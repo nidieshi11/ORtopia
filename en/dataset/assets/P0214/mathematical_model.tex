@@ -1,0 +1,78 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\title{Cut-Based Maintenance Master Formulation}
+\author{}
+\date{}
+\begin{document}
+\maketitle
+
+\section{Sets and input data}
+Let $G'$ and $L'$ be the finite sets of maintained generators and transmission lines, with distinct component identifiers, and let $H'=G'\cup L'$. Let $T=\{1,\ldots,N\}$, where $N\geq 1$, be the planning periods and let $\bar T=\{1,\ldots,N+1\}$. Assignment to period $N+1$ means that no maintenance is scheduled within the planning horizon. Define the coordinate set $\mathcal I=H'\times\bar T$ and its size $d=|H'|(N+1)$. Let $K$ be the finite scenario set.
+
+The scenario weights are $\pi^k\geq 0$, with $\sum_{k\in K}\pi^k=1$. For each $k\in K$, the maintenance-cost vector is $c_k=(c_{k,ht})_{(h,t)\in\mathcal I}\in\mathbb R^d$, and $L^k\in\mathbb R$ is the supplied valid scenario recourse lower bound. All vectors indexed by $\mathcal I$ use the same coordinate ordering.
+
+\subsection{Exact reliability classification}
+Define the finite collection of scheduling sets
+\[
+\mathscr S=\left\{C\subseteq\mathcal I:
+  \bigl|C\cap(\{h\}\times\bar T)\bigr|=1
+  \quad\text{for every }h\in H'\right\}.
+\]
+For $C\in\mathscr S$, let $t_C(h)$ denote its unique selected period for component $h$. The input $\mathscr F\subseteq\mathscr S$ is the \emph{complete exact list} of reliability-infeasible scheduling sets: it contains precisely those schedules whose source-defined joint reliability probability is strictly below $1-\alpha$, where $\alpha\in[0,1]$ is the risk tolerance. Equality to $1-\alpha$ is feasible. This classification uses the independent component failure indicators and the independent generator and line Poisson-binomial sums, including components not maintained. For a component assigned to period $N+1$, the failure probability is evaluated at $N$, as it is for a component not maintained. The complete reliability classification is supplied as model data.
+
+\subsection{Accumulated reliability cuts}
+Let $J_{\mathcal C}$ index the supplied finite accumulated reliability-cut pool. For each $j\in J_{\mathcal C}$, supply a cover $C_j\in\mathscr F$ and the row support $D_j\subseteq\mathcal I$ used by that retained cut. Its support is either the original cover $C_j$ or its source-defined extended cover
+\[
+E(C_j)=\bigcup_{h\in H'}\{(h,t):t_C(h)\leq t\leq N+1\},
+\qquad t_C(h)=t_{C_j}(h).
+\]
+The support $D_j$ is fixed input data. The pool may be empty.
+
+\subsection{Accumulated scenario-level optimality cuts}
+Let $J_{\Theta}$ index the supplied finite pool of scenario-level optimality cuts defining the selected master instance. Supply coefficient arrays
+\[
+A^{\Theta}\in\mathbb R^{|J_{\Theta}|\times d},\qquad
+B^{\Theta}\in\mathbb R^{|J_{\Theta}|\times|K|},\qquad
+b^{\Theta}\in\mathbb R^{|J_{\Theta}|}.
+\]
+Row $r\in J_{\Theta}$ is the retained affine inequality written in the orientation
+\[
+\sum_{k\in K}B^{\Theta}_{rk}\theta^k
+\;\geq\;
+b^{\Theta}_r+
+\sum_{(h,t)\in\mathcal I}A^{\Theta}_{r,ht}v_{ht}.
+\]
+These arrays are the exact coefficients of the retained cuts, including their fixed anchor schedules, recourse values, lower bounds, and period subsets after algebraic expansion. In particular, an aggregate cut with the unweighted left-hand side $\sum_{k\in K}\theta^k$ has $B^{\Theta}_{rk}=1$ for every $k$. The supplied cut pool may be empty or partial and defines the recourse approximation used by the master problem.
+
+\section{Decision variables}
+For each $(h,t)\in\mathcal I$, $v_{ht}$ is binary and equals one when component $h$ is assigned to maintenance period $t$. For each $k\in K$, $\theta^k$ is a continuous scenario recourse-cost master variable. Its domain is $\theta^k\in[L^k,+\infty)$.
+
+\section{Finite mixed-integer linear formulation}
+\begin{align}
+\min_{v,\theta}\quad
+ &\sum_{k\in K}\pi^k
+ \left(\sum_{(h,t)\in\mathcal I}c_{k,ht}v_{ht}+\theta^k\right)
+ \label{eq:objective}\\
+\text{subject to}\quad
+ &\sum_{t\in\bar T}v_{ht}=1
+ &&h\in H',\label{eq:assignment}\\
+ &\sum_{(h,t)\in C}v_{ht}\leq |H'|-1
+ &&C\in\mathscr F,\label{eq:exact-reliability}\\
+ &\sum_{(h,t)\in D_j}v_{ht}\leq |H'|-1
+ &&j\in J_{\mathcal C},\label{eq:accumulated-covers}\\
+ &\theta^k\geq L^k
+ &&k\in K,\label{eq:lower-bounds}\\
+ &\sum_{k\in K}B^{\Theta}_{rk}\theta^k
+ \geq b^{\Theta}_r+
+ \sum_{(h,t)\in\mathcal I}A^{\Theta}_{r,ht}v_{ht}
+ &&r\in J_{\Theta},\label{eq:optimality-cuts}\\
+ &v_{ht}\in\{0,1\}
+ &&(h,t)\in\mathcal I,\\
+ &\theta^k\in\mathbb R
+ &&k\in K.
+\end{align}
+
+This is formulation (14) with the probability-defined part of its maintenance-feasibility set replaced exactly by the complete infeasible-schedule cover family. The supplied accumulated reliability rows and the specified scenario-level optimality-cut pool are retained unchanged. Consequently, the formulation represents the selected master instance, without strengthening a partial optimality-cut pool to the full recourse epigraph.
+
+\end{document}

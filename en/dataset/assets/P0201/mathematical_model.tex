@@ -1,0 +1,86 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\title{Deterministic Node-Level Power-Network Operating Model}
+\author{}
+\date{}
+\begin{document}
+\maketitle
+
+\section*{Scope and index sets}
+The model is solved at a fixed node $n$, with line availability and parent-node generation supplied as inputs. It is the selected directly solvable node-level formulation (12).
+
+Let $\mathcal N$ be the finite set of buses, $\mathcal L$ the finite set of transmission lines, and $\mathcal G$ the finite set of generators. The supplied set $\mathcal G_n\subseteq\mathcal G$ indexes generation costs in the objective as a supplied subset of $\mathcal G$. For each line $l\in\mathcal L$, let $s(l),t(l)\in\mathcal N$ be its supplied from and to buses. Define
+\[
+ l(b,\cdot)=\{l\in\mathcal L:s(l)=b\},\qquad
+ l(\cdot,b)=\{l\in\mathcal L:t(l)=b\}.
+\]
+For each bus $b\in\mathcal N$, the supplied set $g(b)\subseteq\mathcal G$ contains its generators. The notation $p(n)$ denotes the parent of the fixed node $n$.
+
+\section*{Parameters}
+All parameters below are fixed numerical data for the node solve. Every indexed entry is a scalar.
+\begin{itemize}
+\item $C_g$ for $g\in\mathcal G_n$: unit generation cost; $C^l$: the scalar unit load-shedding cost appearing in the objective, with a superscript labeling load shedding.
+\item $d_{bn}$ for $b\in\mathcal N$: demand.
+\item $\overline\theta^{\min},\overline\theta^{\max}$: lower and upper voltage-angle bounds.
+\item $B_l$ for $l\in\mathcal L$: line susceptance; $a_{ln}\in\{0,1\}$: fixed line availability.
+\item $\overline F_l^{\min},\overline F_l^{\max}$ for $l\in\mathcal L$: line-flow bounds used in the switching-capacity constraints.
+\item $\overline F_{ln}^{\max},\overline F_{ln}^{\mathrm{nom}}$ for $l\in\mathcal L$: node-indexed maximum and nominal ratings used in the overload restrictions. The instance supplies the node-indexed ratings and the line-only ratings as separate parameter arrays.
+\item $P_g^{\min},P_g^{\max}$ for $g\in\mathcal G$: generation bounds; $R_g^+,R_g^-$: upward and downward ramp limits; $p_{g p(n)}$: fixed parent-node generation.
+\end{itemize}
+The switching constants are defined by
+\[
+M_l:=\left|B_l\bigl(\overline\theta^{\max}-\overline\theta^{\min}\bigr)\right|,
+\qquad l\in\mathcal L.
+\]
+
+\section*{Decision variables}
+For each $b\in\mathcal N$, $\theta_{bn}$ is a continuous voltage angle and $\Delta_{bn}$ is continuous load shedding. For each $g\in\mathcal G$, $p_{gn}$ is continuous generation. For each $l\in\mathcal L$, $f_{ln}$ is continuous line flow, $z_{ln}$ is a binary line-closed indicator, and $o_{ln}$ is a binary overload indicator. Angles and line flows are signed real variables with the domains below.
+
+\section*{Optimization model}
+\begin{align}
+\min_{\theta,f,p,\Delta,z,o}\quad
+ &\sum_{g\in\mathcal G_n}C_g p_{gn}
+   +\sum_{b\in\mathcal N}C^l\Delta_{bn}
+ &&\tag{12a}\\
+\text{s.t.}\quad
+ &\overline\theta^{\min}\leq\theta_{bn}\leq\overline\theta^{\max}
+ && b\in\mathcal N,\tag{12b}\\
+ &\sum_{l\in l(b,\cdot)}f_{ln}
+  -\sum_{l\in l(\cdot,b)}f_{ln}
+  +\sum_{g\in g(b)}p_{gn}+\Delta_{bn}=d_{bn}
+ && b\in\mathcal N,\tag{12c}\\
+ &\overline F_l^{\min}z_{ln}\leq f_{ln}\leq\overline F_l^{\max}z_{ln}
+ && l\in\mathcal L,\tag{12d}\\
+ &z_{ln}\leq a_{ln}
+ && l\in\mathcal L,\tag{12e}\\
+ &B_l\bigl(\theta_{s(l)n}-\theta_{t(l)n}\bigr)-f_{ln}
+   +(2-z_{ln}-a_{ln})M_l\geq0
+ && l\in\mathcal L,\tag{12f}\\
+ &B_l\bigl(\theta_{s(l)n}-\theta_{t(l)n}\bigr)-f_{ln}
+   -(2-z_{ln}-a_{ln})M_l\leq0
+ && l\in\mathcal L,\tag{12g}\\
+ &P_g^{\min}\leq p_{gn}\leq P_g^{\max}
+ && g\in\mathcal G,\tag{12h}\\
+ &p_{gn}-p_{g p(n)}\leq R_g^+
+ && g\in\mathcal G,\tag{12i}\\
+ &p_{g p(n)}-p_{gn}\leq R_g^-
+ && g\in\mathcal G,\tag{12j}\\
+ &f_{ln}-\bigl(\overline F_{ln}^{\max}-\overline F_{ln}^{\mathrm{nom}}\bigr)o_{ln}
+   \leq\overline F_{ln}^{\mathrm{nom}}
+ && l\in\mathcal L,\tag{12k}\\
+ &f_{ln}+\bigl(\overline F_{ln}^{\max}-\overline F_{ln}^{\mathrm{nom}}\bigr)o_{ln}
+   \geq-\overline F_{ln}^{\mathrm{nom}}
+ && l\in\mathcal L,\tag{12l}\\
+ &p_{gn}\in\mathbb R_{\geq0}
+ && g\in\mathcal G,\tag{12m}\\
+ &\Delta_{bn}\in\mathbb R_{\geq0}
+ && b\in\mathcal N,\tag{12n}\\
+ &z_{ln},o_{ln}\in\{0,1\}
+ && l\in\mathcal L,\tag{12o}\\
+ &\theta_{bn}\in\mathbb R
+ && b\in\mathcal N,\notag\\
+ &f_{ln}\in\mathbb R
+ && l\in\mathcal L.\notag
+\end{align}
+\end{document}

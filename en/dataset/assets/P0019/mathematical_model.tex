@@ -1,0 +1,38 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,geometry}
+\geometry{margin=22mm}
+\emergencystretch=4em
+\begin{document}
+\section*{P19: Model for Random Matching Strategies in Real-time Online Car Hailing Services}
+\paragraph{Source and scope}According to pages 7, 8, 9, 10, 11, 12, 14, and 15 of the original paper PDF, sections 2 (Formulas (1), (4), (6), (8)) and Definition 1; and section 3.2 (Formula (12)) are used to identify the upper boundary of the fluid.
+
+\subsection*{Random systems and parameters}
+The driver area type collection is $\mathcal N=\{1,\ldots,N\}$, the passenger type collection is $\mathcal J=\{1,\ldots,J\}$, and the duration is $T>0$. The driver arrival rate $\lambda_i(t)$, passenger arrival rate $\mu_j(t)$, and the rate at which unmatched drivers leave $\theta_i(t)$ are all known non-negative functions. $\Lambda_i(t)=\int_0^t\lambda_i(s)\,ds$ and $\Gamma_j(t)=\int_0^t\mu_j(s)\,ds$ are also involved. $A_i,R_i,E_j$ represents a Poisson process where each unit time follows independent and mutually exclusive patterns, affecting the arrival of drivers, the departure of drivers, and the arrival of passengers respectively. $Q_i(0)\in\mathbb Z_+$ represents the initial number of drivers following a given distribution, which is independent of other random variables. The boundaries of the specified time periods $0=\tau_0<\tau_1<\cdots$ tend to infinity. $t_{ij}(m)\ge0$ represents the time during which drivers can pick up passengers during the period $m$. $a_j^k(m)\ge0$ represents the maximum waiting time that the $k$th passenger of type $j$ can endure during the period $m$. This waiting time follows a given distribution, and is independent of other random variables, as determined by $k$. $w_{ij}\ge0$ represents the weight used to determine the matching between drivers of type $i$ and passengers of type $j$. All random variables are defined within the same probability space $(\Omega,\mathcal F,\mathbb P)$. The moment of passenger arrival is $\nu_j(k)=\inf\{t:E_j(\Gamma_j(t))=k\}$.
+\subsection*{Decisions, states, and feasible strategies}
+The decision-making process involves strategy $\pi=(\pi_j)_{j\in\mathcal J}$. In this strategy, $\pi_j(k)\in\mathcal N\cup\{0\}$ specifies the type of driver recommended for passengers belonging to category $j$, numbered $k$. The value 0 indicates that no driver is recommended. $D_{ij}^\pi(t)$ represents the total number of recommendations received and successfully matched up to $t$. $Q_i^\pi(t)$, on the other hand, indicates the number of drivers that were not matched with any passengers. This value is calculated using the following formula:
+\begin{align}
+D_{ij}^\pi(t)&=\sum_{k=1}^{E_j(\Gamma_j(t))}\sum_{m\ge0}
+\mathbf1\{\nu_j(k)\in[\tau_m,\tau_{m+1}),\ a_j^k(m)\ge t_{ij}(m),\ \pi_j(k)=i\},\tag{4}\\
+Q_i^\pi(t)&=Q_i(0)+A_i(\Lambda_i(t))-R_i\left(\int_0^t\theta_i(s)Q_i^\pi(s)\,ds\right)-\sum_{j\in\mathcal J}D_{ij}^\pi(t)\ge0.\tag{1}
+\end{align}
+Equation (1) applies to $i\in\mathcal N,0\le t\le T$, while Equation (4) applies to all $i,j,t$ cases. To clarify matters related to unforeseen circumstances, let’s define the information domain for the case where $u=s\wedge\nu_j(k)$ is used.
+\begin{align*}
+\mathcal F_j(k)=\sigma\bigl(&A_i(\Lambda_i(u)),\ E_{j'}(\Gamma_{j'}(u)),\
+R_i(\int_0^{u^-}\theta_i(v)Q_i^\pi(v)\,dv),\
+D_{ij'}^\pi(u^-),\ Q_i^\pi(u^-):s\ge0,i\in\mathcal N,j'\in\mathcal J;\\
+&a_{j'}^r(m):j'\ne j,\ 1\le r\le E_{j'}(\Gamma_{j'}(\nu_j(k)^-)),\ m\ge0;\\
+&a_j^r(m):1\le r<k,\ m\ge0\bigr).
+\end{align*}
+The feasible strategy set $\Pi$ requires that each $\pi_j(k)$ is measurable by $\mathcal F_j(k)$, and satisfies the conditions.
+\[
+ Q_i^\pi(\nu_j(k)^-)=0\ \Longrightarrow\ \pi_j(k)\ne i
+ \qquad(i\in\mathcal N,j\in\mathcal J,k\ge1).
+\]
+This allows the use of information about the patience of previous passengers, but prohibits the use of information regarding the patience and future arrivals of current passengers, which have not yet been revealed. If randomization is required, a random element can be added, following the original Note 4, ensuring that no future-related information is included in the randomization process.
+\subsection*{Only one optimization objective is allowed: the original text’s path-based criteria.}
+\[
+ \max_{\pi\in\Pi}\ \sum_{i\in\mathcal N}\sum_{j\in\mathcal J}w_{ij}D_{ij}^\pi(T,\omega),\qquad\text{For each one }\omega\in\Omega.\tag{6}
+\]
+This method defines performance based on individual samples, and the strategy uses information that has already been observed during decision-making to make recommendations. The paper analyzes the asymptotic optimality of strategies under conditions of large markets.
+
+\end{document}

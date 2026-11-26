@@ -1,0 +1,34 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,mathtools,geometry}
+\geometry{a4paper,margin=20mm}\allowdisplaybreaks
+\emergencystretch=4em
+\begin{document}
+\section*{A model for allocating supplies to disaster areas, taking into account emergency priorities}
+
+\paragraph{Source and scope} Pages 10–12 of the PDF document, section 3.4, equations (17)–(25). A fixed decision-making cycle is defined as $t$. Demand forecasting, regional grouping, urgency levels, and inventory levels from the previous period are all known inputs for this optimization. Supply allocation in the next stage is not part of this model.
+\subsection*{Collections, parameters, and variables}
+$L$ represents the type of supplies; $M$ represents the collection of distribution centers; $G$ represents the groups of affected areas; $I_g$ represents the regions to which the groups belong; $g$ represents the collection of regions. $V$ represents the type of transport vehicles. The values for $I_g$ are not provided. $D_i^l(t)\ge0$ represents the demand, while $Q_m^l(t-1|t-1)\ge0$ represents the initial inventory at the center. $UNV^l$ represents the volume per unit of supplies; $UNL_v$ represents the capacity of the vehicle; $NV_v^m(t)$ represents the number of available trains for this period. $CS_m^l$ and $CT_{mi}^l$ represent the settings for units and transportation costs, respectively. $u_i^1(t)$ represents the time elapsed since the last supply arrived. $\Omega_g(t)$ represents the emergency rating value of the input groups (originally denoted as $X_g(t)$; here, $\Omega_g(t)$ is used instead). It is assumed that the normalization conditions satisfy $\overline F_g^j>\underline F_g^j$ and $j=1,2$. $\omega_r,\omega_c\ge0$ and $\omega_r+\omega_c=1$ are also assumed to hold true. Only those groups with valid total demand $D_g=\sum_{l\in L,i\in I_g}D_i^l(t)>0$ will be optimized. For groups with zero demand, the output is fixed to zero due to demand constraints. $\sum_g\Omega_g(t)\ne0$ is required. Emergency weights and target components are defined as follows:
+\begin{align}
+\gamma_g(t)&=\frac{\Omega_g(t)}{\sum_{h\in G}\Omega_h(t)},\\
+F_g^1(X)&=\frac{\sum_{l\in L,m\in M,i\in I_g}X_{mi}^l(t)}{D_g},\\
+F_g^2(X)&=\sum_{l\in L,m\in M,i\in I_g}
+  \bigl[CS_m^l u_i^1(t)+CT_{mi}^l\bigr]X_{mi}^l(t),\\
+F_g(X)&=\omega_r\frac{F_g^1(X)-\underline F_g^1}{\overline F_g^1-\underline F_g^1}
+-\omega_c\frac{F_g^2(X)-\underline F_g^2}{\overline F_g^2-\underline F_g^2}.
+\end{align}
+The unique decision family $X_{mi}^l(t)\ge0$ refers to the quantity of materials $l$ allocated from the center $m$ to the region $i$.
+\subsection*{Complete optimization of the model}
+\begin{align}
+\max_X\quad &\sum_{g\in G}\gamma_g(t)F_g(X)\tag{20}\\
+\text{s.t.}\quad
+&\sum_{m\in M}X_{mi}^l(t)\le D_i^l(t)
+ &&g\in G,\ i\in I_g,\ l\in L,\tag{22}\\
+&\sum_{g\in G,i\in I_g}X_{mi}^l(t)\le Q_m^l(t-1|t-1)
+ &&m\in M,\ l\in L,\tag{23}\\
+&\sum_{g\in G,i\in I_g,l\in L}UNV^lX_{mi}^l(t)
+\le\sum_{v\in V}UNL_vNV_v^m(t) &&m\in M,\tag{24}\\
+&X_{mi}^l(t)\ge0 &&m\in M,\ g\in G,\ i\in I_g,\ l\in L.\tag{25}
+\end{align}
+After fixing $t$, this is a linear programming. The output is for subsequent supply allocation and inventory updates, but the subsequent objectives do not reverse the current allocation. The old transcription (24) wrote both vehicle types and periods as $t$; here, the vehicle types are uniformly written as $v$; the original PDF used different font styles for the vehicle type index.
+
+\end{document}

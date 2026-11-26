@@ -1,0 +1,35 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage[margin=2.5cm]{geometry}
+
+\title{Finite-Support Mixed-Integer Reformulation}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+Let $[q]:=\{1,\ldots,q\}$. Consider a finite discrete distribution with scenarios $\xi_i\in\{0,1\}^m$ and probabilities $p_i\geq 0$, $i\in[s]$, satisfying
+\[
+\sum_{i=1}^{s}p_i=1.
+\]
+For each $k\in[m]$, define the scenario-index set
+\[
+\mathcal{S}_k:=\{i\in[s]:\xi_{ik}=1\}.
+\]
+Scenarios with $\xi_i=0$ may be fixed as satisfied and removed; hence, without loss of generality, assume $\xi_i\neq 0$ for all $i\in[s]$, so that
+\[
+\bigcup_{k\in[m]}\mathcal{S}_k=[s].
+\]
+
+Let $c\in\mathbb{R}^n$, $A\in\mathbb{R}^{m\times n}$, and $\epsilon\in[0,1)$. The finite-support mixed-integer formulation is
+\begin{alignat}{2}
+\min_{x,v,z}\quad & c^{\top}x \\
+\text{s.t.}\quad
+& Ax\geq v, \tag{1}\\
+& v_k\geq z_i, &&\qquad \forall k\in[m],\ i\in\mathcal{S}_k, \tag{2}\\
+& \sum_{i=1}^{s}p_i z_i\geq 1-\epsilon, \tag{3}\\
+& x\in\{0,1\}^n,\qquad v\in\{0,1\}^m,\qquad z\in\{0,1\}^s. \tag{4}
+\end{alignat}
+
+\end{document}

@@ -1,0 +1,118 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,longtable}
+\allowdisplaybreaks
+\emergencystretch=4em
+\begin{document}
+\section*{P47: Current complete mathematical model (2026-10-20)}
+\section*{Basis and scope of the revision}On page 10 of the source text, the actual formula 23–24 has been replaced with the perceptual formula 41. In the current complete model, only the perceived travel time, denoted as r, is used; the independent diagnostic parameters related to the actual travel time remain intact. The starting perceptual time, the binary domain, and the set of two segments of the journey are also retained.
+
+
+\section*{Problem: **Multi-vehicle Dial-a-Ride Problem with Interchange (DARPi)**. This problem belongs to the category of **Vehicle Routing Problems (VRP)**. It combines elements of Pickup and Delivery Problems with features related to transfer points. The problem is a **Mixed Integer Linear Programming (MILP)** problem; the original non-linear problem is transformed into a MILP form through linearization. DARPi is a **NP-hard** combinatorial optimization problem, involving various constraints such as time windows, capacity limits, and travel times.}
+
+
+
+\subsection*{Decision Variables}
+\begin{align*}
+& x_{ij}^k \in \{0, 1\} && \forall (i,j) \in \mathcal{A}, k \in \mathcal{K} \\
+& \eta_i^k, \theta_i^k \in \{0, 1\} && \forall i \in \mathcal{P}, k \in \mathcal{K} \\
+& \tilde{\eta}^k, \tilde{\theta}^k \in \{0,1\} && \forall k \in \mathcal{K} \\
+& u_i^k, p_i^k \ge 0 && \forall i \in \mathcal{V}, k \in \mathcal{K} \\
+& \nu_i^k \ge 0 && \forall i \in \mathcal{V}, k \in \mathcal{K} \\
+& \tau^k, w^k \ge 0 && \forall k \in \mathcal{K} \\
+& z_i \ge 0 && \forall i \in \mathcal{P} \\
+& r_i \ge 0 && \forall i \in \mathcal{P} \\
+& \tilde{u}_i, \tilde{p}_i \ge 0 && \forall i \in \mathcal{P} \cup \mathcal{D} \\
+& \sigma_{ji}^k, s_{ij}^k, \tilde{s}_{ij}^k \in \mathbb{R} && \forall (i,j) \in \mathcal{A}, k \in \mathcal{K} \\
+& g_i^k \ge 0 && \forall i \in \mathcal{V}, k \in \mathcal{K} \\
+& \delta_i^k \in \{0, 1\} && \forall i \in \mathcal{V}, k \in \mathcal{K} \\
+& d_i^k \ge 1 && \forall i \in \mathcal{V}, k \in \mathcal{K}
+\end{align*}
+
+\subsection*{Objective Function}
+\[
+\min \sum_{k \in \mathcal{K}} \sum_{(i,j) \in \mathcal{A}} c_{ij}^k x_{ij}^k
+\]
+
+\subsection*{Constraints}
+\begin{align*}
+& \text{1. Constraints related to customer-specific services:} \\
+& \quad \sum_{k \in \mathcal{K}} \sum_{j: (i,j) \in \mathcal{A}} x_{ij}^k = 1 \quad \forall i \in \mathcal{P} \cup \mathcal{D} \\
+\\
+& \text{2. Vehicle capacity constraints:} \\
+& \quad \sum_{i \in \mathcal{P}} \sum_{j: (i,j) \in \mathcal{A}} q_i x_{ij}^k \le Q_k \quad \forall k \in \mathcal{K} \\
+& \quad \sum_{i \in \mathcal{D}} \sum_{j: (i,j) \in \mathcal{A}} q_i x_{ij}^k \le Q_k \quad \forall k \in \mathcal{K} \\
+\\
+& \text{3. Balancing constraints related to traffic flow in the parking lot:} \\
+& \quad \sum_{j: (o_1, j) \in \mathcal{A}} x_{o_1 j}^k = \sum_{j: (o_3, j) \in \mathcal{A}} x_{o_3 j}^k = 1 \quad \forall k \in \mathcal{K} \\
+& \quad \sum_{j: (j, o_2) \in \mathcal{A}} x_{j o_2}^k = \sum_{j: (j, o_4) \in \mathcal{A}} x_{j o_4}^k = 1 \quad \forall k \in \mathcal{K} \\
+& \quad \sum_{i: (i, h) \in \mathcal{A}} x_{i h}^k - \sum_{j: (h, j) \in \mathcal{A}} x_{h j}^k = 0 \quad \forall h \in \mathcal{P} \cup \mathcal{D}, k \in \mathcal{K} \\
+\\
+& \text{4. Time window and sub-loop elimination constraints:} \\
+& \quad u_j^k \ge u_i^k + t_{ij} - M(1 - x_{ij}^k) \quad \forall (i, j) \in \mathcal{A}, k \in \mathcal{K} \\
+& \quad e_i \le u_i^k \le l_i \quad \forall i \in \mathcal{V}, k \in \mathcal{K} \\
+& \quad u_i^k \ge e_i + \sum_{j: (j,i) \in A} \max\{0, e_j - e_i + t_{ij}\} x_{ji}^k \quad \forall i \in P \cup D, k \in K \\
+& \quad u_i^k \le l_i + \sum_{j: (i,j) \in A} \max\{0, l_i - l_j + t_{ij}\} x_{ij}^k \quad \forall i \in P \cup D, k \in K \\
+\\
+& \text{5. Constraints on the division and connection of itineraries:} \\
+& \quad \eta_i^k - \theta_i^k = \sum_{j \in \mathcal{P} \cup \{o_2\}: j \neq i} x_{ij}^k - \sum_{j \in \mathcal{D} \cup \{o_4\}: j \neq i+n} x_{i+n, j}^k \quad \forall i \in \mathcal{P}, k \in \mathcal{K} \\
+& \quad \eta_i^k + \theta_i^k \le 1 \quad \forall i \in \mathcal{P}, k \in \mathcal{K} \\
+& \quad \frac{1}{M} \sum_{i \in \mathcal{P}} \eta_i^k \le \tilde{\eta}^k \le \sum_{i \in \mathcal{P}} \eta_i^k \quad \forall k \in \mathcal{K} \\
+& \quad \frac{1}{M} \sum_{i \in \mathcal{P}} \theta_i^k \le \tilde{\theta}^k \le \sum_{i \in \mathcal{P}} \theta_i^k \quad \forall k \in \mathcal{K} \\
+& \quad \tau^k = u_{o_2}^k + a \tilde{\eta}^k + \beta \sum_{i \in \mathcal{P}} q_i \eta_i^k \quad \forall k \in \mathcal{K} \\
+& \quad w^k \ge \tau^k \quad \forall k \in \mathcal{K} \\
+& \quad u_{o_3}^k = w^k + a \tilde{\theta}^k + \beta \sum_{i \in \mathcal{P}} q_i \theta_i^k \quad \forall k \in \mathcal{K} \\
+& \quad w^k \ge z_i - M(1 - \theta_i^k) \quad \forall i \in \mathcal{P}, k \in \mathcal{K} \\
+& \quad z_i \ge \tau^k - M(1 - \eta_i^k) \quad \forall i \in \mathcal{P}, k \in \mathcal{K} \\
+& \quad u_{o_2}^k - u_{o_1}^k \le T_k \quad \forall k \in \mathcal{K} \\
+& \quad u_{o_4}^k - u_{o_3}^k \le T_k \quad \forall k \in \mathcal{K} \\
+\\
+& \text{6. Order response time constraints:} \\
+& \quad r_i \le L \quad \forall i \in \mathcal{P} \\
+& \quad \tilde{u}_i + \sigma_{j, i}^{u,k} = u_i^k \quad \forall (j, i) \in \mathcal{A}: i \in \mathcal{P} \cup \mathcal{D}, \forall k \in \mathcal{K} \\
+& \quad \sigma_{j i}^{u,k} \le M(1 - x_{j, i}^k) \quad \forall (j, i) \in \mathcal{A}: i \in \mathcal{P} \cup \mathcal{D}, k \in \mathcal{K} \\
+& \quad \sigma_{j i}^{p,k} \le M(1 - x_{j, i}^k) \quad \forall (j, i) \in \mathcal{A}: i \in \mathcal{P} \cup \mathcal{D}, k \in \mathcal{K} \\
+& \quad \sigma_{j i}^{u,k} \ge -M(1 - x_{j, i}^k) \quad \forall (j, i) \in \mathcal{A}: i \in \mathcal{P} \cup \mathcal{D}, k \in \mathcal{K} \\
+& \quad \sigma_{j i}^{p,k} \ge -M(1 - x_{j, i}^k) \quad \forall (j, i) \in \mathcal{A}: i \in \mathcal{P} \cup \mathcal{D}, k \in \mathcal{K} \\
+\\
+& \text{7. Load balance and definition constraints:} \\
+& \quad \nu_{o_1}^k = 0 \quad \forall k \in \mathcal{K} \\
+& \quad \nu_{o_3}^k = \sum_{i \in \mathcal{D}} \sum_{j: (i,j) \in \mathcal{A}} q_i x_{ij}^k \quad \forall k \in \mathcal{K} \\
+& \quad \nu_j^k + s_{ij}^k = \nu_i^k + q_j \quad \forall (i, j) \in \mathcal{A}: i \in \mathcal{P} + \{o_1\}, k \in \mathcal{K} \\
+& \quad \nu_j^k + s_{ij}^k = \nu_i^k - q_j \quad \forall (i, j) \in \mathcal{A}: i \in \mathcal{D} + \{o_3\}, k \in \mathcal{K} \\
+& \quad s_{ij}^k \le M(1 - x_{ij}^k) \quad \forall (i, j) \in \mathcal{A}, k \in \mathcal{K} \\
+& \quad s_{ij}^k \ge -M(1 - x_{ij}^k) \quad \forall (i, j) \in \mathcal{A}, k \in \mathcal{K} \\
+& \quad 0 \le \nu_j^k \le Q_k \quad \forall j \in \mathcal{V}, k \in \mathcal{K} \\
+\\
+& \text{8. Linearization constraints for load impact factors:} \\
+& \quad g_i^k \ge \nu_i^k - \rho Q_k \quad \forall i \in \mathcal{V}, k \in \mathcal{K} \\
+& \quad g_i^k \ge 0 \quad \forall i \in \mathcal{V}, k \in \mathcal{K} \\
+& \quad g_i^k \le \nu_i^k - \rho Q_k + M \delta_i^k \quad \forall i \in \mathcal{V}, k \in \mathcal{K} \\
+& \quad g_i^k \le M(1 - \delta_i^k) \quad \forall i \in \mathcal{V}, k \in \mathcal{K} \\
+& \quad \delta_i^k \in \{0, 1\} \quad \forall i \in \mathcal{V}, k \in \mathcal{K} \\
+& \quad d_i^k = 1 + \gamma g_i^k \quad \forall i \in \mathcal{V}, k \in \mathcal{K} \\
+\\
+& \text{9. Constraints on departure time and response time (taking into account load effects):} \\
+& \quad p_j^k + \tilde{s}_{ij}^k = u_j^k + (p_i^k - u_i^k) + t_{ij} d_i^k - t_{ij} \quad \forall (i, j) \in \mathcal{A}, k \in \mathcal{K} \\
+& \quad \tilde{s}_{ij}^k \le M(1 - x_{ij}^k) \quad \forall (i, j) \in \mathcal{A}, k \in \mathcal{K} \\
+& \quad \tilde{s}_{ij}^k \ge -M(1 - x_{ij}^k) \quad \forall (i, j) \in \mathcal{A}, k \in \mathcal{K} \\
+& \quad p_{o_3}^k = u_{o_3}^k + (p_{o_2}^k - u_{o_2}^k) \quad \forall k \in \mathcal{K} \\
+& \quad \tilde{p}_i + \sigma_{j, i}^{p,k} = p_i^k \quad \forall (j, i) \in \mathcal{A}: i \in \mathcal{P} \cup \mathcal{D}, \forall k \in \mathcal{K} \\
+& \quad \sigma_{j i}^{u,k} \le M(1 - x_{j, i}^k) \quad \forall (j, i) \in \mathcal{A}: i \in \mathcal{P} \cup \mathcal{D}, k \in \mathcal{K} \\
+& \quad \sigma_{j i}^{p,k} \le M(1 - x_{j, i}^k) \quad \forall (j, i) \in \mathcal{A}: i \in \mathcal{P} \cup \mathcal{D}, k \in \mathcal{K} \\
+& \quad \sigma_{j i}^{u,k} \ge -M(1 - x_{j, i}^k) \quad \forall (j, i) \in \mathcal{A}: i \in \mathcal{P} \cup \mathcal{D}, k \in \mathcal{K} \\
+& \quad \sigma_{j i}^{p,k} \ge -M(1 - x_{j, i}^k) \quad \forall (j, i) \in \mathcal{A}: i \in \mathcal{P} \cup \mathcal{D}, k \in \mathcal{K} \\
+& \quad r_i = \tilde{p}_{n+i} - \tilde{p}_i \quad \forall i \in \mathcal{P}
+\end{align*}
+
+
+\section*{The complete definition of perceived time}
+On page 10 of the source text, it is clearly stated that option 41 replaces option 23–24. Therefore, $r_i$ is defined solely by $r_i=\tilde p_{n+i}-\tilde p_i$, while $r_i\le L$ determines the perceived riding time. The actual time $\tilde u$ is used only for independent diagnostics purposes. Link relaxation is denoted as $\sigma^u$. The perceived time is calculated using a different method, denoted as $\sigma^p$; these two methods should not be used interchangeably.
+\[
+p_{o_1}^k=u_{o_1}^k,\qquad\tilde\eta^k,\tilde\theta^k\in\{0,1\}.
+\]
+The legal journey paths are indicated for each instance: the first journey starts at $o_1$ and ends at $o_2$; the second journey starts at $o_3$ and ends at $o_4$. Each journey only visits the nodes where pick-up and drop-off are possible; there are no direct “empty” journey paths. All parameters such as capacity, passenger requirements, travel/transfer times, congestion levels, and time windows are limited to specific instances.
+
+\section*{Clear conventions for marking questions in this set of questions}
+Both of the two time-windowed arc selections belong to the same vehicle, namely $k$. According to the definitions given in the third subscript, these can be denoted as $x_{ji}^k$ and $x_{ij}^k$, and need to be calculated separately for each vehicle. The coefficient for the first arc remains unchanged, being $t_{ij}$ – that is, the time interval from the current point $i$ to the previous point $j$. The coefficient for the second arc remains the original plus sign. The passenger demand at the four boundary points is defined as $q_{o_1}=q_{o_2}=q_{o_3}=q_{o_4}=0$; the demand from customers is provided by individual instances. Here, $A,P,D,K$ is an equivalent notation for $\mathcal A,\mathcal P,\mathcal D,\mathcal K$.
+
+\end{document}

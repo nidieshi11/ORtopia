@@ -1,0 +1,166 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=0.65in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\section*{Final deterministic CD-SNDP MILP}
+\begin{equation}
+\begin{aligned}
+(\mathbf{MILP})\quad \max_{v,f,p,x,z}\quad
+&\sum_{(i,j)\in\mathcal A}-\frac{1}{\beta_c}\Biggl(
+D_{ij}\lambda_{ij}+\sum_{h\in\mathcal H}U_{ij}^{h}z_{ij}^{h}
++\sum_{s\in\mathcal S}\sum_{k\in\mathcal K}\bar U_{ij}^{O}x_{ijsk}\\
+&\hspace{42mm}+\beta_f\sum_{s\in\mathcal S}\sum_{k\in\mathcal K}\phi_{ijs}
+\sum_{b=0}^{B_{sk}-1}2^b a_{ijskb}\Biggr)\\
+&-\sum_{s\in\mathcal S}\sum_{k\in\mathcal K}c_{sk}^{\mathrm{FIX}}f_{sk}
+-\sum_{(i,j)\in\mathcal A}\sum_{s\in\mathcal S}\sum_{k\in\mathcal K}c_{ijsk}^{\mathrm{VAR}}x_{ijsk}.
+\end{aligned}\tag{19}
+\end{equation}
+Subject to the inherited operator and demand constraints:
+\begin{align}
+\sum_{s\in\mathcal S}v_{sk}&\leq V_k
+&&\forall k\in\mathcal K,\tag{2}\\
+f_{sk}&\leq W_{sk}v_{sk}
+&&\forall s\in\mathcal S,\ \forall k\in\mathcal K,\tag{3}\\
+\sum_{(i,j)\in\mathcal A}\delta_{ijl_s}x_{ijsk}&\leq Q_k f_{sk}
+&&\forall l_s\in\mathcal L_s,\ \forall s\in\mathcal S,\ \forall k\in\mathcal K,\tag{4}\\
+x_{ijsk}&\leq\sum_{l_s\in\mathcal L_s}\delta_{ijl_s}D_{ij}
+&&\forall(i,j)\in\mathcal A,\ \forall s\in\mathcal S,\ \forall k\in\mathcal K,\tag{5}\\
+p_{ij}&\geq0
+&&\forall(i,j)\in\mathcal A,\tag{6}\\
+v_{sk},f_{sk}&\in\mathbb N
+&&\forall s\in\mathcal S,\ \forall k\in\mathcal K,\tag{7}\\
+\sum_{s\in\mathcal S}\sum_{k\in\mathcal K}x_{ijsk}
++\sum_{h\in\mathcal H}z_{ij}^{h}&=D_{ij}
+&&\forall(i,j)\in\mathcal A,\tag{9}\\
+x_{ijsk}&\geq0
+&&\forall(i,j)\in\mathcal A,\ \forall s\in\mathcal S,\ \forall k\in\mathcal K,\tag{10}\\
+z_{ij}^{h}&\geq0
+&&\forall(i,j)\in\mathcal A,\ \forall h\in\mathcal H.\tag{11}
+\end{align}
+The final formulation adds the following frequency expansion, product linearization, and KKT disjunction rows:
+\begin{align}
+f_{sk}&=\sum_{b=0}^{B_{sk}-1}2^b f_{skb}
+&&\forall s\in\mathcal S,\ \forall k\in\mathcal K,\tag{20}\\
+a_{ijskb}&\leq D_{ij}f_{skb}
+&&\forall(i,j)\in\mathcal A,\ \forall s\in\mathcal S,\ \forall k\in\mathcal K,\ \forall b\in\mathcal B,\tag{21}\\
+a_{ijskb}&\leq x_{ijsk}
+&&\forall(i,j)\in\mathcal A,\ \forall s\in\mathcal S,\ \forall k\in\mathcal K,\ \forall b\in\mathcal B,\tag{22}\\
+a_{ijskb}&\geq x_{ijsk}-D_{ij}(1-f_{skb})
+&&\forall(i,j)\in\mathcal A,\ \forall s\in\mathcal S,\ \forall k\in\mathcal K,\ \forall b\in\mathcal B.\tag{23}
+\end{align}
+\begin{align}
+\lambda_{ij}&\leq-\left(\bar U_{ij}^{O}+\beta_c p_{ij}
++\beta_f\sum_{s\in\mathcal S}\sum_{k\in\mathcal K}\phi_{ijs}f_{sk}\right)
+&&\forall(i,j)\in\mathcal A,\tag{24}\\
+-\left(\bar U_{ij}^{O}+\beta_c p_{ij}
++\beta_f\sum_{s\in\mathcal S}\sum_{k\in\mathcal K}\phi_{ijs}f_{sk}\right)
+-\lambda_{ij}&\leq M_{ij}^{\mathrm I}y_{ij}^{\mathrm I}
+&&\forall(i,j)\in\mathcal A,\tag{25}\\
+\sum_{s\in\mathcal S}\sum_{k\in\mathcal K}x_{ijsk}&\leq M_{ij}^{\mathrm{II}}y_{ij}^{\mathrm{II}}
+&&\forall(i,j)\in\mathcal A,\tag{26}\\
+y_{ij}^{\mathrm I}+y_{ij}^{\mathrm{II}}&\leq1
+&&\forall(i,j)\in\mathcal A,\tag{27}\\
+\lambda_{ij}&\leq-U_{ij}^{h}
+&&\forall(i,j)\in\mathcal A,\ \forall h\in\mathcal H,\tag{28}\\
+-U_{ij}^{h}-\lambda_{ij}&\leq M_{ij}^{\mathrm I h}y_{ij}^{\mathrm I h}
+&&\forall(i,j)\in\mathcal A,\ \forall h\in\mathcal H,\tag{29}\\
+z_{ij}^{h}&\leq M_{ij}^{\mathrm{II}h}y_{ij}^{\mathrm{II}h}
+&&\forall(i,j)\in\mathcal A,\ \forall h\in\mathcal H,\tag{30}\\
+y_{ij}^{\mathrm I h}+y_{ij}^{\mathrm{II}h}&\leq1
+&&\forall(i,j)\in\mathcal A,\ \forall h\in\mathcal H.\tag{31}
+\end{align}
+The additional printed variable domains are:
+\begin{align}
+f_{skb}&\in\{0,1\}
+&&\forall s\in\mathcal S,\ \forall k\in\mathcal K,\ \forall b\in\mathcal B,\tag{32}\\
+a_{ijskb}&\in\mathbb N
+&&\forall(i,j)\in\mathcal A,\ \forall s\in\mathcal S,\ \forall k\in\mathcal K,\ \forall b\in\mathcal B,\tag{33}\\
+y_{ij}^{\mathrm I},y_{ij}^{\mathrm{II}},y_{ij}^{\mathrm I h},y_{ij}^{\mathrm{II}h}&\in\{0,1\}
+&&\forall(i,j)\in\mathcal A,\tag{34}\\
+\lambda_{ij}&\geq0
+&&\forall(i,j)\in\mathcal A.\tag{35}
+\end{align}
+The selected CD-SNDP also includes the later frequency cap:
+\begin{equation}
+f_{sk}\leq35
+\qquad\forall s\in\mathcal S,\ \forall k\in\mathcal K.
+\tag{56}
+\end{equation}
+
+\section*{Operative definitions and variable roles}
+\paragraph{Network and indices.}
+The directed transport network is
+\[
+G=(\mathcal N,\mathcal A),\qquad
+\mathcal A=\{(i,j):i,j\in\mathcal N,\ i\ne j\}.
+\]
+Here \(\mathcal N\) is the set of terminals, \(\mathcal K\) the set of vehicle types, \(\mathcal S\) the set of potential transport services, and \(\mathcal H\) the set of competing alternatives. For each service \(s\), \(\mathcal L_s\) denotes its sequence of legs, indexed by \(l_s\). Each leg is an arc, and the service sequence starts and ends at the same node. Services may have intermediate stops.
+
+\paragraph{Fixed operational data.}
+For vehicle type \(k\), \(V_k\) is the number of available vehicles and \(Q_k\) is their capacity in TEUs. The parameter \(W_{sk}\) is the maximum number of cycles of service \(s\) that one vehicle of type \(k\) can perform during the planning horizon. The paper describes this as maximum operating time divided by cycle time, including travel and terminal time; its explicit computation on PDF page 20 is
+\[
+W_{sk}=\frac{T^{\max}}{t_{sk}^{\mathrm{sail}}+t_{sk}^{\mathrm{port}}}.
+\]
+Here \(T^{\max}\) is maximum operating time, \(t_{sk}^{\mathrm{sail}}\) sailing time and \(t_{sk}^{\mathrm{port}}\) time spent in ports. No rounding of this expression is imposed.
+
+The fixed cost of operating service \(s\) with type \(k\) is \(c_{sk}^{\mathrm{FIX}}\), in euros; the variable cost per container transported from \(i\) to \(j\) using that service and type is \(c_{ijsk}^{\mathrm{VAR}}\), in euros per TEU. The aggregated demand is \(D_{ij}\), in TEUs. The incidence parameters are defined by
+\[
+\delta_{ijl_s}=\begin{cases}
+1,&\text{if a container traveling from }i\text{ to }j\text{ uses leg }l_s,\\
+0,&\text{otherwise},
+\end{cases}
+\qquad (i,j)\in\mathcal A,\ s\in\mathcal S,\ l_s\in\mathcal L_s,
+\]
+\[
+\phi_{ijs}=\begin{cases}
+1,&\text{if both terminals }i\text{ and }j\text{ are contained in service }s,\\
+0,&\text{otherwise},
+\end{cases}
+\qquad (i,j)\in\mathcal A,\ s\in\mathcal S.
+\]
+
+\paragraph{Deterministic utility definition.}
+The selected generic utility specification is the one used to derive (19):
+\begin{equation}
+U_{ij}^{O}=\bar U_{ij}^{O}+\beta_c p_{ij}+\beta_f f_{ij}
+=\bar U_{ij}^{O}+\beta_c p_{ij}
++\beta_f\sum_{s\in\mathcal S}\sum_{k\in\mathcal K}\phi_{ijs}f_{sk}.
+\tag{17}
+\end{equation}
+In particular,
+\[
+f_{ij}=\sum_{s\in\mathcal S}\sum_{k\in\mathcal K}\phi_{ijs}f_{sk}.
+\]
+These definitions apply to OD pairs \((i,j)\in\mathcal A\). The quantity \(\bar U_{ij}^{O}\) is the exogenous part of the operator's utility, not the full utility \(U_{ij}^{O}\). The coefficients \(\beta_c\) and \(\beta_f\) weight price and frequency, respectively. Competing utilities \(U_{ij}^{h}\), for \((i,j)\in\mathcal A\) and \(h\in\mathcal H\), are fixed data. They remain abstract in this generic deterministic formulation, as does \(\bar U_{ij}^{O}\); no random errors, sampled coefficients, or realization indices are introduced. Competition is fixed and exogenous and does not react to the operator's decisions.
+
+\paragraph{Frequency representation.}
+The number of binary digits is defined in the prose immediately preceding (19):
+\[
+B_{sk}=\left\lceil\log_2(W_{sk}V_k+1)\right\rceil.
+\]
+The sums in (19) and (20) run from \(b=0\) to \(B_{sk}-1\). The variables \(f_{skb}\) are the binary digits of \(f_{sk}\). The auxiliary variable \(a_{ijskb}\) represents the product of the binary digit \(f_{skb}\) and the cargo variable \(x_{ijsk}\), using the printed linearization (21)--(23) and domain (33), rather than an additional nonlinear equality.
+
+\paragraph{Decision variables.}
+The operator chooses \(v_{sk}\), the number of type-\(k\) vehicles assigned to service \(s\); \(f_{sk}\), its frequency with that vehicle type; and \(p_{ij}\), the price per container from \(i\) to \(j\). The variables \(x_{ijsk}\) are cargo volumes assigned to the operator's services and \(z_{ij}^{h}\) are cargo volumes assigned to competing alternatives. The original notation table gives cargo volumes in TEUs and prices in euros per TEU.
+
+The variables \(\lambda_{ij}\) are introduced as dual variables associated with the demand equalities (9). The binary pairs \((y_{ij}^{\mathrm I},y_{ij}^{\mathrm{II}})\) and \((y_{ij}^{\mathrm I h},y_{ij}^{\mathrm{II}h})\) implement the operator and competitor complementarity disjunctions, respectively. The symbols \(M_{ij}^{\mathrm I}\), \(M_{ij}^{\mathrm{II}}\), \(M_{ij}^{\mathrm I h}\), and \(M_{ij}^{\mathrm{II}h}\) are fixed big-\(M\) coefficients; the paper supplies no formulas or numerical bounds for them in this formulation. They are retained abstractly. Although the printed maximization subscript in (19) lists only \(v,f,p,x,z\), the frequency digits, product variables, dual variables, and disjunction variables are also variables of the final formulation.
+
+\paragraph{Scope of the added cap.}
+Equation (56) is introduced because the data used to estimate the mode-choice coefficients contain IWT frequencies no greater than 35 services per week. Its printed scope is each service--vehicle-type frequency \(f_{sk}\), not the aggregate OD frequency \(f_{ij}\). Apart from this explicitly selected cap, numerical fleet, network, utility-coefficient, and operating-time values from the case study are not imposed.
+
+\section*{Source qualifications retained without repair}
+\begin{itemize}
+\item The final block on PDF page 16 explicitly inherits (2)--(7) and (9)--(11). Its disjunctions replace the preceding nonlinear complementarity rows; neither those superseded rows nor a separate lower-level optimization problem are imposed here.
+\item The source defines the scalar digit count \(B_{sk}\) but uses the distinct set symbol \(\mathcal B\) in (21)--(23), (32), and (33) without defining that set or relating it explicitly to the service-dependent digit ranges. Both the printed sums and the printed quantifiers have been retained; no definition of \(\mathcal B\) has been supplied.
+\item Equation (34) contains competitor-indexed variables but prints only the quantifier \(\forall(i,j)\in\mathcal A\), with no \(h\)-quantifier. This omission is preserved. The symbol \(\mathbb N\) in (7) and (33) is also retained without adding a convention about zero.
+\item Equation (33) makes the product variable integer, although the preceding prose describes a binary--continuous product and (10) imposes only nonnegativity on cargo. Equation (35) makes the demand-equality dual variable nonnegative, although an equality multiplier is not generally sign-restricted. These printed restrictions are retained, not relaxed.
+\item The frequency term in (19) follows the printed same-service product in the revenue transformation on PDF page 15. In contrast, (17) uses the total OD frequency in the utility of every operator shipment. Expanding that total-frequency utility against all operator cargo would also produce cross-service products, which are absent from (19). The printed objective and utility definition are retained without adding such terms.
+\item The generic formulation divides by \(\beta_c\) but does not state an admissible range or a zero-coefficient exception. No additional sign or nonzero constraint has been inserted. The prose following (17) calls the exogenous part \(\bar U_{ij}\), omitting the superscript \(O\) that appears in the formulas; the operative notation follows the formulas.
+\end{itemize}
+
+\paragraph{Source.}
+Adrien Nicolet and Bilge Atasoy, \emph{A Choice-Driven Service Network Design and Pricing Including Heterogeneous Behaviors}, arXiv:2311.15907v1, physical PDF pages 12--16 and 20. The supplied page images establish the printed forms of the selected rows. The paper's external reference to Tawfik and Limbourg (2019) for transformation details is unverified here; no constraints or conventions have been imported from that reference.
+
+\end{document}

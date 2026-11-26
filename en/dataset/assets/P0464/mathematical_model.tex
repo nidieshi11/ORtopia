@@ -1,0 +1,452 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[margin=0.7in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\section*{DRO location--inventory model: formulation (10) with the full epigraph (9)}
+\begin{equation}
+\begin{aligned}
+\min_{\substack{\boldsymbol{o},\boldsymbol{z},\boldsymbol{\alpha},\boldsymbol{\phi}\\
+\boldsymbol{\gamma},\boldsymbol{\lambda},\boldsymbol{\tau},\delta}}
+\Biggl\{&\sum_{i\in I}f_i o_i+
+\sum_{i\in I}\sum_{t\in\mathcal T}c_t^a z_{t,i}
++\sum_{i\in I}\sum_{t\in\mathcal T}\sum_{l\in L}
+ \left(\mu^d_{t,i,l}\alpha_{t,i,l}+\mu^M_{t,i,l}\phi_{t,i,l}\right)\\
+&+\sum_{i\in I}\sum_{l\in L}
+ \left(\mu^\rho_{i,l}\gamma_{i,l}+\mu^q_{i,l}\lambda_{i,l}\right)
++\sum_{(i,j)\in\mathcal A}\sum_{l\in L}\mu^V_{i,j,l}\tau_{i,j,l}+\delta\Biggr\}
+\end{aligned}\tag{10a}
+\end{equation}
+\begin{align}
+\text{s.t.}\quad &(1\mathrm b)\text{--}(1\mathrm c),\tag{10b}\\
+&\delta\geq H(\boldsymbol z,\boldsymbol\alpha,\boldsymbol\phi,
+\boldsymbol\gamma,\boldsymbol\lambda,\boldsymbol\tau).\tag{10c}
+\end{align}
+The inherited first-stage rows are
+\begin{align}
+&\sum_{t\in\mathcal T}s_t z_{t,i}\leq S_i o_i,
+&&\forall i\in I,\tag{1b}\\
+&o_i\in\{0,1\},\quad z_{i,t\geq0},
+&&\forall i\in I,\ t\in\mathcal T.\tag{1c}
+\end{align}
+\noindent\emph{Printed notation in (1c).} The page image prints the malformed subscript
+$z_{i,t\geq0}$, retained here. The defining paragraph on page 10 separately specifies
+$z_{t,i}$ as a nonnegative continuous variable:
+\[
+z_{t,i}\geq0\qquad(t\in\mathcal T,\ i\in\mathcal N).
+\]
+No identification of an additional variable $z_{i,t}$ is introduced.
+
+\subsection*{Sets, fixed data, and variable roles}
+The directed network is $G(\mathcal N,\mathcal A)$. The set $\mathcal N$ consists of nodes,
+$\mathcal A$ of directed road arcs, $I\subseteq\mathcal N$ of potential warehouse sites,
+$\mathcal T$ of relief-item types, and $L$ of disaster levels. The problem-description
+paragraph assumes that candidate locations and demand nodes are the same; Table 1
+nevertheless states $I\subseteq\mathcal N$, and the displayed model uses $I$ as retained above.
+
+The fixed nonnegative parameters $f_i,S_i,s_t,c_t^a,c_t^p,c_t^u,c_t^h,c^t_{i,j}$ are,
+respectively, facility-opening cost, warehouse storage capacity, unit storage requirement,
+unit acquisition cost, unit post-disaster procurement cost, unit unmet-demand penalty,
+unit holding cost, and unit transportation cost. Their indices are $i\in\mathcal N$,
+$t\in\mathcal T$, and $(i,j)\in\mathcal A$, as applicable. The parameter $v_t$ is arc
+capacity required per unit of item $t$; $\hat V_{i,j}$ is nominal arc capacity.
+The source assumes no limit on supplies available for first-stage prepositioning.
+It describes post-disaster procurement as limited and more expensive, without specifying
+a general numerical cost ratio.
+
+The first-stage decision $o_i$ indicates whether a facility is open, and $z_{t,i}$ is its
+prepositioned quantity of item $t$. The five families
+$\alpha_{t,i,l},\phi_{t,i,l},\gamma_{i,l},\lambda_{i,l},\tau_{i,j,l}$ are moment-dual
+variables, not physical inventory or flow variables. Appendix B specifies them as
+unrestricted in sign, for $t\in\mathcal T$, $i\in I$, $l\in L$, and $(i,j)\in\mathcal A$
+as appropriate. The scalar $\delta$ is the full recourse epigraph variable; no
+nonnegativity restriction on $\delta$ is printed.
+
+\subsection*{Uncertainty, support, and ambiguity}
+The random vector is
+\[
+\xi=[\boldsymbol q,\boldsymbol d,\boldsymbol\rho,\boldsymbol M,\boldsymbol V]^\top.
+\]
+For $i\in I$, $l\in L$, $q_{i,l}$ is binary and equals one if a level-$l$ disaster occurs
+at node $i$, and zero otherwise. The random quantity $d_{t,i,l}$ is demand for item $t$
+following that disaster; $\rho_{i,l}$ is the fraction of prepositioned supplies remaining
+usable; $M_{t,i,l}$ is the maximum post-disaster procurement quantity; and $V_{i,j,l}$ is
+arc capacity following a level-$l$ disaster at either endpoint. These are uncertain
+inputs to recourse, but their realizations are chosen in the worst-case maximization
+underlying $H$. Means and support endpoints are fixed data, assumed known or approximable.
+
+The source defines
+\[
+\mathcal R=\mathcal R_q\times\mathcal R_d\times\mathcal R_\rho
+\times\mathcal R_M\times\mathcal R_V,
+\]
+\begin{align}
+\mathcal R_q&:=\{0,1\}^{N},&
+\mathcal R_d&:=\left\{\boldsymbol d\geq0:
+\underline d_{t,i,l}\leq d_{t,i,l}\leq\overline d_{t,i.l},\ \forall(t,i,l)\right\},\tag{3a}\\
+\mathcal R_\rho&:=\left\{\boldsymbol\rho\geq0:
+\underline\rho_{i,l}\leq\rho_{i,l}\leq\overline\rho_{i,l},\ \forall(i,l)\right\},\tag{3b}\\
+\mathcal R_M&:=\left\{\boldsymbol M\geq0:
+\underline M_{t,i,l}\leq M_{t,i,l}\leq\overline M_{t,i,l},\ \forall(t,i)\right\},\tag{3c}\\
+\mathcal R_V&:=\left\{\boldsymbol V\geq0:
+\underline V_{i,j,l}\leq V_{i,j,l}\leq\overline V_{i,j,l},\
+\forall(i,j)\in\mathcal A,\ \forall l\right\}.\tag{3d}
+\end{align}
+Here lower and upper decorations denote support endpoints, not random realizations.
+The supplied text of (3a) uses exponent $N$ and the punctuation $i.l$ in the demand
+upper endpoint; (3c) quantifies $(t,i)$ although $l$ occurs in its expression. These
+printed scopes are retained. The component indexing in the definition paragraphs is
+$t\in\mathcal T$, $i\in\mathcal N$ for $d,M$, $i\in I$ for $q,\rho$, $l\in L$, and
+$(i,j)\in\mathcal A$ for $V$. No replacement dimension for $\mathcal R_q$ is supplied here.
+
+Let $\mathcal P=\mathcal P(\mathcal R)$ be the probability measures on
+$(\mathcal R,\mathcal B)$, with $\mathcal B$ the Borel $\sigma$-field, and let
+$\mathbb E_{\mathbb P}$ denote expectation under $\mathbb P$. Then
+\[
+\mu:=\mathbb E_{\mathbb P}[\xi]
+=[\boldsymbol\mu^q,\boldsymbol\mu^d,\boldsymbol\mu^\rho,
+\boldsymbol\mu^M,\boldsymbol\mu^V]^\top,
+\]
+\begin{equation}
+\mathcal F(\mathcal R,\mu):=
+\left\{\mathbb P\in\mathcal P(\mathcal R)\mid
+\mathbb E_{\mathbb P}[\xi]=\mu\right\}.\tag{4}
+\end{equation}
+The component moment and normalization equalities used in Appendix B are
+\begin{align}
+\int_{\mathcal R}d_{t,i,l}\,d\mathbb P&=\mu^d_{t,i,l},
+&&\forall i\in I,\ t\in\mathcal T,\ l\in L,\tag{B.1b}\\
+\int_{\mathcal R}M_{t,i,l}\,d\mathbb P&=\mu^M_{t,i,l},
+&&\forall i\in I,\ t\in\mathcal T,\ l\in L,\tag{B.1c}\\
+\int_{\mathcal R}\rho_{i,l}\,d\mathbb P&=\mu^\rho_{i,l},
+&&\forall i\in I,\ l\in L,\tag{B.1d}\\
+\int_{\mathcal R}V_{i,j,l}\,d\mathbb P&=\mu^V_{i,j,l},
+&&\forall(i,j\in\mathcal A,\ l\in L,\tag{B.1e}\\
+\int_{\mathcal R}q_{i,l}\,d\mathbb P&=\mu^q_{i,l},
+&&\forall i\in I,\ l\in L,\tag{B.1f}\\
+\int_{\mathcal R}d\mathbb P&=1.\tag{B.1g}
+\end{align}
+The unmatched parenthesis in the quantifier of (B.1e) is retained from the supplied
+source text. The multipliers of these six families are, respectively,
+$\alpha,\phi,\gamma,\tau,\lambda,\theta$, all unrestricted in sign. The normalization
+multiplier $\theta$ belongs to the derivation, not to the decision list of (10).
+
+\paragraph{Disaster exclusivity and optional counts.}
+Page 10 restricts the computational study, rather than the general formulation, to
+\[
+\sum_{l\in L}q_{i,l}\leq1,\qquad\forall i\in I.
+\]
+Likewise, page 16 says that to prescribe the number of disasters of level $l$, one
+\emph{can add}
+\[
+\sum_{i\in I}q_{i,l}=N_l.
+\]
+Neither restriction is included in the general (9b) selected here. The case-study
+values and hurricane-count equalities are not imposed on this formulation.
+
+\subsection*{Full worst-case recourse epigraph}
+For fixed $(\boldsymbol z,\boldsymbol\alpha,\boldsymbol\phi,
+\boldsymbol\gamma,\boldsymbol\lambda,\boldsymbol\tau)$, Proposition 2 defines
+\begin{equation}
+\begin{aligned}
+&H(\boldsymbol z,\boldsymbol\alpha,\boldsymbol\phi,
+\boldsymbol\gamma,\boldsymbol\lambda,\boldsymbol\tau)\\
+&=\max_{\substack{
+\boldsymbol\beta,\boldsymbol\Gamma,\boldsymbol\psi,\boldsymbol\varphi,
+\boldsymbol a,\boldsymbol\Theta,\boldsymbol\kappa,\boldsymbol\varrho\\
+\boldsymbol a',\boldsymbol\Theta',\boldsymbol\kappa',\boldsymbol\varrho',
+\boldsymbol h,\boldsymbol g,\boldsymbol F,\boldsymbol\pi\\
+\boldsymbol\eta,\boldsymbol\Phi,\boldsymbol\varpi,\boldsymbol b,\boldsymbol\Lambda}}
+\Biggl\{\sum_{i\in I}\sum_{t\in\mathcal T}\sum_{l\in L}
+\Bigl[\underline d_{t,i,l}(k_{t,i,l}-\alpha_{t,i,l})
++\Delta d_{t,i,l}(h_{t,i,l}-\alpha_{t,i,l}a_{t,i,l})\Bigr]\\
+&\qquad+\sum_{i\in I}\sum_{t\in\mathcal T}z_{t,i}
+\left(\sum_{l\in L}k_{t,i,l}-\beta_{t,i}\right)\\
+&\qquad-\sum_{i\in I}\sum_{l\in L}
+\Bigl[\underline\rho_{i,l}\left(\sum_{t\in\mathcal T}z_{t,i}k_{t,i,l}+\gamma_{i,l}\right)
++\Delta\rho_{i,l}\left(\sum_{t\in\mathcal T}z_{t,i}g_{t,i,l}+\Theta_{i,l}\gamma_{i,l}\right)\Bigr]\\
+&\qquad+\sum_{i\in I}\sum_{t\in\mathcal T}\sum_{l\in L}
+\Bigl[\underline M_{t,i,l}(F_{t,i,l}-\phi_{t,i,l})
++\Delta M_{t,i,l}(\pi_{t,i,l}-\phi_{t,i,l}\kappa_{t,i,l})\Bigr]\\
+&\qquad+\sum_{(i,j)\in\mathcal A}\sum_{l\in L}
+\Bigl[\underline V_{i,j,l}(\eta_{i,j,l}+\varpi_{i,j,l}-\tau_{i,j,l})
++\Delta V_{i,j,l}(\Phi_{i,j,l}+\Lambda_{i,j,l}-\varrho_{i,j,l}\tau_{i,j,l})\\
+&\qquad+\sum_{(i,j)\in\mathcal A}
+\Bigl[\left(\psi_{i,j}-\sum_{l\in L}\eta_{i,j,l}\right)\hat V_{i,j}
++\left(\varphi_{i,j}-\sum_{l\in L}\varpi_{i,j,l}\right)\hat V_{i,j}\Bigr]
+-\sum_{i\in I}\sum_{l\in L}q_{i,l}\lambda_{i,l}\Biggr\}
+\end{aligned}\tag{9a}
+\end{equation}
+\begin{equation}
+\text{s.t.}\quad
+\{(7\mathrm a)\text{--}(7\mathrm d)\},\quad
+\boldsymbol q\in\{0,1\},\quad
+(\boldsymbol a,\boldsymbol\Theta,\boldsymbol\kappa,\boldsymbol\varrho)\in\{0,1\},
+\quad (\mathrm C.3a)\text{--}(\mathrm C.3n).\tag{9b}
+\end{equation}
+\noindent\emph{Printed omissions in (9a).} The displayed maximization subscript omits
+$\boldsymbol q$ and $\boldsymbol k$, although they occur in its objective and defining
+constraints. The opening square bracket following
+$\sum_{(i,j)\in\mathcal A}\sum_{l\in L}$ has no matching closing square bracket in the
+original page image. Its printed placement is retained; no additional nesting or
+closing location is imposed. The nominal-capacity and $q\lambda$ sums are reproduced
+on their separate printed line.
+
+The binary families have component indices
+\[
+q_{i,l},\Theta_{i,l}\ (i\in I,l\in L),\qquad
+ a_{t,i,l},\kappa_{t,i,l}\ (t\in\mathcal T,i\in I,l\in L),\qquad
+\varrho_{i,j,l}\ ((i,j)\in\mathcal A,l\in L).
+\]
+The remaining inner variables are continuous auxiliary or recourse-dual variables;
+no additional integrality is assigned to the primed product variables.
+The dual variables $\beta_{t,i},\Gamma_{t,i},\psi_{i,j},\varphi_{i,j}$ correspond to
+(2b), (2c), (2d), and (2e), respectively. In particular, the outer multiplier
+$\phi_{t,i,l}$ is distinct from the arc-capacity dual $\varphi_{i,j}$.
+
+\subsection*{Dual feasible region inherited by (9)}
+\begin{align}
+-\beta_{t,i}+\beta_{t,j}+v_t\psi_{i,j}+v_t\varphi_{i,j}
+&\leq c^t_{i,j},
+&&\forall(i,j)\in\mathcal A,\ \forall t\in\mathcal T,\tag{7a}\\
+\beta_{t,i}+\Gamma_{t,i}&\leq c_t^p,
+&&\forall i\in I,\ t\in\mathcal T,\tag{7b}\\
+-c_t^h\leq\beta_{t,i}&\leq c_t^u,
+&&\forall i\in I,\ t\in\mathcal T,\tag{7c}\\
+\Gamma_{t,i}\leq0,\quad\psi_{i,j}&\leq0,\quad\varphi_{i,j}\leq0,
+&&\forall(i,j)\in\mathcal A,\ t\in\mathcal T.\tag{7d}
+\end{align}
+The quantifier in (7d) is retained as printed. Page 16 calls this region bounded and
+$\mathcal R$ finite. Those claims are not extra constraints: the displayed region has
+unbounded negative directions in its nonpositive dual variables, and the interval
+supports in (3) are not generally finite sets.
+
+\subsection*{Endpoint construction and auxiliary meanings}
+Appendix C replaces each interval realization by a lower endpoint plus its range
+multiplied by a binary endpoint selector. Its stated premise is that, at an optimum
+of the inner maximization with the outer variables fixed, each such realization can
+be taken at an endpoint. The defining relations are
+\begin{align*}
+\Delta d_{t,i,l}&=\overline d_{t,i,l}-\underline d_{t,i,l},&
+d_{t,i,l}&=\underline d_{t,i,l}+a_{t,i,l}\Delta d_{t,i,l},\\
+\Delta\rho_{i,l}&=\overline\rho_{i,l}-\underline\rho_{i,l},&
+\rho_{i,l}&=\underline\rho_{i,l}+\Delta\rho_{i,l}\Theta_{i,l},\\
+\Delta M_{t,i,l}&=\overline M_{t,i,l}-\underline M_{t,i,l},&
+M_{t,i,l}&=\underline M_{t,i,l}+\Delta M_{t,i,l}\kappa_{t,i,l},\\
+\Delta V_{i,j,l}&=\overline V_{i,j,l}-\underline V_{i,j,l},&
+V_{i,j,l}&=\underline V_{i,j,l}+\Delta V_{i,j,l}\varrho_{i,j,l}.
+\end{align*}
+Here $t\in\mathcal T$, $i\in I$, $l\in L$, and $(i,j)\in\mathcal A$ as applicable.
+The demand selector is defined as one at the upper endpoint and zero at the lower
+endpoint; the other selectors follow the same construction. No separate rule for
+coincident endpoints is supplied.
+
+The following are the authors' meanings of the product auxiliaries, not additional
+nonlinear equalities imposed alongside their replacement rows (C.3):
+\begin{align*}
+k_{t,i,l}&=q_{i,l}\beta_{t,i},&
+a'_{t,i,l}&=a_{t,i,l}q_{i,l},&
+h_{t,i,l}&=a'_{t,i,l}\beta_{t,i},\\
+\Theta'_{i,l}&=\Theta_{i,l}q_{i,l},&
+g_{t,i,l}&=\Theta'_{i,l}\beta_{t,i},&
+F_{t,i,l}&=q_{i,l}\Gamma_{t,i},\\
+\kappa'_{t,i,l}&=\kappa_{t,i,l}q_{i,l},&
+\pi_{t,i,l}&=\kappa'_{t,i,l}\Gamma_{t,i},&
+\eta_{i,j,l}&=q_{i,l}\psi_{i,j},\\
+\varrho'_{i,j,l}&=\varrho_{i,j,l}q_{i,l},&
+\Phi_{i,j,l}&=\varrho'_{i,j,l}\psi_{i,j},&
+\varpi_{i,j,l}&=q_{j,l}\varphi_{i,j},\\
+b_{i,j,l}&=\varrho_{i,j,l}q_{j,l},&
+\Lambda_{i,j,l}&=b_{i,j,l}\varphi_{i,j}.&&
+\end{align*}
+The node/item families are indexed by $t\in\mathcal T$, $i\in I$, $l\in L$,
+with $t$ absent for $\Theta'$; the arc families are indexed by
+$(i,j)\in\mathcal A$, $l\in L$.
+
+\subsection*{Complete linearization rows used in (9b)}
+The lower and upper decorations on dual coefficients below denote fixed bounds,
+not additional optimization variables. The source prints these families without
+individual quantifiers; their component ranges are those just specified. The source prints inconsistent $\eta_{t,i,l}$ subscripts in (C.3i). The operative candidate selects the explicit arc-product definition on the same source page; the original conflicting subscripts remain documented below.
+\begin{align}
+&\begin{aligned}
+k_{t,i,l}&\geq q_{i,l}\underline\beta_{t,i},&
+k_{t,i,l}&\geq\beta_{t,i}+\overline\beta_{t,i}(q_{i,l}-1),\\
+k_{t,i,l}&\leq q_{i,l}\overline\beta_{t,i},&
+k_{t,i,l}&\leq\beta_{t,i}+\underline\beta_{t,i}(q_{i,l}-1)
+\end{aligned}\tag{C.3a}\\
+& a'_{t,i,l}\geq0,\quad a'_{t,i,l}\leq q_{i,l},\quad
+ a'_{t,i,l}\leq a_{t,i,l},\quad a'_{t,i,l}\geq a_{t,i,l}+q_{i,l}-1
+\tag{C.3b}\\
+&\begin{aligned}
+h_{t,i,l}&\geq a'_{t,i,l}\underline\beta_{t,i},&
+h_{t,i,l}&\geq\beta_{t,i},{}+\overline\beta_{t,i}(a'_{t,i,l}-1),\\
+h_{t,i,l}&\leq a'_{t,i,l}\overline\beta_{t,i},&
+h_{t,i,l}&\leq\beta_{t,i}+\underline\beta_{t,i}(a'_{t,i,l}-1)
+\end{aligned}\tag{C.3c}\\
+&\Theta'_{i,l}\geq0,\quad\Theta'_{i,l}\leq q_{i,l},\quad
+\Theta'_{i,l}\leq\Theta_{i,l},\quad\Theta'_{i,l}\geq\Theta_{i,l}+q_{i,l}-1
+\tag{C.3d}\\
+&\begin{aligned}
+g_{t,i,l}&\geq\Theta'_{i,l}\underline\beta_{t,i},&
+g_{t,i,l}&\geq\beta_{t,i},{}+\overline\beta_{t,i}(\Theta'_{i,l}-1),\\
+g_{t,i,l}&\leq\Theta'_{i,l}\overline\beta_{t,i},&
+g_{t,i,l}&\leq\beta_{t,i}+\underline\beta_{t,i}(\Theta'_{i,l}-1)
+\end{aligned}\tag{C.3e}\\
+&\begin{aligned}
+F_{t,i,l}&\geq q_{i,l}\underline\Gamma_{t,i},&F_{t,i,l}&\geq\Gamma_{t,i},\\
+F_{t,i,l}&\leq0,&F_{t,i,l}&\leq\Gamma_{t,i}+\underline\Gamma_{t,i}(q_{i,l}-1)
+\end{aligned}\tag{C.3f}\\
+&\kappa'_{t,i,l}\geq0,\quad\kappa'_{t,i,l}\leq q_{i,l},\quad
+\kappa'_{t,i,l}\leq\kappa_{t,i,l},\quad
+\kappa'_{t,i,l}\geq\kappa_{t,i,l}+q_{i,l}-1
+\tag{C.3g}\\
+&\begin{aligned}
+\pi_{t,i,l}&\geq\kappa'_{t,i,l}\underline\Gamma_{t,i},&\pi_{t,i,l}&\geq\Gamma_{t,i},\\
+\pi_{t,i,l}&\leq0,&\pi_{t,i,l}&\leq\Gamma_{t,i}+\underline\Gamma_{t,i}(\kappa'_{t,i,l}-1)
+\end{aligned}\tag{C.3h}\\
+&\begin{aligned}
+\eta_{i,j,l}&\geq q_{i,l}\underline\psi_{i,j},&\eta_{i,j,l}&\geq\psi_{i,j},\\
+\eta_{i,j,l}&\leq0,&\eta_{i,j,l}&\leq\psi_{i,j}+\underline\psi_{i,j}(q_{i,l}-1)
+\end{aligned}\tag{C.3i}\\
+&\varrho'_{i,j,l}\geq0,\quad\varrho'_{i,j,l}\leq q_{i,l},\quad
+\varrho'_{i,j,l}\leq\varrho_{i,j,l},\quad
+\varrho'_{i,j,l}\geq\varrho_{i,j,l}+q_{i,l}-1
+\tag{C.3j}\\
+&\begin{aligned}
+\Phi_{i,j,l}&\geq\varrho'_{i,j,l}\underline\psi_{i,j},&\Phi_{i,j,l}&\geq\psi_{i,j},\\
+\Phi_{i,j,l}&\leq0,&\Phi_{i,j,l}&\leq\psi_{i,j}+\underline\psi_{i,j}(\varrho'_{i,j,l}-1)
+\end{aligned}\tag{C.3k}\\
+&\begin{aligned}
+\varpi_{i,j,l}&\geq q_{j,l}\underline\varphi_{i,j},&\varpi_{i,j,l}&\geq\varphi_{i,j},\\
+\varpi_{i,j,l}&\leq0,&\varpi_{i,j,l}&\leq\varphi_{i,j}+\underline\varphi_{i,j}(q_{j,l}-1)
+\end{aligned}\tag{C.3l}\\
+&b_{i,j,l}\geq0,\quad b_{i,j,l}\leq q_{j,l},\quad
+ b_{i,j,l}\leq\varrho_{i,j,l},\quad b_{i,j,l}\geq\varrho_{i,j,l}+q_{j,l}-1
+\tag{C.3m}\\
+&\begin{aligned}
+\Lambda_{i,j,l}&\geq b_{i,j,l}\underline\varphi_{i,j},&\Lambda_{i,j,l}&\geq\varphi_{i,j},\\
+\Lambda_{i,j,l}&\leq0,&\Lambda_{i,j,l}&\leq\varphi_{i,j}+\underline\varphi_{i,j}(b_{i,j,l}-1)
+\end{aligned}\tag{C.3n}
+\end{align}
+\noindent\emph{Printed punctuation and index inconsistency.} The page image has a comma
+between $\beta_{t,i}$ and the following plus sign in the second inequality of both
+(C.3c) and (C.3e). In (C.3i), the last two inequalities use $\eta_{t,i,l}$ rather than
+the arc-indexed $\eta_{i,j,l}$ defined in the preceding prose. This executable candidate selects that explicit source product form and binds all four C.3i rows to the same arc/level auxiliary. It does not claim equivalence to a literal reading that treats both subscript families as distinct. No additional nonlinear product equality is imposed alongside these four replacement rows.
+
+\subsection*{Bound coefficients and the Appendix D discussion}
+Appendix C identifies $\underline\beta,\overline\beta,
+\underline\Gamma,\underline\psi,\underline\varphi$ as bound coefficients in the
+McCormick inequalities. They are distinct from the unmarked dual variables.
+Appendix D gives the following bound discussion (page 48):
+\[
+-c_t^h\leq\beta_{t,i}\leq c_t^u,\qquad
+\underline\beta_{t,i}=-c_t^h,\qquad \overline\beta=c_t^u,
+\qquad k_{t,i,l}\in[\underline\beta_{t,i},\overline\beta_{t,i}].
+\]
+The upper-bound definition is printed without component subscripts. For the procurement
+dual, the discussion states
+\[
+\Gamma_{t,i}\leq c_t^p-\beta_{t,i},\qquad \Gamma_{t,i}\leq0,
+\qquad \Gamma_{t,i}=\min\{c_t^p-\beta_{t,i},0\}
+\quad\text{in an optimal solution},
+\]
+\[
+\overline\Gamma_{t,i}=0,\qquad
+\underline\Gamma_{t,i}=
+\begin{cases}
+c_t^p-c_t^u,&c_t^p\leq c_t^u,\\
+0,&\text{otherwise}.
+\end{cases}
+\]
+Its final paragraph starts from
+\[
+v_t\psi_{i,j}+v_t\varphi_{i,j}\leq c^t_{i,j}+\beta_{t,i}-\beta_{t,j},
+\qquad \psi_{i,j}\leq0,\quad\varphi_{i,i}\leq0,
+\]
+and the supplied text gives the bound statement
+\[
+\underline\psi_{i,j}\leq
+\min_t\left\{(1/v_t)(c^t_{i,j}-c_t^h-c_t^u\right\}
+\quad\text{if }c^t_{i,j}\leq c_t^h+c_t^u,
+\qquad \underline\psi_{i,j}=0\quad\text{otherwise}.
+\]
+This is retained as a bound discussion, not strengthened to an equality or repaired
+into a different inequality. Its condition contains $t$ outside the minimum and
+its parenthesis is incomplete in the supplied text. The page-48 image is not supplied,
+so the decorations in this last bound statement, unlike the coefficients in the
+page-47 inequalities, remain image-unverified. No formula assigning
+$\underline\varphi_{i,j}$ appears in the supplied Appendix D text; it remains the
+abstract bound coefficient used in (C.3l) and (C.3n). No numerical big-$M$, additional
+positivity assumption on $v_t$, or symmetric repair for $\underline\varphi$ is added.
+
+\subsection*{Recourse definition underlying the epigraph}
+For feasible first-stage decisions and a given realization $\xi$, the recourse value
+used in the ambiguity model is the following problem. These rows define $Q$ and the
+origin of (7); they are not an additional primal block imposed on the variables of
+(9).
+\begin{equation}
+Q(\boldsymbol o,\boldsymbol z,\xi):=
+\min_{\boldsymbol y,\boldsymbol u,\boldsymbol e,\boldsymbol x}
+\left\{\sum_{i\in I}\sum_{t\in\mathcal T}
+(c_t^p y_{t,i}+c_t^u u_{t,i}+c_t^h e_{t,i})
++\sum_{t\in\mathcal T}\sum_{(i,j)\in\mathcal A}c^t_{i,j}x^t_{i,j}\right\}.
+\tag{2a}
+\end{equation}
+\begin{align}
+&\begin{aligned}
+\text{s.t.}\quad
+\sum_{j:(j,i)\in\mathcal A}x^t_{j,i}
+-\sum_{j:(i,j)\in\mathcal A}x^t_{i,j}
++y_{t,i}-e_{t,i}+u_{t,i}
+&=\sum_{l\in L}q_{i,l}(d_{t,i,l}-\rho_{i,l}z_{t,i})\\
+&\quad-\left(1-\sum_{l\in L}q_{i,l}\right)z_{t,i},
+\qquad\forall t\in\mathcal T,\ i\in I,
+\end{aligned}\tag{2b}\\
+&y_{t,i}\leq\sum_{l\in L}q_{i,l}M_{t,i,l},
+\qquad\forall t\in\mathcal T,\ i\in I,\tag{2c}\\
+&\sum_{t\in\mathcal T}v_t x^t_{i,j}
+\leq\sum_{l\in L}q_{i,l}V_{i,j,l}
++\left(1-\sum_{l\in L}q_{i,l}\right)\hat V_{i,j},
+\qquad\forall(i,j)\in\mathcal A,\tag{2d}\\
+&\sum_{t\in\mathcal T}v_t x^t_{i,j}
+\leq\sum_{l'\in L}q_{j,l'}V_{i,j,l'}
++\left(1-\sum_{l'\in L}q_{j,l'}\right)\hat V_{i,j},
+\qquad\forall(i,j)\in\mathcal A,\tag{2e}\\
+&y_{t,i}\geq0,\quad e_{t,i}\geq0,\quad u_{t,i}\geq0,\quad x^t_{i,j}\geq0,
+\qquad\forall t\in\mathcal T,\ i\in(i,j)\in\mathcal A.\tag{2f}
+\end{align}
+The variables $y_{t,i},e_{t,i},u_{t,i}$ are continuous quantities procured, left unused,
+and unmet, respectively; the defining prose gives them for all $t\in\mathcal T$,
+$i\in\mathcal N$. The continuous variable $x^t_{i,j}$ is shipment of item $t$ through
+arc $(i,j)\in\mathcal A$. All four are nonnegative by their prose definitions. The
+malformed quantifier $i\in(i,j)\in\mathcal A$ in (2f) is retained.
+
+If $\sum_{l\in L}q_{i,l}=0$, all inventory prepositioned at $i$ remains usable.
+The accompanying arc-capacity interpretation is: nominal capacity $\hat V_{i,j}$
+when neither endpoint is hit, $V_{i,j,l}$ or $V_{i,j,l'}$ when only $i$ or only $j$
+is hit, respectively, and
+\[
+\min\{V_{i,j,l},V_{i,j,l'}\}
+\]
+when the two endpoints are hit at levels $l$ and $l'$. These are the authors'
+interpretations of (2d)--(2e), not additional capacity inequalities.
+
+The moment duality in Appendix B and the endpoint/product replacements in Appendix C
+lead to the selected (9)--(10). The intermediate min--max formulations and algorithmic
+master problems are not simultaneously enforced here. Proposition 3 states that, for
+fixed outer arguments,
+\[
+H(\boldsymbol z,\boldsymbol\alpha,\boldsymbol\phi,
+\boldsymbol\gamma,\boldsymbol\lambda,\boldsymbol\tau)<\infty,
+\]
+and that $H$ is convex piecewise linear in those arguments with finitely many pieces.
+
+\paragraph{Source.}
+K. S. Shehadeh and E. L. Tucker, \emph{Stochastic Optimization Models for Location and
+Inventory Prepositioning of Disaster Relief Supplies}, arXiv:2012.05387v3,
+physical PDF pages 10--17 and Appendices B--E, pages 45--49. Equations (3)--(4) and the
+Appendix B and D passages are available in the supplied full-page text; their original
+page images are not supplied. The supplied images of pages 12, 16, 17, and 47 establish
+the displayed typographical issues and the bound accents in the linearization rows.
+\end{document}

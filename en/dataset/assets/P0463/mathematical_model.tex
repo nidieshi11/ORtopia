@@ -1,0 +1,156 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\begin{document}
+
+\begin{align}
+\text{(MP)}\qquad \text{minimize}\quad &\sum_{t\in T}c_t x_t \notag\\
+\text{subject to}\quad &\sum_{t\in T}a_{it}x_t=1, &&i\in C, \tag{2}\\
+&x_t\in\{0,1\}, &&t\in T. \notag
+\end{align}
+The printed strengthening imposed on the minimum number of tour-trees is
+\begin{equation}
+\sum_{t\in T}x_t\geq
+\left\lceil\frac{\sum_{i\in C}\mu_c}{\theta\bar Q}\right\rceil.
+\tag{3}
+\end{equation}
+\noindent\textit{Printed indexing issue.} Equation (3) prints $\mu_c$ under a sum indexed by $i\in C$. The customer means are defined as $\mu_i$, $i\in C$; no index $c$ is bound in (3). The printed expression is retained without repair.
+
+\section*{Fixed data and operating assumptions}
+The problem is defined on an undirected weighted graph
+\[
+G=(V,E),\qquad V=D\cup S\cup C,
+\]
+where $D$, $S$, and $C$ are the sets of depots, satellites, and customers, respectively. The edge set is partitioned into the two echelon edge sets
+\begin{align*}
+E^1&=\{(i,j)\mid i\in D\cup S,\ j\in S,\ i\neq j\},\\
+E^2&=\{(i,j)\mid i\in S\cup C,\ j\in C,\ i\neq j\}.
+\end{align*}
+First-echelon (FE) vehicles traverse $E^1$ and second-echelon (SE) vehicles traverse $E^2$. For each $e\in E$, the fixed weight $c_e$ is the transportation cost of traversing edge $e$.
+
+There is an unlimited homogeneous fleet for each echelon. The respective vehicle capacities satisfy
+\[
+Q^{\mathrm{FE}}>Q^{\mathrm{SE}}.
+\]
+At satellites, goods are unloaded from FE vehicles and directly loaded into SE vehicles, with no intermediate storage. Deliveries from different FE vehicles to the same SE vehicle are not allowed. Multiple FE vehicles may visit a satellite provided that they supply different SE vehicles.
+
+For every $i\in C$, demand $\xi_i$ is a non-negative integer random variable with mean $\mu_i$ and variance $\sigma_i^2$:
+\[
+\xi_i\in\{0,1,2,\ldots\},\qquad
+\mathbb E[\xi_i]=\mu_i,\qquad
+\operatorname{Var}(\xi_i)=\sigma_i^2,
+\qquad i\in C.
+\]
+The joint demand distribution is fixed data. No independence assumption is imposed: demands of different customers may be statistically dependent. The fixed chance-constraint level $\eta$ specifies the required probability that the demand on each SE route fits within its capacity. The general problem definition does not print an additional numerical restriction on $\eta$.
+
+\section*{Routes and the feasible tour-tree set}
+\paragraph{First-echelon route (Definition 1).}
+An FE route is a sequence
+\[
+f=(n_0,n_1,\ldots,n_m,n_{m+1})
+\]
+with
+\begin{align*}
+m&\geq1, & n_0&=n_{m+1}\in D,\\
+n_i&\in S &&\text{for all }i\in\{1,\ldots,m\},\\
+n_i&\neq n_j &&\text{for all }i,j\in\{1,\ldots,m\},\ i\neq j.
+\end{align*}
+
+\paragraph{Second-echelon route (Definition 2).}
+A valid SE route is a sequence
+\[
+r=(n_0,n_1,\ldots,n_m,n_{m+1})
+\]
+with
+\begin{align*}
+m&\geq1, & n_0&=n_{m+1}\in S,\\
+n_i&\in C &&\text{for }i\in\{1,\ldots,m\},\\
+n_i&\neq n_j &&\text{for all }i,j\in\{1,\ldots,m\},\ i\neq j,
+\end{align*}
+and, with $C'=\{n_1,\ldots,n_m\}$,
+\begin{equation}
+\mathbb P\left(\sum_{i\in C'}\xi_i\leq Q^{\mathrm{SE}}\right)\geq\eta.
+\tag{1}
+\end{equation}
+Constraint (1) applies to every SE route in a feasible tour-tree, not to the combined stochastic demand of the whole tour-tree.
+
+\paragraph{Tour-tree (Definition 3 and inherited feasibility).}
+A tour-tree comprises a single FE route and all SE routes supplied by that FE route. Its sequence representation is
+\[
+t=(n_0,(n_1,R_1),\ldots,(n_m,R_m),n_{m+1}),
+\]
+where
+\[
+m\geq1,\qquad n_0=n_{m+1}\in D,\qquad
+n_k\in S\quad\text{for }k\in\{1,\ldots,m\},
+\]
+and $R_k$ is the set of SE routes starting at satellite $n_k$. The underlying FE route obeys Definition 1, and each route in each $R_k$ obeys Definition 2. Customers are visited at most once within an elementary tour-tree; the paper distinguishes these elementary tour-trees from the later algorithmic relaxation allowing revisits.
+
+Every SE route leaves its satellite with full capacity. Consequently, an FE route supplies at most
+\[
+\theta=\left\lfloor\frac{Q^{\mathrm{FE}}}{Q^{\mathrm{SE}}}\right\rfloor
+\]
+SE routes. In the notation of Definition 3, this condition is
+\[
+\sum_{k=1}^{m}|R_k|\leq\theta
+\qquad\text{for every feasible tour-tree }t.
+\]
+The direct-transfer and single-FE-supplier conditions above also apply. These are conditions defining the columns, not additional decisions in MP.
+
+\section*{Column coefficients and decision variables}
+$T$ is the set of all feasible tour-trees under the preceding definitions and operating assumptions. For $t\in T$, $E(t)$ denotes the set of edges traversed in tour-tree $t$, and its fixed transportation cost is
+\[
+c_t=\sum_{e\in E(t)}c_e,\qquad t\in T.
+\]
+The set-based expression for $E(t)$ and $c_t$ is retained as printed; no edge-traversal multiplicity convention is added.
+
+The fixed binary incidence parameter is
+\[
+a_{it}=\begin{cases}
+1,&\text{if customer }i\text{ is visited in tour-tree }t,\\
+0,&\text{otherwise},
+\end{cases}
+\qquad i\in C,\ t\in T.
+\]
+The sole MP decision variables are $x_t$, $t\in T$: a value of one selects tour-tree $t$. Equation (2) covers each customer by exactly one selected tour-tree.
+
+\section*{Definition of the bound in (3)}
+Section 3 defines $\bar Q$ by the following property:
+\[
+\sum_{i\in C'}\mu_i>\bar Q
+\quad\Longrightarrow\quad
+\mathbb P\left(\sum_{i\in C'}\xi_i\leq Q^{\mathrm{SE}}\right)<\eta,
+\qquad\text{for every }C'\subset C.
+\]
+The referenced definition is resolved in Section 5.3 (physical PDF pages 15--17). For a customer combination, the paper defines
+\[
+\mu(C')=\sum_{i\in C'}\mu_i,\qquad C'\subset C.
+\]
+Its upper feasibility bound $\bar\mu$ must satisfy
+\[
+\mu(C')>\bar\mu
+\quad\Longrightarrow\quad
+\mathbb P\left(\sum_{i\in C'}\xi_i\leq Q^{\mathrm{SE}}\right)<\eta,
+\qquad\text{for every }C'\subset C.
+\]
+The paper sets the fixed parameter used in (3) to this bound:
+\[
+\boxed{\bar Q=\bar\mu.}
+\]
+To obtain $\bar\mu$, the printed procedure initializes
+\[
+\mu^*=\sum_{i\in C}\mu_i
+\]
+and decreases $\mu^*$ by one until it finds a customer combination $C'\subset C$ such that
+\[
+\mu(C')=\mu^*,\qquad
+\mathbb P\left(\sum_{i\in C'}\xi_i\leq Q^{\mathrm{SE}}\right)\geq\eta;
+\]
+it then sets $\bar\mu=\mu^*$. Here $\mu^*$ is a preprocessing search value, not an MP decision variable. No scenario-selection optimization problem, sampling approximation, or variance-based feasibility test replaces (1) in this formulation.
+
+\noindent\textit{Scope of the printed bound construction.} The unit decrement is printed in Algorithm 2, although the general problem statement does not require integer means. No rounding convention or exceptional-case termination rule is added here. Section 5.3 also contains a prose statement that, above $\bar\mu$, the probability of exceeding capacity exceeds $\eta$. That statement is not the defining violation condition of (1); the operative chain above retains the explicit requirement that (1) is violated, namely that the probability of demand not exceeding capacity is strictly less than $\eta$.
+
+\paragraph{Source scope.}
+The model is MP and its printed strengthening (3), with Definitions 1--3 and the operating assumptions from Section 3 (physical PDF pages 5--6), and the definition $\bar Q=\bar\mu$ from Section 5.3 (physical PDF pages 15--17). The variance-bound appendix and the pricing and feasibility-search subproblems do not define additional constraints of this MP. No deterministic replacement of (1) or relaxation of the binary variables is imposed.
+
+\end{document}

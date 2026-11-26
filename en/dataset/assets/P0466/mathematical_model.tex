@@ -1,0 +1,228 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\section*{Online dynamic pricing: recursive variational reformulation}
+\begin{equation}
+\begin{aligned}
+&\sup_{\Pi\in\mathcal G}\int_0^t L_q^\star(\lambda;\Pi_s,\pi_s,s)\,ds\\
+&\text{subject to}\quad \Pi_t=0.
+\end{aligned}\tag{A115}
+\end{equation}
+For each $q\in\mathbb N_+$ and $t\geq0$, Theorem A1 identifies the optimal value of this problem with $J^\star(\lambda;q,t)$. The arrival rate $\lambda>0$ is fixed. The decision is the function $\Pi$; $\pi$ is its density, not an independent decision. The lower-inventory optimal value in the integrand is inherited recursively from the same online problem, not optimized independently at inventory level $q$.
+
+\subsection*{Admissible functions and recursive integrand}
+The class $\mathcal G$ consists of functions $\Pi$ absolutely continuous on $\mathbb R_+$ with a density $\pi\in[0,1]$. Thus its defining requirements are
+\[
+\Pi\in\operatorname{AC}(\mathbb R_+),\qquad
+\frac{d\Pi_s}{ds}=\pi_s\quad\text{for a.e. }s\in\mathbb R_+,
+\qquad \pi\text{ takes values in }[0,1].
+\]
+The left endpoint is variable and the right endpoint is fixed. The Lagrangian has the printed domain
+\[
+L_q^\star:(\mathbb R_+;\mathbb R,[0,1],\mathbb R_+)\longmapsto\mathbb R
+\]
+and is
+\begin{equation}
+L_q^\star(\lambda;\Pi,\pi,s)
+=\lambda\exp(\lambda\Pi)\pi\bigl(F^{-1}(1-\pi)+J^\star(q-1,s)\bigr),
+\qquad q\in\mathbb N_+.
+\tag{A116}
+\end{equation}
+The recursive boundary values inherited from Section 3 are
+\begin{equation}
+\begin{aligned}
+J^\star(\lambda;q,0)&=0,&&q\in\mathbb N_+,\\
+J^\star(\lambda;0,t)&=0,&&t\geq0.
+\end{aligned}\tag{4, boundary values}
+\end{equation}
+The correspondence of optimal solutions in Theorem A1 is
+\[
+\pi^\star(\lambda;0,\cdot)=0,\qquad
+\pi^\star(\lambda;q,s)
+=\frac{\partial\Pi^\star(\lambda;q,s)}{\partial s},
+\quad q\in\mathbb N_+,\quad\text{for a.e. }s\in[0,t],
+\]
+and holds in both directions between the optimal families in (A115) and the online policy problem.
+
+\subsection*{Fixed inputs and distribution assumptions}
+Section 3 specifies a single item, a finite selling horizon of length $t>0$, and initial inventory $q$ with
+\[
+\mathbb N=\{0,1,2,\ldots\},\qquad
+\mathbb N_+=\{1,2,\ldots\},\qquad
+q\in\mathbb N,\qquad \lambda>0.
+\]
+The variational statement also includes the boundary case $t=0$, and applies at each $q\in\mathbb N_+$. Customers arrive according to a Poisson process with known rate $\lambda$. Their nonnegative valuations $X_n$, $n\in\mathbb N_+$, are independent and identically distributed, with common distribution function $F$ and finite mean. The firm knows $F$ and the i.i.d. assumption, but not the specific valuations. The support has lower limit $x_L$ and upper limit $x_U$, where $x_U$ may be $\infty$. The distribution has a positive density $f$ on the entirety of its support. All random variables and processes are defined on the common probability space $(\Omega,\mathcal F,P)$.
+
+The firm is risk-neutral, all items have zero marginal cost, and each customer purchases at most one unit. A customer purchases when the valuation is at least the posted price. The printed price--probability relation is
+\[
+P(\text{purchase at price }p)=1-F(p).
+\]
+Section 3 defines the inverse, stated there to be uniquely defined on $[0,1]$, by
+\[
+F^{-1}(\pi)=\{x\in[x_L,x_U]:F(x)=\pi\},\qquad \pi\in[0,1].
+\]
+For a desired purchasing probability and its corresponding price,
+\[
+\pi_s\in[0,1],\qquad
+p_s=F^{-1}(1-\pi_s),\qquad 0\leq s\leq t.
+\]
+The optimal-policy correspondence is
+\[
+\pi^\star=1-F(p^\star),\qquad
+p^\star=F^{-1}(1-\pi^\star).
+\]
+The null price is assumed to exist and satisfies
+\[
+1-F(p_\infty)=0.
+\]
+No Gumbel-domain, von-Mises, unimodality, or Theorem A2 uniqueness assumption is a premise of Theorem A1.
+
+\subsection*{Purchasing-probability policies and inherited value functions}
+The following rows define the policy values used in the recursive construction; they are not additional independent optimization problems imposed on (A115). A purchasing-probability policy
+\[
+\pi=\{\pi_s,0\leq s\leq t\}
+\]
+on $(\Omega,\mathcal F,P)$ belongs to $\mathcal W$ precisely when it is $[0,1]$-valued and satisfies
+\[
+\begin{aligned}
+\pi_s&=\pi(\lambda;Q_s,t-s),&&0\leq s\leq t,\\
+\pi(\lambda;q,\cdot)&\text{ is measurable},&&q\in\mathbb N,\\
+\pi(\lambda;0,\cdot)&=0.
+\end{aligned}
+\]
+Here $Q_s$ is the inventory process, and $N$ is a standard rate-one Poisson process:
+\begin{equation}
+Q_s=Q_0-N\left(\lambda\int_0^s\pi(\lambda;Q_u,t-u)\,du\right),
+\qquad 0\leq s\leq t.
+\tag{A108}
+\end{equation}
+For initial inventory $Q_0=q$, the associated expected revenue is
+\begin{equation}
+J_\pi(\lambda;q,t)
+=E\left[\left.
+\lambda\int_0^t\pi(\lambda;Q_s,t-s)
+F^{-1}\bigl(1-\pi(\lambda;Q_s,t-s)\bigr)\,ds
+\,\right|\,Q_0=q\right].
+\tag{A107}
+\end{equation}
+The inherited optimal-value definition is
+\begin{equation}
+J^\star(\lambda;q,t)=\sup_{\pi\in\mathcal W}J_\pi(\lambda;q,t).
+\tag{A109}
+\end{equation}
+
+\subsection*{First-sale decomposition and Proposition A8}
+The first-sale time is printed as
+\[
+\tau=\inf\{s\geq0:Q_s<Q_0\}.
+\]
+For each $\pi\in\mathcal W$ and $q\in\mathbb N$, the survival probability is
+\begin{equation}
+P(\tau>s\mid Q_0=q)
+=\exp\left(-\lambda\int_0^s\pi(q,t-u)\,du\right),
+\qquad 0\leq s<t.
+\tag{A110}
+\end{equation}
+The printed first-sale revenue identity is
+\begin{equation}
+\begin{aligned}
+&E\left[\left.\int_0^\tau
+\pi(Q_s,t-s)F^{-1}\bigl(1-\pi(Q_s,t-s)\bigr)\,ds
+\,\right|\,Q_0=q\right]\\
+&\quad=\int_0^t
+\exp\left(-\lambda\int_0^s\pi(q,t-u)\,du\right)
+\pi(q,t-s)F^{-1}\bigl(1-\pi(q,t-s)\bigr)\,ds.
+\end{aligned}\tag{A111}
+\end{equation}
+The intervening unnumbered conditional identity is
+\[
+E\left[\left.\int_\tau^t
+\pi(Q_s,t-s)F^{-1}\bigl(1-\pi(Q_s,t-s)\bigr)\,ds
+\,\right|\,\tau,Q_0=q\right]
+=J_\pi(q-1,t-\tau)/\lambda.
+\]
+Consequently the continuation identity is printed as
+\begin{equation}
+\begin{aligned}
+&E\left[\left.\int_\tau^t
+\pi(Q_s,t-s)F^{-1}\bigl(1-\pi(Q_s,t-s)\bigr)\,ds
+\,\right|\,Q_0=q\right]\\
+&\quad=\int_0^t
+\exp\left(-\lambda\int_0^s\pi(q,t-u)\,du\right)
+\pi(q,t-s)J_\pi(q-1,t-s)\,ds.
+\end{aligned}\tag{A112}
+\end{equation}
+For each $\pi\in\mathcal W$, Proposition A8 states that the family
+$\{J_\pi(\lambda;q,\cdot),q\in\mathbb N\}$ is the unique solution to
+\begin{equation}
+J_\pi(\lambda;q,t)
+=\int_0^t L_q\bigl(\Pi(\lambda;q,s,t),\pi(q,s),s\bigr)\,ds,
+\qquad t\geq0,\quad q\in\mathbb N_+,
+\tag{A113}
+\end{equation}
+where
+\begin{equation}
+\Pi(q,s,t)=-\int_s^t\pi(q,u)\,du,
+\qquad s\geq0,
+\tag{A114}
+\end{equation}
+and
+\[
+\begin{gathered}
+L_q:(\mathbb R_+;\mathbb R,[0,1],\mathbb R_+)\longmapsto\mathbb R,\\
+L_q(\lambda;\Pi,\pi,s)
+=\lambda\exp(\lambda\Pi)\pi
+\bigl(F^{-1}(1-\pi)+J_\pi(q-1,s)\bigr),
+\qquad q\in\mathbb N_+,\\
+J_\pi(0,\cdot)=0.
+\end{gathered}
+\]
+For each $\pi\in\mathcal W$, $q\in\mathbb N_+$, and $t\geq0$, the source states that $\Pi(q,\cdot,t)$ is absolutely continuous on $\mathbb R_+$ with density $\pi(q,\cdot)$. This is the construction leading to $\mathcal G$ and (A115). In (A116), the continuation term is the optimal value $J^\star$, rather than the fixed-policy value $J_\pi$ appearing in Proposition A8.
+
+\paragraph{Printed notation and scope.}
+Equations (A110)--(A116) retain the source's mixed display and suppression of $\lambda$. In particular, (A113) prints $L_q$ with three arguments although the immediately following definition has the four arguments $(\lambda;\Pi,\pi,s)$; (A114) suppresses $\lambda$ in $\Pi$ and $\pi$; and (A116) prints $J^\star(q-1,s)$ without $\lambda$. The recursive dependence is the fixed-arrival-rate continuation value inherited from (3), as stated in Theorem A1, not an instruction to reset $\lambda$ to one. Section 4 separately uses two-argument value notation for inventory and market size; that separate notation does not supply a missing argument in the printed Appendix D rows.
+
+The prose introducing $\tau$ prints ``$\pi\in\mathcal V$'', although $\mathcal V$ is the pricing-policy class and the subsequent (A110) and Proposition A8 explicitly use $\pi\in\mathcal W$. Also, (A111) prints the upper limit $\tau$, not a truncation at $t$; the following conditional identity and (A112) print the lower limit $\tau$ without a restriction to $\tau\leq t$. The definition of $\tau$ does not guarantee a sale before the finite horizon, and the displayed continuation uses $q-1$ without a new positive-inventory qualifier in that intervening prose. These expressions and their printed scope are retained; no truncation, indicator, or extension to negative remaining times or negative inventories is added. Proposition A8 itself explicitly restricts its recursion to $q\in\mathbb N_+$.
+
+\subsection*{Original definition of the continuation optimum}
+Theorem A1 explicitly invokes (3). The following original pricing-policy rows specify its meaning, rather than adding a second pricing optimization to (A115). The class $\mathcal V$ consists of $\mathbb R_+\cup p_\infty$-valued policies
+\[
+p=\{p_s,0\leq s\leq t\}
+\]
+on $(\Omega,\mathcal F,P)$ satisfying
+\[
+\begin{aligned}
+p_s&=p(\lambda;Q_s,t-s),&&0\leq s\leq t,\\
+p(\lambda;q,\cdot)&\text{ is measurable},&&q\in\mathbb N,\\
+p(\lambda;0,\cdot)&=p_\infty.
+\end{aligned}
+\]
+Their state and revenue definitions are
+\begin{equation}
+Q_s=Q_0-N\left(\lambda\int_0^s
+\bigl(1-F(p(\lambda;Q_u,t-u))\bigr)\,du\right),
+\qquad 0\leq s\leq t,
+\tag{2}
+\end{equation}
+\begin{equation}
+J_p(\lambda;q,t)
+=E\left[\left.\lambda\int_0^t
+p(\lambda;Q_s,t-s)
+\bigl(1-F(p(\lambda;Q_s,t-s))\bigr)\,ds
+\,\right|\,Q_0=q\right],
+\tag{1}
+\end{equation}
+and
+\begin{equation}
+J^\star(\lambda;q,t)=\sup_{p\in\mathcal V}J_p(\lambda;q,t).
+\tag{3}
+\end{equation}
+The correspondence $\pi=1-F(p)$ gives (A107)--(A109). Thus (1)--(3) and (A107)--(A114) are the defining chain for the continuation value in the selected variational model, not additional controls or constraints imposed alongside it.
+
+\paragraph{Endpoint expressions.}
+The source includes $\pi=0$ in $\mathcal G$ and defines $F^{-1}$ on $[0,1]$, while permitting $x_U=\infty$. Accordingly (A107), Proposition A8, and (A116) retain their printed factors $\pi F^{-1}(1-\pi)$. The cited passages supply no explicit product convention at $\pi=0$ when the upper endpoint is infinite; none is introduced here.
+
+\end{document}

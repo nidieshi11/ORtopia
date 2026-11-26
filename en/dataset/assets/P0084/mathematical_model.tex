@@ -1,0 +1,142 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage[a4paper,margin=1in]{geometry}
+
+\title{Scaled Deterministic Positive-Part Surrogate Routing Model}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Sets and network}
+
+Let $I,L\in\mathbb{Z}_{+}$ be the numbers of customers and available homogeneous vehicles, respectively. Define
+\[
+\mathcal{N}_c:=\{1,\ldots,I\},
+\qquad
+\mathcal{N}_d:=\{I+1,\ldots,I+L\},
+\qquad
+\mathcal{N}:=\{0\}\cup\mathcal{N}_c\cup\mathcal{N}_d,
+\]
+where node $0$ is the depot, $\mathcal{N}_c$ is the customer set, and $\mathcal{N}_d$ is the set of dummy destination nodes. The directed arc set is
+\[
+\mathcal{A}:=\mathcal{A}_o\cup\mathcal{A}_c\cup\mathcal{A}_d,
+\]
+with
+\[
+\mathcal{A}_o:=\{(0,j):j\in\mathcal{N}_c\},
+\qquad
+\mathcal{A}_c:=\{(i,j):i,j\in\mathcal{N}_c,\ i\neq j\},
+\]
+\[
+\mathcal{A}_d:=\{(i,\ell):i\in\mathcal{N}_c,\ \ell\in\mathcal{N}_d\}.
+\]
+For every $\mathcal{H}\subseteq\mathcal{N}$, define the outgoing and incoming cut sets
+\[
+E^+(\mathcal{H})
+:=\{(i,j)\in\mathcal{A}:i\in\mathcal{H},\ j\in\mathcal{N}\setminus\mathcal{H}\},
+\]
+\[
+E^-(\mathcal{H})
+:=\{(j,i)\in\mathcal{A}:i\in\mathcal{H},\ j\in\mathcal{N}\setminus\mathcal{H}\}.
+\]
+For a singleton node $i\in\mathcal{N}$, write $E^+(i):=E^+(\{i\})$ and $E^-(i):=E^-(\{i\})$.
+
+\section{Parameters}
+
+For each customer $i\in\mathcal{N}_c$, let $d_i$ denote its demand, and let $Q>0$ be the homogeneous vehicle capacity. Let $\tau\in\mathbb{R}$ be the common threshold. Let
+\[
+T\in\mathbb{Z}_{+},
+\qquad
+\rho\in\mathbb{R}_{+}.
+\]
+For every $t\in\{1,\ldots,T\}$ and $a\in\mathcal{A}$, $\theta_a^t\in\mathbb{R}$ is a fixed coefficient, and $\bar\theta^t\in\mathbb{R}$ is a fixed intercept. Thus, for each $t$, the coefficient vector $\theta^t=(\theta_a^t)_{a\in\mathcal{A}}$ has dimension $|\mathcal{A}|$.
+
+\section{Decision variables}
+
+\begin{align*}
+x_a&\in\{0,1\} && \forall a\in\mathcal{A},\\
+s_a^\ell&\in\{0,1\} && \forall \ell\in\mathcal{N}_d,\ a\in\mathcal{A},\\
+\eta_\ell&\in\mathbb{R} && \forall \ell\in\mathcal{N}_d,\\
+w_{\ell t}&\in\mathbb{R} && \forall \ell\in\mathcal{N}_d,\ t=1,\ldots,T,\\
+u_{\ell t}&\in\mathbb{R}_{+} && \forall \ell\in\mathcal{N}_d,\ t=1,\ldots,T.
+\end{align*}
+Here $x_a=1$ if arc $a$ belongs to a selected route, and $s_a^\ell=1$ if arc $a$ belongs to the route ending at dummy destination $\ell$.
+
+\section{Optimization model}
+
+\begin{align}
+\min_{x,s,\eta,w,u}\quad
+&\sum_{\ell\in\mathcal{N}_d}\eta_\ell
+\label{obj}\\[1ex]
+\text{s.t.}\quad
+&\sum_{a\in E^+(i)}x_a=1
+&&\forall i\in\mathcal{N}_c,
+\label{customer-out}\\
+&\sum_{a\in E^-(i)}x_a=1
+&&\forall i\in\mathcal{N}_c,
+\label{customer-in}\\
+&\sum_{a\in E^+(0)}x_a
+ =\sum_{\ell\in\mathcal{N}_d}\sum_{a\in E^-(\ell)}x_a,
+\label{depot-balance}\\
+&\sum_{a\in E^-(\ell)}x_a\leq 1
+&&\forall \ell\in\mathcal{N}_d,
+\label{destination-use}\\
+&\sum_{a\in E^+(0)}s_a^\ell
+ =\sum_{a\in E^-(\ell)}x_a
+&&\forall \ell\in\mathcal{N}_d,
+\label{route-start}\\
+&\sum_{a\in E^-(\ell)}s_a^\ell
+ =\sum_{a\in E^-(\ell)}x_a
+&&\forall \ell\in\mathcal{N}_d,
+\label{route-end}\\
+&\sum_{a\in E^-(i)}s_a^\ell
+ -\sum_{a\in E^+(i)}s_a^\ell=0
+&&\forall \ell\in\mathcal{N}_d,\ i\in\mathcal{N}_c,
+\label{route-flow}\\
+&s_a^\ell\leq x_a
+&&\forall \ell\in\mathcal{N}_d,\ a\in\mathcal{A},
+\label{route-link}\\
+&\sum_{a\in E^+(\mathcal{H})}x_a
+ \geq
+ \left\lceil\frac{\sum_{i\in\mathcal{H}}d_i}{Q}\right\rceil
+&&\forall \mathcal{H}\subseteq\mathcal{N}_c:\ |\mathcal{H}|\geq 2,
+\label{capacity-cuts}\\
+&\sum_{a\in\mathcal{A}}s_a^\ell
+ \leq
+ \sum_{a\in\mathcal{A}}s_a^{\ell-1}
+&&\forall \ell\in\mathcal{N}_d\setminus\{I+1\},
+\label{route-ordering}\\
+&w_{\ell t}
+ =\sum_{a\in\mathcal{A}}\theta_a^t s_a^\ell
+  +\bar\theta^t-\tau
+&&\forall \ell\in\mathcal{N}_d,\ t=1,\ldots,T,
+\label{affine-risk}\\
+&u_{\ell t}=\max\{w_{\ell t},0\}
+&&\forall \ell\in\mathcal{N}_d,\ t=1,\ldots,T,
+\label{max-general}\\
+&\eta_\ell
+ \geq
+ \frac{\rho}{T+1}\sum_{t=1}^{T}u_{\ell t}
+&&\forall \ell\in\mathcal{N}_d,
+\label{surrogate-risk}\\
+&x_a\in\{0,1\}
+&&\forall a\in\mathcal{A},
+\label{x-domain}\\
+&s_a^\ell\in\{0,1\}
+&&\forall \ell\in\mathcal{N}_d,\ a\in\mathcal{A},
+\label{s-domain}\\
+&\eta_\ell\in\mathbb{R}
+&&\forall \ell\in\mathcal{N}_d,
+\label{eta-domain}\\
+&w_{\ell t}\in\mathbb{R},\quad u_{\ell t}\in\mathbb{R}_{+}
+&&\forall \ell\in\mathcal{N}_d,\ t=1,\ldots,T.
+\label{aux-domains}
+\end{align}
+
+Constraint \eqref{max-general} is an exact scalar maximum general constraint and can be imposed directly as a Gurobi maximum general constraint with constant zero.
+
+\end{document}

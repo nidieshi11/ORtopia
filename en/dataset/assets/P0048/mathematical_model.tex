@@ -1,0 +1,29 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,geometry}
+\geometry{margin=22mm}
+\emergencystretch=4em
+\begin{document}
+\section*{P48: Cluster-based Vehicle Routing Problem Model (CluVRP2)}
+\paragraph{Source and scope}According to pages 1, 2, 3, 4, 5, 7, and 8 of the original paper’s PDF file, section 2 contains equations (8)–(15); section 4.2 contains equations (34)–(39). These equations are used to identify the pricing subproblem that needs to be solved.
+
+\subsection*{Data and preprocessing results}
+$G=(V,E)$ is the complete undirected graph, $0\in V$ denotes the depot, and $V_c=V\setminus\{0\}$ is the set of customers. $\mathcal C$ is a partition of $V_c$ into disjoint, nonempty clusters, and $\kappa(i)$ is the cluster containing customer $i$. Customer demands are $d_i>0$ and cluster demands are $d_C=\sum_{i\in C}d_i\le Q$. There are $m$ identical vehicles with capacity $Q>0$. The edges joining customers from different clusters or joining the depot to a customer form $\bar E$, and the within-cluster edges form $\hat E=E\setminus\bar E$. We have $\delta(S)=\{\{i,j\}\in E:i\in S,j\notin S\}$ and $E(S)=\{\{i,j\}\in E:i,j\in S\}$. The original edge costs $c_{ij}$ are given. For each $C\in\mathcal C$ satisfying $|C|\ge2$ and each distinct pair of endpoints $i,j\in C$, the model is given the cost $\hat c_{ij}$ of a shortest Hamiltonian path visiting every customer in $C$, along with one such path. Let
+\[
+ c'_{ij}=\begin{cases}c_{ij},&\{i,j\}\in\bar E,\\\hat c_{ij},&\{i,j\}\in\hat E.\end{cases}
+\]
+The preprocessed Hamilton path costs are used as model parameters. For any non-empty subset of clusters $\mathcal R\subseteq\mathcal C$, let $S_{\mathcal R}=\bigcup_{C\in\mathcal R}C$ and $r(\mathcal R)=\lceil\sum_{C\in\mathcal R}d_C/Q\rceil$ be other subsets of clusters.
+\subsection*{Complete CluVRP2 model}
+The variable $x_{ij}=x_{ji}$ represents the number of times the edges between clusters are used; edges within a cluster represent the pairs of endpoints of the selected Hamilton paths.
+\begin{align}
+\min\quad &\sum_{\{i,j\}\in E}c'_{ij}x_{ij},\tag{8}\\
+\text{s.t.}\quad&\sum_{j:\{i,j\}\in E(\kappa(i))}x_{ij}=\sum_{j:\{i,j\}\in\delta(\kappa(i))}x_{ij} &&i\in V_c:|\kappa(i)|>1,\tag{9}\\
+&\sum_{\{i,j\}\in\delta(C)}x_{ij}=2 &&C\in\mathcal C,\tag{10}\\
+&\sum_{i\in V_c}x_{0i}=2m,\tag{11}\\
+&\sum_{\{i,j\}\in\delta(S_{\mathcal R})}x_{ij}\ge2r(\mathcal R) &&\varnothing\ne\mathcal R\subseteq\mathcal C,\tag{12}\\
+&x_{ij}\in\{0,1\} &&\{i,j\}\in\bar E\setminus E_{0,1},\tag{13}\\
+&x_{0j}\in\{0,1,2\} &&j\in V_c:|\kappa(j)|=1,\tag{14}\\
+&x_{ij}\ge0 &&\{i,j\}\in\hat E,\tag{15}
+\end{align}
+Among them, $E_{0,1}=\{\{0,j\}:j\in V_c,|\kappa(j)|=1\}$. The variables within each cluster remain continuous and non-negative as originally defined. When there are edges between given integer clusters, equations (9) and (10) determine which pair of endpoints to choose. By expanding the preprocessed Hamilton paths corresponding to each pair of endpoints, we can obtain a vehicle route that allows continuous access to all customers in each cluster.
+
+\end{document}

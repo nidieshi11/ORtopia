@@ -1,0 +1,54 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,geometry}
+\geometry{margin=22mm}
+\emergencystretch=4em
+\begin{document}
+\section*{P82: Original multi-stage stochastic integer programming with non-forward-looking policies}
+\paragraph{Source and scope}Based on pages 1, 8, 9, and 10 of the original paper PDF, sections 2 (Formulas (1a)--(1c)) and $X_t$ definitions; assumption 1--2 on page 8; and non-prospective interpretation on page 10.
+
+\paragraph{Modeling objects and information structures}
+Retain the original multi-stage stochastic mixed integer programming (MSMIP) formulations (1a)--(1c) from Section 2 of the paper. The stage-based and non-forwarding Lagrangian duality are methods for finding the lower bound of the problem, and do not belong to another set of decision models in this document. The stage set is $\mathcal T=\{1,\ldots,T\}$. In the probability space $(\Omega,\mathcal F,\mathbb P)$, the stage random vector is $\boldsymbol\xi_t\in\mathbb R^{\ell_t}$, the history is $h_t=(\boldsymbol\xi_1,\ldots,\boldsymbol\xi_t)$, the dimension of history is $L_t=\sum_{s=1}^t\ell_s$; $\boldsymbol\xi_1=1$ is determined in the first stage. $\mathcal F_t=\sigma(h_t)$ and the distribution of the complete path and the support set $\Xi$ are both inputs. The joint distribution of the stage random vectors is given by the instance and may include inter-stage dependencies.
+
+\paragraph{Parameters}
+In stage $t$, the decision dimension is $n_t$. The first $p_t$ components are integers, while $0\le p_t\le n_t$. The number of rows for the state equation and inequalities within the stage are $m_t^s,m_t^r$. All the measurable coefficients depend solely on the known history of $h_t$:
+\[
+\begin{aligned}
+&c_t(h_t)\in\mathbb R^{n_t},\qquad b_t(h_t)\in\mathbb R^{m_t^s},
+\qquad d_t(h_t)\in\mathbb R^{m_t^r},\\
+&A_t(h_t)\in\mathbb R^{m_t^s\times n_t},\quad
+B_t(h_t)\in\mathbb R^{m_t^s\times n_{t-1}},\quad
+C_t(h_t)\in\mathbb R^{m_t^r\times n_t}.
+\end{aligned}
+\]
+$c_t$ represents the cost vector, $A_t,B_t,b_t$ describes the state coupling between the current and previous periods, $C_t,d_t$ describes the resources, boundaries, and other feasibility conditions for the current period. The paper specifies $x_0(h_0)\equiv0$; non-zero initial resources and other constants must be input as part of $b_1$, the initial state is fixed by the instance.
+
+\paragraph{Variable and phase feasible regions}
+The variable is not a forward-looking policy $x_t: h_t\mapsto x_t(h_t)$. That is, $x_t$ must be $\mathcal F_t$ measurable, and the same decision should be adopted across the same history. The complete feasible region within the phase is
+\[
+X_t(h_t)=\{x\in\mathbb Z^{p_t}\times\mathbb R^{n_t-p_t}:
+ C_t(h_t)x\ge d_t(h_t)\}.
+\]
+If the non-negative nature of the variables, their upper and lower limits, as well as their binary nature are required for a particular instance, these details must be explicitly specified by the instance using the $C_t,d_t$ notation.
+
+\paragraph{The only core model}
+\begin{align}
+\min_{\{x_t(\cdot)\}_{t=1}^T}\quad&
+\mathbb E_{\mathbb P}\!\left[\sum_{t=1}^T c_t(h_t)^\top x_t(h_t)\right]
+\tag{1a}\\
+\text{s.t.}\quad& A_t(h_t)x_t(h_t)+B_t(h_t)x_{t-1}(h_{t-1})=b_t(h_t),
+&&t=1,\ldots,T,\quad\mathbb P\text{-a.s.},\tag{1b}\\
+&C_t(h_t)x_t(h_t)\ge d_t(h_t),
+&&t=1,\ldots,T,\quad\mathbb P\text{-a.s.},\tag{1c-i}\\
+&x_t(h_t)\in\mathbb Z^{p_t}\times\mathbb R^{n_t-p_t},
+&&t=1,\ldots,T,\quad\mathbb P\text{-a.s.},\tag{1c-ii}\\
+&x_t\text{ is }\mathcal F_t\text{-measurable},
+&&t=1,\ldots,T.\tag{NA}
+\end{align}
+Among these, the ranges (1c–i) to (1c–ii) only involve expanding on the original expression for (1c). The symbol (NA) indicates that the definitions of the policy variables remain unchanged. No additional optimization problems were introduced.
+
+\paragraph{Enter applicable conditions and details regarding the limited number of instances available.}
+According to pages 8–9 of the paper, assume that relative complete remedies are possible: any feasible past decisions are also feasible in the current period. Additionally, $X_t(h_t)$ is almost always tight, and $\mathbb E[\operatorname{diam}(X_t(h_t))]<\infty$ is also true. At the same time, the expected cost should be well-defined. These conditions serve as input assumptions for this problem; they do not allow for the arbitrary addition of slack variables, penalties, or other constraints to modify individual instances.
+
+If the input is represented using a finite scenario tree, then each node represents a historical situation, and the nodes share the same decision-making processes. This is not a forward-looking description; the probability of reaching a given node must be considered as an unconditional probability. The sum of the probabilities for leaf nodes is always equal to 1. The probability for any non-leaf node is equal to the sum of the probabilities of its child nodes. If the tree fully represents the original input distribution, then it represents a finite representation of the same model. If the tree is merely a sample, then it can only represent an instance of that discrete approximate distribution. No second set of mathematical models is provided in this description.
+
+\end{document}

@@ -1,0 +1,109 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\begin{document}
+\section*{Common train timetable with scenario-dependent integer passenger flows}
+The original extraction is retained separately. This complete event-indexed
+form specifies its timetable, transfer and passenger constraints and both
+objective terms. Source text on printed page 73 explicitly rounds alighting
+up and transfers down; the old extraction omitted that convention.
+
+Lines are $l\in L$, directional station visits $i=1,\ldots,I_l$ and demand
+scenarios $s\in S$, of probability $\pi_s$ with $\sum_s\pi_s=1$.
+The time step is $\tau$ minutes and the normalized horizon is $t=1,\ldots,T$.
+Input station offsets $e_{li}$, dwell times $d_{li}$, headways
+$h_l^{\min},h_l^{\max}$ and transfer walks $f_{li,l'j}$ are in time-step
+units. Each line has capacity $C_l$, service count bounds
+$K_l^{\min},K_l^{\max}$ and service cost $c_l$.
+$p_{slit}$ is external arrival count, $\alpha_{sli}\in[0,1]$ the
+alighting fraction and $\rho_{li,l'j}\in[0,1]$ the transfer fraction,
+with outgoing transfer fractions summing to at most one.
+Time-constant fractions are a property of the supplied instances.
+The last visit has $\alpha=1$ and zero external arrivals.
+
+\subsection*{Timetable and transfer events}
+Choose common integer service count $K_l$ and departure indices
+$t_{lk}\in\{1,\ldots,T\}$ for $k=1,\ldots,K_l$, in increasing order.
+Equivalently $x_{lkt}=1$ exactly when $t=t_{lk}$; inactive service indices
+have all-zero $x$.
+\begin{align}
+K_l^{\min}\le K_l&\le K_l^{\max},\\
+h_l^{\min}\le t_{l1}&\le h_l^{\max},\\
+h_l^{\min}\le t_{lk}-t_{l,k-1}&\le h_l^{\max}\quad(k>1),\\
+\sum_kx_{lkt}\le1,\quad \sum_tx_{lkt}\le1,\quad
+\sum_tx_{lkt}&\le\sum_tx_{l,k-1,t}\quad(k>1).
+\end{align}
+The first-time convention is $T_0=1$, so the source first-time bounds
+$T_0+h-1$ become $h$. Boarding at visit $i$ occurs at absolute time
+$t_{lk}+e_{li}$; alighting occurs at $t_{lk}+e_{li}-d_{li}$.
+For every permitted transfer pair $(li,l'j)$, its event for train $k$ is
+at absolute time $t_{lk}+e_{li}-d_{li}+f_{li,l'j}$, or receiving-station
+normalized time
+\[
+t'=t_{lk}+e_{li}-d_{li}+f_{li,l'j}-e_{l'j}.
+\]
+Define $y_{li,l'j,k,t'}=1$ exactly at that event, and zero otherwise.
+Thus each active train has one event per permitted pair and none for
+unconnected pairs; $\sum_k y_{li,l'j,k,t'}\le1$ follows from the positive
+headway and a fixed transfer offset. All scenario decisions use these
+same $x,y$.
+
+\subsection*{Complete passenger constraints}
+The model includes all external-arrival, alighting, transfer-arrival,
+boarding and sampling events. Queues initially equal zero.
+At equal absolute time the order is alight, external arrival, transfer
+arrival, board, then sample. Each train has initial load $u_{slk0}=0$.
+Let $u^-_{slki}=u_{slk,i-1}$, alighting count $a_{slki}$, boarding count
+$b_{slki}$ and load after departure $u_{slki}$. For every active train:
+\begin{align}
+a_{slki}&=\lceil\alpha_{sli}u^-_{slki}\rceil,\qquad
+0\le a_{slki}\le u^-_{slki},\\
+v_{s,li,l'j,k}&=\lfloor\rho_{li,l'j}a_{slki}\rfloor,\\
+u_{slki}&=u^-_{slki}-a_{slki}+b_{slki},\qquad0\le u_{slki}\le C_l,\\
+0\le b_{slki}&\le Q^-_{sli,\ t_{lk}+e_{li}},\\
+Q^+_{sli,\ t_{lk}+e_{li}}&=Q^-_{sli,\ t_{lk}+e_{li}}-b_{slki}.
+\end{align}
+At each external event $Q^+=Q^-+p_{slit}$; at each transfer-arrival
+event $Q^+=Q^-+v_{s,li,l'j,k}$ at its receiving queue.
+Queues remain unchanged at other events and always nonnegative.
+All queue, load, boarding, alighting and transfer counts are integers.
+Inactive services have zero boarding/load/transfer variables.
+Alighting passengers not assigned a transfer leave the system; transfers
+remain in transit until their specified receiving event. Passengers present at the horizon are carried into the terminal state. Capacity holds before and after every
+boarding, so $b\le C_l$ and $v\le C_l y$ follow as well.
+For any event, the total external arrivals so far equal exited passengers
+plus all waiting queues, onboard loads and passengers still transferring.
+The terminal alighting rule and zero terminal arrivals make final onboard
+loads zero.
+
+\subsection*{Objective and unequal normalized horizons}
+Let $w_{slit}$ be the queue sampled after service at absolute time
+$t+e_{li}$. The original objective counts external arrivals with a
+half-step waiting approximation and waiting queues at normalized samples.
+Some transfer events can fall beyond the receiving visit's last sample.
+Define $W_s^{\rm end}=\sum_{li}w_{sliT}$ and
+$W_s^{\rm late}=\sum_{li}Q_{sli}^{\rm eventual}-W_s^{\rm end}\ge0$,
+where eventual queues are after every scheduled train and transfer event.
+No train boards after its own visit's final sample; hence this difference
+contains exactly the additional late transfers. They receive the same
+terminal waiting penalty.
+\begin{align}
+Z_{\rm TSC}&=\sum_l c_lK_l,\\
+PWT_s&=\frac{\tau}{2}\sum_{li,t}p_{slit}
++\tau\sum_{li,t<T}w_{slit}
++\epsilon(W_s^{\rm end}+W_s^{\rm late}),\\
+\min Z&=Z_{\rm TSC}+\mu\sum_s\pi_sPWT_s .
+\end{align}
+The late-transfer term is an explicit boundary completion of the
+extracted model, using the explicit transfer and terminal-state definitions above.
+
+\subsection*{Algorithm and input scope}
+The code searches service counts and departure-time neighborhoods, and
+constructs feasible passenger flows by boarding as many as available
+capacity allows. Greedy boarding and the search neighborhoods are algorithm
+choices for candidate construction. The full supplied
+scenario set is evaluated for every candidate. This is a verified feasible
+heuristic with full scenario evaluation. The two delivered
+instances retain respectively one line/five demand scenarios and two
+lines/one scenario with 44 physical stations in total. Their time horizons
+are the supplied input horizons, specified separately for each instance.
+\end{document}

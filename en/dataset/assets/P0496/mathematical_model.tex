@@ -1,0 +1,270 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\[
+\underset{(p_{i1}^{c},p_{i1}^{u})}{\operatorname{maximize}}
+\quad \text{sum of expected profits in both periods},
+\qquad i=1,2,\quad j\ne i.
+\]
+The objective is the verbal objective in the unnumbered Perfect Bayesian Equilibrium definition of Garcia, Janssen, and Shopova, \emph{Dynamic Pricing with Uncertain Capacities}, January 26, 2022 (physical PDF pp.~7--9). Each firm's first-period strategy is optimal conditional on its capacity type, given the rival's strategies $(p_{j1}^{c},p_{j1}^{u})$ and the equilibrium continuation reactions. Strategies may be mixed.
+
+Subject to the following equilibrium requirements:
+\begin{enumerate}
+\item At the beginning of period 2, the non-selling firm $i$ updates its belief $\theta(p_{j1})$ about the rival being constrained using Bayes' Rule whenever possible.
+\item For every first-period price pair $(p_{11},p_{21})$, each firm $i$ with unsold capacity chooses $p_{i2}$ to maximize second-period profit, given the rival's second-period price $p_{j2}$ and the updated belief $\theta(p_{j1})$.
+\item Each firm $i$ chooses $(p_{i1}^{c},p_{i1}^{u})$ to maximize expected profit over both periods, given $(p_{j1}^{c},p_{j1}^{u})$ and the equilibrium reactions
+\[
+p_{i2}(p_{i1},p_{j1}),\qquad i=1,2,\quad j\ne i.
+\]
+\end{enumerate}
+The source's strategy and belief objects are
+\[
+\bigl(p_{i1}^{c},p_{i1}^{u},p_{i2}(p_{i1},p_{j1})\bigr),
+\qquad i=1,2,\quad j\ne i,
+\qquad \theta(p_{j1}).
+\]
+Here $c$ and $u$ denote constrained and unconstrained capacity types. The belief $\theta(p_{j1})$ is held by the non-selling firm $i$ about firm $j$ being constrained after observing $j$'s first-period price. Conditional on having capacity left, a firm's second-period pricing does not depend on whether its original type was constrained or unconstrained (footnote 14).
+
+The fixed baseline inputs and timing are as follows. There are two firms and two selling periods,
+\[
+i\in\{1,2\},\qquad t\in\{1,2\}.
+\]
+A constrained firm can sell one unit; an unconstrained firm can serve demand in both periods. Initial capacities are privately known. The fixed prior satisfies
+\[
+\Pr(\text{firm }i\text{ is constrained})=\alpha,
+\qquad
+\Pr(\text{firm }i\text{ is unconstrained})=1-\alpha,
+\qquad i=1,2,
+\]
+and capacity types are independent across firms. Production cost is normalized to zero. Consumers are myopic and have unit demand; market size in each period and willingness to pay are both normalized to $1$. A consumer arrives in each period, observes current prices, and buys from the lowest-priced available firm if that price is no greater than $1$. Otherwise the consumer leaves and does not return. If both firms charge the same price, all demand goes to one firm, with each firm selling with probability $1/2$.
+
+Nature draws capacities before period 1 and each firm learns its own type. Firms then choose $p_{i1}$. After the first purchase, firms observe both first-period prices and know which firm sold, if either did. They update beliefs; only firms with unsold capacity choose $p_{i2}$.
+
+\emph{Printed purchasing-threshold conflict.} The operative setup on physical p.~8 says that purchase occurs when the lowest price is ``not larger than 1.'' Figure 1 on that page instead prints
+\[
+p_1<1,\qquad p_2<1.
+\]
+The weak purchasing threshold is retained here, consistently with the paper's subsequent sales and price atoms at $1$; the figure's strict thresholds are not imposed simultaneously. The baseline definition does not state a global price action interval. In particular, the paper explicitly considers first-period deviations $p_1>1$, so equilibrium supports below are not global bounds on feasible prices.
+
+The following continuation formulas are common to the baseline equilibrium constructions (physical pp.~12--13). Let $S$ denote the firm that sold in period 1 and $N$ the firm that did not. Let $F^{S}$ and $F^{N}$ be their second-period price CDFs, with $F^{S}$ describing the selling firm's pricing conditional on still having capacity. For
+\[
+\theta\in(0,1),
+\]
+firm $N$ is commonly known to have capacity, while firm $S$ is sold out with probability $\theta$. Thus $N$ is a monopolist with probability $\theta$ and faces competition with probability $1-\theta$. Its printed expected-profit expression is
+\[
+\pi_2^{N}(p_2)
+ =\theta p_2+(1-\theta)\bigl(1-F^{S}(p_2)\bigr)p_2,
+\qquad p_2\leq 1,
+\]
+with $\pi_2^{N}(1)=\theta$. The continuation distributions are
+\begin{equation}
+F^{S}(p_2)=1-\frac{\theta(1-p_2)}{(1-\theta)p_2},
+\qquad p_2\in[\theta,1).
+\tag{1}
+\end{equation}
+The unconstrained selling firm's expected second-period profit at a price in this interval is
+\[
+\bigl(1-F^{N}(p_2)\bigr)p_2.
+\]
+Its indifference requires
+\begin{equation}
+F^{N}(p_2)=1-\frac{\theta}{p_2},
+\qquad p_2\in[\theta,1),
+\tag{2}
+\end{equation}
+with a mass point of size $\theta$ at $p_2=1$ for firm $N$. Both firms, conditional on still having capacity, earn expected second-period profit $\theta$. In subsequent uses, $\theta$ can depend on the selling firm's first-period price and is written $\theta(p)$.
+
+The restriction $0<\theta<1$ belongs to these mixed-continuation formulas. They are not evaluated at $\theta=0$ or $\theta=1$. The paper separately describes fully revealing histories as producing second-period prices of $0$ or $1$: competition when the selling firm is known to retain capacity, and monopoly when it is known to be sold out.
+
+The baseline has no separating equilibrium (Proposition 2). The pooling and semi-separating characterizations below are alternative outcomes of the same PBE model, not simultaneous restrictions on one strategy profile. The symmetric pooling version and the original all-or-nothing tie rule are retained.
+
+For the symmetric pooling equilibrium (Proposition 3, physical pp.~13--14),
+\[
+p_{i1}^{c}=p_{i1}^{u}=p_1^{*}=\alpha,
+\qquad i=1,2,
+\qquad \theta(\alpha)=\alpha.
+\]
+Substitution into (1)--(2) gives
+\[
+F^{S}(p_2)=1-\frac{\alpha(1-p_2)}{(1-\alpha)p_2},
+\qquad
+F^{N}(p_2)=1-\frac{\alpha}{p_2},
+\qquad p_2\in[\alpha,1),
+\]
+with an atom of size $\alpha$ at $1$ in $F^{N}$. These expressions inherit the interior-posterior premise $\theta=\alpha\in(0,1)$. The total expected profits conditional on type are
+\[
+\text{constrained firm's profit}=\alpha,
+\qquad
+\text{unconstrained firm's profit}=\frac{3\alpha}{2}.
+\]
+The ex-ante expected profit per firm is
+\[
+\alpha\left[\alpha+\frac{3}{2}(1-\alpha)\right]
+ =\alpha\frac{3-\alpha}{2}.
+\]
+For an unconstrained firm undercutting to $p_1<\alpha$, let $\theta'$ be the induced off-equilibrium belief. The paper gives
+\[
+\text{deviation payoff}=p_1+\theta',
+\qquad
+\theta'\leq\frac{\alpha}{2}
+\]
+as a sufficient belief restriction for deterring such deviations. It is not stated as a necessary restriction. Bayesian updating at the rival's on-path price continues to give $\alpha$ following an upward deviation. Other histories remain subject to the common sequential-optimality and belief requirements above.
+
+For semi-separating equilibria (physical pp.~14--16), $\theta(p)$ is the posterior probability that a firm charging first-period price $p$ is constrained, and $Q(p)$ is the probability that it sells in period 1. The main text prints the type-dependent expected profits as
+\begin{equation}
+\Pi^{c}(p)=Q(p)p+
+\int_{\underline p}^{p}\theta(p')\,d\bigl(1-Q(p')\bigr),
+\tag{3}
+\end{equation}
+\begin{equation}
+\Pi^{u}(p)=Q(p)\bigl(p+\theta(p)\bigr)+
+\int_{\underline p}^{p}\theta(p')\,d\bigl(1-Q(p')\bigr).
+\tag{4}
+\end{equation}
+The main-text paragraph immediately following (3) calls $\underline p$ the lowest price in the interval of prices charged in the \emph{second} period. This printed description is retained as such. Appendix A instead uses the lower endpoint of the \emph{first}-period support and establishes that it equals $\alpha$. The two descriptions are not identified here. The explicit interior construction below uses the appendix's printed payoff rows with lower limit $\alpha$.
+
+For all prices in the common support, each type's equilibrium profit must be constant. The linked payoff relation is
+\[
+\Pi^{u}(p)=\Pi^{c}(p)+Q(p)\theta(p).
+\]
+Consequently, $Q(p)\theta(p)$ is constant and positive over the support; the posterior increases with the price, and an unconstrained firm uses only prices having positive first-period sale probability. The upper endpoint has a mass point.
+
+Proposition 4 indexes the semi-separating family by
+\[
+\bar p\in(\alpha,1].
+\]
+Both types randomize their first-period prices in
+\[
+[\alpha,\bar p),
+\]
+with a mass point at $\bar p$, while the stated range of second-period prices is
+\[
+[\theta(\alpha),1].
+\]
+Here $\bar p$ is an equilibrium index, not an additional exogenous price-action bound. The constrained type's equilibrium profit is $\alpha$.
+
+The appendix's selected interior construction (physical pp.~38--40) applies for every $p\in[\alpha,\bar p)$. With $\tilde p$ denoting the rival's first-period price, it uses
+\[
+Q(p)=\Pr(\tilde p>p),\qquad p\in[\alpha,\bar p),
+\]
+which agrees with the main-text sale probability away from the upper atom, and writes
+\[
+\Pi^{c}(p)=Q(p)p+
+\int_{\alpha}^{p}-Q'(\tilde p)\theta(\tilde p)\,d\tilde p,
+\qquad p\in[\alpha,\bar p),
+\]
+\[
+\begin{aligned}
+\Pi^{u}(p)
+ &=Q(p)\bigl(p+\theta(p)\bigr)
+   +\int_{\alpha}^{p}-Q'(\tilde p)\theta(\tilde p)\,d\tilde p\\
+ &=\Pi^{c}(p)+Q(p)\theta(p),
+\qquad p\in[\alpha,\bar p).
+\end{aligned}
+\]
+The defining indifference and boundary relations include
+\[
+\Pi^{c}(p)=\alpha,
+\qquad
+\Pi^{u}(p)=\Pi^{u}(\alpha),
+\qquad p\in[\alpha,\bar p),
+\]
+\[
+Q(\alpha)=1,
+\qquad
+Q(p)\theta(p)=\theta(\alpha),
+\qquad p\in[\alpha,\bar p),
+\]
+\[
+\theta(\bar p)=\bar p,
+\qquad
+\lim_{p\uparrow\bar p}\theta(p)
+ =\frac{1}{2}\theta(\bar p)=\frac{\bar p}{2}.
+\]
+The resulting posterior is
+\[
+\theta(p)=
+\frac{p}{-W_{-1}\!\left(-\dfrac{2p}{e^{2}\bar p}\right)},
+\qquad p\in[\alpha,\bar p),
+\]
+and in particular
+\[
+\theta(\alpha)=
+\frac{-\alpha}{W_{-1}\!\left(-\dfrac{2\alpha}{e^{2}\bar p}\right)}.
+\]
+The source calls $W_{-1}$ the negative branch of the Lambert-$W$ function and recalls the identity
+\[
+W(xe^{x})=x.
+\]
+The appendix assigns the off-path beliefs
+\[
+\theta(p)=0\quad\text{for }p<\alpha,
+\qquad
+\theta(p)=1\quad\text{for }p>\bar p.
+\]
+For prices in $[\alpha,\bar p]$, beliefs are obtained from the equilibrium strategies by Bayesian updating. The total unconstrained profit is retained through the source's identity
+\[
+\Pi^{u}(\alpha)=\alpha+Q(\alpha)\theta(\alpha),
+\qquad Q(\alpha)=1,
+\]
+together with the printed posterior formula above. The first-period type-dependent mixed strategies remain subject to Bayes' Rule and the common PBE optimality conditions; no additional type-specific density formulas are introduced.
+
+\emph{Printed profit conflicts.} Proposition 4 on physical p.~15 prints the unconstrained type's profit as
+\[
+\alpha\left(
+1-\left[
+W_{-1}\!\left(\frac{2\alpha}{e^{2}\bar p}\right)
+\right]^{-1}
+\right).
+\]
+The positive argument is visible in the supplied original page image. For positive $\alpha$ and $\bar p$, it is incompatible with the stated negative real branch and with the negative argument in the posterior formula on the same page. Appendix A, physical p.~40, separately prints
+\[
+\Pi^{u}(\alpha)
+ =\alpha+Q(\alpha)\theta(\alpha)
+ =\alpha+\frac{\alpha}{W\!\left(-\dfrac{2\alpha}{e^{2}\bar p}\right)}.
+\]
+Its last expression also conflicts with the preceding identity and the appendix's negative-branch posterior. These two literal closed forms are recorded as printed conflicts, not imposed as additional payoff equalities. Neither sign nor branch is silently repaired.
+
+\emph{Printed upper-atom notation.} Appendix A uses $Q(\bar p)$ in its mass-point calculations as follows:
+\[
+\begin{aligned}
+&\lim_{p\uparrow\bar p}Q(p)p
+ +\int_{\alpha}^{\bar p}-Q'(\tilde p)\theta(\tilde p)\,d\tilde p\\
+&\qquad=
+ \frac12\bigl(Q(\bar p)\bar p+Q(\bar p)\theta(\bar p)\bigr)
+ +\int_{\alpha}^{\bar p}-Q'(\tilde p)\theta(\tilde p)\,d\tilde p,
+\end{aligned}
+\]
+\[
+\lim_{p\uparrow\bar p}Q(p)\theta(p)
+ =\frac12Q(\bar p)\theta(\bar p),
+\qquad
+Q(\bar p)=\frac{2\theta(\alpha)}{\bar p}.
+\]
+These are literal appendix endpoint calculations. Their $Q(\bar p)$ acts as the full rival-price atom: the factors $1/2$ then apply the tie rule. This differs from the main-text sale probability at $\bar p$, which includes winning a tie, and from the strict-tail expression $\Pr(\tilde p>\bar p)$, which is zero at an upper support endpoint. The incompatible endpoint meanings are not imposed simultaneously on the main-text $Q$. The interior definition and the posterior boundary relations above are retained without replacing an endpoint value by a limit.
+
+The same endpoint usage appears in the appendix's Bayesian normalization calculation (physical p.~41):
+\begin{equation}
+\int_{\alpha}^{\bar p}-Q'(p)\theta(p)\,dp
+ +Q(\bar p)\bar p
+ =-\theta(\alpha)
+ W_{-1}\!\left(-\frac{2\alpha}{e^{2}\bar p}\right)
+ =\alpha.
+\tag{11}
+\end{equation}
+This is the printed expected-posterior calculation with the appendix's full-atom usage of $Q(\bar p)$; it does not define the main-text sale probability at the atom. The preceding physical page instead prints, as its proposed prior-consistency condition,
+\[
+\int_{\alpha}^{\bar p}-Q'(p)p\,dp
+ +Q(\bar p)\bar p=\alpha.
+\]
+The integrand here contains $p$, whereas (11) contains $\theta(p)$. These are distinct printed expressions. The latter preceding-page expression is not enforced in addition to Bayesian consistency; the selected chain follows the posterior-weighted expression (11), with its endpoint-notation limitation explicitly retained.
+
+\emph{Allowed endpoint.} The source includes $\bar p=1$ and requires $\theta(\bar p)=\bar p$. If its statement that both types have a mass point is read as requiring a strictly positive atom for each type, this conflicts at $\bar p=1$ with Bayesian updating whenever both types have positive prior probability. The printed parameter range and atom statement are retained; no replacement atom specification or restriction $\bar p<1$ is added. Likewise, formulas (1)--(2) remain restricted to $0<\theta<1$ at this endpoint.
+
+\medskip
+\noindent\emph{Source scope.} This article uses the supplied main-paper setup and PBE definition, the baseline continuation and equilibrium characterizations, and the relevant defining passages of Appendix A. Physical PDF pages are distinguished from the paper's printed page numbers. The comparative-static proofs, complete-information benchmark, and extensions are not additional conditions of this formulation. Referenced online supplements and Appendices C--D were not supplied and remain unverified; no rows from them are used.
+
+\end{document}

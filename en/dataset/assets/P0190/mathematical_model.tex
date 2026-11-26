@@ -1,0 +1,82 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,mathtools,geometry}
+\geometry{a4paper,margin=20mm}\allowdisplaybreaks
+\emergencystretch=4em
+\begin{document}
+\section*{Joint high-level scheduling of intersection signals and vehicle arrivals}
+
+\paragraph{Source and scope} Pages 3--10 of the PDF, §2.3--2.6, equations (1)--(50). The high-level signals and arrival times are given, and the trajectories are generated at the low level in §2.7; this document only covers the complete high-level scheduling.
+\subsection*{Indexing, input, and variable definitions}
+The entrance lane is designated as $i$. The lanes numbered from right to left are $j$. Vehicles indexed by their positions are designated as $k$. Vehicles grouped together are $\Omega=\Omega^{\rm CAV}\cup\Omega^{\rm OV}$. Only CAV-controlled vehicles are included in this category. $f(j)$ represents the mapping between lanes and signal phases (using the mapping appropriate for the entrance lane). The eight-phase system is represented by $\phi_1,\ldots,\phi_8$. This system follows the NEMA dual-barrier sequence. $I_\phi$ indicates that the current phase is green; $g_\phi^p,t_\phi^l$ indicates that the green light has been passed and time has been lost. $\phi_g$ refers to the current green light in the same barrier. $\phi_p$ represents the phases that follow the current phase and precede the target phase, as described in equation (7). $g^{\min},g^{\max}$ represents the maximum duration allowed for each phase.
+
+The vehicle inputs $d^{\rm stop},P,v,v^{\rm lat},d^{\rm lat}$ which include distance from the stop line, position along the lane, current speed, lateral speed, and lateral deviation. $v^l=v_l$ represents the speed limit, $v_t$ is the passing speed, $a_{\max},d_{\max}>0$ are the speed increment/decrement limits, $v_{lc}$ is the minimum speed for lane changing, and $v_{\rm avg}^{\rm CAV},v_{\rm avg}^{\rm OV}>0$ is the average speed near the entrance. $d^{\rm acc},d^{\rm dec}$ indicates the acceleration/deceleration distance calculated based on the given driving conditions. $d_v,d_g,t_{\rm headway},d_h$ includes vehicle length, minimum spacing, expected headway, and release headway. $CNL_i$ indicates areas where lane changing is prohibited, $d_{\rm dis}$ is the specified distance for queue clearing, and $e^{f(j)}$ represents the red light indication when entering the area. $I_j^{lm},I_j^{rm}$ identifies the leftmost/rightmost lane. $K^{\rm front}_{ijk}(\ell)$ represents the vehicles ahead of the vehicle in question on the candidate lane $\ell$. $kf,kfl$ indicates the immediate vehicles ahead and behind on the candidate lane (only neighboring vehicles apply corresponding safety measures). $GAP_{ij}$ is the lane spacing. $K^{q_jL},K^{q_jR}$ represents the group of vehicles that can enter the gap from adjacent left and right lanes. $I_{\rm safety},I_{\rm speed},I_{\rm NCG}$ includes the conditions for lane changing as pre-evaluated according to rules from (17)--(23) and page 8. Lane changes conflicting with each other are prioritized based on the one closer to the stop line. $M$ represents the valid upper bounds for various condition expressions.
+
+$J^{\rm target}_{ijk}$ represents a set of absolute lane numbers that are compatible with the vehicle’s subsequent path. $\widehat J_{ijk}$ represents a set of lanes that can be maintained or moved one step closer to the target direction. Action $j^{\prime}=0,1,2$ corresponds to $\ell_{ijk}(j^{\prime})=j+1,j,j-1$. The action of leaving the road is defined as zero. According to conditions (10), the value 1 is taken if the conditions are met, otherwise 0 is used. To avoid direct comparison between the action numbers and absolute lane numbers, an explicit mapping using $\ell$ is employed. $f^l,f^r$ Returns 1 if conditions (11)–(12) are met; otherwise, 0 is returned.
+
+Decision variables $t^a,d,r,g,\theta,C,t^{\rm dis}\ge0$ represent arrival time, delay, remaining red lights, remaining green lights, phase duration, cycle duration, and queue release time. $\delta^{0,1,2},\alpha,\beta\in\{0,1\}$ refers to lane change actions and pass marks for the current cycle. $n^{r,c,l}$ represents non-negative integer queue counts, with “green” or “red” indicating the direction of the queue movement. $j_{\rm new}$ refers to the derived lanes defined by (16). Variables $t$ in equations (47)–(49) represent the $t^a$ values of the preceding vehicle.
+\subsection*{The only goal}
+\[
+\min \sum_{i,j,k}(d_{ijk}+\delta^0_{ijk}+\delta^2_{ijk}),\qquad
+d_{ijk}=t^a_{ijk}-d^{\rm stop}_{ijk}/v^l.\tag{1--2}
+\]
+\subsection*{All high-level constraints}
+\[\begin{aligned}&\text{Signal allocation constraints (based on the NEMA dual-barrier structure):}\end{aligned}\]
+\[\begin{aligned}&\quad \sum_{i=1}^{4} \theta_{\phi_{i}} = \sum_{i=5}^{8} \theta_{\phi_{i}} = C \quad \text{(Equation (3))}\end{aligned}\]
+\[\begin{aligned}&\quad \sum_{i=1}^{2} \theta_{\phi_{i}} = \sum_{i=5}^{6} \theta_{\phi_{i}} \quad \text{(Equation (4))}\end{aligned}\]
+\[\begin{aligned}&\quad \sum_{i=3}^{4} \theta_{\phi_{i}} = \sum_{i=7}^{8} \theta_{\phi_{i}} \quad \text{(Equation (5))}\end{aligned}\]
+\[\begin{aligned}&\quad g_{\phi} = I_{\phi} (\theta_{\phi} - g^{p}_{\phi} - t^{l}_{\phi}), \quad \forall \phi \quad \text{(Equation (6))}\end{aligned}\]
+\[\begin{aligned}&\quad \text{Among them, when the phase… } \phi \text{ When it’s a red light, } g_{\phi} = 0.\end{aligned}\]
+\[\begin{aligned}&\quad r_{\phi} = (1 - I_{\phi})(g_{\phi_{g}} + t^{l}_{\phi_{g}} + \sum_{\phi_{p}} \theta_{\phi_{p}}), \quad \forall \phi \quad \text{(Equation (7))}\end{aligned}\]
+\[\begin{aligned}&\quad g^{\min} \leq \theta_{\phi} \leq g^{\max} \quad \text{(Equation (8))}\end{aligned}\]
+\[\begin{aligned}&\text{Lane allocation constraints:}\end{aligned}\]
+\[\begin{aligned}&\quad \sum_{j^{\prime}=0,1,2} \delta^{j^{\prime}}_{ijk} = 1 \quad \text{(Equation (9))}\end{aligned}\]
+\[\begin{aligned}&\quad \delta^{j^{\prime}}_{ijk} = 0 \text{ if } \ell_{ijk}(j^{\prime}) \notin \widehat J_{ijk} \text{ and } \omega_{ijk} \in \Omega^{\text{CAV}} \quad \text{(Equation (10))}\end{aligned}\]
+\[\begin{aligned}&\quad f^{l}_{ijk} = 1 \text{ if } v^{\text{lat}}_{ijk} > 0, d^{\text{lat}}_{ijk} \geq 0.2 \quad \text{(Equation (11))}\end{aligned}\]
+\[\begin{aligned}&\quad f^{r}_{ijk} = 1 \text{ if } v^{\text{lat}}_{ijk} < 0, d^{\text{lat}}_{ijk} \leq -0.2 \quad \text{(Equation (12))}\end{aligned}\]
+\[\begin{aligned}&\quad \delta^{1}_{ijk} = 1 \text{ if } \omega_{ijk} \in \Omega^{\text{OV}}, f^{l}_{ijk} = 0, f^{r}_{ijk} = 0 \quad \text{(Equation (13))}\end{aligned}\]
+\[\begin{aligned}&\quad \delta^{2}_{ijk} = 1 \text{ if } \omega_{ijk} \in \Omega^{\text{OV}}, f^{r}_{ijk} = 1 \quad \text{(Equation (14))}\end{aligned}\]
+\[\begin{aligned}&\quad \delta^{0}_{ijk} = 1 \text{ if } \omega_{ijk} \in \Omega^{\text{OV}}, f^{l}_{ijk} = 1 \quad \text{(Equation (15))}\end{aligned}\]
+\[\begin{aligned}&\quad j_{\text{new}} = \delta^{0}_{ijk}(j + 1) + \delta^{1}_{ijk}(j) + \delta^{2}_{ijk}(j - 1) \quad \text{(Equation (16))}\end{aligned}\]
+\[\begin{aligned}&\quad (P_{ij_{\text{new}}kf} - P_{ijk}) - \max \left( \frac{v^{2}_{ijk} - v^{2}_{ij_{\text{new}}kf}}{2d_{\max}} + d_{r}, d_{\text{des}} \right) \geq - (1 - \delta^{j^{\prime}}_{ijk}) M \quad \text{(Equation (17))}\end{aligned}\]
+\[\begin{aligned}&\quad (P_{ijk} - P_{ij_{\text{new}}kfl}) - \max \left( \frac{v^{2}_{ij_{\text{new}}kfl} - v^{2}_{ijk}}{2d_{\max}} + d_{r}, d_{\text{des}} \right) \geq - (1 - \delta^{j^{\prime}}_{ijk}) M \quad \text{(Equation (18))}\end{aligned}\]
+\[\begin{aligned}&\quad d_{r} = d_{v} + d_{g} \quad \text{(Equation (19))}\end{aligned}\]
+\[\begin{aligned}&\quad d_{\text{des}} = d_{r} + t_{\text{headway}} \times v_{ijk} \quad \text{(Equation (20))}\end{aligned}\]
+\[\begin{aligned}&\quad v_{ijk} - v_{lc} \geq - (1 - \delta^{j^{\prime}}_{ijk}) M \quad \text{(Equation (21))}\end{aligned}\]
+equations (17), (18), and (21) only apply to the candidate lane change action $j^{\prime}\in\{0,2\}$ of CAV; the action to maintain the current lane $j^{\prime}=1$ is not subject to these lane change conditions. In these equations, the candidate lane is denoted as $\ell_{ijk}(j^{\prime})$, and corresponding to $kf,kfl$, the front and rear vehicles currently in that lane are considered. It is not allowed to use unactivated neighboring vehicles to restrict the movement of vehicles in the maintained lane. Equations (19) and (20) define the distance parameters used in these safety constraints.
+\[\begin{aligned}&\quad \delta^{1}_{ijk} = 1 \quad \text{if} \quad P_{ijk} \in \text{CNL}_{i} \quad \text{(Equation (22))}\end{aligned}\]
+\[\begin{aligned}&\quad (1 - I^{lm}_{j}) \sum_{k_{l} \in K^{q_{j}L}} \delta^{2}_{i(j+1)k_l} + (1 - I^{rm}_{j}) \sum_{k_{r} \in K^{q_{j}R}} \delta^{0}_{i(j-1)k_r} \leq 1, \quad \forall \text{gap}^{q}_{j} \in \text{GAP}_{ij} \quad \text{(Equation (23))}\end{aligned}\]
+\[\begin{aligned}&\quad \delta^{0}_{ijk} = 1, \quad \text{if} \quad j - \min(J^{\text{target}}_{ijk}) < 0, \quad I_{\text{safety}} = 1, \quad I_{\text{speed}} = 1, \quad I_{\text{NCG}} = 1, \quad P_{ijk} \notin \text{CNL}_{i} \quad \text{(Equation (24))}\end{aligned}\]
+\[\begin{aligned}&\quad \delta^{2}_{ijk} = 1, \quad \text{if} \quad j - \max(J^{\text{target}}_{ijk}) > 0, \quad I_{\text{safety}} = 1, \quad I_{\text{speed}} = 1, \quad I_{\text{NCG}} = 1, \quad P_{ijk} \notin \text{CNL}_{i} \quad \text{(Equation (25))}\end{aligned}\]
+\[\begin{aligned}&\quad \text{Equations (24) and (25) relate to vehicles. } \omega_{ijk} \text{ It is effective when in CAV mode.}\end{aligned}\]
+\[\begin{aligned}&\text{Arrival time constraints:}\end{aligned}\]
+\[\begin{aligned}&\quad \phi = f(j) \quad \text{(Equation (26))}\end{aligned}\]
+\[\begin{aligned}&\quad \text{When the current phase } f(j_{\text{new}}) \text{ When the light is green:}\end{aligned}\]
+\[\begin{aligned}&\quad M(1 - \alpha_{ijk}) \geq I_{f(j_{\text{new}})}(t^{a}_{ijk} - g_{f(j_{\text{new}})}) \geq -M \alpha_{ijk} \quad \text{(Equation (27))}\end{aligned}\]
+\[\begin{aligned}&\quad M \alpha_{ijk} \geq I_{f(j_{\text{new}})}(g_{f(j_{\text{new}})} + t^{l}_{f(j_{\text{new}})} + C - \theta_{f(j_{\text{new}})} + t^{\text{dis}}_{ijk} - t^{a}_{ijk}) \geq -M(1 - \alpha_{ijk}) \quad \text{(Equation (28))}\end{aligned}\]
+\[\begin{aligned}&\quad \text{When the current phase } f(j_{\text{new}}) \text{ When it is red light:}\end{aligned}\]
+\[\begin{aligned}&\quad M \beta_{ijk} \geq (1 - I_{f(j_{\text{new}})})(r_{f(j_{\text{new}})} + \theta_{f(j_{\text{new}})} - t^{a}_{ijk}) \geq -M(1 - \beta_{ijk}) \quad \text{(Equation (29))}\end{aligned}\]
+\[\begin{aligned}&\quad (1 + I_{f(j_{\text{new}})}) \geq \beta_{ijk} \geq (1 - I_{f(j_{\text{new}})}) \quad \text{(Equation (30))}\end{aligned}\]
+\[\begin{aligned}&\quad t^{a}_{ijk} \geq (1 - I_{f(j_{\text{new}})})(r_{f(j_{\text{new}})} + t^{\text{dis}}_{ijk}) \quad \text{(Equation (31))}\end{aligned}\]
+\[\begin{aligned}&\quad t^{\text{dis}}_{ijk} = (n^{r}_{ijk} + n^{c}_{ijk} + n^{l}_{ijk}) d_{h} \quad \text{(Equation (32))}\end{aligned}\]
+\[\begin{aligned}&\quad n^{r}_{ijk} = n^{r \text{green}}_{ijk} I_{f(j_{\text{new}})} + n^{r \text{red}}_{ijk} (1 - I_{f(j_{\text{new}})}) \quad \text{(Equation (33))}\end{aligned}\]
+\[\begin{aligned}&\quad n^{r \text{green}}_{ijk} = \sum_{k^{\prime} \in K^{\text{front}}_{ijk}(j_{\text{new}}-1)} (1 - \alpha_{i(j_{\text{new}}-1)k^{\prime}})(\delta^{0}_{i(j_{\text{new}}-1)k^{\prime}}) \quad \text{(Equation (34))}\end{aligned}\]
+\[\begin{aligned}&\quad n^{r \text{red}}_{ijk} = \sum_{k^{\prime} \in K^{\text{front}}_{ijk}(j_{\text{new}}-1)} (\beta_{i(j_{\text{new}}-1)k^{\prime}})(\delta^{0}_{i(j_{\text{new}}-1)k^{\prime}}) \quad \text{(Equation (35))}\end{aligned}\]
+\[\begin{aligned}&\quad n^{c}_{ijk} = n^{c \text{green}}_{ijk} I_{f(j_{\text{new}})} + n^{c \text{red}}_{ijk} (1 - I_{f(j_{\text{new}})}) \quad \text{(Equation (36))}\end{aligned}\]
+\[\begin{aligned}&\quad n^{c \text{green}}_{ijk} = \sum_{k^{\prime} \in K^{\text{front}}_{ijk}(j_{\text{new}})} (1 - \alpha_{ij_{\text{new}}k^{\prime}})(\delta^{1}_{ij_{\text{new}}k^{\prime}}) \quad \text{(Equation (37))}\end{aligned}\]
+\[\begin{aligned}&\quad n^{c \text{red}}_{ijk} = \sum_{k^{\prime} \in K^{\text{front}}_{ijk}(j_{\text{new}})} (\beta_{ij_{\text{new}}k^{\prime}})(\delta^{1}_{ij_{\text{new}}k^{\prime}}) \quad \text{(Equation (38))}\end{aligned}\]
+\[\begin{aligned}&\quad n^{l}_{ijk} = n^{l \text{green}}_{ijk} I_{f(j_{\text{new}})} + n^{l \text{red}}_{ijk} (1 - I_{f(j_{\text{new}})}) \quad \text{(Equation (39))}\end{aligned}\]
+\[\begin{aligned}&\quad n^{l \text{green}}_{ijk} = \sum_{k^{\prime} \in K^{\text{front}}_{ijk}(j_{\text{new}}+1)} (1 - \alpha_{i(j_{\text{new}}+1)k^{\prime}})(\delta^{2}_{i(j_{\text{new}}+1)k^{\prime}}) \quad \text{(Equation (40))}\end{aligned}\]
+\[\begin{aligned}&\quad n^{l \text{red}}_{ijk} = \sum_{k^{\prime} \in K^{\text{front}}_{ijk}(j_{\text{new}}+1)} (\beta_{i(j_{\text{new}}+1)k^{\prime}})(\delta^{2}_{i(j_{\text{new}}+1)k^{\prime}}) \quad \text{(Equation (41))}\end{aligned}\]
+\[\begin{aligned}&\quad t^{a}_{ijk} \geq \frac{d^{\text{stop}}_{ijk} - d^{\text{acc}}_{ijk} - d^{\text{dec}}_{ijk}}{v_{l}} + \frac{v_{l} - v_{ijk}}{a_{\max}} + \frac{v_{l} - v_{t}}{d_{\max}} \quad \text{if} \quad d^{\text{stop}}_{ijk} \geq d^{\text{acc}}_{ijk} + d^{\text{dec}}_{ijk} \quad \text{(Equation (42))}\end{aligned}\]
+\[\begin{aligned}&\quad t^{a}_{ijk} \geq \frac{d^{\text{stop}}_{ijk}}{v^{\text{CAV}}_{\text{avg}}} \quad \text{if} \quad \omega_{ijk} \in \Omega^{\text{CAV}}, \quad d^{\text{stop}}_{ijk} < d^{\text{acc}}_{ijk} + d^{\text{dec}}_{ijk} \quad \text{(Equation (43))}\end{aligned}\]
+\[\begin{aligned}&\quad t^{a}_{ijk} \geq \frac{d^{\text{stop}}_{ijk}}{v^{\text{OV}}_{\text{avg}}} \quad \text{if} \quad \omega_{ijk} \in \Omega^{\text{OV}}, \quad d^{\text{stop}}_{ijk} < d^{\text{acc}}_{ijk} + d^{\text{dec}}_{ijk}, \quad v_{ijk} \leq v^{\text{OV}}_{\text{avg}} \quad \text{(Equation (44))}\end{aligned}\]
+\[\begin{aligned}&\quad t^{a}_{ijk} \geq \frac{d^{\text{stop}}_{ijk}}{v_{ijk}} \quad \text{if} \quad \omega_{ijk} \in \Omega^{\text{OV}}, \quad d^{\text{stop}}_{ijk} < d^{\text{acc}}_{ijk} + d^{\text{dec}}_{ijk}, \quad v_{ijk} > v^{\text{OV}}_{\text{avg}} \quad \text{(Equation (45))}\end{aligned}\]
+\[\begin{aligned}&\quad t^{a}_{ijk} \geq (r_{f(j_{\text{new}})} + t^{\text{dis}}_{ijk})(1 - I_{f(j_{\text{new}})}) \quad \text{(Equation (46))}\end{aligned}\]
+\[\begin{aligned}&\quad t^{a}_{ijk} \geq (t_{ij_{\text{new}}k^{\prime}} + d_{h})\delta^{1}_{ij_{\text{new}}k^{\prime}}, \quad k^{\prime} \in K^{\text{front}}_{ijk}(j_{\text{new}}) \quad \text{(Equation (47))}\end{aligned}\]
+\[\begin{aligned}&\quad t^{a}_{ijk} \geq (t_{i(j_{\text{new}}-1)k^{\prime}} + d_{h})\delta^{0}_{i(j_{\text{new}}-1)k^{\prime}}, \quad k^{\prime} \in K^{\text{front}}_{ijk}(j_{\text{new}}-1) \quad \text{(Equation (48))}\end{aligned}\]
+\[\begin{aligned}&\quad t^{a}_{ijk} \geq (t_{i(j_{\text{new}}+1)k^{\prime}} + d_{h})\delta^{2}_{i(j_{\text{new}}+1)k^{\prime}}, \quad k^{\prime} \in K^{\text{front}}_{ijk}(j_{\text{new}}+1) \quad \text{(Equation (49))}\end{aligned}\]
+\[\begin{aligned}&\quad \alpha_{ijk} = 1 \quad \text{if} \quad d^{\text{stop}}_{ijk} \leq d_{\text{dis}} \quad \text{and} \quad e^{f(j)}_{ijk} = 1 \quad \text{(Equation (50))}\end{aligned}\]
+\paragraph{Expression methods}
+Each constraint applies to all existing vehicles, lanes, or phases. Those lines marked with “if” only apply when the specified conditions are met. The index values for $j_{\rm new}$ can be conditioned based on three possible actions. Binary products can be used in such cases. $z\le a,\ z\le b,\ z\ge a+b-1,\ z\ge0$ represents precise linearization. The original logical/prod notation is retained for clarity purposes; no low-level trajectory targets are included here. The vehicle/lane indices in the original transcriptions (23), (40), (48), and (49) have been standardized according to the meanings of neighboring vehicles.
+
+\end{document}

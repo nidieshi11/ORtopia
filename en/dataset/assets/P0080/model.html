@@ -1,0 +1,278 @@
+<!DOCTYPE html> 
+<html lang='en-US' xml:lang='en-US'> 
+<head><title>P0080 · Advance Flight Cancellation and Aircraft Recovery After Disruption · Mathematical model</title> 
+<meta charset='utf-8' /> 
+<meta content='TeX4ht (https://tug.org/tex4ht/)' name='generator' /> 
+<meta content='width=device-width,initial-scale=1' name='viewport' /> 
+<style> 
+/* start css.sty */
+.cmr-10x-x-109{}
+.cmbx-10x-x-109{ font-weight: bold;}
+.cmbsy-10x-x-109{font-weight: bold;}
+.cmbsy-10x-x-109{font-weight: bold;}
+.cmbsy-10x-x-109{font-weight: bold;}
+.cmbsy-8{font-size:72%;font-weight: bold;}
+.cmbsy-8{font-weight: bold;}
+.cmbsy-8{font-weight: bold;}
+.cmbsy-6{font-size:54%;font-weight: bold;}
+.cmbsy-6{font-weight: bold;}
+.cmbsy-6{font-weight: bold;}
+.cmex-10x-x-109{}
+.cmex-8{font-size:72%;}
+.cmex-7x-x-85{font-size:54%;}
+.msam-10x-x-109{}
+.msam-10x-x-80{font-size:72%;}
+.msam-7x-x-85{font-size:54%;}
+.msbm-10x-x-109{}
+.msbm-10x-x-80{font-size:72%;}
+.msbm-7x-x-85{font-size:54%;}
+.cmr-8{font-size:72%;}
+.cmr-6{font-size:54%;}
+.cmmi-10x-x-109{font-style: italic;}
+.cmmi-8{font-size:72%;font-style: italic;}
+.cmmi-6{font-size:54%;font-style: italic;}
+.cmsy-10x-x-109{}
+.cmsy-8{font-size:72%;}
+.cmsy-6{font-size:54%;}
+.cmti-10x-x-109{ font-style: italic;}
+p{margin-top:0;margin-bottom:0}
+p.indent{text-indent:0;}
+p + p{margin-top:1em;}
+p + div, p + pre {margin-top:1em;}
+div + p, pre + p {margin-top:1em;}
+a { overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; hyphens: auto; }
+@media print {div.crosslinks {visibility:hidden;}}
+table.tabular{border-collapse: collapse; border-spacing: 0;}
+a img { border-top: 0; border-left: 0; border-right: 0; }
+center { margin-top:1em; margin-bottom:1em; }
+td center { margin-top:0em; margin-bottom:0em; }
+.Canvas { position:relative; }
+math { text-indent: 0em; }
+body{ margin:1em auto; max-width:80ch; padding:0 .62em; }
+h1,h2,h3,h4,h5 { line-height:1.2; }
+@media print{ body{ max-width:none } }
+.partHead, .likepartHead { font-size: 2em; }
+.chapterHead, .likechapterHead { font-size: 1.7411em; }
+.sectionHead, .likesectionHead { font-size: 1.5157em; }
+.subsectionHead, .likesubsectionHead { font-size: 1.3195em; }
+.subsubsectionHead, .likesubsubsectionHead { font-size: 1.1487em; }
+ @media (prefers-color-scheme: dark) { img[src^="model"]{filter: invert(1); } } 
+li p.indent { text-indent: 0em }
+li p:first-child{ margin-top:0em; }
+li p:last-child, li div:last-child { margin-bottom:0.5em; }
+li p:first-child{ margin-bottom:0; }
+li p~ul:last-child, li p~ol:last-child{ margin-bottom:0.5em; }
+.enumerate1 {list-style-type:decimal;}
+.enumerate2 {list-style-type:lower-alpha;}
+.enumerate3 {list-style-type:lower-roman;}
+.enumerate4 {list-style-type:upper-alpha;}
+div.newtheorem { margin-bottom: 2em; margin-top: 2em;}
+div.newtheorem .head{font-weight: bold;}
+.obeylines-h,.obeylines-v {white-space: nowrap; }
+div.obeylines-v p { margin-top:0; margin-bottom:0; }
+.overline{ text-decoration:overline; }
+.overline img{ border-top: 1px solid black; }
+td.displaylines {text-align:center; white-space:nowrap;}
+.centerline {text-align:center;}
+.rightline {text-align:right;}
+pre.verbatim {font-family: monospace,monospace; text-align:left; clear:both; }
+.fbox {padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+div.fbox {display:table}
+div.center div.fbox {text-align:center; clear:both; padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+div.minipage{width:100%;}
+div.center, div.center div.center {text-align: center; margin-left:1em; margin-right:1em;}
+div.center div {text-align: left;}
+div.flushright, div.flushright div.flushright {text-align: right;}
+div.flushright div {text-align: left;}
+div.flushleft {text-align: left;}
+.underline{ text-decoration:underline; }
+.underline img{ border-bottom: 1px solid black; margin-bottom:1pt; }
+.framebox-c, .framebox-l, .framebox-r { padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+.framebox-c {text-align:center;}
+.framebox-l {text-align:left;}
+.framebox-r {text-align:right;}
+span.thank-mark{ vertical-align: super }
+span.footnote-mark sup.textsuperscript, span.footnote-mark a sup.textsuperscript{ font-size:80%; }
+code.verb{font-family:monospace,monospace;}
+div.tabular, div.center div.tabular {text-align: center; margin-top:0.5em; margin-bottom:0.5em; }
+table.tabular td p{margin-top:0em;}
+table.tabular {margin-left: auto; margin-right: auto;}
+td p:first-child{ margin-top:0em; }
+td p:last-child{ margin-bottom:0em; }
+div.td00{ margin-left:0pt; margin-right:0pt; }
+div.td01{ margin-left:0pt; margin-right:5pt; }
+div.td10{ margin-left:5pt; margin-right:0pt; }
+div.td11{ margin-left:5pt; margin-right:5pt; }
+table[rules] {border-left:solid black 0.4pt; border-right:solid black 0.4pt; }
+td.td00{ padding-left:0pt; padding-right:0pt; }
+td.td01{ padding-left:0pt; padding-right:5pt; }
+td.td10{ padding-left:5pt; padding-right:0pt; }
+td.td11{ padding-left:5pt; padding-right:5pt; }
+table[rules] {border-left:solid black 0.4pt; border-right:solid black 0.4pt; }
+.hline hr, .cline hr{ height : 0px; margin:0px; }
+.hline td, .cline td{ padding: 0; }
+.hline hr, .cline hr{border:none;border-top:1px solid black;}
+.hline {border-top: 1px solid black;}
+.hline + .vspace:last-child{display:none;}
+.hline:first-child{border-bottom:1px solid black;border-top:none;}
+.tabbing-right {text-align:right;}
+div.float, div.figure {margin-left: auto; margin-right: auto;}
+div.float img {text-align:center;}
+div.figure img {text-align:center;}
+.marginpar,.reversemarginpar {width:20%; float:right; text-align:left; margin-left:auto; margin-top:0.5em; font-size:85%; text-decoration:underline;}
+.marginpar p,.reversemarginpar p{margin-top:0.4em; margin-bottom:0.4em;}
+.reversemarginpar{float:left;}
+.equation td{text-align:center; vertical-align:middle; }
+td.eq-no{ width:5%; }
+table.equation { width:100%; } 
+div.math-display, div.par-math-display{text-align:center;}
+.array-hline,.array-cline{ border-top: 1px solid black; height:0px; }
+.array-hline + .array-vspace:last-child{display:none;}
+.hline-mtd, .array-hline td{ display:none }
+.array-hline + .array-row:last-child{display:none;}
+.array-hline:first-child{border-bottom:1px solid black;border-top:none;}
+math .texttt { font-family: monospace; }
+math .textit { font-style: italic; }
+math .textsl { font-style: oblique; }
+math .textsf { font-family: sans-serif; }
+math .textbf { font-weight: bold; }
+mo.MathClass-op + mi{margin-left:0.3em}
+mi + mo.MathClass-op{margin-left:0.3em}
+ math mstyle[mathvariant="bold"] { font-weight: bold; font-style: normal; } 
+ math mstyle[mathvariant="normal"] { font-weight: normal; font-style: normal; } 
+.partToc a, .partToc, .likepartToc a, .likepartToc {line-height: 200%; font-weight:bold; font-size:110%;}
+.index-item, .index-subitem, .index-subsubitem {display:block}
+div.caption {text-indent:-2em; margin-left:3em; margin-right:1em; text-align:left;}
+div.caption span.id{font-weight: bold; white-space: nowrap; }
+h1.partHead{text-align: center}
+p.bibitem { text-indent: -2em; margin-left: 2em; margin-top:0.6em; margin-bottom:0.6em; }
+p.bibitem-p { text-indent: 0em; margin-left: 2em; margin-top:0.6em; margin-bottom:0.6em; }
+.subsubsectionHead, .likesubsubsectionHead { font-size: 1em; }
+.paragraphHead, .likeparagraphHead { margin-top:2em; font-weight: bold;}
+.subparagraphHead, .likesubparagraphHead { font-weight: bold;}
+.verse{white-space:nowrap; margin-left:2em}
+div.maketitle {text-align:center;}
+h2.titleHead{text-align:center;}
+div.maketitle{ margin-bottom: 2em; }
+div.author, div.date {text-align:center;}
+div.thanks{text-align:left; margin-left:10%; font-size:85%; font-style:italic; }
+div.author{white-space: nowrap;}
+div.abstract p {margin-left:5%; margin-right:5%;}
+div.abstract {width:100%;}
+.abstracttitle{text-align:center;margin-bottom:1em;}
+.subsectionToc, .likesubsectionToc {margin-left:1em;}
+.subsubsectionToc, .likesubsubsectionToc {margin-left:2em;}
+.paragraphToc, .likeparagraphToc {margin-left:3em;}
+.subparagraphToc, .likesubparagraphToc {margin-left:4em;}
+figure.float, div.figure {margin-left: auto; margin-right: auto;}
+figure.figure {text-align:center;}
+figcaption.caption {text-indent:-2em; margin-left:3em; margin-right:1em; text-align:center;}
+figcaption.caption span.id{font-weight: bold; white-space: nowrap; }
+p + figcaption, img + figcaption{margin-top: 1em;}
+.abstract{margin:1em;}
+.equation-star td{text-align:center; vertical-align:middle; }
+table.equation-star { width:100%; } 
+.boxed{border: 1px solid black; padding-left:2px; padding-right:2px;}
+mtd.align-odd{margin-left:2em; text-align:right;}
+mtd.align-even{margin-right:2em; text-align:left;}
+/* end css.sty */
+
+
+html{background:#fff;color:#243833}body{padding:clamp(.55rem,2vw,1.25rem);margin:0;line-height:1.5;overflow-wrap:break-word}
+h1,h2,h3,h4,h5,h6{line-height:1.22;color:#193d35}p{margin:.5rem 0}math[display=block]{overflow-x:auto;max-width:100%}
+@media print{body{padding:0;color:#000}}
+</style> 
+<meta content='model.tex' name='src' /> 
+</head><body>
+   <h3 class='likesectionHead' id='core-model-twostage-aircraft-recovery-with-precancellation'><a id='x1-1000'></a>Core model: two-stage aircraft recovery with precancellation</h3>
+<!-- l. 6 --><p class='noindent'>Source: Section 3.1, PDF pp.4–5, Table 3 and (1)–(9). The complete route-based BM is retained;
+the nonanticipative first-stage precancellation and all scenario recovery decisions form one
+model.
+</p>
+<!-- l. 9 --><p class='noindent'><span class='paragraphHead' id='data-and-feasible-routes'><a id='x1-2000'></a><span class='cmbx-10x-x-109'>Data and feasible routes.</span></span>
+   <!-- l. 10 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>L</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>A</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>S</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>B</mi></mrow></math>
+are flights, aircraft, disruption scenarios and required end bases.
+<!-- l. 11 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>p</mi></mrow><mrow><mi>s</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>&gt;</mo> <mn>0</mn></mrow></math>,
+<!-- l. 11 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi class='MathClass-op'>∑</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo>
+   <!-- nolimits --></mrow><mrow><mi>s</mi></mrow></msub><msub><mrow><mi>p</mi></mrow><mrow><mi>s</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn></mrow></math>. Costs
+<!-- l. 11 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>c</mi></mrow><mrow><mi>l</mi></mrow></msub></math> and
+<!-- l. 11 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msubsup><mrow><mi>d</mi></mrow><mrow><mi>l</mi></mrow><mrow><mi>s</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>&gt;</mo> <msub><mrow><mi>c</mi></mrow><mrow><mi>l</mi></mrow></msub></mrow></math> are advance and real-time
+cancellation costs. <!-- l. 12 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>c</mi></mrow><mrow><mi>b</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mn>0</mn></mrow></math> penalizes
+base imbalance and <!-- l. 13 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>n</mi></mrow><mrow><mi>b</mi></mrow></msub></math> is the
+required number at base <!-- l. 13 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>b</mi></math>.
+<!-- l. 13 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>O</mi></mrow><mrow><mi>s</mi></mrow></msub></math>
+indexes airport/interval slot restrictions with integer capacity
+<!-- l. 14 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mrow><mi>u</mi></mrow><mrow><mi>o</mi></mrow><mrow><mi>s</mi></mrow></msubsup></math>. For
+aircraft <!-- l. 15 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>a</mi></math>
+and scenario <!-- l. 15 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>s</mi></math>,
+<!-- l. 15 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mrow><mi>R</mi></mrow><mrow><mi>a</mi></mrow><mrow><mi>s</mi></mrow></msubsup></math> is the
+<span class='cmti-10x-x-109'>complete </span>set of physically feasible routes on its finite time-space network, with every route satisfying the
+network requirements below. Each route starts at the aircraft’s actual available airport/time, uses
+compatible flight copies (scheduled time plus an allowed nonnegative delay), and connects successive flights
+only when airports agree and the previous arrival plus required turn time does not exceed the next
+departure. It respects aircraft availability/disruption restrictions, terminates within the recovery horizon,
+and contains at most one copy of each flight. Ground waiting arcs connect consecutive events at the same
+airport. An idle route can represent an aircraft staying at its starting base. These rules define
+<!-- l. 25 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mrow><mi>R</mi></mrow><mrow><mi>a</mi></mrow><mrow><mi>s</mi></mrow></msubsup></math> from
+the supplied flight times, delay-copy grid, aircraft availability, compatibility and turn-time
+data.
+</p><!-- l. 28 --><p class='indent'>   For each route, <!-- l. 28 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>δ</mi></mrow><mrow><mi mathvariant='italic'>lr</mi></mrow></msub></math>
+indicates inclusion of flight <!-- l. 28 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>l</mi></math>,
+<!-- l. 29 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>𝜃</mi></mrow><mrow><mi mathvariant='italic'>or</mi></mrow></msub></math> counts its
+departures/arrivals in slot <!-- l. 29 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>o</mi></math>,
+and <!-- l. 30 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>γ</mi></mrow><mrow><mi mathvariant='italic'>br</mi></mrow></msub></math>
+indicates its end base. Its cost is </p><table class='equation-star'><tr><td>
+
+<!-- l. 31 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                                 <msub><mrow><mi>q</mi></mrow><mrow><mi mathvariant='italic'>ar</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>l</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>L</mi></mrow></munder><msub><mrow><mi>δ</mi></mrow><mrow><mi mathvariant='italic'>lr</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>k</mi></mrow><mrow><mi mathvariant='italic'>al</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>φ</mi></mrow><mrow><mi mathvariant='italic'>lr</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>,</mo>
+</mrow></math></td></tr></table>
+<!-- l. 34 --><p class='indent'>   where <!-- l. 34 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>k</mi></mrow><mrow><mi mathvariant='italic'>al</mi></mrow></msub></math> is aircraft
+swapping cost and <!-- l. 34 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>φ</mi></mrow><mrow><mi mathvariant='italic'>lr</mi></mrow></msub></math>
+the delay cost of the selected copy. These are route coefficients.
+</p>
+<!-- l. 36 --><p class='noindent'><span class='paragraphHead' id='variables'><a id='x1-3000'></a><span class='cmbx-10x-x-109'>Variables.</span></span>
+   <!-- l. 37 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>x</mi></mrow><mrow><mi>l</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>∈</mo><mo class='MathClass-open' stretchy='false'>{</mo><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>}</mo></mrow></math>
+is advance cancellation and is common to every scenario;
+<!-- l. 38 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msubsup><mrow><mi>y</mi></mrow><mrow><mi>l</mi></mrow><mrow><mi>s</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>∈</mo><mo class='MathClass-open' stretchy='false'>{</mo><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>}</mo></mrow></math> is real-time cancellation;
+<!-- l. 39 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msubsup><mrow><mi>z</mi></mrow><mrow><mi mathvariant='italic'>ar</mi></mrow><mrow><mi>s</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>∈</mo><mo class='MathClass-open' stretchy='false'>{</mo><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>}</mo></mrow></math> selects a route;
+<!-- l. 39 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msubsup><mrow><mi>v</mi></mrow><mrow><mi>b</mi></mrow><mrow><mi>s</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msub><mrow><mi>ℤ</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>+</mo></mrow></msub></mrow></math> is the nonnegative base-shortage
+slack. The source prints <!-- l. 40 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>ℤ</mi></math>
+in (9), but defines <!-- l. 41 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>v</mi></math>
+as a penalized slack for missing aircraft. This document makes that physical nonnegative domain
+explicit.
+</p>
+<!-- l. 43 --><p class='noindent'><span class='paragraphHead' id='single-complete-model'><a id='x1-4000'></a><span class='cmbx-10x-x-109'>Single complete model.</span></span>
+</p><!-- tex4ht:inline --><!-- l. 57 --><math display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mtable class='align' columnalign='left' displaystyle='true'>
+       <mtr><mtd class='align-odd' columnalign='right'><mtext class='qopname'>min</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo><mspace class='quad' width='1em'></mspace></mtd>       <mtd class='align-even'><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>l</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>L</mi></mrow></munder><msub><mrow><mi>c</mi></mrow><mrow><mi>l</mi></mrow></msub><msub><mrow><mi>x</mi></mrow><mrow><mi>l</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>s</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>S</mi></mrow></munder><msub><mrow><mi>p</mi></mrow><mrow><mi>s</mi></mrow></msub> <mrow><mo fence='true' form='prefix'> (</mo><mrow><munder class='msub'><mrow><mo>∑</mo>
+  </mrow><mrow><mi>l</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>L</mi></mrow></munder><msubsup><mrow><mi>d</mi></mrow><mrow><mi>l</mi></mrow><mrow><mi>s</mi></mrow></msubsup><msubsup><mrow><mi>y</mi></mrow><mrow>
+<mi>l</mi></mrow><mrow><mi>s</mi></mrow></msubsup> <mo class='MathClass-bin' stretchy='false'>+</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>a</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>A</mi></mrow></munder><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>r</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msubsup><mrow><mi>R</mi></mrow><mrow><mi>a</mi></mrow><mrow><mi>s</mi></mrow></msubsup></mrow></munder><msub><mrow><mi>q</mi></mrow><mrow><mi mathvariant='italic'>ar</mi></mrow></msub><msubsup><mrow><mi>z</mi></mrow><mrow><mi mathvariant='italic'>ar</mi></mrow><mrow><mi>s</mi></mrow></msubsup> <mo class='MathClass-bin' stretchy='false'>+</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>b</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>B</mi></mrow></munder><msub><mrow><mi>c</mi></mrow><mrow><mi>b</mi></mrow></msub><msubsup><mrow><mi>v</mi></mrow><mrow><mi>b</mi></mrow><mrow><mi>s</mi></mrow></msubsup></mrow><mo fence='true' form='postfix'>)</mo></mrow> <mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>              <mtd class='align-odd' columnalign='right'></mtd>                   <mtd class='align-even'><mspace width='2em'></mspace></mtd>       <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(1)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-4006r0'></mstyle><!-- endlabel -->
+       </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><mstyle class='text'><mtext>s.t.</mtext></mstyle><mspace class='quad' width='1em'></mspace></mtd>        <mtd class='align-even'><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>a</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>A</mi></mrow></munder><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>r</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msubsup><mrow><mi>R</mi></mrow><mrow><mi>a</mi></mrow><mrow><mi>s</mi></mrow></msubsup></mrow></munder><msub><mrow><mi>δ</mi></mrow><mrow><mi mathvariant='italic'>lr</mi></mrow></msub><msubsup><mrow><mi>z</mi></mrow><mrow><mi mathvariant='italic'>ar</mi></mrow><mrow><mi>s</mi></mrow></msubsup> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>x</mi></mrow><mrow>
+<mi>l</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msubsup><mrow><mi>y</mi></mrow><mrow><mi>l</mi></mrow><mrow><mi>s</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mspace width='2em'></mspace></mtd>                                           <mtd class='align-odd' columnalign='right'></mtd>       <mtd class='align-even'><mi>l</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>L</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>s</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>S</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                             <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(2)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-4007r0'></mstyle><!-- endlabel -->
+       </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>           <mtd class='align-even'><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>r</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msubsup><mrow><mi>R</mi></mrow><mrow><mi>a</mi></mrow><mrow><mi>s</mi></mrow></msubsup></mrow></munder><msubsup><mrow><mi>z</mi></mrow><mrow><mi mathvariant='italic'>ar</mi></mrow><mrow><mi>s</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>≤</mo> <mn>1</mn><mspace width='2em'></mspace></mtd>                                                              <mtd class='align-odd' columnalign='right'></mtd>       <mtd class='align-even'><mi>a</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>A</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>s</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>S</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                            <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(3)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-4008r0'></mstyle><!-- endlabel -->
+       </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>           <mtd class='align-even'><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>a</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>A</mi></mrow></munder><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>r</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msubsup><mrow><mi>R</mi></mrow><mrow><mi>a</mi></mrow><mrow><mi>s</mi></mrow></msubsup></mrow></munder><msub><mrow><mi>𝜃</mi></mrow><mrow><mi mathvariant='italic'>or</mi></mrow></msub><msubsup><mrow><mi>z</mi></mrow><mrow><mi mathvariant='italic'>ar</mi></mrow><mrow><mi>s</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msubsup><mrow><mi>u</mi></mrow><mrow>
+<mi>o</mi></mrow><mrow><mi>s</mi></mrow></msubsup><mspace width='2em'></mspace></mtd>                                                  <mtd class='align-odd' columnalign='right'></mtd>       <mtd class='align-even'><mi>o</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msub><mrow><mi>O</mi></mrow><mrow>
+<mi>s</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mi>s</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>S</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                            <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(4)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-4009r0'></mstyle><!-- endlabel -->
+       </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>           <mtd class='align-even'><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>a</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>A</mi></mrow></munder><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>r</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><msubsup><mrow><mi>R</mi></mrow><mrow><mi>a</mi></mrow><mrow><mi>s</mi></mrow></msubsup></mrow></munder><msub><mrow><mi>γ</mi></mrow><mrow><mi mathvariant='italic'>br</mi></mrow></msub><msubsup><mrow><mi>z</mi></mrow><mrow><mi mathvariant='italic'>ar</mi></mrow><mrow><mi>s</mi></mrow></msubsup> <mo class='MathClass-bin' stretchy='false'>+</mo> <msubsup><mrow><mi>v</mi></mrow><mrow>
+<mi>b</mi></mrow><mrow><mi>s</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>≥</mo> <msub><mrow><mi>n</mi></mrow><mrow>
+<mi>b</mi></mrow></msub><mspace width='2em'></mspace></mtd>                                              <mtd class='align-odd' columnalign='right'></mtd>       <mtd class='align-even'><mi>b</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>B</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>s</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>S</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                             <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(5)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-4010r0'></mstyle><!-- endlabel -->
+       </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>           <mtd class='align-even'><msub><mrow><mi>x</mi></mrow><mrow><mi>l</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><msubsup><mrow><mi>y</mi></mrow><mrow><mi>l</mi></mrow><mrow><mi>s</mi></mrow></msubsup><mo class='MathClass-punc' stretchy='false'>,</mo><msubsup><mrow><mi>z</mi></mrow><mrow>
+<mi mathvariant='italic'>ar</mi></mrow><mrow><mi>s</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>∈</mo><mo class='MathClass-open' stretchy='false'>{</mo><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>}</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><msubsup><mrow><mi>v</mi></mrow><mrow>
+<mi>b</mi></mrow><mrow><mi>s</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msub><mrow><mi>ℤ</mi></mrow><mrow>
+<mo class='MathClass-bin' stretchy='false'>+</mo></mrow></msub><mo class='MathClass-punc' stretchy='false'>.</mo><mspace width='2em'></mspace></mtd>                                                          <mtd class='align-odd' columnalign='right'></mtd>                   <mtd class='align-even'><mspace width='2em'></mspace></mtd>       <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-4011r1'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(1)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+   </mtd></mtr></mtable></math>
+    
+</body> 
+</html>

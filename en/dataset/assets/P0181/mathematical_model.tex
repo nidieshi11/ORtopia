@@ -1,0 +1,99 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=2.5cm]{geometry}
+\title{Finite-Sample Stochastic Scheduling Deterministic Equivalent}
+\author{}
+\date{}
+\begin{document}
+\maketitle
+
+\section*{Sets and parameters}
+Let $I$, $A$, and $R$ be finite sets of surgeries, anesthesiologists, and operating rooms, respectively. Let $N_s\in\mathbb{Z}_{>0}$ and $\mathcal{N}=\{1,\ldots,N_s\}$ be the sample count and sample index set. Write $I^2_{\ne}=\{(i,j)\in I^2:i\ne j\}$ and $I^3_{\ne}=\{(i,j,h)\in I^3:i,j,h\text{ pairwise distinct}\}$. Sequencing uses these distinct indices; diagonal sequencing variables, if stored, are fixed to zero. This follows the preceding-surgery interpretation and the explicit $j\in I\setminus\{i\}$ dual indices on source PDF page 7.
+
+The input parameters are:
+\begin{itemize}
+\item $d_i^n\geq 0$: sampled duration of surgery $i$, for $(i,n)\in I\times\mathcal{N}$.
+\item $c_r$ for $r\in R$ and $c_a$ for $a\in A$: the objective coefficients appearing in the room-opening cost and the anesthesiologist activation cost, respectively.
+\item $c_{oa}$ for $a\in A$ and $c_{or}$ for $r\in R$: anesthesiologist and room overtime cost coefficients, respectively.
+\item $g_a,w_a\in\{0,1\}$ for $a\in A$: regular-duty and on-call availability indicators.
+\item $\kappa^A_{ia}\in\{0,1\}$ for $(i,a)\in I\times A$ and $\kappa^R_{ir}\in\{0,1\}$ for $(i,r)\in I\times R$: assignment compatibility indicators.
+\item $t_a^{\mathrm{start}},t_a^{\mathrm{end}}$ for $a\in A$: anesthesiologist shift start and end times; $T^{\mathrm{end}}$: room regular end time.
+\item $M,M_{\mathrm{seq}},M_{\mathrm{anesth}},M_{\mathrm{room}}$: fixed finite big-$M$ coefficients supplied with the instance.
+\end{itemize}
+All numerical coefficients and set memberships are supplied as instance data.
+
+\section*{Decision variables}
+The shared first-stage binary variables are $x_{ia}$ (anesthesiologist assignment), $y_a$ (on-call activation), $z_{ir}$ (room assignment), $v_r$ (room activation), $u_{ij}$ (precedence), and the resource-specific sequence variables $\alpha_{ija}$ and $\beta_{ijr}$. The continuous variable $s_i$ is the scheduled start time.
+
+For each sample $n\in\mathcal{N}$, $S_i^n$ is the actual start time. Write $O_a^{A,n}$ and $O_r^{R,n}$ for the source variables $\mathrm{Over}_a^n$ and $\mathrm{Over}_r^n$, respectively. These are distinct anesthesiologist and room overtime variable families, regardless of whether the underlying resource labels overlap.
+
+\section*{Deterministic equivalent}
+The selected formulation is the finite-sample model with each sample recourse minimum exposed as a separate continuous variable block. All first-stage variables are shared across samples. Minimize over all declared variables:
+\begin{equation}
+\min\quad
+\sum_{r\in R}c_r v_r+\sum_{a\in A}c_a y_a
++\frac{1}{N_s}\sum_{n\in\mathcal{N}}
+\left(\sum_{a\in A}c_{oa}O_a^{A,n}
++\sum_{r\in R}c_{or}O_r^{R,n}\right).
+\end{equation}
+The term $\sum_{r\in R}c_rv_r$ charges only opened rooms, restoring source equation (1).
+
+\subsection*{First-stage constraints}
+\begin{align}
+\sum_{a\in A}x_{ia}&=1 &&\forall i\in I,\\
+\sum_{r\in R}z_{ir}&=1 &&\forall i\in I,\\
+z_{ir}&\leq v_r &&\forall (i,r)\in I\times R,\\
+x_{ia}&\leq g_a+y_a &&\forall (i,a)\in I\times A,\\
+y_a&\leq w_a &&\forall a\in A,\\
+s_i&\geq t_a^{\mathrm{start}}-M(1-x_{ia}) &&\forall (i,a)\in I\times A,\\
+x_{ia}&\leq\kappa^A_{ia} &&\forall (i,a)\in I\times A,\\
+z_{ir}&\leq\kappa^R_{ir} &&\forall (i,r)\in I\times R.
+\end{align}
+\begin{align}
+\alpha_{ija}&\leq u_{ij} &&\forall (i,j,a)\in I^2_{\ne}\times A,\\
+\beta_{ijr}&\leq u_{ij} &&\forall (i,j,r)\in I^2_{\ne}\times R,\\
+u_{ij}+u_{ji}&\leq 1 &&\forall (i,j)\in I^2_{\ne},\\
+u_{ih}&\geq u_{ij}+u_{jh}-1 &&\forall (i,j,h)\in I^3_{\ne},\\
+\alpha_{ija}+\alpha_{jia}&\leq x_{ia} &&\forall (i,j,a)\in I^2_{\ne}\times A,\\
+\alpha_{ija}+\alpha_{jia}&\leq x_{ja} &&\forall (i,j,a)\in I^2_{\ne}\times A,\\
+\alpha_{ija}+\alpha_{jia}&\geq x_{ia}+x_{ja}-1 &&\forall (i,j,a)\in I^2_{\ne}\times A,\\
+\beta_{ijr}+\beta_{jir}&\leq z_{ir} &&\forall (i,j,r)\in I^2_{\ne}\times R,\\
+\beta_{ijr}+\beta_{jir}&\leq z_{jr} &&\forall (i,j,r)\in I^2_{\ne}\times R,\\
+\beta_{ijr}+\beta_{jir}&\geq z_{ir}+z_{jr}-1 &&\forall (i,j,r)\in I^2_{\ne}\times R.
+\end{align}
+\begin{align}
+\alpha_{ija}&\geq x_{ia}+x_{ja}+\beta_{ijr}-2
+&&\forall (i,j,r,a)\in I^2_{\ne}\times R\times A,\\
+\beta_{ijr}&\geq z_{ir}+z_{jr}+\alpha_{ija}-2
+&&\forall (i,j,r,a)\in I^2_{\ne}\times R\times A.
+\end{align}
+
+\subsection*{Sample recourse constraints}
+\begin{align}
+S_j^n&\geq S_i^n+d_i^n-M_{\mathrm{seq}}(1-u_{ij})
+&&\forall (i,j,n)\in I^2_{\ne}\times\mathcal{N},\\
+S_i^n&\geq s_i
+&&\forall (i,n)\in I\times\mathcal{N},\\
+O_a^{A,n}&\geq S_i^n+d_i^n-t_a^{\mathrm{end}}
+-M_{\mathrm{anesth}}(1-x_{ia}+y_a)
+&&\forall (i,a,n)\in I\times A\times\mathcal{N},\\
+O_r^{R,n}&\geq S_i^n+d_i^n-T^{\mathrm{end}}
+-M_{\mathrm{room}}(1-z_{ir})
+&&\forall (i,r,n)\in I\times R\times\mathcal{N}.
+\end{align}
+
+\subsection*{Variable domains}
+\begin{align}
+x_{ia}&\in\{0,1\} &&\forall (i,a)\in I\times A,\\
+y_a&\in\{0,1\} &&\forall a\in A,\\
+z_{ir}&\in\{0,1\} &&\forall (i,r)\in I\times R,\\
+v_r&\in\{0,1\} &&\forall r\in R,\\
+u_{ij}&\in\{0,1\} &&\forall (i,j)\in I^2_{\ne},\\
+\alpha_{ija}&\in\{0,1\} &&\forall (i,j,a)\in I^2_{\ne}\times A,\\
+\beta_{ijr}&\in\{0,1\} &&\forall (i,j,r)\in I^2_{\ne}\times R,\\
+s_i&\in\mathbb{R}_{\geq0} &&\forall i\in I,\\
+S_i^n&\in\mathbb{R}_{\geq0} &&\forall (i,n)\in I\times\mathcal{N},\\
+O_a^{A,n}&\in\mathbb{R}_{\geq0} &&\forall (a,n)\in A\times\mathcal{N},\\
+O_r^{R,n}&\in\mathbb{R}_{\geq0} &&\forall (r,n)\in R\times\mathcal{N}.
+\end{align}
+\end{document}

@@ -1,0 +1,348 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\section*{Joint online pricing and inventory control}
+
+\begin{equation*}
+\begin{aligned}
+\underset{\pi\text{ admissible}}{\operatorname{maximize}}\quad &R_T(\pi)\\
+\text{subject to}\quad
+&p_t\in[0,1],\qquad y_t\geq x_t, &&t=1,\ldots,T,\\
+&d_t=D_0(p_t)+\beta_t, &&t=1,\ldots,T,\\
+&x_{t+1}=y_t-d_t, &&t=1,\ldots,T.
+\end{aligned}
+\end{equation*}
+\begin{equation}
+R_T(\pi):=\frac{1}{T}\sum_{t=1}^{T}\mathbb{E}[\mathfrak{r}_t],
+\qquad \mathfrak{r}_1,\ldots,\mathfrak{r}_T\sim\pi,\mathcal{M}.
+\tag{2}
+\end{equation}
+An admissible policy is a sequence
+\(\pi=\{y_t,p_t:t=1,\ldots,T\}\) for which \((y_t,p_t)\) depends only on the historical information
+\[
+(y_r,p_r,d_r:r=1,\ldots,t-1),
+\]
+not on future information. At the beginning of period \(t\), the retailer observes the inventory \(x_t\), chooses the price \(p_t\) and order-up-to level \(y_t\), and receives any order instantaneously. Demand is then realized and satisfied to the maximum extent using on-hand inventory. Unsatisfied demand is backlogged; leftover inventory is carried forward. The end-of-period profit is
+\begin{equation}
+\begin{aligned}
+\mathfrak{r}_t={}&-k\times\mathbf{1}\{y_t>x_t\}-c(y_t-x_t)
++p_t\bigl(D_0(p_t)+\beta_t\bigr)\\
+&-h\bigl(y_t-D_0(p_t)-\beta_t\bigr),
+\qquad t=1,\ldots,T.
+\end{aligned}
+\tag{1}
+\end{equation}
+The objective is the expected average profit for sufficiently large \(T\), not a separate single-epoch objective. The rewards need not be independent because they depend on the inventory states.
+
+\section*{Fixed data, unknown demand, and input assumptions}
+The system model is
+\[
+\mathcal{M}=(D_0,\mu_0,k,c,h),\qquad
+k>0,\quad c>0,\quad h:\mathbb{R}\longrightarrow\mathbb{R}^{+}.
+\]
+Here \(k\) is the fixed ordering cost, \(c\) is the variable cost per unit ordered, and \(h\) is the holding cost for positive remaining inventory and backlogging cost for negative remaining inventory. The quantities \(k,c,h\) are known. The demand function \(D_0\) and noise distribution \(\mu_0\) are unknown and learned online. The distribution \(\mu_0\) governs the demand noise, with
+\[
+\mathbb{E}_{\mu_0}[\beta]=0.
+\]
+The following are restrictions on the model inputs, not additional choices of the policy.
+
+\paragraph{A1. Demand curve.}
+\[
+D_0:[0,1]\longrightarrow[\underline d_0,\bar d_0],
+\qquad D_0(0)=\bar d_0,\qquad D_0(1)=\underline d_0.
+\]
+The function \(D_0\) is continuous and monotonically decreasing.
+
+\paragraph{A2. Demand noise.}
+\[
+D_0(p)+\beta\in[\underline d,\bar d]
+\quad\text{almost surely for every }p\in[0,1],
+\qquad \underline d>0.
+\]
+The distribution \(\mu_0\) is continuous and has a probability density \(f_{\mu_0}\) satisfying
+\[
+\|f_{\mu_0}\|_{\infty}<A,\qquad A<\infty.
+\]
+This reconstruction retains A2 itself, rather than either optional relaxation discussed after A3.
+
+\paragraph{A3. Holding and backlogging cost.}
+The function \(h\) is convex and Lipschitz continuous with constant \(L'\geq1\):
+\[
+\begin{aligned}
+|h(x)-h(x')|&\leq L'|x-x'|,
+&&x,x'\in\mathbb{R},\\
+h\bigl(\lambda x+(1-\lambda)x'\bigr)
+&\leq\lambda h(x)+(1-\lambda)h(x'),
+&&x,x'\in\mathbb{R},\quad\lambda\in[0,1].
+\end{aligned}
+\]
+
+\paragraph{B1. Parametric demand family.}
+There is a known feature map and a given parametric model,
+\[
+\eta:[0,1]\longrightarrow\mathbb{R}^{\mathfrak d},
+\qquad
+\{\mathfrak D(\cdot\mid\theta_0):\theta_0\in\Theta\},
+\qquad
+D_0(p)\equiv\mathfrak D(\eta(p)\mid\theta_0),
+\]
+with unknown parameter \(\theta_0\). The feature dimension \(\mathfrak d\), the demand bounds \(\underline d,\bar d\), and the realized demand \(d_t\) are distinct symbols. The selected construction is the general parametric regression-oracle construction B1--B3; the paper's linear and generalized-linear examples are not imposed as additional restrictions.
+
+\paragraph{B2. Feature and demand regularity.}
+There is a known constant \(L<\infty\) such that, for all \(p,p'\in[0,1]\),
+\[
+\|\eta(p)\|_2\leq L,\qquad
+\|\eta(p)-\eta(p')\|_2\leq L|p-p'|,\qquad
+|D_0(p)-D_0(p')|\leq L^2|p-p'|.
+\]
+
+\paragraph{B3. Regression oracle.}
+Given periods \(\mathcal H=\{1,2,\ldots,\tau\}\), advertised prices \(p_t\), and observed demands
+\[
+d_t=D_0(p_t)+\beta_t,\qquad t\in\mathcal H,
+\]
+the regression oracle \(\mathcal O\) returns an estimate \(\widehat\theta\) of \(\theta_0\). Define
+\[
+\Lambda=I_{\mathfrak d\times\mathfrak d}
++\sum_{t\in\mathcal H}\eta(p_t)\eta(p_t)^\top.
+\]
+There exists \(\gamma=\gamma(\mathfrak d,\bar d,L,T)\), depending only logarithmically on \(T\), such that, with probability \(1-O(T^{-2})\),
+\begin{equation}
+\left|D_0(p)-\mathfrak D(\eta(p)\mid\widehat\theta)\right|
+\leq\gamma\sqrt{\eta(p)^\top\Lambda^{-1}\eta(p)}
+\qquad\text{for every }p\in[0,1].
+\tag{8}
+\end{equation}
+The randomness in this guarantee is over \(\{\beta_t\}_{t\in\mathcal H}\) and the internal randomness of \(\mathcal O\). The oracle is left abstract as in B3.
+
+\paragraph{C1. Prior inventory ranges for Algorithm 1.}
+The algorithm has access to ranges satisfying
+\[
+0<\underline s<\bar s\leq\underline S<\bar S<\infty,
+\qquad
+s^*\in[\underline s,\bar s],\qquad
+S^*\in[\underline S,\bar S],\qquad
+\bar S\geq\underline d.
+\]
+The paper states that otherwise, for the last condition, the problem trivializes. The optimal benchmark \((s^*,S^*,\boldsymbol p^*)\) is defined below. These are the original C1 ranges, not the replacement C1' used for Algorithm 2.
+
+\section*{Stationary policy and reward definitions linked to the online construction}
+For an \((s,S,\boldsymbol p)\) policy, the retailer orders only when \(x_t<s\), bringing inventory to \(y_t=S\); otherwise no order is placed. The function \(\boldsymbol p\) specifies inventory-dependent prices in \([0,1]\). Section 2.1 describes its argument as the initial inventory of the period. The actual first-period price used by the selected online construction is retained explicitly below.
+
+For an arbitrary noise distribution \(\mu\), the paper defines
+\begin{equation}
+H_0(x,p;\mu)
+=-\mathbb{E}_{\mu}\!\left[h\bigl(x-D_0(p)-\beta\bigr)\right]
++pD_0(p)-cD_0(p).
+\tag{4}
+\end{equation}
+For a fixed \((s,S,\boldsymbol p)\) policy, define
+\begin{equation}
+I(s,x,\boldsymbol p;\mu):=
+\begin{cases}
+H_0(x,\boldsymbol p(x);\mu)
++\mathbb{E}_{\mu}\!\left[
+ I\bigl(s,x-D_0(\boldsymbol p(x))-\beta,\boldsymbol p;\mu\bigr)
+\right],&x\geq s,\\
+0,&x<s,
+\end{cases}
+\tag{5}
+\end{equation}
+\begin{equation}
+M(s,x,\boldsymbol p;\mu):=
+\begin{cases}
+1+\mathbb{E}_{\mu}\!\left[
+ M\bigl(s,x-D_0(\boldsymbol p(x))-\beta,\boldsymbol p;\mu\bigr)
+\right],&x\geq s,\\
+0,&x<s.
+\end{cases}
+\tag{6}
+\end{equation}
+Here \(I\) is the expected total reward from initial inventory \(x\) until inventory first drops below \(s\), and \(M\) is the expected number of periods until that event. The latter is distinct from the system model \(\mathcal M\). Define
+\begin{equation}
+r(s,S,\boldsymbol p;\mu):=
+\frac{-k+I(s,S,\boldsymbol p;\mu)}{M(s,S,\boldsymbol p;\mu)}.
+\tag{7}
+\end{equation}
+When \(I(s,S,\boldsymbol p;\mu_0)\) and \(M(s,S,\boldsymbol p;\mu_0)\) are bounded, the paper states
+\[
+\lim_{T\to\infty}R_T(\pi)=r(s,S,\boldsymbol p;\mu_0),
+\qquad \pi=(s,S,\boldsymbol p).
+\]
+Let \(\Pi^{\mathrm{ssp}}\) denote the class of all \((s,S,\boldsymbol p)\) policies. The benchmark is
+\[
+\pi^*=(s^*,S^*,\boldsymbol p^*)\in\Pi^{\mathrm{ssp}},
+\qquad
+(s^*,S^*,\boldsymbol p^*)\in
+\operatorname*{arg\,max}_{(s,S,\boldsymbol p)\in\Pi^{\mathrm{ssp}}}
+ r(s,S,\boldsymbol p;\mu_0).
+\]
+For an online policy \(\widehat\pi\), the associated cumulative-regret criterion in the paper is
+\begin{equation}
+T\times\bigl[R_T(\pi^*)-R_T(\widehat\pi)\bigr].
+\tag{3}
+\end{equation}
+This is the performance comparison for the online design, not a replacement for the objective (2).
+
+\section*{Estimated inputs at the beginning of an epoch}
+The periods are partitioned into epochs \(\mathcal B_1,\mathcal B_2,\ldots\). For epoch \(b\in\{1,2,\ldots\}\), let
+\[
+\mathcal H_{b-1}=\mathcal B_1\cup\cdots\cup\mathcal B_{b-1}.
+\]
+The estimate \(\widehat\theta_b\) is computed by \(\mathcal O\) from the prices and demands in \(\mathcal H_{b-1}\). Define
+\[
+\Lambda_b:=I_{\mathfrak d\times\mathfrak d}
++\sum_{t\in\mathcal H_{b-1}}\eta(p_t)\eta(p_t)^\top,
+\qquad
+\Delta_b(p):=\gamma\sqrt{\eta(p)^\top\Lambda_b^{-1}\eta(p)},
+\quad p\in[0,1],
+\]
+where \(\gamma>0\) is the oracle-specific parameter from B3. The upper demand estimate is
+\begin{equation}
+\overline D_b(p):=
+\min\left\{\bar d_0,\ \underline d_0+L^2(1-p),\
+\mathfrak D(\eta(p)\mid\widehat\theta_b)+\Delta_b(p)\right\},
+\qquad p\in[0,1].
+\tag{11}
+\end{equation}
+
+Let \(b(t)\) denote the epoch containing period \(t\). Section 3.2 introduces a nonempty set
+\(\mathcal E_{<b}\subseteq\mathcal B_1\cup\cdots\cup\mathcal B_{b-1}\) and defines
+\begin{equation}
+\widehat\mu_b:=\frac{1}{|\mathcal E_{<b}|}
+\sum_{t\in\mathcal E_{<b}}
+\mathbb I\!\left[d_t-\mathfrak D(\eta(p_t)\mid\widehat\theta_{b(t)})\right],
+\tag{12}
+\end{equation}
+where \(\mathbb I[\beta']\) is the point mass at \(\beta'\). In particular, it is not the ordering indicator in (1). The selected historical periods are
+\begin{equation}
+\mathcal E_{<b}:=
+\left\{t\in\mathcal B_1\cup\cdots\cup\mathcal B_{b-1}:
+\Delta_{b(t)}(p_t)\leq\frac{\kappa}{\sqrt b}\right\},
+\tag{13}
+\end{equation}
+with the fixed algorithm scale
+\[
+\kappa>0,\qquad
+\kappa=2\underline d^{-3/2}\bar d\,\bar S^{3/2}\gamma
+\sqrt{\mathfrak d\ln(TL^2)}.
+\]
+Thus the residuals in (12) use the estimates from the epochs in which the observations were collected, rather than refitting every residual using \(\widehat\theta_b\). The paper gives the identity
+\[
+\begin{aligned}
+d_t-\mathfrak D(\eta(p_t)\mid\widehat\theta_{b(t)})
+={}&\beta_t+\mathfrak D(\eta(p_t)\mid\theta_0)
+-\mathfrak D(\eta(p_t)\mid\widehat\theta_{b(t)}).
+\end{aligned}
+\]
+The samples in (12) can be dependent. The associated upper immediate-reward estimate is
+\begin{equation}
+\begin{aligned}
+\overline H_b(x,p;\widehat\mu_b):={}&
+-\mathbb E_{\widehat\mu_b}\!\left[h\bigl(x-\overline D_b(p)-\beta\bigr)\right]
++p\overline D_b(p)-c\overline D_b(p)\\
+&+(c+L')\Delta_b(p).
+\end{aligned}
+\tag{14}
+\end{equation}
+
+\section*{Dynamic policy construction used within Algorithm 1}
+For
+\[
+s\in[\underline s,\bar s],\quad
+S\in[\underline S,\bar S],\quad r\in\mathbb R,
+\quad D:[0,1]\longrightarrow[\underline d,\infty),
+\]
+a noise distribution \(\mu\), and their associated function
+\(H:\mathbb R\times[0,1]\longrightarrow\mathbb R\), define
+\begin{equation}
+\phi^{(s,S)}(x;D,r,\mu):=
+\begin{cases}
+\displaystyle\sup_{p\in[0,1]}
+\left\{H(x,p;\mu)-r+
+\mathbb E_\mu\!\left[
+\phi^{(s,S)}(x-D(p)-\beta;D,r,\mu)
+\right]\right\},&x\geq s,\\
+0,&x<s.
+\end{cases}
+\tag{15}
+\end{equation}
+For epoch \(b\), the substitutions are exactly
+\[
+D=\overline D_b,\qquad
+\mu=\widehat\mu_b,\qquad
+H=\overline H_b(\cdot,\cdot;\widehat\mu_b).
+\]
+For every pair in the stated inventory ranges, define
+\begin{equation}
+\overline r_b(s,S):=
+\inf\left\{r\in\mathbb R:
+\phi^{(s,S)}(S;\overline D_b,r,\widehat\mu_b)=k\right\}.
+\tag{16}
+\end{equation}
+The pricing strategy \(\boldsymbol p\) associated with \((s,S)\) is the optimal solution to
+\(\phi^{(s,S)}(\cdot;\overline D_b,\overline r_b(s,S),\widehat\mu_b)\).
+The immediately following prose specifies the defining equality as
+\[
+\begin{aligned}
+&\phi^{(s,S)}(x;\overline D_b,\overline r_b(s,S),\widehat\mu_b)\\
+&\quad=\overline H_b(x,\boldsymbol p(x);\widehat\mu_b)
+-\overline r_b(s,S)\\
+&\qquad\quad+
+\mathbb E_{\widehat\mu_b}\!\left[
+\phi^{(s,S)}\!\left(x-\overline D_b(\boldsymbol p(x))-\beta;
+\overline D_b,\overline r_b(s,S),\widehat\mu_b\right)
+\right],\qquad\text{for all }x.
+\end{aligned}
+\]
+\emph{Printed scope issue:} the phrase ``for all \(x\)'' is retained. Equation (15), however, assigns zero for \(x<s\) and uses its optimization recursion only for \(x\geq s\); the displayed pricing equality does not state this restriction.
+
+The explanatory reward connection in Section 3.3 is
+\[
+r^*(s,S)=\sup_{\boldsymbol p}r(s,S,\boldsymbol p;\mu),
+\qquad
+\phi^{(s,S)}(S;D,r^*(s,S),\mu)=k.
+\]
+The paper attributes this connection to Lemma 3 of Chen and Simchi-Levi (2004b); \(\overline r_b(s,S)\) is its empirical approximation.
+
+\section*{Algorithm 1: complete online construction}
+The input is \(k,c,h,T\) and the regression-oracle-specific parameter \(\gamma\), together with the known features, oracle, constants, and inventory ranges specified in the assumptions. The output is \((y_t,p_t)\) for each \(t=1,\ldots,T\). For epochs \(b=1,2,3,\ldots\), the printed construction performs the following operations:
+\begin{enumerate}
+\item Compute \(\widehat\theta_b\) using \(\mathcal O\) and the observations from \(\mathcal H_{b-1}\).
+\item Construct \(\overline D_b\) by (11), using \(\Lambda_b\) and \(\Delta_b\) defined above.
+\item Construct \(\mathcal E_{<b}\) by (13), with the stated value of \(\kappa\), and construct \(\widehat\mu_b\) by (12).
+\item Construct \(\overline H_b\) by (14).
+\item For every \(s\in[\underline s,\bar s]\) and \(S\in[\underline S,\bar S]\), compute (15) with the epoch substitutions and find \(\overline r_b(s,S)\) by (16).
+\item Select the inventory pair and its pricing function:
+\[
+(s_b,S_b)=
+\operatorname*{arg\,max}_{\substack{s\in[\underline s,\bar s]\\S\in[\underline S,\bar S]}}
+\overline r_b(s,S),
+\]
+with \(\boldsymbol p_b\) the optimal pricing decisions associated with
+\[
+\phi^{(s_b,S_b)}
+\bigl(\cdot;\overline D_b,\overline r_b(s_b,S_b),\widehat\mu_b\bigr).
+\]
+\item Let \(t_b\) be the first period in \(\mathcal B_b\). Implement
+\[
+\begin{aligned}
+y_{t_b}&=S_b,&p_{t_b}&=\boldsymbol p_b(S_b),\\
+y_t&=x_t,&p_t&=\boldsymbol p_b(x_t),
+&&t\in\mathcal B_b\setminus\{t_b\}.
+\end{aligned}
+\]
+The epoch terminates once \(x_t<s_b\). Restocking occurs only at the first period of each epoch. Within every selling period, the demand, state transition, and profit are those in the opening system block and (1).
+\end{enumerate}
+The estimates and policy are renewed at the beginning of every epoch. No discretization, infrequent-update rule, inventory-disposal rule, or explore-then-exploit initialization is added to this version.
+
+\paragraph{Printed initialization issue.}
+Algorithm 1 begins with \(b=1\), but (12) requires a nonempty \(\mathcal E_{<b}\). With no preceding epochs, (13) gives \(\mathcal E_{<1}=\varnothing\), so (12) has a zero denominator. Section 3.2 nevertheless states that the choice of \(\kappa\) yields \(|\mathcal E_{<b}|\geq b/2\), without an initial-epoch exception in the supplied main-paper passages. The printed Algorithm 1 gives no initial empirical distribution or separate first-epoch rule. Also, no initial value or bound for \(x_1\) is supplied in its system and algorithm block to ensure that the first assignment \(y_{t_1}=S_1\) respects \(y_{t_1}\geq x_1\). These expressions are retained without adding an initialization or a repair.
+
+\paragraph{Source and verification scope.}
+This is the general parametric Algorithm 1 version in Chen, Simchi-Levi, Wang, and Zhou, \emph{Dynamic Pricing and Inventory Control with Fixed Ordering Cost and Incomplete Demand Information}, \emph{Management Science} 68(8), 5684--5703, DOI 10.1287/mnsc.2021.4171, physical PDF pages 5--9, with the B3 randomness specified in the endnote on physical page 18. The supplied original-page images and image transcriptions determine the displayed distinctions between \(\mathfrak D\), \(D_0\), \(\overline D_b\), \(\mathfrak d\), and the bounded-demand symbols. The official online appendix was not supplied and remains unverified. The original Chen and Simchi-Levi (2004a,b) references cited for dynamic programming and stationary-reward results also remain unverified here; their defining formulas available in the present paper have been reproduced above.
+
+\end{document}

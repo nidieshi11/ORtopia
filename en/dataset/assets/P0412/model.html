@@ -1,0 +1,335 @@
+<!DOCTYPE html> 
+<html lang='en-US' xml:lang='en-US'> 
+<head><title>P0412 · A Shared Train Timetable under Variable Passenger Demand · Mathematical model</title> 
+<meta charset='utf-8' /> 
+<meta content='TeX4ht (https://tug.org/tex4ht/)' name='generator' /> 
+<meta content='width=device-width,initial-scale=1' name='viewport' /> 
+<style> 
+/* start css.sty */
+.cmr-5{font-size:50%;}
+.cmr-7{font-size:70%;}
+.cmmi-5{font-size:50%;font-style: italic;}
+.cmmi-7{font-size:70%;font-style: italic;}
+.cmmi-10{font-style: italic;}
+.cmsy-5{font-size:50%;}
+.cmsy-7{font-size:70%;}
+.cmbsy-10{font-weight: bold;}
+.cmbsy-10{font-weight: bold;}
+.cmbsy-10{font-weight: bold;}
+.cmbsy-7{font-size:70%;font-weight: bold;}
+.cmbsy-7{font-weight: bold;}
+.cmbsy-7{font-weight: bold;}
+.cmbsy-5{font-size:50%;font-weight: bold;}
+.cmbsy-5{font-weight: bold;}
+.cmbsy-5{font-weight: bold;}
+.cmex-7{font-size:70%;}
+.cmex-7x-x-71{font-size:49%;}
+.msam-7{font-size:70%;}
+.msam-5{font-size:50%;}
+.msbm-7{font-size:70%;}
+.msbm-5{font-size:50%;}
+p{margin-top:0;margin-bottom:0}
+p.indent{text-indent:0;}
+p + p{margin-top:1em;}
+p + div, p + pre {margin-top:1em;}
+div + p, pre + p {margin-top:1em;}
+a { overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; hyphens: auto; }
+@media print {div.crosslinks {visibility:hidden;}}
+table.tabular{border-collapse: collapse; border-spacing: 0;}
+a img { border-top: 0; border-left: 0; border-right: 0; }
+center { margin-top:1em; margin-bottom:1em; }
+td center { margin-top:0em; margin-bottom:0em; }
+.Canvas { position:relative; }
+math { text-indent: 0em; }
+body{ margin:1em auto; max-width:80ch; padding:0 .62em; }
+h1,h2,h3,h4,h5 { line-height:1.2; }
+@media print{ body{ max-width:none } }
+.partHead, .likepartHead { font-size: 2em; }
+.chapterHead, .likechapterHead { font-size: 1.7411em; }
+.sectionHead, .likesectionHead { font-size: 1.5157em; }
+.subsectionHead, .likesubsectionHead { font-size: 1.3195em; }
+.subsubsectionHead, .likesubsubsectionHead { font-size: 1.1487em; }
+ @media (prefers-color-scheme: dark) { img[src^="model"]{filter: invert(1); } } 
+li p.indent { text-indent: 0em }
+li p:first-child{ margin-top:0em; }
+li p:last-child, li div:last-child { margin-bottom:0.5em; }
+li p:first-child{ margin-bottom:0; }
+li p~ul:last-child, li p~ol:last-child{ margin-bottom:0.5em; }
+.enumerate1 {list-style-type:decimal;}
+.enumerate2 {list-style-type:lower-alpha;}
+.enumerate3 {list-style-type:lower-roman;}
+.enumerate4 {list-style-type:upper-alpha;}
+div.newtheorem { margin-bottom: 2em; margin-top: 2em;}
+div.newtheorem .head{font-weight: bold;}
+.obeylines-h,.obeylines-v {white-space: nowrap; }
+div.obeylines-v p { margin-top:0; margin-bottom:0; }
+.overline{ text-decoration:overline; }
+.overline img{ border-top: 1px solid black; }
+td.displaylines {text-align:center; white-space:nowrap;}
+.centerline {text-align:center;}
+.rightline {text-align:right;}
+pre.verbatim {font-family: monospace,monospace; text-align:left; clear:both; }
+.fbox {padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+div.fbox {display:table}
+div.center div.fbox {text-align:center; clear:both; padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+div.minipage{width:100%;}
+div.center, div.center div.center {text-align: center; margin-left:1em; margin-right:1em;}
+div.center div {text-align: left;}
+div.flushright, div.flushright div.flushright {text-align: right;}
+div.flushright div {text-align: left;}
+div.flushleft {text-align: left;}
+.underline{ text-decoration:underline; }
+.underline img{ border-bottom: 1px solid black; margin-bottom:1pt; }
+.framebox-c, .framebox-l, .framebox-r { padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+.framebox-c {text-align:center;}
+.framebox-l {text-align:left;}
+.framebox-r {text-align:right;}
+span.thank-mark{ vertical-align: super }
+span.footnote-mark sup.textsuperscript, span.footnote-mark a sup.textsuperscript{ font-size:80%; }
+code.verb{font-family:monospace,monospace;}
+div.tabular, div.center div.tabular {text-align: center; margin-top:0.5em; margin-bottom:0.5em; }
+table.tabular td p{margin-top:0em;}
+table.tabular {margin-left: auto; margin-right: auto;}
+td p:first-child{ margin-top:0em; }
+td p:last-child{ margin-bottom:0em; }
+div.td00{ margin-left:0pt; margin-right:0pt; }
+div.td01{ margin-left:0pt; margin-right:5pt; }
+div.td10{ margin-left:5pt; margin-right:0pt; }
+div.td11{ margin-left:5pt; margin-right:5pt; }
+table[rules] {border-left:solid black 0.4pt; border-right:solid black 0.4pt; }
+td.td00{ padding-left:0pt; padding-right:0pt; }
+td.td01{ padding-left:0pt; padding-right:5pt; }
+td.td10{ padding-left:5pt; padding-right:0pt; }
+td.td11{ padding-left:5pt; padding-right:5pt; }
+table[rules] {border-left:solid black 0.4pt; border-right:solid black 0.4pt; }
+.hline hr, .cline hr{ height : 0px; margin:0px; }
+.hline td, .cline td{ padding: 0; }
+.hline hr, .cline hr{border:none;border-top:1px solid black;}
+.hline {border-top: 1px solid black;}
+.hline + .vspace:last-child{display:none;}
+.hline:first-child{border-bottom:1px solid black;border-top:none;}
+.tabbing-right {text-align:right;}
+div.float, div.figure {margin-left: auto; margin-right: auto;}
+div.float img {text-align:center;}
+div.figure img {text-align:center;}
+.marginpar,.reversemarginpar {width:20%; float:right; text-align:left; margin-left:auto; margin-top:0.5em; font-size:85%; text-decoration:underline;}
+.marginpar p,.reversemarginpar p{margin-top:0.4em; margin-bottom:0.4em;}
+.reversemarginpar{float:left;}
+.equation td{text-align:center; vertical-align:middle; }
+td.eq-no{ width:5%; }
+table.equation { width:100%; } 
+div.math-display, div.par-math-display{text-align:center;}
+.array-hline,.array-cline{ border-top: 1px solid black; height:0px; }
+.array-hline + .array-vspace:last-child{display:none;}
+.hline-mtd, .array-hline td{ display:none }
+.array-hline + .array-row:last-child{display:none;}
+.array-hline:first-child{border-bottom:1px solid black;border-top:none;}
+math .texttt { font-family: monospace; }
+math .textit { font-style: italic; }
+math .textsl { font-style: oblique; }
+math .textsf { font-family: sans-serif; }
+math .textbf { font-weight: bold; }
+mo.MathClass-op + mi{margin-left:0.3em}
+mi + mo.MathClass-op{margin-left:0.3em}
+ math mstyle[mathvariant="bold"] { font-weight: bold; font-style: normal; } 
+ math mstyle[mathvariant="normal"] { font-weight: normal; font-style: normal; } 
+.partToc a, .partToc, .likepartToc a, .likepartToc {line-height: 200%; font-weight:bold; font-size:110%;}
+.index-item, .index-subitem, .index-subsubitem {display:block}
+div.caption {text-indent:-2em; margin-left:3em; margin-right:1em; text-align:left;}
+div.caption span.id{font-weight: bold; white-space: nowrap; }
+h1.partHead{text-align: center}
+p.bibitem { text-indent: -2em; margin-left: 2em; margin-top:0.6em; margin-bottom:0.6em; }
+p.bibitem-p { text-indent: 0em; margin-left: 2em; margin-top:0.6em; margin-bottom:0.6em; }
+.subsubsectionHead, .likesubsubsectionHead { font-size: 1em; }
+.paragraphHead, .likeparagraphHead { margin-top:2em; font-weight: bold;}
+.subparagraphHead, .likesubparagraphHead { font-weight: bold;}
+.verse{white-space:nowrap; margin-left:2em}
+div.maketitle {text-align:center;}
+h2.titleHead{text-align:center;}
+div.maketitle{ margin-bottom: 2em; }
+div.author, div.date {text-align:center;}
+div.thanks{text-align:left; margin-left:10%; font-size:85%; font-style:italic; }
+div.author{white-space: nowrap;}
+div.abstract p {margin-left:5%; margin-right:5%;}
+div.abstract {width:100%;}
+.abstracttitle{text-align:center;margin-bottom:1em;}
+.subsectionToc, .likesubsectionToc {margin-left:1em;}
+.subsubsectionToc, .likesubsubsectionToc {margin-left:2em;}
+.paragraphToc, .likeparagraphToc {margin-left:3em;}
+.subparagraphToc, .likesubparagraphToc {margin-left:4em;}
+figure.float, div.figure {margin-left: auto; margin-right: auto;}
+figure.figure {text-align:center;}
+figcaption.caption {text-indent:-2em; margin-left:3em; margin-right:1em; text-align:center;}
+figcaption.caption span.id{font-weight: bold; white-space: nowrap; }
+p + figcaption, img + figcaption{margin-top: 1em;}
+.abstract{margin:1em;}
+.equation-star td{text-align:center; vertical-align:middle; }
+table.equation-star { width:100%; } 
+.boxed{border: 1px solid black; padding-left:2px; padding-right:2px;}
+mtd.align-odd{margin-left:2em; text-align:right;}
+mtd.align-even{margin-right:2em; text-align:left;}
+/* end css.sty */
+
+
+html{background:#fff;color:#243833}body{padding:clamp(.55rem,2vw,1.25rem);margin:0;line-height:1.5;overflow-wrap:break-word}
+h1,h2,h3,h4,h5,h6{line-height:1.22;color:#193d35}p{margin:.5rem 0}math[display=block]{overflow-x:auto;max-width:100%}
+@media print{body{padding:0;color:#000}}
+</style> 
+<meta content='model.tex' name='src' /> 
+</head><body>
+   <h3 class='likesectionHead' id='common-train-timetable-with-scenariodependent-integer-passenger-flows'><a id='x1-1000'></a>Common train timetable with scenario-dependent integer passenger flows</h3>
+<!-- l. 5 --><p class='noindent'>The original extraction is retained separately. This complete event-indexed form
+specifies its timetable, transfer and passenger constraints and both objective terms.
+Source text on printed page 73 explicitly rounds alighting up and transfers down; the
+old extraction omitted that convention.
+</p><!-- l. 10 --><p class='indent'>   Lines are <!-- l. 10 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>l</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>L</mi></mrow></math>, directional
+station visits <!-- l. 10 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>i</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>I</mi></mrow><mrow><mi>l</mi></mrow></msub></mrow></math> and
+demand scenarios <!-- l. 11 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>s</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>S</mi></mrow></math>,
+of probability <!-- l. 11 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>π</mi></mrow><mrow><mi>s</mi></mrow></msub></math> with
+<!-- l. 11 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi class='MathClass-op'>∑</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo>
+  <!-- nolimits --></mrow><mrow><mi>s</mi></mrow></msub><msub><mrow><mi>π</mi></mrow><mrow><mi>s</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn></mrow></math>. The time step is
+<!-- l. 12 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>τ</mi></math> minutes and the
+normalized horizon is <!-- l. 12 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>t</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mi>T</mi></mrow></math>.
+Input station offsets <!-- l. 13 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>e</mi></mrow><mrow><mi mathvariant='italic'>li</mi></mrow></msub></math>,
+dwell times <!-- l. 13 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>d</mi></mrow><mrow><mi mathvariant='italic'>li</mi></mrow></msub></math>, headways
+<!-- l. 14 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msubsup><mrow><mi>h</mi></mrow><mrow><mi>l</mi></mrow><mrow><mtext class='qopname'>min</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow></msubsup><mo class='MathClass-punc' stretchy='false'>,</mo><msubsup><mrow><mi>h</mi></mrow><mrow><mi>l</mi></mrow><mrow><mtext class='qopname'>max</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow></msubsup></mrow></math> and transfer walks
+<!-- l. 14 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>f</mi></mrow><mrow><mi mathvariant='italic'>li</mi><mo class='MathClass-punc' stretchy='false'>,</mo><msup><mrow><mi>l</mi></mrow><mrow><mi>′</mi></mrow></msup><mi>j</mi></mrow></msub></math> are in time-step units.
+Each line has capacity <!-- l. 15 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>C</mi></mrow><mrow><mi>l</mi></mrow></msub></math>,
+service count bounds <!-- l. 16 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msubsup><mrow><mi>K</mi></mrow><mrow><mi>l</mi></mrow><mrow><mtext class='qopname'>min</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow></msubsup><mo class='MathClass-punc' stretchy='false'>,</mo><msubsup><mrow><mi>K</mi></mrow><mrow><mi>l</mi></mrow><mrow><mtext class='qopname'>max</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow></msubsup></mrow></math>
+and service cost <!-- l. 16 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>c</mi></mrow><mrow><mi>l</mi></mrow></msub></math>.
+<!-- l. 17 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>p</mi></mrow><mrow><mi mathvariant='italic'>slit</mi></mrow></msub></math> is external arrival
+count, <!-- l. 17 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>α</mi></mrow><mrow><mi mathvariant='italic'>sli</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mo class='MathClass-open' stretchy='false'>[</mo><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>]</mo></mrow></math> the alighting
+fraction and <!-- l. 18 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>ρ</mi></mrow><mrow><mi mathvariant='italic'>li</mi><mo class='MathClass-punc' stretchy='false'>,</mo><msup><mrow><mi>l</mi></mrow><mrow><mi>′</mi></mrow></msup><mi>j</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mo class='MathClass-open' stretchy='false'>[</mo><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>]</mo></mrow></math>
+the transfer fraction, with outgoing transfer fractions summing to at most one.
+Time-constant fractions are a property of the supplied instances. The last visit has
+<!-- l. 21 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>α</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn></mrow></math> and
+zero external arrivals.
+</p><!-- l. 23 --><p class='noindent'>
+</p>
+   <h4 class='likesubsectionHead' id='timetable-and-transfer-events'><a id='x1-2000'></a>Timetable and transfer events</h4>
+<!-- l. 24 --><p class='noindent'>Choose common integer service count <!-- l. 24 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>K</mi></mrow><mrow><mi>l</mi></mrow></msub></math>
+and departure indices <!-- l. 25 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>t</mi></mrow><mrow><mi mathvariant='italic'>lk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>∈</mo><mo class='MathClass-open' stretchy='false'>{</mo><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mi>T</mi><mo class='MathClass-close' stretchy='false'>}</mo></mrow></math>
+for <!-- l. 25 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>K</mi></mrow><mrow><mi>l</mi></mrow></msub></mrow></math>, in increasing order.
+Equivalently <!-- l. 26 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>x</mi></mrow><mrow><mi mathvariant='italic'>lkt</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn></mrow></math> exactly
+when <!-- l. 26 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>t</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <msub><mrow><mi>t</mi></mrow><mrow><mi mathvariant='italic'>lk</mi></mrow></msub></mrow></math>; inactive service
+indices have all-zero <!-- l. 27 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>x</mi></math>.
+
+</p><!-- tex4ht:inline --><!-- l. 34 --><math display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mtable class='align' columnalign='left' displaystyle='true'>
+       <mtr><mtd class='align-odd' columnalign='right'><msubsup><mrow><mi>K</mi></mrow><mrow><mi>l</mi></mrow><mrow><mtext class='qopname'>min</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msub><mrow><mi>K</mi></mrow><mrow>
+<mi>l</mi></mrow></msub></mtd>                            <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msubsup><mrow><mi>K</mi></mrow><mrow><mi>l</mi></mrow><mrow><mtext class='qopname'>max</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow></msubsup><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                         <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-2001r1'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(1)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+       </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><msubsup><mrow><mi>h</mi></mrow><mrow><mi>l</mi></mrow><mrow><mtext class='qopname'>min</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msub><mrow><mi>t</mi></mrow><mrow>
+<mi>l</mi><mn>1</mn></mrow></msub></mtd>                             <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msubsup><mrow><mi>h</mi></mrow><mrow><mi>l</mi></mrow><mrow><mtext class='qopname'>max</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow></msubsup><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                         <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-2002r2'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(2)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+       </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><msubsup><mrow><mi>h</mi></mrow><mrow><mi>l</mi></mrow><mrow><mtext class='qopname'>min</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msub><mrow><mi>t</mi></mrow><mrow>
+<mi mathvariant='italic'>lk</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>t</mi></mrow><mrow><mi>l</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>k</mi><mo class='MathClass-bin' stretchy='false'>−</mo><mn>1</mn></mrow></msub></mtd>                      <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msubsup><mrow><mi>h</mi></mrow><mrow><mi>l</mi></mrow><mrow><mtext class='qopname'>max</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow></msubsup><mspace class='quad' width='1em'></mspace><mo class='MathClass-open' stretchy='false'>(</mo><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>&gt;</mo> <mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                   <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-2003r3'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(3)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+       </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>k</mi></mrow></munder><msub><mrow><mi>x</mi></mrow><mrow><mi mathvariant='italic'>lkt</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≤</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>t</mi></mrow></munder><msub><mrow><mi>x</mi></mrow><mrow><mi mathvariant='italic'>lkt</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≤</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>t</mi></mrow></munder><msub><mrow><mi>x</mi></mrow><mrow><mi mathvariant='italic'>lkt</mi></mrow></msub></mtd>       <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>≤</mo><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>t</mi></mrow></munder><msub><mrow><mi>x</mi></mrow><mrow><mi>l</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>k</mi><mo class='MathClass-bin' stretchy='false'>−</mo><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mi>t</mi></mrow></msub><mspace class='quad' width='1em'></mspace><mo class='MathClass-open' stretchy='false'>(</mo><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>&gt;</mo> <mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>.</mo><mspace width='2em'></mspace></mtd>              <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-2004r4'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(4)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+   </mtd></mtr></mtable></math>
+<!-- l. 35 --><p class='noindent'>The first-time convention is <!-- l. 35 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>T</mi></mrow><mrow><mn>0</mn></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn></mrow></math>,
+so the source first-time bounds <!-- l. 36 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>T</mi></mrow><mrow><mn>0</mn></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <mi>h</mi> <mo class='MathClass-bin' stretchy='false'>−</mo> <mn>1</mn></mrow></math>
+become <!-- l. 36 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>h</mi></math>. Boarding
+at visit <!-- l. 36 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>i</mi></math> occurs at
+absolute time <!-- l. 37 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>t</mi></mrow><mrow><mi mathvariant='italic'>lk</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>e</mi></mrow><mrow><mi mathvariant='italic'>li</mi></mrow></msub></mrow></math>; alighting
+occurs at <!-- l. 37 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>t</mi></mrow><mrow><mi mathvariant='italic'>lk</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>e</mi></mrow><mrow><mi mathvariant='italic'>li</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>d</mi></mrow><mrow><mi mathvariant='italic'>li</mi></mrow></msub></mrow></math>. For every
+permitted transfer pair <!-- l. 38 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mo class='MathClass-open' stretchy='false'>(</mo><mi mathvariant='italic'>li</mi><mo class='MathClass-punc' stretchy='false'>,</mo><msup><mrow><mi>l</mi></mrow><mrow><mi>′</mi></mrow></msup><mi>j</mi><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math>,
+its event for train <!-- l. 38 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>k</mi></math>
+is at absolute time <!-- l. 39 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>t</mi></mrow><mrow><mi mathvariant='italic'>lk</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>e</mi></mrow><mrow><mi mathvariant='italic'>li</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>d</mi></mrow><mrow><mi mathvariant='italic'>li</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>f</mi></mrow><mrow><mi mathvariant='italic'>li</mi><mo class='MathClass-punc' stretchy='false'>,</mo><msup><mrow><mi>l</mi></mrow><mrow><mi>′</mi></mrow></msup><mi>j</mi></mrow></msub></mrow></math>,
+or receiving-station normalized time </p><table class='equation-star'><tr><td>
+<!-- l. 41 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                   <msup><mrow><mi>t</mi></mrow><mrow><mi>′</mi></mrow></msup> <mo class='MathClass-rel' stretchy='false'>=</mo> <msub><mrow><mi>t</mi></mrow><mrow>
+<mi mathvariant='italic'>lk</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>e</mi></mrow><mrow><mi mathvariant='italic'>li</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>d</mi></mrow><mrow><mi mathvariant='italic'>li</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>f</mi></mrow><mrow><mi mathvariant='italic'>li</mi><mo class='MathClass-punc' stretchy='false'>,</mo><msup><mrow><mi>l</mi></mrow><mrow><mi>′</mi></mrow></msup><mi>j</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>e</mi></mrow><mrow><msup><mrow><mi>l</mi></mrow><mrow><mi>′</mi></mrow></msup><mi>j</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 44 --><p class='indent'>   Define <!-- l. 44 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>y</mi></mrow><mrow><mi mathvariant='italic'>li</mi><mo class='MathClass-punc' stretchy='false'>,</mo><msup><mrow><mi>l</mi></mrow><mrow><mi>′</mi></mrow></msup><mi>j</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>k</mi><mo class='MathClass-punc' stretchy='false'>,</mo><msup><mrow><mi>t</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn></mrow></math>
+exactly at that event, and zero otherwise. Thus each active train
+has one event per permitted pair and none for unconnected pairs;
+<!-- l. 46 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi class='MathClass-op'>∑</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo>
+  <!-- nolimits --></mrow><mrow><mi>k</mi></mrow></msub><msub><mrow><mi>y</mi></mrow><mrow><mi mathvariant='italic'>li</mi><mo class='MathClass-punc' stretchy='false'>,</mo><msup><mrow><mi>l</mi></mrow><mrow><mi>′</mi></mrow></msup><mi>j</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>k</mi><mo class='MathClass-punc' stretchy='false'>,</mo><msup><mrow><mi>t</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≤</mo> <mn>1</mn></mrow></math> follows
+from the positive headway and a fixed transfer offset. All scenario decisions use these
+same <!-- l. 48 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>x</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>y</mi></mrow></math>.
+</p><!-- l. 50 --><p class='noindent'>
+</p>
+   <h4 class='likesubsectionHead' id='complete-passenger-constraints'><a id='x1-3000'></a>Complete passenger constraints</h4>
+
+<!-- l. 51 --><p class='noindent'>The model includes all external-arrival, alighting, transfer-arrival, boarding and
+sampling events. Queues initially equal zero. At equal absolute time the order is alight,
+external arrival, transfer arrival, board, then sample. Each train has initial load
+<!-- l. 54 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>u</mi></mrow><mrow><mi mathvariant='italic'>slk</mi><mn>0</mn></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn></mrow></math>. Let
+<!-- l. 55 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msubsup><mrow><mi>u</mi></mrow><mrow><mi mathvariant='italic'>slki</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>−</mo></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo> <msub><mrow><mi>u</mi></mrow><mrow><mi mathvariant='italic'>slk</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>i</mi><mo class='MathClass-bin' stretchy='false'>−</mo><mn>1</mn></mrow></msub></mrow></math>, alighting count
+<!-- l. 55 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>a</mi></mrow><mrow><mi mathvariant='italic'>slki</mi></mrow></msub></math>, boarding count
+<!-- l. 56 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>b</mi></mrow><mrow><mi mathvariant='italic'>slki</mi></mrow></msub></math> and load after
+departure <!-- l. 56 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>u</mi></mrow><mrow><mi mathvariant='italic'>slki</mi></mrow></msub></math>.
+For every active train:
+</p><!-- tex4ht:inline --><!-- l. 64 --><math display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mtable class='align' columnalign='left' displaystyle='true'>
+           <mtr><mtd class='align-odd' columnalign='right'><msub><mrow><mi>a</mi></mrow><mrow><mi mathvariant='italic'>slki</mi></mrow></msub></mtd>                 <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>⌈</mo><msub><mrow><mi>α</mi></mrow><mrow><mi mathvariant='italic'>sli</mi></mrow></msub><msubsup><mrow><mi>u</mi></mrow><mrow><mi mathvariant='italic'>slki</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>−</mo></mrow></msubsup><mo class='MathClass-close' stretchy='false'>⌉</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mn>0</mn> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msub><mrow><mi>a</mi></mrow><mrow>
+<mi mathvariant='italic'>slki</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msubsup><mrow><mi>u</mi></mrow><mrow><mi mathvariant='italic'>slki</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>−</mo></mrow></msubsup><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                          <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-3001r5'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(5)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+           </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><msub><mrow><mi>v</mi></mrow><mrow><mi>s</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi mathvariant='italic'>li</mi><mo class='MathClass-punc' stretchy='false'>,</mo><msup><mrow><mi>l</mi></mrow><mrow><mi>′</mi></mrow></msup><mi>j</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>k</mi></mrow></msub></mtd>              <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>⌊</mo><msub><mrow><mi>ρ</mi></mrow><mrow><mi mathvariant='italic'>li</mi><mo class='MathClass-punc' stretchy='false'>,</mo><msup><mrow><mi>l</mi></mrow><mrow><mi>′</mi></mrow></msup><mi>j</mi></mrow></msub><msub><mrow><mi>a</mi></mrow><mrow><mi mathvariant='italic'>slki</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>⌋</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                                          <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-3002r6'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(6)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+           </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><msub><mrow><mi>u</mi></mrow><mrow><mi mathvariant='italic'>slki</mi></mrow></msub></mtd>                 <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>=</mo> <msubsup><mrow><mi>u</mi></mrow><mrow><mi mathvariant='italic'>slki</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>−</mo></mrow></msubsup><mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>a</mi></mrow><mrow>
+<mi mathvariant='italic'>slki</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>b</mi></mrow><mrow><mi mathvariant='italic'>slki</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mn>0</mn> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msub><mrow><mi>u</mi></mrow><mrow><mi mathvariant='italic'>slki</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msub><mrow><mi>C</mi></mrow><mrow><mi>l</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                      <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-3003r7'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(7)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+           </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><mn>0</mn> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msub><mrow><mi>b</mi></mrow><mrow><mi mathvariant='italic'>slki</mi></mrow></msub></mtd>              <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msubsup><mrow><mi>Q</mi></mrow><mrow><mi mathvariant='italic'>sli</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><msub><mrow><mi>t</mi></mrow><mrow><mi mathvariant='italic'>lk</mi></mrow></msub><mo class='MathClass-bin' stretchy='false'>+</mo><msub><mrow><mi>e</mi></mrow><mrow><mi mathvariant='italic'>li</mi></mrow></msub></mrow><mrow><mo class='MathClass-bin' stretchy='false'>−</mo></mrow></msubsup><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                                         <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-3004r8'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(8)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+           </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><msubsup><mrow><mi>Q</mi></mrow><mrow><mi mathvariant='italic'>sli</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><msub><mrow><mi>t</mi></mrow><mrow><mi mathvariant='italic'>lk</mi></mrow></msub><mo class='MathClass-bin' stretchy='false'>+</mo><msub><mrow><mi>e</mi></mrow><mrow><mi mathvariant='italic'>li</mi></mrow></msub></mrow><mrow><mo class='MathClass-bin' stretchy='false'>+</mo></mrow></msubsup></mtd>           <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>=</mo> <msubsup><mrow><mi>Q</mi></mrow><mrow>
+<mi mathvariant='italic'>sli</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><msub><mrow><mi>t</mi></mrow><mrow><mi mathvariant='italic'>lk</mi></mrow></msub><mo class='MathClass-bin' stretchy='false'>+</mo><msub><mrow><mi>e</mi></mrow><mrow><mi mathvariant='italic'>li</mi></mrow></msub></mrow><mrow><mo class='MathClass-bin' stretchy='false'>−</mo></mrow></msubsup><mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>b</mi></mrow><mrow>
+<mi mathvariant='italic'>slki</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>.</mo><mspace width='2em'></mspace></mtd>                                    <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-3005r9'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(9)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+   </mtd></mtr></mtable></math>
+<!-- l. 65 --><p class='noindent'>At each external event <!-- l. 65 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msup><mrow><mi>Q</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>+</mo></mrow></msup> <mo class='MathClass-rel' stretchy='false'>=</mo> <msup><mrow><mi>Q</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>−</mo></mrow></msup> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>p</mi></mrow><mrow><mi mathvariant='italic'>slit</mi></mrow></msub></mrow></math>; at
+each transfer-arrival event <!-- l. 66 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msup><mrow><mi>Q</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>+</mo></mrow></msup> <mo class='MathClass-rel' stretchy='false'>=</mo> <msup><mrow><mi>Q</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>−</mo></mrow></msup> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>v</mi></mrow><mrow><mi>s</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi mathvariant='italic'>li</mi><mo class='MathClass-punc' stretchy='false'>,</mo><msup><mrow><mi>l</mi></mrow><mrow><mi>′</mi></mrow></msup><mi>j</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>k</mi></mrow></msub></mrow></math>
+at its receiving queue. Queues remain unchanged at other events and always
+nonnegative. All queue, load, boarding, alighting and transfer counts are integers.
+Inactive services have zero boarding/load/transfer variables. Alighting passengers
+not assigned a transfer leave the system; transfers remain in transit until
+their specified receiving event. Passengers present at the horizon are carried
+into the terminal state. Capacity holds before and after every boarding, so
+<!-- l. 72 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>b</mi> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msub><mrow><mi>C</mi></mrow><mrow><mi>l</mi></mrow></msub></mrow></math> and
+<!-- l. 72 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>v</mi> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msub><mrow><mi>C</mi></mrow><mrow><mi>l</mi></mrow></msub><mi>y</mi></mrow></math> follow
+as well. For any event, the total external arrivals so far equal exited passengers
+plus all waiting queues, onboard loads and passengers still transferring. The
+terminal alighting rule and zero terminal arrivals make final onboard loads
+zero.
+
+</p><!-- l. 78 --><p class='noindent'>
+</p>
+   <h4 class='likesubsectionHead' id='objective-and-unequal-normalized-horizons'><a id='x1-4000'></a>Objective and unequal normalized horizons</h4>
+<!-- l. 79 --><p class='noindent'>Let <!-- l. 79 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>w</mi></mrow><mrow><mi mathvariant='italic'>slit</mi></mrow></msub></math>
+be the queue sampled after service at absolute time
+<!-- l. 80 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>t</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>e</mi></mrow><mrow><mi mathvariant='italic'>li</mi></mrow></msub></mrow></math>.
+The original objective counts external arrivals with a half-step waiting
+approximation and waiting queues at normalized samples. Some
+transfer events can fall beyond the receiving visit’s last sample. Define
+<!-- l. 83 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msubsup><mrow><mi>W</mi></mrow><mrow><mi>s</mi></mrow><mrow><mi mathvariant='italic'>end</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo><msub><mrow> <mi class='MathClass-op'>∑</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo>
+  <!-- nolimits --></mrow><mrow><mi mathvariant='italic'>li</mi></mrow></msub><msub><mrow><mi>w</mi></mrow><mrow><mi mathvariant='italic'>sliT</mi></mrow></msub></mrow></math> and
+<!-- l. 84 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msubsup><mrow><mi>W</mi></mrow><mrow><mi>s</mi></mrow><mrow><mi mathvariant='italic'>late</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo><msub><mrow> <mi class='MathClass-op'>∑</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo>
+  <!-- nolimits --></mrow><mrow><mi mathvariant='italic'>li</mi></mrow></msub><msubsup><mrow><mi>Q</mi></mrow><mrow><mi mathvariant='italic'>sli</mi></mrow><mrow><mi mathvariant='italic'>eventual</mi></mrow></msubsup> <mo class='MathClass-bin' stretchy='false'>−</mo> <msubsup><mrow><mi>W</mi></mrow><mrow><mi>s</mi></mrow><mrow><mi mathvariant='italic'>end</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mn>0</mn></mrow></math>,
+where eventual queues are after every scheduled train and transfer event. No
+train boards after its own visit’s final sample; hence this difference contains
+exactly the additional late transfers. They receive the same terminal waiting
+penalty.
+</p><!-- tex4ht:inline --><!-- l. 95 --><math display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mtable class='align' columnalign='left' displaystyle='true'>
+          <mtr><mtd class='align-odd' columnalign='right'><msub><mrow><mi>Z</mi></mrow><mrow><mi mathvariant='italic'>TSC</mi></mrow></msub></mtd>           <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>=</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>l</mi></mrow></munder><msub><mrow><mi>c</mi></mrow><mrow><mi>l</mi></mrow></msub><msub><mrow><mi>K</mi></mrow><mrow><mi>l</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                                                        <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-4001r10'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(10)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+          </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><mi mathvariant='italic'>PW</mi><msub><mrow><mi>T</mi></mrow><mrow><mi>s</mi></mrow></msub></mtd>          <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>=</mo> <mfrac><mrow><mi>τ</mi></mrow> 
+<mrow><mn>2</mn></mrow></mfrac><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi mathvariant='italic'>li</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>t</mi></mrow></munder><msub><mrow><mi>p</mi></mrow><mrow><mi mathvariant='italic'>slit</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <mi>τ</mi><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi mathvariant='italic'>li</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>t</mi><mo class='MathClass-rel' stretchy='false'>&lt;</mo><mi>T</mi></mrow></munder><msub><mrow><mi>w</mi></mrow><mrow><mi mathvariant='italic'>slit</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <mi>𝜖</mi><mo class='MathClass-open' stretchy='false'>(</mo><msubsup><mrow><mi>W</mi></mrow><mrow><mi>s</mi></mrow><mrow><mi mathvariant='italic'>end</mi></mrow></msubsup> <mo class='MathClass-bin' stretchy='false'>+</mo> <msubsup><mrow><mi>W</mi></mrow><mrow>
+<mi>s</mi></mrow><mrow><mi mathvariant='italic'>late</mi></mrow></msubsup><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                    <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-4002r11'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(11)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+          </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><mtext class='qopname'>min</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo><mi>Z</mi></mtd>           <mtd class='align-even'> <mo class='MathClass-rel' stretchy='false'>=</mo> <msub><mrow><mi>Z</mi></mrow><mrow><mi mathvariant='italic'>TSC</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <mi>μ</mi><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>s</mi></mrow></munder><msub><mrow><mi>π</mi></mrow><mrow><mi>s</mi></mrow></msub><mi mathvariant='italic'>PW</mi><msub><mrow><mi>T</mi></mrow><mrow><mi>s</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>.</mo><mspace width='2em'></mspace></mtd>                                            <mtd class='align-label' columnalign='right'><mstyle class='label' id='x1-4003r12'></mstyle><!-- endlabel --><mstyle class='maketag'><mtext>(12)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace>
+   </mtd></mtr></mtable></math>
+<!-- l. 96 --><p class='noindent'>The late-transfer term is an explicit boundary completion of the extracted model,
+using the explicit transfer and terminal-state definitions above.
+</p><!-- l. 99 --><p class='noindent'>
+</p>
+   <h4 class='likesubsectionHead' id='algorithm-and-input-scope'><a id='x1-5000'></a>Algorithm and input scope</h4>
+<!-- l. 100 --><p class='noindent'>The code searches service counts and departure-time neighborhoods, and constructs
+feasible passenger flows by boarding as many as available capacity allows. Greedy
+boarding and the search neighborhoods are algorithm choices for candidate
+construction. The full supplied scenario set is evaluated for every candidate. This is a
+verified feasible heuristic with full scenario evaluation. The two delivered instances
+retain respectively one line/five demand scenarios and two lines/one scenario with 44
+
+physical stations in total. Their time horizons are the supplied input horizons,
+specified separately for each instance.
+</p>
+    
+</body> 
+</html>

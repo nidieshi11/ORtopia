@@ -1,0 +1,66 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\emergencystretch=4em
+\begin{document}
+\section*{P204: Complete double-layer model for the current integer slot}
+This version restores the form of integer slots selected for 02 in history: The fixed format 8 allows a maximum of one ship at each moment in the same $q$. Formulas 11--14 calculate the processing volume on an hourly basis, while formulas 32--34 account for an entire hour for each binary shore power variable.
+
+The two explicit definitions are revised as follows: The berth index of formula 5 is changed to check the length of each berth selected for the $b$; The time endpoints of formulas 32--34 are interpreted from the hour starting point $s_i\le t<d_i$ to avoid duplicate charges at berth endpoints. The berthing fuel interval is corrected according to Figure 2 on page 10 of the original paper PDF, with $d_i-s_i-T_i^E$ as the reference; The internal conflict between formula 26 on page 13 and the illustration is resolved; the anchoring fuel is not duplicated. The container volume is taken as the nearest positive $\eta$ multiple to maintain data consistency; separate files are created for each ship's values before and after the adjustment; Other ETA, deadline, penalty, ship, berth, limited quay crane, and energy data remain unchanged.
+
+\section*{Collections, parameters, and variables}
+$V,B,R$ represents ships, berths, and shipping companies; $\mathcal T=\{0,\ldots,H-1\}$ indicates the hour of start; $\mathcal Q=\{1,\ldots,Q\}$ is the option for the number of quays; $H_i\subseteq\mathcal Q$ is the maximum number of ships allowed per $i$. $c_i,l_i,\eta,L_b,D_i,\sigma_i,ETA_i$ includes information such as the number of containers, ship length, processing rate per quay per hour, berth length, deadline, delay penalties, and estimated arrival time. $e_i,\alpha_i,\beta_b\in\{0,1\}$ refers to features related to ship shore power supply, desulfurization, and berth shore power supply facilities. The upper-level variables are $b_i\in B$, $0\le s_i\le d_i\le H$, and $x_{itq},y_{itb}\in\{0,1\}$. $x_{itq}=1$ indicates hours; $t$ represents ships; $i$ specifies the configuration of $q$ quays per ship. $y_{itb}=1$ represents the original berth and sorting time markers. The lower-level variables include legal fuel speed $v_{ig}$, arrival time $a_i\ge0$, $\gamma_{it}\in\{0,1\}$, as well as non-negative times, energy consumption, and costs defined by the following formula. The order of ships, the number of quays per ship $q$, and parallel operation arrangements are all determined by the model selection. $s_i,d_i$ uses a continuous time domain.
+
+\section*{Upper objectives and the original discrete feasible region}
+\[
+\min(U_1,U_2,U_3),\quad
+U_1=\sum_{i:e_i=1}\sigma_i(d_i-D_i)^+,\quad
+U_2=\sum_{i:\alpha_i=1}\sigma_i(d_i-D_i)^+,\quad
+U_3=\sum_i\sigma_i(d_i-D_i)^+.
+\]
+Use the positive power scalar $2U_1+U_2+U_3$ to calculate the comprehensive target value.
+\begin{align}
+a_i&\le s_i &&\forall i \tag{4}\\
+l_i\sum_{t\in\mathcal T}y_{itb}&\le L_b &&\forall i,b \tag{5}\\
+\sum_{t,b}y_{itb}&=1 &&\forall i \tag{6}\\
+\sum_i y_{itb}&\le1 &&\forall t,b \tag{7}\\
+\sum_i x_{itq}&\le1 &&\forall t,q \tag{8}\\
+\sum_{t,b}b\,y_{itb}&=b_i &&\forall i \tag{9}\\
+\sum_i\sum_{q\in H_i}q x_{itq}&\le Q &&\forall t \tag{10}\\
+s_i+\sum_t\sum_{q\in H_i}x_{itq}&\le d_i &&\forall i \tag{11}\\
+\eta\sum_t\sum_{q\in H_i}q x_{itq}&=c_i &&\forall i \tag{12}\\
+(t+1)\sum_{q\in H_i}x_{itq}&\le d_i &&\forall i,t \tag{13}\\
+t\sum_{q\in H_i}x_{itq}+H(1-\sum_{q\in H_i}x_{itq})&\ge s_i &&\forall i,t \tag{14}\\
+d_i y_{itb}&\le s_j y_{jt'b}+H(1-y_{jt'b})
+&&\forall i\ne j,b,t<t' \tag{15}\\
+x_{itq},y_{itb}&\in\{0,1\}. && \tag{16}
+\end{align}
+No additional selection of a single $q$ per ship at each moment can be included in the complete model; candidate algorithms can voluntarily use this feasible subset. The useless $x$ of $q\notin H_i$ can be set to zero, without reducing the effectiveness of any target option.
+
+\section*{All lower-level targets, fuel resources, and hourly constraints related to shore power supply are considered.}
+$G_i$ lists all legally fueled positive-distance sailing legs for each ship. Ships without scrubbers use an approved non-HFO fuel for the relevant zone. Ships with scrubbers may use HFO. The parameters are $w_{ig}>0,P_{ig}>0,F^{main}_{ig}>0,
+F^{aux}_{ig}\ge0,u_i,v^0_{ig},\underline v_{ig},\bar v_{ig}$. The hourly in-port fuel cost $p_i^a$ is the appropriate fuel price multiplied by the auxiliary engine consumption rate. Shore power $\theta_i$, its tariff for each whole hour $P_t^E$, the base port charge $\Psi_i^0$, the discount rate $\lambda$ and the threshold $T^*$ are given. With the upper-level decisions fixed, each company $r$ minimizes $\sum_{i:r(i)=r}C_i$:
+\begin{align*}
+a_i&=ETA_i+\sum_{g\in G_i}w_{ig}(v_{ig}^{-1}-(v^0_{ig})^{-1}),&
+0&\le a_i\le s_i,\\
+\underline v_{ig}&\le v_{ig}\le\bar v_{ig},&
+\gamma_{it}&\in\{0,1\},\\
+T_{ik}^E&=\sum_{t\in K_k:\,s_i\le t<d_i}
+             \gamma_{it}\min(e_i\beta_{b_i},1),&
+k&\in\{p,mp,op\},\\
+T_i^E&=\sum_kT_{ik}^E,&
+0&\le T_i^E\le d_i-s_i,\\
+E_i^E&=\sum_k P_k^E\theta_i T_{ik}^E,&
+C_i^{sail}&=\sum_gP_{ig}\big[F^{main}_{ig}(v_{ig}/u_i)^3+F^{aux}_{ig}\big]w_{ig}/v_{ig},\\
+C_i^{anc}&=p_i^a(s_i-a_i),&
+C_i^{berth}&=p_i^a(d_i-s_i-T_i^E),\\
+\Psi_i&=\begin{cases}\Psi_i^0&T_i^E<T^*,\\
+\lambda\Psi_i^0&T_i^E\ge T^*,\end{cases}&
+C_i&=C_i^{sail}+C_i^{anc}+C_i^{berth}+E_i^E+\Psi_i.
+\end{align*}
+$K_k$ represents the given set of peak, flat, and trough time periods. The hourly electricity prices remain the same as those in the above grouping. Each valid $\gamma$ corresponds to one hour; there are no continuous edge hours where charges are based on overlapping time periods. $\gamma$ values can be set to zero for invalid time periods or situations where shore power availability is not available. This does not affect the target or feasible solution set. There are no new constraints on shared shore power capacity between companies. The requirement for a two-layer solution means that the lower layer must be the global optimal solution to the problem.
+
+\section*{Solve and obtain independent certificates}
+The upper level utilizes a limited number of time slots, each corresponding to a different set of ship arrangements. This allows for flexible adjustments in the number of shore-based bridges at any given time. The candidate values for $x,y,\gamma$ are stored separately; all binary variables that are not listed are set to zero. The certificate includes detailed calculations for each $t,q,b$, covering ranges from 4 to 16, 32 to 36, as well as all relevant upper and lower limits and costs. The candidate generation rules do not replace the full verification process.
+
+Make $\tau_{ig}=w_{ig}/v_{ig}$, $K_{ig}=P_{ig}F^{main}_{ig}w_{ig}^3/u_i^3>0$, $D_{ig}=P_{ig}F^{aux}_{ig}-p_i^a$. The speed value is equivalent to $\sum_g(K_{ig}/\tau_{ig}^2+D_{ig}\tau_{ig})$; all speed constraints remain intact, along with $0\le ETA_i-\sum_gw_{ig}/v^0_{ig}+\sum_g\tau_{ig}\le s_i$. The strict positive second derivative $6K_{ig}/\tau_{ig}^4$ ensures that the feasible KKT certificate is sufficient to prove that the global speed is optimal. For each feasible shore power usage hour $k$, select the $k$ hours with the lowest incremental cost $P_t^E\theta_i-p_i^a$. Enumerate all $k$ values and calculate the port fee threshold. This yields an accurate optimal response for the entire binary shore power domain. The two parts can be separated, and the optimal global response for the company can be determined based on the ship’s specifications. The solving process does not involve calling Gurobi; the monotonic clock limit is 3600 seconds. The parameters are solved using a finite algorithm with a maximum of 160 iterations. The output is considered a conservative heuristic solution. The boundaries/gaps are empty. If the delay vector is exactly zero, then a certificate indicating that the non-negative objectives have been achieved is provided. However, this does not claim to represent the entire Pareto front or the total lower-level cost across the upper-level global optimal solution.
+\end{document}

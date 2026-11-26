@@ -1,0 +1,66 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,geometry}
+\geometry{margin=25mm}
+\begin{document}
+\section*{Core model: multi-trip VRPTW with an unloading queue}
+Source: Section 3.1, PDF pp.3--4, and Section 3.4, PDF p.7,
+SPM (44)--(48). This is the full integer trip-set formulation,
+over the complete feasible column set.
+\paragraph{Physical data.}
+$N=\{1,\ldots,n\}$ are collection customers and $0$ is the depot.
+Customer $i$ has demand $q_i>0$, service duration $s_i$ and service-start
+window $[e_i,l_i]$. Vehicle capacity is $Q$, fleet size is $m$,
+and the operating horizon is $[0,T]$. Let $c_{ij}$ be distance and
+$t_{ij}$ travel time \emph{including service at the origin}; hence
+$t_{ij}=s_i+\text{driving time}_{ij}$ and $s_0=0$.
+Depot unloading slots are $u=1,\ldots,P$ of length $L$, starting at
+$S_u=(u-1)L$; $S_{P+1}=T$. $C$ is the number of simultaneous unloading
+positions, available for simultaneous unloading. Unloading $q$ units
+takes $\delta q$ time and reserves complete slots.
+\paragraph{Complete trip domain.}
+$R$ is the set of all feasible \emph{single} trips. A trip $r$ specifies
+an ordered sequence $(0,i_1,\ldots,i_k,0)$ of distinct customers,
+a departure time $a_r\ge0$, service-start times $b_{r,i_j}$, a depot
+return time $d_r$, and consecutive unloading slots $u_r,\ldots,v_r$.
+It is in $R$ precisely when
+\begin{align*}
+&k\ge1,\quad \sum_{j=1}^kq_{i_j}\le Q,\quad
+ b_{r,i_1}\ge a_r+t_{0i_1},\\
+&b_{r,i_{j+1}}\ge b_{r,i_j}+t_{i_ji_{j+1}}\quad(j<k),\qquad
+ e_{i_j}\le b_{r,i_j}\le l_{i_j}\quad(j=1,\ldots,k),\\
+&d_r=b_{r,i_k}+t_{i_k0},\qquad d_r\le S_{u_r},\qquad
+ 1\le u_r\le v_r\le P,\\
+&\delta\sum_{j=1}^kq_{i_j}\le S_{v_r+1}-S_{u_r},\qquad
+ f_r:=S_{v_r+1}\le T.
+\end{align*}
+The unloading reservation consists of consecutive full slots; normally
+$v_r-u_r+1=\lceil\delta\sum_jq_{i_j}/L\rceil$. A longer reservation
+is dominated, and may be retained without improving the minimum-distance
+objective. If the last slot is truncated at $T$, the displayed duration
+inequality ensures enough unloading time across the occupied slots. The trip occupies a vehicle continuously on $[a_r,f_r)$,
+including travel, queue waiting and the full unloading reservation.
+All these quantities are attributes of a column. Trip size is governed by the capacity and timing constraints.
+\paragraph{Column coefficients.}
+Let $\alpha_{ir}=1$ iff $i$ occurs on $r$,
+$\pi_{tr}=\mathbf1\{a_r\le t<f_r\}$ and
+$\gamma_{ur}=\mathbf1\{u_r\le u\le v_r\}$.
+Define
+\[
+ c_r=c_{0i_1}+\sum_{j=1}^{k-1}c_{i_ji_{j+1}}+c_{i_k0}.
+\]
+Thus cost is travel distance. Boundary times use
+half-open occupancy so a vehicle can start a new trip exactly when its
+previous unloading reservation ends.
+\paragraph{One complete integer model.}
+\begin{align}
+\min_{\theta}\quad &\sum_{r\in R}c_r\theta_r,\tag{44}\\
+\text{s.t.}\quad &\sum_{r\in R}\alpha_{ir}\theta_r=1 &&i\in N,\tag{45}\\
+&\sum_{r\in R}\pi_{tr}\theta_r\le m &&t\in[0,T],\tag{46}\\
+&\sum_{r\in R}\gamma_{ur}\theta_r\le C &&u=1,\ldots,P,\tag{47}\\
+&\theta_r\in\{0,1\} &&r\in R.\tag{48}
+\end{align}
+Selected trip intervals can be assigned to the $m$ identical vehicles
+without overlap whenever (46) holds. For a finite column representation,
+(46) need only be checked on all event intervals induced by its endpoints.
+AF1, AF2, the continuous master and pricing subproblem are excluded.
+\end{document}

@@ -1,0 +1,189 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\section*{Fixed-wholesale-price contract menu: the page 30 envelope formulation}
+
+\begin{equation*}
+\begin{aligned}
+\max_{\alpha_\psi\geq 0,\,L}\quad
+&-L+(\overline w-c)(q_0+\theta)\\
+&\quad+\int_{-\infty}^{\infty}\Bigg[
+\left(k(\overline w-c)\alpha_\psi-\frac{k}{2}\alpha_\psi^2\right)
+\sqrt{\frac{h\widetilde h}{h+\widetilde h}}\,
+\phi\left(\frac{\psi-\theta}{\sqrt{\sigma^2+\widetilde\sigma^2}}\right)\\
+&\hspace{48mm}-\frac{\widetilde h}{h+\widetilde h}
+\left(1-\Phi\left(\frac{\psi-\theta}{\sqrt{\sigma^2+\widetilde\sigma^2}}\right)\right)\alpha_\psi
+\Bigg]\,d\psi\\
+\text{s.t.}\quad
+&\pi_s(k\alpha_\psi,\alpha_\psi,\beta_\psi\mid\Theta_r=\psi)\geq 0,
+\qquad\text{for all }\psi.
+\end{aligned}
+\end{equation*}
+This is the displayed problem on physical PDF page 30 (Online Supplement, OS.2). Its decisions are the commission schedule \(\alpha_\psi\) and the constant \(L\); the salaries are recovered through the envelope relation below. The wholesale price \(\overline w\) is fixed, not a decision. Type indices \(\psi,\psi'\) range over the real-valued signal realizations; \(y\) is an integration variable. The source imposes nonnegative commissions and does not impose a salary sign restriction.
+
+\section*{Inputs, information, and compensation}
+
+Sections 3--4 (physical PDF pages 5--8) specify a single-period, single-product supply chain. The fixed inputs are retail price \(p\), unit production cost \(c\), wholesale price \(\overline w\), market mean \(\theta\), the market and signal variances, and agent efficiency \(k\). Section 3 uses \(w\) for the wholesale price; Section 4 fixes it at \(\overline w\). The printed input restriction and the fixed-price specialization are
+\[
+p>w>c>0,\qquad w=\overline w.
+\]
+The product has zero salvage value. The sales agent's reservation payoff is normalized to zero.
+
+\begin{gather*}
+D=\Theta+e,\qquad
+\Theta\sim N(\theta,\sigma^2),\qquad h\equiv\frac{1}{\sigma^2},\\
+\Psi\mid(\Theta=\widehat\theta)\sim N(\widehat\theta,\widetilde\sigma^2),
+\qquad \widetilde h\equiv\frac{1}{\widetilde\sigma^2},\\
+C(e)=\frac{1}{2k}e^2,\qquad k>0.
+\end{gather*}
+Here \(D\) is consumer demand, \(\Theta\) is the market condition, and \(e\) is the sales agent's demand-promoting effort. The retailer and the agent observe the same private signal \(\Psi\); the manufacturer cannot obtain it. All parameters and the information structure are common knowledge, and the realization \(\psi\) is the only private information. The normal-distribution specification is part of the model.
+
+The agent's compensation depends on the retailer's order quantity, not on realized consumer demand:
+\[
+P(q)=\alpha q+\beta,
+\qquad
+\{P_\psi(q)=\alpha_\psi q+\beta_\psi:\ \forall\psi\}.
+\]
+Here \(q\) is the retailer's order quantity, \(\alpha\) is the commission rate, and \(\beta\) is the constant salary. The agent may reject the menu. Its effort is observable by the retailer but is not contractible by the manufacturer.
+
+The timing is: the downstream parties observe the signal; the manufacturer offers the menu; the agent selects a contract or rejects participation; the agent makes its effort; the retailer observes that effort and orders; the manufacturer pays the agent and delivers the order; consumer demand is realized.
+
+For realized demand \(x\), the source profit definitions are
+\begin{gather*}
+y^+\equiv\max\{y,0\},\\
+\Pi_R=p\min\{x,q\}-wq=(p-w)q-p(q-x)^+,\\
+\Pi_M=(w-c)q-P_\psi(q).
+\end{gather*}
+The supply-chain profit is the sum of these two profits.
+
+\section*{Response and payoff definitions used by the envelope problem}
+
+The posterior belief and retailer's conditional expected profit on physical PDF page 8 are
+\[
+\Theta\mid(\Psi=\psi)\sim
+N\left(\frac{h\theta+\widetilde h\psi}{h+\widetilde h},\frac{1}{h+\widetilde h}\right),
+\]
+\[
+\mathbb E[\Pi_R(q)]
+=(p-\overline w)q-p\int_{-\infty}^{q}
+\Phi\left(
+\frac{y-e-\frac{h\theta+\widetilde h\psi}{h+\widetilde h}}
+{\frac{1}{\sqrt{h+\widetilde h}}}
+\right)\,dy.
+\]
+\(\Phi\) is the standard normal CDF, and \(\phi\) is its PDF. The response and the defining equality for \(q_0\) are
+\[
+q^*(\psi,e)=q_0+e+\frac{h\theta+\widetilde h\psi}{h+\widetilde h},
+\qquad
+\Phi\left(q_0\sqrt{h+\widetilde h}\right)=\frac{p-\overline w}{p}.
+\]
+The source does not truncate this response at zero.
+
+\begin{equation}
+\pi_s(e,\alpha,\beta\mid\Psi=\psi)
+=\alpha\left(q_0+e+\frac{h\theta+\widetilde h\psi}{h+\widetilde h}\right)
++\beta-\frac{1}{2k}e^2.
+\tag{1}
+\end{equation}
+Consequently, the responses used in the selected manufacturer problem are
+\[
+e^*(\alpha)=k\alpha,
+\qquad e_\psi=k\alpha_\psi,
+\qquad q_\psi=q_0+\frac{h\theta+\widetilde h\psi}{h+\widetilde h}+k\alpha_\psi.
+\]
+
+\section*{Printed implementability construction and salary recovery}
+
+The selected integral formulation replaces the original incentive-compatibility block by the construction in the proof of Proposition 1, physical PDF page 29 (OS.1). The following are the author's printed construction rows, rather than an additional copy of the superseded contract-menu optimization.
+
+For any \(\psi>\psi'\), the proof states
+\[
+\alpha_\psi>\alpha_{\psi'}.
+\]
+It then prints
+\begin{equation}
+\begin{aligned}
+&\pi_s(k\alpha_\psi,\alpha_\psi,\beta_\psi\mid\Psi=\psi)
+-\pi_s(k\alpha_\psi,\alpha_\psi,\beta_\psi\mid\Psi=\psi')\\
+&\hspace{18mm}\geq
+\frac{\widetilde h}{h+\widetilde h}(\psi-\psi')\alpha_{\psi'},
+\qquad\forall\psi,\ \forall\psi'.
+\end{aligned}
+\tag{A.1}
+\end{equation}
+For \(\psi>\psi'\), the next, unnumbered relation is
+\[
+\begin{aligned}
+\frac{\widetilde h}{h+\widetilde h}(\psi-\psi')\alpha_\psi
+&\geq
+\pi_s(k\alpha_\psi,\alpha_\psi,\beta_\psi\mid\Psi=\psi)
+-\pi_s(k\alpha_{\psi'},\alpha_{\psi'},\beta_{\psi'}\mid\Psi=\psi')\\
+&\geq
+\frac{\widetilde h}{h+\widetilde h}(\psi-\psi')\alpha_{\psi'}.
+\end{aligned}
+\]
+The envelope and its integrated form are
+\begin{equation}
+\frac{\partial\pi_s(k\alpha_\psi,\alpha_\psi,\beta_\psi\mid\Psi=\psi)}{\partial\psi}
+=\frac{\widetilde h}{h+\widetilde h}\alpha_\psi,
+\tag{A.2}
+\end{equation}
+\begin{equation}
+\pi_s(k\alpha_\psi,\alpha_\psi,\beta_\psi\mid\Theta_r=\psi)
+=L+\frac{\widetilde h}{h+\widetilde h}\int_{-\infty}^{\psi}\alpha_y\,dy.
+\tag{A.3}
+\end{equation}
+The source defines \(L\) as a constant chosen by the manufacturer, whose value is restricted by participation for every type. In particular, the envelope-side participation expression is
+\[
+L+\frac{\widetilde h}{h+\widetilde h}\int_{-\infty}^{\psi}\alpha_y\,dy\geq0,
+\qquad\forall\psi.
+\]
+As directed by the proof, substituting (1) into (A.3) recovers the salary through
+\[
+\alpha_\psi\left(q_0+\frac{h\theta+\widetilde h\psi}{h+\widetilde h}
++\frac{k}{2}\alpha_\psi\right)+\beta_\psi
+=L+\frac{\widetilde h}{h+\widetilde h}\int_{-\infty}^{\psi}\alpha_y\,dy.
+\]
+This last equality records the substitution used in the proof; it does not impose a separate bound on salaries.
+
+\paragraph{Printed inconsistencies in this construction.}
+The conditioning symbol \(\Theta_r\) in (A.3) and in the selected participation block is retained as printed. It is not defined in the selected model, whereas (1) and (A.2) condition on \(\Psi=\psi\). The salary substitution above is the substitution explicitly directed by the authors despite this notation change; no new random variable or equality \(\Theta_r=\Psi\) is imposed here.
+
+The strict inequality \(\alpha_\psi>\alpha_{\psi'}\) is the proof's printed claim, not a constraint displayed in the page 30 maximization. It conflicts with the zero-commission region in the author's solution below. Also, (A.1) prints the same contract \((\alpha_\psi,\beta_\psi)\) in both payoff terms, whereas the subsequent two-sided inequality compares the two designated contracts. These expressions and their scopes have been retained, rather than silently replaced by corrected incentive-compatibility or monotonicity conditions.
+
+\section*{The conclusion attached to the selected formulation}
+
+Immediately after the page 30 problem the authors state that participation and \(\alpha_\psi\geq0\) yield
+\[
+L=0.
+\]
+This is their stated optimizing conclusion, not an additional restriction in the printed maximization. Participation and commission nonnegativity alone do not require equality for every feasible choice of \(L\); the objective contains \(-L\).
+
+The commission characterization printed on the same page is
+\[
+\alpha_\psi^*
+=\left(
+(\overline w-c)
+-\frac{A}{kH\left(\frac{\psi-\theta}{\sqrt{\sigma^2+\widetilde\sigma^2}}\right)}
+\right)^+,
+\qquad
+A=\sqrt{\frac{\widetilde h}{h(h+\widetilde h)}},
+\]
+with the standard-normal hazard rate defined in Proposition 1 as
+\[
+H(x)\equiv\frac{\phi(x)}{1-\Phi(x)}.
+\]
+The standardized threshold \(\underline\psi\) is the unique solution of
+\[
+k(\overline w-c)H(\underline\psi)=A.
+\]
+The page 30 prose identifies this with zero commission ``at \(\psi=\underline\psi\).'' That statement mixes the standardized threshold with the unstandardized signal in the displayed commission formula. The main text on physical PDF page 10 instead identifies the signal threshold as
+\[
+\theta+\underline\psi\sqrt{\sigma^2+\widetilde\sigma^2}.
+\]
+The commission formula and threshold equation above are retained without changing their scales. These are reported solution relations for the selected problem, not extra constraints on its decision schedule.
+
+\end{document}

@@ -1,0 +1,99 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\title{Core Mathematical Model}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section*{Fuel-Constrained Unit Commitment}
+
+To make the model directly implementable in Gurobi, we use explicit initial conditions $(y_0,x_0)$ and the exact period-specific piecewise-linear production-cost curve supplied in the instance data. In particular, for each period $t$, the solver reads ordered breakpoint-value pairs $(\chi_{tm},\phi_{tm})_{m\in\mathcal{M}_t}$ from \texttt{f\_t.breakpoints\_MW} and \texttt{f\_t.values}, and enforces the resulting polyline with Gurobi's \texttt{addGenConstrPWL}. When these data define a convex curve, this is equivalent to a supporting-line epigraph; otherwise the implemented model follows the nonconvex polyline itself. The repository implementation also exposes a period-length parameter $\Delta t = \texttt{period\_length}$; in the current solver, $\Delta t$ scales only the production-cost term, while the revenue term $\xi_t x_t$ and the fuel budget $Q$ remain unscaled.
+
+\begin{equation}
+\min
+\sum_{t=1}^T
+\left[
+c_t^f + c_t y_t + \overline{U}u_t
++ \underline{U}(y_{t-1} - y_t + u_t)
+- \xi_t x_t
+\right]
+\tag{1a}
+\end{equation}
+
+\begin{equation}
+\sum_{i=\max\{1,t-L+1\}}^{t} u_i \le y_t,
+\qquad \forall t \in \mathcal{T}
+\tag{1b}
+\end{equation}
+
+\begin{equation}
+\sum_{i=\max\{1,t-\ell+1\}}^{t} u_i \le 1-\hat{y}_{t-\ell},
+\qquad \forall t \in \mathcal{T}
+\tag{1c}
+\end{equation}
+
+\begin{equation}
+\hat{y}_{t-\ell} =
+\begin{cases}
+y_{t-\ell}, & t > \ell,\\
+y_0, & t \le \ell,
+\end{cases}
+\qquad \forall t \in \mathcal{T}
+\tag{1c'}
+\end{equation}
+
+\begin{equation}
+y_t - y_{t-1} - u_t \le 0,
+\qquad \forall t \in \mathcal{T}
+\tag{1d}
+\end{equation}
+
+\begin{equation}
+\underline{C} y_t \le x_t \le \overline{C} y_t,
+\qquad \forall t \in \mathcal{T}
+\tag{1e}
+\end{equation}
+
+\begin{equation}
+x_t - x_{t-1} \le V y_{t-1} + \overline{V}(1-y_{t-1}),
+\qquad \forall t \in \mathcal{T}
+\tag{1f}
+\end{equation}
+
+\begin{equation}
+x_{t-1} - x_t \le V y_t + \overline{V}(1-y_t),
+\qquad \forall t \in \mathcal{T}
+\tag{1g}
+\end{equation}
+
+\begin{equation}
+\sum_{t=1}^T x_t \le Q
+\tag{1h}
+\end{equation}
+
+\begin{equation}
+c_t^f = \Delta t \cdot \operatorname{PWL}_t(x_t;(\chi_{tm},\phi_{tm})_{m\in\mathcal{M}_t}),
+\qquad
+\forall t \in \mathcal{T}
+\tag{1i}
+\end{equation}
+
+\begin{equation}
+y_0 = \bar{y}_0,\quad x_0 = \bar{x}_0
+\tag{1j}
+\end{equation}
+
+\begin{equation}
+y_t \in \{0,1\},\quad
+u_t \in \{0,1\},\quad
+x_t \ge 0,\quad
+c_t^f \ge 0,
+\qquad \forall t \in \mathcal{T}
+\tag{1k}
+\end{equation}
+
+\end{document}

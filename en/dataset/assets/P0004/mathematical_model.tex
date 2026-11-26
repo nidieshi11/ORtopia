@@ -1,0 +1,38 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,geometry}
+\geometry{margin=22mm}
+\emergencystretch=4em
+\begin{document}
+\section*{P4: The robust upper bound approximation model used in the main analysis of the paper (given the operational scale parameters)}
+\paragraph{Source and scope}According to pages 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 of the original paper’s PDF file, sections 2 and (7), (8)–(13) are used to explain the sources of information. Section 2.4, item (14), remains intact.
+
+\paragraph{The form that is retained}
+Retain section 2.4 formula (14): When given a batch size $q$ and the number of drivers to participate $N$, a robust upper bound programming for the crowdsourcing ratio and rush hour wages is selected. This model is a robust upper bound approximation of formula (7) in the original text.
+\subsection*{Enter the necessary definitions.}
+$m$ represents the number of delivery batches; $q$ indicates the number of orders per batch; $N$ refers to the number of drivers involved in delivery; $m=N\tau$ and $m,q,N,\tau\in\mathbb Z_{++}$ are related parameters. The customer involved in the $j$th batch is $B_j=\{(j-1)q+1,\ldots,jq\}$, and the delivery speed is $v_j>0$. The average and standard deviation of order arrival intervals and on-site service times are $\mu_i^a>0,\sigma_i^a\ge0,\mu_i^s\ge0,\sigma_i^s\ge0$. $\beta\ge0$ represents the length coefficient obtained by combining geographic density and the upper bound of TSP; $t_j=\beta\sqrt{q+1}/v_j$ is related to this coefficient. $\alpha>0$ denotes the promised delivery deadline; $0<\epsilon<1$ represents the safety margin for utilization rate; $c_T\ge0$ indicates the third-party delivery fee per order. $\gamma^a,\gamma^s,\gamma^k\ge0$ indicates the level of conservatism regarding arrival time, service time, and opportunity costs. $\mu_{(r)}^k$ lists the $N$ lowest values of the average driver opportunity cost; $\sigma^k\ge0$ represents the common standard deviation. Driver $h$’s service batch index is $J_h=\{j_{h1},\ldots,j_{h\tau}\}$. Each batch is selected from every $J_h$ of the $N$th batch, and all $J_h$ divisions cover all $m$ batches. This results in $D_h=\bigcup_{j\in J_h}B_j$. A fixed coefficient is defined accordingly.
+\[
+ C=\frac{\sum_{j=1}^m t_j+\sum_{h=1}^N\left(\sum_{i\in D_h}\mu_i^s+\gamma^s\sqrt{\sum_{i\in D_h}(\sigma_i^s)^2}\right)}{mq},\quad
+ R=\frac{\sum_{i=1}^{mq}\mu_i^s+\sum_{j=1}^m t_j}{N\sum_{i=1}^{mq}\mu_i^a},\quad
+ K_N=\frac{\sum_{r=1}^N\mu_{(r)}^k+\gamma^k\sqrt N\sigma^k}{N}.
+\]
+For $j>N$, $a_j=\lfloor(j-1)/N\rfloor$. For $1\le i\le a_j$, $A_{ji}=\{(j-iN)q+1,\ldots,(j-1)q+1\}$, $D_{ji}=\bigcup_{\ell=0}^{i}B_{j-\ell N}$. The upper limit of service hours is defined by the following expression.
+\begin{align*}
+G_j(P)&=\frac{\sum_{r=(j-1)q+2}^{jq}\mu_r^a+\gamma^a\sqrt{\sum_{r=(j-1)q+2}^{jq}(\sigma_r^a)^2}}{P}
++\sum_{r\in B_j}\mu_r^s+\gamma^s\sqrt{\sum_{r\in B_j}(\sigma_r^s)^2}+t_j,\\
+F_{ji}(P)&=\frac{-\sum_{r\in A_{ji}}\mu_r^a+\gamma^a\sqrt{\sum_{r\in A_{ji}}(\sigma_r^a)^2}}{P}
++\sum_{r\in D_{ji}}\mu_r^s+\gamma^s\sqrt{\sum_{r\in D_{ji}}(\sigma_r^s)^2}+\sum_{\ell=0}^{i}t_{j-\ell N}.
+\end{align*}
+The sum of the empty values is zero. This is especially true for the $q=1$ case, where there are no waiting items.
+\subsection*{The only core planning element}
+The decision parameter $P$ represents the proportion of orders assigned to crowdsourcing, while $w$ represents the salary per unit of working time for each driver.
+\begin{align}
+\min_{P,w}\quad &CPw+(1-P)c_T,\tag{14a}\\
+\text{s.t.}\quad&G_j(P)\le\alpha &&j=1,\ldots,m,\tag{14b}\\
+&F_{ji}(P)\le\alpha &&j=N+1,\ldots,m,\quad i=1,\ldots,a_j,\tag{14c}\\
+&RP\le1-\epsilon,\tag{14d}\\
+&RPw\ge K_N,\tag{14e}\\
+&0<P\le1,\quad w>0.\tag{14f}
+\end{align}
+Each item $F_{ji}\le\alpha$ is equivalent to the original formula after taking the maximum value of $i$. $q,N$ is the given operating scale parameter.
+
+\end{document}

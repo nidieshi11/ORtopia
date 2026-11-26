@@ -1,0 +1,687 @@
+<!DOCTYPE html> 
+<html lang='en-US' xml:lang='en-US'> 
+<head><title>P0190 · Signal timings and arrival lanes at a mixed-traffic intersection · Mathematical model</title> 
+<meta charset='utf-8' /> 
+<meta content='TeX4ht (https://tug.org/tex4ht/)' name='generator' /> 
+<meta content='width=device-width,initial-scale=1' name='viewport' /> 
+<style> 
+/* start css.sty */
+.cmr-10x-x-109{}
+.cmbx-10x-x-109{ font-weight: bold;}
+.cmbsy-10x-x-109{font-weight: bold;}
+.cmbsy-10x-x-109{font-weight: bold;}
+.cmbsy-10x-x-109{font-weight: bold;}
+.cmbsy-8{font-size:72%;font-weight: bold;}
+.cmbsy-8{font-weight: bold;}
+.cmbsy-8{font-weight: bold;}
+.cmbsy-6{font-size:54%;font-weight: bold;}
+.cmbsy-6{font-weight: bold;}
+.cmbsy-6{font-weight: bold;}
+.cmex-10x-x-109{}
+.cmex-8{font-size:72%;}
+.cmex-7x-x-85{font-size:54%;}
+.msam-10x-x-109{}
+.msam-10x-x-80{font-size:72%;}
+.msam-7x-x-85{font-size:54%;}
+.msbm-10x-x-109{}
+.msbm-10x-x-80{font-size:72%;}
+.msbm-7x-x-85{font-size:54%;}
+.cmr-8{font-size:72%;}
+.cmr-6{font-size:54%;}
+.cmmi-10x-x-109{font-style: italic;}
+.cmmi-8{font-size:72%;font-style: italic;}
+.cmmi-6{font-size:54%;font-style: italic;}
+.cmsy-10x-x-109{}
+.cmsy-8{font-size:72%;}
+.cmsy-6{font-size:54%;}
+p{margin-top:0;margin-bottom:0}
+p.indent{text-indent:0;}
+p + p{margin-top:1em;}
+p + div, p + pre {margin-top:1em;}
+div + p, pre + p {margin-top:1em;}
+a { overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; hyphens: auto; }
+@media print {div.crosslinks {visibility:hidden;}}
+table.tabular{border-collapse: collapse; border-spacing: 0;}
+a img { border-top: 0; border-left: 0; border-right: 0; }
+center { margin-top:1em; margin-bottom:1em; }
+td center { margin-top:0em; margin-bottom:0em; }
+.Canvas { position:relative; }
+math { text-indent: 0em; }
+body{ margin:1em auto; max-width:80ch; padding:0 .62em; }
+h1,h2,h3,h4,h5 { line-height:1.2; }
+@media print{ body{ max-width:none } }
+.partHead, .likepartHead { font-size: 2em; }
+.chapterHead, .likechapterHead { font-size: 1.7411em; }
+.sectionHead, .likesectionHead { font-size: 1.5157em; }
+.subsectionHead, .likesubsectionHead { font-size: 1.3195em; }
+.subsubsectionHead, .likesubsubsectionHead { font-size: 1.1487em; }
+ @media (prefers-color-scheme: dark) { img[src^="model"]{filter: invert(1); } } 
+li p.indent { text-indent: 0em }
+li p:first-child{ margin-top:0em; }
+li p:last-child, li div:last-child { margin-bottom:0.5em; }
+li p:first-child{ margin-bottom:0; }
+li p~ul:last-child, li p~ol:last-child{ margin-bottom:0.5em; }
+.enumerate1 {list-style-type:decimal;}
+.enumerate2 {list-style-type:lower-alpha;}
+.enumerate3 {list-style-type:lower-roman;}
+.enumerate4 {list-style-type:upper-alpha;}
+div.newtheorem { margin-bottom: 2em; margin-top: 2em;}
+div.newtheorem .head{font-weight: bold;}
+.obeylines-h,.obeylines-v {white-space: nowrap; }
+div.obeylines-v p { margin-top:0; margin-bottom:0; }
+.overline{ text-decoration:overline; }
+.overline img{ border-top: 1px solid black; }
+td.displaylines {text-align:center; white-space:nowrap;}
+.centerline {text-align:center;}
+.rightline {text-align:right;}
+pre.verbatim {font-family: monospace,monospace; text-align:left; clear:both; }
+.fbox {padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+div.fbox {display:table}
+div.center div.fbox {text-align:center; clear:both; padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+div.minipage{width:100%;}
+div.center, div.center div.center {text-align: center; margin-left:1em; margin-right:1em;}
+div.center div {text-align: left;}
+div.flushright, div.flushright div.flushright {text-align: right;}
+div.flushright div {text-align: left;}
+div.flushleft {text-align: left;}
+.underline{ text-decoration:underline; }
+.underline img{ border-bottom: 1px solid black; margin-bottom:1pt; }
+.framebox-c, .framebox-l, .framebox-r { padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+.framebox-c {text-align:center;}
+.framebox-l {text-align:left;}
+.framebox-r {text-align:right;}
+span.thank-mark{ vertical-align: super }
+span.footnote-mark sup.textsuperscript, span.footnote-mark a sup.textsuperscript{ font-size:80%; }
+code.verb{font-family:monospace,monospace;}
+div.tabular, div.center div.tabular {text-align: center; margin-top:0.5em; margin-bottom:0.5em; }
+table.tabular td p{margin-top:0em;}
+table.tabular {margin-left: auto; margin-right: auto;}
+td p:first-child{ margin-top:0em; }
+td p:last-child{ margin-bottom:0em; }
+div.td00{ margin-left:0pt; margin-right:0pt; }
+div.td01{ margin-left:0pt; margin-right:5pt; }
+div.td10{ margin-left:5pt; margin-right:0pt; }
+div.td11{ margin-left:5pt; margin-right:5pt; }
+table[rules] {border-left:solid black 0.4pt; border-right:solid black 0.4pt; }
+td.td00{ padding-left:0pt; padding-right:0pt; }
+td.td01{ padding-left:0pt; padding-right:5pt; }
+td.td10{ padding-left:5pt; padding-right:0pt; }
+td.td11{ padding-left:5pt; padding-right:5pt; }
+table[rules] {border-left:solid black 0.4pt; border-right:solid black 0.4pt; }
+.hline hr, .cline hr{ height : 0px; margin:0px; }
+.hline td, .cline td{ padding: 0; }
+.hline hr, .cline hr{border:none;border-top:1px solid black;}
+.hline {border-top: 1px solid black;}
+.hline + .vspace:last-child{display:none;}
+.hline:first-child{border-bottom:1px solid black;border-top:none;}
+.tabbing-right {text-align:right;}
+div.float, div.figure {margin-left: auto; margin-right: auto;}
+div.float img {text-align:center;}
+div.figure img {text-align:center;}
+.marginpar,.reversemarginpar {width:20%; float:right; text-align:left; margin-left:auto; margin-top:0.5em; font-size:85%; text-decoration:underline;}
+.marginpar p,.reversemarginpar p{margin-top:0.4em; margin-bottom:0.4em;}
+.reversemarginpar{float:left;}
+.equation td{text-align:center; vertical-align:middle; }
+td.eq-no{ width:5%; }
+table.equation { width:100%; } 
+div.math-display, div.par-math-display{text-align:center;}
+.array-hline,.array-cline{ border-top: 1px solid black; height:0px; }
+.array-hline + .array-vspace:last-child{display:none;}
+.hline-mtd, .array-hline td{ display:none }
+.array-hline + .array-row:last-child{display:none;}
+.array-hline:first-child{border-bottom:1px solid black;border-top:none;}
+math .texttt { font-family: monospace; }
+math .textit { font-style: italic; }
+math .textsl { font-style: oblique; }
+math .textsf { font-family: sans-serif; }
+math .textbf { font-weight: bold; }
+mo.MathClass-op + mi{margin-left:0.3em}
+mi + mo.MathClass-op{margin-left:0.3em}
+ math mstyle[mathvariant="bold"] { font-weight: bold; font-style: normal; } 
+ math mstyle[mathvariant="normal"] { font-weight: normal; font-style: normal; } 
+.partToc a, .partToc, .likepartToc a, .likepartToc {line-height: 200%; font-weight:bold; font-size:110%;}
+.index-item, .index-subitem, .index-subsubitem {display:block}
+div.caption {text-indent:-2em; margin-left:3em; margin-right:1em; text-align:left;}
+div.caption span.id{font-weight: bold; white-space: nowrap; }
+h1.partHead{text-align: center}
+p.bibitem { text-indent: -2em; margin-left: 2em; margin-top:0.6em; margin-bottom:0.6em; }
+p.bibitem-p { text-indent: 0em; margin-left: 2em; margin-top:0.6em; margin-bottom:0.6em; }
+.subsubsectionHead, .likesubsubsectionHead { font-size: 1em; }
+.paragraphHead, .likeparagraphHead { margin-top:2em; font-weight: bold;}
+.subparagraphHead, .likesubparagraphHead { font-weight: bold;}
+.verse{white-space:nowrap; margin-left:2em}
+div.maketitle {text-align:center;}
+h2.titleHead{text-align:center;}
+div.maketitle{ margin-bottom: 2em; }
+div.author, div.date {text-align:center;}
+div.thanks{text-align:left; margin-left:10%; font-size:85%; font-style:italic; }
+div.author{white-space: nowrap;}
+div.abstract p {margin-left:5%; margin-right:5%;}
+div.abstract {width:100%;}
+.abstracttitle{text-align:center;margin-bottom:1em;}
+.subsectionToc, .likesubsectionToc {margin-left:1em;}
+.subsubsectionToc, .likesubsubsectionToc {margin-left:2em;}
+.paragraphToc, .likeparagraphToc {margin-left:3em;}
+.subparagraphToc, .likesubparagraphToc {margin-left:4em;}
+figure.float, div.figure {margin-left: auto; margin-right: auto;}
+figure.figure {text-align:center;}
+figcaption.caption {text-indent:-2em; margin-left:3em; margin-right:1em; text-align:center;}
+figcaption.caption span.id{font-weight: bold; white-space: nowrap; }
+p + figcaption, img + figcaption{margin-top: 1em;}
+.abstract{margin:1em;}
+.equation-star td{text-align:center; vertical-align:middle; }
+table.equation-star { width:100%; } 
+.boxed{border: 1px solid black; padding-left:2px; padding-right:2px;}
+mtd.align-odd{margin-left:2em; text-align:right;}
+mtd.align-even{margin-right:2em; text-align:left;}
+/* end css.sty */
+
+
+html{background:#fff;color:#243833}body{padding:clamp(.55rem,2vw,1.25rem);margin:0;line-height:1.5;overflow-wrap:break-word}
+h1,h2,h3,h4,h5,h6{line-height:1.22;color:#193d35}p{margin:.5rem 0}math[display=block]{overflow-x:auto;max-width:100%}
+@media print{body{padding:0;color:#000}}
+</style> 
+<meta content='model.tex' name='src' /> 
+</head><body>
+   <h3 class='likesectionHead' id='joint-highlevel-scheduling-of-intersection-signals-and-vehicle-arrivals'><a id='x1-1000'></a>Joint high-level scheduling of intersection signals and vehicle arrivals</h3>
+<!-- l. 8 --><p class='noindent'><span class='paragraphHead' id='source-and-scope'><a id='x1-2000'></a><span class='cmbx-10x-x-109'>Source and scope</span></span>
+   Pages 3–10 of the PDF, <span class='tcrm-1095'>§</span>2.3–2.6, equations (1)–(50). The high-level signals and arrival times are given,
+and the trajectories are generated at the low level in <span class='tcrm-1095'>§</span>2.7; this document only covers the complete high-level
+scheduling.
+</p>
+   <h4 class='likesubsectionHead' id='indexing-input-and-variable-definitions'><a id='x1-3000'></a>Indexing, input, and variable definitions</h4>
+<!-- l. 10 --><p class='noindent'>The entrance lane is designated as <!-- l. 10 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>i</mi></math>. The
+lanes numbered from right to left are <!-- l. 10 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>j</mi></math>.
+Vehicles indexed by their positions are designated as
+<!-- l. 10 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>k</mi></math>. Vehicles grouped together are
+<!-- l. 10 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi mathvariant='normal'>Ω</mi> <mo class='MathClass-rel' stretchy='false'>=</mo><msup><mrow> <mi mathvariant='normal'>Ω</mi></mrow><mrow><mi mathvariant='italic'>CAV</mi> </mrow></msup> <mo class='MathClass-bin' stretchy='false'>∪</mo><msup><mrow><mi mathvariant='normal'>Ω</mi></mrow><mrow><mi mathvariant='italic'>OV</mi> </mrow></msup></mrow></math>. Only CAV-controlled vehicles
+are included in this category. <!-- l. 10 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>f</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>j</mi><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math>
+represents the mapping between lanes and signal phases (using the mapping
+appropriate for the entrance lane). The eight-phase system is represented by
+<!-- l. 10 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>ϕ</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>ϕ</mi></mrow><mrow><mn>8</mn></mrow></msub></mrow></math>. This system follows the NEMA
+dual-barrier sequence. <!-- l. 10 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>I</mi></mrow><mrow><mi>ϕ</mi></mrow></msub></math> indicates
+that the current phase is green; <!-- l. 10 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msubsup><mrow><mi>g</mi></mrow><mrow><mi>ϕ</mi></mrow><mrow><mi>p</mi></mrow></msubsup><mo class='MathClass-punc' stretchy='false'>,</mo><msubsup><mrow><mi>t</mi></mrow><mrow><mi>ϕ</mi></mrow><mrow><mi>l</mi></mrow></msubsup></mrow></math>
+indicates that the green light has been passed and time has been lost.
+<!-- l. 10 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>ϕ</mi></mrow><mrow><mi>g</mi></mrow></msub></math> refers to the current green
+light in the same barrier. <!-- l. 10 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>ϕ</mi></mrow><mrow><mi>p</mi></mrow></msub></math>
+represents the phases that follow the current phase and precede the target phase, as described in equation
+(7). <!-- l. 10 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msup><mrow><mi>g</mi></mrow><mrow><mtext class='qopname'>min</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><msup><mrow><mi>g</mi></mrow><mrow><mtext class='qopname'>max</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow></msup></mrow></math>
+represents the maximum duration allowed for each phase.
+</p><!-- l. 12 --><p class='indent'>   The vehicle inputs <!-- l. 12 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msup><mrow><mi>d</mi></mrow><mrow><mi mathvariant='italic'>stop</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><mi>P</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>v</mi><mo class='MathClass-punc' stretchy='false'>,</mo><msup><mrow><mi>v</mi></mrow><mrow><mi mathvariant='italic'>lat</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><msup><mrow><mi>d</mi></mrow><mrow><mi mathvariant='italic'>lat</mi></mrow></msup></mrow></math>
+which include distance from the stop line, position along the lane, current speed, lateral speed, and lateral deviation.
+<!-- l. 12 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msup><mrow><mi>v</mi></mrow><mrow><mi>l</mi></mrow></msup> <mo class='MathClass-rel' stretchy='false'>=</mo> <msub><mrow><mi>v</mi></mrow><mrow><mi>l</mi></mrow></msub></mrow></math> represents the speed
+limit, <!-- l. 12 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>v</mi></mrow><mrow><mi>t</mi></mrow></msub></math> is the passing speed,
+<!-- l. 12 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>a</mi></mrow><mrow><mtext class='qopname'>max</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>d</mi></mrow><mrow><mtext class='qopname'>max</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow></msub> <mo class='MathClass-rel' stretchy='false'>&gt;</mo> <mn>0</mn></mrow></math> are the speed increment/decrement
+limits, <!-- l. 12 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>v</mi></mrow><mrow><mi mathvariant='italic'>lc</mi></mrow></msub></math> is the minimum speed
+for lane changing, and <!-- l. 12 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msubsup><mrow><mi>v</mi></mrow><mrow><mi mathvariant='italic'>avg</mi></mrow><mrow><mi mathvariant='italic'>CAV</mi> </mrow></msubsup><mo class='MathClass-punc' stretchy='false'>,</mo><msubsup><mrow><mi>v</mi></mrow><mrow><mi mathvariant='italic'>avg</mi></mrow><mrow><mi mathvariant='italic'>OV</mi> </mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>&gt;</mo> <mn>0</mn></mrow></math> is the
+average speed near the entrance. <!-- l. 12 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msup><mrow><mi>d</mi></mrow><mrow><mi mathvariant='italic'>acc</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><msup><mrow><mi>d</mi></mrow><mrow><mi mathvariant='italic'>dec</mi></mrow></msup></mrow></math>
+indicates the acceleration/deceleration distance calculated based on the given driving conditions.
+<!-- l. 12 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>d</mi></mrow><mrow><mi>v</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>d</mi></mrow><mrow><mi>g</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>t</mi></mrow><mrow><mi mathvariant='italic'>headway</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>d</mi></mrow><mrow><mi>h</mi></mrow></msub></mrow></math>
+includes vehicle length, minimum spacing, expected headway, and release headway.
+<!-- l. 12 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi mathvariant='italic'>CN</mi><msub><mrow><mi>L</mi></mrow><mrow><mi>i</mi></mrow></msub></mrow></math> indicates areas where lane changing
+is prohibited, <!-- l. 12 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>d</mi></mrow><mrow><mi mathvariant='italic'>dis</mi></mrow></msub></math> is the specified
+distance for queue clearing, and <!-- l. 12 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msup><mrow><mi>e</mi></mrow><mrow><mi>f</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>j</mi><mo class='MathClass-close' stretchy='false'>)</mo></mrow></msup></math>
+represents the red light indication when entering the area.
+<!-- l. 12 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msubsup><mrow><mi>I</mi></mrow><mrow><mi>j</mi></mrow><mrow><mi mathvariant='italic'>lm</mi></mrow></msubsup><mo class='MathClass-punc' stretchy='false'>,</mo><msubsup><mrow><mi>I</mi></mrow><mrow><mi>j</mi></mrow><mrow><mi mathvariant='italic'>rm</mi></mrow></msubsup></mrow></math> identifies the
+leftmost/rightmost lane. <!-- l. 12 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msubsup><mrow><mi>K</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mi mathvariant='italic'>front</mi></mrow></msubsup><mo class='MathClass-open' stretchy='false'>(</mo><mi>ℓ</mi><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math>
+represents the vehicles ahead of the vehicle in question on the candidate lane
+<!-- l. 12 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>ℓ</mi></math>.
+<!-- l. 12 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi mathvariant='italic'>kf</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi mathvariant='italic'>kfl</mi></mrow></math> indicates the
+immediate vehicles ahead and behind on the candidate lane (only neighboring vehicles apply corresponding safety
+measures). <!-- l. 12 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi mathvariant='italic'>GA</mi><msub><mrow><mi>P</mi></mrow><mrow><mi mathvariant='italic'>ij</mi></mrow></msub></mrow></math> is the
+lane spacing. <!-- l. 12 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msup><mrow><mi>K</mi></mrow><mrow><msub><mrow><mi>q</mi></mrow><mrow><mi>j</mi></mrow></msub><mi>L</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><msup><mrow><mi>K</mi></mrow><mrow><msub><mrow><mi>q</mi></mrow><mrow><mi>j</mi></mrow></msub><mi>R</mi></mrow></msup></mrow></math>
+represents the group of vehicles that can enter the gap from adjacent left and right lanes.
+<!-- l. 12 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>I</mi></mrow><mrow><mi mathvariant='italic'>safety</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>I</mi></mrow><mrow><mi mathvariant='italic'>speed</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>I</mi></mrow><mrow><mi mathvariant='italic'>NCG</mi></mrow></msub></mrow></math>
+includes the conditions for lane changing as pre-evaluated according to rules from (17)–(23) and page 8.
+Lane changes conflicting with each other are prioritized based on the one closer to the stop line.
+<!-- l. 12 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>M</mi></math>
+represents the valid upper bounds for various condition expressions.
+</p><!-- l. 14 --><p class='indent'>   <!-- l. 14 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msubsup><mrow><mi>J</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mi mathvariant='italic'>target</mi></mrow></msubsup></math>
+represents a set of absolute lane numbers that are compatible with the vehicle’s subsequent path.
+<!-- l. 14 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mover accent='true'><mrow><mi>J</mi></mrow><mo accent='true'>^</mo></mover></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow></msub></math>
+represents a set of lanes that can be maintained or moved one step closer to the target direction. Action
+<!-- l. 14 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msup><mrow><mi>j</mi></mrow><mrow><mi>′</mi></mrow></msup> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>2</mn></mrow></math> corresponds
+to <!-- l. 14 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>ℓ</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><msup><mrow><mi>j</mi></mrow><mrow><mi>′</mi></mrow></msup><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>=</mo> <mi>j</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mi>j</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>j</mi> <mo class='MathClass-bin' stretchy='false'>−</mo> <mn>1</mn></mrow></math>. The action
+of leaving the road is defined as zero. According to conditions (10), the value 1 is taken if the conditions are met,
+otherwise 0 is used. To avoid direct comparison between the action numbers and absolute lane numbers, an explicit
+mapping using <!-- l. 14 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>ℓ</mi></math>
+is employed. <!-- l. 14 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msup><mrow><mi>f</mi></mrow><mrow><mi>l</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><msup><mrow><mi>f</mi></mrow><mrow><mi>r</mi></mrow></msup></mrow></math>
+Returns 1 if conditions (11)–(12) are met; otherwise, 0 is returned.
+</p><!-- l. 16 --><p class='indent'>   Decision variables <!-- l. 16 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msup><mrow><mi>t</mi></mrow><mrow><mi>a</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><mi>d</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>r</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>g</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>𝜃</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>C</mi><mo class='MathClass-punc' stretchy='false'>,</mo><msup><mrow><mi>t</mi></mrow><mrow><mi mathvariant='italic'>dis</mi></mrow></msup> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mn>0</mn></mrow></math>
+represent arrival time, delay, remaining red lights, remaining green lights, phase duration, cycle duration, and queue
+release time. <!-- l. 16 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msup><mrow><mi>δ</mi></mrow><mrow><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>2</mn></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><mi>α</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>β</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo><mo class='MathClass-open' stretchy='false'>{</mo><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>}</mo></mrow></math>
+refers to lane change actions and pass marks for the current cycle.
+<!-- l. 16 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msup><mrow><mi>n</mi></mrow><mrow><mi>r</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>c</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>l</mi></mrow></msup></math> represents
+non-negative integer queue counts, with “green” or “red” indicating the direction of the queue movement.
+<!-- l. 16 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>j</mi></mrow><mrow><mi mathvariant='italic'>new</mi></mrow></msub></math> refers to the derived lanes
+defined by (16). Variables <!-- l. 16 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>t</mi></math> in
+equations (47)–(49) represent the <!-- l. 16 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msup><mrow><mi>t</mi></mrow><mrow><mi>a</mi></mrow></msup></math>
+values of the preceding vehicle.
+</p>
+   <h4 class='likesubsectionHead' id='the-only-goal'><a id='x1-4000'></a>The only goal</h4>
+   <table class='equation-star'><tr><td>
+<!-- l. 18 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                    <mtext class='qopname'>min</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>i</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>j</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>k</mi></mrow></munder><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>d</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <munderover accent='false' accentunder='false'><mrow><mi>δ</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mn>0</mn></mrow></munderover> <mo class='MathClass-bin' stretchy='false'>+</mo> <munderover accent='false' accentunder='false'><mrow><mi>δ</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow><mrow><mn>2</mn></mrow></munderover><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><msub><mrow><mi>d</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <munderover accent='false' accentunder='false'><mrow><mi>t</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>a</mi></mrow></munderover> <mo class='MathClass-bin' stretchy='false'>−</mo> <munderover accent='false' accentunder='false'><mrow><mi>d</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow><mrow><mi mathvariant='italic'>stop</mi></mrow></munderover><mo class='MathClass-bin' stretchy='false'>∕</mo><msup><mrow><mi>v</mi></mrow><mrow><mi>l</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>.</mo>               <mstyle class='maketag'><mtext>(1–2)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-4001r0'></mstyle><!-- endlabel -->
+</mrow></math></td></tr></table>
+<!-- l. 22 --><p class='noindent'>
+</p>
+   <h4 class='likesubsectionHead' id='all-highlevel-constraints'><a id='x1-5000'></a>All high-level constraints</h4>
+   <table class='equation-star'><tr><td>
+
+<!-- l. 23 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mstyle class='text'><mtext>Signal allocation constraints (based on the NEMA dual-barrier structure):</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 24 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><munderover accent='false' accentunder='false'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>i</mi><mo class='MathClass-rel' stretchy='false'>=</mo><mn>1</mn></mrow><mrow><mn>4</mn></mrow></munderover><msub><mrow><mi>𝜃</mi></mrow><mrow><msub><mrow>
+<mi>ϕ</mi></mrow><mrow><mi>i</mi></mrow></msub></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo><munderover accent='false' accentunder='false'><mrow><mo> ∑</mo>
+  </mrow><mrow><mi>i</mi><mo class='MathClass-rel' stretchy='false'>=</mo><mn>5</mn></mrow><mrow><mn>8</mn></mrow></munderover><msub><mrow><mi>𝜃</mi></mrow><mrow><msub><mrow>
+<mi>ϕ</mi></mrow><mrow><mi>i</mi></mrow></msub></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mi>C</mi><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (3))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 25 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><munderover accent='false' accentunder='false'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>i</mi><mo class='MathClass-rel' stretchy='false'>=</mo><mn>1</mn></mrow><mrow><mn>2</mn></mrow></munderover><msub><mrow><mi>𝜃</mi></mrow><mrow><msub><mrow>
+<mi>ϕ</mi></mrow><mrow><mi>i</mi></mrow></msub></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo><munderover accent='false' accentunder='false'><mrow><mo> ∑</mo>
+  </mrow><mrow><mi>i</mi><mo class='MathClass-rel' stretchy='false'>=</mo><mn>5</mn></mrow><mrow><mn>6</mn></mrow></munderover><msub><mrow><mi>𝜃</mi></mrow><mrow><msub><mrow>
+<mi>ϕ</mi></mrow><mrow><mi>i</mi></mrow></msub></mrow></msub><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (4))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 26 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><munderover accent='false' accentunder='false'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>i</mi><mo class='MathClass-rel' stretchy='false'>=</mo><mn>3</mn></mrow><mrow><mn>4</mn></mrow></munderover><msub><mrow><mi>𝜃</mi></mrow><mrow><msub><mrow>
+<mi>ϕ</mi></mrow><mrow><mi>i</mi></mrow></msub></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo><munderover accent='false' accentunder='false'><mrow><mo> ∑</mo>
+  </mrow><mrow><mi>i</mi><mo class='MathClass-rel' stretchy='false'>=</mo><mn>7</mn></mrow><mrow><mn>8</mn></mrow></munderover><msub><mrow><mi>𝜃</mi></mrow><mrow><msub><mrow>
+<mi>ϕ</mi></mrow><mrow><mi>i</mi></mrow></msub></mrow></msub><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (5))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+
+<!-- l. 27 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><msub><mrow><mi>g</mi></mrow><mrow><mi>ϕ</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <msub><mrow><mi>I</mi></mrow><mrow><mi>ϕ</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>𝜃</mi></mrow><mrow><mi>ϕ</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <msubsup><mrow><mi>g</mi></mrow><mrow><mi>ϕ</mi></mrow><mrow><mi>p</mi></mrow></msubsup> <mo class='MathClass-bin' stretchy='false'>−</mo> <msubsup><mrow><mi>t</mi></mrow><mrow>
+<mi>ϕ</mi></mrow><mrow><mi>l</mi></mrow></msubsup><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>ϕ</mi><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (6))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 28 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>Among them, when the phase… </mtext></mstyle><mi>ϕ</mi><mstyle class='text'><mtext> When it’s a red light, </mtext></mstyle><msub><mrow><mi>g</mi></mrow><mrow><mi>ϕ</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>.</mo></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 29 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><msub><mrow><mi>r</mi></mrow><mrow><mi>ϕ</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>(</mo><mn>1</mn> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>I</mi></mrow><mrow><mi>ϕ</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>g</mi></mrow><mrow><msub><mrow><mi>ϕ</mi></mrow><mrow><mi>g</mi></mrow></msub></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msubsup><mrow><mi>t</mi></mrow><mrow><msub><mrow><mi>ϕ</mi></mrow><mrow><mi>g</mi></mrow></msub></mrow><mrow><mi>l</mi></mrow></msubsup> <mo class='MathClass-bin' stretchy='false'>+</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><msub><mrow><mi>ϕ</mi></mrow><mrow><mi>p</mi></mrow></msub></mrow></munder><msub><mrow><mi>𝜃</mi></mrow><mrow><msub><mrow><mi>ϕ</mi></mrow><mrow><mi>p</mi></mrow></msub></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><mi>ϕ</mi><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (7))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 30 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><msup><mrow><mi>g</mi></mrow><mrow><mtext class='qopname'>min</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow></msup> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msub><mrow><mi>𝜃</mi></mrow><mrow>
+<mi>ϕ</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msup><mrow><mi>g</mi></mrow><mrow><mtext class='qopname'>max</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow></msup><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (8))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+
+<!-- l. 31 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mstyle class='text'><mtext>Lane allocation constraints:</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 32 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><munder class='msub'><mrow><mo>∑</mo>
+    </mrow><mrow><msup><mrow><mi>j</mi></mrow><mrow><mi>′</mi></mrow></msup><mo class='MathClass-rel' stretchy='false'>=</mo><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>2</mn></mrow></munder><msubsup><mrow><mi>δ</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><msup><mrow><mi>j</mi></mrow><mrow><mi>′</mi></mrow></msup>
+   </mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (9))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 33 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><msubsup><mrow><mi>δ</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><msup><mrow><mi>j</mi></mrow><mrow><mi>′</mi></mrow></msup>
+   </mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn><mstyle class='text'><mtext> if </mtext></mstyle><msub><mrow><mi>ℓ</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><msup><mrow><mi>j</mi></mrow><mrow><mi>′</mi></mrow></msup><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-rel' stretchy='false'>∉</mo><msub><mrow><mover accent='true'><mrow><mi>J</mi></mrow><mo accent='true'>^</mo></mover></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow></msub><mstyle class='text'><mtext> and </mtext></mstyle><msub><mrow><mi>ω</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>∈</mo><msup><mrow><mi mathvariant='normal'>Ω</mi></mrow><mrow><mstyle class='text'><mtext>CAV</mtext></mstyle></mrow></msup><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (10))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 34 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><msubsup><mrow><mi>f</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>l</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mstyle class='text'><mtext> if </mtext></mstyle><msubsup><mrow><mi>v</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>lat</mtext></mstyle></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>&gt;</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><msubsup><mrow><mi>d</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>lat</mtext></mstyle></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mn>0.2</mn><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (11))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+
+<!-- l. 35 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><msubsup><mrow><mi>f</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>r</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mstyle class='text'><mtext> if </mtext></mstyle><msubsup><mrow><mi>v</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>lat</mtext></mstyle></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>&lt;</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><msubsup><mrow><mi>d</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>lat</mtext></mstyle></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>≤</mo><mo class='MathClass-bin' stretchy='false'>−</mo><mn>0.2</mn><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (12))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 36 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><msubsup><mrow><mi>δ</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mn>1</mn></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mstyle class='text'><mtext> if </mtext></mstyle><msub><mrow><mi>ω</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>∈</mo><msup><mrow><mi mathvariant='normal'>Ω</mi></mrow><mrow><mstyle class='text'><mtext>OV</mtext></mstyle></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><msubsup><mrow><mi>f</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>l</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><msubsup><mrow><mi>f</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>r</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (13))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 37 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><msubsup><mrow><mi>δ</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mn>2</mn></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mstyle class='text'><mtext> if </mtext></mstyle><msub><mrow><mi>ω</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>∈</mo><msup><mrow><mi mathvariant='normal'>Ω</mi></mrow><mrow><mstyle class='text'><mtext>OV</mtext></mstyle></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><msubsup><mrow><mi>f</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>r</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (14))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 38 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><msubsup><mrow><mi>δ</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mn>0</mn></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mstyle class='text'><mtext> if </mtext></mstyle><msub><mrow><mi>ω</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>∈</mo><msup><mrow><mi mathvariant='normal'>Ω</mi></mrow><mrow><mstyle class='text'><mtext>OV</mtext></mstyle></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><msubsup><mrow><mi>f</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>l</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (15))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+
+<!-- l. 39 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <msubsup><mrow><mi>δ</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mn>0</mn></mrow></msubsup><mo class='MathClass-open' stretchy='false'>(</mo><mi>j</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-bin' stretchy='false'>+</mo> <msubsup><mrow><mi>δ</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow><mrow><mn>1</mn></mrow></msubsup><mo class='MathClass-open' stretchy='false'>(</mo><mi>j</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-bin' stretchy='false'>+</mo> <msubsup><mrow><mi>δ</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow><mrow><mn>2</mn></mrow></msubsup><mo class='MathClass-open' stretchy='false'>(</mo><mi>j</mi> <mo class='MathClass-bin' stretchy='false'>−</mo> <mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (16))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 40 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>P</mi></mrow><mrow><mi>i</mi><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mi mathvariant='italic'>kf</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>P</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-bin' stretchy='false'>−</mo><mtext class='qopname'> max</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo> <mrow><mo fence='true' form='prefix'> (</mo><mrow><mfrac><mrow><munderover accent='false' accentunder='false'><mrow><mi>v</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mn>2</mn></mrow></munderover> <mo class='MathClass-bin' stretchy='false'>−</mo> <msubsup><mrow><mi>v</mi></mrow><mrow><mi>i</mi><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mi mathvariant='italic'>kf</mi></mrow><mrow><mn>2</mn></mrow></msubsup></mrow>
+          <mrow><mn>2</mn><msub><mrow><mi>d</mi></mrow><mrow><mtext class='qopname'>max</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow></msub></mrow></mfrac>           <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>d</mi></mrow><mrow><mi>r</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>d</mi></mrow><mrow><mstyle class='text'><mtext>des</mtext></mstyle></mrow></msub></mrow><mo fence='true' form='postfix'>)</mo></mrow> <mo class='MathClass-rel' stretchy='false'>≥</mo><mo class='MathClass-bin' stretchy='false'>−</mo><mo class='MathClass-open' stretchy='false'>(</mo><mn>1</mn> <mo class='MathClass-bin' stretchy='false'>−</mo> <munderover accent='false' accentunder='false'><mrow><mi>δ</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><msup><mrow><mi>j</mi></mrow><mrow><mi>′</mi></mrow></msup>
+   </mrow></munderover><mo class='MathClass-close' stretchy='false'>)</mo><mi>M</mi><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (17))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 41 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>P</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>P</mi></mrow><mrow><mi>i</mi><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mi mathvariant='italic'>kfl</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-bin' stretchy='false'>−</mo><mtext class='qopname'> max</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo> <mrow><mo fence='true' form='prefix'> (</mo><mrow><mfrac><mrow><munderover accent='false' accentunder='false'><mrow><mi>v</mi></mrow><mrow><mi>i</mi><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mi mathvariant='italic'>kfl</mi></mrow><mrow><mn>2</mn></mrow></munderover> <mo class='MathClass-bin' stretchy='false'>−</mo> <msubsup><mrow><mi>v</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mn>2</mn></mrow></msubsup></mrow>
+          <mrow><mn>2</mn><msub><mrow><mi>d</mi></mrow><mrow><mtext class='qopname'>max</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow></msub></mrow></mfrac>           <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>d</mi></mrow><mrow><mi>r</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>d</mi></mrow><mrow><mstyle class='text'><mtext>des</mtext></mstyle></mrow></msub></mrow><mo fence='true' form='postfix'>)</mo></mrow> <mo class='MathClass-rel' stretchy='false'>≥</mo><mo class='MathClass-bin' stretchy='false'>−</mo><mo class='MathClass-open' stretchy='false'>(</mo><mn>1</mn> <mo class='MathClass-bin' stretchy='false'>−</mo> <munderover accent='false' accentunder='false'><mrow><mi>δ</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><msup><mrow><mi>j</mi></mrow><mrow><mi>′</mi></mrow></msup>
+   </mrow></munderover><mo class='MathClass-close' stretchy='false'>)</mo><mi>M</mi><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (18))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 42 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><msub><mrow><mi>d</mi></mrow><mrow><mi>r</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <msub><mrow><mi>d</mi></mrow><mrow><mi>v</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>d</mi></mrow><mrow><mi>g</mi></mrow></msub><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (19))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+
+<!-- l. 43 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><msub><mrow><mi>d</mi></mrow><mrow><mstyle class='text'><mtext>des</mtext></mstyle></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <msub><mrow><mi>d</mi></mrow><mrow><mi>r</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>t</mi></mrow><mrow><mstyle class='text'><mtext>headway</mtext></mstyle></mrow></msub> <mo class='MathClass-bin' stretchy='false'>×</mo> <msub><mrow><mi>v</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow></msub><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (20))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 44 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><msub><mrow><mi>v</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>v</mi></mrow><mrow><mi mathvariant='italic'>lc</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≥</mo><mo class='MathClass-bin' stretchy='false'>−</mo><mo class='MathClass-open' stretchy='false'>(</mo><mn>1</mn> <mo class='MathClass-bin' stretchy='false'>−</mo> <msubsup><mrow><mi>δ</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><msup><mrow><mi>j</mi></mrow><mrow><mi>′</mi></mrow></msup>
+   </mrow></msubsup><mo class='MathClass-close' stretchy='false'>)</mo><mi>M</mi><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (21))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+<!-- l. 45 --><p class='noindent'>equations (17), (18), and (21) only apply to the candidate lane change action
+<!-- l. 45 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msup><mrow><mi>j</mi></mrow><mrow><mi>′</mi></mrow></msup><mo class='MathClass-rel' stretchy='false'>∈</mo><mo class='MathClass-open' stretchy='false'>{</mo><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>2</mn><mo class='MathClass-close' stretchy='false'>}</mo></mrow></math> of CAV; the action to
+maintain the current lane <!-- l. 45 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msup><mrow><mi>j</mi></mrow><mrow><mi>′</mi></mrow></msup> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn></mrow></math>
+is not subject to these lane change conditions. In these equations, the candidate lane is denoted as
+<!-- l. 45 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>ℓ</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><msup><mrow><mi>j</mi></mrow><mrow><mi>′</mi></mrow></msup><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math>, and
+corresponding to <!-- l. 45 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi mathvariant='italic'>kf</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi mathvariant='italic'>kfl</mi></mrow></math>,
+the front and rear vehicles currently in that lane are considered. It is not allowed to use unactivated
+neighboring vehicles to restrict the movement of vehicles in the maintained lane. Equations (19) and (20)
+define the distance parameters used in these safety constraints. </p><table class='equation-star'><tr><td>
+<!-- l. 46 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><msubsup><mrow><mi>δ</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mn>1</mn></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>if</mtext></mstyle><mspace class='quad' width='1em'></mspace><msub><mrow><mi>P</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mstyle class='text'><mtext>CNL</mtext></mstyle></mrow><mrow><mi>i</mi></mrow></msub><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (22))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+
+<!-- l. 47 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><mo class='MathClass-open' stretchy='false'>(</mo><mn>1</mn> <mo class='MathClass-bin' stretchy='false'>−</mo> <msubsup><mrow><mi>I</mi></mrow><mrow><mi>j</mi></mrow><mrow><mi mathvariant='italic'>lm</mi></mrow></msubsup><mo class='MathClass-close' stretchy='false'>)</mo><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><msub><mrow><mi>k</mi></mrow><mrow>
+<mi>l</mi></mrow></msub><mo class='MathClass-rel' stretchy='false'>∈</mo><msup><mrow><mi>K</mi></mrow><mrow><msub><mrow><mi>q</mi></mrow><mrow><mi>j</mi></mrow></msub><mi>L</mi></mrow></msup></mrow></munder><msubsup><mrow><mi>δ</mi></mrow><mrow><mi>i</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>j</mi><mo class='MathClass-bin' stretchy='false'>+</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo><msub><mrow><mi>k</mi></mrow><mrow><mi>l</mi></mrow></msub></mrow><mrow><mn>2</mn></mrow></msubsup> <mo class='MathClass-bin' stretchy='false'>+</mo> <mo class='MathClass-open' stretchy='false'>(</mo><mn>1</mn> <mo class='MathClass-bin' stretchy='false'>−</mo> <msubsup><mrow><mi>I</mi></mrow><mrow>
+<mi>j</mi></mrow><mrow><mi mathvariant='italic'>rm</mi></mrow></msubsup><mo class='MathClass-close' stretchy='false'>)</mo><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><msub><mrow><mi>k</mi></mrow><mrow>
+<mi>r</mi></mrow></msub><mo class='MathClass-rel' stretchy='false'>∈</mo><msup><mrow><mi>K</mi></mrow><mrow><msub><mrow><mi>q</mi></mrow><mrow><mi>j</mi></mrow></msub><mi>R</mi></mrow></msup></mrow></munder><msubsup><mrow><mi>δ</mi></mrow><mrow><mi>i</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>j</mi><mo class='MathClass-bin' stretchy='false'>−</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo><msub><mrow><mi>k</mi></mrow><mrow><mi>r</mi></mrow></msub></mrow><mrow><mn>0</mn></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>≤</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><mi class='MathClass-op'>∀</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo><msubsup><mrow><mstyle class='text'><mtext>gap</mtext></mstyle></mrow><mrow>
+<mi>j</mi></mrow><mrow><mi>q</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>∈</mo><msub><mrow><mstyle class='text'><mtext>GAP</mtext></mstyle></mrow><mrow>
+<mi mathvariant='italic'>ij</mi></mrow></msub><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (23))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 48 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><msubsup><mrow><mi>δ</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mn>0</mn></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>if</mtext></mstyle><mspace class='quad' width='1em'></mspace><mi>j</mi> <mo class='MathClass-bin' stretchy='false'>−</mo><mtext class='qopname'> min</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo><mo class='MathClass-open' stretchy='false'>(</mo><munderover accent='false' accentunder='false'><mrow><mi>J</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>target</mtext></mstyle></mrow></munderover><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>&lt;</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><msub><mrow><mi>I</mi></mrow><mrow>
+<mstyle class='text'><mtext>safety</mtext></mstyle></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><msub><mrow><mi>I</mi></mrow><mrow><mstyle class='text'><mtext>speed</mtext></mstyle></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><msub><mrow><mi>I</mi></mrow><mrow><mstyle class='text'><mtext>NCG</mtext></mstyle></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><msub><mrow><mi>P</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow></msub><mo class='MathClass-rel' stretchy='false'>∉</mo><msub><mrow><mstyle class='text'><mtext>CNL</mtext></mstyle></mrow><mrow><mi>i</mi></mrow></msub><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (24))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 49 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><msubsup><mrow><mi>δ</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mn>2</mn></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>if</mtext></mstyle><mspace class='quad' width='1em'></mspace><mi>j</mi> <mo class='MathClass-bin' stretchy='false'>−</mo><mtext class='qopname'> max</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo><mo class='MathClass-open' stretchy='false'>(</mo><munderover accent='false' accentunder='false'><mrow><mi>J</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>target</mtext></mstyle></mrow></munderover><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>&gt;</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><msub><mrow><mi>I</mi></mrow><mrow>
+<mstyle class='text'><mtext>safety</mtext></mstyle></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><msub><mrow><mi>I</mi></mrow><mrow><mstyle class='text'><mtext>speed</mtext></mstyle></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><msub><mrow><mi>I</mi></mrow><mrow><mstyle class='text'><mtext>NCG</mtext></mstyle></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><msub><mrow><mi>P</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow></msub><mo class='MathClass-rel' stretchy='false'>∉</mo><msub><mrow><mstyle class='text'><mtext>CNL</mtext></mstyle></mrow><mrow><mi>i</mi></mrow></msub><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (25))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 50 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>Equations (24) and (25) relate to vehicles. </mtext></mstyle><msub><mrow><mi>ω</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow></msub><mstyle class='text'><mtext> It is effective when in CAV mode.</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+
+<!-- l. 51 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mstyle class='text'><mtext>Arrival time constraints:</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 52 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><mi>ϕ</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mi>f</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>j</mi><mo class='MathClass-close' stretchy='false'>)</mo><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (26))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 53 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>When the current phase </mtext></mstyle><mi>f</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mstyle class='text'><mtext> When the light is green:</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 54 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><mi>M</mi><mo class='MathClass-open' stretchy='false'>(</mo><mn>1</mn> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>α</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>≥</mo> <msub><mrow><mi>I</mi></mrow><mrow><mi>f</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><msubsup><mrow><mi>t</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>a</mi></mrow></msubsup> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>g</mi></mrow><mrow>
+<mi>f</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>≥</mo><mo class='MathClass-bin' stretchy='false'>−</mo><mi>M</mi><msub><mrow><mi>α</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow></msub><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (27))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+
+<!-- l. 55 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><mi>M</mi><msub><mrow><mi>α</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≥</mo> <msub><mrow><mi>I</mi></mrow><mrow><mi>f</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>g</mi></mrow><mrow><mi>f</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msubsup><mrow><mi>t</mi></mrow><mrow><mi>f</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo></mrow><mrow><mi>l</mi></mrow></msubsup> <mo class='MathClass-bin' stretchy='false'>+</mo> <mi>C</mi> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>𝜃</mi></mrow><mrow>
+<mi>f</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msubsup><mrow><mi>t</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>dis</mtext></mstyle></mrow></msubsup> <mo class='MathClass-bin' stretchy='false'>−</mo> <msubsup><mrow><mi>t</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>a</mi></mrow></msubsup><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>≥</mo><mo class='MathClass-bin' stretchy='false'>−</mo><mi>M</mi><mo class='MathClass-open' stretchy='false'>(</mo><mn>1</mn> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>α</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (28))</mtext></mstyle></mtd>
+   </mtr>                                                                                            </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 56 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>When the current phase </mtext></mstyle><mi>f</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mstyle class='text'><mtext> When it is red light:</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 57 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><mi>M</mi><msub><mrow><mi>β</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mo class='MathClass-open' stretchy='false'>(</mo><mn>1</mn> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>I</mi></mrow><mrow><mi>f</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>r</mi></mrow><mrow><mi>f</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>𝜃</mi></mrow><mrow><mi>f</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <msubsup><mrow><mi>t</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>a</mi></mrow></msubsup><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>≥</mo><mo class='MathClass-bin' stretchy='false'>−</mo><mi>M</mi><mo class='MathClass-open' stretchy='false'>(</mo><mn>1</mn> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>β</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (29))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 58 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><mo class='MathClass-open' stretchy='false'>(</mo><mn>1</mn> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>I</mi></mrow><mrow><mi>f</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>≥</mo> <msub><mrow><mi>β</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mo class='MathClass-open' stretchy='false'>(</mo><mn>1</mn> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>I</mi></mrow><mrow><mi>f</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (30))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+
+<!-- l. 59 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><msubsup><mrow><mi>t</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>a</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mo class='MathClass-open' stretchy='false'>(</mo><mn>1</mn> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>I</mi></mrow><mrow>
+<mi>f</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>r</mi></mrow><mrow><mi>f</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msubsup><mrow><mi>t</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>dis</mtext></mstyle></mrow></msubsup><mo class='MathClass-close' stretchy='false'>)</mo><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (31))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 60 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><msubsup><mrow><mi>t</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>dis</mtext></mstyle></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>(</mo><msubsup><mrow><mi>n</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>r</mi></mrow></msubsup> <mo class='MathClass-bin' stretchy='false'>+</mo> <msubsup><mrow><mi>n</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>c</mi></mrow></msubsup> <mo class='MathClass-bin' stretchy='false'>+</mo> <msubsup><mrow><mi>n</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>l</mi></mrow></msubsup><mo class='MathClass-close' stretchy='false'>)</mo><msub><mrow><mi>d</mi></mrow><mrow>
+<mi>h</mi></mrow></msub><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (32))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 61 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><msubsup><mrow><mi>n</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>r</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo> <msubsup><mrow><mi>n</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>r</mi><mstyle class='text'><mtext>green</mtext></mstyle></mrow></msubsup><msub><mrow><mi>I</mi></mrow><mrow>
+<mi>f</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msubsup><mrow><mi>n</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>r</mi><mstyle class='text'><mtext>red</mtext></mstyle></mrow></msubsup><mo class='MathClass-open' stretchy='false'>(</mo><mn>1</mn> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>I</mi></mrow><mrow>
+<mi>f</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (33))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 62 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><msubsup><mrow><mi>n</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>r</mi><mstyle class='text'><mtext>green</mtext></mstyle></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><msup><mrow>
+<mi>k</mi></mrow><mrow><mi>′</mi></mrow></msup><mo class='MathClass-rel' stretchy='false'>∈</mo><msubsup><mrow><mi>K</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>front</mtext></mstyle></mrow></msubsup><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-bin' stretchy='false'>−</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo></mrow></munder><mo class='MathClass-open' stretchy='false'>(</mo><mn>1</mn> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>α</mi></mrow><mrow><mi>i</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-bin' stretchy='false'>−</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo><msup><mrow><mi>k</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-open' stretchy='false'>(</mo><msubsup><mrow><mi>δ</mi></mrow><mrow><mi>i</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-bin' stretchy='false'>−</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo><msup><mrow><mi>k</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow><mrow><mn>0</mn></mrow></msubsup><mo class='MathClass-close' stretchy='false'>)</mo><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (34))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+
+<!-- l. 63 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><msubsup><mrow><mi>n</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>r</mi><mstyle class='text'><mtext>red</mtext></mstyle></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><msup><mrow>
+<mi>k</mi></mrow><mrow><mi>′</mi></mrow></msup><mo class='MathClass-rel' stretchy='false'>∈</mo><msubsup><mrow><mi>K</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>front</mtext></mstyle></mrow></msubsup><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-bin' stretchy='false'>−</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo></mrow></munder><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>β</mi></mrow><mrow><mi>i</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-bin' stretchy='false'>−</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo><msup><mrow><mi>k</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-open' stretchy='false'>(</mo><msubsup><mrow><mi>δ</mi></mrow><mrow><mi>i</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-bin' stretchy='false'>−</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo><msup><mrow><mi>k</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow><mrow><mn>0</mn></mrow></msubsup><mo class='MathClass-close' stretchy='false'>)</mo><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (35))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 64 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><msubsup><mrow><mi>n</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>c</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo> <msubsup><mrow><mi>n</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>c</mi><mstyle class='text'><mtext>green</mtext></mstyle></mrow></msubsup><msub><mrow><mi>I</mi></mrow><mrow>
+<mi>f</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msubsup><mrow><mi>n</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>c</mi><mstyle class='text'><mtext>red</mtext></mstyle></mrow></msubsup><mo class='MathClass-open' stretchy='false'>(</mo><mn>1</mn> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>I</mi></mrow><mrow>
+<mi>f</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (36))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 65 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><msubsup><mrow><mi>n</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>c</mi><mstyle class='text'><mtext>green</mtext></mstyle></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><msup><mrow>
+<mi>k</mi></mrow><mrow><mi>′</mi></mrow></msup><mo class='MathClass-rel' stretchy='false'>∈</mo><msubsup><mrow><mi>K</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>front</mtext></mstyle></mrow></msubsup><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo></mrow></munder><mo class='MathClass-open' stretchy='false'>(</mo><mn>1</mn> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>α</mi></mrow><mrow><mi>i</mi><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><msup><mrow><mi>k</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-open' stretchy='false'>(</mo><msubsup><mrow><mi>δ</mi></mrow><mrow><mi>i</mi><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><msup><mrow><mi>k</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow><mrow><mn>1</mn></mrow></msubsup><mo class='MathClass-close' stretchy='false'>)</mo><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (37))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 66 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><msubsup><mrow><mi>n</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>c</mi><mstyle class='text'><mtext>red</mtext></mstyle></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><msup><mrow>
+<mi>k</mi></mrow><mrow><mi>′</mi></mrow></msup><mo class='MathClass-rel' stretchy='false'>∈</mo><msubsup><mrow><mi>K</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>front</mtext></mstyle></mrow></msubsup><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo></mrow></munder><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>β</mi></mrow><mrow><mi>i</mi><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><msup><mrow><mi>k</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-open' stretchy='false'>(</mo><msubsup><mrow><mi>δ</mi></mrow><mrow><mi>i</mi><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><msup><mrow><mi>k</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow><mrow><mn>1</mn></mrow></msubsup><mo class='MathClass-close' stretchy='false'>)</mo><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (38))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+
+<!-- l. 67 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><msubsup><mrow><mi>n</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>l</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo> <msubsup><mrow><mi>n</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>l</mi><mstyle class='text'><mtext>green</mtext></mstyle></mrow></msubsup><msub><mrow><mi>I</mi></mrow><mrow>
+<mi>f</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msubsup><mrow><mi>n</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>l</mi><mstyle class='text'><mtext>red</mtext></mstyle></mrow></msubsup><mo class='MathClass-open' stretchy='false'>(</mo><mn>1</mn> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>I</mi></mrow><mrow>
+<mi>f</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (39))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 68 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><msubsup><mrow><mi>n</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>l</mi><mstyle class='text'><mtext>green</mtext></mstyle></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><msup><mrow>
+<mi>k</mi></mrow><mrow><mi>′</mi></mrow></msup><mo class='MathClass-rel' stretchy='false'>∈</mo><msubsup><mrow><mi>K</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>front</mtext></mstyle></mrow></msubsup><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-bin' stretchy='false'>+</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo></mrow></munder><mo class='MathClass-open' stretchy='false'>(</mo><mn>1</mn> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>α</mi></mrow><mrow><mi>i</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-bin' stretchy='false'>+</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo><msup><mrow><mi>k</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-open' stretchy='false'>(</mo><msubsup><mrow><mi>δ</mi></mrow><mrow><mi>i</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-bin' stretchy='false'>+</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo><msup><mrow><mi>k</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow><mrow><mn>2</mn></mrow></msubsup><mo class='MathClass-close' stretchy='false'>)</mo><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (40))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 69 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><msubsup><mrow><mi>n</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>l</mi><mstyle class='text'><mtext>red</mtext></mstyle></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><msup><mrow>
+<mi>k</mi></mrow><mrow><mi>′</mi></mrow></msup><mo class='MathClass-rel' stretchy='false'>∈</mo><msubsup><mrow><mi>K</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>front</mtext></mstyle></mrow></msubsup><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-bin' stretchy='false'>+</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo></mrow></munder><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>β</mi></mrow><mrow><mi>i</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-bin' stretchy='false'>+</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo><msup><mrow><mi>k</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-open' stretchy='false'>(</mo><msubsup><mrow><mi>δ</mi></mrow><mrow><mi>i</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-bin' stretchy='false'>+</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo><msup><mrow><mi>k</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow><mrow><mn>2</mn></mrow></msubsup><mo class='MathClass-close' stretchy='false'>)</mo><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (41))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 70 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><msubsup><mrow><mi>t</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>a</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mfrac><mrow><msubsup><mrow><mi>d</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>stop</mtext></mstyle></mrow></msubsup> <mo class='MathClass-bin' stretchy='false'>−</mo> <msubsup><mrow><mi>d</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>acc</mtext></mstyle></mrow></msubsup> <mo class='MathClass-bin' stretchy='false'>−</mo> <msubsup><mrow><mi>d</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>dec</mtext></mstyle></mrow></msubsup></mrow> 
+                 <mrow><msub><mrow><mi>v</mi></mrow><mrow><mi>l</mi></mrow></msub></mrow></mfrac>                    <mo class='MathClass-bin' stretchy='false'>+</mo> <mfrac><mrow><msub><mrow><mi>v</mi></mrow><mrow><mi>l</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>v</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow></msub></mrow> 
+   <mrow><msub><mrow><mi>a</mi></mrow><mrow><mtext class='qopname'>max</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow></msub></mrow></mfrac>    <mo class='MathClass-bin' stretchy='false'>+</mo> <mfrac><mrow><msub><mrow><mi>v</mi></mrow><mrow><mi>l</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>v</mi></mrow><mrow><mi>t</mi></mrow></msub></mrow> 
+ <mrow><msub><mrow><mi>d</mi></mrow><mrow><mtext class='qopname'>max</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow></msub></mrow></mfrac>  <mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>if</mtext></mstyle><mspace class='quad' width='1em'></mspace><msubsup><mrow><mi>d</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>stop</mtext></mstyle></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>≥</mo> <msubsup><mrow><mi>d</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>acc</mtext></mstyle></mrow></msubsup> <mo class='MathClass-bin' stretchy='false'>+</mo> <msubsup><mrow><mi>d</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>dec</mtext></mstyle></mrow></msubsup><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (42))</mtext></mstyle></mtd>
+   </mtr>                                                                                          </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+
+<!-- l. 71 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><msubsup><mrow><mi>t</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>a</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mfrac><mrow><msubsup><mrow><mi>d</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>stop</mtext></mstyle></mrow></msubsup></mrow> 
+<mrow><msubsup><mrow><mi>v</mi></mrow><mrow><mstyle class='text'><mtext>avg</mtext></mstyle></mrow><mrow><mstyle class='text'><mtext>CAV</mtext></mstyle></mrow></msubsup></mrow></mfrac><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>if</mtext></mstyle><mspace class='quad' width='1em'></mspace><msub><mrow><mi>ω</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>∈</mo><msup><mrow><mi mathvariant='normal'>Ω</mi></mrow><mrow><mstyle class='text'><mtext>CAV</mtext></mstyle></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><msubsup><mrow><mi>d</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>stop</mtext></mstyle></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>&lt;</mo> <msubsup><mrow><mi>d</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>acc</mtext></mstyle></mrow></msubsup> <mo class='MathClass-bin' stretchy='false'>+</mo> <msubsup><mrow><mi>d</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>dec</mtext></mstyle></mrow></msubsup><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (43))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 72 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><msubsup><mrow><mi>t</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>a</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mfrac><mrow><msubsup><mrow><mi>d</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>stop</mtext></mstyle></mrow></msubsup></mrow> 
+<mrow><msubsup><mrow><mi>v</mi></mrow><mrow><mstyle class='text'><mtext>avg</mtext></mstyle></mrow><mrow><mstyle class='text'><mtext>OV</mtext></mstyle></mrow></msubsup></mrow></mfrac><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>if</mtext></mstyle><mspace class='quad' width='1em'></mspace><msub><mrow><mi>ω</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>∈</mo><msup><mrow><mi mathvariant='normal'>Ω</mi></mrow><mrow><mstyle class='text'><mtext>OV</mtext></mstyle></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><msubsup><mrow><mi>d</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>stop</mtext></mstyle></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>&lt;</mo> <msubsup><mrow><mi>d</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>acc</mtext></mstyle></mrow></msubsup> <mo class='MathClass-bin' stretchy='false'>+</mo> <msubsup><mrow><mi>d</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>dec</mtext></mstyle></mrow></msubsup><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><msub><mrow><mi>v</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msubsup><mrow><mi>v</mi></mrow><mrow><mstyle class='text'><mtext>avg</mtext></mstyle></mrow><mrow><mstyle class='text'><mtext>OV</mtext></mstyle></mrow></msubsup><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (44))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 73 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><msubsup><mrow><mi>t</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>a</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mfrac><mrow><msubsup><mrow><mi>d</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>stop</mtext></mstyle></mrow></msubsup></mrow> 
+   <mrow><msub><mrow><mi>v</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow></msub></mrow></mfrac>   <mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>if</mtext></mstyle><mspace class='quad' width='1em'></mspace><msub><mrow><mi>ω</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>∈</mo><msup><mrow><mi mathvariant='normal'>Ω</mi></mrow><mrow><mstyle class='text'><mtext>OV</mtext></mstyle></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><msubsup><mrow><mi>d</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>stop</mtext></mstyle></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>&lt;</mo> <msubsup><mrow><mi>d</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>acc</mtext></mstyle></mrow></msubsup> <mo class='MathClass-bin' stretchy='false'>+</mo> <msubsup><mrow><mi>d</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>dec</mtext></mstyle></mrow></msubsup><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><msub><mrow><mi>v</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>&gt;</mo> <msubsup><mrow><mi>v</mi></mrow><mrow><mstyle class='text'><mtext>avg</mtext></mstyle></mrow><mrow><mstyle class='text'><mtext>OV</mtext></mstyle></mrow></msubsup><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (45))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 74 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><msubsup><mrow><mi>t</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>a</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>r</mi></mrow><mrow>
+<mi>f</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msubsup><mrow><mi>t</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>dis</mtext></mstyle></mrow></msubsup><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-open' stretchy='false'>(</mo><mn>1</mn> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>I</mi></mrow><mrow>
+<mi>f</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (46))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+
+<!-- l. 75 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><msubsup><mrow><mi>t</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>a</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>t</mi></mrow><mrow>
+<mi>i</mi><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><msup><mrow><mi>k</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>d</mi></mrow><mrow><mi>h</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><msubsup><mrow><mi>δ</mi></mrow><mrow><mi>i</mi><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><msup><mrow><mi>k</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow><mrow><mn>1</mn></mrow></msubsup><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><msup><mrow><mi>k</mi></mrow><mrow><mi>′</mi></mrow></msup><mo class='MathClass-rel' stretchy='false'>∈</mo> <msubsup><mrow><mi>K</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>front</mtext></mstyle></mrow></msubsup><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (47))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 76 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><msubsup><mrow><mi>t</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>a</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>t</mi></mrow><mrow>
+<mi>i</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-bin' stretchy='false'>−</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo><msup><mrow><mi>k</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>d</mi></mrow><mrow><mi>h</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><msubsup><mrow><mi>δ</mi></mrow><mrow><mi>i</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-bin' stretchy='false'>−</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo><msup><mrow><mi>k</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow><mrow><mn>0</mn></mrow></msubsup><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><msup><mrow><mi>k</mi></mrow><mrow><mi>′</mi></mrow></msup><mo class='MathClass-rel' stretchy='false'>∈</mo> <msubsup><mrow><mi>K</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>front</mtext></mstyle></mrow></msubsup><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (48))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 77 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><msubsup><mrow><mi>t</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>a</mi></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>t</mi></mrow><mrow>
+<mi>i</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-bin' stretchy='false'>+</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo><msup><mrow><mi>k</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>d</mi></mrow><mrow><mi>h</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><msubsup><mrow><mi>δ</mi></mrow><mrow><mi>i</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub><mo class='MathClass-bin' stretchy='false'>+</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo><msup><mrow><mi>k</mi></mrow><mrow><mi>′</mi></mrow></msup></mrow><mrow><mn>2</mn></mrow></msubsup><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><msup><mrow><mi>k</mi></mrow><mrow><mi>′</mi></mrow></msup><mo class='MathClass-rel' stretchy='false'>∈</mo> <msubsup><mrow><mi>K</mi></mrow><mrow>
+<mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>front</mtext></mstyle></mrow></msubsup><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>j</mi></mrow><mrow><mstyle class='text'><mtext>new</mtext></mstyle></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (49))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 78 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mtable class='aligned'><mtr><mtd columnalign='right'></mtd><mtd columnalign='left'><mspace class='quad' width='1em'></mspace><msub><mrow><mi>α</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>if</mtext></mstyle><mspace class='quad' width='1em'></mspace><msubsup><mrow><mi>d</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mstyle class='text'><mtext>stop</mtext></mstyle></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>≤</mo> <msub><mrow><mi>d</mi></mrow><mrow>
+<mstyle class='text'><mtext>dis</mtext></mstyle></mrow></msub><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>and</mtext></mstyle><mspace class='quad' width='1em'></mspace><msubsup><mrow><mi>e</mi></mrow><mrow><mi mathvariant='italic'>ijk</mi></mrow><mrow><mi>f</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>j</mi><mo class='MathClass-close' stretchy='false'>)</mo></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mspace class='quad' width='1em'></mspace><mstyle class='text'><mtext>(Equation (50))</mtext></mstyle></mtd>
+   </mtr>                                                                                         </mtable>
+</mrow></math></td></tr></table>
+<!-- l. 79 --><p class='noindent'><span class='paragraphHead' id='expression-methods'><a id='x1-6000'></a><span class='cmbx-10x-x-109'>Expression methods</span></span>
+   Each constraint applies to all existing vehicles, lanes, or phases. Those lines marked
+with “if” only apply when the specified conditions are met. The index values for
+<!-- l. 80 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>j</mi></mrow><mrow><mi mathvariant='italic'>new</mi></mrow></msub></math>
+can be conditioned based on three possible actions. Binary products can be used in such cases.
+<!-- l. 80 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>z</mi> <mo class='MathClass-rel' stretchy='false'>≤</mo> <mi>a</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><mi>z</mi> <mo class='MathClass-rel' stretchy='false'>≤</mo> <mi>b</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><mi>z</mi> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mi>a</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <mi>b</mi> <mo class='MathClass-bin' stretchy='false'>−</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><mi>z</mi> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mn>0</mn></mrow></math>
+represents precise linearization. The original logical/prod notation is retained for clarity purposes; no
+low-level trajectory targets are included here. The vehicle/lane indices in the original transcriptions (23),
+(40), (48), and (49) have been standardized according to the meanings of neighboring vehicles.
+</p>
+    
+</body> 
+</html>

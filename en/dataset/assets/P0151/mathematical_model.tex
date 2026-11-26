@@ -1,0 +1,47 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,longtable}
+\emergencystretch=4em
+\begin{document}
+\section*{P151: Current complete mathematical model (as of 2026-10-20)}
+\section*{Basis and scope of the revision}On pages 6, 11, 27–28 of the source text, the meanings of “passenger flow” and “inventory” are defined. The system uses the total accumulated points and previous waiting time information to determine the optimal departure time. Currently, the value of source\_horizon\_branch corresponds only to the original time limit; there are no additional nominal departure windows. All 10 cases have been thoroughly analyzed, and the optimal solutions have been verified independently.
+
+\section*{Collection and Decision-making}
+Each train $k$ has a complete ordered set of sections $E_k$ and an ordered set of stations $U_k$. The formation size $n\in\mathcal N$, section travel time $D_{ke}(n)$, shared resources, origin-destination arrival rates $r^{uv}_p$, cycle length $\Delta$, vehicle inventory $F_d$, coupling $T_c$, uncoupling $T_d$, short turning $\hat T$, dwell times $T_w$, and the finite horizon $H$ are specified by the instance. $z_{kn}\in\{0,1\}$, $s_k=\sum_nn z_{kn}$, and $t_{ke}\in\{1,\ldots,H\}$.
+\[
+\sum_nz_{kn}=1,\quad D_{ke}=\sum_nD_{ke}(n)z_{kn},\quad
+t_{k,e+1}=t_{ke}+D_{ke},\quad t_{ke}+D_{ke}\le H.
+\]
+Each pair of different train segments that occupy the same resources should be uniquely ordered using the binary value $o$.
+\[
+t_{jf}\ge t_{ie}+D_{ie}+h-M(1-o),\quad
+t_{ie}\ge t_{jf}+D_{jf}+h-Mo.
+\]
+\section*{Inventory and turnover}
+The binary relationship between train$i,j$departing from the same depot and$\omega_{ij}$ satisfies$t_{j0}\ge t_{i0}+1-M(1-\omega_{ij})$, $t_{i0}\ge t_{j0}+1-M\omega_{ij}$, $\omega_{ji}=1-\omega_{ij}$. For trains arriving at depot$j$and leaving depot$i$is$g_{ij}=t_{j,last}+T_d(s_j-1)+\hat T+T_c(s_i-1)-t_{i0}$.
+\[
+-My_{ij}\le g_{ij}\le M(1-y_{ij}),\qquad
+s_i\le F_d-\sum_{j\ne i}\omega_{ji}s_j+\sum_{j\text{arriving at the depot}}y_{ij}s_j.
+\]
+For $y$ and $\omega$, the product of these values and the group ID is precisely linearized using $v\le y,v\le z,v\ge y+z-1,v\ge0$. Isocronous returns available inventory; if $g=0$ is selected, $y=0$ is a conservative but feasible option, resulting in no additional vehicles being generated.
+\section*{Time-varying passenger flow and complete targets}
+The arrival time of the train corresponds to the start time of the corresponding section. This defines the total cumulative number of arrivals.
+\[
+A_{uv}(t)=\sum_p r^{uv}_p\min\{\Delta,\max(0,t-p\Delta)\}.
+\]
+The binary periodic selection $a_{kup}$ and the integer period offset $c_{kup}$ are used to precisely represent: $\sum_pa=1$, $0\le c_{kup}\le\Delta a_{kup}$, $t_{ku}+T_w=\sum_p(p\Delta a_{kup}+c_{kup})$, $A_{uv}(t_{ku}+T_w)=\sum_p[(\sum_{q<p}r_q^{uv})\Delta a_{kup}+r_p^{uv}c_{kup}]$. The train sequence for each OD is determined by the input service identifier, and adjacent services $t_{ku}\ge t_{ju}+1$ are constrained.
+\[
+W_{1uv}=A_{uv}(t_{1u}+T_w),\quad
+W_{kuv}=W_{juv}-B_{juv}+A_{uv}(t_{ku}+T_w)-A_{uv}(t_{ju}+T_w),
+\quad0\le B_{kuv}\le W_{kuv}.
+\]
+\[
+C_{ku}=c_0s_k-\sum_{a\prec u}\sum_{v\succ u}B_{kav}\ge0,\quad
+\sum_{v\succ u}B_{kuv}\le C_{ku},\quad
+P^{out}_{ku}=\sum_{a\prec u}B_{kau}.
+\]
+\[
+\min\sum_{k,u,v}(W_{kuv}-B_{kuv}).
+\]
+The nominal time stamp only includes the initial values of MIP and the service number; no nominal departure windows are provided. The complete current model corresponds to the source \_ horizon \_ branch.
+
+\end{document}

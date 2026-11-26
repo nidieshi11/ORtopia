@@ -1,0 +1,42 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,longtable}
+\emergencystretch=4em
+\usepackage{geometry}
+\geometry{paperwidth=235mm,paperheight=297mm,hmargin=18mm,vmargin=19mm}
+\begin{document}
+\section*{P202: Current complete mathematical model (as of 2026-10-20)}
+\section*{Basis and scope of the revision}The model specifies the legal start-time domain for the complete planning horizon, t+h-1 \ensuremath{\leq} H, and retains the profile, shared-berth, two-tier quay-crane, scenario recovery and yard constraints. The shared-yard variables remain continuous as specified in the selected model in file 02. The alternative rounded formulation from the paper is outside this model.
+
+\section*{Two-stage planning and the complete spectrum}
+Ship $i$, berth $b$, integer period $t=1,\ldots,H$, scenario $\omega$. Optional complete quay bridge type for the ship $p$. The duration is given as $h_{ip}$, with quay bridges for both upper and lower levels per period $q^1_{ipa},q^2_{ipa}$. Phase $w=-1$ is the base plan, and $w\in\Omega$ is for restoration. Legal choices $(i,p,b,t,w)$ satisfy $t\ge a_i^w$ and $t+h_{ip}-1\le H$; The base plan also ensures that the completion does not occur later than $b_i^f$. Restoration $a_i^w=\max(a_i^f,a_{i\omega})$. Binary $\eta_{ipbtw}$, cross-scenario berths $\alpha_{ib}$, integer-specific storage yards $\sigma_i\ge s_i^{min}$.
+\[
+\sum_b\alpha_{ib}=1,\quad\sum_{pbt}\eta_{ipbtw}=1,\quad
+\sum_{pt}\eta_{ipbtw}=\alpha_{ib},\quad\sum_i\sigma_i\le S.
+\]
+$s_{iw}=\sum t\eta$, $e_{iw}=\sum(t+h_{ip}-1)\eta$. The total number of items occupied per berth, as denoted by $\eta$, shall not exceed 1 per period. The cumulative total of such items corresponds to $Q^1_{wt},Q^2_{wt}$.
+\[
+Q^1_{wt}+Q^2_{wt}\le\min(Q^{total},P_t),\quad
+|Q^1_{wt}-Q^2_{wt}|\le\bar Q^{gap}.
+\]
+The base values of $\psi_i\ge a_i^e-s_{i,-1}$ and $\chi_i\ge e_{i,-1}-b_i^e$ must be non-negative. Also, the recovery delay values of $\rho_{i\omega}\ge e_{i\omega}-e_{i,-1}$ and $\rho\ge0$ must also be non-negative.
+\section*{Linearization of complete storage facility costs}
+For each scenario, the following parameters are provided: installation cost $L_{i\omega}$, removal cost $U_{i\omega}$, probability $p_\omega$, and capacity of each block $z$. Additionally, parameters $\pi_{i\omega}\in\{0,1\}$, $\tau_{i\omega}\ge0$, and shared blocks $s_{i\omega}\ge0$ also need to be considered.
+\[
+M(\pi-1)\le L-z\sigma\le M\pi,\quad
+0\le\tau\le M\pi,\quad\tau\le\sigma,\quad\tau\ge\sigma+M(\pi-1),
+\]
+\[
+s_{i\omega}-1\le(L_{i\omega}-z\sigma_i)/z\le s_{i\omega},
+\qquad\sum_i s_{i\omega}\le S-\sum_i\sigma_i.
+\]
+Shared blocks use continuous variable domains.
+\[
+\min\sum_i[c_i^P(\psi_i+\chi_i)+c^E\sigma_i]
++\sum_\omega p_\omega\sum_i[
+c_i^D\rho_{i\omega}+(d^{LE}-d^{LS})z\tau_{i\omega}
++(d^{LS}-d^{LE})L_{i\omega}\pi_{i\omega}
++d^{LE}L_{i\omega}+d^UU_{i\omega}+c^Ss_{i\omega}].
+\]
+Select all valid values for variables: types, positions, and start times. No truncation of the solution is allowed. Completing the planning process within the specified period is essential to define clear boundaries for the business.
+
+\end{document}

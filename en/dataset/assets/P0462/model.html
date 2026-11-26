@@ -1,0 +1,312 @@
+<!DOCTYPE html> 
+<html lang='en-US' xml:lang='en-US'> 
+<head><title>P0462 · Fair Stochastic Vehicle Routing with Partial Deliveries · Mathematical model</title> 
+<meta charset='utf-8' /> 
+<meta content='TeX4ht (https://tug.org/tex4ht/)' name='generator' /> 
+<meta content='width=device-width,initial-scale=1' name='viewport' /> 
+<style> 
+/* start css.sty */
+.cmr-5{font-size:50%;}
+.cmr-7{font-size:70%;}
+.cmmi-5{font-size:50%;font-style: italic;}
+.cmmi-7{font-size:70%;font-style: italic;}
+.cmmi-10{font-style: italic;}
+.cmsy-5{font-size:50%;}
+.cmsy-7{font-size:70%;}
+.cmbx-10{ font-weight: bold;}
+.cmbsy-10{font-weight: bold;}
+.cmbsy-10{font-weight: bold;}
+.cmbsy-10{font-weight: bold;}
+.cmbsy-7{font-size:70%;font-weight: bold;}
+.cmbsy-7{font-weight: bold;}
+.cmbsy-7{font-weight: bold;}
+.cmbsy-5{font-size:50%;font-weight: bold;}
+.cmbsy-5{font-weight: bold;}
+.cmbsy-5{font-weight: bold;}
+.cmex-7{font-size:70%;}
+.cmex-7x-x-71{font-size:49%;}
+.msam-7{font-size:70%;}
+.msam-5{font-size:50%;}
+.msbm-7{font-size:70%;}
+.msbm-5{font-size:50%;}
+.cmti-10{ font-style: italic;}
+p{margin-top:0;margin-bottom:0}
+p.indent{text-indent:0;}
+p + p{margin-top:1em;}
+p + div, p + pre {margin-top:1em;}
+div + p, pre + p {margin-top:1em;}
+a { overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; hyphens: auto; }
+@media print {div.crosslinks {visibility:hidden;}}
+table.tabular{border-collapse: collapse; border-spacing: 0;}
+a img { border-top: 0; border-left: 0; border-right: 0; }
+center { margin-top:1em; margin-bottom:1em; }
+td center { margin-top:0em; margin-bottom:0em; }
+.Canvas { position:relative; }
+math { text-indent: 0em; }
+body{ margin:1em auto; max-width:80ch; padding:0 .62em; }
+h1,h2,h3,h4,h5 { line-height:1.2; }
+@media print{ body{ max-width:none } }
+.partHead, .likepartHead { font-size: 2em; }
+.chapterHead, .likechapterHead { font-size: 1.7411em; }
+.sectionHead, .likesectionHead { font-size: 1.5157em; }
+.subsectionHead, .likesubsectionHead { font-size: 1.3195em; }
+.subsubsectionHead, .likesubsubsectionHead { font-size: 1.1487em; }
+ @media (prefers-color-scheme: dark) { img[src^="model"]{filter: invert(1); } } 
+li p.indent { text-indent: 0em }
+li p:first-child{ margin-top:0em; }
+li p:last-child, li div:last-child { margin-bottom:0.5em; }
+li p:first-child{ margin-bottom:0; }
+li p~ul:last-child, li p~ol:last-child{ margin-bottom:0.5em; }
+.enumerate1 {list-style-type:decimal;}
+.enumerate2 {list-style-type:lower-alpha;}
+.enumerate3 {list-style-type:lower-roman;}
+.enumerate4 {list-style-type:upper-alpha;}
+div.newtheorem { margin-bottom: 2em; margin-top: 2em;}
+div.newtheorem .head{font-weight: bold;}
+.obeylines-h,.obeylines-v {white-space: nowrap; }
+div.obeylines-v p { margin-top:0; margin-bottom:0; }
+.overline{ text-decoration:overline; }
+.overline img{ border-top: 1px solid black; }
+td.displaylines {text-align:center; white-space:nowrap;}
+.centerline {text-align:center;}
+.rightline {text-align:right;}
+pre.verbatim {font-family: monospace,monospace; text-align:left; clear:both; }
+.fbox {padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+div.fbox {display:table}
+div.center div.fbox {text-align:center; clear:both; padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+div.minipage{width:100%;}
+div.center, div.center div.center {text-align: center; margin-left:1em; margin-right:1em;}
+div.center div {text-align: left;}
+div.flushright, div.flushright div.flushright {text-align: right;}
+div.flushright div {text-align: left;}
+div.flushleft {text-align: left;}
+.underline{ text-decoration:underline; }
+.underline img{ border-bottom: 1px solid black; margin-bottom:1pt; }
+.framebox-c, .framebox-l, .framebox-r { padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+.framebox-c {text-align:center;}
+.framebox-l {text-align:left;}
+.framebox-r {text-align:right;}
+span.thank-mark{ vertical-align: super }
+span.footnote-mark sup.textsuperscript, span.footnote-mark a sup.textsuperscript{ font-size:80%; }
+code.verb{font-family:monospace,monospace;}
+div.tabular, div.center div.tabular {text-align: center; margin-top:0.5em; margin-bottom:0.5em; }
+table.tabular td p{margin-top:0em;}
+table.tabular {margin-left: auto; margin-right: auto;}
+td p:first-child{ margin-top:0em; }
+td p:last-child{ margin-bottom:0em; }
+div.td00{ margin-left:0pt; margin-right:0pt; }
+div.td01{ margin-left:0pt; margin-right:5pt; }
+div.td10{ margin-left:5pt; margin-right:0pt; }
+div.td11{ margin-left:5pt; margin-right:5pt; }
+table[rules] {border-left:solid black 0.4pt; border-right:solid black 0.4pt; }
+td.td00{ padding-left:0pt; padding-right:0pt; }
+td.td01{ padding-left:0pt; padding-right:5pt; }
+td.td10{ padding-left:5pt; padding-right:0pt; }
+td.td11{ padding-left:5pt; padding-right:5pt; }
+table[rules] {border-left:solid black 0.4pt; border-right:solid black 0.4pt; }
+.hline hr, .cline hr{ height : 0px; margin:0px; }
+.hline td, .cline td{ padding: 0; }
+.hline hr, .cline hr{border:none;border-top:1px solid black;}
+.hline {border-top: 1px solid black;}
+.hline + .vspace:last-child{display:none;}
+.hline:first-child{border-bottom:1px solid black;border-top:none;}
+.tabbing-right {text-align:right;}
+div.float, div.figure {margin-left: auto; margin-right: auto;}
+div.float img {text-align:center;}
+div.figure img {text-align:center;}
+.marginpar,.reversemarginpar {width:20%; float:right; text-align:left; margin-left:auto; margin-top:0.5em; font-size:85%; text-decoration:underline;}
+.marginpar p,.reversemarginpar p{margin-top:0.4em; margin-bottom:0.4em;}
+.reversemarginpar{float:left;}
+.equation td{text-align:center; vertical-align:middle; }
+td.eq-no{ width:5%; }
+table.equation { width:100%; } 
+div.math-display, div.par-math-display{text-align:center;}
+.array-hline,.array-cline{ border-top: 1px solid black; height:0px; }
+.array-hline + .array-vspace:last-child{display:none;}
+.hline-mtd, .array-hline td{ display:none }
+.array-hline + .array-row:last-child{display:none;}
+.array-hline:first-child{border-bottom:1px solid black;border-top:none;}
+math .texttt { font-family: monospace; }
+math .textit { font-style: italic; }
+math .textsl { font-style: oblique; }
+math .textsf { font-family: sans-serif; }
+math .textbf { font-weight: bold; }
+mo.MathClass-op + mi{margin-left:0.3em}
+mi + mo.MathClass-op{margin-left:0.3em}
+ math mstyle[mathvariant="bold"] { font-weight: bold; font-style: normal; } 
+ math mstyle[mathvariant="normal"] { font-weight: normal; font-style: normal; } 
+.partToc a, .partToc, .likepartToc a, .likepartToc {line-height: 200%; font-weight:bold; font-size:110%;}
+.index-item, .index-subitem, .index-subsubitem {display:block}
+div.caption {text-indent:-2em; margin-left:3em; margin-right:1em; text-align:left;}
+div.caption span.id{font-weight: bold; white-space: nowrap; }
+h1.partHead{text-align: center}
+p.bibitem { text-indent: -2em; margin-left: 2em; margin-top:0.6em; margin-bottom:0.6em; }
+p.bibitem-p { text-indent: 0em; margin-left: 2em; margin-top:0.6em; margin-bottom:0.6em; }
+.subsubsectionHead, .likesubsubsectionHead { font-size: 1em; }
+.paragraphHead, .likeparagraphHead { margin-top:2em; font-weight: bold;}
+.subparagraphHead, .likesubparagraphHead { font-weight: bold;}
+.verse{white-space:nowrap; margin-left:2em}
+div.maketitle {text-align:center;}
+h2.titleHead{text-align:center;}
+div.maketitle{ margin-bottom: 2em; }
+div.author, div.date {text-align:center;}
+div.thanks{text-align:left; margin-left:10%; font-size:85%; font-style:italic; }
+div.author{white-space: nowrap;}
+div.abstract p {margin-left:5%; margin-right:5%;}
+div.abstract {width:100%;}
+.abstracttitle{text-align:center;margin-bottom:1em;}
+.subsectionToc, .likesubsectionToc {margin-left:1em;}
+.subsubsectionToc, .likesubsubsectionToc {margin-left:2em;}
+.paragraphToc, .likeparagraphToc {margin-left:3em;}
+.subparagraphToc, .likesubparagraphToc {margin-left:4em;}
+figure.float, div.figure {margin-left: auto; margin-right: auto;}
+figure.figure {text-align:center;}
+figcaption.caption {text-indent:-2em; margin-left:3em; margin-right:1em; text-align:center;}
+figcaption.caption span.id{font-weight: bold; white-space: nowrap; }
+p + figcaption, img + figcaption{margin-top: 1em;}
+.abstract{margin:1em;}
+.equation-star td{text-align:center; vertical-align:middle; }
+table.equation-star { width:100%; } 
+.boxed{border: 1px solid black; padding-left:2px; padding-right:2px;}
+mtd.align-odd{margin-left:2em; text-align:right;}
+mtd.align-even{margin-right:2em; text-align:left;}
+/* end css.sty */
+
+
+html{background:#fff;color:#243833}body{padding:clamp(.55rem,2vw,1.25rem);margin:0;line-height:1.5;overflow-wrap:break-word}
+h1,h2,h3,h4,h5,h6{line-height:1.22;color:#193d35}p{margin:.5rem 0}math[display=block]{overflow-x:auto;max-width:100%}
+@media print{body{padding:0;color:#000}}
+</style> 
+<meta content='model.tex' name='src' /> 
+</head><body>
+<!-- l. 6 --><p class='noindent'>
+</p><!-- tex4ht:inline --><!-- l. 10 --><math display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mtable class='align' columnalign='left' displaystyle='true'>
+                      <mtr><mtd class='align-odd' columnalign='right'><mtext class='qopname'>min</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo><mspace class='quad' width='1em'></mspace></mtd>                      <mtd class='align-even'><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>r</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>R</mi></mrow></munder><msub><mrow><mi>c</mi></mrow><mrow><mi>r</mi></mrow></msub><msub><mrow><mi>y</mi></mrow><mrow><mi>r</mi></mrow></msub><mspace width='2em'></mspace></mtd>                                                 <mtd class='align-odd' columnalign='right'></mtd>                            <mtd class='align-even'><mspace width='2em'></mspace></mtd>                      <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(4)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-5r0'></mstyle><!-- endlabel -->
+                      </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><mstyle class='text'><mtext>s.t.</mtext></mstyle><mspace class='quad' width='1em'></mspace></mtd>                        <mtd class='align-even'><munder class='msub'><mrow><mo>∑</mo>
+   </mrow><mrow><mi>r</mi><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>R</mi></mrow></munder><msub><mrow><mi>a</mi></mrow><mrow><mi mathvariant='italic'>ir</mi></mrow></msub><msub><mrow><mi>y</mi></mrow><mrow><mi>r</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                      <mtd class='align-odd' columnalign='right'></mtd>                      <mtd class='align-even'><mi>i</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msup><mrow><mi>V</mi> </mrow><mrow><mi>′</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                                                                                        <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(5)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-6r0'></mstyle><!-- endlabel -->
+                      </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>                          <mtd class='align-even'><msub><mrow><mi>y</mi></mrow><mrow><mi>r</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>∈</mo><mo class='MathClass-open' stretchy='false'>{</mo><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>}</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                            <mtd class='align-odd' columnalign='right'></mtd>                      <mtd class='align-even'><mi>r</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>R</mi><mo class='MathClass-punc' stretchy='false'>.</mo><mspace width='2em'></mspace></mtd>                                                                                         <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(6)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-7r0'></mstyle><!-- endlabel -->
+   </mtd></mtr></mtable></math>
+   <h3 class='likesectionHead' id='cfr-fullroute-setpartitioning-model'><a id='x1-1000'></a>CFR full-route set-partitioning model</h3>
+<!-- l. 13 --><p class='noindent'>The objective minimizes total transportation cost. The decision variable
+<!-- l. 13 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>y</mi></mrow><mrow><mi>r</mi></mrow></msub></math> equals one if
+route <!-- l. 13 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>r</mi></math> is
+selected and zero otherwise. Equations (5) require every customer to be visited exactly once. The set
+<!-- l. 13 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>R</mi></math> is the
+full set of feasible routes defined below, not a restricted column set.
+</p><!-- l. 15 --><p class='noindent'>
+</p>
+   <h4 class='likesubsectionHead' id='fixed-data-and-customer-demands'><a id='x1-2000'></a>Fixed data and customer demands</h4>
+<!-- l. 16 --><p class='noindent'>The problem is defined on the complete directed graph </p><table class='equation-star'><tr><td>
+<!-- l. 17 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                 <mi>G</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>(</mo><mi>V</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>A</mi><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mi>V</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>{</mo><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi><mo class='MathClass-close' stretchy='false'>}</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><msup><mrow><mi>V</mi> </mrow><mrow><mi>′</mi></mrow></msup> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>{</mo><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi><mo class='MathClass-close' stretchy='false'>}</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mi>A</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>{</mo><mo class='MathClass-open' stretchy='false'>(</mo><mi>i</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>j</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-punc' stretchy='false'>:</mo> <mi>i</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>j</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>V</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='nbsp' width='0.33em'></mspace><mi>i</mi><mo class='MathClass-rel' stretchy='false'>≠</mo><mi>j</mi><mo class='MathClass-close' stretchy='false'>}</mo><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 21 --><p class='indent'>   Node <!-- l. 21 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mn>0</mn></math> is the depot and
+<!-- l. 21 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msup><mrow><mi>V</mi> </mrow><mrow><mi>′</mi></mrow></msup></math> is the customer set. The
+fixed cost of traversing arc <!-- l. 21 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mo class='MathClass-open' stretchy='false'>(</mo><mi>i</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>j</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>A</mi></mrow></math> is
+<!-- l. 21 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>c</mi></mrow><mrow><mi mathvariant='italic'>ij</mi></mrow></msub></math>. Vehicles form a homogeneous
+fleet, with capacity <!-- l. 21 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>Q</mi></math> per vehicle.
+The fixed target fill rate is <!-- l. 21 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>F</mi></math>.
+
+</p><!-- l. 23 --><p class='indent'>   Section 3 assumes that customer demands are independent and identically distributed. For each customer,
+demand is a discrete random variable satisfying </p><table class='equation-star'><tr><td>
+<!-- l. 24 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                            <msub><mrow><mi>ξ</mi></mrow><mrow><mi>i</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>ℕ</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mi>𝔼</mi><mo class='MathClass-open' stretchy='false'>[</mo><msub><mrow><mi>ξ</mi></mrow><mrow><mi>i</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>]</mo> <mo class='MathClass-rel' stretchy='false'>=</mo> <msub><mrow><mi>μ</mi></mrow><mrow><mi>i</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mi>ℙ</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>ξ</mi></mrow><mrow><mi>i</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mi>i</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msup><mrow><mi>V</mi> </mrow><mrow><mi>′</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 30 --><p class='indent'>   Demand is revealed only upon arrival at the customer’s location. Allocation to the current customer is decided
+without knowing the demands of customers still to be visited. A customer’s fill rate is the proportion of its demand
+supplied.
+</p><!-- l. 32 --><p class='noindent'>
+</p>
+   <h4 class='likesubsectionHead' id='full-feasibleroute-set-and-route-coefficients'><a id='x1-3000'></a>Full feasible-route set and route coefficients</h4>
+<!-- l. 33 --><p class='noindent'>A route has the form </p><table class='equation-star'><tr><td>
+<!-- l. 34 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                   <mi>r</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>i</mi></mrow><mrow><mn>0</mn></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>i</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>i</mi></mrow><mrow><mi>m</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>i</mi></mrow><mrow><mi>m</mi><mo class='MathClass-bin' stretchy='false'>+</mo><mn>1</mn></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><msub><mrow><mi>i</mi></mrow><mrow><mn>0</mn></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <msub><mrow><mi>i</mi></mrow><mrow><mi>m</mi><mo class='MathClass-bin' stretchy='false'>+</mo><mn>1</mn></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><msub><mrow><mi>i</mi></mrow><mrow><mi>k</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msup><mrow><mi>V</mi> </mrow><mrow><mi>′</mi></mrow></msup><mspace class='quad' width='1em'></mspace><mo class='MathClass-open' stretchy='false'>(</mo><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo><mo class='MathClass-open' stretchy='false'>{</mo><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mi>m</mi><mo class='MathClass-close' stretchy='false'>}</mo><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 39 --><p class='indent'>   The set <!-- l. 39 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>R</mi></math>
+contains exactly those routes that start and end at the depot, visit each customer at most once, and satisfy the
+collective-fill-rate requirement </p><table class='equation'><tr><td>
+<!-- l. 40 --><p class='indent'>
+</p><!-- l. 40 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow>
+                                          <mstyle class='label' id='x1-3001r1'></mstyle><!-- endlabel --></mrow><mrow><mi>r</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mi>F</mi><mo class='MathClass-punc' stretchy='false'>.</mo>
+                                                                                         <mstyle class='label' id='x1-3002r0'></mstyle><!-- endlabel -->
+</mrow></math></td><td class='eq-no'>(3)<a id='x1-3003r0'></a></td></tr></table>
+
+<!-- l. 43 --><p class='indent'>   Here <!-- l. 43 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow></mrow><mrow><mi>r</mi></mrow></msub></math> is
+the route’s collective fill rate, defined by (1)–(2) and the evaluation relation below. Requirement (3) applies to each route
+admitted to <!-- l. 43 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>R</mi></math>;
+it is not an additional restriction on the selection variables outside this definition.
+</p><!-- l. 45 --><p class='indent'>   For <!-- l. 45 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>r</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>R</mi></mrow></math>,
+<!-- l. 45 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>A</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>r</mi><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math> denotes the set of arcs
+traversed by route <!-- l. 45 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>r</mi></math>.
+Its transportation cost and customer-incidence coefficients are </p><table class='equation-star'><tr><td>
+<!-- l. 46 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                                 <msub><mrow><mi>c</mi></mrow><mrow><mi>r</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mo class='MathClass-open' stretchy='false'>(</mo><mi>i</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>j</mi><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-rel' stretchy='false'>∈</mo><mi>A</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>r</mi><mo class='MathClass-close' stretchy='false'>)</mo></mrow></munder><msub><mrow><mi>c</mi></mrow><mrow><mi mathvariant='italic'>ij</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mi>r</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>R</mi><mo class='MathClass-punc' stretchy='false'>,</mo>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 49 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow>
+<mi>a</mi></mrow><mrow><mi mathvariant='italic'>ir</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo>  <mrow><mo fence='true' form='prefix'> {</mo><mrow> <mtable align='axis' class='array' columnlines='none' displaystyle='true' equalcolumns='false' equalrows='false' style=''> <mtr class='array-row'><mtd class='array-td' columnalign='left'><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace></mtd><mtd class='array-td' columnalign='left'><mstyle class='text'><mtext>if customer </mtext></mstyle><mi>i</mi><mstyle class='text'><mtext> is visited in route </mtext></mstyle><mi>r</mi><mo class='MathClass-punc' stretchy='false'>,</mo></mtd></mtr>   <!-- @{}l@{\quad }l@{} --></mtable>                                                                               </mrow><mo fence='true' form='postfix'></mo></mrow><mspace class='qquad' width='2em'></mspace><mi>i</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msup><mrow><mi>V</mi> </mrow><mrow><mi>′</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><mi>r</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <mi>R</mi><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 56 --><p class='indent'>   These are fixed coefficients of the set-partitioning model.
+</p><!-- l. 58 --><p class='noindent'>
+</p>
+   <h4 class='likesubsectionHead' id='defining-collectivefillrate-equations'><a id='x1-4000'></a>Defining collective-fill-rate equations</h4>
+<!-- l. 59 --><p class='noindent'>Section 3 calls the expected minimum fill rate over all customers in a route its collective fill rate and computes it
+using the following recursion: </p><table class='equation'><tr><td>
+<!-- l. 60 --><p class='indent'>
+
+</p><!-- l. 60 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mstyle class='label' id='x1-4001r1'></mstyle><!-- endlabel --><msup><mrow><mi>v</mi></mrow><mrow><mi>r</mi></mrow></msup><mo class='MathClass-open' stretchy='false'>(</mo><mi>k</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>q</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>=</mo>  <mrow><mo fence='true' form='prefix'> {</mo><mrow> <mtable align='axis' class='array' columnlines='none' displaystyle='true' equalcolumns='false' equalrows='false' style=''> <mtr class='array-row'><mtd class='array-td' columnalign='left'><munderover accent='false' accentunder='false'><mrow><mo>∑</mo>
+  </mrow><mrow><mi>d</mi><mo class='MathClass-rel' stretchy='false'>=</mo><mn>1</mn></mrow><mrow><mi>∞</mi></mrow></munderover><mi>ℙ</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>ξ</mi></mrow><mrow><msub><mrow>
+<mi>i</mi></mrow><mrow><mi>k</mi></mrow></msub></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mi>d</mi><mo class='MathClass-close' stretchy='false'>)</mo><munder class='msub'><mrow><mtext class='qopname'>max</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow><mrow><mi>x</mi><mo class='MathClass-rel' stretchy='false'>≤</mo><mtext class='qopname'>min</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo><mo class='MathClass-open' stretchy='false'>(</mo><mi>d</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>q</mi><mo class='MathClass-close' stretchy='false'>)</mo></mrow></munder><mtext class='qopname'> min</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo><mspace class='negthinspace' width='-0.17em'></mspace> <mrow><mo fence='true' form='prefix'> [</mo><mrow><mfrac><mrow><mi>x</mi></mrow>
+<mrow><mi>d</mi></mrow></mfrac><mo class='MathClass-punc' stretchy='false'>,</mo><msup><mrow><mi>v</mi></mrow><mrow><mi>r</mi></mrow></msup><mo class='MathClass-open' stretchy='false'>(</mo><mi>k</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mi>q</mi> <mo class='MathClass-bin' stretchy='false'>−</mo> <mi>x</mi><mo class='MathClass-close' stretchy='false'>)</mo></mrow><mo fence='true' form='postfix'>]</mo></mrow><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace></mtd><mtd class='array-td' columnalign='left'><mstyle class='text'><mtext>if </mtext></mstyle><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mi>m</mi> <mo class='MathClass-bin' stretchy='false'>−</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo></mtd>
+</mtr> <mtr class='array-vspace' style='font-size:6.0pt'></mtr>  <!-- @{}l@{\quad }l@{} --></mtable>                                  </mrow><mo fence='true' form='postfix'></mo></mrow>
+                                                                                         <mstyle class='label' id='x1-4002r0'></mstyle><!-- endlabel -->
+</mrow></math></td><td class='eq-no'>(1)<a id='x1-4003r0'></a></td></tr></table>
+<!-- l. 71 --><p class='indent'>   Here <!-- l. 71 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>q</mi></math> is the capacity
+remaining, <!-- l. 71 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>d</mi></math> is the realized
+demand at customer <!-- l. 71 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>i</mi></mrow><mrow><mi>k</mi></mrow></msub></math>,
+and <!-- l. 71 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>x</mi></math>
+is the allocation to that customer. The expected fill rate at customer
+<!-- l. 71 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>i</mi></mrow><mrow><mi>k</mi></mrow></msub></math> with
+<!-- l. 71 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>q</mi></math> units of
+capacity left is </p><table class='equation'><tr><td>
+<!-- l. 72 --><p class='indent'>
+</p><!-- l. 72 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                             <mstyle class='label' id='x1-4004r1'></mstyle><!-- endlabel --><msub><mrow><mi>f</mi></mrow><mrow><msub><mrow><mi>i</mi></mrow><mrow><mi>k</mi></mrow></msub></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>q</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>=</mo><munderover accent='false' accentunder='false'><mrow><mo> ∑</mo>
+  </mrow><mrow><mi>d</mi><mo class='MathClass-rel' stretchy='false'>=</mo><mn>1</mn></mrow><mrow><mi>∞</mi></mrow></munderover><mi>ℙ</mi><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>ξ</mi></mrow><mrow><msub><mrow>
+<mi>i</mi></mrow><mrow><mi>k</mi></mrow></msub></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mi>d</mi><mo class='MathClass-close' stretchy='false'>)</mo><mfrac><mrow><mtext class='qopname'>min</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo><mo class='MathClass-open' stretchy='false'>(</mo><mi>q</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>d</mi><mo class='MathClass-close' stretchy='false'>)</mo></mrow>
+     <mrow><mi>d</mi></mrow></mfrac>     <mo class='MathClass-punc' stretchy='false'>.</mo>
+                                                                                         <mstyle class='label' id='x1-4005r0'></mstyle><!-- endlabel -->
+</mrow></math></td><td class='eq-no'>(2)<a id='x1-4006r0'></a></td></tr></table>
+<!-- l. 76 --><p class='indent'>   Starting at <!-- l. 76 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mi>m</mi></mrow></math> and
+recursively solving (1) for <!-- l. 76 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>k</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo><mo class='MathClass-open' stretchy='false'>{</mo><mi>m</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>}</mo></mrow></math>
+gives the route’s collective fill rate: </p><table class='equation-star'><tr><td>
+<!-- l. 77 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow>
+                                       </mrow><mrow><mi>r</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <msup><mrow><mi>v</mi></mrow><mrow><mi>r</mi></mrow></msup><mo class='MathClass-open' stretchy='false'>(</mo><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mi>Q</mi><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 80 --><p class='indent'>   Thus route feasibility uses the ordered customer sequence, not merely its customer set. The allocation maximization in (1) defines
+a route coefficient; <!-- l. 80 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>x</mi></math>
+is not a route-selection variable in (4)–(6).
+
+</p>
+<!-- l. 82 --><p class='noindent'><span class='paragraphHead' id='source-notes'><a id='x1-5000'></a><span class='cmbx-10'>Source notes.</span></span>
+   The operative formulation is Section 3 and Section 3.1, physical PDF pages 6–8, of Sluijk et al., <span class='cmti-10'>Fair stochastic
+vehicle routing with partial deliveries </span>(April 2023). The original page images show an empty base with subscript
+<!-- l. 83 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>r</mi></math>
+for the collective-fill-rate symbol on pages 6–7, including (3); this is retained as
+<!-- l. 83 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow></mrow><mrow><mi>r</mi></mrow></msub></math>, rather than supplying a missing
+letter. Equation (1) prints only <!-- l. 83 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>x</mi> <mo class='MathClass-rel' stretchy='false'>≤</mo><mtext class='qopname'> min</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo><mo class='MathClass-open' stretchy='false'>(</mo><mi>d</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>q</mi><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math>
+beneath the maximization: it does not state a lower bound or an integer/real domain for
+<!-- l. 83 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>x</mi></math>, nor an explicit
+domain for <!-- l. 83 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>q</mi></math>.
+These have not been supplied. Section 3’s printed assumption of identically distributed demands is retained,
+although the subsequent two-customer illustration uses different demand distributions. That illustration does not
+replace the operative assumption here. The continuation on page 8 introduces a linear relaxation and column
+generation as solution methods, not additional conditions on (4)–(6); those algorithmic formulations are not
+included.
+</p>
+    
+</body> 
+</html>

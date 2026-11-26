@@ -1,0 +1,42 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,mathtools,geometry}
+\geometry{a4paper,margin=20mm}\allowdisplaybreaks
+\emergencystretch=4em
+\begin{document}
+\section*{Joint crowdsourced and dedicated parcel delivery using complete feasible route sets}
+
+\paragraph{Source} PDF pages 6--10, the problem definition in Section 3, and Formulation 2, equations (20)--(26).
+\subsection*{Inputs and complete route sets}
+$P$ is the set of parcel orders. Order $p$ is delivered to $n_p$, has earliest pickup time $T_p^d$ at the common pickup depot $o$, and has latest delivery time $T_p^a$. $S$ is the set of participating private vehicles, and $D$ is the set of dedicated delivery vehicles. Private vehicle $s$ has a personal origin and a personal destination $n_s$, an earliest depot arrival $T_s^d$, a latest destination arrival $T_s^a$, and capacity $q_s$ orders. Dedicated vehicle $d$ starts at depot $o$ and returns to its copy $h$, has capacity $q_d$, and finishes by $T^D$. Arc travel times $\tau_{ij}\ge0$ and arc costs $c^s_{ij},c^d_{ij}$ are given. $c_s^o$ is the cost from the private origin to the depot, $c^s$ is the cost of the original direct personal trip, $F_d$ is the fixed cost of a dedicated vehicle, and $e_d,e_o\ge0$ are the detour and per-order compensation coefficients.
+
+$\mathcal R_s$ includes \emph{all} feasible routes of the following form. For a sequence of distinct orders $(p_1,\ldots,p_k)$, travel from the personal origin to depot $o$, visit every $n_{p_j}$ in order, and finish at $n_s$. Require $1\le k\le q_s$ and nonnegative service times $t_0,\ldots,t_{k+1}$ that satisfy:
+\begin{align*}
+t_0&\ge T_s^d,&t_0&\ge T_{p_j}^d &&(j=1,\ldots,k),\\
+t_1&\ge t_0+\tau_{o,n_{p_1}},&
+t_{j+1}&\ge t_j+\tau_{n_{p_j},n_{p_{j+1}}}&&(j=1,\ldots,k-1),\\
+t_j&\le T_{p_j}^a&&(j=1,\ldots,k),\\
+t_{k+1}&\ge t_k+\tau_{n_{p_k},n_s},&
+t_{k+1}&\le T_s^a.
+\end{align*}
+The set $\mathcal R_s$ must also include the direct personal trip with zero orders served and cost $c^s$. The cost $c_{rs}$ of a delivery route equals $c_s^o$ plus the costs of all arcs traveled after the depot.
+
+$\mathcal R_d$ includes all nonempty depot-to-depot routes that serve distinct orders, with $1\le k\le q_d$. Each route waits at the depot until all its orders are ready for pickup, satisfies the arc travel times and delivery deadlines, and returns to $h$ by $T^D$. Its cost $c_{rd}$ is the sum of the costs of the arcs traveled. The depot is initially available at time zero. If an instance includes common loading or unloading times, include those times in the arc travel times exactly once. $a_{prv}\in\{0,1\}$ indicates whether the complete route $r\in\mathcal R_v$ serves order $p$. The route sets include every route satisfying the stated conditions.
+\subsection*{Optimization model}
+The variable $y_{rv}\in\{0,1\}$ indicates whether vehicle $v$ selects route $r$.
+\begin{align}
+\min_y\quad&
+ e_d\sum_{s\in S}\sum_{r\in\mathcal R_s}(c_{rs}-c^s)y_{rs}
+ +e_o\sum_{s\in S}\sum_{r\in\mathcal R_s}\sum_{p\in P}a_{prs}y_{rs}\notag\\
+&+\sum_{d\in D}\sum_{r\in\mathcal R_d}(c_{rd}+F_d)y_{rd}\tag{20}\\
+\text{s.t.}\quad&
+\sum_{s\in S,r\in\mathcal R_s}a_{prs}y_{rs}
++\sum_{d\in D,r\in\mathcal R_d}a_{prd}y_{rd}=1 &&p\in P,\tag{21}\\
+&\sum_{r\in\mathcal R_s}y_{rs}=1 &&s\in S,\tag{22}\\
+&\sum_{r\in\mathcal R_d}y_{rd}\le1 &&d\in D,\tag{23}\\
+&\sum_{r\in\mathcal R_s,p\in P}a_{prs}y_{rs}\le q_s &&s\in S,\tag{24}\\
+&\sum_{r\in\mathcal R_d,p\in P}a_{prd}y_{rd}\le q_d &&d\in D,\tag{25}\\
+&y_{rv}\in\{0,1\} &&v\in S\cup D,\ r\in\mathcal R_v.\tag{26}
+\end{align}
+The order's $T_p^d$ indicates the moment when the goods can be picked up from the warehouse.
+
+\end{document}

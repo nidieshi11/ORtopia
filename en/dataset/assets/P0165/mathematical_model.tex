@@ -1,0 +1,232 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\title{Finite Scenario Investment and Operation Model}
+\author{}
+\date{}
+\begin{document}
+\maketitle
+
+\section{Sets and indexing}
+Let $\mathcal S$ be the finite set of damage scenarios. The distribution grid is $(N,E)$ and the communication network is $(\widetilde N,\widetilde E)$, including its dummy node $\widetilde i_d$. Write $\mathcal E=E\cup\widetilde E$ for the integrated edge set. Each edge has ordered endpoints $(e_h,e_t)$; $\delta(e)=\{e_h,e_t\}$, and $\delta(i)$ denotes incident distribution edges when $i\in N$. In expressions indexed by $e=(i,j)$, $i=e_h$ and $j=e_t$. Communication incidence sums range over $\widetilde E$.
+
+The existing and candidate edge sets are $E_x^0$ and $E_x^n$, with $E_x^0\cup E_x^n=\mathcal E$. The switch sets are $E_t^0,E_t^n\subseteq E$, and $E_t=E_t^0\cup E_t^n$. The hardening-eligible set is $E_h\subseteq\mathcal E$. Existing and candidate generators form $U=U^0\cup U^n$. These existing/candidate partitions are disjoint. Each generator $l$ is located at bus $i(l)$, and $U_i=\{l\in U:i(l)=i\}$. Candidate distribution lines have existing switch availability, as specified by $E_x^n\cap E\subseteq E_t^0$.
+
+Let $E_V\subseteq E$ be the transformer set, $L\subseteq N$ the critical-load buses, and $D_s\subseteq\mathcal E$ the damaged edges in scenario $s$. Let $\mathcal C$ be the supplied finite collection of distribution cycles and $E_{\mathcal C}=\bigcup_{C\in\mathcal C}C$. Endpoint matches in the topology constraints include parallel edges.
+
+Let $P=\{a,b,c\}$, with bus, edge, and generator phase sets $P_i,P_e,P_l\subseteq P$. Transformer phase sets are nonempty. Quantities on absent phases are extended by zero whenever used in a phase-indexed expression. All phase projections and extensions use this convention.
+
+The communication control-point set is $\widetilde N_c\subseteq\widetilde N$, with mappings $\widetilde i(l)\in\widetilde N_c$ for $l\in U$ and $\widetilde i(e)\in\widetilde N_c$ for $e\in E_t$.
+
+\section{Parameters}
+The investment costs are $c_e^x$ for $e\in E_x^n$, $c_e^t$ for $e\in E_t^n$, $c_e^h$ for $e\in E_h$, and $c_l^u$ for $l\in U^n$. Real and reactive generator capacities are $\bar g_{l,p}^k,\bar g_{l,q}^k$ for $l\in U$, $k\in P_l$. Demands are $D_{i,p}^k,D_{i,q}^k$ for $i\in N$, $k\in P_i$. Critical and total service fractions are $\eta_c,\eta_t$.
+
+For $e\in E$ and $k\in P_e$, $T_e^k$ is the thermal-limit parameter (also denoted $T_{e,k}$ in the source). Transformer sharing coefficients are $\underline\beta_e,\overline\beta_e$ for $e\in E_V$. Voltage-magnitude bounds are $\underline V_i^k,\overline V_i^k$ for $i\in N$, $k\in P_i$. Each impedance matrix is $Z_e=R_e+\mathrm i X_e$, where $R_e,X_e\in\mathbb R^{P_e\times P_e}$ and $\mathrm i^2=-1$.
+
+Use balanced phase phasors $u_a=1$, $u_b=\alpha$,
+$u_c=\alpha^2$, where $\alpha=\exp(-2\pi\mathrm i/3)$, and define
+\[
+ \Gamma_{kk'}=u_k/u_{k'},\quad
+ C_{e,kk'}=2\Gamma_{kk'}\overline{(Z_e)_{kk'}}.
+\]
+The physical real squared-voltage drop is
+$\Delta_e^{s,k}=\sum_{k'\in P_e}
+[\operatorname{Re}(C_{e,kk'})p_{e,i}^{s,k'}
+-\operatorname{Im}(C_{e,kk'})q_{e,i}^{s,k'}]$.
+It is the real diagonal of $S_{e,i}Z_e^H+Z_eS_{e,i}^H$ under the
+balanced-voltage, zero-loss approximation (source pp.13--14, equations (7)--(10)).
+
+Let $K$ be the fixed positive integer polygon parameter, supplied with the instance (the reported implementation uses $K=28$). Precompute
+\[
+a_n=\sin\frac{2n\pi}{K}-\sin\frac{2(n-1)\pi}{K},\qquad
+b_n=\cos\frac{2n\pi}{K}-\cos\frac{2(n-1)\pi}{K},\qquad
+r_K=\sin\frac{2\pi}{K},\quad n=1,\ldots,K.
+\]
+Use the source's finite bounds
+\[
+M_{\rm comm}=|\widetilde N_c|,\qquad
+M_{\rm flow}^k=\sum_{i\in N}D_{i,p}^k\quad(k\in P).
+\]
+All sets and parameter arrays are finite input data.
+
+\section{Variables and domains}
+The first-stage binary investment vector and matching cost vector are
+\[
+w=(x_{E_x^n},t_{E_t^n},h_{E_h},u_{U^n})\in\{0,1\}^m,
+\qquad c=(c^x_{E_x^n},c^t_{E_t^n},c^h_{E_h},c^u_{U^n}),
+\]
+where $m=|E_x^n|+|E_t^n|+|E_h|+|U^n|$, using a fixed common ordering.
+
+For every $s\in\mathcal S$, the scenario binary variables are
+\[
+x_e^s,t_e^s,h_e^s\in\{0,1\}\ (e\in\mathcal E),\qquad
+u_l^s\in\{0,1\}\ (l\in U),
+\]
+\[
+z_e^s,b_e^s,b_e^{0,s}\in\{0,1\}\ (e\in E),\qquad
+y_e^s\in\{0,1\}\ (e\in E_{\mathcal C}).
+\]
+Here $x^s$ denotes edge availability, $t^s$ switch use, $h^s$ hardening, $u^s$ generator availability, $z^s$ edge activity, $b^s,b^{0,s}$ flow-direction indicators, and $y^s$ the cycle indicators. Define the vector abbreviation
+\[
+w^s=(x^s_{E_x^n},t^s_{E_t^n},h^s_{E_h},u^s_{U^n}).
+\]
+The real continuous variables, separately for each scenario, are
+\begin{align*}
+&p_{e,i}^{s,k},q_{e,i}^{s,k} &&(e\in E,\ i\in\delta(e),\ k\in P_e),\\
+&g_{l,p}^{s,k},g_{l,q}^{s,k} &&(l\in U,\ k\in P_l),\\
+&d_{i,p}^{s,k},d_{i,q}^{s,k},v_i^{s,k} &&(i\in N,\ k\in P_i),\\
+&f_e^s &&(e\in\widetilde E),\\
+&\gamma_i^s &&(i\in\widetilde N_c).
+\end{align*}
+They represent endpoint real/reactive flow, generation, delivered load, squared voltage magnitude, artificial communication flow, and control-point connectivity. Continuous variables are real-valued with the lower and upper bounds specified in the constraints below.
+
+\section{Objective and constraints}
+The model minimizes
+\[
+\min\ c^\top w.
+\]
+The investment links are
+\[
+w\geq w^s\qquad(s\in\mathcal S).
+\]
+Every constraint in the remainder of this section is imposed for every $s\in\mathcal S$.
+
+\subsection{Equipment fixings}
+\begin{align*}
+x_e^s&=1 &&(e\in E_x^0\setminus D_s),\\
+t_e^s&=0 &&(e\in\mathcal E\setminus E_t),\\
+h_e^s&=0 &&(e\in\mathcal E\setminus E_h),\\
+u_l^s&=1 &&(l\in U^0).
+\end{align*}
+
+\subsection{Power balance and directional bounds}
+For $i\in N$ and $k\in P_i$,
+\begin{align*}
+\sum_{l\in U_i}g_{l,p}^{s,k}-d_{i,p}^{s,k}
+ &=\sum_{e\in\delta(i)}p_{e,i}^{s,k},\\
+\sum_{l\in U_i}g_{l,q}^{s,k}-d_{i,q}^{s,k}
+ &=\sum_{e\in\delta(i)}q_{e,i}^{s,k}.
+\end{align*}
+For each ordered edge $e=(i,j)\in E$ and $k\in P_e$,
+\begin{align*}
+-T_e^k b_e^s&\leq p_{e,i}^{s,k}\leq T_e^k(1-b_e^s),\\
+-T_e^k b_e^{0,s}&\leq q_{e,i}^{s,k}\leq T_e^k(1-b_e^{0,s}).
+\end{align*}
+
+\subsection{Lossless endpoint conservation}
+Endpoint flows are positive out of their own bus. Hence for every scenario,
+physical line $e=(i,j)$ and phase $k\in P_e$,
+\[
+ p_{e,i}^{s,k}+p_{e,j}^{s,k}=0,\qquad
+ q_{e,i}^{s,k}+q_{e,j}^{s,k}=0.
+\]
+Distribution self-loops are invalid. Summing the nodal real-power balances now
+proves total generation equals total delivered demand; independent endpoint
+variables cannot create power.
+
+\subsection{Phase sharing}
+For an ordered transformer $e=(i,j)\in E_V$, use the expression abbreviations
+\[
+H_{e,p}^s=\sum_{r\in P_e}p_{e,i}^{s,r},\qquad
+H_{e,q}^s=\sum_{r\in P_e}q_{e,i}^{s,r},\qquad d_e=|P_e|.
+\]
+For every $k\in P_e$, impose the expanded quadratic inequalities
+\begin{align*}
+\underline\beta_e H_{e,p}^s+
+ (\overline\beta_e-\underline\beta_e)b_e^sH_{e,p}^s
+ &\leq d_e p_{e,i}^{s,k},\\
+d_e p_{e,i}^{s,k}
+ &\leq\overline\beta_e H_{e,p}^s+
+ (\underline\beta_e-\overline\beta_e)b_e^sH_{e,p}^s,\\
+\underline\beta_e H_{e,q}^s+
+ (\overline\beta_e-\underline\beta_e)b_e^{0,s}H_{e,q}^s
+ &\leq d_e q_{e,i}^{s,k},\\
+d_e q_{e,i}^{s,k}
+ &\leq\overline\beta_e H_{e,q}^s+
+ (\underline\beta_e-\overline\beta_e)b_e^{0,s}H_{e,q}^s.
+\end{align*}
+
+\subsection{Generation, load, and service}
+\begin{align*}
+0\leq g_{l,p}^{s,k}&\leq\bar g_{l,p}^k u_l^s,&
+g_{l,q}^{s,k}&\leq\bar g_{l,q}^k u_l^s
+&& (l\in U,\ k\in P_l),\\
+0\leq d_{i,p}^{s,k}&\leq D_{i,p}^k,&
+0\leq d_{i,q}^{s,k}&\leq D_{i,q}^k
+&& (i\in N,\ k\in P_i).
+\end{align*}
+For each $k\in P$ and $a\in\{p,q\}$,
+\[
+\sum_{i\in L}d_{i,a}^{s,k}\geq\eta_c\sum_{i\in L}D_{i,a}^k,
+\qquad
+\sum_{i\in N}d_{i,a}^{s,k}\geq\eta_t\sum_{i\in N}D_{i,a}^k.
+\]
+
+\subsection{Communication}
+\begin{align*}
+\sum_{e\in\widetilde E:e_t=i}f_e^s-
+\sum_{e\in\widetilde E:e_h=i}f_e^s
+ &=\gamma_i^s &&(i\in\widetilde N_c),\\
+\sum_{e\in\widetilde E:e_t=i}f_e^s-
+\sum_{e\in\widetilde E:e_h=i}f_e^s
+ &=0 &&(i\in\widetilde N\setminus(\widetilde N_c\cup\{\widetilde i_d\})),\\
+-M_{\rm comm}x_e^s\leq f_e^s
+ &\leq M_{\rm comm}x_e^s &&(e\in\widetilde E),\\
+0\leq g_{l,p}^{s,k}
+ &\leq\bar g_{l,p}^k\gamma_{\widetilde i(l)}^s
+ &&(l\in U,\ k\in P_l),\\
+g_{l,q}^{s,k}
+ &\leq\bar g_{l,q}^k\gamma_{\widetilde i(l)}^s
+ &&(l\in U,\ k\in P_l),\\
+t_e^s&\leq\gamma_{\widetilde i(e)}^s &&(e\in E_t),\\
+0\leq\gamma_i^s&\leq1 &&(i\in\widetilde N_c).
+\end{align*}
+
+\subsection{Availability and topology}
+\begin{align*}
+x_e^s&\geq t_e^s &&(e\in\mathcal E),\\
+z_e^s&=x_e^s-t_e^s &&(e\in E),\\
+x_e^s&=h_e^s &&(e\in D_s),\\
+\sum_{e\in C}y_e^s&\leq |C|-1 &&(C\in\mathcal C),\\
+z_{\hat e}^s&\leq y_e^s
+ &&(C\in\mathcal C,\ e\in C,\ \hat e\in E:\delta(\hat e)=\delta(e)).
+\end{align*}
+
+\subsection{Voltage on active lines}
+For every $e=(i,j)\in E$, $k\in P_e$, define
+\[
+ M_{e,k}^{v}=\max\{(\bar V_i^k)^2-(\underline V_j^k)^2,
+                    (\bar V_j^k)^2-(\underline V_i^k)^2\}.
+\]
+Impose
+\[
+-M_{e,k}^{v}(1-z_e^s)
+\le v_i^{s,k}-v_j^{s,k}-\Delta_e^{s,k}
+\le M_{e,k}^{v}(1-z_e^s),
+\qquad
+(\underline V_i^k)^2\le v_i^{s,k}\le(\bar V_i^k)^2.
+\]
+Inactive-line endpoint power is already zero by the activity bounds, so this
+$M^v$ permits every allowed pair of endpoint voltages when the line is open.
+The former unconditional equality and extraneous imaginary-part equality are
+removed. The source explicitly applies Ohm's law only on available lines
+(p.10, (2a); p.14 following (10)).
+
+\subsection{Polygonal capacity and activity bounds}
+For $e\in E$, $i\in\delta(e)$, and $k\in P_e$,
+\begin{align*}
+a_n p_{e,i}^{s,k}-b_n q_{e,i}^{s,k}
+ &\leq r_K T_e^k &&(n=1,\ldots,K),\\
+-M_{\rm flow}^k z_e^s\leq p_{e,i}^{s,k}
+ &\leq M_{\rm flow}^k z_e^s,\\
+-M_{\rm flow}^k z_e^s\leq q_{e,i}^{s,k}
+ &\leq M_{\rm flow}^k z_e^s.
+\end{align*}
+
+\paragraph{Explicit repaired physical interpretation.}
+This is a balanced-voltage, lossless three-phase approximation with the source's
+finite damage scenarios, investment links, control network, radial topology,
+load-service fractions and inner polygon thermal bounds. Binary--continuous
+phase-sharing products are retained exactly with global MIQCP handling.
+Endpoint flows use the outward-flow sign convention. The real voltage-drop relation follows from (7)--(8).
+\end{document}

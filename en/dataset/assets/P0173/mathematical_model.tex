@@ -1,0 +1,49 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,longtable}
+\emergencystretch=4em
+\usepackage{geometry}
+\geometry{paperwidth=235mm,paperheight=297mm,hmargin=18mm,vmargin=19mm}
+\begin{document}
+\section*{P173: Current complete mathematical model (as of 2026-10-20)}
+\section*{Basis and scope of the revision}On page 9 of the recovery source document, the upper and lower limits are specified in minutes and hours. All details regarding line connections, terminal/garage charging, scenario-specific PV/BES calculations, and radial linear power grids are listed clearly. The initial and final battery levels are considered as real-day operational boundaries, and no attempt is made to replicate the original text word for word.
+
+\section*{Collection, domain, and public transportation connectivity}
+$S$ refers to all fixed services. $A=\{(i,j):i\ne j,e_i+t^{dh}_{ij}\le b_j\}$… $N$ represents terminals; garages are denoted as 0. $K$ indicates the type of stake. $T=\{0,\ldots,H-1\}$ stands for minutes. $\Delta=1/60$ represents hours. $x_{ij},s_i,f_i,z_n\in\{0,1\}$; $q_i,q^d_i\in[\underline a Q,\bar a Q]$.
+\[
+s_i+\sum_jx_{ji}=1,\quad f_i+\sum_jx_{ij}=1,\quad
+s_i=1\Rightarrow q_i\le\bar aQ-e_i^{start}-e_i^{trip},
+\quad f_i=1\Rightarrow q_i^d\le q_i-e_i^{end}.
+\]
+All counts $n_{nk},n_{0k}$ are integers of $0,\ldots,|S|$, $\sum_kn_{nk}\le|S|z_n$ and $\sum_kn_{nk}P_k\le Cap_n$; garage $\sum_kn_{0k}P_k\le Cap_0$.
+\section*{Charging at terminals and in garages}
+For each feasible sequence $i,j$, only the binary $\ell_{ijt}$ and power $p_{ijt}$ are defined at $[e_i+t^{dh}_{ij},b_j)$. $\ell\le x,\ell\le z_{n(i)},0\le p\le P^{bus}\ell$. Every station per minute $\sum\ell\le\sum_kn_{nk}$ and $\sum p\le\sum_kn_{nk}P_k$. This constraint represents the total power capacity of the charging terminals.
+\[
+x_{ij}=1\Rightarrow
+q_j\le q_i+\Delta\sum_tp_{ijt}-e^{dh}_{ij}-e_j^{trip},\qquad
+q_i+\Delta\sum_tp_{ijt}\le\bar aQ.
+\]
+After returning to the warehouse, define $\ell^d_{ikt}\in\{0,1\}$ and $p^d_{ikt}\ge0$ within $H$, as well as $\sum_k\ell^d_{ikt}\le f_i$ and $p^d_{ikt}\le\min(P^{bus},P_k)\ell^d_{ikt}$; for each type and each time, there is $\sum_i\ell^d_{ikt}\le n_{0k}$. $f_i=1\Rightarrow q_i^d+\Delta\sum_{kt}p^d_{ikt}\ge\bar aQ$.
+\section*{PV, energy storage, and the power grid}
+$D_{bt}$ represents the sum of the charging capacities for all terminals/garages mentioned above. Three equally likely weather scenarios are considered: $w$, which involves sharing all vehicles/charging decisions among them. Site attributes include $R_b$, $0\le P_b^{PV}\le\overline P^{PV}R_b$, and $0\le E_b^{BES}\le\overline E^{BES}R_b$. For each scenario, the following metrics are considered: non-negative electricity purchases $g$, total PV generation $v$, direct supply $p$, charging $c$, discharging $d$, and battery state $e$.
+\[
+v_{bwt}\le\rho_{wt}P_b^{PV},\quad v=p+c,\quad p+d+g\ge D_{bt},\quad0\le g\le\bar g_b,
+\]
+\[
+e_{bwt}=e_{bw,t-1}+\Delta\eta_c c_{bwt}-\Delta d_{bwt}/\eta_d,\quad
+.1E_b^{BES}\le e\le.9E_b^{BES},\quad c,d\le.5E_b^{BES}.
+\]
+Binary $u$ makes $c\le.5\bar E^{BES}u,d\le.5\bar E^{BES}(1-u)$; $e_{bw,-1}=.5E_b^{BES}$ and $e_{bw,H-1}\ge.5E_b^{BES}$. Reactive power compensation $0\le Q^c_{bt}\le\bar Q_b$ is a shared variable for scenarios. Each radial blade:
+\[
+F_{bwt}=-L_{bt}+p_{bwt}+d_{bwt}-D_{bt},\quad
+G_{bwt}=-.33L_{bt}+Q^c_{bt},\quad
+1=V_{bwt}-(r_bF_{bwt}+x_bG_{bwt}),\quad .9\le V\le1.05.
+\]
+$F,G\in[-\bar g_b,\bar g_b]$. Route $r_b,x_b$ represents a given resistance/reactance value; $R_b$ refers to the binary decision made at each station.
+\[
+\min PVF[c^{bus}\sum_is_i+\sum_kc_k(n_{0k}+\sum_nn_{nk})+
+c^{PV}\sum_bP_b^{PV}+c^{BES}\sum_bE_b^{BES}]
++\Delta\sum_{bwt}\tfrac13c_tg_{bwt}.
+\]
+For daily operations, the SOC closure conditions are met at the end of each day, and the initial storage capacity is restored at the end of the day.
+
+\end{document}

@@ -1,0 +1,82 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,longtable}
+\emergencystretch=4em
+\begin{document}
+\section*{P79: Current complete mathematical model (2026-10-20)}
+\section*{Basis and scope of the revision}The current model is defined by the physical occupancy of non-preemptive processing, denoted as \(T_{tij}=\{t'\colon t'\leq t<t'+p_{ij}\}\). Results from the old printing interval are reserved for diagnosis, and the current target value is only taken from the actually solved active \_processing \_interval branch.
+
+
+
+\section*{Deterministic-Equivalent MILP for the Minimum-Makespan Case}
+The paper is primarily algorithmic. The directly solvable core model is the deterministic-equivalent
+MILP used for the minimum-makespan two-stage stochastic planning and scheduling problem.
+
+\begin{equation}
+\min \quad \sum_{\omega \in \Omega} \pi_\omega \beta_\omega
+\tag{M1}
+\end{equation}
+
+subject to
+\begin{equation}
+\sum_{i \in I} x_{ij} = 1,
+\qquad \forall j \in J,
+\tag{M2}
+\end{equation}
+\begin{equation}
+\beta_\omega \ge \beta_{i\omega},
+\qquad \forall i \in I,\ \forall \omega \in \Omega,
+\tag{M3}
+\end{equation}
+\begin{equation}
+\beta_\omega \ge \sum_{t \in T} (t + p_{ij}^{\omega}) z_{ijt}^{\omega},
+\qquad \forall i \in I,\ \forall j \in J,\ \forall \omega \in \Omega,
+\tag{M4}
+\end{equation}
+\begin{equation}
+z_{ijt}^{\omega} \le x_{ij},
+\qquad \forall i \in I,\ \forall j \in J,\ \forall t \in T,\ \forall \omega \in \Omega,
+\tag{M5}
+\end{equation}
+\begin{equation}
+\sum_{i \in I} \sum_{t \in T} z_{ijt}^{\omega} = 1,
+\qquad \forall j \in J,\ \forall \omega \in \Omega,
+\tag{M6}
+\end{equation}
+\begin{equation}
+\sum_{j \in J} \sum_{t' \in T_{tij}^{\omega}} c_{ij} z_{ijt'}^{\omega} \le K_i,
+\qquad \forall i \in I,\ \forall t \in T,\ \forall \omega \in \Omega,
+\tag{M7}
+\end{equation}
+\begin{equation}
+z_{ijt}^{\omega} = 0,
+\qquad \forall i \in I,\ \forall j \in J,\ \forall \omega \in \Omega,\ \forall t<r_j,
+\tag{M8}
+\end{equation}
+\begin{equation}
+x_{ij} \in \{0,1\},
+\qquad \forall i \in I,\ \forall j \in J,
+\tag{M9}
+\end{equation}
+\begin{equation}
+z_{ijt}^{\omega} \in \{0,1\},
+\qquad \forall i \in I,\ \forall j \in J,\ \forall t \in T,\ \forall \omega \in \Omega,
+\tag{M10}
+\end{equation}
+\begin{equation}
+\beta_\omega \ge 0,
+\qquad
+\beta_{i\omega} \ge 0,
+\qquad \forall i \in I,\ \forall \omega \in \Omega.
+\tag{M11}
+\end{equation}
+
+
+\section*{Processing Allocation Collection}
+For each machine $i$, job $j$, scenario $\omega$, and integer time point $t$,
+\[
+T_{tij}^{\omega}=\{t'\in T:t'\le t<t'+p_{ij}^{\omega}\}.
+\]
+This is the set of tasks that are still being processed in $t$. It’s not a collection of tasks that have already been completed. Each scenario has its own set of tasks, which start processing at different times. Processing time, resource consumption, and capacity are limited. Machines are allocated to $x$ for use across different scenarios. The code returns two possible interpretations of this situation; currently, only active tasks like \_ and \_ are considered for processing.
+
+
+\end{document}

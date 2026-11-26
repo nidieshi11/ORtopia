@@ -1,0 +1,442 @@
+<!DOCTYPE html> 
+<html lang='en-US' xml:lang='en-US'> 
+<head><title>P0475 · Manufacturer Production, Retailer Ordering, and Wholesale Pricing Problem · Mathematical model</title> 
+<meta charset='utf-8' /> 
+<meta content='TeX4ht (https://tug.org/tex4ht/)' name='generator' /> 
+<meta content='width=device-width,initial-scale=1' name='viewport' /> 
+<style> 
+/* start css.sty */
+.cmr-5{font-size:50%;}
+.cmr-7{font-size:70%;}
+.cmmi-5{font-size:50%;font-style: italic;}
+.cmmi-7{font-size:70%;font-style: italic;}
+.cmmi-10{font-style: italic;}
+.cmsy-5{font-size:50%;}
+.cmsy-7{font-size:70%;}
+.cmbx-10{ font-weight: bold;}
+.cmbsy-10{font-weight: bold;}
+.cmbsy-10{font-weight: bold;}
+.cmbsy-10{font-weight: bold;}
+.cmbsy-7{font-size:70%;font-weight: bold;}
+.cmbsy-7{font-weight: bold;}
+.cmbsy-7{font-weight: bold;}
+.cmbsy-5{font-size:50%;font-weight: bold;}
+.cmbsy-5{font-weight: bold;}
+.cmbsy-5{font-weight: bold;}
+.cmex-7{font-size:70%;}
+.cmex-7x-x-71{font-size:49%;}
+.msam-7{font-size:70%;}
+.msam-5{font-size:50%;}
+.msbm-7{font-size:70%;}
+.msbm-5{font-size:50%;}
+p{margin-top:0;margin-bottom:0}
+p.indent{text-indent:0;}
+p + p{margin-top:1em;}
+p + div, p + pre {margin-top:1em;}
+div + p, pre + p {margin-top:1em;}
+a { overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; hyphens: auto; }
+@media print {div.crosslinks {visibility:hidden;}}
+table.tabular{border-collapse: collapse; border-spacing: 0;}
+a img { border-top: 0; border-left: 0; border-right: 0; }
+center { margin-top:1em; margin-bottom:1em; }
+td center { margin-top:0em; margin-bottom:0em; }
+.Canvas { position:relative; }
+math { text-indent: 0em; }
+body{ margin:1em auto; max-width:80ch; padding:0 .62em; }
+h1,h2,h3,h4,h5 { line-height:1.2; }
+@media print{ body{ max-width:none } }
+.partHead, .likepartHead { font-size: 2em; }
+.chapterHead, .likechapterHead { font-size: 1.7411em; }
+.sectionHead, .likesectionHead { font-size: 1.5157em; }
+.subsectionHead, .likesubsectionHead { font-size: 1.3195em; }
+.subsubsectionHead, .likesubsubsectionHead { font-size: 1.1487em; }
+ @media (prefers-color-scheme: dark) { img[src^="model"]{filter: invert(1); } } 
+li p.indent { text-indent: 0em }
+li p:first-child{ margin-top:0em; }
+li p:last-child, li div:last-child { margin-bottom:0.5em; }
+li p:first-child{ margin-bottom:0; }
+li p~ul:last-child, li p~ol:last-child{ margin-bottom:0.5em; }
+.enumerate1 {list-style-type:decimal;}
+.enumerate2 {list-style-type:lower-alpha;}
+.enumerate3 {list-style-type:lower-roman;}
+.enumerate4 {list-style-type:upper-alpha;}
+div.newtheorem { margin-bottom: 2em; margin-top: 2em;}
+div.newtheorem .head{font-weight: bold;}
+.obeylines-h,.obeylines-v {white-space: nowrap; }
+div.obeylines-v p { margin-top:0; margin-bottom:0; }
+.overline{ text-decoration:overline; }
+.overline img{ border-top: 1px solid black; }
+td.displaylines {text-align:center; white-space:nowrap;}
+.centerline {text-align:center;}
+.rightline {text-align:right;}
+pre.verbatim {font-family: monospace,monospace; text-align:left; clear:both; }
+.fbox {padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+div.fbox {display:table}
+div.center div.fbox {text-align:center; clear:both; padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+div.minipage{width:100%;}
+div.center, div.center div.center {text-align: center; margin-left:1em; margin-right:1em;}
+div.center div {text-align: left;}
+div.flushright, div.flushright div.flushright {text-align: right;}
+div.flushright div {text-align: left;}
+div.flushleft {text-align: left;}
+.underline{ text-decoration:underline; }
+.underline img{ border-bottom: 1px solid black; margin-bottom:1pt; }
+.framebox-c, .framebox-l, .framebox-r { padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+.framebox-c {text-align:center;}
+.framebox-l {text-align:left;}
+.framebox-r {text-align:right;}
+span.thank-mark{ vertical-align: super }
+span.footnote-mark sup.textsuperscript, span.footnote-mark a sup.textsuperscript{ font-size:80%; }
+code.verb{font-family:monospace,monospace;}
+div.tabular, div.center div.tabular {text-align: center; margin-top:0.5em; margin-bottom:0.5em; }
+table.tabular td p{margin-top:0em;}
+table.tabular {margin-left: auto; margin-right: auto;}
+td p:first-child{ margin-top:0em; }
+td p:last-child{ margin-bottom:0em; }
+div.td00{ margin-left:0pt; margin-right:0pt; }
+div.td01{ margin-left:0pt; margin-right:5pt; }
+div.td10{ margin-left:5pt; margin-right:0pt; }
+div.td11{ margin-left:5pt; margin-right:5pt; }
+table[rules] {border-left:solid black 0.4pt; border-right:solid black 0.4pt; }
+td.td00{ padding-left:0pt; padding-right:0pt; }
+td.td01{ padding-left:0pt; padding-right:5pt; }
+td.td10{ padding-left:5pt; padding-right:0pt; }
+td.td11{ padding-left:5pt; padding-right:5pt; }
+table[rules] {border-left:solid black 0.4pt; border-right:solid black 0.4pt; }
+.hline hr, .cline hr{ height : 0px; margin:0px; }
+.hline td, .cline td{ padding: 0; }
+.hline hr, .cline hr{border:none;border-top:1px solid black;}
+.hline {border-top: 1px solid black;}
+.hline + .vspace:last-child{display:none;}
+.hline:first-child{border-bottom:1px solid black;border-top:none;}
+.tabbing-right {text-align:right;}
+div.float, div.figure {margin-left: auto; margin-right: auto;}
+div.float img {text-align:center;}
+div.figure img {text-align:center;}
+.marginpar,.reversemarginpar {width:20%; float:right; text-align:left; margin-left:auto; margin-top:0.5em; font-size:85%; text-decoration:underline;}
+.marginpar p,.reversemarginpar p{margin-top:0.4em; margin-bottom:0.4em;}
+.reversemarginpar{float:left;}
+.equation td{text-align:center; vertical-align:middle; }
+td.eq-no{ width:5%; }
+table.equation { width:100%; } 
+div.math-display, div.par-math-display{text-align:center;}
+.array-hline,.array-cline{ border-top: 1px solid black; height:0px; }
+.array-hline + .array-vspace:last-child{display:none;}
+.hline-mtd, .array-hline td{ display:none }
+.array-hline + .array-row:last-child{display:none;}
+.array-hline:first-child{border-bottom:1px solid black;border-top:none;}
+math .texttt { font-family: monospace; }
+math .textit { font-style: italic; }
+math .textsl { font-style: oblique; }
+math .textsf { font-family: sans-serif; }
+math .textbf { font-weight: bold; }
+mo.MathClass-op + mi{margin-left:0.3em}
+mi + mo.MathClass-op{margin-left:0.3em}
+ math mstyle[mathvariant="bold"] { font-weight: bold; font-style: normal; } 
+ math mstyle[mathvariant="normal"] { font-weight: normal; font-style: normal; } 
+.partToc a, .partToc, .likepartToc a, .likepartToc {line-height: 200%; font-weight:bold; font-size:110%;}
+.index-item, .index-subitem, .index-subsubitem {display:block}
+div.caption {text-indent:-2em; margin-left:3em; margin-right:1em; text-align:left;}
+div.caption span.id{font-weight: bold; white-space: nowrap; }
+h1.partHead{text-align: center}
+p.bibitem { text-indent: -2em; margin-left: 2em; margin-top:0.6em; margin-bottom:0.6em; }
+p.bibitem-p { text-indent: 0em; margin-left: 2em; margin-top:0.6em; margin-bottom:0.6em; }
+.subsubsectionHead, .likesubsubsectionHead { font-size: 1em; }
+.paragraphHead, .likeparagraphHead { margin-top:2em; font-weight: bold;}
+.subparagraphHead, .likesubparagraphHead { font-weight: bold;}
+.verse{white-space:nowrap; margin-left:2em}
+div.maketitle {text-align:center;}
+h2.titleHead{text-align:center;}
+div.maketitle{ margin-bottom: 2em; }
+div.author, div.date {text-align:center;}
+div.thanks{text-align:left; margin-left:10%; font-size:85%; font-style:italic; }
+div.author{white-space: nowrap;}
+div.abstract p {margin-left:5%; margin-right:5%;}
+div.abstract {width:100%;}
+.abstracttitle{text-align:center;margin-bottom:1em;}
+.subsectionToc, .likesubsectionToc {margin-left:1em;}
+.subsubsectionToc, .likesubsubsectionToc {margin-left:2em;}
+.paragraphToc, .likeparagraphToc {margin-left:3em;}
+.subparagraphToc, .likesubparagraphToc {margin-left:4em;}
+figure.float, div.figure {margin-left: auto; margin-right: auto;}
+figure.figure {text-align:center;}
+figcaption.caption {text-indent:-2em; margin-left:3em; margin-right:1em; text-align:center;}
+figcaption.caption span.id{font-weight: bold; white-space: nowrap; }
+p + figcaption, img + figcaption{margin-top: 1em;}
+.abstract{margin:1em;}
+.equation-star td{text-align:center; vertical-align:middle; }
+table.equation-star { width:100%; } 
+.boxed{border: 1px solid black; padding-left:2px; padding-right:2px;}
+mtd.align-odd{margin-left:2em; text-align:right;}
+mtd.align-even{margin-right:2em; text-align:left;}
+/* end css.sty */
+
+
+html{background:#fff;color:#243833}body{padding:clamp(.55rem,2vw,1.25rem);margin:0;line-height:1.5;overflow-wrap:break-word}
+h1,h2,h3,h4,h5,h6{line-height:1.22;color:#193d35}p{margin:.5rem 0}math[display=block]{overflow-x:auto;max-width:100%}
+@media print{body{padding:0;color:#000}}
+</style> 
+<meta content='model.tex' name='src' /> 
+</head><body>
+   <h3 class='likesectionHead' id='asymmetric-decentralized-supplychain-equilibrium'><a id='x1-1000'></a>Asymmetric decentralized supply-chain equilibrium</h3>
+<!-- l. 8 --><p class='noindent'>For every manufacturer <!-- l. 8 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>i</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mi>M</mi></mrow></math>,
+the manufacturer’s MPEC is
+</p><!-- tex4ht:inline --><!-- l. 14 --><math display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mtable class='align' columnalign='left' displaystyle='true'>
+                               <mtr><mtd class='align-odd' columnalign='right'><munder class='msub'><mrow><mtext class='qopname'>max</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow><mrow><msub><mrow><mi>y</mi></mrow><mrow><mi>i</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mover accent='true'><mrow><mi>x</mi></mrow><mo accent='true'>^</mo></mover><mo class='MathClass-punc' stretchy='false'>,</mo><mi>v</mi></mrow></munder><mspace class='quad' width='1em'></mspace></mtd>                               <mtd class='align-even'><msup><mrow><mi>v</mi></mrow><mrow><mi>T</mi></mrow></msup><msub><mrow><mi>y</mi></mrow><mrow>
+<mi>i</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <msubsup><mrow><mi>c</mi></mrow><mrow><mi>i</mi></mrow><mrow><mi>T</mi></mrow></msubsup><msub><mrow><mi>y</mi></mrow><mrow>
+<mi>i</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                                                                              <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(10)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-1005r0'></mstyle><!-- endlabel -->
+                               </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'><mstyle class='text'><mtext>s.t.</mtext></mstyle><mspace class='quad' width='1em'></mspace></mtd>                                     <mtd class='align-even'><munderover accent='false' accentunder='false'><mrow><mo>∑</mo>
+  </mrow><mrow><mi>k</mi><mo class='MathClass-rel' stretchy='false'>=</mo><mn>1</mn></mrow><mrow><mi>M</mi></mrow></munderover><msub><mrow><mi>y</mi></mrow><mrow>
+<mi>k</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo><munderover accent='false' accentunder='false'><mrow><mo> ∑</mo>
+  </mrow><mrow><mi>j</mi><mo class='MathClass-rel' stretchy='false'>=</mo><mn>1</mn></mrow><mrow><mi>N</mi></mrow></munderover><msub><mrow><mi>x</mi></mrow><mrow>
+<mi>j</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                                                                   <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(11)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-1006r0'></mstyle><!-- endlabel -->
+                               </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>                                        <mtd class='align-even'><mn>0</mn> <mo class='MathClass-rel' stretchy='false'>≤</mo><mover accent='true'><mrow><mi>q</mi></mrow><mo accent='true'>^</mo></mover> <mo class='MathClass-bin' stretchy='false'>+</mo> <mo class='MathClass-open' stretchy='false'>(</mo><mover accent='true'><mrow><mi>B</mi></mrow><mo accent='true'>^</mo></mover> <mo class='MathClass-bin' stretchy='false'>+</mo> <mi>Ĥ</mi><mo class='MathClass-close' stretchy='false'>)</mo><mover accent='true'><mrow><mi>x</mi></mrow><mo accent='true'>^</mo></mover> <mo class='MathClass-rel' stretchy='false'>⊥</mo><mover accent='true'><mrow><mi>x</mi></mrow><mo accent='true'>^</mo></mover> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace width='2em'></mspace></mtd>                                                              <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(12)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-1007r0'></mstyle><!-- endlabel -->
+                               </mtd></mtr><mtr><mtd class='align-odd' columnalign='right'></mtd>                                        <mtd class='align-even'><msub><mrow><mi>y</mi></mrow><mrow><mi>i</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>.</mo><mspace width='2em'></mspace></mtd>                                                                                   <mtd class='align-label' columnalign='right'><mstyle class='maketag'><mtext>(13)</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mstyle class='label' id='x1-1008r0'></mstyle><!-- endlabel -->
+   </mtd></mtr></mtable></math>
+<!-- l. 15 --><p class='noindent'>In manufacturer <!-- l. 15 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>i</mi></math>’s maximization,
+the production quantities <!-- l. 15 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>y</mi></mrow><mrow><mi>k</mi></mrow></msub></math>
+of all other manufacturers, <!-- l. 15 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>k</mi><mo class='MathClass-rel' stretchy='false'>≠</mo><mi>i</mi></mrow></math>,
+are held fixed. The manufacturer–retailer equilibrium simultaneously solves these MPECs for all
+<!-- l. 15 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>M</mi></math> manufacturers, with the same
+retailer order vector <!-- l. 15 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mover accent='true'><mrow><mi>x</mi></mrow><mo accent='true'>^</mo></mover></math> and
+wholesale price vector <!-- l. 15 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>v</mi></math>. Thus
+the selected model is the coupled equilibrium problem with equilibrium constraints, not a maximization of aggregate manufacturer profit.
+Only <!-- l. 15 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>y</mi></mrow><mrow><mi>i</mi></mrow></msub></math> is the manufacturer’s
+free production decision; <!-- l. 15 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>v</mi></math>
+is implicitly determined through wholesale market clearing and the retailers’ equilibrium. There is no manufacturer
+differentiation: every manufacturer sells a given product at the same wholesale price.
+</p><!-- l. 17 --><p class='noindent'>
+</p>
+   <h3 class='likesectionHead' id='indices-data-and-variable-roles'><a id='x1-2000'></a>Indices, data, and variable roles</h3>
+<!-- l. 18 --><p class='noindent'>There are <!-- l. 18 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>M</mi></math> manufacturers,
+<!-- l. 18 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>N</mi></math> retailers, and
+<!-- l. 18 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>P</mi></math> products. Manufacturer
+indices run from <!-- l. 18 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mn>1</mn></math>
+to <!-- l. 18 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>M</mi></math>, retailer
+indices from <!-- l. 18 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mn>1</mn></math> to
+<!-- l. 18 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>N</mi></math>, and product
+indices from <!-- l. 18 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mn>1</mn></math> to
+<!-- l. 18 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>P</mi></math>. In particular,
+<!-- l. 18 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>k</mi></math> in (11) is a manufacturer
+index, whereas <!-- l. 18 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>k</mi></math>
+in <!-- l. 18 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>x</mi></mrow><mrow><mi mathvariant='italic'>jk</mi></mrow></msub></math> and
+
+<!-- l. 18 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>p</mi></mrow><mrow><mi mathvariant='italic'>jk</mi></mrow></msub></math> below is
+a product index.
+</p><!-- l. 20 --><p class='indent'>   The fixed unit production cost of manufacturer <!-- l. 20 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>i</mi></math>
+is <!-- l. 20 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>c</mi></mrow><mrow><mi>i</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msup><mrow><mi>ℝ</mi></mrow><mrow><mi>P</mi></mrow></msup></mrow></math>. Its production
+vector is <!-- l. 20 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>y</mi></mrow><mrow><mi>i</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msup><mrow><mi>ℝ</mi></mrow><mrow><mi>P</mi></mrow></msup></mrow></math>.
+The wholesale price vector is </p><table class='equation-star'><tr><td>
+<!-- l. 21 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                                   <mi>v</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>v</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>v</mi></mrow><mrow><mn>2</mn></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>v</mi></mrow><mrow><mi>P</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msup><mrow><mi>ℝ</mi></mrow><mrow><mi>P</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 24 --><p class='indent'>   The retailer order vectors and their stack are </p><table class='equation-star'><tr><td>
+<!-- l. 25 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                     <msub><mrow><mi>x</mi></mrow><mrow><mi>j</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>x</mi></mrow><mrow><mi>j</mi><mn>1</mn></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>x</mi></mrow><mrow><mi>j</mi><mn>2</mn></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>x</mi></mrow><mrow><mi mathvariant='italic'>jP</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msup><mrow><mi>ℝ</mi></mrow><mrow><mi>P</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mover accent='true'><mrow><mi>x</mi></mrow><mo accent='true'>^</mo></mover> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>x</mi></mrow><mrow>
+<mn>1</mn></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>x</mi></mrow><mrow><mn>2</mn></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>x</mi></mrow><mrow><mi>N</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msup><mrow><mi>ℝ</mi></mrow><mrow><mi mathvariant='italic'>NP</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 30 --><p class='indent'>   Here <!-- l. 30 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>x</mi></mrow><mrow><mi mathvariant='italic'>jk</mi></mrow></msub></math> is retailer
+<!-- l. 30 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>j</mi></math>’s order quantity
+of product <!-- l. 30 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>k</mi></math>.
+Nonnegative orders are imposed by (12), and nonnegative production by (13) in every
+manufacturer’s block. The displayed model imposes no separate sign constraint on
+<!-- l. 30 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>v</mi></math>.
+</p><!-- l. 32 --><p class='indent'>   The fixed inverse-demand intercepts and their stack are </p><table class='equation-star'><tr><td>
+<!-- l. 33 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                      <msub><mrow><mi>a</mi></mrow><mrow><mi>j</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>a</mi></mrow><mrow><mi>j</mi><mn>1</mn></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>a</mi></mrow><mrow><mi>j</mi><mn>2</mn></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>a</mi></mrow><mrow><mi mathvariant='italic'>jP</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msup><mrow><mi>ℝ</mi></mrow><mrow><mi>P</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mi>â</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>a</mi></mrow><mrow>
+<mn>1</mn></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>a</mi></mrow><mrow><mn>2</mn></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>a</mi></mrow><mrow><mi>N</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msup><mrow><mi>ℝ</mi></mrow><mrow><mi mathvariant='italic'>NP</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+
+<!-- l. 38 --><p class='indent'>   The vector <!-- l. 38 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>â</mi></math>
+gives the prices consumers would pay at zero retail supply and at a realization
+<!-- l. 38 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>𝜖</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn></mrow></math>. The inverse-demand
+sensitivity matrix is <!-- l. 38 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mover accent='true'><mrow><mi>B</mi></mrow><mo accent='true'>^</mo></mover> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msup><mrow><mi>ℝ</mi></mrow><mrow><mi mathvariant='italic'>NP</mi><mo class='MathClass-bin' stretchy='false'>×</mo><mi mathvariant='italic'>NP</mi></mrow></msup></mrow></math>;
+its blocks <!-- l. 38 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>H</mi></mrow><mrow><mi>j</mi></mrow></msub></math>
+and <!-- l. 38 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>G</mi></mrow><mrow><mi mathvariant='italic'>jl</mi></mrow></msub></math> are
+<!-- l. 38 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>P</mi> <mo class='MathClass-bin' stretchy='false'>×</mo> <mi>P</mi></mrow></math>
+matrices.
+</p><!-- l. 40 --><p class='noindent'>
+</p>
+   <h3 class='likesectionHead' id='demand-and-risk-adjustment'><a id='x1-3000'></a>Demand and risk adjustment</h3>
+<!-- l. 41 --><p class='noindent'>The operative stochastic inverse demand is </p><table class='equation-star'><tr><td>
+<!-- l. 42 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                <mover accent='true'><mrow><mi>p</mi></mrow><mo accent='true'>^</mo></mover> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>(</mo><mi>â</mi> <mo class='MathClass-bin' stretchy='false'>−</mo><mover accent='true'><mrow><mi>B</mi></mrow><mo accent='true'>^</mo></mover><mover accent='true'><mrow><mi>x</mi></mrow><mo accent='true'>^</mo></mover><mo class='MathClass-close' stretchy='false'>)</mo><mi>𝜖</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mover accent='true'><mrow><mi>p</mi></mrow><mo accent='true'>^</mo></mover> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>p</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>p</mi></mrow><mrow><mn>2</mn></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>p</mi></mrow><mrow><mi>N</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msup><mrow><mi>ℝ</mi></mrow><mrow><mi mathvariant='italic'>NP</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><msub><mrow><mi>p</mi></mrow><mrow>
+<mi>j</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>p</mi></mrow><mrow><mi>j</mi><mn>1</mn></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>p</mi></mrow><mrow><mi>j</mi><mn>2</mn></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>p</mi></mrow><mrow><mi mathvariant='italic'>jP</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 49 --><p class='indent'>   Here <!-- l. 49 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>p</mi></mrow><mrow><mi mathvariant='italic'>jk</mi></mrow></msub></math> is retailer
+<!-- l. 49 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>j</mi></math>’s retail price for
+product <!-- l. 49 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>k</mi></math>. The common
+multiplicative shock <!-- l. 49 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>𝜖</mi></math>
+is a positive scalar random variable with mean one and finite standard deviation
+<!-- l. 49 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>σ</mi></math>:
+</p><table class='equation-star'><tr><td>
+<!-- l. 50 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                                <mi>𝜖</mi> <mo class='MathClass-rel' stretchy='false'>&gt;</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mi>𝔼</mi><mo class='MathClass-open' stretchy='false'>[</mo><mi>𝜖</mi><mo class='MathClass-close' stretchy='false'>]</mo> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mtext class='qopname'>sd</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo><!-- nolimits --><mo class='MathClass-open' stretchy='false'>(</mo><mi>𝜖</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-rel' stretchy='false'>=</mo> <mi>σ</mi> <mo class='MathClass-rel' stretchy='false'>&lt;</mo> <mi>∞</mi><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 54 --><p class='indent'>   Consequently, </p><table class='equation-star'><tr><td>
+
+<!-- l. 55 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                                    <mi>𝔼</mi><mo class='MathClass-open' stretchy='false'>[</mo><mover accent='true'><mrow><mi>p</mi></mrow><mo accent='true'>^</mo></mover><mo class='MathClass-close' stretchy='false'>]</mo> <mo class='MathClass-rel' stretchy='false'>=</mo> <mi>â</mi> <mo class='MathClass-bin' stretchy='false'>−</mo><mover accent='true'><mrow><mi>B</mi></mrow><mo accent='true'>^</mo></mover><mover accent='true'><mrow><mi>x</mi></mrow><mo accent='true'>^</mo></mover><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 58 --><p class='indent'>   For each <!-- l. 58 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>j</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mi>N</mi></mrow></math>,
+define the block row </p><table class='equation-star'><tr><td>
+<!-- l. 59 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow>
+                                 <mover accent='true'><mrow><mi>B</mi></mrow><mo accent='true'>^</mo></mover></mrow><mrow><mi>j</mi><mo class='MathClass-bin' stretchy='false'>∙</mo></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>G</mi></mrow><mrow><mi>j</mi><mn>1</mn></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>H</mi></mrow><mrow><mi>j</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>G</mi></mrow><mrow><mi mathvariant='italic'>jN</mi></mrow></msub><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 62 --><p class='indent'>   The retailer-specific demand relation and random profit are, respectively, </p><table class='equation-star'><tr><td>
+<!-- l. 63 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow>
+<mi>p</mi></mrow><mrow><mi>j</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mrow><mo fence='true' form='prefix'> (</mo><mrow><msub><mrow><mi>a</mi></mrow><mrow><mi>j</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>H</mi></mrow><mrow><mi>j</mi></mrow></msub><msub><mrow><mi>x</mi></mrow><mrow><mi>j</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo><munderover accent='false' accentunder='false'><mrow><mo>∑</mo>
+  </mrow><mrow><mtable class='subarray-c' columnalign='center' rowspacing='0'><mtr><mtd><mi>l</mi><mo class='MathClass-rel' stretchy='false'>=</mo><mn>1</mn>
+</mtd></mtr><mtr><mtd><mi>l</mi><mo class='MathClass-rel' stretchy='false'>≠</mo><mi>j</mi>
+     </mtd></mtr>                                                                                                                                            </mtable></mrow><mrow><mi>N</mi></mrow></munderover><msub><mrow><mi>G</mi></mrow><mrow>
+<mi mathvariant='italic'>jl</mi></mrow></msub><msub><mrow><mi>x</mi></mrow><mrow><mi>l</mi></mrow></msub></mrow><mo fence='true' form='postfix'>)</mo></mrow> <mi>𝜖</mi><mo class='MathClass-punc' stretchy='false'>,</mo>
+</mrow></math></td></tr></table>
+   <table class='equation-star'><tr><td>
+<!-- l. 66 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                                 <mo class='MathClass-bin' stretchy='false'>−</mo><msubsup><mrow><mi>x</mi></mrow><mrow><mi>j</mi></mrow><mrow><mi>T</mi></mrow></msubsup><mi>v</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <msubsup><mrow><mi>x</mi></mrow><mrow>
+<mi>j</mi></mrow><mrow><mi>T</mi></mrow></msubsup><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>a</mi></mrow><mrow>
+<mi>j</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo><msub><mrow><mover accent='true'><mrow><mi>B</mi></mrow><mo accent='true'>^</mo></mover></mrow><mrow><mi>j</mi><mo class='MathClass-bin' stretchy='false'>∙</mo></mrow></msub><mover accent='true'><mrow><mi>x</mi></mrow><mo accent='true'>^</mo></mover><mo class='MathClass-close' stretchy='false'>)</mo><mi>𝜖</mi><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+
+<!-- l. 69 --><p class='indent'>   Wholesale decisions and retailer orders are made before
+<!-- l. 69 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>𝜖</mi></math> is
+realized. Wholesale prices and manufacturer profits are therefore deterministic in this decentralized
+model.
+</p><!-- l. 71 --><p class='indent'>   Retailer <!-- l. 71 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>j</mi></math> has fixed
+risk-aversion parameter <!-- l. 71 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>γ</mi></mrow><mrow><mi>j</mi></mrow></msub></math>.
+The paper assumes risk-averse retailers and also allows the risk-neutral boundary case
+<!-- l. 71 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>γ</mi></mrow><mrow><mi>j</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn></mrow></math>. Its risk
+adjustment is </p><table class='equation-star'><tr><td>
+<!-- l. 72 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                               <msub><mrow><mi>η</mi></mrow><mrow><mi>j</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>γ</mi></mrow><mrow><mi>j</mi></mrow></msub><mi>σ</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><msub><mrow><mi>η</mi></mrow><mrow><mi>j</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>&gt;</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mi>j</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mi>N</mi><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 77 --><p class='indent'>   The strict positivity of <!-- l. 77 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>η</mi></mrow><mrow><mi>j</mi></mrow></msub></math>
+is the paper’s maintained premise to avoid trivial equilibria. The stated boundary cases are </p><table class='equation-star'><tr><td>
+<!-- l. 78 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                                   <msub><mrow><mi>γ</mi></mrow><mrow><mi>j</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn><mspace class='nbsp' width='0.33em'></mspace><mstyle class='text'><mtext>or</mtext></mstyle><mspace class='nbsp' width='0.33em'></mspace><mi>σ</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn><mspace class='quad' width='1em'></mspace><mo class='MathClass-rel' stretchy='false'>⟹</mo><mspace class='quad' width='1em'></mspace><msub><mrow><mi>η</mi></mrow><mrow><mi>j</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 83 --><p class='noindent'>
+</p>
+   <h3 class='likesectionHead' id='matrices-and-premise-for-the-retailerequilibrium-replacement'><a id='x1-4000'></a>Matrices and premise for the retailer-equilibrium replacement</h3>
+<!-- l. 84 --><p class='noindent'>The matrices in (12) are exactly those in Assumption 5.1: </p><table class='equation-star'><tr><td>
+
+<!-- l. 85 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mover accent='true'><mrow><mi>B</mi></mrow><mo accent='true'>^</mo></mover> <mo class='MathClass-rel' stretchy='false'>=</mo>  <mrow><mo fence='true' form='prefix'> (</mo><mrow><mtable align='axis' class='array' columnlines='none none none none none none none none none' displaystyle='true' equalcolumns='false' equalrows='false' style=''><mtr class='array-row'><mtd class='array-td' columnalign='center'>  <msub><mrow><mi>H</mi></mrow><mrow><mn>1</mn></mrow></msub>   </mtd><mtd class='array-td' columnalign='center'>  <msub><mrow><mi>G</mi></mrow><mrow><mn>12</mn></mrow></msub>  </mtd><mtd class='array-td' columnalign='center'>  <mo class='MathClass-rel' stretchy='false'>⋯</mo><mspace class='thinspace' width='0.17em'></mspace> </mtd><mtd class='array-td' columnalign='center'> <msub><mrow><mi>G</mi></mrow><mrow><mn>1</mn><mi>N</mi></mrow></msub>  </mtd>
+</mtr> <mtr class='array-row'><mtd class='array-td' columnalign='center'>  <msub><mrow><mi>G</mi></mrow><mrow><mn>21</mn></mrow></msub>  </mtd><mtd class='array-td' columnalign='center'>   <msub><mrow><mi>H</mi></mrow><mrow><mn>2</mn></mrow></msub>   </mtd><mtd class='array-td' columnalign='center'>  <mo class='MathClass-rel' stretchy='false'>⋯</mo><mspace class='thinspace' width='0.17em'></mspace> </mtd><mtd class='array-td' columnalign='center'> <msub><mrow><mi>G</mi></mrow><mrow><mn>2</mn><mi>N</mi></mrow></msub>  </mtd>
+</mtr> <mtr class='array-row'><mtd class='array-td' columnalign='center'>    <mi>⋮</mi>   </mtd><mtd class='array-td' columnalign='center'>   <mi>⋮</mi>   </mtd><mtd class='array-td' columnalign='center'> <mo class='MathClass-rel' stretchy='false'>⋱</mo> </mtd><mtd class='array-td' columnalign='center'>   <mi>⋮</mi>   </mtd></mtr>  <!-- *\c@MaxMatrixCols c --></mtable>                                                                                                             </mrow><mo fence='true' form='postfix'>)</mo></mrow> <mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mi>Ĥ</mi> <mo class='MathClass-rel' stretchy='false'>=</mo>  <mrow><mo fence='true' form='prefix'> (</mo><mrow><mtable align='axis' class='array' columnlines='none none none none none none none none none' displaystyle='true' equalcolumns='false' equalrows='false' style=''><mtr class='array-row'><mtd class='array-td' columnalign='center'> <msub><mrow><mi>H</mi></mrow><mrow><mn>1</mn></mrow></msub>  </mtd><mtd class='array-td' columnalign='center'>   <mn>0</mn>   </mtd><mtd class='array-td' columnalign='center'> <mo class='MathClass-rel' stretchy='false'>⋯</mo><mspace class='thinspace' width='0.17em'></mspace> </mtd><mtd class='array-td' columnalign='center'>   <mn>0</mn>   </mtd>
+</mtr><mtr class='array-row'><mtd class='array-td' columnalign='center'>   <mn>0</mn>   </mtd><mtd class='array-td' columnalign='center'> <msub><mrow><mi>H</mi></mrow><mrow><mn>2</mn></mrow></msub>  </mtd><mtd class='array-td' columnalign='center'>  <mo class='MathClass-rel' stretchy='false'>⋯</mo><mspace class='thinspace' width='0.17em'></mspace> </mtd><mtd class='array-td' columnalign='center'>   <mn>0</mn>   </mtd></mtr> <mtr class='array-row'><mtd class='array-td' columnalign='center'> <mi>⋮</mi> </mtd> <mtd class='array-td' columnalign='center'> <mi>⋮</mi> </mtd> <mtd class='array-td' columnalign='center'> <mo class='MathClass-rel' stretchy='false'>⋱</mo> </mtd> <mtd class='array-td' columnalign='center'> <mi>⋮</mi></mtd>
+</mtr> <!-- *\c@MaxMatrixCols c --></mtable>                                                                                                                 </mrow><mo fence='true' form='postfix'>)</mo></mrow> <mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 102 --><p class='indent'>
+     </p><blockquote class='quote'>
+     <!-- l. 103 --><p class='noindent'><span class='cmbx-10'>Assumption 5.1. </span>The matrix <!-- l. 103 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mover accent='true'><mrow><mi>B</mi></mrow><mo accent='true'>^</mo></mover> <mo class='MathClass-bin' stretchy='false'>+</mo> <mi>Ĥ</mi></mrow></math>
+     is positive definite.</p></blockquote>
+<!-- l. 105 --><p class='noindent'>This is an input premise, not a constraint on production or orders. Proposition B.4 states that it implies that every
+<!-- l. 105 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>H</mi></mrow><mrow><mi>j</mi></mrow></msub></math>,
+<!-- l. 105 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>j</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mi>N</mi></mrow></math>, is
+positive definite.
+</p><!-- l. 107 --><p class='indent'>   The vector in (12) is defined by </p><table class='equation-star'><tr><td>
+<!-- l. 108 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                           <mover accent='true'><mrow><mi>q</mi></mrow><mo accent='true'>^</mo></mover> <mo class='MathClass-rel' stretchy='false'>=</mo> <mrow><mo fence='true' form='prefix'> (</mo><mrow> <mfrac><mrow><mi>v</mi></mrow>
+<mrow><msub><mrow><mi>η</mi></mrow><mrow><mn>1</mn></mrow></msub></mrow></mfrac> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>a</mi></mrow><mrow><mn>1</mn></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo> <mfrac><mrow><mi>v</mi></mrow> 
+<mrow><msub><mrow><mi>η</mi></mrow><mrow><mn>2</mn></mrow></msub></mrow></mfrac> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>a</mi></mrow><mrow><mn>2</mn></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo>  <mfrac><mrow><mi>v</mi></mrow> 
+<mrow><msub><mrow><mi>η</mi></mrow><mrow><mi>N</mi></mrow></msub></mrow></mfrac> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>a</mi></mrow><mrow><mi>N</mi></mrow></msub></mrow><mo fence='true' form='postfix'>)</mo></mrow> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msup><mrow><mi>ℝ</mi></mrow><mrow><mi mathvariant='italic'>NP</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 113 --><p class='indent'>   In particular, <!-- l. 113 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mover accent='true'><mrow><mi>q</mi></mrow><mo accent='true'>^</mo></mover></math>
+depends on the wholesale price variable; it is not independent fixed data in the manufacturer MPEC.
+</p><!-- l. 115 --><p class='noindent'>
+</p>
+   <h3 class='likesectionHead' id='defining-retailer-preferences-and-complementarity'><a id='x1-5000'></a>Defining retailer preferences and complementarity</h3>
+<!-- l. 116 --><p class='noindent'>The following rows define the retailer response represented by (12); they are not additional upper-level maximizations. Given
+<!-- l. 116 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>v</mi></math> and the orders of the
+other retailers, retailer <!-- l. 116 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>j</mi></math>’s
+printed mean–standard-deviation decision is </p><table class='equation'><tr><td>
+<!-- l. 117 --><p class='indent'>
+
+</p><!-- l. 117 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                   <mstyle class='label' id='x1-5001r1'></mstyle><!-- endlabel --><munder class='msub'><mrow><mtext class='qopname'>max</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow><mrow><msub><mrow><mi>x</mi></mrow><mrow><mi>j</mi></mrow></msub><mo class='MathClass-rel' stretchy='false'>≥</mo><mn>0</mn></mrow></munder><mspace class='quad' width='1em'></mspace> <mo class='MathClass-bin' stretchy='false'>−</mo> <msubsup><mrow><mi>x</mi></mrow><mrow><mi>j</mi></mrow><mrow><mi>T</mi></mrow></msubsup><mi>v</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <msubsup><mrow><mi>x</mi></mrow><mrow>
+<mi>j</mi></mrow><mrow><mi>T</mi></mrow></msubsup><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>a</mi></mrow><mrow>
+<mi>j</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo><msub><mrow><mover accent='true'><mrow><mi>B</mi></mrow><mo accent='true'>^</mo></mover></mrow><mrow><mi>j</mi><mo class='MathClass-bin' stretchy='false'>∙</mo></mrow></msub><mover accent='true'><mrow><mi>x</mi></mrow><mo accent='true'>^</mo></mover><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>γ</mi></mrow><mrow><mi>j</mi></mrow></msub><msubsup><mrow><mi>x</mi></mrow><mrow><mi>j</mi></mrow><mrow><mi>T</mi></mrow></msubsup><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>a</mi></mrow><mrow>
+<mi>j</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo><msub><mrow><mover accent='true'><mrow><mi>B</mi></mrow><mo accent='true'>^</mo></mover></mrow><mrow><mi>j</mi><mo class='MathClass-bin' stretchy='false'>∙</mo></mrow></msub><mover accent='true'><mrow><mi>x</mi></mrow><mo accent='true'>^</mo></mover><mo class='MathClass-close' stretchy='false'>)</mo><mi>σ</mi><mo class='MathClass-punc' stretchy='false'>.</mo>
+                                                                                         <mstyle class='label' id='x1-5002r0'></mstyle><!-- endlabel -->
+</mrow></math></td><td class='eq-no'>(1)<a id='x1-5003r0'></a></td></tr></table>
+<!-- l. 123 --><p class='indent'>   With the above definition of <!-- l. 123 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>η</mi></mrow><mrow><mi>j</mi></mrow></msub></math>,
+the paper rewrites this as </p><table class='equation'><tr><td>
+<!-- l. 124 --><p class='indent'>
+</p><!-- l. 124 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                            <mstyle class='label' id='x1-5004r1'></mstyle><!-- endlabel --><munder class='msub'><mrow><mtext class='qopname'>max</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow><mrow><msub><mrow><mi>x</mi></mrow><mrow><mi>j</mi></mrow></msub><mo class='MathClass-rel' stretchy='false'>≥</mo><mn>0</mn></mrow></munder><mspace class='quad' width='1em'></mspace> <mo class='MathClass-bin' stretchy='false'>−</mo> <msubsup><mrow><mi>x</mi></mrow><mrow><mi>j</mi></mrow><mrow><mi>T</mi></mrow></msubsup><mi>v</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>η</mi></mrow><mrow>
+<mi>j</mi></mrow></msub><msubsup><mrow><mi>x</mi></mrow><mrow><mi>j</mi></mrow><mrow><mi>T</mi></mrow></msubsup><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>a</mi></mrow><mrow>
+<mi>j</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo><msub><mrow><mover accent='true'><mrow><mi>B</mi></mrow><mo accent='true'>^</mo></mover></mrow><mrow><mi>j</mi><mo class='MathClass-bin' stretchy='false'>∙</mo></mrow></msub><mover accent='true'><mrow><mi>x</mi></mrow><mo accent='true'>^</mo></mover><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-punc' stretchy='false'>.</mo>
+                                                                                         <mstyle class='label' id='x1-5005r0'></mstyle><!-- endlabel -->
+</mrow></math></td><td class='eq-no'>(2)<a id='x1-5006r0'></a></td></tr></table>
+<!-- l. 129 --><p class='indent'>   The proof of Proposition 5.2 in Appendix C writes the same objective explicitly as </p><table class='equation-star'><tr><td>
+<!-- l. 130 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<munder class='msub'><mrow><mtext class='qopname'>max</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow><mrow><msub><mrow><mi>x</mi></mrow><mrow><mi>j</mi></mrow></msub><mo class='MathClass-rel' stretchy='false'>≥</mo><mn>0</mn></mrow></munder><mspace class='quad' width='1em'></mspace><mo class='MathClass-bin' stretchy='false'>−</mo><msubsup><mrow><mi>x</mi></mrow><mrow><mi>j</mi></mrow><mrow><mi>T</mi></mrow></msubsup><mi>v</mi><mo class='MathClass-bin' stretchy='false'>+</mo><msub><mrow><mi>η</mi></mrow><mrow>
+<mi>j</mi></mrow></msub><msubsup><mrow><mi>x</mi></mrow><mrow><mi>j</mi></mrow><mrow><mi>T</mi></mrow></msubsup> <mrow><mo fence='true' form='prefix'> (</mo><mrow><msub><mrow><mi>a</mi></mrow><mrow>
+<mi>j</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>H</mi></mrow><mrow><mi>j</mi></mrow></msub><msub><mrow><mi>x</mi></mrow><mrow><mi>j</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo><munderover accent='false' accentunder='false'><mrow><mo>∑</mo>
+  </mrow><mrow><mtable class='subarray-c' columnalign='center' rowspacing='0'><mtr><mtd><mi>l</mi><mo class='MathClass-rel' stretchy='false'>=</mo><mn>1</mn>
+</mtd></mtr><mtr><mtd><mi>l</mi><mo class='MathClass-rel' stretchy='false'>≠</mo><mi>j</mi>
+     </mtd></mtr>                                                                                                                                            </mtable></mrow><mrow><mi>N</mi></mrow></munderover><msub><mrow><mi>G</mi></mrow><mrow>
+<mi mathvariant='italic'>jl</mi></mrow></msub><msub><mrow><mi>x</mi></mrow><mrow><mi>l</mi></mrow></msub></mrow><mo fence='true' form='postfix'>)</mo></mrow> <mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mi>j</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mtext class='qopname'>…</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo><mo class='MathClass-punc' stretchy='false'>,</mo><mi>N</mi><mo class='MathClass-punc' stretchy='false'>,</mo>
+</mrow></math></td></tr></table>
+<!-- l. 136 --><p class='indent'>   and gives the following retailer best-response complementarity rows: </p><table class='equation-star'><tr><td>
+<!-- l. 137 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+<mn>0</mn> <mo class='MathClass-rel' stretchy='false'>≤</mo> <mfrac><mrow><mi>v</mi></mrow> 
+<mrow><msub><mrow><mi>η</mi></mrow><mrow><mi>j</mi></mrow></msub></mrow></mfrac><mo class='MathClass-bin' stretchy='false'>−</mo><mrow><mo fence='true' form='prefix'> (</mo><mrow><msub><mrow><mi>a</mi></mrow><mrow><mi>j</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <mn>2</mn><msub><mrow><mi>H</mi></mrow><mrow><mi>j</mi></mrow></msub><msub><mrow><mi>x</mi></mrow><mrow><mi>j</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo><munderover accent='false' accentunder='false'><mrow><mo>∑</mo>
+  </mrow><mrow><mtable class='subarray-c' columnalign='center' rowspacing='0'><mtr><mtd><mi>l</mi><mo class='MathClass-rel' stretchy='false'>=</mo><mn>1</mn>
+</mtd></mtr><mtr><mtd><mi>l</mi><mo class='MathClass-rel' stretchy='false'>≠</mo><mi>j</mi>
+     </mtd></mtr>                                                                                                                                            </mtable></mrow><mrow><mi>N</mi></mrow></munderover><msub><mrow><mi>G</mi></mrow><mrow>
+<mi mathvariant='italic'>jl</mi></mrow></msub><msub><mrow><mi>x</mi></mrow><mrow><mi>l</mi></mrow></msub></mrow><mo fence='true' form='postfix'>)</mo></mrow> <mo class='MathClass-rel' stretchy='false'>⊥</mo> <msub><mrow><mi>x</mi></mrow><mrow><mi>j</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mi>j</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mi>N</mi><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 143 --><p class='indent'>   Their concatenation is precisely </p><table class='equation'><tr><td>
+<!-- l. 144 --><p class='indent'>
+
+</p><!-- l. 144 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                               <mstyle class='label' id='x1-5007r1'></mstyle><!-- endlabel --><mn>0</mn> <mo class='MathClass-rel' stretchy='false'>≤</mo><mover accent='true'><mrow><mi>q</mi></mrow><mo accent='true'>^</mo></mover> <mo class='MathClass-bin' stretchy='false'>+</mo> <mo class='MathClass-open' stretchy='false'>(</mo><mover accent='true'><mrow><mi>B</mi></mrow><mo accent='true'>^</mo></mover> <mo class='MathClass-bin' stretchy='false'>+</mo> <mi>Ĥ</mi><mo class='MathClass-close' stretchy='false'>)</mo><mover accent='true'><mrow><mi>x</mi></mrow><mo accent='true'>^</mo></mover> <mo class='MathClass-rel' stretchy='false'>⊥</mo><mover accent='true'><mrow><mi>x</mi></mrow><mo accent='true'>^</mo></mover> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>.</mo>
+                                                                                         <mstyle class='label' id='x1-5008r0'></mstyle><!-- endlabel -->
+</mrow></math></td><td class='eq-no'>(9)<a id='x1-5009r0'></a></td></tr></table>
+<!-- l. 149 --><p class='indent'>   Equation (12) is this same condition, imposed once in each manufacturer’s feasible
+block. Proposition 5.2 states that under Assumption 5.1, for a given wholesale price
+<!-- l. 149 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>v</mi></math>, (9) has a unique solution, the
+retailer equilibrium. Its <!-- l. 149 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>j</mi></math>th
+block defines the implicit response </p><table class='equation-star'><tr><td>
+<!-- l. 150 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                                      <msub><mrow><mi>x</mi></mrow><mrow><mi>j</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>v</mi><mo class='MathClass-close' stretchy='false'>)</mo> <mo class='MathClass-punc' stretchy='false'>:</mo> <msup><mrow><mi>ℝ</mi></mrow><mrow><mi>P</mi></mrow></msup><mo class='MathClass-rel' stretchy='false'>→</mo><msup><mrow><mi>ℝ</mi></mrow><mrow><mi>P</mi></mrow></msup><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 153 --><p class='indent'>   The manufacturer formulation (10)–(13) replaces the implicit-response formulation (3)–(4); the latter is not
+imposed as a second manufacturer problem.
+</p><!-- l. 155 --><p class='indent'>   As defined on page 12 and in Appendix A, for <!-- l. 155 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>s</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>t</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo> <msup><mrow><mi>ℝ</mi></mrow><mrow><mi>n</mi></mrow></msup></mrow></math>,
+</p><table class='equation-star'><tr><td>
+<!-- l. 156 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                        <mn>0</mn> <mo class='MathClass-rel' stretchy='false'>≤</mo> <mi>s</mi> <mo class='MathClass-rel' stretchy='false'>⊥</mo> <mi>t</mi> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mn>0</mn><mspace class='quad' width='1em'></mspace><mo class='MathClass-rel' stretchy='false'>⟺</mo><mspace class='quad' width='1em'></mspace><msub><mrow><mi>s</mi></mrow><mrow><mi>r</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><msub><mrow><mi>t</mi></mrow><mrow><mi>r</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><msub><mrow><mi>s</mi></mrow><mrow><mi>r</mi></mrow></msub><msub><mrow><mi>t</mi></mrow><mrow><mi>r</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mi>r</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mi>n</mi><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 162 --><p class='indent'>   Thus the complementarity in (12), with <!-- l. 162 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>n</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mi mathvariant='italic'>NP</mi></mrow></math>,
+means </p><table class='equation-star'><tr><td>
+
+<!-- l. 163 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                   <mover accent='true'><mrow><mi>x</mi></mrow><mo accent='true'>^</mo></mover> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><mover accent='true'><mrow><mi>q</mi></mrow><mo accent='true'>^</mo></mover> <mo class='MathClass-bin' stretchy='false'>+</mo> <mo class='MathClass-open' stretchy='false'>(</mo><mover accent='true'><mrow><mi>B</mi></mrow><mo accent='true'>^</mo></mover> <mo class='MathClass-bin' stretchy='false'>+</mo> <mi>Ĥ</mi><mo class='MathClass-close' stretchy='false'>)</mo><mover accent='true'><mrow><mi>x</mi></mrow><mo accent='true'>^</mo></mover> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><msup><mrow><mover accent='true'><mrow><mi>x</mi></mrow><mo accent='true'>^</mo></mover></mrow><mrow><mi>T</mi></mrow></msup><mrow><mo class='MathClass-open' fence='true' mathsize='1.19em'>[</mo><mrow><mover accent='true'><mrow><mi>q</mi></mrow><mo accent='true'>^</mo></mover> <mo class='MathClass-bin' stretchy='false'>+</mo> <mo class='MathClass-open' stretchy='false'>(</mo><mover accent='true'><mrow><mi>B</mi></mrow><mo accent='true'>^</mo></mover> <mo class='MathClass-bin' stretchy='false'>+</mo> <mi>Ĥ</mi><mo class='MathClass-close' stretchy='false'>)</mo><mover accent='true'><mrow><mi>x</mi></mrow><mo accent='true'>^</mo></mover></mrow><mo class='MathClass-close' fence='true' mathsize='1.19em'>]</mo></mrow> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 168 --><p class='indent'>   These are the meaning of (12), not an alternative algorithmic subproblem.
+</p><!-- l. 170 --><p class='noindent'>
+</p>
+   <h3 class='likesectionHead' id='source-scope-and-printed-qualifications'><a id='x1-6000'></a>Source scope and printed qualifications</h3>
+<!-- l. 171 --><p class='noindent'>The operative block and coupling are from Section 5.2, physical pages 20–21; the defining demand and preferences
+are from pages 6–10. The complementarity definition is in Appendix A, pages 34–35, and the asymmetric retailer
+proof is on pages 45–46. Equation (14), on page 21, specifies a numerical example in Section 5.3.1,
+not a further condition of the general asymmetric equilibrium, and is not imposed here. The paper
+does not establish uniqueness of the coupled manufacturer–retailer equilibrium for the asymmetric
+chain.
+</p><!-- l. 173 --><p class='indent'>   Two printed qualifications are retained without repair. First, (1) identifies
+<!-- l. 173 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msubsup><mrow><mi>x</mi></mrow><mrow><mi>j</mi></mrow><mrow><mi>T</mi></mrow></msubsup><mo class='MathClass-open' stretchy='false'>(</mo><msub><mrow><mi>a</mi></mrow><mrow><mi>j</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo><msub><mrow><mover accent='true'><mrow><mi>B</mi></mrow><mo accent='true'>^</mo></mover></mrow><mrow><mi>j</mi><mo class='MathClass-bin' stretchy='false'>∙</mo></mrow></msub><mover accent='true'><mrow><mi>x</mi></mrow><mo accent='true'>^</mo></mover><mo class='MathClass-close' stretchy='false'>)</mo><mi>σ</mi></mrow></math>
+as the profit standard deviation, without an absolute value or an accompanying restriction making
+the revenue coefficient nonnegative. Second, the asymmetric retailer proof and (9)–(12) use
+<!-- l. 173 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>2</mn><msub><mrow><mi>H</mi></mrow><mrow><mi>j</mi></mrow></msub><msub><mrow><mi>x</mi></mrow><mrow><mi>j</mi></mrow></msub></mrow></math>
+on the diagonal, although the general demand definition and Assumption 5.1 do not state that
+<!-- l. 173 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>H</mi></mrow><mrow><mi>j</mi></mrow></msub></math> is
+symmetric. Positive definiteness alone does not supply that symmetry. The printed expressions and their stated
+scope are retained; no revenue-sign restriction, symmetry assumption, or transpose correction has been
+added.
+</p>
+    
+</body> 
+</html>

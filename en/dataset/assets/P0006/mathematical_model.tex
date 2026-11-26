@@ -1,0 +1,169 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+
+\title{Core Solvable Mathematical Model}
+\author{Paper 2}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section*{Retained Core Model}
+According to the \texttt{tex} formulas and the PDF, the practical directly solvable model is the
+exact McCormick-linearized deterministic equivalent in Appendix A (Page 35--36). 
+
+\paragraph{Sets and parameters.}
+Let $\mathcal{P}$ be the product set and $\mathcal{F}$ the facility set. For each
+$p \in \mathcal{P}$, let $\mathcal{D}_p$ be the set of admissible distributions, and for each
+$(p,d)$ let $\mathcal{S}_{pd}$ be the scenario set. For each $(p,f)$, let $\mathcal{L}_{pf}$ be
+the set of production levels. The parameters are:
+$C_{pf}$ unit production cost, $B_f$ facility capacity, $b_f$ facility-specific upper bound used
+in the linearized model, $L_{pfl}$ and $U_{pfl}$ lower/upper bounds of production level $l$,
+$l(p,f,d)$ the production level required by distribution $d$, $\pi_{sd}$ scenario probability,
+$Y_{pfds}$ realized yield, $D_{pds}$ demand, $P_p$ full-price revenue, $O_p$ discounted revenue,
+and $N_{pds}$ a valid upper bound on discounted sales $o_{pds}$.
+
+\paragraph{Decision variables.}
+$x_{pf} \ge 0$ is the production allocation of product $p$ at facility $f$.
+$y_{pfl}\in\{0,1\}$ selects production level $l$.
+$\delta_{pd}\in\{0,1\}$ selects the yield-demand distribution.
+$z_{pds}, w_{pds}, o_{pds} \ge 0$ denote available inventory, full-price sales, and discounted
+sales in scenario $(p,d,s)$.
+$\mu_{pds}$ and $\rho_{pds}$ are McCormick linearization variables replacing
+$\delta_{pd} w_{pds}$ and $\delta_{pd} o_{pds}$.
+
+\section*{Linearized MIP Formulation}
+\begin{equation}
+v_{PP\text{-}DESUP}^{*}
+= \max
+\left(
+- \sum_{p \in \mathcal{P}} \sum_{f \in \mathcal{F}} C_{pf} x_{pf}
++ \sum_{p \in \mathcal{P}} \sum_{d \in \mathcal{D}_p} \sum_{s \in \mathcal{S}_{pd}}
+\pi_{sd}\left( P_p \mu_{pds} + O_p \rho_{pds} \right)
+\right)
+\tag{22a}
+\end{equation}
+
+\begin{equation}
+\sum_{p \in \mathcal{P}} x_{pf} \le B_f
+\quad \forall f \in \mathcal{F}
+\tag{22b}
+\end{equation}
+
+\begin{equation}
+\sum_{l \in \mathcal{L}_{pf}} y_{pfl} = 1
+\quad \forall p \in \mathcal{P},\ \forall f \in \mathcal{F}
+\tag{22c}
+\end{equation}
+
+\begin{equation}
+\sum_{l \in \mathcal{L}_{pf}} L_{pfl} y_{pfl}
+\le x_{pf}
+\le \sum_{l \in \mathcal{L}_{pf}} \min\{b_f, U_{pfl}\}\, y_{pfl}
+\quad \forall p \in \mathcal{P},\ \forall f \in \mathcal{F}
+\tag{22d}
+\end{equation}
+
+\begin{equation}
+\sum_{d \in \mathcal{D}_p} \delta_{pd} = 1
+\quad \forall p \in \mathcal{P}
+\tag{22e}
+\end{equation}
+
+\begin{equation}
+\sum_{f \in \mathcal{F}} y_{p,f,l(p,f,d)} \ge |\mathcal{F}|\, \delta_{pd}
+\quad \forall p \in \mathcal{P},\ \forall d \in \mathcal{D}_p
+\tag{22f}
+\end{equation}
+
+\begin{equation}
+z_{pds} = \sum_{f \in \mathcal{F}} Y_{pfds} x_{pf}
+\quad \forall p \in \mathcal{P},\ \forall d \in \mathcal{D}_p,\ \forall s \in \mathcal{S}_{pd}
+\tag{22g}
+\end{equation}
+
+\begin{equation}
+w_{pds} \le D_{pds}
+\quad \forall p \in \mathcal{P},\ \forall d \in \mathcal{D}_p,\ \forall s \in \mathcal{S}_{pd}
+\tag{22h}
+\end{equation}
+
+\begin{equation}
+w_{pds} + o_{pds} = z_{pds}
+\quad \forall p \in \mathcal{P},\ \forall d \in \mathcal{D}_p,\ \forall s \in \mathcal{S}_{pd}
+\tag{22i}
+\end{equation}
+
+\begin{equation}
+\mu_{pds} \le w_{pds}
+\quad \forall p \in \mathcal{P},\ \forall d \in \mathcal{D}_p,\ \forall s \in \mathcal{S}_{pd}
+\tag{22n}
+\end{equation}
+
+\begin{equation}
+\mu_{pds} \le D_{pds}\, \delta_{pd}
+\quad \forall p \in \mathcal{P},\ \forall d \in \mathcal{D}_p,\ \forall s \in \mathcal{S}_{pd}
+\tag{22o}
+\end{equation}
+
+\begin{equation}
+\mu_{pds} \ge w_{pds} - D_{pds}(1 - \delta_{pd})
+\quad \forall p \in \mathcal{P},\ \forall d \in \mathcal{D}_p,\ \forall s \in \mathcal{S}_{pd}
+\tag{22p}
+\end{equation}
+
+\begin{equation}
+\rho_{pds} \le o_{pds}
+\quad \forall p \in \mathcal{P},\ \forall d \in \mathcal{D}_p,\ \forall s \in \mathcal{S}_{pd}
+\tag{22q}
+\end{equation}
+
+\begin{equation}
+\rho_{pds} \le N_{pds}\, \delta_{pd}
+\quad \forall p \in \mathcal{P},\ \forall d \in \mathcal{D}_p,\ \forall s \in \mathcal{S}_{pd}
+\tag{22r}
+\end{equation}
+
+\begin{equation}
+\rho_{pds} \ge o_{pds} - N_{pds}(1 - \delta_{pd})
+\quad \forall p \in \mathcal{P},\ \forall d \in \mathcal{D}_p,\ \forall s \in \mathcal{S}_{pd}
+\tag{22s}
+\end{equation}
+
+\begin{equation}
+x_{pf} \ge 0
+\quad \forall p \in \mathcal{P},\ \forall f \in \mathcal{F}
+\tag{22j}
+\end{equation}
+
+\begin{equation}
+y_{pfl} \in \{0,1\}
+\quad \forall p \in \mathcal{P},\ \forall f \in \mathcal{F},\ \forall l \in \mathcal{L}_{pf}
+\tag{22k}
+\end{equation}
+
+\begin{equation}
+\delta_{pd} \in \{0,1\}
+\quad \forall p \in \mathcal{P},\ \forall d \in \mathcal{D}_p
+\tag{22l}
+\end{equation}
+
+\begin{equation}
+z_{pds},\, w_{pds},\, o_{pds} \ge 0
+\quad \forall p \in \mathcal{P},\ \forall d \in \mathcal{D}_p,\ \forall s \in \mathcal{S}_{pd}
+\tag{22m}
+\end{equation}
+
+\begin{equation}
+\mu_{pds},\, \rho_{pds} \ge 0
+\quad \forall p \in \mathcal{P},\ \forall d \in \mathcal{D}_p,\ \forall s \in \mathcal{S}_{pd}
+\tag{Lin-Dom}
+\end{equation}
+
+\end{document}

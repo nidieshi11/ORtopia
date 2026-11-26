@@ -1,0 +1,315 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\begin{equation}
+\begin{aligned}
+(P[b_h,b_p,\mathbf z])\qquad \text{maximize:}\quad
+ &\sum_{j,k}r_{jk}x_{jk\mathrm a}+\sum_j\bar r_jx_{j\mathrm a}\\
+\text{subject to:}\quad
+ &\sum_{j,k}x_{jk\mathrm a}+\sum_jx_{j\mathrm a}\le b_h,\\
+ &\sum_jx_{j\mathrm p}\le b_p,\\
+ &x_{j\mathrm a}+x_{j\mathrm p}+x_{j\mathrm r}=z_j
+ &&\forall j\in[n],\\
+ &x_{jk\mathrm a}+x_{jk\mathrm r}=q_{jk}x_{j\mathrm p}
+ &&\forall j\in[n],\ k\in[m],\\
+ &\mathbf x\ge0.
+\end{aligned}\tag{7}
+\end{equation}
+
+\section*{Budget-constrained online probing: data and decision variables}
+This is the budget-constrained, unit-weight version in Section 4 of Vera, Banerjee, and Gurvich, \emph{Online Allocation and Pricing: Constant Regret via Bellman Inequalities}, arXiv:1906.06361v2. The probing-cost alternative is not imposed. In (7), sums over $j$ and $k$ range over $[n]$ and $[m]$, respectively. The parameters and decision-variable domain are
+\[
+(b_h,b_p,\mathbf z)\in\mathbb N^2\times\mathbb R_{\ge0}^{n},
+\qquad
+\mathbf x\in\mathbb R_{\ge0}^{3n+2nm}.
+\]
+The symbol $P[b_h,b_p,\mathbf z]$ denotes the optimal value of (7); the paper also writes the same value as $P[(b_h,b_p),\mathbf z]$ or $P[\mathbf b,\mathbf z]$.
+
+For every $j\in[n]$, $x_{j\mathrm a}$, $x_{j\mathrm r}$, and $x_{j\mathrm p}$ summarize the numbers of future type-$j$ arrivals accepted without probing, rejected without probing, and probed. For every $(j,k)\in[n]\times[m]$, $x_{jk\mathrm a}$ and $x_{jk\mathrm r}$ summarize the numbers of probed type-$j$ arrivals revealing reward $r_{jk}$ that are subsequently accepted and rejected. These are continuous LP variables, not integer decisions for individual arrivals.
+
+The horizon is $T$, with time-to-go
+\[
+t=T,T-1,\ldots,1.
+\]
+The arriving public type is drawn from $[n]$ with known distribution $\mathbf p=(p_1,\ldots,p_n)$. Each arrival of type $j$ has an independent random reward, with known reward support and probabilities
+\[
+R_j\in\{r_{jk}:k\in[m]\},\qquad
+q_{jk}:=\mathbb P[R_j=r_{jk}]
+\quad(j\in[n],\ k\in[m]).
+\]
+Section 4 assumes, without loss of generality,
+\[
+r_{j1}<r_{j2}<\cdots<r_{jm},\qquad r_{jm}>0
+\quad\forall j\in[n].
+\]
+The support has size $m$. The expected reward coefficient used in (7) is
+\[
+\bar r_j:=\sum_{k\in[m]}r_{jk}q_{jk}\quad\forall j\in[n].
+\]
+Section 2.1 calls the expected reward $r_j=\mathbb E[R_j]$; the operative coefficient in Section 4 and (7) is the barred $\bar r_j$, distinct from each realized reward $r_{jk}$.
+
+All arrivals have unit weights in the selected version. The initial resource (hiring) and probing budgets are fixed data
+\[
+B_h\in\mathbb N,\qquad B_p\in\mathbb N.
+\]
+Acceptance consumes one unit of the resource budget; probing consumes one unit of the probing budget. An arrival can be accepted without probing. Section 2.1 denotes the resource budget by $B$ and states that the problem reduces to OnlineKnapsack when either $B_p\ge T$ or $B_p=0$; these are boundary cases, not additional restrictions on (7).
+
+\section*{Two-stage process and information}
+Each period comprises stages $t$ and $t-\tfrac12$, with inputs
+\[
+\xi^t\in[n],\qquad
+\xi^{t-1/2}\in[n]\times[m].
+\]
+At stage $t$, the controller observes $\xi^t=j$ and chooses an action in $\{\mathrm a,\mathrm p,\mathrm r\}$ (accept, probe, reject). At stage $t-\tfrac12$, the subtype $\xi^{t-1/2}=(j,k)$, and hence reward $r_{jk}$, is drawn with probability $q_{jk}$. The available actions are $\{\mathrm a,\mathrm r\}$ if the first-stage action was $\mathrm p$, and $\emptyset$ otherwise, as printed in Section 4. The first-stage action is recorded by $\diamond$:
+\[
+\mathcal S=\{(b_h,b_p,\diamond):b_h,b_p\in\mathbb N,
+\ \diamond\in\{\mathrm a,\mathrm p,\mathrm r,\emptyset\}\}.
+\]
+Here $b_h,b_p$ are residual budgets. At the first stage of every period, $\diamond=\emptyset$; rewards are collected only at the second stage.
+
+The transitions and rewards displayed in Figure 3 are recorded below. An arrow label gives the action, where there is a choice, and the reward on that transition:
+\[
+\begin{array}{ccl}
+\text{stage }t&&\text{stage }t-\tfrac12\\[2pt]
+(b_h,b_p,\emptyset)&\xrightarrow{\mathrm a\,;\,0}&(b_h-1,b_p,\mathrm a),\\
+(b_h,b_p,\emptyset)&\xrightarrow{\mathrm p\,;\,0}&(b_h,b_p-1,\mathrm p),\\
+(b_h,b_p,\emptyset)&\xrightarrow{\mathrm r\,;\,0}&(b_h,b_p,\mathrm r),
+\end{array}
+\]
+\[
+\begin{array}{ccl}
+\text{stage }t-\tfrac12&&\text{stage }t-1\\[2pt]
+(b_h-1,b_p,\mathrm a)&\xrightarrow{R_j}&(b_h-1,b_p,\emptyset),\\
+(b_h,b_p-1,\mathrm p)&\xrightarrow{\mathrm a\,;\,R_j}&(b_h-1,b_p-1,\emptyset),\\
+(b_h,b_p-1,\mathrm p)&\xrightarrow{\mathrm r\,;\,0}&(b_h,b_p-1,\emptyset),\\
+(b_h,b_p,\mathrm r)&\xrightarrow{0}&(b_h,b_p,\emptyset).
+\end{array}
+\]
+The subtype convention in the prose is $\xi^{t-1/2}=(j,k)$ and the corresponding reward in (8) is $r_{\xi^{t-1/2}}$. Figure 3's caption instead describes the second-stage input directly as the reward. The subtype convention is retained in the formulas below.
+
+Let $Z_j^t\in\mathbb N$ be the number of type-$j$ arrivals in the remaining $t$ periods. Its defining count is
+\[
+Z_j^t=\sum_{l=1}^{t}\mathbf1_{\{\xi^l=j\}}
+\quad(j\in[n]).
+\]
+Offline knows all public arrival types in advance, but not future reward realizations. The canonical augmentation in Section 4.1 is
+\[
+\Theta=[T],\qquad G_\theta=\xi^\theta,
+\qquad
+\mathcal G_t=\sigma\bigl(\{\xi^t:t\in[T]\}\cup
+\{\xi^\tau:\tau\ge t\}\bigr).
+\]
+The general framework uses the probability space $(\Omega,\Sigma,\mathbb P)$ and natural filtration
+\[
+\mathcal F_t=\sigma(\{\xi^\tau:\tau\ge t\}),
+\qquad
+\mathcal G_t\supseteq\mathcal F_t,
+\qquad
+\mathcal G_{t-1}\supseteq\mathcal G_t.
+\]
+For the two-stage process, the already elapsed inputs include the second-stage inputs; the augmentation reveals only the integer-stage public types. Online uses a non-anticipative policy, while Offline acts optimally with its augmented information.
+
+\section*{Selected execution version and relaxed values}
+This execution view selects the second-stage information argument $\mathcal G_{t-1/2}$ printed on original physical pages 18 and 38. The original reconstruction and the conflicting printed $\mathcal G_t$ version of (8) remain archived separately. All rows and variable domains of (7), all primitive data, and Algorithm 2 are unchanged.
+
+For internal continuation-value expressions only, define the extended-real value of the same feasible set of (7):
+\[
+P_{\mathrm{ext}}[b_h,b_p,\mathbf z]=
+\begin{cases}
+P[b_h,b_p,\mathbf z],&b_h,b_p\ge0,\\
+-\infty,&b_h<0\text{ or }b_p<0.
+\end{cases}
+\]
+Here the budgets in the extension are integers and $\mathbf z\ge0$. A negative resource right-hand side is inconsistent with its unchanged nonnegative left-hand side, so that feasible set is empty; its supremum is $-\infty$. For nonnegative budgets, reject-all is feasible and the balance rows bound every variable, so the original finite maximum is attained and unchanged. Physical states and external LP inputs retain their nonnegative budgets. No row is removed or modified, and no negative-budget physical state is created.
+
+At a first stage, Section 4.1 defines
+\[
+\varphi(t,(b_h,b_p,\emptyset)\mid\mathcal G_t)
+:=P[b_h,b_p,Z^t].
+\]
+At a second stage, the selected source form uses the following unchanged right-hand-side expressions with the explicit value extension:
+\begin{equation}
+\begin{aligned}
+&\varphi(t-\tfrac12,(b_h,b_p,\diamond)\mid\mathcal G_{t-1/2})\\
+&\quad=\begin{cases}
+r_{\xi^{t-1/2}}+P_{\mathrm{ext}}[(b_h,b_p),Z^{t-1}],
+ &\diamond=\mathrm a,\\[2pt]
+\max\{r_{\xi^{t-1/2}}+P_{\mathrm{ext}}[(b_h-1,b_p),Z^{t-1}],
+       P_{\mathrm{ext}}[(b_h,b_p),Z^{t-1}]\},
+ &\diamond=\mathrm p,\\[2pt]
+P_{\mathrm{ext}}[(b_h,b_p),Z^{t-1}],
+ &\diamond=\mathrm r.
+\end{cases}
+\end{aligned}\tag{8}
+\end{equation}
+The budgets in (8) are the second-stage residual budgets: the first-stage resource or probing expenditure has already occurred.
+
+\paragraph{Archived printed alternatives and selected convention.}
+The source's displayed (8) labels its second-stage value by $\mathcal G_t$, although it uses the newly realized subtype. Its physical pages 18 and 38 instead use $\mathcal G_{t-1/2}$; this execution view explicitly selects the latter. The original source does not state a negative-budget value convention. The same-feasible-set supremum convention above supplies that value without altering (7). At second-stage $(0,b_p,\mathrm p)$, the infeasible acceptance continuation is $-\infty$ and finite rejection remains available. First-stage actions still cannot observe the later subtype.
+
+\section*{Conditional estimation and action summaries}
+The general RABBI construction in Section 3.2 represents the relaxed value as
+\[
+\varphi(t,s\mid\mathcal G_t)
+=\varphi(t,s;f_t(\xi^T,\ldots,\xi^t,G_\Theta)),
+\qquad
+\mathcal G_t=\sigma(\{\xi^l:l\ge t\}\cup G_\Theta),
+\]
+and uses the optimization representation
+\begin{equation}
+\begin{aligned}
+&\varphi(t,s;f_t(\xi^T,\ldots,\xi^t,G_\Theta))\\
+&\quad=\max_{\mathbf x\in\mathbb R^{\mathcal U\times\Xi}}
+\bigl\{h_t(\mathbf x;s,f_t(\xi^T,\ldots,\xi^t,G_\Theta)):
+ g_t(\mathbf x;s,f_t(\xi^T,\ldots,\xi^t,G_\Theta))\le0\bigr\}.
+\end{aligned}\tag{5}
+\end{equation}
+Here $\mathcal U$ and $\Xi$ are the action and input spaces. The component $x_{u,\xi}$ summarizes the number of remaining occasions on which action $u$ is taken for input $\xi$, or serves as its score. The functions $f_t,h_t,g_t$ remain abstract in this general representation. The non-anticipative estimate is
+\begin{equation}
+\begin{aligned}
+\hat\varphi(t,s\mid\mathcal F_t)
+&=\varphi(t,s;\mathbb E[f_t(\xi^T,\ldots,\xi^t,G_\Theta)\mid\mathcal F_t])\\
+&=\max_{\mathbf y\in\mathbb R^{\mathcal U\times\Xi}}
+\{h_t(\mathbf y;s,\mathbb E[f_t\mid\mathcal F_t]):
+ g_t(\mathbf y;s,\mathbb E[f_t\mid\mathcal F_t])\le0\}.
+\end{aligned}\tag{6}
+\end{equation}
+The general RABBI rule initializes $S^T$ at the given initial state and, for $t=T,\ldots,1$, computes (6) at $s=S^t$ with scores $\mathbf y=(y_{u,\xi})_{u\in\mathcal U,\xi\in\Xi}$, chooses an action $\hat U^t$ with the highest score $y_{u,\xi^t}$, collects $\mathcal R(S^t,\xi^t,\hat U^t)$, and updates
+\[
+S^{t-1}\leftarrow\mathcal T(S^t,\xi^t,\hat U^t).
+\]
+The functions $\mathcal R$ and $\mathcal T$ denote immediate reward and state transition; for probing their two-stage values are given by the transitions above.
+
+\paragraph{Probing-specific estimate.}
+The prose following (8) states that $\hat\varphi$ is constructed by replacing $Z^t$ with
+\[
+\mathbb E_{\xi^{t-1/2}}[Z^t].
+\]
+Algorithm 2, however, explicitly solves with $\mathbb E[Z^t]$. These printed expectation expressions are not identified with one another here. The operative probing policy below follows Algorithm 2, including its unconditional expectation and its order of solving before observing the current type.
+
+\section*{Algorithm 2: Probing RABBI}
+The input is access to solutions of $(P[\mathbf b,\mathbf z])$; the output is a sequence of decisions for Online.
+\begin{enumerate}
+\item Initialize
+\[
+(B_h^T,B_p^T)\leftarrow(B_h,B_p).
+\]
+\item For each period $t=T,\ldots,1$, compute $X^t$, an optimal solution of
+\[
+(P[\mathbf B^t,\mathbb E[Z^t]]),
+\]
+where $\mathbf B^t$ consists of the current resource and probing budgets. This is exactly (7) with $(b_h,b_p,\mathbf z)=(B_h^t,B_p^t,\mathbb E[Z^t])$.
+\item Observe the arrival, say type $j$, and take
+\[
+\hat U^t\in\operatorname*{arg\,max}_{u=\mathrm a,\mathrm p,\mathrm r}
+\{X^t_{j,u}\}.
+\]
+\item If $\hat U^t=\mathrm r$ or $\hat U^t=\mathrm a$, collect zero or the random reward $R_j$, respectively.
+\item If $\hat U^t=\mathrm p$, probe the arrival to observe $R_j=r_{jk}$, and then take the action
+\[
+\operatorname*{arg\,max}_{u=\mathrm a,\mathrm r}\{X^t_{j,k,u}\}.
+\]
+The same solution $X^t$ supplies the second-stage scores; Algorithm 2 does not prescribe a second LP solve after probing.
+\item Update the budgets $\mathbf B^{t-1}$ accordingly, using the unit resource and probing expenditures in the two-stage transitions.
+\end{enumerate}
+Algorithm 2 supplies no additional tie-breaking rule or explicit budget-feasibility override for these maximizations; none is added here.
+
+\section*{Bellman benchmark and retained analytical source claims}
+The benchmark recursion below defines the complete conditional Offline decision problem. The subsequent Bellman-inequality and Lemma 3 statements are retained analytical definitions and claims from the source, not added rows of (7), action thresholds, or a requirement that an executable policy verify every theorem. Their source claim status matters: the counterexample below shows that the printed exclusion-event loss need not satisfy the stated information/measurability and first-stage monotonicity requirements.
+
+The general benchmark value is defined using reward $\mathcal R$, transition $\mathcal T$, and the augmented information:
+\begin{equation}
+V(t,s\mid\mathcal G_t)=\max_{u\in\mathcal U}
+\{\mathcal R(s,\xi^t,u)+
+\mathbb E[V(t-1,\mathcal T(s,\xi^t,u)\mid\mathcal G_{t-1})\mid\mathcal G_t]\},
+\qquad V(0,\cdot)=0.
+\tag{2}
+\end{equation}
+The framework encodes feasible actions by
+\[
+\{u\in\mathcal U:\mathcal R(s,\xi,u)>-\infty\},
+\]
+assumes this set is nonempty for every $s\in\mathcal S,\xi\in\Xi$, and assumes
+\[
+\sup_{s\in\mathcal S,\xi\in\Xi,u\in\mathcal U}\mathcal R(s,\xi,u)<\infty.
+\]
+For the Bellman inequalities, $\varphi(t,\cdot)$ and $L_B(t,\cdot)$ are $\mathcal G_t$-measurable. Their defining conditions are
+\[
+\mathbb E[V(T,S^T)\mid\mathcal G_T]
+\le\varphi(T,S^T\mid\mathcal G_T),
+\qquad
+\varphi(0,s)=0\quad\forall s\in\mathcal S,
+\]
+\begin{equation}
+\begin{aligned}
+\varphi(t,s\mid\mathcal G_t)
+\le{}&\max_{u\in\mathcal U}
+\{\mathcal R(s,\xi^t,u)+
+\mathbb E[\varphi(t-1,\mathcal T(s,\xi^t,u)\mid\mathcal G_{t-1})\mid\mathcal G_t]\}
++L_B(t,s),\\[-2pt]
+&\hfill\forall s\in\mathcal S,\ t\in[T].
+\end{aligned}\tag{3}
+\end{equation}
+A satisfying action is an action $u$ for which
+\begin{equation}
+\varphi(t,s\mid\mathcal G_t)
+\le\mathcal R(s,\xi^t,u)+
+\mathbb E[\varphi(t-1,\mathcal T(s,\xi^t,u)\mid\mathcal G_{t-1})\mid\mathcal G_t]
++L_B(t,s).
+\tag{4}
+\end{equation}
+The maximum-loss definition used in the probing analysis is
+\[
+r_\varphi:=
+\max_{t,s,u:\mathcal R(s,\xi^t,u)>-\infty}
+\left\{\varphi(t,s\mid\mathcal G_t)-
+\left(\mathcal R(s,\xi^t,u)+
+\mathbb E[\varphi(t-1,\mathcal T(s,\xi^t,u)\mid\mathcal G_{t-1})\mid\mathcal G_t]\right)\right\}.
+\]
+These are the general framework's period-indexed rows. For probing, the source explicitly writes the two-stage monotonicity condition as
+\[
+\varphi(t,(b_h,b_p,\emptyset)\mid\mathcal G_t)
+\le\max_{\diamond\in\{\mathrm a,\mathrm p,\mathrm r\}}
+\left\{\mathbb E_{\xi^{t-1/2}}
+[\varphi(t-\tfrac12,(s_\diamond,\diamond)\mid\mathcal G_{t-1/2})\mid\mathcal G_t]\right\}
+\quad\forall\omega\notin\mathcal B(t,b_h,b_p),
+\]
+where
+\[
+s_\diamond=
+\begin{cases}
+(b_h-1,b_p),&\diamond=\mathrm a,\\
+(b_h,b_p-1),&\diamond=\mathrm p,\\
+(b_h,b_p),&\diamond=\mathrm r.
+\end{cases}
+\]
+Lemma 2 states the initial comparison, for any $b_h,b_p\in\mathbb N$ and arrivals $Z$,
+\[
+\mathbb E[V(T,(b_h,b_p)\mid\mathcal G_T)]
+\le\mathbb E[\varphi(T,(b_h,b_p,\emptyset)\mid\mathcal G_T)].
+\]
+The following sufficient-action statements are the original Lemma 3 claims, retained for explicit analytical checking rather than assumed valid for all admissible data. For a maximizer $\bar X$ of $(P[(b_h,b_p),Z^t])$ and current public type $\xi^t=i$, Lemma 3 gives the following sufficient conditions:
+\begin{enumerate}
+\item $\bar X_{i\mathrm a}\ge1$: accepting at time $t$ is satisfying.
+\item $\bar X_{i\mathrm r}\ge1$: rejecting at time $t$ is satisfying.
+\item $\bar X_{i\mathrm p}\ge1$ and the realized $\xi^{t-1/2}=(i,k)$ satisfies $\bar X_{ik\mathrm a}\ge1$ or $\bar X_{ik\mathrm r}\ge1$: probing at $t$, followed by accepting if $\bar X_{ik\mathrm a}\ge1$ or rejecting if $\bar X_{ik\mathrm r}\ge1$ at $t-\tfrac12$, is satisfying.
+\end{enumerate}
+With precisely those three conditions, its exclusion sets and Bellman loss are
+\[
+\mathcal B(t,b_h,b_p)=
+\{\omega\in\Omega:\nexists\,\bar X\text{ solving }(P[(b_h,b_p),Z^t])
+\text{ such that (1), (2), or (3) above holds}\},
+\]
+\[
+L_B(t,(b_h,b_p))=r_\varphi\mathbf1_{\mathcal B(t,b_h,b_p)}.
+\]
+The displayed sufficient conditions and exclusion sets are analytical properties of the selected relaxation, not additional constraints on (7) or thresholds imposed on Algorithm 2. Appendix B supplies their proofs; its auxiliary perturbed LP is not a replacement for (7) and is not part of the operative probing policy.
+
+\section*{Retained source analytical counterexample}
+Take $n=1$, $m=2$, $T=2$, $B_h=1$, $B_p=2$, $p_1=1$, rewards $(-1,1)$ and subtype probabilities $(9/10,1/10)$. These satisfy the stated primitive-data conditions. For remaining count $z_1=2$, the unique optimal first-stage summaries are $x_{1\mathrm p}=2$ and $x_{1\mathrm a}=x_{1\mathrm r}=0$; the negative-reward rejection summary is $9/5$ and positive-reward acceptance summary is $1/5$. The value of (7) is $1/5$. The conditional first-stage probe return from the selected (8) is $19/100$, rejection gives $1/10$, and immediate acceptance gives $-4/5$. The first-stage Bellman deficit is therefore $1/100$.
+
+The source's Lemma 3 exclusion event is false on the negative subtype and true on the positive subtype, although the first-stage information is identical. Hence its proposed event-based loss is not first-stage measurable, and its zero-loss monotonicity claim fails on the negative subtype. The complete conditional Offline dynamic program gives $19/100$. These are retained source analytical issues; they do not change the original LP, the entire Algorithm 2 policy, the reward law, or either resource transition. Do not report an uncomputed analytical maximum or unconditional expectation as verified, and do not replace the full policy or dynamic program by one LP value.
+\end{document}

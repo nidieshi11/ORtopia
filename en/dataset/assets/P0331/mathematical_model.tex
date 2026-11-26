@@ -1,0 +1,52 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,mathtools,geometry}
+\geometry{a4paper,margin=20mm}\allowdisplaybreaks
+\emergencystretch=4em
+\begin{document}
+\section*{Single-phase two-level packaging cabinets combined with opportunistic delivery agents for distribution modeling}
+
+\paragraph{Source} Pages 6–9 of the PDF document, section 3, equations (1)–(24). The system takes single-period known orders as input.
+\subsection*{Enter}
+$o$ represents the warehouse. $L$ stands for the parcel cabinets. $C_D$ refers to customers who prefer to pick up their items at the store. $C_L$ denotes customers who prefer to pick up their items themselves (can be used as occasional delivery agents). $q_c>0$ represents requests. $a_k\in L\cup\{o\}$ indicates the selected pick-up location for customers who prefer to pick up their items themselves. $S_k\subseteq C_D$ refers to a group of customers who are willing to have their items delivered additionally. $p_{ck}$ represents compensation measures. Professional fleet capacity: $Q$; cabinets available for delivery: $Q^L$. Number of cabinets: $l$. Local fleet capacity: $Q_l$. Cabinet capacity: $W_l$. Corresponding arc costs: $c_{ij},c^L_{ij},c^l_{ij}\ge0$. The total number of routes for the fleet is not limited. PF, cabinets, and individual cabinets are all operated separately. Definitions: $B^0=\{o\}\cup C_D,\ B^L=\{o\}\cup L,\ B^l=\{l\}\cup C_D$. Each arc area: $A^a=\{(i,j)\in B^a\times B^a:i\ne j\}$.
+\subsection*{Variables and derived quantities}
+$x^a_{ij}\in\{0,1\}$ represents the selection of corresponding fleet arcs, $y^a_{ij}\ge0$ represents the cargo loading on the arcs, $a\in\{0,L\}\cup L$, where the label $L$ indicates the supply cabinet fleet, distinct from the individual element labels of cabinets. $z_c,z_c^l,z_l^L\in\{0,1\}$ represent PF services, $l$ represent LF services for cabinets, and supply cabinets access cabinets; $w_{ck}\in\{0,1\}$ represents opportunistic deliveries. It defines the cabinet supply requirements.
+\[
+d_l=\sum_{k\in C_L:a_k=l}\left(q_k+\sum_{c\in S_k}q_cw_{ck}\right)
+       +\sum_{c\in C_D}q_cz_c^l .
+\]
+\subsection*{Complete model}
+\begin{align}
+\min\quad&
+\sum_{(i,j)\in A^L}c^L_{ij}x^L_{ij}
++\sum_{k\in C_L,c\in S_k}p_{ck}w_{ck}
++\sum_{(i,j)\in A^0}c_{ij}x^0_{ij}
++\sum_{l\in L,(i,j)\in A^l}c^l_{ij}x^l_{ij},\tag{1}\\
+z_c+\sum_{k:c\in S_k}w_{ck}+\sum_{l\in L}z_c^l&=1 &&c\in C_D,\tag{2}\\
+\sum_{c\in S_k}w_{ck}&\le1 &&k\in C_L,\tag{3}\\
+d_l&\le W_lz_l^L &&l\in L.\tag{4}
+\end{align}
+To list the three isomorphic flow constraints completely and compactly, define the fleet index $a\in\mathcal A=\{0,\mathrm{sup}\}\cup L$:
+\[
+(b_a,J_a,Q_a,z_i^a,d_i^a)=
+\begin{cases}
+(o,C_D,Q,z_i,q_i z_i),&a=0,\\
+(o,L,Q^L,z_i^L,d_i),&a=\mathrm{sup},\\
+(l,C_D,Q_l,z_i^l,q_i z_i^l),&a=l\in L.
+\end{cases}
+\]
+Where $x^{\mathrm{sup}}=x^L,\ y^{\mathrm{sup}}=y^L$, All fleet arcs are on $\{b_a\}\cup J_a$ with no self-looping directed arcs. Apply to each $a\in\mathcal A$ simultaneously.
+\begin{align}
+\sum_{j\in J_a\cup\{b_a\}:j\ne i}x^a_{ij}
+&=\sum_{j\in J_a\cup\{b_a\}:j\ne i}x^a_{ji}=z_i^a &&i\in J_a,\tag{5/11/17}\\
+\sum_{j\in J_a}x^a_{b_aj}&=\sum_{j\in J_a}x^a_{jb_a},\tag{6/12/18}\\
+\sum_{j\in J_a\cup\{b_a\}:j\ne i}(y^a_{ji}-y^a_{ij})
+&=d_i^a &&i\in J_a,\tag{7/13/19}\\
+\sum_{j\in J_a}(y^a_{jb_a}-y^a_{b_aj})
+&=-\sum_{i\in J_a}d_i^a,\tag{8/14/20}\\
+0\le y^a_{ij}&\le Q_ax^a_{ij} &&(i,j)\in A^a,\tag{9/15/21}\\
+y^a_{ib_a}&=0 &&i\in J_a.\tag{10/16/22}
+\end{align}
+All the aforementioned $x,z,w$ values are binary, while all $y$ values are non-negative. A common constraint template can be instantiated for both PF and LF systems.
+
+
+\end{document}

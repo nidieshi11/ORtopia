@@ -1,0 +1,224 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+
+\title{Core Solvable Mathematical Model}
+\author{Paper 10}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section*{Retained Core Model}
+According to the \texttt{tex} formulas and the PDF, the underlying application model is the
+dynamic facility-location and treatment-budget allocation MIP on Page 13, but the paper states
+that this non-convex bilinear MIP is only practically solvable for small instances. Therefore, the
+retained \emph{practically solvable} core model is the McCormick-envelope-based relaxation built
+from the Appendix/Page 27--29 formulas rather than the original non-convex main-text model. The
+retained model preserves the full dynamic epidemic constraints and all operational constraints,
+while replacing bilinear terms by standard exact/relaxed linear reformulations.
+
+\paragraph{Decision variables.}
+$x_i \in \mathbb Z_+$ is the number of treatment facilities in county $i$,
+$d_{ik}\ge 0$ is the treatment budget assigned to county $i$ at time $k$,
+$h \ge 0$ is the over-budget epigraph variable,
+$z_i$ is the reciprocal surrogate for $1/x_i$ used in the linearized formulation,
+$p_{ij},o_{ij},r_{ik}$ are auxiliary variables for unary expansion and McCormick relaxations, and
+$\mathbf z_k=(S_k,P_k,I_k,A_k,R_k,D_k)$ is the epidemic state vector.
+
+\paragraph{Sets and parameters.}
+$\mathcal C$ is the county set and $\mathcal K=\{0,\dots,K\}$ is the time-period set.
+The weights $\lambda_D,\lambda_A,\lambda_{\mathrm{pr}},\lambda_{\mathrm{SVI}},
+\lambda_{\mathrm{Pop}},\lambda_{\mathrm{inf}}$ define the objective trade-off.
+$N$ is the facility cap, $n_i$ is the initial number of facilities, $d_k$ is the state treatment
+budget at time $k$, $d_{\min}$ is the minimum budget per facility, $\theta$ is the maximum
+allowed inter-period budget reduction, $d$ is the quarterly per-patient MAT cost, and
+$lb_{ik},ub_{ik}$ are budget bounds.
+
+\paragraph{Initial conditions.}
+The six nonnegative initial compartment values are supplied data. They specify the initial population state.
+\[
+(S_0,P_0,I_0,A_0,R_0,D_0)
+ = (S^{\mathrm{init}},P^{\mathrm{init}},I^{\mathrm{init}},
+A^{\mathrm{init}},R^{\mathrm{init}},D^{\mathrm{init}}).
+\]
+\section*{Retained Practical Formulation}
+\begin{equation}
+\min \quad
+\lambda_D D_K
++ \lambda_A \sum_{k=0}^{K} A_k
++ \lambda_{\mathrm{pr}} \mathbf c_{\mathrm{pr}}^\top \mathbf x
++ \lambda_{\mathrm{SVI}} \mathbf c_{\mathrm{SVI}}^\top \mathbf x
++ \lambda_{\mathrm{Pop}} \sum_{k=0}^{K} \mathbf c_{\mathrm{Pop}}^\top \bar{\mathbf d}_k
++ \lambda_{\mathrm{inf}} h
+\tag{Prac-Obj}
+\end{equation}
+
+\begin{equation}
+\sum_{i=1}^{C} x_i - N \le h,\qquad h \ge 0
+\tag{27}
+\end{equation}
+
+\begin{equation}
+x_i \ge n_i
+\quad \forall i \in \mathcal C
+\tag{28a}
+\end{equation}
+
+\begin{equation}
+\sum_{i=1}^{C} \bar d_{ik} \le d_k
+\quad \forall k \in \mathcal K
+\tag{28c}
+\end{equation}
+
+\begin{equation}
+r_{ik} \ge d_{\min}
+\quad \forall i \in \mathcal C,\ \forall k \in \mathcal K
+\tag{28d}
+\end{equation}
+
+\begin{equation}
+\bar d_{i,k-1} - \bar d_{ik} \le \theta
+\quad \forall i \in \mathcal C,\ \forall k = 1,\dots,K
+\tag{28e}
+\end{equation}
+
+\begin{equation}
+lb_{ik} \le \bar d_{ik} \le ub_{ik}
+\quad \forall i \in \mathcal C,\ \forall k \in \mathcal K
+\tag{28f}
+\end{equation}
+
+\begin{equation}
+S_{k+1} = S_k + (\epsilon P_k + \delta R_k - \alpha S_k)\Delta
+\quad k=0,\dots,K-1
+\tag{28g}
+\end{equation}
+
+\begin{equation}
+P_{k+1} = P_k + (\alpha S_k - (\epsilon+\gamma+\beta)P_k)\Delta
+\quad k=0,\dots,K-1
+\tag{28h}
+\end{equation}
+
+\begin{equation}
+I_{k+1} = I_k + (\beta P_k - \phi I_k)\Delta
+\quad k=0,\dots,K-1
+\tag{28i}
+\end{equation}
+
+\begin{equation}
+A_{k+1} = A_k + \left(
+\gamma P_k + \sigma R_k + \phi I_k - \zeta A_k
+- \frac{1}{d}\sum_{i=1}^{C}\left(\bar d_{ik} - n_i r_{ik}\right)
+- \mu A_k
+\right)\Delta
+\quad k=0,\dots,K-1
+\tag{28j}
+\end{equation}
+
+\begin{equation}
+R_{k+1} = R_k + \left(
+\zeta A_k + \frac{1}{d}\sum_{i=1}^{C}\left(\bar d_{ik} - n_i r_{ik}\right)
+- (\delta+\sigma)R_k
+\right)\Delta
+\quad k=0,\dots,K-1
+\tag{28k}
+\end{equation}
+
+\begin{equation}
+D_{k+1} = D_k + (\mu A_k)\Delta
+\quad k=0,\dots,K-1
+\tag{28l}
+\end{equation}
+
+\begin{equation}
+x_i \in \mathbb Z,\qquad x_i \in [1,N]
+\quad \forall i \in \mathcal C
+\tag{28m}
+\end{equation}
+
+\begin{equation}
+\bar d_{ik},r_{ik},S_k,P_k,I_k,A_k,R_k,D_k \ge 0
+\quad \forall i \in \mathcal C,\ \forall k \in \mathcal K
+\tag{28n}
+\end{equation}
+
+\section*{Unary Expansion and McCormick Constraints}
+\begin{equation}
+x_i = \sum_{j=1}^{N} j\,p_{ij},\qquad
+\sum_{j=1}^{N} p_{ij} \le 1,\qquad
+\sum_{j=1}^{N} j\,o_{ij} = 1
+\quad \forall i \in \mathcal C
+\tag{29a}
+\end{equation}
+
+\begin{equation}
+o_{ij} \ge \frac{1}{N}p_{ij}
+\quad \forall i \in \mathcal C,\ \forall j=1,\dots,N
+\tag{29b}
+\end{equation}
+
+\begin{equation}
+o_{ij} \ge p_{ij} + z_i - 1
+\quad \forall i \in \mathcal C,\ \forall j=1,\dots,N
+\tag{29c}
+\end{equation}
+
+\begin{equation}
+o_{ij} \le p_{ij}
+\quad \forall i \in \mathcal C,\ \forall j=1,\dots,N
+\tag{29d}
+\end{equation}
+
+\begin{equation}
+o_{ij} \le z_i + \frac{1}{N}p_{ij} - \frac{1}{N}
+\quad \forall i \in \mathcal C,\ \forall j=1,\dots,N
+\tag{29e}
+\end{equation}
+
+\begin{equation}
+r_{ik} \ge lb_{ik} z_i + \frac{1}{N}\bar d_{ik} - \frac{1}{N}lb_{ik}
+\quad \forall i \in \mathcal C,\ \forall k \in \mathcal K
+\tag{29f}
+\end{equation}
+
+\begin{equation}
+r_{ik} \ge ub_{ik} z_i + \bar d_{ik} - ub_{ik}
+\quad \forall i \in \mathcal C,\ \forall k \in \mathcal K
+\tag{29g}
+\end{equation}
+
+\begin{equation}
+r_{ik} \le ub_{ik} z_i + \frac{1}{N}\bar d_{ik} - \frac{1}{N}ub_{ik}
+\quad \forall i \in \mathcal C,\ \forall k \in \mathcal K
+\tag{29h}
+\end{equation}
+
+\begin{equation}
+r_{ik} \le \bar d_{ik} + lb_{ik} z_i - lb_{ik}
+\quad \forall i \in \mathcal C,\ \forall k \in \mathcal K
+\tag{29i}
+\end{equation}
+
+\begin{equation}
+\frac{1}{N} \le z_i \le 1,\qquad
+p_{ij}\in\{0,1\},\qquad
+0 \le o_{ij} \le 1
+\quad \forall i \in \mathcal C,\ \forall j=1,\dots,N
+\tag{29j}
+\end{equation}
+
+\section*{Interpretation of the retained relaxation}
+The four inequalities (29f)--(29i) form the McCormick relaxation of
+$r_{ik}=\bar d_{ik}z_i$. They define the product relaxation.
+The treatment term used in (28j)--(28k) is the declared relaxed expression
+$d^{-1}\sum_i(\bar d_{ik}-n_i r_{ik})$.
+Solutions and optimum values refer to this relaxation with fixed initial
+conditions for the stated MILP relaxation.
+\end{document}

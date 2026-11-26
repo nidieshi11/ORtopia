@@ -1,0 +1,314 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[margin=0.7in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\section*{Sequential scheduling and voltage-penalized BEB--APDN formulation}
+
+\subsection*{First step: bus scheduling}
+\begin{equation}
+\min C^{\mathrm{BEB}}=\min\sum_{i\in\mathcal S}\sum_{o\in\mathcal O}\lambda^{\mathrm{BEB}}x_{oi}.
+\tag{61}
+\end{equation}
+Subject to
+\begin{align}
+\sum_{j\in\mathcal{SD},\,i\ne j}x_{ij}&=1,
+&&\forall i\in\mathcal S,\tag{7}\\
+\sum_{i\in\mathcal{SD},\,i\ne j}x_{ji}-\sum_{i\in\mathcal{OS},\,i\ne j}x_{ij}&=0,
+&&\forall j\in\mathcal S,\tag{8}\\
+\overline u_i+\tau_i+\tau_i^{\mathrm{DH}}&\leq\underline u_j+M(1-x_{ij}),
+&&\forall i,j\in\mathcal S,\ i\ne j.\tag{9}
+\end{align}
+The trip-chain variables are binary:
+\[
+x_{ij}\in\{0,1\};\qquad
+x_{ij}=1\text{ if trip }i\text{ is connected to trip }j,\text{ and }0\text{ otherwise}.
+\]
+The timetable is predetermined. As specified following (61), the resulting values of \(x_{ij}\) are passed to the second step as fixed parameters, not reoptimized there.
+
+
+\subsection*{Printed coupled payment and original follower}
+Equation (41) gives the coupled upper-level problem. Its lower-level
+responses are selected from the optima of (33), (35)--(40).
+\begin{equation}
+\min \sum_{t,w,b}\rho_w\left(\sum_{o\in\mathcal O}\lambda^{\rm BEB}x_{oi}
+   +\lambda^{\rm M}_{t,w}p_{b,w,t}
+   +\sum_{g\in\mathcal G}\lambda^{\rm AG}_{g,t,w}P^{\rm LC}_{g,b,w,t}\right).\tag{41}
+\end{equation}
+Here the upper offer is a decision and its payment sign in (41) is positive.
+The printed procurement summand contains an unquantified \(i\). With the
+first-stage trip plan fixed, this term is constant across all second-stage
+alternatives. The instances report first-stage procurement separately and
+give the second-stage economic cost without that unresolved additive constant.
+Both the original hard voltage bounds \(\underline V\le V\le\bar V\) and the
+authors' described penalty for positive undervoltage, \(PF(\underline V-V)^+\),
+are addressed. The voltage variable in (29) is squared. If (63) is instead
+read literally without a sign restriction on \(\Delta V\), a different
+objective is bounded separately.
+\subsection*{Sets, fixed inputs, and variable roles}
+The scheduling horizon is \(\mathcal T\), with timeslot index \(t\); \(\mathcal W\) is the scenario set, with index \(w\); and \(\rho_w\) is the probability of scenario \(w\). The aggregator set is \(\mathcal G\), indexed by \(g\) in the equations (the nomenclature also uses \(k\)). The transit-node and APDN-node sets are \(\mathcal N\) and \(\mathcal B\), respectively. The source defines
+\[
+\mathcal I=\mathcal O\cup\mathcal S\cup\mathcal D,
+\qquad\mathcal{OS}=\mathcal O\cup\mathcal S,
+\qquad\mathcal{SD}=\mathcal D\cup\mathcal S,
+\]
+where \(\mathcal O\) contains first trips from the origin depot, \(\mathcal S\) the service trips excluding the first and last depot trips, and \(\mathcal D\) the last trips to the destination depot. Indices \(i,j\) denote trips and \(o\) a first depot trip. Charging nodes and aggregator-managed nodes satisfy
+\[
+\mathcal N^{\mathrm B}\subset\mathcal N,
+\qquad\mathcal B^{\mathrm N}\subset\mathcal B,
+\qquad\mathcal B^{\mathrm G}\subset\mathcal B.
+\]
+The charging nodes \(\mathcal N^{\mathrm B}\) connect to the APDN through \(\mathcal B^{\mathrm N}\); \(\mathcal B^{\mathrm G}\) denotes APDN nodes managed by DR aggregators. The APDN is the only source of BEB charging power. The APDN is radial, and \(b\) and \(b+1\) are described as exclusive sequential nodes. One load is assumed at each APDN node.
+
+\paragraph{Fixed inputs.}
+\(\lambda^{\mathrm{BEB}}\) is the BEB procurement price; \(\lambda^{\mathrm M}_{t,w}\) is the scenario-dependent market price; \(PF\) is the voltage-deviation penalty factor. The fixed timetable has trip start and end times \(\underline u_i,\overline u_i\), service duration \(\tau_i\), deadhead duration \(\tau_i^{\mathrm{DH}}\), depot-to-service duration \(\tau_i^{\mathrm{O2S}}\), and service-to-depot duration \(\tau_{ij}^{\mathrm{S2D}}\) for \(j\in\mathcal D\). The BEB capacity is \(A\); \(\underline\Upsilon,\overline\Upsilon\) are the minimum and maximum battery-energy percentages. These battery-bound symbols are distinct from the auxiliary binary \(Y_{g,b,w,t}\). Energy consumptions are \(c^{\mathrm{O2S}}_{oi}\) from depot to the first service trip, \(c_i^{\mathrm{SL}}\) during a service trip, \(c^{\mathrm{ST}}_{ij}\) between service trips, and \(c^{\mathrm{S2D}}_{ij}\) from the final service trip to the depot. Charger capacities are \(p_n^{\mathrm{EnMax}}\) en route and \(p^{\mathrm{DMax}}\) at the depot.
+
+\(D^{\mathrm P}_{b,t},D^{\mathrm Q}_{b,t}\) are fixed active and reactive demands. Branch resistance and reactance are \(\mathrm r_b,\mathrm x_b\), not trip-chain variables. The voltage limits are \(\underline V,\overline V\); \(\overline P^{\mathrm{PV}}_{b,w}\) is the scenario-dependent maximum PV generation, with no \(t\) subscript in (32). The energy- and power-curtailment coefficients are \(\Lambda_b,\Phi_b\). The compensation parameters are \(c^{\mathrm{DR}}_{b,t}\) for curtailment and \(\lambda^{\mathrm{NS}}_b\) for energy not supplied. The registration input satisfies
+\[
+\mathbb I_{bg}\in\{0,1\},\qquad
+\mathbb I_{bg}=1\text{ if consumer }b\text{ is registered through aggregator }g.
+\]
+\(M_1,M_2\) are described as big numbers. The distinct \(M\) in (9) is left as printed; no equation identifying it with \(M_1\) or \(M_2\) is supplied. Instance-specific numerical capacities, percentages, voltage limits, and scenario-generation choices are not fixed inputs of the general formulation reproduced here.
+
+\paragraph{Decisions in the second step.}
+\(SOC_{oi}\) denotes battery energy on leaving the depot, \(\widetilde{SOC}_i\) energy on finishing trip \(i\), and \(SOC_{ij}\) energy after trip \(i\) and before trip \(j\). The received charging energies are \(e^{\mathrm{Ter}}_{inj},e^{\mathrm{Dep}}_{ij}\), and their charging powers are \(p^{\mathrm{Ter}}_{injt},p^{\mathrm{Dep}}_{ijt}\). The network variables are branch powers \(P_{b,w,t},Q_{b,w,t}\), net node injections \(p_{b,w,t},q_{b,w,t}\), squared branch-current magnitude \(I_{b,w,t}\), PV generation \(P^{\mathrm{PV}}_{b,w,t}\), capacitor reactive injection \(Q^{\mathrm{CAP}}_{b,t}\), voltage \(V_{b,w,t}\), and deviation \(\Delta V_{b,w,t}\). The network-equation prose defines \(V_{b,w,t}\) as squared voltage magnitude, whereas the nomenclature calls it voltage magnitude; the equations and bounds are retained without rescaling.
+
+\(P^{\mathrm{BEB}}_{b,w,t}\) is charging demand at an APDN node. The DR variables are curtailment \(P^{\mathrm{LC}}_{g,b,w,t}\), load shifting \(P^{\mathrm{LS}}_{g,b,w,t}\), and energy not supplied \(P^{\mathrm{NS}}_{g,b,w}\); \(\lambda^{\mathrm{AG}}_{g,t,w}\) is the price offered to the aggregator. The second step also contains \(C^{\mathrm{EQ}}_{g,t,w}\), the dual variables below, and auxiliary binaries. The literal transcription records exactly the domains printed in these displayed equations. The physical benchmark selects the explicitly stated response and registration domains below.
+
+\subsection*{BEB energy and charging constraints}
+Buses leave the depot nearly fully charged, recharge only en route during their daily trip chains, and return to the depot only after the final service trip. The general description permits charging at bus stops with sufficient available time. The following rows, rather than case-specific charging-location restrictions, are the inherited constraints.
+\begin{align}
+SOC_{oi}&=x_{oi}\overline\Upsilon A,
+&&\forall i\in\mathcal S,\ o\in\mathcal O,\tag{10}\\
+\widetilde{SOC}_i&\leq
+(SOC_{oi}-c^{\mathrm{O2S}}_{oi}-c^{\mathrm{SL}}_i)x_{oi}
++\overline\Upsilon A(1-x_{oi}),
+&&\forall i\in\mathcal S,\ o\in\mathcal O,\tag{11}\\
+\widetilde{SOC}_j&\leq
+(\widetilde{SOC}_i+e^{\mathrm{Ter}}_{inj}-c^{\mathrm{ST}}_{ij}-c^{\mathrm{SL}}_j)x_{ij}
++\overline\Upsilon A(1-x_{ij}),
+&&\forall i,j\in\mathcal S,\ i\ne j,\tag{12}\\
+SOC_{ij}&\leq
+(\widetilde{SOC}_i-c^{\mathrm{S2D}}_{ij})x_{ij}
++\overline\Upsilon A(1-x_{ij}),
+&&\forall i\in\mathcal S,\ j\in\mathcal D.\tag{13}
+\end{align}
+\begin{equation}
+\underline\Upsilon Ax_{oi}\leq
+(SOC_{oi}-c^{\mathrm{O2S}}_{oi}-c^{\mathrm{SL}}_i)x_{oi}
+\leq\overline\Upsilon Ax_{oi},
+\qquad\forall i\in\mathcal S,\ o\in\mathcal O.
+\tag{14}
+\end{equation}
+\begin{equation}
+\underline\Upsilon Ax_{ij}\leq
+(\widetilde{SOC}_i+e^{\mathrm{Ter}}_{inj})x_{ij}
+\leq\overline\Upsilon Ax_{ij},
+\qquad\forall i,j\in\mathcal S.
+\tag{15}
+\end{equation}
+\begin{equation}
+\underline\Upsilon Ax_{ij}\leq
+(\widetilde{SOC}_i+e^{\mathrm{Ter}}_{inj}-c^{\mathrm{ST}}_{ij}-c^{\mathrm{SL}}_j)x_{ij}
+\leq\overline\Upsilon Ax_{ij},
+\qquad\forall i,j\in\mathcal S.
+\tag{16}
+\end{equation}
+\begin{equation}
+\underline\Upsilon Ax_{ij}\leq
+(\widetilde{SOC}_i-c^{\mathrm{S2D}}_{ij})x_{ij}
+\leq\overline\Upsilon Ax_{ij},
+\qquad\forall i\in\mathcal S,\ j\in\mathcal D.
+\tag{17}
+\end{equation}
+\begin{align}
+(SOC_{ij}+e^{\mathrm{Dep}}_{ij})x_{ij}&\geq\overline\Upsilon Ax_{ij},
+&&\forall i\in\mathcal S,\ j\in\mathcal D,\tag{18}\\
+\underline\Upsilon Ax_{ij}\leq SOC_{ij}x_{ij}&\leq\overline\Upsilon Ax_{ij},
+&&\forall i\in\mathcal S,\ j\in\mathcal D,\tag{19}\\
+e^{\mathrm{Ter}}_{inj}&=\frac{1}{|\mathcal T|}\sum_{t\in\mathcal T}p^{\mathrm{Ter}}_{injt},
+&&\forall i,j\in\mathcal S,\ n\in\mathcal N^{\mathrm B},\tag{20}\\
+e^{\mathrm{Dep}}_{ij}&=\frac{1}{|\mathcal T|}\sum_{t\in\mathcal T}p^{\mathrm{Dep}}_{ijt},
+&&\forall i\in\mathcal S,\ j\in\mathcal D.\tag{21}
+\end{align}
+\begin{equation}
+\begin{aligned}
+p^{\mathrm{Ter}}_{injt}&\leq x_{ij}p_n^{\mathrm{EnMax}},\\
+&\forall i,j\in\mathcal S,\ i\ne j,\quad
+ t\in[\overline u_i+\tau_i^{\mathrm{DH}},\underline u_j-\tau_j^{\mathrm{DH}}],\quad
+ n\in\mathcal N^{\mathrm B}.
+\end{aligned}\tag{22}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+p^{\mathrm{Dep}}_{ijt}&\leq x_{ij}p^{\mathrm{DMax}},\\
+&\forall i\in\mathcal S,\ j\in\mathcal D,\ i\ne j,\quad
+ t\in\{[\underline u_1-\tau_i^{\mathrm{O2S}}]\cup[\overline u_j+\tau_{ij}^{\mathrm{S2D}}]\}.
+\end{aligned}\tag{23}
+\end{equation}
+\noindent\emph{Printed scope and endpoints.} The index \(n\) is not quantified in (12), (15), or (16). The single-expression brackets in (23) are retained; missing interval endpoints are not supplied. No off-window zero-charging relations are added. The factor in (20)--(21) is exactly \(1/|\mathcal T|\). The prose near (10) says ``over 90\%'' for the illustrated nearly full charge, while the case study uses a 90\% maximum; the operative general relation remains the equality in (10), not a new percentage restriction.
+
+\subsection*{APDN constraints and charging-demand definition}
+\begin{align}
+P_{b+1,w,t}&=P_{b,w,t}-\mathrm r_b I_{b,w,t}-p_{b,w,t},
+&&\forall b\in\mathcal B,\ w\in\mathcal W,\ t\in\mathcal T,\tag{25}\\
+Q_{b+1,w,t}&=Q_{b,w,t}-\mathrm x_b I_{b,w,t}-q_{b,w,t},
+&&\forall b\in\mathcal B,\ w\in\mathcal W,\ t\in\mathcal T.\tag{26}
+\end{align}
+\begin{equation}
+\begin{aligned}
+p_{b,w,t}={}&D^{\mathrm P}_{b,t}
++\sum_{g\in\mathcal G}(P^{\mathrm{LS}}_{g,b,w,t}-P^{\mathrm{LC}}_{g,b,w,t})
+-P^{\mathrm{PV}}_{b,w,t}+P^{\mathrm{BEB}}_{b,w,t},\\
+&\forall b\in\mathcal B,\ w\in\mathcal W,\ t\in\mathcal T.
+\end{aligned}\tag{27}
+\end{equation}
+The immediately following prose supplies the relation
+\[
+P^{\mathrm{APDN}}_{t,w}=p_{b,w,t}-P^{\mathrm{BEB}}_{b,w,t}.
+\]
+Here \(P^{\mathrm{APDN}}_{t,w}\) is market power for the APDN excluding charging demand. The relation has no printed quantifier and has a node index only on its right-hand side; no nodal sum is inserted.
+\begin{equation}
+q_{b,w,t}=D^{\mathrm Q}_{b,t}-Q^{\mathrm{CAP}}_{b,t},
+\qquad\forall b\in\mathcal B,\ w\in\mathcal W,\ t\in\mathcal T.
+\tag{28}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+V_{b,w,t}-2(\mathrm r_bP_{b,w,t}+\mathrm x_bQ_{b,w,t})
+-(\mathrm r_b^2+\mathrm x_b^2)I_{b,w,t}&=V_{b+1,w,t},\\
+\forall b\in\mathcal B,\ w\in\mathcal W,\ t\in\mathcal T.&
+\end{aligned}\tag{29}
+\end{equation}
+\begin{equation}
+V_{b,w,t}I_{b,w,t}\geq P_{b,w,t}^2+Q_{b,w,t}^2,
+\qquad\forall b\in\mathcal B,\ s\in\mathcal W,\ t\in\mathcal T.
+\tag{30}
+\end{equation}
+\begin{equation}
+0\leq P^{\mathrm{PV}}_{b,w,t}\leq\overline P^{\mathrm{PV}}_{b,w},
+\qquad\forall b\in\mathcal B,\ w\in\mathcal W,\ t\in\mathcal T.
+\tag{32}
+\end{equation}
+Equation (30) is the authors' stated second-order conic relaxation. Its printed quantifier uses \(s\), although its variables use \(w\). No corrected index or extra conic-domain constraints are substituted. The hard and penalty interpretations of the voltage limits are specified above.
+
+\subsection*{Operative DR capacity conditions}
+The dual associated with each source constraint is written after a colon.
+\begin{align}
+\sum_{t\in\mathcal T}P^{\mathrm{LS}}_{g,b,w,t}
+&\leq\sum_{t\in\mathcal T}\Lambda_bD^{\mathrm P}_{b,t}
+\quad:\omega_{g,b,w},
+&&\forall b\in\mathcal B,\ w\in\mathcal W,\ g\in\mathcal G,\tag{37}\\
+\sum_{t\in\mathcal T}P^{\mathrm{LC}}_{g,b,w,t}
+&\leq\sum_{t\in\mathcal T}\Lambda_bD^{\mathrm P}_{b,t}
+\quad:\sigma_{g,b,w},
+&&\forall b\in\mathcal B,\ w\in\mathcal W,\ g\in\mathcal G,\tag{38}\\
+P^{\mathrm{LS}}_{g,b,w,t}&\leq\Phi_bD^{\mathrm P}_{b,t}
+\quad:\alpha_{g,b,w,t},
+&&\forall t\in\mathcal T,\ b\in\mathcal B,\ w\in\mathcal W,\ g\in\mathcal G,\tag{39}\\
+P^{\mathrm{LC}}_{g,b,w,t}&\leq\Phi_bD^{\mathrm P}_{b,t}
+\quad:\varpi_{g,b,w,t},
+&&\forall t\in\mathcal T,\ b\in\mathcal B,\ w\in\mathcal W,\ g\in\mathcal G.\tag{40}
+\end{align}
+
+
+\subsection*{Original demand-response objective and energy constraints}
+\begin{equation}
+\begin{aligned}
+C^{\mathrm{DR}}_{g,w}=\min_{\Xi}\Biggl\{
+\sum_{t\in\mathcal T}\sum_{b\in\mathcal B}\mathbb I_{bg}
+\Bigl(P^{\mathrm{LC}}_{g,b,w,t}(c^{\mathrm{DR}}_{b,t}-\lambda^{\mathrm{AG}}_{g,t,w})
++\lambda_b^{\mathrm{NS}}P^{\mathrm{NS}}_{g,b,w}\Bigr)\Biggr\},\\
+\forall w\in\mathcal W,\ g\in\mathcal G.
+\end{aligned}\tag{33}
+\end{equation}
+Here \(\Xi\) contains the lower-level decisions \(P^{\mathrm{LC}}_{g,b,w,t},P^{\mathrm{LS}}_{g,b,w,t},P^{\mathrm{NS}}_{g,b,w}\). The following sentence and the nomenclature identify \(c^{\mathrm{DR}}_{b,t}\) and \(\lambda_b^{\mathrm{NS}}\) as compensation parameters, not lower-level decisions. The source then gives
+\begin{equation}
+C^{\mathrm{DR}}_w=\sum_{g\in\mathcal G}C^{\mathrm{DR}}_{g,w},
+\qquad\forall w\in\mathcal W.
+\tag{34}
+\end{equation}
+Equation (34) is present on physical PDF page 10. The original lower-level restrictions include the following two rows, in addition to (37)--(40):
+\begin{equation}
+\sum_{t\in\mathcal T}P^{\mathrm{LS}}_{g,b,w,t}
+\leq\sum_{t\in\mathcal T}P^{\mathrm{LC}}_{g,b,w,t}
+\quad:\phi_{g,b,w},
+\qquad\forall b\in\mathcal B,\ w\in\mathcal W,\ g\in\mathcal G.
+\tag{35}
+\end{equation}
+\begin{equation}
+P^{\mathrm{NS}}_{g,b,w}
+=\sum_{t\in\mathcal T}P^{\mathrm{LC}}_{g,b,w,t}
+-\sum_{t\in\mathcal T}P^{\mathrm{LS}}_{g,b,w,t}
+\quad:\delta_{g,b,w},
+\qquad\forall b\in\mathcal B,\ w\in\mathcal W,\ g\in\mathcal G.
+\tag{36}
+\end{equation}
+
+\paragraph{Connecting the original source definitions on these benchmarks.}
+The stage-one solution is fixed before charging. A service connection has
+one physical terminal, mapped according to the terminal field in the input.
+For a selected pair \(i,j\) the index \(n\) in (12),(15),(16) denotes
+the data-mapped physical terminal after service \(i\); a diagonal trip
+connection has value zero. At a station the associated en-route and depot charges add to its nodal
+electricity demand, as described by the bus-to-APDN connection in §§3.1 and 5.1.
+The periodic physical depot opportunity of each bus uses its own first
+service \(f\) and last service \(l\). The bus returns at
+\(R=\bar u_l+\tau^{\rm S2D}_l\) and the next day departs for \(f\) at
+\(1440+D\), \(D=\underline u_f-\tau_f^{\rm O2S}\). Map the closed interval
+\([R,1440+D]\) modulo 1440 to the supplied two-minute grid.
+All energy bought there is credited once to this bus between its return and its
+next full departure, including predeparture minutes after midnight when available.
+If \(D<0\) the depot opportunity ends before the next midnight. The terminal
+window for a selected successive pair remains its actual inter-trip interval.
+Equation (23) prints incomplete endpoints, so the finite tail-only variant
+and the nonphysical relaxation imposing no zero power off those opportunities are
+also certified separately. The latter uses nonnegative power with the printed
+in-window limits. Its value is meaningful only for that mathematical branch.
+Each chain, physical opportunity, station, time and energy is available in the
+generator and solution. The branch equations are used on every physical line,
+with the downstream net demand as the terminal boundary of the radial chain.
+The two reported capacity regimes are the per-connection ratings of (22)--(23)
+and the additional shared station nameplates of §5.1. They can give different costs.
+
+\paragraph{Preserved disagreements in the original.}
+The earlier (24),(33) add the minimized aggregator net cost, while (41) charges
+the operator positive payments. Those objectives need not agree. Equation (60)
+leaves two occurrences of \(b\) outside their sum; the printed final subject-to
+list omits (35)--(36), and the big-\(M\) counterpart has residual signs that do not
+enforce the stated complementary slackness. The relation following (27) uses
+a scalar on its left and a nodal power on its right. The original source and
+the separate branch evidence are preserved. No equivalence of these competing
+forms is claimed. The original positive-payment follower model is the execution
+target on this family.
+
+\paragraph{Domain of the finite benchmark costs.}
+For the physical operating and registration interpretation of Section 3.4 and
+the mutually exclusive node assignments in Section 5.1, use
+\[
+ P^{\rm LC}_{g,b,w,t},P^{\rm LS}_{g,b,w,t}\ge0,\qquad
+ \mathbb I_{bg}=0\ \Longrightarrow\ 
+ P^{\rm LC}_{g,b,w,t}=P^{\rm LS}_{g,b,w,t}=P^{\rm NS}_{g,b,w}=0 .
+\]
+These are explicit execution-domain conventions. Rows (35)--(40) alone give
+upper bounds, while (27) and (41) sum powers without a registration multiplier.
+With negative response allowed, set the registered offer equal to the compensation
+coefficient and set the two powers at one sample to the same value \(-K\).
+This leaves net demand and unserved energy unchanged, attains zero follower
+cost and reduces the upper objective without bound. If only nonnegativity is
+imposed and unregistered decisions remain unmasked, set one such pair to
+the same small positive power and offer \(-K\), with all registered responses
+zero. The unregistered pair is costless in (33), yet enters (41). Thus the
+positive-payment economic values require both physical response conventions.
+Equation (32) prints a PV upper bound indexed by node and scenario. The
+ten synthetic instances apply the time-dependent availability of the case
+profiles to that nameplate, including zero solar availability at night.
+The exhibited feeder trajectories choose the stated capacitor injections,
+which are zero here. The source treats these injections as decisions. The
+economic lower bound omits feeder restrictions: attainment by this admissible
+capacitor setting is sufficient even if other capacitor settings are allowed.
+No equality of these two feasible domains or of the printed and time-profiled
+solar domains is assumed.
+\end{document}
+

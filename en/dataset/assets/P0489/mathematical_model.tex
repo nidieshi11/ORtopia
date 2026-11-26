@@ -1,0 +1,100 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\begin{equation}
+\min\;\mathbb{E}\!\left[\sum_{n=0}^{\infty}\gamma^n\left(
+\begin{aligned}
+&c_u u_n-p\cdot(\xi_n+u_n-w_n)^-\\
+&\quad+q(\tau_n)\cdot\bigl(\xi_n+u_n-(\xi_n+u_n-w_n)^+\bigr)
++c_r x_n r_n
+\end{aligned}
+\right)\right].
+\tag{5}
+\end{equation}
+\begin{align}
+\text{s.t.}\quad x_{n+1}&=(\xi_n+u_n-w_n)^+,
+&&\text{for }n\geq0,\tag{6}\\
+t_{n+1}&=\tau_n+1,
+&&\text{for }n\geq0,\tag{7}\\
+\xi_n&=x_n\cdot(1-r_n),
+&&\text{for }n\geq0,\tag{8}\\
+\tau_n&=t_n\cdot(1-r_n),
+&&\text{for }n\geq0,\tag{9}\\
+t_n&\leq k,
+&&\text{for }n\geq0,\tag{10}\\
+r_n&\in\mathbb{B},
+&&\text{for }n\geq0,\tag{11}\\
+u_n&\in[0,c_{\max}-\xi_n],
+&&\text{for }n\geq0.\tag{12}
+\end{align}
+
+\section*{Domains, data, and operative definitions}
+The formulation is the water-storage problem in Section 2.1 of Lee et al., \emph{Optimal Policy for Inventory Management with Periodic and Controlled Resets}, arXiv:2209.03571v1, physical PDF pages 8--11. The decision epoch is a day, indexed by $n\in\mathbb{Z}_+$, with the objective and constraints starting at $n=0$.
+
+The state and action domains are
+\[
+x_n\in\mathbb{R}_+,\qquad t_n\in\mathbb{Z}_+,\qquad
+u_n\in\mathbb{R}_+,\qquad r_n\in\mathbb{B},
+\qquad n\geq0.
+\]
+Here $x_n$ is the amount of water stored in the tank, and $t_n$ is the number of days since the tank was last emptied. The decisions are $r_n$, whether to empty the entire tank, and $u_n$, how much water to purchase at the beginning of the day. The binary domain $\mathbb{B}$ represents the two actions: $r_n=1$ means flushing, and $r_n=0$ means no flushing. The decision-maker first decides whether to purge the tank and then how much water to purchase.
+
+The pseudo-states $\xi_n$ and $\tau_n$ in (8)--(9) are the intermediate inventory and elapsed time after the reset decision. The inherited pseudo-state time domain is $\tau_n\in\mathbb{Z}_+$. The water reset state is $\zeta=0$, as also explicitly identified in Appendix A, proof of Proposition 7, page 36. Thus flushing resets the intermediate inventory and elapsed time to zero, while (7) makes the following day's elapsed time equal to one.
+
+Demand is an exogenous, nonnegative, independent and identically distributed random disturbance process:
+\[
+w_n\in\mathbb{R}_+,\qquad n\geq0,\qquad
+\{w_n\}\text{ are i.i.d.}
+\]
+The expectation in (5) is over the random demand process. Section 2.1 does not prescribe a particular demand distribution.
+
+The positive and negative parts have the printed definitions
+\[
+(x)^+=\max\{x,0\},\qquad (x)^-=\min\{x,0\}.
+\]
+In particular, the negative part is nonpositive, not the magnitude of a shortfall.
+
+The fixed cost data and discount factor satisfy
+\[
+c_u,c_r,p\in\mathbb{R}_+,\qquad \gamma\in[0,1).
+\]
+These cost parameters are nonnegative: $c_u$ is the variable purchasing cost, $c_r$ is the per-unit purging cost, and $p$ is the shortage penalty. The fixed health-cost function is
+\[
+q:\mathbb{R}_+\longrightarrow\mathbb{R}_+,
+\qquad q\text{ is nonnegative and nondecreasing}.
+\]
+It measures the increased health cost of consuming water that has remained in the tank longer. No particular functional form for $q$ is imposed in Section 2.1.
+
+The fixed parameter $k$ is the maximum interval between resets: (10) requires purging at least once every $k$ days. The fixed parameter $c_{\max}$ is the tank capacity; (12) limits purchases by the remaining capacity after the reset decision. The paper explicitly describes this capacity constant as nonnegative in Assumption 4, page 16:
+\[
+c_{\max}\geq0.
+\]
+No numerical values for $k$ or $c_{\max}$ are fixed in this formulation.
+
+\section*{Linked defining dynamics and cost interpretation}
+The original water-state dynamics on page 9 are
+\begin{align}
+x_{n+1}&=\bigl(x_n\cdot(1-r_n)+u_n-w_n\bigr)^+,\tag{3}\\
+t_{n+1}&=t_n\cdot(1-r_n)+1.\tag{4}
+\end{align}
+These are the same dynamics expressed by (6)--(9), not an additional or alternative control model.
+
+As defined in the prose on pages 10--11, the amount of water available at the beginning of the day is $\xi_n+u_n$, the unused amount at the end of the day is $(\xi_n+u_n-w_n)^+$, and the consumed amount is
+\[
+\xi_n+u_n-(\xi_n+u_n-w_n)^+.
+\]
+Consequently the health-cost term in the selected objective is
+\[
+q(\tau_n)\cdot\bigl(\xi_n+u_n-(\xi_n+u_n-w_n)^+\bigr).
+\]
+Purchasing and flushing contribute $c_u u_n$ and $c_r x_n r_n$, respectively; flushing costs are incurred only when the reset action is taken.
+
+\paragraph{Printed discrepancy and scope.}
+The prose immediately following (12) calls $p\cdot(\xi_n+u_n-w_n)^-$ the total shortage cost, although the printed objective (5) uses $-p\cdot(\xi_n+u_n-w_n)^-$. The objective sign and the printed negative-part definition are retained here. Section 2.1 does not specify values for the initial state $x_0,t_0$; none are added.
+
+The stage-cost rewriting discussed on page 23 and proved in Appendix A, (A.17)--(A.20), serves the sufficient-condition analysis of Proposition 7; it does not supersede (5)--(12). Likewise, BiDS on pages 23--25 is a solution algorithm, and the demand distribution, weekly reset interval, and cost comparisons on page 25 are numerical-instance choices. They are not additional restrictions of the selected formulation.
+
+\end{document}

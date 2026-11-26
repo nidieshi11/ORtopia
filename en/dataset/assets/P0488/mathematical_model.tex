@@ -1,0 +1,326 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\section*{Learning-based inventory ordering: Algorithm 1}
+
+\subsection*{Objective and physical constraints}
+The objective is to minimize, over feasible non-anticipative ordering policies \(\pi\), the cumulative expected holding and lost-sales cost
+\begin{equation}
+C^{\pi}(T,L)=\sum_{t=1}^{T}\mathbb{E}[C_t^{\pi}]
+=\sum_{t=1}^{T}\mathbb{E}\left[
+ h\cdot(I_t+s(x_{1,t},Z_t)-D_t)^+
+ +b\cdot(D_t-I_t-s(x_{1,t},Z_t))^+
+\right].\tag{1}
+\end{equation}
+The physical state and initial conditions are subject to
+\begin{align*}
+I_{t+1}&=(I_t+s(x_{1,t},Z_t)-D_t)^+,
+&&t=1,\ldots,T,\\
+x_{i,t+1}&=x_{i+1,t},
+&&1\leq i\leq L-1,\quad t=1,\ldots,T,\\
+x_{L,t+1}&=q_t,
+&&t=1,\ldots,T,\\
+I_1&=0,\qquad x_{i,1}=0,
+&&1\leq i\leq L.
+\end{align*}
+A policy is specified by \(q_1^\pi,\ldots,q_T^\pi\). It is feasible if and only if it is non-anticipative: for each \(t\), \(q_t^\pi\) can depend only on the system states
+\[
+(I_\tau^\pi,x_{1,\tau}^\pi,\ldots,x_{L,\tau}^\pi),\qquad \tau\leq t,
+\]
+and the realized supplies \((s_1,\ldots,s_t)\). Here the realized period-\(t\) supply is \(s(x_{1,t},Z_t)\). The period cost is
+\[
+C_t^\pi=h\cdot(I_t+s(x_{1,t},Z_t)-D_t)^+
++b\cdot(D_t-I_t-s(x_{1,t},Z_t))^+.
+\]
+
+\paragraph{Inputs, roles, and timing (Section 3, pp.\ 7--8).}
+There is a single product and a horizon of \(T\) periods, indexed by \(t=1,\ldots,T\). The lead time \(L\) is a positive integer. The demand variables are drawn independently from the same unknown distribution \(F\), with
+\[
+D_t\in[0,\bar D].
+\]
+The supply function has the printed signature
+\[
+s(q,z):\mathbb{R}^2\longrightarrow\mathbb{R}.
+\]
+The variables \(Z_1,\ldots,Z_T\) are i.i.d. nonnegative random variables with unknown common distribution \(G\); their stated interval is \([\underline\alpha,\bar\alpha]\). The lower endpoint \(\underline\alpha\) is distinct from the unmarked parameter \(\alpha\) in the third supply formulation below. The holding cost \(h\) and lost-sales penalty \(b\) are fixed inputs known at the beginning. The order quantities are decisions, not realizations of supply.
+
+At the beginning of period \(t\), the company observes \(I_t\) and the pipeline \((x_{1,t},\ldots,x_{L,t})\), where \(x_{i,t}\) is the order placed in period \(t-L+i-1\), for \(i=1,\ldots,L\). Next the order placed \(L\) periods earlier arrives, increasing available inventory to
+\[
+I_t+s(x_{1,t},Z_t).
+\]
+The company then places \(q_t\), which arrives at the beginning of period \(t+L\). Demand is realized afterward. Demand not satisfied by inventory is lost and unobservable. The observable sales quantity is only
+\[
+\min\{I_t+s(x_{1,t},Z_t),D_t\},
+\]
+not \(D_t\). When \(I_{t+1}=0\), the lost-sales volume is unknown. Likewise, only \(s(x_{1,t},Z_t)\), not necessarily \(Z_t\), is observed.
+
+\paragraph{Long-run criterion and selected regret benchmark.}
+\begin{equation}
+C_\infty^\pi=\limsup_{T\to\infty}\frac{1}{T}\cdot C^\pi(T,L).\tag{2}
+\end{equation}
+The constant-order policy \(\pi_q\) orders the same quantity \(q\) every period, independently of the state. The quantity \(q^*\) minimizes the long-run cost among constant-order policies. The selected regret criterion is
+\begin{equation}
+\operatorname{Regret}_T^\pi
+=C^\pi(T,L)-T\cdot C_\infty^{\pi_{q^*}}.\tag{3}
+\end{equation}
+
+\subsection*{Exogenously specified supply family and observation rule}
+Section 3.2 specifies that the supply function is exogenously given as one of the following four functions; these are alternatives for the fixed input \(s\), not simultaneous equalities:
+\begin{align*}
+\text{Formulation 1:}\quad&s(q,Z)=q\cdot Z,\\
+\text{Formulation 2:}\quad&s(q,Z)=\min\{q,Z\},\\
+\text{Formulation 3:}\quad&s(q,Z)=\frac{qZ}{q+\alpha Z^\rho},
+&&\rho\leq1,\quad\alpha>0,\\
+\text{Formulation 4:}\quad&s(q,Z)=\frac{qk}{q+Z},
+&&k>0.
+\end{align*}
+In Formulation 4, \(k\) is the supplier's total output and \(Z\) captures other firms' order quantities. This parameter \(k\) is not the grid index used below. The deterministic case \(s(q,Z)=q\) is identified as a special case, not imposed here.
+
+\paragraph{Observation 1 (pp.\ 9--10).}
+If the supply function takes one of Formulations 1--4, then, for any \(q\) and \(Z\), observing \(s(q,Z)\) determines \(s(q',Z)\) for every \(q'\leq q\). The paper states that in Formulations 1, 3, and 4, \(Z\) can be inferred backward from \(q\) and \(s(q,Z)\). For Formulation 2 its complete case distinction is
+\begin{align*}
+q=s(q,Z)&\ \Longrightarrow\ q\leq Z
+\ \Longrightarrow\ s(q',Z)=q',&&\text{for every }q'\leq q,\\
+q>s(q,Z)&\ \Longrightarrow\ q>Z=s(q,Z)
+\ \Longrightarrow\ s(q',Z)=\min\{q',s(q,Z)\},
+&&\text{for every }q'\leq q.
+\end{align*}
+The observation is used only to reconstruct lower-order supplies from observed supplies. No inverse formula or exceptional-value convention is added. In particular, the paper's unrestricted claim about inferring \(Z\) in Formulation 1 includes \(q=0\), although \(s(0,Z)=0\) does not identify \(Z\); the observation about lower-order supplies and the printed algorithm are retained without an added invertibility premise.
+
+\subsection*{Constant-order benchmark and pseudo-cost}
+The benchmark construction in Section 4 uses
+\begin{equation}
+I_{t+1}^{\pi_q}=(I_t^{\pi_q}+s(q,Z_t)-D_t)^+.\tag{4}
+\end{equation}
+The paper calls \(I_\infty^{\pi_q}\) the limiting inventory level and states convergence in probability of \(\{I_t^{\pi_q}\}_{t=1}^{\infty}\) under
+\begin{equation}
+\mathbb{E}_{Z\sim G}[s(q,Z)]<\mathbb{E}_{D\sim F}[D].\tag{5}
+\end{equation}
+\paragraph{Assumption 1.}
+The company knows an upper bound \(\bar q\) of \(q^*\), satisfying the strict input restriction
+\[
+q^*\leq\bar q,\qquad \mathbb{E}[s(\bar q,Z)]<\mathbb{E}[D].
+\]
+The benchmark identities printed on p.\ 11 are
+\begin{align*}
+C_\infty^{\pi_q}
+&=h\cdot\mathbb{E}\big[(I_\infty^{\pi_q}+s(q,Z)-D)^+\big]
++b\cdot\mathbb{E}\big[(D-s(q,Z)-I_\infty^{\pi_q})^+\big],\\
+I_\infty^{\pi_q}
+&\overset{d}{=}(I_\infty^{\pi_q}+s(q,Z)-D)^+,\\
+I_\infty^{\pi_q}+s(q,Z)-D
+&=[I_\infty^{\pi_q}+s(q,Z)-D]^+
+-[D-s(q,Z)-I_\infty^{\pi_q}]^+,\\
+\mathbb{E}[I_\infty^{\pi_q}]+\mathbb{E}[s(q,Z)]-\mathbb{E}[D]
+&=\mathbb{E}[I_\infty^{\pi_q}+s(q,Z)-D]^+
+-\mathbb{E}[D-s(q,Z)-I_\infty^{\pi_q}]^+\\
+&=\mathbb{E}[I_\infty^{\pi_q}]
+-\mathbb{E}[D-s(q,Z)-I_\infty^{\pi_q}]^+.
+\end{align*}
+Here \(\overset d=\) means identical in distribution. In the last two lines, the placement of \({}^+\) outside the expectation brackets is retained from the printed page; the preceding derivation describes taking expectations of positive parts.
+\begin{equation}
+C_\infty^{\pi_q}
+=h\cdot\mathbb{E}[I_\infty^{\pi_q}]
++b\cdot\mathbb{E}[D]-b\cdot\mathbb{E}[s(q,Z)].\tag{6}
+\end{equation}
+Since \(\mathbb{E}[D]\) is independent of \(q\), the paper replaces benchmark-cost minimization by minimization of
+\begin{equation}
+\hat C_\infty^{\pi_q}
+=h\cdot\mathbb{E}[I_\infty^{\pi_q}]
+-b\cdot\mathbb{E}[s(q,Z)]\tag{7}
+\end{equation}
+over the printed set
+\[
+\mathcal Q=\{q:q\leq\bar q\}.
+\]
+The printed set does not include a lower-bound row; it is not replaced here by \([0,\bar q]\). The algorithm's grid, in contrast, is explicitly constructed on \([0,\bar q]\). Equation (4) is the paper's constant-input benchmark recursion; the physical system still has the zero initial pipeline stated above. Applying (4) from the first physical period would disregard that pipeline delay, so it is not an additional recursion enforced on the adaptive system.
+
+\subsection*{Complete operative Algorithm 1 (p.\ 13)}
+The following uses the formal algorithm's epoch lengths, simulation range, empirical cost, and elimination threshold. For the source-supported input choice in Theorem 1, take
+\[
+K=\sqrt T,\qquad\gamma_n=2^{-n}\quad\text{for every }n\geq1.
+\]
+\begin{enumerate}
+\item Initialize
+\[
+\mathcal A_1=\mathcal A,\qquad
+\mathcal A=\{a_1,\ldots,a_{K+1}\},\qquad
+ a_k=\frac{k-1}{K}\cdot\bar q\quad(k=1,\ldots,K+1).
+\]
+Thus the grid has \(K+1\) points. Set, for every \(n\geq1\),
+\[
+\tau_n=\sum_{n'=1}^{n-1}\kappa_2\cdot
+\max\left\{\frac{1}{\gamma_{n'+1}^{2}}\cdot\log T,3L\right\}+1,
+\]
+where \(\kappa_2\) is a fixed constant selected as described below.
+
+\item For epochs \(n=1,2,\ldots\), identify the largest active order quantity
+\[
+a_{n^*}=\max\mathcal A_n.
+\]
+For each time period \(t=\tau_n,\ldots,\tau_{n+1}-1\), implement the constant-order policy \(\pi_{a_{n^*}}\), that is, order \(a_{n^*}\). Observe the supply \(s(x_{1,t},Z_t)\) and on-hand inventory \(I_t\).
+
+\item For every \(a\in\mathcal A_n\), obtain the simulated supplies
+\[
+s(a,Z_t),\qquad t=\tau_n+L,\ldots,\tau_{n+1}-1,
+\]
+using Observation 1 and the observed supplies under \(a_{n^*}\). Initialize
+\[
+I^a_{\tau_n+L}=I_{\tau_n+L}.
+\]
+For \(t=\tau_n+L,\ldots,\tau_{n+1}-1\), compute
+\[
+I^a_{t+1}=\begin{cases}
+\big(I^a_t+s(a,Z_t)+I_{t+1}-I_t-s(a_{n^*},Z_t)\big)^+,
+& I_{t+1}>0,\\
+0,&I_{t+1}\leq0.
+\end{cases}
+\]
+Then compute the empirical pseudo-cost
+\begin{align*}
+\tilde C_n^a
+={}&h\cdot\frac{1}{\tau_{n+1}-\tau_n-\kappa_2\max\{\log T,2L\}}
+\sum_{t=\tau_n+\kappa_2\max\{\log T,2L\}}^{\tau_{n+1}-1} I_t^a\\
+&-b\cdot\frac{1}{\tau_{n+1}-\tau_n-\kappa_2\max\{\log T,2L\}}
+\sum_{t=\tau_n+\kappa_2\max\{\log T,2L\}}^{\tau_{n+1}-1}s(a,Z_t).
+\end{align*}
+
+\item Set
+\[
+\tilde C_n^*=\min_{a\in\mathcal A_n}\tilde C_n^a
+\]
+and update
+\begin{equation}
+\mathcal A_{n+1}
+=\left\{a\in\mathcal A_n:
+\tilde C_n^a\leq\tilde C_n^*+(h+b)\cdot\frac{\gamma_n}{2}\right\}.\tag{8}
+\end{equation}
+Continue to the next epoch.
+\end{enumerate}
+The active sets are subsets of the fixed grid and are nested through (8). Their elements, their empirical costs, and their largest elements are computed quantities, not additional free decision variables.
+
+\paragraph{Printed scope of the algorithm.}
+The formal algorithm contains no integer-rounding rule for \(K=\sqrt T\), epoch endpoints, or summation endpoints, and no explicit final-epoch truncation instruction at \(T\). These are left as printed, rather than supplied as implementation conventions. The introductory epoch description on pp.\ 11--12 omits the factor \(\kappa_2\); the formal Algorithm 1 above is the selected operative version.
+
+\subsection*{Simulation definitions and the printed sign conflict}
+Section 4.1 defines, for each \(a\in\mathcal A_n\), the demand-driven simulated process
+\begin{equation}
+I^a_{\tau_n+L}=I_{\tau_n+L},\qquad
+I^a_{t+1}=(I^a_t+s(a,Z_t)-D_t)^+,
+\quad t=\tau_n+L,\ldots,\tau_{n+1}-2.\tag{9}
+\end{equation}
+Its implementable, censored-data replacement is the two-case update in Algorithm 1 above. Lemma 1 repeats that update for \(t=\tau_n+L,\ldots,\tau_{n+1}-2\); Algorithm 1 itself extends the update range through \(\tau_{n+1}-1\).
+
+The following equation is printed in Section 4.1 for the actual inventory:
+\begin{equation}
+I_{t+1}=(I_t-s(a_{n^*},Z_t)-D_t)^+.\tag{10, printed}
+\end{equation}
+\emph{Source contradiction:} the minus sign before supply in (10) conflicts with the physical dynamics on p.\ 7, with (4), and with Algorithm 1's reconstruction formula. Equation (10) is recorded here as a printed discrepancy, not enforced alongside the physical dynamics. The operative physical and simulation rows above retain their printed plus-supply signs.
+
+The accompanying argument on pp.\ 14--15 states that, if \(I_{t+1}>0\), demand can be recovered and (9) evaluated; if \(I_{t+1}\leq0\), it uses
+\[
+s(a,Z_\tau)\leq s(a_{n^*},Z_\tau)\quad\text{for all }\tau\leq t,
+\qquad
+I_t^a\leq I_t\leq D_t-s(a_{n^*},Z_t)\leq D_t-s(a,Z_t),
+\]
+which implies \(I_{t+1}^a=0\). This argument likewise uses the plus-supply physical recursion rather than the sign printed in (10).
+
+\subsection*{Confidence rule and algorithm constants}
+The grid benchmark used to describe elimination is
+\[
+a^*=\arg\min_{a\in\mathcal A}\hat C_\infty^{\pi_a},\qquad
+\hat C_\infty^{\pi_{a^*}}=\min_{a\in\mathcal A}\hat C_\infty^{\pi_a}.
+\]
+For each completed epoch, the confidence interval selected in Section 5, step 3, is
+\[
+\left[\tilde C_n^a-(h+b)\cdot\frac{\gamma_n}{2},
+      \tilde C_n^a+(h+b)\cdot\frac{\gamma_n}{2}\right].
+\]
+With \(N\) denoting the total number of epochs, its simultaneous confidence event is
+\begin{equation}
+\mathcal E=\left\{
+\left|\tilde C_n^a-\hat C_\infty^{\pi_a}\right|
+\leq(h+b)\cdot\frac{\gamma_n}{2},
+\quad\forall a\in\mathcal A_n,\quad\forall\,1\leq n\leq N-1
+\right\}.\tag{11}
+\end{equation}
+Lemma 6 gives
+\[
+\mathbb P(\mathcal E)\geq1-\frac{7(K+1)N}{T^2}.
+\]
+These are confidence statements, not additional deterministic feasibility constraints on the realized sample path. Section 5.3 also prints intervals \([\tilde C_n^a-\gamma_n,\tilde C_n^a+\gamma_n]\); those alternate widths are not substituted for (11) or the threshold in (8).
+
+\paragraph{Selected constant requirement (Section 4.2).}
+The fixed constant is required to satisfy
+\[
+\kappa_2\geq\delta(F,G,\bar q),
+\]
+where \(\delta(F,G,\bar q)\) depends solely on \(F,G,\bar q\), not on \(L,T\), and is unknown initially. This abstract function is not assigned an invented formula. The optional \(\kappa_2=\log T\) version and the optional initial pure-learning phase are not imposed in this fixed-constant version.
+
+The appendix supplies the following explicit sufficient requirements used in the coupling and confidence arguments (pp.\ 31--32, 34--37):
+\begin{align*}
+\delta&=\mathbb E[D]-\mathbb E[s(\bar q,Z)],\\
+\kappa_2&\geq\max\left\{\frac{2\kappa_1}{\delta},\frac{4\bar D}{\delta^2}\right\}
+\geq\max\left\{
+\frac{2\kappa_1\log T}{\delta\max\{\log T,2L\}},
+\frac{4\bar D\log T}{\delta^2\max\{\log T,2L\}}
+\right\},\\
+\kappa_2&\geq\max\{4,2(\bar D+1+\kappa_1)\}
+\geq\max\left\{\frac{4\log T}{\max\{\log T,2L\}},
+2(\bar D+1+\kappa_1)\right\},\\
+\kappa_2&\geq\frac{24}{1-\lambda},\\
+\kappa_2&\geq12\bar D^2.
+\end{align*}
+Here the scalar \(\delta\) is the positive demand--supply expectation gap under Assumption 1; it is distinct from the abstract threshold function \(\delta(F,G,\bar q)\). The constant \(\kappa_1>0\) is the fixed inventory-tail constant used in the appendix, for example
+\[
+\mathbb P\big(\tilde I^a_{\tau_1}\leq\kappa_1\log T\big)
+\geq1-\frac{1}{T^2},\qquad a\in\mathcal A_1.
+\]
+The auxiliary stationary processes, used only to justify confidence and not to implement ordering, are
+\begin{equation}
+\tilde I^a_{\tau_n}\overset d=I_\infty^{\pi_a},\qquad
+\tilde I^a_{t+1}=(\tilde I^a_t+s(a,Z_t)-D_t)^+,
+\quad t=\tau_n,\ldots,\tau_{n+1}-2.\tag{15}
+\end{equation}
+The appendix obtains \(\kappa_1\) from its quoted Lundberg inequality: for the limiting inventory of
+\[
+I_{t+1}=(I_t+Q-D)^+,
+\]
+where \(Q,D\) are positive random variables in that lemma,
+\[
+\mathbb P(I_\infty\geq u)\leq\exp(-\rho u)\quad(u>0),
+\qquad
+\lambda(z)=\mathbb E[\exp(z(Q-D))],\qquad\lambda(\rho)=1.
+\]
+Here \(Q\) is that lemma's random input, not the feasible set \(\mathcal Q\); \(\rho\) and the function \(\lambda(z)\) are local to the tail lemma, not the supply exponent or the confidence constant.
+
+The confidence constant \(\lambda\) comes from the stationary-Markov-chain concentration result quoted as Lemma 8. For a stationary Markov chain \((X_i)_{i\geq1}\), initialized in its stationary distribution, it asserts existence of a constant \(\lambda>0\) with
+\[
+\mathbb P\left(
+\left|\sum_{i=1}^{m}X_i-\mathbb E\left[\sum_{i=1}^{m}X_i\right]\right|
+\geq\sqrt m\,\epsilon
+\right)
+\leq2\exp\left(-\frac{\epsilon^2(1-\lambda)}4\right),
+\qquad\epsilon>0.
+\]
+This is the unambiguous event form used in the proof of Lemma 6 on p.\ 36. No additional upper bound on \(\lambda\) is supplied here: the paper's Lemma 8 explicitly states only \(\lambda>0\), despite the later use of \(1-\lambda\) in the constant requirement.
+
+\paragraph{Scope of the appendix dependencies.}
+The constant bounds above are retained as printed; they are not recomputed from corrected concentration arguments. In particular, p.\ 36 introduces
+\[
+m=\tau_{n+1}-\tau_n-1-\kappa_2\max\{\log T,2L\}
+\]
+but then prints
+\[
+m=\kappa_2\left(
+\max\{\gamma_n^{-2}\log T,3L\}-\max\{\log T,2L\}\right).
+\]
+The latter changes \(\gamma_{n+1}\) in Algorithm 1's epoch length to \(\gamma_n\) and drops the subtraction of one. It is a proof-level inconsistency, not an alternative operative epoch rule. The algorithm and empirical-cost denominator remain those printed in Algorithm 1. No bounds on supply by \(\bar D\), rounding rules, independence between demand and supply beyond the stated distributional assumptions, or missing parameter-domain restrictions are added to repair these arguments.
+
+\paragraph{Source scope.}
+The operative formulation is reconstructed from Sections 3--4 and Algorithm 1 of Chen, Jiang, Zhang, and Zhou, \emph{Learning to Order for Inventory Systems with Lost Sales and Uncertain Supplies}, arXiv:2207.04550v4, with the confidence and constant dependencies printed in Sections 5 and Appendices A--B. The supplied original page images establish the distinct supply-support endpoint \(\underline\alpha\), the physical plus-supply dynamics, and the benchmark identities. External originals cited for queueing, tail, and Markov-chain results were not supplied and remain independently unverified; their statements above are those quoted in this paper.
+
+\end{document}

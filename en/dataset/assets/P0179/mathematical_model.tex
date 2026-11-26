@@ -1,0 +1,123 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\title{Integrated Fleet Assignment, Cruise Speed, and Aircraft Swaps}
+\date{}
+\begin{document}
+\maketitle
+
+\section{Sets and parameters}
+Let $L$, $F$, and $P$ be finite sets of flights, aircraft types, and original flight paths, respectively. Let $L_d\subseteq L$ be the flights with prescribed delays, $S(l)\subseteq L$ the possible swap partners of flight $l$, and $L(p)\subseteq L$ the flights on path $p$. Define
+\[
+ E=\{(l,j):l\in L,\ j\in S(l)\}.
+\]
+All referenced indices must be covered by the instance: in particular, $(j,l)\in E$ whenever $(l,j)\in E$. The mappings $n(l)\in L$, $f_l\in F$, and $l_o(p)\in L(p)$ specify the immediate successor of flight $l$, its original aircraft type, and the first flight of path $p$ considered in rescheduling.
+
+All parameters below are scalar arrays over the indicated indices:
+\begin{itemize}
+\item For $l\in L$: scheduled departure $d_l$, scheduled arrival $r_l$, turnaround time $a_l$, cruise distance $d_l^{\mathrm{cr}}$, departure-delay bound $\ell_l^u$, arrival-delay cost coefficient $w_l$, passenger count $psg_l$, and coefficient $sp_l$ for $s_l$.
+\item For $l\in L_d$: prescribed delay $\bar\ell_l$.
+\item For $(l,f)\in L\times F$: noncruise time $t_{lf}^{\mathrm{nc}}$, original speed $v_{lf}^{o}$, upper speed bound $v_{lf}^{u}$, and fuel coefficients $c_{i,lf}$ for $i=1,2,3,4$. These coefficients denote the applicable coefficients of the supplied fuel function; shared coefficients are represented by equal entries.
+\item For $(l,j)\in E$: swap cost $h_{lj}$. For $f\in F$: seat capacity $b_f$.
+\item Fuel price $p_{\mathrm{fuel}}$, carbon price $p_{\mathrm{CO}_2}$, fuel-to-emissions conversion factor $\kappa$, and incremental emissions limit $C_{\max}$.
+\end{itemize}
+The original assigned speeds have defined positive-speed baseline fuel evaluations. Define the constant
+\[
+ B_0=\sum_{l\in L}d_l^{\mathrm{cr}}\left(
+ c_{1,l f_l}(v_{l f_l}^{o})^2+c_{2,l f_l}v_{l f_l}^{o}
+ +\frac{c_{3,l f_l}}{(v_{l f_l}^{o})^2}
+ +\frac{c_{4,l f_l}}{(v_{l f_l}^{o})^3}\right).
+\]
+
+\section{Variables and domains}
+For every $(l,f)\in L\times F$, $z_{lf}$ denotes aircraft-type assignment, $\ell_{lf}$ departure delay, $v_{lf}$ cruise speed, and $t_{lf}$ cruise time. For $(l,j)\in E$, $x_{lj}$ denotes a swap. For $l\in L$, $s_l$ is the passenger-related variable in the stated capacity inequality. The scalar $\ell_l$ for $l\in L_d$ is distinct from the fleet-indexed variables $\ell_{lf}$ and is governed by its stated constraints.
+
+The variables $A_l,D_l$ represent the arrival-delay argument and its nonnegative part. The variables $q_{lf},U_{lf},R_{lf},H_{lf},B_{lf}$ give the exact fuel graph. Their domains, together with those of the original variables, are
+\begin{align}
+ z_{lf}&\in\{0,1\}, & &l\in L,\ f\in F,\\
+ x_{lj}&\in\{0,1\}, & &(l,j)\in E,\\
+ \ell_{lf},v_{lf},t_{lf},q_{lf},U_{lf},R_{lf},H_{lf}&\geq0,
+ &&l\in L,\ f\in F,\\
+ B_{lf}&\in\mathbb R, &&l\in L,\ f\in F,\\
+ s_l,D_l&\geq0,\qquad A_l\in\mathbb R, &&l\in L,\\
+ \ell_l&\in\mathbb R, &&l\in L_d.
+\end{align}
+All variables except $x$ and $z$ are continuous.
+
+\section{Objective and constraints}
+Minimize
+\begin{equation}
+ \sum_{l\in L}w_lD_l
+ +(p_{\mathrm{fuel}}+p_{\mathrm{CO}_2}\kappa)
+ \left(\sum_{l\in L}\sum_{f\in F}B_{lf}-B_0\right)
+ +\sum_{l\in L}\sum_{j\in S(l)}h_{lj}x_{lj}
+ +\sum_{l\in L}sp_ls_l.
+\end{equation}
+The directed swap-cost summation is retained as displayed.
+
+The exact arrival-delay graph is
+\begin{align}
+ A_l&=d_l-r_l+\sum_{f\in F}
+ (\ell_{lf}+t_{lf}+t_{lf}^{\mathrm{nc}}z_{lf}), &&l\in L,\\
+ D_l&=\max\{A_l,0\}, &&l\in L.
+\end{align}
+The latter equality is an exact MAX general constraint.
+
+The exact fuel graph is
+\begin{align}
+ v_{lf}q_{lf}&=z_{lf}, &&l\in L,\ f\in F,\\
+ U_{lf}&=v_{lf}^2, &&l\in L,\ f\in F,\\
+ R_{lf}&=q_{lf}^2, &&l\in L,\ f\in F,\\
+ H_{lf}&=R_{lf}q_{lf}, &&l\in L,\ f\in F,\\
+ z_{lf}=0&\ \Longrightarrow\ q_{lf}=0, &&l\in L,\ f\in F,\\
+ B_{lf}&=d_l^{\mathrm{cr}}\bigl(c_{1,lf}U_{lf}+c_{2,lf}v_{lf}
+                 +c_{3,lf}R_{lf}+c_{4,lf}H_{lf}\bigr),
+ &&l\in L,\ f\in F.
+\end{align}
+The implication is a linear indicator constraint.
+
+Cruise-distance, delay, speed, and emissions constraints are
+\begin{align}
+ v_{lf}t_{lf}&=d_l^{\mathrm{cr}}z_{lf}, &&l\in L,\ f\in F,\\
+ \ell_{lf}&\leq\ell_l^u z_{lf}, &&l\in L,\ f\in F,\\
+ \ell_l&=\bar\ell_l, &&l\in L_d,\\
+ v_{lf}^{o}z_{lf}&\leq v_{lf}\leq v_{lf}^{u}z_{lf}, &&l\in L,\ f\in F,\\
+ \kappa\sum_{l\in L}\sum_{f\in F}B_{lf}-\kappa B_0&\leq C_{\max}.
+\end{align}
+Flight--type cruise times satisfy the displayed bounds and linking constraints for every pair.
+
+Turnaround feasibility requires
+\begin{align}
+ &d_{n(l)}z_{n(l),f_k}+\ell_{n(l),f_k}
+ +(r_k+\ell_k^u+a_k)(1-z_{n(l),f_k})\notag\\
+ &\qquad\geq d_kz_{k f_k}+a_kz_{k f_k}
+ +\ell_{k f_k}+t_{k f_k}+t_{k f_k}^{\mathrm{nc}}z_{k f_k},
+ &&l\in L,\ k\in\{l\}\cup S(l),\\
+ &d_{n(l)}z_{n(l),f}+\ell_{n(l),f}\notag\\
+ &\qquad\geq d_lz_{lf}+a_lz_{lf}
+ +\ell_{lf}+t_{lf}+t_{lf}^{\mathrm{nc}}z_{lf},
+ &&l\in L,\ f\in F\setminus\{f_l\}.
+\end{align}
+
+Swap limits, symmetry, and the stated passenger-capacity inequality are
+\begin{align}
+ \sum_{l\in L(p)}\sum_{j\in S(l)}x_{lj}&\leq1, &&p\in P,\\
+ \sum_{j\in S(l)}x_{lj}&\leq1, &&l\in L,\\
+ x_{lj}&=x_{jl}, &&(l,j)\in E,\\
+ psg_l-\sum_{f\in F}b_fz_{lf}&\geq s_l, &&l\in L.
+\end{align}
+
+Fleet assignment and swap consistency require
+\begin{align}
+ \sum_{f\in F}z_{lf}&=1, &&l\in L,\\
+ z_{l_o(p),f_{l_o(p)}}&=1, &&p\in P,\\
+ z_{n(l),f}-z_{lf}&\leq\sum_{j\in S(l)}x_{lj}, &&l\in L,\ f\in F,\\
+ z_{lf}-z_{n(l),f}&\leq\sum_{j\in S(l)}x_{lj}, &&l\in L,\ f\in F,\\
+ z_{n(j),f_l}&\geq x_{lj}, &&(l,j)\in E,\\
+ z_{n(l),f_j}&\geq x_{lj}, &&(l,j)\in E.
+\end{align}
+
+\paragraph{Formulation retained.}
+This is the selected model (20)--(40) with exact graph and linear rewrites.  Its quadratic equalities are retained for solution with Gurobi's nonconvex quadratic capability (\texttt{NonConvex=2}), together with the MAX and indicator general constraints.
+\end{document}

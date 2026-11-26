@@ -1,0 +1,103 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\emergencystretch=4em
+\begin{document}
+\section*{Coordination model between suburban railways and subways in terms of schedules and speeds}
+Corresponding to pages 9--15 of the original paper (sections (1)--(34). In the original document, the sets of moving block sections, adjacent section pairs, and sequential variable domains are mixed together. This document defines them separately. All times are in integer seconds, distance in meters, and speed in m/s. The two directions in the current example use separate tracks. The number of trains, stations, and running times given in the original document are all retained; the lengths of missing sections and physical parameters can be found in the data records.
+
+\subsection*{Collections, variables, and targets}
+$K$ represents a set of trains, $S_k$ represents a fixed path for trains, $\mathcal F$ represents pairs of adjacent sections, $Z$ represents a set of moving block sections, $S_B$ represents the starting section. $\widehat s$ is the successor of $s$, with the end time indicated at the boundary. The running time is fixed as $n_{ks}$, $\xi_k=1$ indicates a direct train service, with 0 representing a regular train. $t_{ks},t^{bc}_{ks},t^{ec}_{ks}$ represents a non-negative integer time; $v^{in}_{ks},v^{cru}_{ks}\ge0$, $a_{ks}\in[0,a^{max}]$ and $b_{ks}\in[-b^{max}_{service},0]$ represent continuous control. For pairs of ordered trains sharing the same physical section, $\lambda_{ij}^s\in\{0,1\}$ and $\lambda_{ji}^s=1-\lambda_{ij}^s$ are used; $x_{ij}\in\{0,1\}$ represents a direct successor record between trains with the same starting point but different trains: 1 is taken if train $j$ departs immediately after train $i$, otherwise 0; its index is $i,j\in K_s,\ i\ne j,\ s\in S_B$. This binary domain is completed according to the definition on page 11 of the original paper. The goal is…
+\[
+\min\sum_{k\in K}t_{k,s_k^e}.
+\]
+
+\subsection*{Operation, sequence, and departure intervals}
+\[
+t_{k,\widehat s}=t_{ks}+n_{ks}.
+\]
+Non-mobile block section $s\notin Z$ for all $i<j$:
+\[
+t_{is}\ge t_{js}+n_{js}+\delta-\lambda_{ij}^sM,\qquad
+t_{js}\ge t_{is}+n_{is}+\delta-(1-\lambda_{ij}^s)M.
+\]
+Same starting point $s=s_i^b=s_j^b$:
+\begin{align*}
+t_{is}&\ge t_{js}+h^{min}-\lambda_{ij}^sM,&
+t_{js}&\ge t_{is}+h^{min}-(1-\lambda_{ij}^s)M,\\
+t_{is}&\le t_{js}+h^{max}+\lambda_{ij}^sM+(1-x_{ji})M,&
+t_{js}&\le t_{is}+h^{max}+(1-\lambda_{ij}^s)M+(1-x_{ij})M.
+\end{align*}
+The trains starting from each station belong to the group $K_s$.
+\[
+\sum_{j\ne i}x_{ij}\le1,\quad \sum_{i\ne j}x_{ij}\le1,\quad
+\sum_i\sum_{j\ne i}x_{ij}=|K_s|-1,\quad x_{ij}\le\lambda_{ij}^s.
+\]
+Define $B_i=\sum_{j\ne i}x_{ij}\xi_j+
+\sum_{j\ne i}\sum_{j'\notin\{i,j\}}x_{ij}x_{jj'}\xi_{j'}$. Ordinary vehicles meet the requirements of $B_i=\sum_{j\ne i}x_{ij}$, while direct access vehicles meet the requirements of $B_i\le1$. This is a finite sequence rule based on the source text (7)–(8); if there are fewer than two successors at the end, then the actual number of successors will be used.
+
+\subsection*{Complete three-stage speed curve}
+\[
+v^{in}_{k,s_k^b}=v^{in}_{k,s_k^e}=0,\quad
+0\le v^{in}_{ks},v^{cru}_{ks}\le v_s^{lim},\quad
+t_{ks}\le t^{bc}_{ks}\le t^{ec}_{ks}\le t_{k,\widehat s}.
+\]
+\begin{align*}
+v^{cru}_{ks}&=v^{in}_{ks}+a_{ks}(t^{bc}_{ks}-t_{ks}),\\
+v^{in}_{k,\widehat s}&=v^{cru}_{ks}+b_{ks}(t_{k,\widehat s}-t^{ec}_{ks}),\\
+L_s&=\tfrac12(v^{in}_{ks}+v^{cru}_{ks})(t^{bc}_{ks}-t_{ks})
+ +v^{cru}_{ks}(t^{ec}_{ks}-t^{bc}_{ks})
+ +\tfrac12(v^{cru}_{ks}+v^{in}_{k,\widehat s})(t_{k,\widehat s}-t^{ec}_{ks}).
+\end{align*}
+All trains use a constant acceleration during the same phase of their journey.
+
+\subsection*{Conflict and braking safety}
+Physical inspection collection $\mathcal Q$ includes ordered pairs of shared lines $(i,j,s',s)$: For fixed block systems, use $s'=\widehat s$ (both sections use fixed block technology); for moving block systems, use $s'=s\in Z$. There are no conflicting pairs between different independent tracks. Let the binary variable be…
+\[
+\check\theta=\mathbf1_{\{t_{i,\widehat{s'}}\ge t_{js}\}},\quad
+\hat\theta=\mathbf1_{\{t_{i,\widehat{s'}}\le t_{j,\widehat s}\}},\quad
+\zeta=\check\theta\hat\theta\lambda_{ij}^{s'}.
+\]
+The above logic is equivalent to the statements from (26) to (33). It can be expressed using a bounded time domain and $\epsilon=1$ as follows:
+\begin{align*}
+t_{js}-t_{i,\widehat{s'}}&\le M(1-\check\theta),&
+t_{js}-t_{i,\widehat{s'}}&\ge1-(M+1)\check\theta,\\
+t_{i,\widehat{s'}}-t_{j,\widehat s}&\le M(1-\hat\theta),&
+t_{i,\widehat{s'}}-t_{j,\widehat s}&\ge1-(M+1)\hat\theta,\\
+\zeta&\ge\check\theta+\hat\theta+\lambda_{ij}^{s'}-2,&
+\zeta&\le\check\theta,\ \hat\theta,\ \lambda_{ij}^{s'} .
+\end{align*}
+Safety conditions are determined based on the source text (34):
+\[
+t_{j,\widehat s}-t_{i,\widehat{s'}}
+\ge \frac{v^{max}_{js}}{b^{max}_{emergency}}+\delta
+ -(3-\iota_{\alpha,js}-\iota_{\beta,js}-\zeta)M.
+\]
+$v^{max}_{js}$ represents the maximum speed of the three-stage curve. $\iota_\alpha,\iota_\beta$ is the indicator of dangerous situations in the source text's speed curve. The candidate solutions are certified with stronger authentication: for all $\zeta=1$s, the braking interval without $M$ is directly satisfied, thus ensuring that the equation (34) is met regardless of the values of the two indicators mentioned above; this value is used to construct the candidate feasible certificate. The $\sigma$ correction used in the source text's iterative algorithm when safety is insufficient is included as a step of the algorithm; the current candidate safety margin is non-negative, and $\sigma=0$ is taken. The implementation certificate also additionally checks several fixed/moving boundary adjacent pairs, which constitutes a stronger check.
+
+
+\subsection*{Six speed metrics from Official Appendix C: Complete closure definition}
+The following definitions come from Official Supplementary Materials, Appendix C. On page 4 of the PDF document (page 46 in print version), Tables 7 and 8 provide further details. For each $k,s$, let $v^-=v^{in}_{ks}$, $v^0=v^{cru}_{ks}$, and $v^+=v^{in}_{k,\widehat s}$ be assigned values. The sixth indicator is also binary in nature, and its value is determined uniquely by the speed value involved.
+\begin{align*}
+\iota_{1,ks}=1&\ \Longleftrightarrow\ v^-\le v^0,&
+\iota_{2,ks}=1&\ \Longleftrightarrow\ v^-=v^0,&
+\iota_{3,ks}=1&\ \Longleftrightarrow\ v^-\ge v^0,\\
+\iota_{4,ks}=1&\ \Longleftrightarrow\ v^0\le v^+,&
+\iota_{5,ks}=1&\ \Longleftrightarrow\ v^0=v^+,&
+\iota_{6,ks}=1&\ \Longleftrightarrow\ v^0\ge v^+ .
+\end{align*}
+Table 7 retains the weak inequality condition: when values are equal, both the weak comparison and the equality indicator should be set to 1. It is not allowed to incorrectly add the one-hot condition, nor should unknown indicators be treated as variables that can be freely set to zero. Table 8 lists six such pairs.
+\[
+\mathcal I=\{(1,4),(3,6),(2,5),(1,5),(2,6),(1,6)\}.
+\]
+Apply formula (34) to each element of type $(\alpha,\beta)\in\mathcal I$ and to each conflicting tuple $\mathcal Q$. Here, the maximum speed is defined as…
+\[
+v^{max}_{js}=\max\{v^{in}_{js},v^{cru}_{js},v^{in}_{j,\widehat s}\}.
+\]
+Within the corresponding active trajectory, the values are as follows: $v^{in}_{j,\widehat s},v^{in}_{js},v^{in}_{js},
+v^{in}_{j,\widehat s},v^{in}_{js},v^{cru}_{js}$. Corresponding to Appendices 47–52. In Appendix 7, $s'$ indicates the successor of this speed segment. In this document, it is uniformly denoted as $\widehat s$ to avoid confusion with the $s'$ value used for previous trajectories in the same tuple. The values of the speed comparison logic indicators are determined based on the actual signs of the continuous speed differences. The value $a\ge0,b\le0$ already exists in the original text; it remains unchanged in this model. This value activates $(1,6)$ for the current candidate acceleration-cruise-braking trajectory, without altering the definitions of other indicators in the appendix.
+
+The current value of the certificate reconstructs six indicators based on the actual speed. Then, each conflicting tuple is analyzed in detail using the six-group method described in (34). The stronger version of the $M$ active security check is retained as additional evidence. The security relationships between conflicting tuples are verified based on the complete definition of each indicator.
+
+\subsection*{Entering boundaries and solving the problem}
+The bounded time domain can take values like $0\le t\le\sum_sn_s+(|K|+1)h^{max}$ and $M$. The upper limit is determined by adding up all the required running/safety intervals. This value is used in the aforementioned logical expressions. The code first determines the sequence of trains that satisfy the type successor constraints, then constructs curves with fixed safety intervals and precise speeds. The candidate configurations involve speeds that start and end at 0, with acceleration and deceleration periods of 20 seconds each. The speeds and acceleration/deceleration times in the model are determined based on their respective variable ranges. All running times, distance equations, speed limits, constraints related to successor relationships, and physical safety requirements are checked separately. Each instance has a total of 3600 seconds to complete the task. The system returns a complete set of feasible moments, speed curves, and feasible target values.
+\end{document}

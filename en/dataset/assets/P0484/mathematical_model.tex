@@ -1,0 +1,103 @@
+\documentclass{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\begin{document}
+\section*{Stochastic pickup and delivery with predictive route insertion}
+\paragraph{Conditional source interpretation.}
+The model below selects the route-state dimensions in (4)--(6), the ordinary
+leg descriptions and departure/load definitions of the 2015 paper (printed
+pp.\ 241--242), and the physical current-position anchor in its Fig.\ 1.
+It uses the pickup indicator as the waiting factor. The 2015 article says
+that its formulation summarizes Cort\'es et al.\ (2009); that paper's
+printed p.\ 33 explicitly identifies the waiting factor with the pickup
+indicator of the route being costed. The earlier 2008 paper uses the
+literal name $z$ for this indicator. The travel and waiting coefficients here
+follow the two terms of 2015 (8). The selected expressions and their
+differences from the printed matrices are specified below.
+
+\paragraph{Information, histories and decisions.}
+Consider an observed current request and a tree of $N-1$ future requests
+with historical transition probabilities. There are $F$ vehicles.
+At history $h$ of depth $d\in\{0,\ldots,N-1\}$ let $e_h$ be the time
+of the known or forecast request and let $\pi_h$ be the probability of
+reaching $h$. The root has probability one. All histories with the same
+observations have the same decisions up to their branching point.
+The initial position, load, preceding route and unserved passengers of each
+vehicle are given. To produce the state at a child history, follow the
+parent's assigned route until the child request time. Remove the completed
+prefix, including a service ending at the request time, retain all
+passengers still aboard and interpolate the vehicle's position along
+its current travel segment. An idle vehicle stays at its last position.
+In the ten input cases, travel has given constant speed and each recorded
+service and transfer time is zero.
+
+At each history choose a vehicle $j$, a pickup rank $a$ and a delivery
+rank $b$ for its incoming passenger. Given $q$ pending stops of that vehicle
+immediately before insertion, put $w=q+2$. The ordinal domain is
+$1\leq a\leq w-1$, $2\leq b\leq w$ and $a<b$. Delete the new pickup and
+delivery from the new list to recover exactly the prior ordered list.
+Other vehicles retain their pending routes. Enforce pickup before delivery,
+passenger-vehicle consistency, nonnegative onboard loads and vehicle
+capacity on every prefix. Initial onboard passengers have their pending
+deliveries and disembark by the end of their vehicle's route. Execute the
+root decision in the current receding-horizon update.
+
+\paragraph{States of an issued route.}
+For vehicle $j$ and issued route at $h$, ordinary stops are
+$i=1,\ldots,w_{jh}$, and row zero is its vehicle anchor at issue. Write
+$r_{jhi}=1$ for pickup and $r_{jhi}=0$ for delivery. The stop also records
+its passenger identity and leg time $\Gamma_{jhi}$ from the preceding
+point, including the input's transfer delay. On the deterministic leg data
+at the specified history the conditional state prediction of (6) is
+\[
+ L_{jh0}=L^{\rm anchor}_{jh},\quad T_{jh0}=e_h,\qquad
+ L_{jhi}=L_{jh,i-1}+2r_{jhi}-1,\qquad
+ T_{jhi}=T_{jh,i-1}+\Gamma_{jhi}.
+\]
+Here $L_{jhi}$ is the load after leaving stop $i$; the previous stop's load
+travels on leg $i$. The vector width is $w_{jh}+1$. Given the input travel
+and service times and the fixed route, the conditional expectations equal
+these values. Observations at a later request produce the state from which
+its own route is issued.
+
+\paragraph{Costs.}
+Use the pickup factor on the same route whose ranks and state are being
+priced. The fleet cost of the route set $S_h$ at issue is
+\[
+ D_h=\sum_{j=1}^{F}\sum_{i=1}^{w_{jh}}
+ \left[L_{jh,i-1}\left(T_{jhi}-T_{jh,i-1}\right)
+       +r_{jhi}\left(T_{jhi}-T_{jh0}\right)\right].
+\]
+Price the preceding routes at the given initial vehicle anchors by the
+same rule to obtain $D_{-1}$. Define $p(h)$ as the parent of $h$,
+with $D_{p(h)}=D_{-1}$ at the root. The finite decision tree minimizes
+the expected increments of (7),
+\[
+ \min_{\text{feasible nonanticipative insertions}}
+       \sum_{d=0}^{N-1}\sum_{h:\,\mathrm{depth}(h)=d}\pi_h\big(D_h-D_{p(h)}\big).
+\]
+The probabilities of children sum to the parent's probability, so the same
+objective equals the expected cost at the last decision histories less
+the original baseline. Bellman minimization over every vehicle and legal
+rank pair certifies the finite input optimum.
+
+\paragraph{Printed alternatives.}
+In 2015 (4)--(6) the predicted state $x(k+t)$ has the width of the issued
+$S(k+t-1)$, whereas (8) writes $w_j(k+t)$ and $z_j^i(k+t)$, including at
+$t=N$ where the control vector ends at $k+N-1$. The selection above
+matches the ranked state and the issued list and uses $k$ through $k+N-1$
+as the decision epochs. The cited 2009 (11) uses the preceding issued
+list and its pickup factors with the predicted snapshot. Its driver charge
+and additional waiting weight are absent from 2015 (8). The 2015
+Appendix A displays a strictly lower triangular load matrix and
+$B_T^2=\operatorname{diag}(0,1,\ldots,1)$ for departure times.
+For signed stop changes $d_i=2r_i-1$, its load at rank $i\geq1$ is
+$L_0+d_0+\sum_{s<i}d_s$. The after-stop definition above gives
+$L_0+\sum_{s\leq i}d_s$ instead. The diagonal clock gives $T_0+\Gamma_i$,
+whereas the cumulative clock gives $T_0+\sum_{s\leq i}\Gamma_s$.
+The original literal transcription is preserved separately for comparison.
+The legacy input also contains passenger-specific price coefficients;
+under the selected indicator interpretation these have no operational
+effect. Every input retains its original history tree, dimensions, demand,
+probabilities and vehicle data.
+\end{document}

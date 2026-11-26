@@ -1,0 +1,119 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\allowdisplaybreaks
+\begin{document}
+
+\begin{equation}
+\begin{aligned}
+\mathrm{Exp}
+&=\min_r\left\{r\cdot\mathbb{E}\left[\min(q,D(z,\epsilon))\right]\right\}\\
+\text{s.t.}\quad
+&\mathbb{E}\left[\min(q,D(z,\epsilon))\right]\geq\Gamma,\\
+&r\geq 0.
+\end{aligned}
+\tag{2}
+\end{equation}
+The government anticipates the supplier's optimal price and production decisions for the announced consumer subsidy $r$. The supplier solves
+\begin{equation}
+\Pi=\max_{q,p}\left\{p\cdot\mathbb{E}\left[\min(q,D(z,\epsilon))\right]-c\cdot q\right\}.
+\tag{1}
+\end{equation}
+
+\section*{Decision roles and operative definitions}
+This is a single-period, full-information, two-stage Stackelberg game with one supplier. The government is the leader and chooses the subsidy per product, $r$, paid directly to the end consumer. The supplier observes $r$ and chooses the selling price $p$ (the manufacturer's suggested retail price) and production quantity $q$. Demand is then realized and sales occur. The effective consumer price and realized sales are, respectively,
+\[
+z=p-r,
+\qquad
+\min(q,D(z,\epsilon)).
+\]
+The fixed adoption target $\Gamma$ is common knowledge. The government must attain it in expectation. The fixed marginal unit cost $c$ may combine manufacturing cost and the cost of an additional unit of manufacturing capacity. When no demand information is gained between capacity construction and production, capacity is built according to planned production. The selected model sets salvage value $v$ and the underage penalty $u$ to
+\[
+v=u=0.
+\]
+The symbol $\Pi$ in (1) denotes the supplier's optimal expected profit. The symbol $\mathrm{Exp}$ in (2) denotes minimum expected subsidy expenditure. Section 3.2 also writes expected expenditure, before minimization, as
+\begin{equation}
+\mathrm{Exp}=r\cdot\mathbb{E}\left[\min(q,D(z,\epsilon))\right].
+\tag{5}
+\end{equation}
+Thus the paper uses $\mathrm{Exp}$ both for the expenditure expression and for its optimal value.
+
+The supplier's response notation is $p^*(r)$ for optimal price and $q^*(p,r)$ for optimal quantity conditional on price and subsidy. The $p$ and $q$ appearing in the government's problem are these responses:
+\[
+p=p^*(r),
+\qquad
+q=q^*(p^*(r),r).
+\]
+They are not additional choices of the government.
+
+\section*{Selected demand version: general additive uncertainty}
+The selected version is Section 4.1, with the nominal demand function left abstract. Demand is
+\begin{equation}
+D(z,\epsilon)=y(z)+\epsilon.
+\tag{8}
+\end{equation}
+Here
+\[
+y(z)=\mathbb{E}[D(z,\epsilon)],
+\qquad z=p-r,
+\]
+and $\epsilon$ is a random variable with cumulative distribution function $F_\epsilon$. Expectations are over this demand uncertainty. Demand represents aggregate demand over the entire single-period horizon.
+
+Assumption 1 imposes the following input conditions:
+\begin{itemize}
+\item Demand depends on $p$ and $r$ only through their difference $z$.
+\item The deterministic demand function $y(z)$ is positive, twice differentiable, and decreasing in $z$, and hence invertible.
+\item At $p=c$ and $r=0$, the adoption target cannot be achieved:
+\[
+y(c)<\Gamma.
+\]
+\item The additive noise has zero mean:
+\[
+\mathbb{E}[\epsilon]=0.
+\]
+\end{itemize}
+No linear or isoelastic specialization, particular noise distribution, support endpoints, or numerical instance is selected.
+
+\section*{Linked supplier-response and government-solution characterization}
+For the additive version, Theorem 1 assumes
+\begin{equation}
+2y'(z)+(p-c)\cdot y''(z)
++\frac{c^2}{p^3}\cdot
+\frac{1}{f_\epsilon\!\left(F_\epsilon^{-1}\!\left((p-c)/p\right)\right)}<0.
+\tag{9}
+\end{equation}
+Here $f_\epsilon$ is the noise density and $F_\epsilon^{-1}$ is the inverse CDF appearing in the paper's newsvendor quantile. The paper states that (9) guarantees uniqueness of optimal price as a function of the subsidy and assumes it for the remainder of the analysis. It prints no explicit price or effective-price interval with (9); none is added here.
+
+Under Assumption 1 and (9), the optimal supplier price for a given $r$ solves
+\begin{equation}
+y(p-r)
++\mathbb{E}\left[\min\left(F_\epsilon^{-1}\!\left(\frac{p-c}{p}\right),\epsilon\right)\right]
++y'(p-r)\cdot(p-c)=0.
+\tag{10}
+\end{equation}
+Using that price, the optimal production quantity is
+\begin{equation}
+q^*(p,r)=y(p-r)+F_\epsilon^{-1}\!\left(\frac{p-c}{p}\right).
+\tag{11}
+\end{equation}
+Theorem 1 further states that the government's adoption constraint is tight at optimality. With the paper's stochastic-optimum notation,
+\[
+p_{\mathrm{sto}}=p^*(r_{\mathrm{sto}}),
+\qquad
+q_{\mathrm{sto}}=q^*(p_{\mathrm{sto}},r_{\mathrm{sto}}),
+\qquad
+z_{\mathrm{sto}}=p_{\mathrm{sto}}-r_{\mathrm{sto}},
+\]
+this statement is
+\[
+\mathbb{E}\left[\min(q_{\mathrm{sto}},D(z_{\mathrm{sto}},\epsilon))\right]=\Gamma.
+\]
+Equations (10)--(11) and this optimality equality characterize the solution of (1)--(2); they are not additional feasibility restrictions imposed on arbitrary decisions. The paper does not supersede (1)--(2) with another decentralized optimization block in this general additive version.
+
+\section*{Printed scope and domains}
+The explicit subsidy restriction is $r\geq0$. Equation (1) prints maximization over $q,p$ without an explicit feasible-set block, interval bounds, or integrality declarations. These are retained as printed rather than supplemented with invented bounds. In particular, $p\geq c$ is described later as a consequence of decentralized optimality, not as an additional constraint in (1). No price cap, subsidy cap, effective-price bound, demand truncation, or noise-support restriction is introduced here.
+
+\paragraph{Source.}
+Cohen, Lobel, and Perakis, \emph{The Impact of Demand Uncertainty on Consumer Subsidies for Green Technology Adoption}, Management Science 62(5), 2016, pp.~1235--1258. The operative model and definitions are on physical PDF pages 5--8; the additive response characterization is on pages 8--9, with its proof in the appendix on page 19. The later multiplicative-demand, centralized, and manufacturer-cost-subsidy formulations are not part of this selected form.
+
+\end{document}

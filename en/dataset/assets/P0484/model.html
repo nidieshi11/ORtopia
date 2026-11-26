@@ -1,0 +1,299 @@
+<!DOCTYPE html> 
+<html lang='en-US' xml:lang='en-US'> 
+<head><title>P0484 · Predictive pickup and delivery routing with uncertain requests · Mathematical model</title> 
+<meta charset='utf-8' /> 
+<meta content='TeX4ht (https://tug.org/tex4ht/)' name='generator' /> 
+<meta content='width=device-width,initial-scale=1' name='viewport' /> 
+<style> 
+/* start css.sty */
+.cmr-5{font-size:50%;}
+.cmr-7{font-size:70%;}
+.cmmi-5{font-size:50%;font-style: italic;}
+.cmmi-7{font-size:70%;font-style: italic;}
+.cmmi-10{font-style: italic;}
+.cmsy-5{font-size:50%;}
+.cmsy-7{font-size:70%;}
+.cmbx-10{ font-weight: bold;}
+.cmbsy-10{font-weight: bold;}
+.cmbsy-10{font-weight: bold;}
+.cmbsy-10{font-weight: bold;}
+.cmbsy-7{font-size:70%;font-weight: bold;}
+.cmbsy-7{font-weight: bold;}
+.cmbsy-7{font-weight: bold;}
+.cmbsy-5{font-size:50%;font-weight: bold;}
+.cmbsy-5{font-weight: bold;}
+.cmbsy-5{font-weight: bold;}
+.cmex-7{font-size:70%;}
+.cmex-7x-x-71{font-size:49%;}
+.msam-7{font-size:70%;}
+.msam-5{font-size:50%;}
+.msbm-7{font-size:70%;}
+.msbm-5{font-size:50%;}
+p{margin-top:0;margin-bottom:0}
+p.indent{text-indent:0;}
+p + p{margin-top:1em;}
+p + div, p + pre {margin-top:1em;}
+div + p, pre + p {margin-top:1em;}
+a { overflow-wrap: break-word; word-wrap: break-word; word-break: break-word; hyphens: auto; }
+@media print {div.crosslinks {visibility:hidden;}}
+table.tabular{border-collapse: collapse; border-spacing: 0;}
+a img { border-top: 0; border-left: 0; border-right: 0; }
+center { margin-top:1em; margin-bottom:1em; }
+td center { margin-top:0em; margin-bottom:0em; }
+.Canvas { position:relative; }
+math { text-indent: 0em; }
+body{ margin:1em auto; max-width:80ch; padding:0 .62em; }
+h1,h2,h3,h4,h5 { line-height:1.2; }
+@media print{ body{ max-width:none } }
+.partHead, .likepartHead { font-size: 2em; }
+.chapterHead, .likechapterHead { font-size: 1.7411em; }
+.sectionHead, .likesectionHead { font-size: 1.5157em; }
+.subsectionHead, .likesubsectionHead { font-size: 1.3195em; }
+.subsubsectionHead, .likesubsubsectionHead { font-size: 1.1487em; }
+ @media (prefers-color-scheme: dark) { img[src^="model"]{filter: invert(1); } } 
+li p.indent { text-indent: 0em }
+li p:first-child{ margin-top:0em; }
+li p:last-child, li div:last-child { margin-bottom:0.5em; }
+li p:first-child{ margin-bottom:0; }
+li p~ul:last-child, li p~ol:last-child{ margin-bottom:0.5em; }
+.enumerate1 {list-style-type:decimal;}
+.enumerate2 {list-style-type:lower-alpha;}
+.enumerate3 {list-style-type:lower-roman;}
+.enumerate4 {list-style-type:upper-alpha;}
+div.newtheorem { margin-bottom: 2em; margin-top: 2em;}
+div.newtheorem .head{font-weight: bold;}
+.obeylines-h,.obeylines-v {white-space: nowrap; }
+div.obeylines-v p { margin-top:0; margin-bottom:0; }
+.overline{ text-decoration:overline; }
+.overline img{ border-top: 1px solid black; }
+td.displaylines {text-align:center; white-space:nowrap;}
+.centerline {text-align:center;}
+.rightline {text-align:right;}
+pre.verbatim {font-family: monospace,monospace; text-align:left; clear:both; }
+.fbox {padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+div.fbox {display:table}
+div.center div.fbox {text-align:center; clear:both; padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+div.minipage{width:100%;}
+div.center, div.center div.center {text-align: center; margin-left:1em; margin-right:1em;}
+div.center div {text-align: left;}
+div.flushright, div.flushright div.flushright {text-align: right;}
+div.flushright div {text-align: left;}
+div.flushleft {text-align: left;}
+.underline{ text-decoration:underline; }
+.underline img{ border-bottom: 1px solid black; margin-bottom:1pt; }
+.framebox-c, .framebox-l, .framebox-r { padding-left:3.0pt; padding-right:3.0pt; text-indent:0pt; border:solid black 0.4pt; }
+.framebox-c {text-align:center;}
+.framebox-l {text-align:left;}
+.framebox-r {text-align:right;}
+span.thank-mark{ vertical-align: super }
+span.footnote-mark sup.textsuperscript, span.footnote-mark a sup.textsuperscript{ font-size:80%; }
+code.verb{font-family:monospace,monospace;}
+div.tabular, div.center div.tabular {text-align: center; margin-top:0.5em; margin-bottom:0.5em; }
+table.tabular td p{margin-top:0em;}
+table.tabular {margin-left: auto; margin-right: auto;}
+td p:first-child{ margin-top:0em; }
+td p:last-child{ margin-bottom:0em; }
+div.td00{ margin-left:0pt; margin-right:0pt; }
+div.td01{ margin-left:0pt; margin-right:5pt; }
+div.td10{ margin-left:5pt; margin-right:0pt; }
+div.td11{ margin-left:5pt; margin-right:5pt; }
+table[rules] {border-left:solid black 0.4pt; border-right:solid black 0.4pt; }
+td.td00{ padding-left:0pt; padding-right:0pt; }
+td.td01{ padding-left:0pt; padding-right:5pt; }
+td.td10{ padding-left:5pt; padding-right:0pt; }
+td.td11{ padding-left:5pt; padding-right:5pt; }
+table[rules] {border-left:solid black 0.4pt; border-right:solid black 0.4pt; }
+.hline hr, .cline hr{ height : 0px; margin:0px; }
+.hline td, .cline td{ padding: 0; }
+.hline hr, .cline hr{border:none;border-top:1px solid black;}
+.hline {border-top: 1px solid black;}
+.hline + .vspace:last-child{display:none;}
+.hline:first-child{border-bottom:1px solid black;border-top:none;}
+.tabbing-right {text-align:right;}
+div.float, div.figure {margin-left: auto; margin-right: auto;}
+div.float img {text-align:center;}
+div.figure img {text-align:center;}
+.marginpar,.reversemarginpar {width:20%; float:right; text-align:left; margin-left:auto; margin-top:0.5em; font-size:85%; text-decoration:underline;}
+.marginpar p,.reversemarginpar p{margin-top:0.4em; margin-bottom:0.4em;}
+.reversemarginpar{float:left;}
+.equation td{text-align:center; vertical-align:middle; }
+td.eq-no{ width:5%; }
+table.equation { width:100%; } 
+div.math-display, div.par-math-display{text-align:center;}
+.array-hline,.array-cline{ border-top: 1px solid black; height:0px; }
+.array-hline + .array-vspace:last-child{display:none;}
+.hline-mtd, .array-hline td{ display:none }
+.array-hline + .array-row:last-child{display:none;}
+.array-hline:first-child{border-bottom:1px solid black;border-top:none;}
+math .texttt { font-family: monospace; }
+math .textit { font-style: italic; }
+math .textsl { font-style: oblique; }
+math .textsf { font-family: sans-serif; }
+math .textbf { font-weight: bold; }
+mo.MathClass-op + mi{margin-left:0.3em}
+mi + mo.MathClass-op{margin-left:0.3em}
+ math mstyle[mathvariant="bold"] { font-weight: bold; font-style: normal; } 
+ math mstyle[mathvariant="normal"] { font-weight: normal; font-style: normal; } 
+.partToc a, .partToc, .likepartToc a, .likepartToc {line-height: 200%; font-weight:bold; font-size:110%;}
+.index-item, .index-subitem, .index-subsubitem {display:block}
+div.caption {text-indent:-2em; margin-left:3em; margin-right:1em; text-align:left;}
+div.caption span.id{font-weight: bold; white-space: nowrap; }
+h1.partHead{text-align: center}
+p.bibitem { text-indent: -2em; margin-left: 2em; margin-top:0.6em; margin-bottom:0.6em; }
+p.bibitem-p { text-indent: 0em; margin-left: 2em; margin-top:0.6em; margin-bottom:0.6em; }
+.subsubsectionHead, .likesubsubsectionHead { font-size: 1em; }
+.paragraphHead, .likeparagraphHead { margin-top:2em; font-weight: bold;}
+.subparagraphHead, .likesubparagraphHead { font-weight: bold;}
+.verse{white-space:nowrap; margin-left:2em}
+div.maketitle {text-align:center;}
+h2.titleHead{text-align:center;}
+div.maketitle{ margin-bottom: 2em; }
+div.author, div.date {text-align:center;}
+div.thanks{text-align:left; margin-left:10%; font-size:85%; font-style:italic; }
+div.author{white-space: nowrap;}
+div.abstract p {margin-left:5%; margin-right:5%;}
+div.abstract {width:100%;}
+.abstracttitle{text-align:center;margin-bottom:1em;}
+.subsectionToc, .likesubsectionToc {margin-left:1em;}
+.subsubsectionToc, .likesubsubsectionToc {margin-left:2em;}
+.paragraphToc, .likeparagraphToc {margin-left:3em;}
+.subparagraphToc, .likesubparagraphToc {margin-left:4em;}
+figure.float, div.figure {margin-left: auto; margin-right: auto;}
+figure.figure {text-align:center;}
+figcaption.caption {text-indent:-2em; margin-left:3em; margin-right:1em; text-align:center;}
+figcaption.caption span.id{font-weight: bold; white-space: nowrap; }
+p + figcaption, img + figcaption{margin-top: 1em;}
+.abstract{margin:1em;}
+.equation-star td{text-align:center; vertical-align:middle; }
+table.equation-star { width:100%; } 
+.boxed{border: 1px solid black; padding-left:2px; padding-right:2px;}
+mtd.align-odd{margin-left:2em; text-align:right;}
+mtd.align-even{margin-right:2em; text-align:left;}
+/* end css.sty */
+
+
+html{background:#fff;color:#243833}body{padding:clamp(.55rem,2vw,1.25rem);margin:0;line-height:1.5;overflow-wrap:break-word}
+h1,h2,h3,h4,h5,h6{line-height:1.22;color:#193d35}p{margin:.5rem 0}math[display=block]{overflow-x:auto;max-width:100%}
+@media print{body{padding:0;color:#000}}
+</style> 
+<meta content='model.tex' name='src' /> 
+</head><body>
+   <h3 class='likesectionHead' id='stochastic-pickup-and-delivery-with-predictive-route-insertion'><a id='x1-1000'></a>Stochastic pickup and delivery with predictive route insertion</h3>
+<!-- l. 6 --><p class='noindent'><span class='paragraphHead' id='conditional-source-interpretation'><a id='x1-2000'></a><span class='cmbx-10'>Conditional source interpretation.</span></span>
+   The model below selects the route-state dimensions in (4)–(6), the ordinary leg descriptions and
+departure/load definitions of the 2015 paper (printed pp. 241–242), and the physical current-position
+anchor in its Fig. 1. It uses the pickup indicator as the waiting factor. The 2015 article says that its
+formulation summarizes Cortés et al. (2009); that paper’s printed p. 33 explicitly identifies the waiting
+factor with the pickup indicator of the route being costed. The earlier 2008 paper uses the literal name
+<!-- l. 14 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>z</mi></math> for this
+indicator. The travel and waiting coefficients here follow the two terms of 2015 (8). The selected expressions and
+their differences from the printed matrices are specified below.
+</p>
+<!-- l. 18 --><p class='noindent'><span class='paragraphHead' id='information-histories-and-decisions'><a id='x1-3000'></a><span class='cmbx-10'>Information, histories and decisions.</span></span>
+   Consider an observed current request and a tree of
+<!-- l. 19 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>N</mi> <mo class='MathClass-bin' stretchy='false'>−</mo> <mn>1</mn></mrow></math> future requests with historical
+transition probabilities. There are <!-- l. 20 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>F</mi></math>
+vehicles. At history <!-- l. 21 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>h</mi></math>
+of depth <!-- l. 21 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>d</mi> <mo class='MathClass-rel' stretchy='false'>∈</mo><mo class='MathClass-open' stretchy='false'>{</mo><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><mi>N</mi> <mo class='MathClass-bin' stretchy='false'>−</mo> <mn>1</mn><mo class='MathClass-close' stretchy='false'>}</mo></mrow></math> let
+<!-- l. 21 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>e</mi></mrow><mrow><mi>h</mi></mrow></msub></math> be the time of the known or
+forecast request and let <!-- l. 22 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>π</mi></mrow><mrow><mi>h</mi></mrow></msub></math> be
+the probability of reaching <!-- l. 23 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>h</mi></math>.
+The root has probability one. All histories with the same observations have the same decisions up to their branching
+point. The initial position, load, preceding route and unserved passengers of each vehicle are given. To produce the
+state at a child history, follow the parent’s assigned route until the child request time. Remove the completed
+prefix, including a service ending at the request time, retain all passengers still aboard and interpolate
+the vehicle’s position along its current travel segment. An idle vehicle stays at its last position. In
+the ten input cases, travel has given constant speed and each recorded service and transfer time is
+zero.
+</p><!-- l. 34 --><p class='indent'>   At each history choose a vehicle <!-- l. 34 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>j</mi></math>,
+a pickup rank <!-- l. 34 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>a</mi></math> and a delivery rank
+<!-- l. 35 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>b</mi></math> for its incoming passenger. Given
+<!-- l. 35 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>q</mi></math> pending stops of that vehicle
+immediately before insertion, put <!-- l. 36 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>w</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mi>q</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <mn>2</mn></mrow></math>.
+The ordinal domain is <!-- l. 37 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>1</mn> <mo class='MathClass-rel' stretchy='false'>≤</mo> <mi>a</mi> <mo class='MathClass-rel' stretchy='false'>≤</mo> <mi>w</mi> <mo class='MathClass-bin' stretchy='false'>−</mo> <mn>1</mn></mrow></math>,
+<!-- l. 37 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mn>2</mn> <mo class='MathClass-rel' stretchy='false'>≤</mo> <mi>b</mi> <mo class='MathClass-rel' stretchy='false'>≤</mo> <mi>w</mi></mrow></math> and
+<!-- l. 37 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>a</mi> <mo class='MathClass-rel' stretchy='false'>&lt;</mo> <mi>b</mi></mrow></math>. Delete
+the new pickup and delivery from the new list to recover exactly the prior ordered list. Other vehicles retain their
+pending routes. Enforce pickup before delivery, passenger-vehicle consistency, nonnegative onboard
+loads and vehicle capacity on every prefix. Initial onboard passengers have their pending deliveries and
+disembark by the end of their vehicle’s route. Execute the root decision in the current receding-horizon
+update.
+</p>
+<!-- l. 45 --><p class='noindent'><span class='paragraphHead' id='states-of-an-issued-route'><a id='x1-4000'></a><span class='cmbx-10'>States of an issued route.</span></span>
+   For vehicle <!-- l. 46 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>j</mi></math> and issued
+route at <!-- l. 46 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>h</mi></math>, ordinary stops are
+
+<!-- l. 47 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>i</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mo>…</mo><mo class='MathClass-punc' stretchy='false'>,</mo><msub><mrow><mi>w</mi></mrow><mrow><mi mathvariant='italic'>jh</mi></mrow></msub></mrow></math>, and row zero is its vehicle
+anchor at issue. Write <!-- l. 48 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>r</mi></mrow><mrow><mi mathvariant='italic'>jhi</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>1</mn></mrow></math>
+for pickup and <!-- l. 48 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>r</mi></mrow><mrow><mi mathvariant='italic'>jhi</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>0</mn></mrow></math>
+for delivery. The stop also records its passenger identity and leg time
+<!-- l. 49 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>Γ</mi></mrow><mrow><mi mathvariant='italic'>jhi</mi></mrow></msub></math> from
+the preceding point, including the input’s transfer delay. On the deterministic leg data at the specified history the
+conditional state prediction of (6) is </p><table class='equation-star'><tr><td>
+<!-- l. 52 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+            <msub><mrow><mi>L</mi></mrow><mrow><mi mathvariant='italic'>jh</mi><mn>0</mn></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <msubsup><mrow><mi>L</mi></mrow><mrow><mi mathvariant='italic'>jh</mi></mrow><mrow><mi mathvariant='italic'>anchor</mi></mrow></msubsup><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='quad' width='1em'></mspace><msub><mrow><mi>T</mi></mrow><mrow>
+<mi mathvariant='italic'>jh</mi><mn>0</mn></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <msub><mrow><mi>e</mi></mrow><mrow><mi>h</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><msub><mrow><mi>L</mi></mrow><mrow><mi mathvariant='italic'>jhi</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <msub><mrow><mi>L</mi></mrow><mrow><mi mathvariant='italic'>jh</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>i</mi><mo class='MathClass-bin' stretchy='false'>−</mo><mn>1</mn></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <mn>2</mn><msub><mrow><mi>r</mi></mrow><mrow><mi mathvariant='italic'>jhi</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mspace class='qquad' width='2em'></mspace><msub><mrow><mi>T</mi></mrow><mrow><mi mathvariant='italic'>jhi</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <msub><mrow><mi>T</mi></mrow><mrow><mi mathvariant='italic'>jh</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>i</mi><mo class='MathClass-bin' stretchy='false'>−</mo><mn>1</mn></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>Γ</mi></mrow><mrow><mi mathvariant='italic'>jhi</mi></mrow></msub><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 57 --><p class='indent'>   Here <!-- l. 57 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>L</mi></mrow><mrow><mi mathvariant='italic'>jhi</mi></mrow></msub></math> is the load after
+leaving stop <!-- l. 57 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>i</mi></math>; the previous
+stop’s load travels on leg <!-- l. 58 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>i</mi></math>.
+The vector width is <!-- l. 58 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>w</mi></mrow><mrow><mi mathvariant='italic'>jh</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <mn>1</mn></mrow></math>.
+Given the input travel and service times and the fixed route, the conditional expectations equal these values.
+Observations at a later request produce the state from which its own route is issued.
+</p>
+<!-- l. 63 --><p class='noindent'><span class='paragraphHead' id='costs'><a id='x1-5000'></a><span class='cmbx-10'>Costs.</span></span>
+   Use the pickup factor on the same route whose ranks and state are being priced. The fleet cost of the route set
+<!-- l. 65 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>S</mi></mrow><mrow><mi>h</mi></mrow></msub></math> at issue
+is </p><table class='equation-star'><tr><td>
+<!-- l. 66 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+                <msub><mrow><mi>D</mi></mrow><mrow><mi>h</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo><munderover accent='false' accentunder='false'><mrow><mo> ∑</mo>
+  </mrow><mrow><mi>j</mi><mo class='MathClass-rel' stretchy='false'>=</mo><mn>1</mn></mrow><mrow><mi>F</mi></mrow></munderover><munderover accent='false' accentunder='false'><mrow><mo> ∑</mo>
+  </mrow><mrow><mi>i</mi><mo class='MathClass-rel' stretchy='false'>=</mo><mn>1</mn></mrow><mrow><msub><mrow><mi>w</mi></mrow><mrow><mi mathvariant='italic'>jh</mi></mrow></msub>
+          </mrow></munderover> <mrow><mo fence='true' form='prefix'> [</mo><mrow><msub><mrow><mi>L</mi></mrow><mrow><mi mathvariant='italic'>jh</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>i</mi><mo class='MathClass-bin' stretchy='false'>−</mo><mn>1</mn></mrow></msub> <mrow><mo fence='true' form='prefix'> (</mo><mrow><msub><mrow><mi>T</mi></mrow><mrow><mi mathvariant='italic'>jhi</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>T</mi></mrow><mrow><mi mathvariant='italic'>jh</mi><mo class='MathClass-punc' stretchy='false'>,</mo><mi>i</mi><mo class='MathClass-bin' stretchy='false'>−</mo><mn>1</mn></mrow></msub></mrow><mo fence='true' form='postfix'>)</mo></mrow> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>r</mi></mrow><mrow><mi mathvariant='italic'>jhi</mi></mrow></msub> <mrow><mo fence='true' form='prefix'> (</mo><mrow><msub><mrow><mi>T</mi></mrow><mrow><mi mathvariant='italic'>jhi</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>T</mi></mrow><mrow><mi mathvariant='italic'>jh</mi><mn>0</mn></mrow></msub></mrow><mo fence='true' form='postfix'>)</mo></mrow></mrow><mo fence='true' form='postfix'>]</mo></mrow> <mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 71 --><p class='indent'>   Price the preceding routes at the given initial vehicle anchors by the same rule to obtain
+<!-- l. 72 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><msub><mrow><mi>D</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>−</mo><mn>1</mn></mrow></msub></math>. Define
+<!-- l. 72 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>p</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>h</mi><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math> as the
+parent of <!-- l. 72 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>h</mi></math>,
+with <!-- l. 73 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>D</mi></mrow><mrow><mi>p</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>h</mi><mo class='MathClass-close' stretchy='false'>)</mo></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <msub><mrow><mi>D</mi></mrow><mrow><mo class='MathClass-bin' stretchy='false'>−</mo><mn>1</mn></mrow></msub></mrow></math> at
+the root. The finite decision tree minimizes the expected increments of (7), </p><table class='equation-star'><tr><td>
+
+<!-- l. 75 --><math class='equation' display='block' xmlns='http://www.w3.org/1998/Math/MathML'><mrow>
+            <munder class='msub'><mrow><mtext class='qopname'>min</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo></mrow><mrow><mstyle class='text'><mtext>feasible nonanticipative insertions</mtext></mstyle></mrow></munder><munderover accent='false' accentunder='false'><mrow><mo>∑</mo>
+  </mrow><mrow><mi>d</mi><mo class='MathClass-rel' stretchy='false'>=</mo><mn>0</mn></mrow><mrow><mi>N</mi><mo class='MathClass-bin' stretchy='false'>−</mo><mn>1</mn></mrow></munderover><munder class='msub'><mrow><mo> ∑</mo>
+   </mrow><mrow><mi>h</mi><mo class='MathClass-punc' stretchy='false'>:</mo><mspace class='thinspace' width='0.17em'></mspace><mstyle mathvariant='normal'><mi>depth</mi></mstyle><mo class='MathClass-open' stretchy='false'>(</mo><mi>h</mi><mo class='MathClass-close' stretchy='false'>)</mo><mo class='MathClass-rel' stretchy='false'>=</mo><mi>d</mi></mrow></munder><msub><mrow><mi>π</mi></mrow><mrow><mi>h</mi></mrow></msub><mstyle mathsize='1.19em'><mrow><mo fence='true' form='prefix'> (</mo><mrow></mrow><mo fence='true' form='postfix'></mo></mrow></mstyle><msub><mrow><mi>D</mi></mrow><mrow><mi>h</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <msub><mrow><mi>D</mi></mrow><mrow><mi>p</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>h</mi><mo class='MathClass-close' stretchy='false'>)</mo></mrow></msub><mstyle mathsize='1.19em'><mrow><mo fence='true' form='prefix'> )</mo><mrow></mrow><mo fence='true' form='postfix'></mo></mrow></mstyle><mo class='MathClass-punc' stretchy='false'>.</mo>
+</mrow></math></td></tr></table>
+<!-- l. 79 --><p class='indent'>   The probabilities of children sum to the parent’s probability, so the same objective equals the expected cost at
+the last decision histories less the original baseline. Bellman minimization over every vehicle and legal rank pair
+certifies the finite input optimum.
+</p>
+<!-- l. 84 --><p class='noindent'><span class='paragraphHead' id='printed-alternatives'><a id='x1-6000'></a><span class='cmbx-10'>Printed alternatives.</span></span>
+   In 2015 (4)–(6) the predicted state <!-- l. 85 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>x</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>k</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math>
+has the width of the issued <!-- l. 86 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>S</mi><mo class='MathClass-open' stretchy='false'>(</mo><mi>k</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <mi>t</mi> <mo class='MathClass-bin' stretchy='false'>−</mo> <mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math>,
+whereas (8) writes <!-- l. 86 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>w</mi></mrow><mrow><mi>j</mi></mrow></msub><mo class='MathClass-open' stretchy='false'>(</mo><mi>k</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math>
+and <!-- l. 86 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msubsup><mrow><mi>z</mi></mrow><mrow><mi>j</mi></mrow><mrow><mi>i</mi></mrow></msubsup><mo class='MathClass-open' stretchy='false'>(</mo><mi>k</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <mi>t</mi><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math>, including at
+<!-- l. 87 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>t</mi> <mo class='MathClass-rel' stretchy='false'>=</mo> <mi>N</mi></mrow></math> where the control
+vector ends at <!-- l. 87 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>k</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <mi>N</mi> <mo class='MathClass-bin' stretchy='false'>−</mo> <mn>1</mn></mrow></math>.
+The selection above matches the ranked state and the issued list and uses
+<!-- l. 88 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mi>k</mi></math> through
+<!-- l. 88 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>k</mi> <mo class='MathClass-bin' stretchy='false'>+</mo> <mi>N</mi> <mo class='MathClass-bin' stretchy='false'>−</mo> <mn>1</mn></mrow></math>
+as the decision epochs. The cited 2009 (11) uses the preceding issued list and its pickup
+factors with the predicted snapshot. Its driver charge and additional waiting weight are absent
+from 2015 (8). The 2015 Appendix A displays a strictly lower triangular load matrix and
+<!-- l. 93 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msubsup><mrow><mi>B</mi></mrow><mrow><mi>T</mi></mrow><mrow><mn>2</mn></mrow></msubsup> <mo class='MathClass-rel' stretchy='false'>=</mo><mtext class='qopname'> diag</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo><!-- nolimits --><mo class='MathClass-open' stretchy='false'>(</mo><mn>0</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mn>1</mn><mo class='MathClass-punc' stretchy='false'>,</mo><mtext class='qopname'>…</mtext><mo> ⁡<!-- FUNCTION APPLICATION --> </mo><mo class='MathClass-punc' stretchy='false'>,</mo><mn>1</mn><mo class='MathClass-close' stretchy='false'>)</mo></mrow></math> for departure times. For
+signed stop changes <!-- l. 94 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>d</mi></mrow><mrow><mi>i</mi></mrow></msub> <mo class='MathClass-rel' stretchy='false'>=</mo> <mn>2</mn><msub><mrow><mi>r</mi></mrow><mrow><mi>i</mi></mrow></msub> <mo class='MathClass-bin' stretchy='false'>−</mo> <mn>1</mn></mrow></math>,
+its load at rank <!-- l. 94 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><mi>i</mi> <mo class='MathClass-rel' stretchy='false'>≥</mo> <mn>1</mn></mrow></math> is
+<!-- l. 95 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>L</mi></mrow><mrow><mn>0</mn></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>d</mi></mrow><mrow><mn>0</mn></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo><msub><mrow> <mi class='MathClass-op'>∑</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo>
+  <!-- nolimits --></mrow><mrow><mi>s</mi><mo class='MathClass-rel' stretchy='false'>&lt;</mo><mi>i</mi></mrow></msub><msub><mrow><mi>d</mi></mrow><mrow><mi>s</mi></mrow></msub></mrow></math>. The after-stop definition
+above gives <!-- l. 96 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>L</mi></mrow><mrow><mn>0</mn></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo><msub><mrow> <mi class='MathClass-op'>∑</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo>
+  <!-- nolimits --></mrow><mrow><mi>s</mi><mo class='MathClass-rel' stretchy='false'>≤</mo><mi>i</mi></mrow></msub><msub><mrow><mi>d</mi></mrow><mrow><mi>s</mi></mrow></msub></mrow></math> instead. The
+diagonal clock gives <!-- l. 96 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>T</mi></mrow><mrow><mn>0</mn></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo> <msub><mrow><mi>Γ</mi></mrow><mrow><mi>i</mi></mrow></msub></mrow></math>, whereas
+the cumulative clock gives <!-- l. 97 --><math display='inline' xmlns='http://www.w3.org/1998/Math/MathML'><mrow><msub><mrow><mi>T</mi></mrow><mrow><mn>0</mn></mrow></msub> <mo class='MathClass-bin' stretchy='false'>+</mo><msub><mrow> <mi class='MathClass-op'>∑</mi><mo> ⁡<!-- FUNCTION APPLICATION --></mo>
+  <!-- nolimits --></mrow><mrow><mi>s</mi><mo class='MathClass-rel' stretchy='false'>≤</mo><mi>i</mi></mrow></msub><msub><mrow><mi>Γ</mi></mrow><mrow><mi>s</mi></mrow></msub></mrow></math>.
+The original literal transcription is preserved separately for comparison. The legacy input also contains
+passenger-specific price coefficients; under the selected indicator interpretation these have no operational effect.
+Every input retains its original history tree, dimensions, demand, probabilities and vehicle data.
+</p>
+    
+</body> 
+</html>

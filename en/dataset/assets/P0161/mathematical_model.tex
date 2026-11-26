@@ -1,0 +1,33 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,longtable}
+\emergencystretch=4em
+\begin{document}
+\section*{P161: Current complete mathematical model (as of 2026-10-20)}
+\section*{Basis and scope of the revision}Please fill in the details regarding direct/co-located trips, total battery capacity, and limited landing/route capacity by referring to pages 14–15 of the source document, as well as the definitions of physical services. The upper limit on time slots is determined based on the shortest possible flight times and turnaround times. The set of requests is provided in full by the instances themselves.
+
+\section*{Data, time, and flight}
+Node $V=V_P\cup V_S$, Aircraft $N$, Passenger Group $A$, Base $b_n$, Flight Duration $r_{ij}$, Energy Consumption $e_{ij}$, Cost $c_{ij}$, Time Domain $H$, Turnaround Time $t_e$. The capacity of seats, landing strips, and flight paths are all instance parameters. The time units used are precise minutes (currently 0.1 minutes). Both flight duration and time domain values are represented as integer scales. The maximum number of valid flight slots is determined by $S=\min\{S^{input},\lfloor H/(t_e+\min r_{ij})\rfloor\}$. Each segment requires at least a certain amount of turnaround time and shortest flight duration. Binary values $X_{ijmnt}$ indicate that aircraft $n$’s $m$ segment departs from $t$ at $x_{ijmn}=\sum_tX_{ijmnt}$ and $h_{mn}=\sum_{ij}x_{ijmn}$. Only takeoff times for $i\ne j$ and $mt_e+(m-1)\min r\le t\le H-r_{ij}$ are considered valid. There must be at least a return time after leaving the base. The first segment starts from the base and ends back at the base.
+\[
+h_{1n}=1,\quad h_{mn}\le1,\quad h_{mn}\ge h_{m+1,n},\quad
+\sum_ix_{ijmn}\ge\sum_ix_{ji,m+1,n},
+\quad\sum_{m,j}x_{b_njmn}=\sum_{m,i}x_{ib_nmn}.
+\]
+The route for virtual slot 0 has no passengers, hence its capacity is zero. $a_{0n}=d_{0n}=0$. The active slot is $a_{mn}=\sum_{ijt}(t+r_{ij})X_{ijmnt}$; The inactive slots are $a_{mn}=a_{m-1,n}$. All slots: $a_{mn}\ge a_{m-1,n}+t_eh_{mn}+\sum_{ij}r_{ij}x_{ijmn}$, $d_{mn}=a_{mn}-\sum_{ij}r_{ij}x_{ijmn}$, $a,d\in[0,H]$.
+\section*{Batteries and Charging}
+$u_{0n}=\bar E$, $u_{mn}\in[\underline E,\bar E]$, $q_{mn}\ge0$, 
+\[
+u_{mn}=u_{m-1,n}+q_{mn}-\sum_{ij}e_{ij}x_{ijmn},\quad
+u_{m-1,n}+q_{mn}\le\bar E,\quad q_{mn}\le\bar Eh_{mn}.
+\]
+$q_{1n}=0$; followed by $q_{mn}\le\bar E\sum_{i\in V_P,j}x_{ijmn}$, $q_{mn}\le rate\cdot tick\cdot(d_{mn}-a_{m-1,n})$.
+\section*{Complete passenger itinerary}
+Each group of $a$ can only include one direct route to $(o_a,d_a,m,n)$, or two routes allowed in total. $(o_a,h,m,n),(h,d_a,m+1,n)$ (different from $h$ in terms of starting and ending points) corresponds to a binary value of $z$, which is less than that of each individual route $x$. The first segment is preceded by an arrival at $a_{m-1,n}\le request_a$; the first flight is conducted via $[request_a,\min(latest_a,request_a+w)]$, and the intervals between intermediate stops are equal to $t_e$. Each flight slot can accommodate a maximum of 2 groups, with the total number of passengers not exceeding the capacity of the seats available; each group must consist of a maximum of $\sum z\le1$ passengers.
+\section*{Real-time space occupancy}
+Flying $X$ requires the use of all integer scales $t+1,\ldots,t+r_{ij}$. The number of aircraft that can be stationed at each node cannot exceed the limit set by $cap_{flt}$. The number of aircraft that can be parked at a node is determined by the initial capacity of that node, plus the number of incoming flights whose arrival times are strictly less than the current scale, minus the number of outgoing flights whose departure times are strictly less than the current scale. This value is specified in $[0,1]$. The total number of aircraft that can be parked at each node cannot exceed the capacity of that node. This applies to the entire time domain and all transfers, not just takeoff operations.
+\[
+\max\sum_a[(fare_a+penalty_a)\sum z_a-penalty_a]
+-\sum_{ijmn}c_{ij}x_{ijmn}.
+\]
+$fare_a$ The system will select the appropriate fare based on the acceptable transfer options provided. Even if the passenger ultimately chooses to take a direct flight, the same fare will still apply. All requests will be clearly marked as either accepted or rejected.
+
+\end{document}

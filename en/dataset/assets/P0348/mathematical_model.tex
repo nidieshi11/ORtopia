@@ -1,0 +1,48 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,mathtools,geometry}
+\geometry{a4paper,margin=20mm}\allowdisplaybreaks
+\emergencystretch=4em
+\begin{document}
+\section*{Scheduling of electric bus trips under time-of-use electricity pricing system, along with combined charging models}
+
+\paragraph{Source} Pages 3–5 of the PDF document, section 2.2, equations (1)–(13). The conditions and relationships related to time indices are explained in detail within the text.
+\subsection*{Collections, parameters, and variables}
+$V$ Refers to bus schedules with a fixed start time $a_i$, end time $b_i$, and task power consumption $u_i$. $R$ Represents copies of visits to a single charging station. $o,e$ Represents copies of departures and returns from the same parking lot. $A$ Includes the allowed $o\to V$, $V\to V$, $V\to R$, $R\to V$, and $V\to e$ arcs; does not include self-arcs or arcs between charging stations. The number of copies must be sufficient for the next charge for each schedule. $t_{ij},d_{ij}$ Represents the travel time and power consumption of an arc. The battery capacity is $Q$,the daily fixed cost of the vehicle is $c_f$,the charging rate is $g>0$(power/country),and the maximum number of vehicles is $N_{\rm EB}$. $h_i$ Represents the original safety limit for energy consumption from the end of schedule $i$ until at the charging station or parking lot. $E(t)$ Is the charging cost rate \emph{ in the integral formula (1)}. If the input is the unit price of power $p(t)$,$E(t)=g p(t)$ should be provided first to make the integral unit monetary. Table 2 refers to it as electricity price, but formula (1) directly integrates by time. The costs are calculated based on the electricity price for each period and the above unit conversion.
+
+$x_{ij}\in\{0,1\}$ represents a connecting arc; $q_i\in[0,Q]$ represents the battery level at the arrival at the shift/charging station; $\tau^a_{ij},\tau^b_{ij}\ge0$ is the start/end time of the charging copy $j$ after the shift $i$. The cost of unselected charging arcs is zero, as are their two-time points.
+\subsection*{Complete core model}
+\[
+\min\ c_f\sum_{j\in V}x_{oj}
+ +\sum_{i\in V,j\in R:(i,j)\in A}
+  x_{ij}\int_{\tau^a_{ij}}^{\tau^b_{ij}}E(t)\,dt.\tag{1}
+\]
+\begin{align}
+\sum_{j:(i,j)\in A}x_{ij}&=1 &&i\in V,\tag{2}\\
+\sum_{j:(i,j)\in A}x_{ij}&\le1 &&i\in R,\tag{3}\\
+\sum_{i:(i,j)\in A}x_{ij}&=\sum_{k:(j,k)\in A}x_{jk}
+&&j\in V\cup R,\tag{4}\\
+\sum_{j\in V}x_{oj}&=\sum_{i\in V}x_{ie}\le N_{\rm EB}.\tag{12}
+\end{align}
+The following time/energy relationships only apply to the actually selected arcs. This converts the original text’s ambiguous logic into a clear, unambiguous conditional form:
+\begin{align}
+x_{ij}=1&\Longrightarrow b_i+t_{ij}\le a_j &&i,j\in V,\tag{5}\\
+x_{ij}=1&\Longrightarrow \tau^a_{ij}=b_i+t_{ij} &&i\in V,\ j\in R,\tag{6}\\
+x_{ij}=1&\Longrightarrow \tau^b_{ij}=\tau^a_{ij}+(Q-q_j)/g
+&&i\in V,\ j\in R,\tag{7}\\
+x_{ij}=x_{jk}=1&\Longrightarrow \tau^b_{ij}+t_{jk}\le a_k
+&&i,k\in V,\ j\in R,\tag{8}\\
+x_{ij}=1&\Longrightarrow q_j\le q_i-u_i-d_{ij} &&i,j\in V,\tag{9a}\\
+q_j&\ge u_j+h_j &&j\in V,\tag{9b}\\
+x_{ij}=1&\Longrightarrow 0\le q_j\le q_i-u_i-d_{ij}
+&&i\in V,\ j\in R,\tag{10}\\
+x_{oj}=1&\Longrightarrow 0\le q_j\le Q-d_{oj} &&j\in V,\tag{11a}\\
+x_{ij}=1&\Longrightarrow 0\le q_j\le Q-d_{ij} &&i\in R,\ j\in V,\tag{11b}\\
+x_{ie}=1&\Longrightarrow q_i-u_i-d_{ie}\ge0 &&i\in V,\tag{11c}\\
+x_{ij}&\in\{0,1\},\quad 0\le q_i\le Q,\quad
+0\le\tau^a_{ij}\le\tau^b_{ij}.\tag{13}
+\end{align}
+Equation (11c) clearly indicates the energy required for returning to the station. If $h_i$ already covers the power consumption associated with station operations, then it can be considered redundant. Only connections between shifts from $o$ to $e$ are allowed. Fixed trips are connected in strict time order, which rules out cycles when travel or charging time is positive. For inputs with zero duration, standard connectivity constraints must be applied. Cycles disconnected from the depot are forbidden.
+\paragraph{Original form and explanatory notes}
+Equation (5) originally had the subscript marked as $j\in R$. However, this equation and its terms represent two consecutive periods, so it has been changed to $j\in V$. Equation (8) becomes effective when both the charging arc and subsequent arcs are selected. For equations (9) to (10), the $Q$ option for those arcs that are not selected still remains active. This option is still denoted as $u_i$. Here, the terms “consecutive periods/charging arcs” are used to clarify the conditions, thereby avoiding incorrect constraints on energy levels due to the selection of certain arcs. The energy status is determined using the upper bound relationships provided in the original formula. In the old LaTeX format, the reverse integration and multiplication operations were denoted as $g$. These have been corrected in the PDF version to represent integration from start to end, along with division by $g$.
+
+\end{document}

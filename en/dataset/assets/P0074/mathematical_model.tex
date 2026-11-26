@@ -1,0 +1,98 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+
+\title{Finite-Sample Second-Order-Cone Formulation}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{Notation and input data}
+Let
+\[
+[N] := \{1,\ldots,N\},
+\qquad N\in\mathbb{Z}_{++}.
+\]
+Let $d_x,d_y\in\mathbb{Z}_{++}$. The prescribed sample and query data are
+\[
+x_0,\widehat{x}_i\in\mathbb{R}^{d_x},
+\qquad
+\widehat{y}_i\in\mathbb{R}^{d_y},
+\qquad i\in[N].
+\]
+The scalars $\rho$, $\varepsilon$, and $\eta$ are prescribed model parameters. The prescribed feasible sets satisfy
+\[
+\mathcal{A}\subseteq\mathbb{R}^{d_y},
+\qquad
+\mathcal{B}\subseteq\mathbb{R}.
+\]
+All occurrences of $\|\cdot\|_2$ denote the Euclidean norm.
+
+\section*{Decision variables}
+The decision variables are
+\[
+\alpha\in\mathcal{A},
+\qquad
+\beta\in\mathcal{B},
+\qquad
+\lambda_1\in\mathbb{R}_+,
+\qquad
+\lambda_2\in\mathbb{R},
+\]
+\[
+\theta\in\mathbb{R}_+^N,
+\qquad
+z\in\mathbb{R}_+^N,
+\qquad
+w\in\mathbb{R}.
+\]
+
+\section*{Optimization model}
+\begin{align}
+\inf\quad
+& \rho\lambda_1+\varepsilon\lambda_2
+  +\frac{1}{N}\sum_{i\in[N]}\theta_i
+\label{eq:objective}\\[0.25em]
+\text{subject to}\quad
+& \alpha\in\mathcal{A},
+  \qquad \beta\in\mathcal{B},
+\label{eq:sets}\\
+& \lambda_1\ge 0,
+  \qquad \lambda_2\in\mathbb{R},
+\label{eq:lambda-domains}\\
+& \theta_i\ge 0,
+  \qquad z_i\ge 0,
+  && \forall i\in[N],
+\label{eq:vector-domains}\\
+& 0\le w\le 1,
+\label{eq:w-domain}\\
+& \left\|
+  \begin{bmatrix}
+  2\alpha\\
+  1-w-\varepsilon\lambda_1
+  \end{bmatrix}
+  \right\|_2
+  \le 1-w+\varepsilon\lambda_1,
+\label{eq:first-soc}\\
+& z_i
+  =\varepsilon\theta_i
+  +\varepsilon\|x_0-\widehat{x}_i\|_2^2\lambda_1
+  +\varepsilon\lambda_2
+  +\frac{1}{4}\eta^2
+  +\eta\beta,
+  && \forall i\in[N],
+\label{eq:z-definition}\\
+& \left\|
+  \begin{bmatrix}
+  2\widehat{y}_i^{\top}\alpha-2\beta-\eta\\
+  z_i-w
+  \end{bmatrix}
+  \right\|_2
+  \le z_i+w,
+  && \forall i\in[N].
+\label{eq:second-soc}
+\end{align}
+
+\end{document}

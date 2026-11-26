@@ -1,0 +1,22 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\begin{document}
+
+\section*{Scenario-distribution fitting model}
+
+Let $\mathcal M$ and $\mathcal D$ be finite index sets, and let $J_m$ be a finite nonempty index set for each $m\in\mathcal M$. Let $q$ be a positive integer. For each indexed observation $i$, let $v^i\in\mathbb R^q$ be given data.
+
+The continuous decision variables are representative vectors $\bar v^d\in\mathbb R^q$ for $d\in\mathcal D$, assignment weights $W^{d,i,m}\in\mathbb R$ for $m\in\mathcal M$, $i\in J_m$, $d\in\mathcal D$, probabilities $P^{d,m}\in\mathbb R$ for $d\in\mathcal D$, $m\in\mathcal M$, and an auxiliary scalar $t\in\mathbb R$.
+
+\begin{alignat}{2}
+\min_{\bar v,P,W,t}\quad & t \\
+\text{s.t.}\quad
+&t=\sum_{m\in\mathcal M}\sum_{i\in J_m}\sum_{d\in\mathcal D}W^{d,i,m}\sum_{k=1}^{q}\bigl(\bar v_k^d-v_k^i\bigr)^2, & &\\
+&\sum_{d\in\mathcal D}W^{d,i,m}=1, & &\quad m\in\mathcal M,\ i\in J_m,\\
+&P^{d,m}=\frac{1}{|J_m|}\sum_{i\in J_m}W^{d,i,m}, & &\quad m\in\mathcal M,\ d\in\mathcal D,\\
+&\bar v^d\in\mathbb R_+^q, & &\quad d\in\mathcal D,\\
+&P^{d,m}\ge 0, & &\quad m\in\mathcal M,\ d\in\mathcal D,\\
+&W^{d,i,m}\ge 0, & &\quad m\in\mathcal M,\ i\in J_m,\ d\in\mathcal D.
+\end{alignat}
+
+\end{document}

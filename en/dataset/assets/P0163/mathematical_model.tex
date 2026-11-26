@@ -1,0 +1,111 @@
+\documentclass{article}
+\usepackage{amsmath,amssymb}
+\begin{document}
+\section*{P163: fixed depot--port joint truck routing and charging}
+The model jointly schedules truck routing and charging. Source: paper.pdf, pp.6--11, Section2, assumptions1--8,
+equations(1)--(30). Each truck has a given depot $d_v$ and port $h_v$.
+Initial charge may be below full (p.7 assumption2). Every depot/port has finite
+charging capacity (p.7 assumptions3--4). All original demand units must be delivered.
+Handling duration is negligible as stated on p.7 and footnote5 on p.9.
+Generated release/loading/unloading metadata are retained in the instance history,
+as diagnostics.
+
+\subsection*{Input and exact clock convention}
+Let $G=(N,R)$ be the directed road network, $V$ trucks, $J$ full-truckload product
+units. Unit $j$ belongs to product $g(j)$, with fixed origin/destination
+$(o_j,e_j)$, due period $D_g$, tardiness price $\pi_g\ge0$.
+Truck $v$ has availability $A_v$, battery $B_v$, initial energy $E_v^0$ and
+horizon $H_v$. A road $r$ has positive integer duration $T_r$ and loaded/empty
+energy $e_r^1,e_r^0$. These are the input special case of time-dependent
+$T_{r,p}$ in the paper. At node $n$, charging supplies $q_n>0$ per occupied
+period and at most $C_n$ trucks can charge. Its per-period price is $c_{n,p}$.
+Source periods are indexed from 0. Thus a road starting at period $b$
+occupies $[b,b+T_r)$ and its source arrival index is $a=b+T_r-1$.
+Thus a subsequent departure at $a+1$ is immediate at the next boundary.
+The objective retains the literal source difference ``latest arrival index
+minus first departure index''.
+
+\subsection*{Decision domain and routing}
+Choose for each $v$ an even number $K_v\in\{0,2,\ldots,2\lfloor H_v/2\rfloor\}$
+of contiguous one-way trips. The bound follows from positive integer duration
+and the finite horizon.
+For $k=0,\ldots,K_v-1$ choose a simple directed path
+$P_{vk}=(n_0,\ldots,n_{L_{vk}})$ satisfying
+\[
+ (n_0,n_{L_{vk}})=
+ \begin{cases}(d_v,h_v)&k\ {\rm even},\\(h_v,d_v)&k\ {\rm odd},\end{cases}
+ \qquad (n_i,n_{i+1})\in R,\quad n_i\ne n_j\ (i\ne j).
+\]
+All such paths are admissible.
+Choose $y_{vkj}\in\{0,1\}$ and $\ell_{vk}\in\{0,1\}$:
+\[
+ \sum_j y_{vkj}=\ell_{vk}\le1,\qquad
+ y_{vkj}=0\quad\text{if }(o_j,e_j)\ne(n_0,n_{L_{vk}}),\qquad
+ \sum_{v,k}y_{vkj}=1\quad(j\in J).
+\]
+A loaded/empty state is constant within each trip. Every used truck starts at
+its own depot, alternates endpoints, and finishes at the same depot.
+Unused trucks have no events and zero cost.
+
+\subsection*{Timing, charging and exact energy continuity}
+For every road on each chosen path choose integer departure $b_{vki}$ and arrival
+$a_{vk,i+1}=b_{vki}+T_{(n_i,n_{i+1})}-1$.
+The first departure is at least $A_v$. Every later road departure is at least
+the preceding arrival plus1, including between trips. Final arrival is at most
+$H_v-1$. Waiting is permitted only at the current node.
+Choose at most one contiguous integer charging interval
+$[s_{vkn},f_{vkn})$ at each visited node, possibly empty.
+Charging must follow an actual arrival and end before the next departure:
+\[
+ a_{vkn}+1\le s_{vkn}\le f_{vkn}\le b^{next}_{vkn},\qquad
+ c_{vknp}=\mathbf1\{s_{vkn}\le p<f_{vkn}\}.
+\]
+At a trip endpoint the interval belongs to the arriving trip and may precede
+the departure of the next trip. Initial energy is supplied for the first trip. Charging is absent at nodes with $C_n=0$.
+For each period and node,
+\[
+ \sum_{v,k}c_{vknp}\le C_n .
+\]
+Energy before the first road is $E_v^0$. Along a road $r$,
+\[
+ E^{arr}=E^{dep}-\ell_{vk}e_r^1-(1-\ell_{vk})e_r^0,\qquad
+ E^{dep,next}=E^{arr}+q_n(f_{vkn}-s_{vkn}),\qquad
+ 0\le E^{arr},E^{dep}\le B_v .
+\]
+Waiting preserves energy. Energy carries exactly between trips. These equations give source SOC by division by $B_v$.
+Because road discharge and charging are monotone during their intervals,
+checking their endpoints also bounds SOC at every interior time.
+
+\subsection*{Delivery, tardiness, objective}
+For product $g$, let $u_g$ be the latest unloading start, the arrival period
+of its latest delivered unit:
+\[
+ u_g=\max\{a_{vk,L_{vk}}:y_{vkj}=1,\ g(j)=g\},\qquad
+ \tau_g=\max(0,u_g-D_g).
+\]
+All product quantities are positive and hence this maximum is defined.
+With $a_v^{last}$ the final depot arrival period and $b_v^{first}$ the first
+departure period, minimize the source equation(29):
+\[
+ \min\quad
+ C^{lbr}\sum_{v:K_v>0}(a_v^{last}-b_v^{first})
+ +\sum_{v,k,n,p}c_{n,p}c_{vknp}
+ +\sum_g\pi_g\tau_g .
+\]
+
+Electricity costs cover actual charging periods, and every demand is served.
+The source's malformed extracted big-M duplicates and swapped inbound/outbound
+names are replaced by the explicit equivalent path/event semantics above.
+
+\subsection*{Algorithm and evidence boundary}
+The accompanying code searches product assignments, orders and vehicle priority,
+then constructs feasible simple routes and finite-capacity charging intervals.
+Its route ranking and greedy interval selection are heuristic algorithm choices,
+used to construct candidates within the model. Each exported candidate is independently
+replayed against every group above. The result reports a feasible heuristic objective and records null for the full-model bound and gap. Time budget is3600 seconds.
+Input repair retains node/vehicle/product counts, quantities, due dates, penalties,
+battery capacities, initial energies and horizon. Illegal same-type OD endpoints
+and absent fixed vehicle endpoint mappings are repaired and logged. Missing depot
+chargers are finite. A common conservative road duration is restored because the
+source's road duration does not depend on the loaded state.
+\end{document}

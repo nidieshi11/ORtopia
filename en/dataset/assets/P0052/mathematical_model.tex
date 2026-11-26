@@ -1,0 +1,88 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,geometry}
+\geometry{margin=22mm}
+\begin{document}
+
+\section*{P52: full-fleet battery and charging design, explicit robust branch}
+The source's nominal and robust equations cannot be imposed together with the
+extracted opposite energy sign. The current branch follows physical energy
+conservation and source (24)--(28), with independent upper consumption on every
+leg. It is a conservative planning formulation.
+
+\subsection*{Finite data and variables}
+Routes are $r\in R$, their entire bus fleets $b\in B_r$, battery choices $k\in BAT$,
+terminals $t\in T$ and charger choices $c\in FCS$. Every bus has an ordered complete
+leg list $h=1,\ldots,H_b$, including its final return. Leg $h$ ends at $t_{bh}$
+and has admissible charging cells $\Omega_{bh}$; its overlap duration in cell
+$w$ is $a_{bhw}\in(0,\Delta]$ hours. No charging variable exists outside these
+windows. The supplied worst consumption is
+\[
+ E_{bh}^{+}=\bar E_{bh}+\min(1,\Gamma_r)\widehat E_{bh}.
+\]
+Its value is already multiplied by the actual leg distance in the completed data.
+This is the exact maximum of the single-coordinate uncertainty expression, used
+conservatively on every leg, with a separate uncertainty budget per leg.
+
+Binary $x_{rk}$ selects a battery; binary $y_{tc}$ selects a charger type;
+$n_{tc}\in\mathbb Z_{\ge0}$ counts chargers. Binary $z_{bh}$ and $v_{bhw}$
+mark charging events/cells. $p_{bhw}\ge0$ is the planned power in kW,
+$A_{bh},D_{bh}\ge0$ arrival/departure energy in kWh, and $P_t^{on},P_t^{off}\ge0$
+are the two demand-charge peaks. Define
+$C_r=\sum_k CAP_kx_{rk}$, $M_t=\sum_{r:t\in T_r}|B_r|$ and
+$P^{max}=\max_c CP_c$.
+
+\subsection*{All constraints}
+\begin{align}
+\sum_kx_{rk}&=1,&
+\sum_c y_{tc}&\le1,&
+0\le n_{tc}&\le M_t y_{tc},\\
+A_{b1}&=SOC_{max}C_r-E_{b1}^{+},&
+A_{bh}&=D_{b,h-1}-E_{bh}^{+}\quad(h>1),\\
+SOC_{min}C_r&\le A_{bh}\le SOC_{max}C_r,&
+SOC_{min}C_r&\le D_{bh}\le SOC_{max}C_r,\\
+D_{bh}&=A_{bh}+\sum_{w\in\Omega_{bh}}a_{bhw}p_{bhw},\\
+0\le p_{bhw}&\le P^{max}v_{bhw},&
+p_{bhw}&\le\sum_cCP_c y_{t_{bh},c},&
+v_{bhw}&\le\sum_cy_{t_{bh},c},\\
+v_{bhw}&\le z_{bh},&
+z_{bh}&\le\sum_{w\in\Omega_{bh}}v_{bhw},&
+z_{bh}&\le\sum_c y_{t_{bh},c}.
+\end{align}
+For each terminal and cell, let
+$I_{tw}=\{(b,h):t_{bh}=t,\ w\in\Omega_{bh}\}$ and let $g(w)$ be its on/off
+tariff category. Impose
+\begin{align}
+\sum_{(b,h)\in I_{tw}}v_{bhw}&\le\sum_c n_{tc},\\
+\sum_{(b,h)\in I_{tw}}p_{bhw}&\le\sum_c CP_cn_{tc},\\
+P_t^{g(w)}&\ge\Delta^{-1}\sum_{(b,h)\in I_{tw}}a_{bhw}p_{bhw}.
+\end{align}
+Counting a partial-cell charging event for the entire occupancy cell is
+conservative; duration-weighted energy and demand averages use actual overlap.
+
+\subsection*{Objective and units}
+Write $a(L)=d/[1-(1+d)^{-L}]$ for annualization at discount $d>0$.
+With supplied prices in dollars per kWh and demand rates in dollars per
+kW-month, minimize
+\begin{align}
+&\sum_{r,k}a(L_k^B)C_k^B|B_r|x_{rk}
++\sum_{t,c}[a(L^{station})C^{station}+M^{station}]y_{tc}\\
+&+\sum_{t,c}[a(L_c^C)C_c^C+M_c^C]n_{tc}
++365\sum_{b,h,w}c_w a_{bhw}p_{bhw}\\
+&+12\sum_t[d^{on}P_t^{on}+d^{off}P_t^{off}].
+\end{align}
+Thus the monthly demand rate absorbs the source's daily-to-month conversion;
+the monthly rate is applied once per month. Battery procurement
+is fleet size times battery cost. Charger maintenance, if present in the completed
+input, is explicitly included. The given full initial SOC is exogenous:
+the energy bill covers daytime opportunity charging.
+
+\subsection*{Robust operational meaning}
+The optimization uses the upper-consumption trajectory. Under any smaller
+realized nonnegative leg consumptions, charge no more than the planned
+cell power, curtailing at $SOC_{max}C_r$. If actual arrival energy is $a$ and
+the planned cell energy is $q$, the feedback update is
+$a^+=\min\{SOC_{max}C_r,a+q\}$. Induction gives actual energy at least the
+upper-consumption trajectory and at most the SOC ceiling; resource use and
+cost do not increase. This curtailment policy provides a feasible operating policy and a conservative cost upper bound.
+
+\end{document}
