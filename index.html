@@ -62,6 +62,32 @@
       font-weight: 600;
       text-decoration: none;
     }
+    .language-switch {
+      position: absolute;
+      top: max(1rem, env(safe-area-inset-top));
+      right: max(1rem, env(safe-area-inset-right));
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .3rem;
+      min-height: 44px;
+      padding: 0 .65rem;
+      border: 1px solid #bac7b7;
+      border-radius: 2rem;
+      background: #f6f5ee;
+      color: inherit;
+      font: 600 .8rem/1 "Inter", "Segoe UI", sans-serif;
+      cursor: pointer;
+    }
+    .language-switch[hidden] { display: none; }
+    .language-switch:hover { background: #e8eddf; }
+    .language-switch:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+    :root:lang(en) .copy-zh, :root:lang(zh) .copy-en { display: none; }
+    :root:lang(en) .mark-en, :root:lang(zh) .mark-zh {
+      text-decoration: underline;
+      text-underline-offset: .22em;
+    }
+    h1 .copy-zh { font-family: "Songti SC", SimSun, serif; text-wrap: balance; }
     .arrow {
       position: relative;
       width: 1.5rem;
@@ -92,12 +118,37 @@
   </style>
 </head>
 <body>
+  <button type="button" class="language-switch" id="language-switch"
+          aria-label="Switch to Chinese (中文)" title="Switch to Chinese (中文)" hidden>
+    <span class="mark-zh" lang="zh-CN" aria-hidden="true">中</span><span aria-hidden="true">/</span><span class="mark-en" lang="en" aria-hidden="true">EN</span>
+  </button>
   <main>
-    <h1>A Utopia for <em>AI-Native</em><br> Operations Research</h1>
+    <h1><span class="copy-en" lang="en">A Utopia for <em>AI-Native</em><br> Operations Research</span><span class="copy-zh" lang="zh-CN">AI 原生运筹优化的理想国</span></h1>
     <nav aria-label="ORtopia">
-      <a href="dataset/">Dataset<span class="arrow" aria-hidden="true"></span></a>
-      <a href="simulation/">Simulation<span class="arrow" aria-hidden="true"></span></a>
+      <a href="dataset/"><span><span class="copy-en" lang="en">Dataset</span><span class="copy-zh" lang="zh-CN">数据集</span></span><span class="arrow" aria-hidden="true"></span></a>
+      <a href="simulation/"><span><span class="copy-en" lang="en">Simulation</span><span class="copy-zh" lang="zh-CN">仿真</span></span><span class="arrow" aria-hidden="true"></span></a>
     </nav>
   </main>
+  <script>
+    (() => {
+      const button = document.getElementById('language-switch');
+      const preference = 'ortopia.cover.language';
+      function show(chinese) {
+        document.documentElement.lang = chinese ? 'zh-CN' : 'en';
+        document.title = chinese ? 'AI 原生运筹优化的理想国' : 'A Utopia for AI-Native Operations Research';
+        button.title = chinese ? '切换到英文 (English)' : 'Switch to Chinese (中文)';
+        button.setAttribute('aria-label', button.title);
+      }
+      let saved;
+      try { saved = localStorage.getItem(preference); } catch {}
+      show(saved === 'zh' || (saved !== 'en' && /^zh(?:-|$)/i.test(navigator.language)));
+      button.hidden = false;
+      button.addEventListener('click', () => {
+        const chinese = document.documentElement.lang === 'en';
+        show(chinese);
+        try { localStorage.setItem(preference, chinese ? 'zh' : 'en'); } catch {}
+      });
+    })();
+  </script>
 </body>
 </html>
