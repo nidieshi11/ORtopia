@@ -225,7 +225,10 @@ function showDetailTopic(problem){
  const tag=document.createElement('span');
  tag.className='sim-topic';
  tag.textContent=problem.topicLabel;
- host.querySelector('h1').after(tag);
+ const heading=host.querySelector('h1');
+ const titleBlock=document.createElement('div');
+ heading.replaceWith(titleBlock);
+ titleBlock.append(heading,tag);
 }
 function sceneRenderer(id){
  if(id==='P0020' && window.ORTOPIA_FACTORY)return window.ORTOPIA_FACTORY;
