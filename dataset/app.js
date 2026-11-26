@@ -2,25 +2,32 @@
 'use strict';
 const E=id=>document.getElementById(id), main=E('content');
 const catalog=window.BENCHMARK_CATALOG||{};
-const domains=catalog.domains||[];
-const dom=id=>domains.find(d=>d.id===id);
+const sourceDomains=catalog.domains||[];
 const subdomains=window.ORTOPIA_SUBDOMAINS||{};
-const problemGroup=new Map();
-const assignedDomain=new Map();
-for(const [domainId,groups] of Object.entries(subdomains)){
+const sceneTopics=window.ORTOPIA_SCENE_TOPICS||{};
+const sceneByProblem=new Map();
+for(const groups of Object.values(subdomains)){
  for(const group of groups){
-  for(const id of group.ids){
-   problemGroup.set(id,group);
-   assignedDomain.set(id,domainId);
-  }
+  for(const id of group.ids)sceneByProblem.set(id,group);
+ }
+}
+const topicByProblem=new Map();
+for(const topics of Object.values(sceneTopics)){
+ for(const topic of topics){
+  for(const id of topic.ids)topicByProblem.set(id,topic.label);
  }
 }
 const probs=(catalog.problems||[]).map(p=>{
- const domain=dom(assignedDomain.get(p.id));
- return domain?{...p,domainId:domain.id,domain:domain.name}:p;
+ const scene=sceneByProblem.get(p.id);
+ return {...p,domainId:scene?.key??p.domainId,domain:scene?.label??p.domain,topic:topicByProblem.get(p.id)??'待分类'};
 });
 const byId=new Map(probs.map(p=>[p.id,p]));
 const byDomain=id=>probs.filter(p=>p.domainId===id);
+const domains=sourceDomains.flatMap((source,iconIndex)=>{
+ const children=(subdomains[source.id]||[]).map(group=>({id:group.key,name:group.label,iconIndex}));
+ if(!children.length||byDomain(source.id).length)children.push({id:source.id,name:source.name,iconIndex});
+ return children;
+}).filter(d=>byDomain(d.id).length);
 const s=x=>String(x??''), esc=x=>s(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const route=(kind,id)=>'#/'+kind+(id!=null?'/'+encodeURIComponent(id):'');
 const detail=p=>route('case',p.id), param=u=>esc(u), sortZh=(a,b)=>s(a).localeCompare(s(b),'zh-CN',{numeric:true});
@@ -39,9 +46,10 @@ const paths={
  rescue:'M12 3 4 6v6q0 6 8 9 8-3 8-9V6z M12 8v7 M9 11.5h6', chip:'M6 6h12v12H6z M9 3v3 M15 3v3 M9 18v3 M15 18v3 M3 9h3 M3 15h3 M18 9h3 M18 15h3 M9 9h6v6H9z',
  network:'M3 4h5v5H3z M16 4h5v5h-5z M9 15h6v6H9z M8 6h8 M6 9l5 6 M18 9l-5 6' };
 const ico=k=>'<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="'+(paths[k]||paths.book)+'"/></svg>', cats=['warehouse','factory','road','train','air','drone','energy','finance','health','rescue','chip','network'];
-const seriesList=[['trans','Transportation Research Parts'],['informs','INFORMS 系列'],['utd','UTD 24 系列']]; const seriesNames={trans:'Transportation Research',informs:'INFORMS',utd:'UTD 24'};
+const seriesList=[['utd','UTD-24 系列'],['trans','Transportation Research Parts'],['informs','INFORMS 系列']];
+const seriesNames={utd:'UTD-24',trans:'Transportation Research',informs:'INFORMS'};
 const groupOf=p=>Array.isArray(p.series)?p.series.map(v=>s(v).toLowerCase()):[];
-const groupLink=(domainId,group)=>route('domain',domainId)+(group?'/'+encodeURIComponent(group.key):'');
+const topicLink=(domainId,label)=>route('domain',domainId)+'/'+encodeURIComponent(label);
 const replayIds = new Set(window.ORTOPIA_REPLAY_IDS || []);
 // Use the same release key for the scene preview and its full-size viewer.
 const assetVersion = new URL(document.currentScript.src).search;
@@ -51,19 +59,19 @@ const sceneUrl = p => {
  return p.scene + revision;
 };
 let domainSearch={id:null,query:''};
-let series='trans', currentProblem=null, zoom=1;
+let series=seriesList[0][0], currentProblem=null, zoom=1;
 function setNav(n){for(const k of ['domains','library'])E('nav-'+k).classList.toggle('active',k===n)}
 function crumb(items){return '<div class="crumb" aria-label="面包屑"><a href="../">首页</a>'+items.map(([t,u])=>'<i>/</i>'+(u?'<a href="'+param(u)+'">'+esc(t)+'</a>':'<strong>'+esc(t)+'</strong>')).join('')+'</div>'}
-function has(q,p){const hay=[p.id,p.title,p.paperTitle,p.domain,problemGroup.get(p.id)?.label,p.journal,p.year,p.journalShort,...groupOf(p)].map(s).join(' ').toLowerCase(); return q.toLowerCase().trim().split(/\s+/).every(v=>hay.includes(v))}
-function listItem(p){return '<a class="result" href="'+param(detail(p))+'"><span class="serial">'+esc(p.id)+'</span><span class="result-body"><strong>'+esc(p.title)+'</strong><small>'+esc(p.paperTitle)+'</small><small>'+esc([p.domain,p.journalShort||p.journal,p.year].filter(Boolean).join(' · '))+'</small></span><span class="chev"></span></a>'}
+function has(q,p){const hay=[p.id,p.title,p.paperTitle,p.domain,p.topic,p.journal,p.year,p.journalShort,...groupOf(p)].map(s).join(' ').toLowerCase(); return q.toLowerCase().trim().split(/\s+/).every(v=>hay.includes(v))}
+function listItem(p){return '<a class="result" href="'+param(detail(p))+'"><span class="serial">'+esc(p.id)+'</span><span class="result-body"><strong>'+esc(p.title)+'</strong><span class="catalog-topic">'+esc(p.topic)+'</span><small>'+esc(p.paperTitle)+'</small><small>'+esc([p.domain,p.journalShort||p.journal,p.year].filter(Boolean).join(' · '))+'</small></span><span class="chev"></span></a>'}
 function domainsPage(){
  document.title='领域目录 · ORtopia';
- const cards=domains.map((d,i)=>{
-  const groups=subdomains[d.id];
-  const count=byDomain(d.id).length;
-  return '<a class="domain-card" href="'+param(route('domain',d.id))+'"><span class="dicon">'+ico(cats[i])+
+ const cards=domains.map(d=>{
+  const rows=byDomain(d.id);
+  const topicCount=new Set(rows.map(p=>p.topic)).size;
+  return '<a class="domain-card" href="'+param(route('domain',d.id))+'"><span class="dicon">'+ico(cats[d.iconIndex])+
    '</span><span class="domain-body"><span class="domain-name">'+esc(d.name)+'</span><span class="domain-meta">'+
-   count+' 道问题'+(groups?' · '+groups.length+' 个子类':'')+'</span></span><span class="chev" aria-hidden="true"></span></a>';
+   rows.length+' 道问题 · '+topicCount+' 个子类</span></span><span class="chev" aria-hidden="true"></span></a>';
  }).join('');
  main.innerHTML='<div class="wrap page" id="domain-index"><div class="domain-head"><h1>领域目录</h1>'+
   '<p class="muted">'+domains.length+' 个领域 · '+probs.length+' 道问题</p></div><div class="domains-grid">'+cards+'</div></div>';
@@ -84,19 +92,36 @@ function shelves(){
  container.innerHTML='<div class="tabs" role="group" aria-label="论文系列">'+groups.map(([k,n])=>'<button type="button" data-series="'+k+'" aria-pressed="'+(series===k)+'" class="'+(series===k?'active':'')+'">'+esc(n)+' <em>'+selectBy(k).length+'</em></button>').join('')+'</div><div class="journals">'+[...journals.entries()].sort(([a],[b])=>sortZh(a,b)).map(([name,rows],i)=>'<details class="journal"'+(i===0?' open':'')+'><summary>'+ico('book')+'<span>'+esc(name)+'</span><span class="pill">'+rows.length+' 篇</span><span class="chev"></span></summary>'+rows.sort((a,b)=>Number(b.year)-Number(a.year)||sortZh(a.paperTitle,b.paperTitle)).map(p=>'<div class="paper-row"><div class="pdf-mark">PDF</div><div><a class="paper-title" target="_blank" rel="noopener" href="'+param(p.pdf)+'">'+esc(p.paperTitle)+'</a><div class="paper-info">'+esc([p.year,p.id,p.title].filter(Boolean).join(' · '))+'</div></div><div class="paper-actions"><a href="'+param(detail(p))+'">问题详情</a><a href="'+param(p.pdf)+'" download="'+esc(p.pdfName||s(p.paperTitle)+'.pdf')+'">下载 PDF</a></div></div>').join('')+'</details>').join('')+(journals.size?'':'<div class="empty">此系列暂无论文。</div>')+'</div>';
  container.querySelectorAll('[data-series]').forEach(b=>b.onclick=()=>{series=b.dataset.series;shelves();container.querySelector('[data-series="'+series+'"]').focus({preventScroll:true})});
 }
-function domainPage(id,groupKey){
- const domain=dom(id);
+function domainPage(id,topicLabel){
+ const legacyChildren=subdomains[id];
+ if(legacyChildren&&topicLabel){
+  const child=legacyChildren.find(g=>g.key===topicLabel);
+  if(!child)return miss();
+  history.replaceState(null,'',route('domain',child.key));
+  return domainPage(child.key);
+ }
+ const domain=legacyChildren?sourceDomains.find(d=>d.id===id):domains.find(d=>d.id===id);
  if(!domain)return miss();
- const rows=byDomain(id);
- const groups=subdomains[id]||[];
- const active=groups.find(group=>group.key===groupKey);
- if(groupKey && !active)return miss();
- const members=group=>rows.filter(p=>problemGroup.get(p.id)===group);
- const tabs=groups.length?'<nav class="subdomain-nav" aria-label="二级分类">'+
-   [[undefined,'全部',rows.length],...groups.map(group=>[group,group.label,members(group).length])]
-   .map(([group,label,count])=>'<a href="'+param(groupLink(id,group))+'"'+(group===active?' aria-current="page"':'')+'>'+
-      esc(label)+' <span>'+count+'</span></a>').join('')+'</nav>':'';
- const trail=[['领域目录','#/domains'],[domain.name,active?groupLink(id):undefined]];
+ const buckets=new Map();
+ const addBucket=(label,link)=>buckets.set(label,{label,link,items:[]});
+ for(const group of legacyChildren||sceneTopics[id]||[]){
+  addBucket(group.label,legacyChildren?route('domain',group.key):topicLink(id,group.label));
+ }
+ const rows=legacyChildren?probs.filter(p=>p.domainId===id||legacyChildren.some(g=>g.key===p.domainId)):byDomain(id);
+ for(const p of rows){
+  const label=legacyChildren?p.domain:p.topic;
+  if(!buckets.has(label))addBucket(label,legacyChildren?route('domain',p.domainId):topicLink(id,label));
+  buckets.get(label).items.push(p);
+ }
+ const active=buckets.get(topicLabel);
+ if(topicLabel&&!active)return miss();
+ const groups=[...buckets.values()].filter(g=>g.items.length);
+ const all={label:'全部',link:route('domain',id),items:groups.flatMap(g=>g.items)};
+ const selected=active||all;
+ const tabs='<nav class="subdomain-nav catalog-subtopics" aria-label="'+(legacyChildren?'领域':'二级分类')+'">'+
+   [all,...groups].map(g=>'<a href="'+param(g.link)+'"'+(g===selected?' aria-current="page"':'')+'>'+
+    esc(g.label)+' <span>'+g.items.length+'</span></a>').join('')+'</nav>';
+ const trail=[['领域目录','#/domains'],[domain.name,active?all.link:undefined]];
  if(active)trail.push([active.label]);
  const inputLabel=active?'在此子类中检索':'在本领域中检索';
  main.innerHTML='<div class="wrap page">'+crumb(trail)+'<div class="domain-head">'+
@@ -108,21 +133,9 @@ function domainPage(id,groupKey){
  input.value=domainSearch.query;
  function filter(){
   domainSearch.query=input.value;
-  const results=(active?members(active):rows).filter(p=>has(input.value,p));
+  const results=selected.items.filter(p=>has(input.value,p));
   E('domain-count').textContent='显示 '+results.length+' 道问题';
-  const list=items=>'<div class="result-list">'+items.map(listItem).join('')+'</div>';
-  if(!results.length){
-   E('domain-list').innerHTML='<div class="no-hits">没有找到匹配的问题。</div>';
-  }else if(groups.length && !active){
-   const sections=groups.map(group=>{
-    const matches=results.filter(p=>problemGroup.get(p.id)===group);
-    return matches.length?'<section class="subdomain-section"><h2><a href="'+param(groupLink(id,group))+'">'+
-      esc(group.label)+'</a> <small>'+matches.length+' 题</small></h2>'+list(matches)+'</section>':'';
-   });
-   const unassigned=results.filter(p=>!problemGroup.has(p.id));
-   if(unassigned.length)sections.push(list(unassigned));
-   E('domain-list').innerHTML=sections.join('');
-  }else E('domain-list').innerHTML=list(results);
+  E('domain-list').innerHTML=results.length?'<div class="result-list">'+results.map(listItem).join('')+'</div>':'<div class="no-hits">没有找到匹配的问题。</div>';
  }
  input.addEventListener('input',filter);
  filter();
@@ -149,9 +162,7 @@ function detailPage(id){
  const p=byId.get(id);if(!p)return miss();currentProblem=p;document.title=p.title+' · ORtopia';const mp=mathList(p);
  const switcher='<div class="desc-switch" role="group" aria-label="问题描述版本"><button data-description="symbolic" aria-pressed="true">有符号</button><button data-description="plain" aria-pressed="false">纯文字</button></div>';
  const math=mp.length?mp.map((u,i)=>pdfFile(u)?'<object aria-label="数学模型 PDF" type="application/pdf" data="'+param(u)+'"><a class="route-link" href="'+param(u)+'" target="_blank" rel="noopener">打开数学模型 PDF</a></object>':'<button class="math-img" data-view="math" data-page="'+i+'" aria-label="放大数学模型第 '+(i+1)+' 页"><img src="'+param(u)+'" loading="lazy" alt="数学模型，第 '+(i+1)+' 页"></button>').join(''):'<div class="empty">暂未收录模型图片。'+(p.tex?'<a class="route-link" href="'+param(p.tex)+'" download>下载 LaTeX 源文件</a>':'')+'</div>';
- const group=problemGroup.get(p.id);
- const trail=[['领域目录','#/domains'],[p.domain,route('domain',p.domainId)]];
- if(group)trail.push([group.label,groupLink(p.domainId,group)]);
+ const trail=[['领域目录','#/domains'],[p.domain,route('domain',p.domainId)],[p.topic,topicLink(p.domainId,p.topic)]];
  const headings=crumb([...trail,[p.id]]);
  const replay=replayIds.has(p.id)
    ? '<a class="primary replay-entry" href="../simulation/replay.html#'+param(p.id)+'">进入实例仿真 <span aria-hidden="true">→</span></a>' : '';
@@ -162,7 +173,7 @@ function detailPage(id){
    groupOf(p).map(k=>'<span class="badge">'+esc(seriesNames[k]||k)+'</span>').join('');
  main.innerHTML='<div class="wrap page">'+headings+
    '<header class="case-head"><div class="tagline"><span class="serial">'+esc(p.id)+'</span><span class="pill">'+esc(p.domain)+'</span></div>'+
-   '<h1>'+esc(p.title)+'</h1><p class="eng-title">'+esc(p.paperTitle)+'</p>'+
+   '<h1>'+esc(p.title)+'</h1><a class="catalog-topic" href="'+param(topicLink(p.domainId,p.topic))+'">'+esc(p.topic)+'</a><p class="eng-title">'+esc(p.paperTitle)+'</p>'+
    '<div class="bar"><div class="pmeta">'+metadata+'</div><div class="doc-actions">'+replay+paper+'</div></div></header>'+
    '<div class="case-grid">'+
    panel('场景图','image',p.scene?zoomBtn('scene'):'',picBox('scene',sceneUrl(p),p.title+' 场景图'))+
