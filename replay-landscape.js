@@ -65,9 +65,9 @@ function frame(canvas,p,track,index,progress,overlay,custom){
   const px=(i*91+seed*7)%900,py=92+(i%3)*4;
   ctx.save();ctx.globalAlpha=.46;building(px,py,.28+(i%3)*.06,false);ctx.restore();
  }
- function actor(x,y,direction,phase){
+ function actor(x,y,direction,phase,unit=''){
   ctx.save();ctx.translate(x,y);ctx.scale(direction<0?-1:1,1);oval(0,3,18,4,'#345e6238');
-  const rail=k==='rail',drone=/无人机|飞行/.test(track.title)&&!/卡车/.test(track.title),flight=/航班|飞行航段/.test(track.title);
+  const rail=k==='rail',drone=(unit.includes('无人机')||/无人机|飞行/.test(track.title))&&!/卡车/.test(track.title),flight=/航班|飞行航段/.test(track.title);
   if(drone){line([[-10,-12],[10,-19]],'#445f68',3);line([[10,-12],[-10,-19]],'#445f68',3);for(const xx of [-11,11])oval(xx,-17,7,2,'#627d81');box(0,-9,10,5,3,'#d89f53','#8b7249','#f1c67f');}
   else if(flight){poly([[-22,-8],[-5,-8],[-10,-20],[-4,-20],[6,-9],[21,-7],[24,-4],[6,-3],[-6,7],[-11,7],[-6,-3],[-20,-2]],'#e5eee9','#62828c');}
   else if(k==='port'&&/船/.test(track.title)){poly([[-23,-7],[23,-7],[14,2],[-15,2]],'#376c79');box(1,-7,16,8,5,'#f4e6c6','#c1c6ad','#dae4c4');}
@@ -95,6 +95,17 @@ function frame(canvas,p,track,index,progress,overlay,custom){
   actor(183+515*f,234,1,f);chip('本期发单 '+fmt(rows[j][1]),175,268,true);chip('上期订单 '+(j?fmt(rows[j-1][1]):'—'),732,268,true);
   for(let h=0;h<Math.min(36,j);h++)box(560+(h%12)*13,317-Math.floor(h/12)*10,11,10,3,'#b99868','#9f815b','#e6cda0');
   return {done:j,active:1,text:'第 '+(j+1)+' 期 · 订货提前期 1 期 · 箱体记录已走完提前期的订单'};
+ }
+ if(p.id==='P0181'){
+  let active=0,finished=0;
+  for(const [j,[id,room,dest,t,u]] of rows.entries()){
+   const x=275+j*350;building(x,207,1.9,true);chip(room,x,238,true);const phase=clamp((time-t)/(u-t));const omitted=id===omit;
+   box(x,279,100,9,8,'#b5c7bf','#93a99e','#e4ede1');if(!omitted){
+    person(x-45+15*phase,266,phase);rect(x-44,292,89*phase,7,'#31947c');if(time>=u)finished++;else if(time>=t)active++;
+   }
+   chip(id+' · '+(omitted?'暂缓':time>=u?'已完成':time<t?'等待':'进行中'),x,322,!omitted&&time>=t);
+  }
+  return {done:finished,active,text:'手术进行中 '+active+' 台 · 已完成 '+finished+' 台'};
  }
  if(p.id==='P0079'){
   const lanes=[...new Set(rows.map(r=>r[1]))];let done=0,working=0;
@@ -151,7 +162,7 @@ function frame(canvas,p,track,index,progress,overlay,custom){
     const a=pos.get(aa),b=pos.get(bb),f=clamp((time-t)/(u-t)),x=a[0]+(b[0]-a[0])*f,y=a[1]+(b[1]-a[1])*f,shade=color[ids.indexOf(id)%color.length];
     if(active.length){moving++;line([a,[x,y]],shade,4);}
     if(track.kind==='coverage'){oval(x,y,7,7,shade);if(v!=null)chip(fmt(v),x,y-17,true);continue;}
-    actor(x,y,b[0]-a[0],f);if(ids.length<=8)chip(id+(v!=null?' · '+fmt(v):''),x,y-30,true);
+    if(unit.includes('配送员'))person(x,y,f);else actor(x,y,b[0]-a[0],f,unit);if(ids.length<=8)chip(id+(v!=null?' · '+fmt(v):''),x,y-30,true);
    }
   }
   return {done:rows.filter(r=>r[0]!==omit&&r[4]<=time).length,active:moving,text:'已抵达 '+seen.size+' 个端点'};
