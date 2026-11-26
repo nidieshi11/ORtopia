@@ -24,33 +24,6 @@ function studio(canvas,sky='#d0e5df',floor='#dddfcc'){
  const wash=c.createLinearGradient(0,0,0,250);wash.addColorStop(0,sky);wash.addColorStop(1,'#f3efdc');box(0,0,900,360,wash);box(0,235,900,125,floor);
  return {c,box,disk,path,poly,text,plate,person,crate};
 }
-labs.P0488={
- title:'卸货月台的一期订货提前期',action:'改变下一笔订货量。到货受当期可供数量限制；货架缺货时，当期销售随即流失。',choices:['按归档量订货','改订半量','停止订货'],live:true,
- scope:'复现归档见证路径 1 的前 12 期。订单提前一期，初始在途为零。图中成本为该段实际样本；全时域归档期望成本为 28,672.625。',
- frame(d,choice,f,hist){const [i,phase]=eventAt(f,d.path.length);let pipe=d.initialPipeline,loss=0,sales=0,out;
-  for(let j=0;j<=i;j++){
-   const [need,supply]=d.path[j],order=[d.orderMax,d.orderMax/2,0][decision(hist,j/d.path.length,choice)];
-   const received=Math.min(pipe,supply),sold=Math.min(need,received);
-   const settled=j<i||phase>=.82;
-   if(settled){sales+=sold;loss+=need-sold;}
-   out={i,phase,pipe,need,supply,order,received,sold,loss};pipe=order;
-  }
-  return {...out,clock:'第 '+(i+1)+' / 12 期',metrics:[['上期在途订单',money(out.pipe)],['本期可交付',money(out.received)],['累计成交',money(sales)],['累计失销成本',money(loss*d.penalty)]]};
- },
- draw(canvas,s){const g=studio(canvas);const {box,disk,path,text,plate,crate,person}=g;
-  for(let j=0;j<10;j++){box(48+j*86,79,63,67,'#c1d8d0');path([[79+j*86,79],[79+j*86,146]],'#e9eeda',3);}
-  box(0,158,900,95,'#c2bfab');box(265,142,11,116,'#748476');box(625,142,11,116,'#748476');
-  const x=lerp(-50,124,s.phase/.42);box(x,182,95,45,'#688a76');box(x+96,199,35,28,'#cf9455');box(x+103,202,19,10,'#c6e2dc');for(const k of [13,93,117])disk(x+k,229,8,'#344a49');
-  box(330,218,224,8,'#86765b');for(let n=0;n<4;n++){box(339+n*68,184,3,75,'#7b8179');}
-  const units=Math.round(s.received*4);
-  for(let k=0;k<units;k++){const px=lerp(175+k*19,366+k*28,(s.phase-.22)/.26),xx=lerp(px,682+k*20,(s.phase-.6)/.24);crate(xx,203);}
-  const shopperX=lerp(864,729,s.phase/.60);person(shopperX,238,'#946148',s.phase);
-  plate('到货月台',151,120);plate('待售货架',443,120);plate('提货窗口',748,120);
-  text('在途 '+money(s.pipe)+'　可供 '+money(s.supply),153,281);text('下期订单 '+money(s.order),447,281);text('当期需求 '+money(s.need),748,281);
-  text('每个货箱 = 0.25 单位',145,327,13,'#54675d');
-  if(s.phase>=.82)plate('成交 '+money(s.sold)+'　流失 '+money(s.need-s.sold),742,323,s.need>s.sold?'#945840':'#34735b');
- }
-};
 labs.P0489={
  title:'水箱的排空阀、补水泵与用水口',action:'选择首日是否排空以及补多少水，观察供水缺口和后续按水龄触发的排空。',choices:['归档排空与补水','首日保留旧水且不补','首日排空后补半箱'],
  scope:'按归档策略表追踪 12 天。三种首日决策共用固定种子抽取的需求，次日起执行原策略。显示该路径的折现费用，归档无限期目标由原 Bellman 检查器核对。',

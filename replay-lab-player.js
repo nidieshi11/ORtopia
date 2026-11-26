@@ -32,6 +32,7 @@ function mount(host,p,pack,step){
  <div class="atlas-control"><button class="lab-play"></button><input class="lab-scrub" type="range" min="0" max="1000" aria-label="仿真进度"><select class="lab-speed" aria-label="播放速度"><option>0.5×</option><option selected>1×</option><option>2×</option><option>4×</option></select><button class="lab-reset">恢复归档方案</button></div></section>
  <dl class="lab-metrics"></dl><details class="atlas-proof"><summary>实例与试算范围</summary><p></p><code></code></details></article>`;
  const q=sel=>host.querySelector(sel),stage=q('.atlas-stage'),map=q('.lab-canvas'),btn=q('.lab-play'),scrub=q('.lab-scrub'),group=q('.lab-choices'),dl=q('.lab-metrics');
+ const heading=q('.atlas-stage-head'),clock=q('.lab-clock'),article=q('article');
  q('.replay-breadcrumb').append(link('index.html#scene/'+p.sceneId,p.sceneName),' / ',link('replay.html#lab20','本批 20 个仿真'));
  q('article').dataset.problem=p.id;q('.lab-meta').textContent=p.id+' · '+pack.sample;q('h1').textContent=p.title;q('h2').textContent=lab.title;
  q('.lab-decisions p').textContent=lab.action;map.setAttribute('aria-label',lab.title);
@@ -39,7 +40,34 @@ function mount(host,p,pack,step){
  q('.atlas-proof code').textContent='实例 '+pack.instance+' · 解 '+pack.solution+' · '+pack.variables.toLocaleString()+' 个决策变量 · '+(pack.lower?'至少 ':'')+pack.constraints.toLocaleString()+' 条约束';
  const baseline=[{at:0,choice:0}];
  let history=baseline.slice(),mode=0,f=0,playing=!matchMedia('(prefers-reduced-motion: reduce)').matches,rate=1,last=0,raf=0;
+ let viewIndex=0,chapterSelect,chapterMode;
+ if(lab.views){
+  article.classList.add('district-world');
+  q('h1').textContent=lab.title;
+  q('.atlas-proof p').textContent=p.title+'。'+lab.scope;
+  heading.querySelector('h2').remove();
+  const cameras=el('div','lab-views');cameras.setAttribute('role','group');cameras.setAttribute('aria-label','观察视角');
+  for(const [i,label] of lab.views.entries()){
+   const button=el('button','',label);button.type='button';button.setAttribute('aria-pressed',String(i===0));
+   on(button,'click',()=>{
+    viewIndex=i;
+    Array.from(cameras.children).forEach((other,j)=>other.setAttribute('aria-pressed',String(j===i)));
+    paint();
+   });
+   cameras.append(button);
+  }
+  heading.insertBefore(cameras,q('.lab-expand'));
+ }
+ if(lab.chapters){
+  chapterSelect=el('select','lab-chapters');chapterSelect.setAttribute('aria-label','定位到现场事件');
+  q('.lab-speed').after(chapterSelect);
+  on(chapterSelect,'change',()=>{
+   if(chapterSelect.value==='')return;
+   f=Number(chapterSelect.value);chapterSelect.selectedIndex=0;start();
+  });
+ }
  function selected(){return lab.live?(history.findLast(v=>v.at<=f+1e-12)?.choice??0):mode;}
+ function endTime(){return lab.endAt?lab.endAt(data,selected()):1;}
  const choices=lab.choices.map((name,i)=>{
   const b=el('button','',name);group.append(b);on(b,'click',()=>{
    if(lab.live){
@@ -51,8 +79,15 @@ function mount(host,p,pack,step){
  });
  function paint(){
   const choice=selected(),s=lab.frame(data,choice,f,history),ref=(!choice&&(!lab.live||history.every(h=>!h.choice)))?s:lab.frame(data,0,f,baseline);
-  lab.draw(map,s,data,choice,f);
-  q('.lab-clock').textContent=s.clock??('进度 '+Math.round(100*f)+'%');scrub.value=Math.round(f*1000);btn.textContent=playing?'暂停':f===1?'重播':'播放';
+  lab.draw(map,s,data,choice,f,viewIndex);
+  if(chapterSelect && chapterMode!==choice){
+   chapterMode=choice;
+   chapterSelect.replaceChildren(new Option('定位到事件',''));
+   for(const {label,at} of lab.chapters(data,choice))chapterSelect.add(new Option(label,String(at)));
+  }
+  const end=endTime(),finished=f>=end;
+  clock.textContent=s.clock??('进度 '+Math.round(100*f)+'%');
+  scrub.max=Math.ceil(end*1000);scrub.value=finished?scrub.max:Math.round(f*1000);btn.textContent=playing?'暂停':finished?'重播':'播放';
   choices.forEach((b,i)=>b.setAttribute('aria-pressed',String(choice===i)));
   while(dl.children.length<s.metrics.length){const card=el('div');card.append(el('dt'),el('dd'),el('small'));dl.append(card);}
   for(let j=0;j<dl.children.length;j++){
@@ -66,15 +101,17 @@ function mount(host,p,pack,step){
  }
  function tick(now){
   if(!playing||document.hidden)return;
-  f=Math.min(1,f+Math.min(120,now-(last||now))*rate/(1000*(lab.duration||23)));
-  last=now;if(f===1)playing=false;paint();if(playing)raf=requestAnimationFrame(tick);
+  const end=endTime();
+  f=Math.min(end,f+Math.min(120,now-(last||now))*rate/(1000*(lab.duration||23)));
+  last=now;if(f>=end)playing=false;paint();if(playing)raf=requestAnimationFrame(tick);
  }
- function start(){cancelAnimationFrame(raf);last=0;paint();if(playing&&!document.hidden)raf=requestAnimationFrame(tick);}
- on(btn,'click',()=>{if(f===1)f=0;playing=!playing;start();});
+ function start(){cancelAnimationFrame(raf);last=0;const end=endTime();if(f>=end){f=end;playing=false;}paint();if(playing&&!document.hidden)raf=requestAnimationFrame(tick);}
+ on(btn,'click',()=>{if(f>=endTime())f=0;playing=!playing;start();});
  on(scrub,'input',()=>{f=Number(scrub.value)/1000;playing=false;start();});
  on(q('.lab-reset'),'click',()=>{history=baseline.slice();mode=0;f=0;playing=false;start();});
  on(q('.lab-speed'),'change',e=>rate=parseFloat(e.target.value));
  const dialog=el('dialog','atlas medium-world batch-world lab-dialog'),anchor=document.createComment('simulation stage');stage.before(anchor);host.append(dialog);
+ if(lab.views)dialog.classList.add('district-world');
  dialog.setAttribute('aria-label',lab.title);const expand=q('.lab-expand');
  on(expand,'click',()=>{if(dialog.open){dialog.close();return;}dialog.append(stage);dialog.showModal();expand.textContent='收起现场';});
  on(dialog,'close',()=>{anchor.after(stage);expand.textContent='放大现场';expand.focus();});
