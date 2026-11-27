@@ -23,9 +23,9 @@ const probs=(catalog.problems||[]).map(p=>{
 });
 const byId=new Map(probs.map(p=>[p.id,p]));
 const byDomain=id=>probs.filter(p=>p.domainId===id);
-const domains=sourceDomains.flatMap((source,iconIndex)=>{
- const children=(subdomains[source.id]||[]).map(group=>({id:group.key,name:group.label,iconIndex}));
- if(!children.length||byDomain(source.id).length)children.push({id:source.id,name:source.name,iconIndex});
+const domains=sourceDomains.flatMap(source=>{
+ const children=(subdomains[source.id]||[]).map(group=>({id:group.key,name:group.label}));
+ if(!children.length||byDomain(source.id).length)children.push({id:source.id,name:source.name});
  return children;
 }).filter(d=>byDomain(d.id).length);
 const s=x=>String(x??''), esc=x=>s(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -35,17 +35,9 @@ const paths={
  book:'M3 5q4-2 9 1 5-3 9-1v14q-4-2-9 1-5-3-9-1z M12 6v14',
  stack:'m3 7 9-4 9 4-9 4z M3 12l9 4 9-4 M3 17l9 4 9-4',
  image:'M3 5h18v14H3z M4 17l5-5 4 3 3-4 4 6 M7.8 9h.4',
- math:'M3 12h3l3 6 4-14h8 M15 14l5 5 M20 14l-5 5', nodes:'M5 6h5v4H5z M15 15h5v4h-5z M3 15h5v4H3z M7 10v2h10v3 M5 15v-3', text:'M5 4h14v16H5z M8 9h8 M8 12h8 M8 15h5', full:'M4 10V4h6 M14 4h6v6 M20 14v6h-6 M10 20H4v-6', pdf:'M6 3h8l4 4v14H6z M14 3v5h4 M9 13h6 M9 16h4',
- warehouse:'M3 11l9-7 9 7v9H3z M8 20v-8h8v8 M8 15h8 M8 18h8',
- factory:'M3 20V9l7 3V8l7 3V4h3l1 16z M6 16h2 M11 16h2 M16 16h2',
- road:'M4 20 8 4 M20 20 16 4 M12 4v3 M12 10v3 M12 16v4',
- train:'M7 3h10q2 0 2 3v10q0 2-2 2H7q-2 0-2-2V6q0-3 2-3z M5 11h14 M12 4v7 M8 15h1 M15 15h1 M8 18l-2 3 M16 18l2 3',
- air:'m3 13 7-1 7-8q2-1 2 1l-4 8 5 4-1 1-6-2-4 4H7l2-6-6 1z',
- drone:'M9 10h6v5H9z M9 10 6 7 M15 10l3-3 M9 15l-3 3 M15 15l3 3 M3 5h6 M15 5h6 M3 19h6 M15 19h6', energy:'m13 2-9 12h6l-1 8 11-14h-7z',
- finance:'M3 21h18 M5 17v-5h3v5 M11 17V8h3v9 M17 17V5h3v12 M4 8l5-4h5', health:'M6 7h12q2 0 2 2v10H4V9q0-2 2-2z M9 7V4h6v3 M12 10v6 M9 13h6',
- rescue:'M12 3 4 6v6q0 6 8 9 8-3 8-9V6z M12 8v7 M9 11.5h6', chip:'M6 6h12v12H6z M9 3v3 M15 3v3 M9 18v3 M15 18v3 M3 9h3 M3 15h3 M18 9h3 M18 15h3 M9 9h6v6H9z',
- network:'M3 4h5v5H3z M16 4h5v5h-5z M9 15h6v6H9z M8 6h8 M6 9l5 6 M18 9l-5 6' };
-const ico=k=>'<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="'+(paths[k]||paths.book)+'"/></svg>', cats=['warehouse','factory','road','train','air','drone','energy','finance','health','rescue','chip','network'];
+ math:'M3 12h3l3 6 4-14h8 M15 14l5 5 M20 14l-5 5', nodes:'M5 6h5v4H5z M15 15h5v4h-5z M3 15h5v4H3z M7 10v2h10v3 M5 15v-3', text:'M5 4h14v16H5z M8 9h8 M8 12h8 M8 15h5', full:'M4 10V4h6 M14 4h6v6 M20 14v6h-6 M10 20H4v-6', pdf:'M6 3h8l4 4v14H6z M14 3v5h4 M9 13h6 M9 16h4'
+};
+const ico=k=>'<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="'+(paths[k]||paths.book)+'"/></svg>';
 const seriesList=[['utd','UTD-24 系列'],['trans','Transportation Research Parts'],['informs','INFORMS 系列']];
 const seriesNames={utd:'UTD-24',trans:'Transportation Research',informs:'INFORMS'};
 const groupOf=p=>Array.isArray(p.series)?p.series.map(v=>s(v).toLowerCase()):[];
@@ -157,7 +149,7 @@ function domainsPage(){
  const cards=domains.map(d=>{
   const rows=byDomain(d.id);
   const topicCount=new Set(rows.map(p=>p.topic)).size;
-  return '<a class="domain-card" href="'+param(route('domain',d.id))+'"><span class="dicon">'+ico(cats[d.iconIndex])+
+  return '<a class="domain-card" href="'+param(route('domain',d.id))+'"><span class="dicon"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="domain-icons.svg#domain-'+param(d.id)+'"></use></svg>'+
    '</span><span class="domain-body"><span class="domain-name">'+esc(d.name)+'</span><span class="domain-meta">'+
    rows.length+' 道问题 · '+topicCount+' 个子类</span></span><span class="chev" aria-hidden="true"></span></a>';
  }).join('');

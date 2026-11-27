@@ -161,6 +161,7 @@ function directory(key){
   const links=groups.map(([id,scene])=>{
    const count=scene.items.length;
    return `<a href="#scene/${encodeURIComponent(id)}">
+     <span class="dicon"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="domain-icons.svg#domain-${esc(id)}"></use></svg></span>
      <strong>${esc(scene.name)}</strong>
      <span class="scene-count">${count} simulations</span>
      <i class="scene-chevron" aria-hidden="true"></i>
