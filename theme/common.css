@@ -1,0 +1,54 @@
+html[data-theme] {
+  --sans: -apple-system, BlinkMacSystemFont, "Inter", "SF Pro Display", "SF Pro Text", "PingFang SC", "Noto Sans SC", sans-serif;
+  --serif: "Baskerville", "Baskerville Old Face", "Baskervville", Georgia, "Songti SC", "Noto Serif CJK SC", SimSun, serif;
+  accent-color: var(--accent);
+}
+html[data-theme="warm"] {
+  color-scheme: light;
+  --paper: #f5f0e6; --surface: #fcf9f2; --ink: #28231d; --muted: #695e51;
+  --accent: #865f49; --accent-ink: #fffaf1; --line: #cdbfac; --tint: #ece2d2;
+  --panel: #e9dfcd; --panel-text: #2e271f; --panel-accent: #765039;
+}
+html[data-theme="ink"] {
+  color-scheme: dark;
+  --paper: #161f2d; --surface: #1d2939; --ink: #f0ebe1; --muted: #b7becc;
+  --accent: #c8ad7f; --accent-ink: #1b212a; --line: #4b5361; --tint: #2b3748;
+  --panel: #202f41; --panel-text: #f0ebe1; --panel-accent: #d4b987;
+}
+html[data-theme] .appearance-button {
+  display: inline-flex; position: relative; justify-content: center; align-items: center;
+  gap: .52rem; flex: none; min-height: 40px; min-width: 40px;
+  padding: .42rem .8rem; border: 1px solid var(--line); border-radius: 2rem;
+  background: var(--surface); color: var(--ink); cursor: pointer;
+  font: 500 14px/1.25 var(--sans); white-space: nowrap;
+}
+html[data-theme] .appearance-button .tone {
+  width: 14px; height: 14px; display: inline-block; border: 1px solid currentColor;
+  background: linear-gradient(90deg, transparent 50%, currentColor 50%); border-radius: 50%; color: var(--accent);
+}
+html[data-theme] .appearance-button:hover { border-color: var(--accent); }
+html[data-theme] .appearance-button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+html[data-theme] body > .appearance-button { position: absolute; top: clamp(15px, 3vh, 30px); right: clamp(20px, 4vw, 72px); z-index: 1; }
+@media(max-width: 1024px) {
+  html[data-theme] .mast .appearance-button { min-width: 36px; min-height: 36px; padding: .45rem; }
+  .mast .appearance-button .tone-label { position: absolute; overflow: hidden; clip-path: inset(50%); width: 1px; height: 1px; }
+}
+@media(min-width: 531px) and (max-width: 1024px) {
+  html[data-theme] .mast:has(.global-search) .mast-inner { column-gap: clamp(8px,1.6vw,14px); }
+}
+@media(max-width: 530px) {
+  html[data-theme] .mast:has(.global-search) .mast-inner { display: grid; grid-template-columns: minmax(0,1fr) auto auto auto; gap: 0 .55rem; height: auto; padding-block: 5px; }
+  html[data-theme] .mast:has(.global-search) .brand { grid-area: 1 / 1; }
+  html[data-theme] .mast:has(.global-search) .global-search { grid-area: 1 / 2; }
+  html[data-theme] .mast:has(.global-search) .language-link { grid-area: 1 / 3; margin: 0; }
+  html[data-theme] .mast:has(.global-search) .appearance-button { grid-area: 1 / 4; }
+  html[data-theme] .mast:has(.global-search) nav { grid-area: 2 / 1 / 3 / -1; gap: 1.25rem; min-height: 26px; }
+  html[data-theme] body:has(.scene-index) .mast-inner { column-gap: .5rem; }
+}
+@media(max-width: 365px) {
+  html[data-theme] body:has(.scene-index) .mast-inner { display:grid; grid-template-columns:1fr auto auto; row-gap:3px; height:auto; }
+  html[data-theme] body:has(.scene-index) .brand { grid-area:1 / 1; }
+  html[data-theme] body:has(.scene-index) .language-link { grid-area:1 / 2; }
+  html[data-theme] body:has(.scene-index) .appearance-button { grid-area:1 / 3; }
+  html[data-theme] body:has(.scene-index) .directory-heading { grid-area:2 / 1 / 3 / -1; flex-direction:row; align-items:baseline; flex-wrap:wrap; }
+}

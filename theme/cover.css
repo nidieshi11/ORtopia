@@ -1,0 +1,149 @@
+body {
+  --cover-gutter: clamp(1.25rem, 5vw, 5rem);
+  --cover-rule: color-mix(in srgb, var(--accent) 38%, var(--paper));
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 1.0625rem/1.6 var(--sans);
+}
+
+html[data-theme] main {
+  position: relative;
+  isolation: isolate;
+  background: var(--paper);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  column-gap: clamp(2rem, 5vw, 5.25rem);
+  align-items: end;
+  align-content: center;
+  width: min(calc(100% - var(--cover-gutter) * 2), 82rem);
+  margin-inline: auto;
+  padding: 6rem 0 5.5rem;
+}
+
+html[data-theme] main::before,
+html[data-theme] main::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  height: 1px;
+  background: var(--cover-rule);
+}
+
+html[data-theme] main::before { top: 4.75rem; }
+html[data-theme] main::after { bottom: 2.5rem; }
+
+html[data-theme] main > .cover {
+  grid-row: 1 / span 2;
+  grid-column: 1;
+  align-self: center;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  margin: 0;
+  mix-blend-mode: multiply;
+}
+
+/* Paper becomes the page background and the engraved strokes become warm gold. */
+html[data-theme="ink"] main > .cover {
+  filter: grayscale(1) invert(1) contrast(1.12) sepia(.85) saturate(1.35) brightness(1.55);
+  mix-blend-mode: screen;
+}
+
+html[data-theme] main h1 {
+  grid-row: 1;
+  grid-column: 2;
+  margin: 0;
+  color: var(--ink);
+  font: 600 clamp(2.25rem, 4.4vw, 3.5rem)/1.07 var(--serif);
+  letter-spacing: -.02em;
+  text-align: left;
+  overflow-wrap: normal;
+}
+
+html[data-theme] main h1::before {
+  content: "";
+  display: block;
+  width: 3rem;
+  height: 2px;
+  background: var(--accent);
+  margin-bottom: clamp(1.1rem, 2.2vw, 1.9rem);
+}
+
+html[data-theme] main h1 em {
+  font-weight: inherit;
+  color: var(--accent);
+}
+
+html[data-theme] main nav {
+  grid-row: 2;
+  grid-column: 2;
+  align-self: start;
+  justify-content: flex-start;
+  gap: .5rem clamp(1.5rem, 3vw, 2.75rem);
+  margin-top: clamp(1.5rem, 3.5vw, 3.25rem);
+}
+
+html[data-theme] main nav a {
+  min-height: 44px;
+  padding: .3rem 0 .5rem;
+  gap: clamp(.75rem, 1.15vw, 1.1rem);
+  border-bottom-color: var(--cover-rule);
+  color: var(--ink);
+  font: 500 1.2rem/1.35 var(--sans);
+}
+
+html[data-theme] main nav a:is(:hover, :focus-visible) {
+  color: var(--accent);
+  border-bottom-color: currentColor;
+}
+
+html[data-theme] main .arrow { color: var(--accent); }
+
+@media (min-width: 54.001rem) and (max-width: 75rem) {
+  html[data-theme] main h1 {
+    font-size: clamp(2.25rem, 3.85vw, 3rem);
+  }
+}
+
+@media (max-width: 54rem) {
+  html[data-theme] main {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto;
+    justify-items: center;
+    align-items: center;
+    align-content: center;
+    padding: 6rem 0 4.5rem;
+  }
+  html[data-theme] main::before { top: 4.2rem; }
+  html[data-theme] main::after { bottom: 1.5rem; }
+  html[data-theme] main > .cover {
+    grid-column: 1;
+    grid-row: 1;
+    width: min(100%, 32rem, 56svh);
+    margin-bottom: clamp(1.75rem, 5vw, 2.75rem);
+  }
+  html[data-theme] main h1 {
+    grid-column: 1;
+    grid-row: 2;
+    font-size: clamp(2.25rem, 5.9vw, 3rem);
+    text-align: center;
+  }
+  html[data-theme] main h1::before { display: none; }
+  html[data-theme] main nav {
+    grid-column: 1;
+    grid-row: 3;
+    justify-content: center;
+    gap: 1.75rem;
+    margin-top: 1.65rem;
+  }
+  html[data-theme] main nav a { font-size: 1rem; }
+}
+
+/* Let the cover title use the outer margin on very small devices. */
+@media (max-width: 27rem) {
+  html[data-theme] main h1 {
+    width: calc(100vw - 1rem);
+    letter-spacing: -.035em;
+  }
+}
