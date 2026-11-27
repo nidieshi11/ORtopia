@@ -139,13 +139,18 @@ for(const id of ids){
 function categoryLink(p){
  return '<a href="index.html#scene/'+encodeURIComponent(p.sceneId)+'">'+esc(p.sceneName)+'</a>';
 }
-function simulationList(key,items){
+for(const [key,scene] of sceneGroups){
  const topics=new Map((sceneTopics[key]??[]).map(({label})=>[label,[]]));
- for(const p of items){
-  if(!topics.has(p.topicLabel))topics.set(p.topicLabel,[]);
-  topics.get(p.topicLabel).push(p);
+ for(const problem of scene.items){
+  if(!topics.has(problem.topicLabel))topics.set(problem.topicLabel,[]);
+  topics.get(problem.topicLabel).push(problem);
  }
- const problems=[...topics.values()].flat();
+ scene.topics=[...topics].filter(([,items])=>items.length);
+}
+function sceneCounts(scene){
+ return `${scene.items.length} 个实例 · ${scene.topics.length} 个子类`;
+}
+function simulationList(problems){
  const links=problems.map(p=>`<li><a href="replay.html#${p.id}">
    <small>${p.id}</small>
    <span class="sim-info"><span class="sim-name">${esc(p.title)}</span><span class="sim-topic">${esc(p.topicLabel)}</span></span>
@@ -153,17 +158,16 @@ function simulationList(key,items){
   </a></li>`).join('');
  return `<ul class="sim-list">${links}</ul>`;
 }
-function directory(key){
+function directory(key,encodedTopic){
  const group=sceneGroups.get(key);
  document.title=(group?group.name+' · ':'')+'实例仿真 · ORtopia';
  if(!group){
   const groups=[...sceneGroups].sort((a,b)=>a[1].domainId.localeCompare(b[1].domainId));
   const links=groups.map(([id,scene])=>{
-   const count=scene.items.length;
    return `<a href="#scene/${encodeURIComponent(id)}">
      <span class="dicon"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="domain-icons.svg#domain-${esc(id)}"></use></svg></span>
-     <strong>${esc(scene.name)}</strong>
-     <span class="scene-count">${count} 个实例</span>
+     <span class="scene-domain-body"><strong>${esc(scene.name)}</strong>
+      <span class="scene-count">${sceneCounts(scene)}</span></span>
      <i class="scene-chevron" aria-hidden="true"></i>
     </a>`;
   }).join('');
@@ -173,7 +177,21 @@ function directory(key){
    </div>`;
   return;
  }
- host.innerHTML='<div class="wrap replay-page sim-directory topic-directory"><div class="replay-breadcrumb"><a href="index.html">实例仿真</a> / '+esc(group.name)+'</div><header class="replay-heading"><h1>'+esc(group.name)+'</h1><p>'+group.items.length+' 个实例</p></header>'+simulationList(key,group.items)+'</div>';
+ const base='#scene/'+encodeURIComponent(key);
+ const active=group.topics.find(([label])=>encodeURIComponent(label)===encodedTopic);
+ if(encodedTopic&&!active)history.replaceState(null,'',base);
+ const all=['全部',group.topics.flatMap(([,items])=>items)];
+ const links=[all,...group.topics].map(topic=>{
+  const [label,items]=topic;
+  const href=topic===all?base:base+'/'+encodeURIComponent(label);
+  return `<a href="${esc(href)}"${topic===(active??all)?' aria-current="page"':''}>${esc(label)} <span>${items.length}</span></a>`;
+ }).join('');
+ host.innerHTML=`<div class="wrap replay-page sim-directory topic-directory">
+  <div class="replay-breadcrumb"><a href="index.html">实例仿真</a> / ${esc(group.name)}</div>
+  <header class="replay-heading"><h1>${esc(group.name)}</h1><p>${sceneCounts(group)}</p></header>
+  <nav class="subdomain-nav" aria-label="子类">${links}</nav>
+  ${simulationList((active??all)[1])}
+ </div>`;
 }
 async function openPage(){
  directoryHeading.replaceChildren();
@@ -181,9 +199,9 @@ async function openPage(){
  let route=location.hash.slice(1);
  if(['lab20','world20','remaining'].includes(route)){window.ORTOPIA_LAB_PLAYER.list(host,cases,route);return;}
  if(route.startsWith('scene/')){
-  const key=route.slice(6);
+  const [,key,encodedTopic]=route.split('/');
   if(!sceneGroups.has(key))history.replaceState(null,'',location.pathname+location.search);
-  directory(key);window.scrollTo(0,0);return;
+  directory(key,encodedTopic);window.scrollTo(0,0);return;
  }
  if(route.startsWith('/problem/'))route=route.slice(9);
  else if(route.startsWith('/')||route==='content')route='';

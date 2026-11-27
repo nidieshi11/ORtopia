@@ -50,12 +50,15 @@
     if (language === 'zh') url.searchParams.set('lang', 'zh');
     else url.searchParams.delete('lang');
     const parts = url.hash.split('/');
-    if (parts.length === 4 && parts[1] === 'domain') {
+    const datasetTopic = parts.length === 4 && parts[1] === 'domain';
+    const simulationTopic = parts.length === 3 && parts[0] === '#scene';
+    if (datasetTopic || simulationTopic) {
+      const last = parts.length - 1;
       let topic;
-      try { topic = decodeURIComponent(parts[3]); } catch { return url; }
+      try { topic = decodeURIComponent(parts[last]); } catch { return url; }
       const translated = (language === 'en' ? topics : enToZh)[topic];
       if (translated) {
-        parts[3] = encodeURIComponent(translated);
+        parts[last] = encodeURIComponent(translated);
         url.hash = parts.join('/');
       }
     }

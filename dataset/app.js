@@ -144,12 +144,17 @@ function mountSceneCarousel(container){
  show(featuredIndex);
  schedule();
 }
+function domainIcon(id,label){
+ const accessible=label?'role="img" aria-label="'+esc(label)+'"':'aria-hidden="true"';
+ const title=label?'<title>'+esc(label)+'</title>':'';
+ return '<svg class="ico" viewBox="0 0 24 24" focusable="false" '+accessible+'>'+title+'<use href="domain-icons.svg#domain-'+param(id)+'"></use></svg>';
+}
 function domainsPage(){
  document.title='领域目录 · ORtopia';
  const cards=domains.map(d=>{
   const rows=byDomain(d.id);
   const topicCount=new Set(rows.map(p=>p.topic)).size;
-  return '<a class="domain-card" href="'+param(route('domain',d.id))+'"><span class="dicon"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="domain-icons.svg#domain-'+param(d.id)+'"></use></svg>'+
+  return '<a class="domain-card" href="'+param(route('domain',d.id))+'"><span class="dicon">'+domainIcon(d.id)+
    '</span><span class="domain-body"><span class="domain-name">'+esc(d.name)+'</span><span class="domain-meta">'+
    rows.length+' 道问题 · '+topicCount+' 个子类</span></span><span class="chev" aria-hidden="true"></span></a>';
  }).join('');
@@ -170,7 +175,7 @@ function shelves(){
  const selectBy=k=>probs.filter(p=>k==='other'?!groupOf(p).some(v=>seriesNames[v]):groupOf(p).includes(k));
  const filtered=selectBy(series), journals=new Map;
  for(const p of filtered){const name=p.journal||p.journalShort||'其他期刊';if(!journals.has(name))journals.set(name,[]);journals.get(name).push(p)}
- container.innerHTML='<div class="tabs" role="group" aria-label="论文系列">'+groups.map(([k,n])=>'<button type="button" data-series="'+k+'" aria-pressed="'+(series===k)+'" class="'+(series===k?'active':'')+'">'+esc(n)+' <em>'+selectBy(k).length+'</em></button>').join('')+'</div><div class="journals">'+[...journals.entries()].sort(([a],[b])=>sortZh(a,b)).map(([name,rows],i)=>'<details class="journal"'+(i===0?' open':'')+'><summary>'+ico('book')+'<span>'+esc(name)+'</span><span class="pill">'+rows.length+' 篇</span><span class="chev"></span></summary>'+rows.sort((a,b)=>Number(b.year)-Number(a.year)||sortZh(a.paperTitle,b.paperTitle)).map(p=>'<div class="paper-row"><div class="pdf-mark">PDF</div><div><a class="paper-title" href="'+param(detail(p))+'">'+esc(p.paperTitle)+'</a><div class="paper-info">'+esc([p.year,p.id,p.title].filter(Boolean).join(' · '))+'</div></div><div class="paper-actions"><a href="'+param(detail(p))+'">问题详情</a><a href="'+param(p.pdf)+'" download="'+esc(p.pdfName||s(p.paperTitle)+'.pdf')+'">下载 PDF</a></div></div>').join('')+'</details>').join('')+(journals.size?'':'<div class="empty">此系列暂无论文。</div>')+'</div>';
+ container.innerHTML='<div class="tabs" role="group" aria-label="论文系列">'+groups.map(([k,n])=>'<button type="button" data-series="'+k+'" aria-pressed="'+(series===k)+'" class="'+(series===k?'active':'')+'">'+esc(n)+' <em>'+selectBy(k).length+'</em></button>').join('')+'</div><div class="journals">'+[...journals.entries()].sort(([a],[b])=>sortZh(a,b)).map(([name,rows],i)=>'<details class="journal"'+(i===0?' open':'')+'><summary>'+ico('book')+'<span>'+esc(name)+'</span><span class="pill">'+rows.length+' 篇</span><span class="chev"></span></summary>'+rows.sort((a,b)=>Number(b.year)-Number(a.year)||sortZh(a.paperTitle,b.paperTitle)).map(p=>'<div class="paper-row">'+domainIcon(p.domainId,p.domain)+'<div><a class="paper-title" href="'+param(detail(p))+'">'+esc(p.paperTitle)+'</a><div class="paper-info">'+esc([p.year,p.id,p.title].filter(Boolean).join(' · '))+'</div></div><div class="paper-actions"><a href="'+param(detail(p))+'">问题详情</a><a href="'+param(p.pdf)+'" download="'+esc(p.pdfName||s(p.paperTitle)+'.pdf')+'">下载 PDF</a></div></div>').join('')+'</details>').join('')+(journals.size?'':'<div class="empty">此系列暂无论文。</div>')+'</div>';
  container.querySelectorAll('[data-series]').forEach(b=>b.onclick=()=>{series=b.dataset.series;shelves();container.querySelector('[data-series="'+series+'"]').focus({preventScroll:true})});
 }
 function domainPage(id,topicLabel){
