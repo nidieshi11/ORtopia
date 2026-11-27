@@ -127,17 +127,21 @@
     if (!initialized) {
       initialized = true;
       window.dataLayer = window.dataLayer || [];
+      // The linked Google tag can initialize its destination before our config runs.
+      // Set the shared defaults first so only the router sends page views.
+      const tagSettings = {
+        send_page_view: false, allow_google_signals: false, allow_ad_personalization_signals: false,
+        cookie_prefix: cookiePrefix, cookie_domain: 'none', cookie_path: root.pathname,
+        page_location: analyticsPage(location.href, root) || root.href, page_referrer: referralOrigin()
+      };
+      gtag('set', tagSettings);
       gtag('consent', 'default', {
         analytics_storage: 'denied', ad_storage: 'denied',
         ad_user_data: 'denied', ad_personalization: 'denied'
       });
       gtag('consent', 'update', { analytics_storage: 'granted' });
       gtag('js', new Date());
-      gtag('config', stream, {
-        send_page_view: false, allow_google_signals: false, allow_ad_personalization_signals: false,
-        cookie_prefix: cookiePrefix, cookie_domain: 'none', cookie_path: root.pathname,
-        page_location: analyticsPage(location.href, root) || root.href, page_referrer: referralOrigin()
-      });
+      gtag('config', stream, tagSettings);
       const tag = document.createElement('script');
       tag.async = true;
       tag.referrerPolicy = 'strict-origin';
