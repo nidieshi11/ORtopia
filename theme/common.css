@@ -1,9 +1,42 @@
 :root {
-  --sans: -apple-system, BlinkMacSystemFont, "Inter", "SF Pro Display", "SF Pro Text", "PingFang SC", "Noto Sans SC", sans-serif;
-  --serif: "Baskerville", "Baskerville Old Face", "Baskervville", Georgia, "Songti SC", "Noto Serif CJK SC", SimSun, serif;
+  --cjk-sans: "PingFang SC", "Noto Sans SC", "Noto Sans CJK SC", "Microsoft YaHei", "Droid Sans Fallback";
+  --sans: -apple-system, BlinkMacSystemFont, "Inter", "SF Pro Display", "SF Pro Text", var(--cjk-sans), sans-serif;
+  --latin-display: "Baskerville", "Baskerville Old Face", "Baskervville", Georgia, var(--cjk-sans), serif;
+  --serif: var(--latin-display);
   accent-color: var(--accent);
-  color-scheme: only light;
+  color-scheme: light;
   --paper: #f5f0e6; --surface: #fcf9f2; --ink: #28231d; --muted: #695e51;
   --accent: #865f49; --accent-ink: #fffaf1; --line: #cdbfac; --tint: #ece2d2;
   --panel: #e9dfcd; --panel-text: #2e271f; --panel-accent: #765039;
+}
+:root:lang(zh) {
+  --sans: var(--cjk-sans), system-ui, sans-serif;
+  --serif: var(--sans);
+}
+.language-link[lang|="zh"] { font-family: var(--cjk-sans), sans-serif; }
+html[data-theme="ink"] {
+  color-scheme: dark;
+  --paper: #302d29; --surface: #393530; --ink: #e9e2d6; --muted: #c4b8a8;
+  --accent: #d9b994; --accent-ink: #302920; --line: #61584e; --tint: #484038;
+  --panel: #423b34; --panel-text: #ede4d7; --panel-accent: #debe96;
+}
+html[data-theme] .appearance-button {
+  display: inline-flex; position: relative; justify-content: center; align-items: center;
+  gap: .52rem; flex: none; min-height: 44px; min-width: 44px;
+  padding: .42rem .8rem; border: 1px solid var(--line); border-radius: 2rem;
+  background: var(--surface); color: var(--ink); cursor: pointer;
+  font: 500 14px/1.25 var(--sans); white-space: nowrap;
+}
+html[data-theme] .appearance-button .tone {
+  width: 14px; height: 14px; display: inline-block; border: 1px solid currentColor;
+  background: linear-gradient(90deg, transparent 50%, currentColor 50%); border-radius: 50%; color: var(--accent);
+}
+html[data-theme] .appearance-button:hover { border-color: var(--accent); }
+html[data-theme] .appearance-button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+@media(max-width: 1024px) {
+  html[data-theme] .mast .appearance-button { padding-inline: .5rem; }
+  .mast .appearance-button .tone-label {
+    position: absolute; overflow: hidden; clip-path: inset(50%); width: 1px; height: 1px;
+  }
 }

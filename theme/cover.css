@@ -74,3 +74,33 @@ main .arrow { color: var(--accent); }
     letter-spacing: -.035em;
   }
 }
+html[data-theme] main > .appearance-button {
+  position: absolute; top: .9rem; right: 0; z-index: 1;
+}
+html[data-theme="ink"] main > .cover {
+  mix-blend-mode: normal;
+  border-radius: .6rem;
+  filter: sepia(.16) saturate(.9) brightness(.88);
+}
+
+/* The grain inside the engraved oval keeps its original light and shade.
+   Outside the oval, the source's printed leaves and lettering form a gold-ink mask. */
+@supports (mask-composite: subtract) and (mask-mode: luminance) {
+  html[data-theme="ink"] main::before {
+    content: "";
+    grid-area: 1 / 1;
+    align-self: start;
+    width: var(--plate-width);
+    aspect-ratio: 4 / 3;
+    background: #e2bb80;
+    mask-image: linear-gradient(black 0 0), url("../ortopia-cover.jpg?v=0eb1e1f9");
+    mask-mode: alpha, luminance;
+    mask-composite: subtract;
+    mask-size: 100% 100%;
+    mask-repeat: no-repeat;
+    pointer-events: none;
+  }
+  html[data-theme="ink"] main > .cover {
+    mask-image: radial-gradient(ellipse 45.6% 42.3% at 49.6% 43.5%, black 99%, transparent 99.6%);
+  }
+}
