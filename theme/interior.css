@@ -8,9 +8,8 @@
   --white: var(--surface);
   --heading-face: var(--serif);
   --rule: 1px solid var(--line);
-  --on-tint: var(--accent);
+  --on-tint: #77513b;
 }
-:root[data-theme="warm"] { --on-tint: #77513b; }
 body { background:var(--paper); color:var(--ink); font:400 17px/1.6 var(--sans); }
 button, input, select { font-family:inherit; }
 :is(button,a,input,summary,select):focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
@@ -205,14 +204,23 @@ body:has(.scene-index) { --directory-gutter:clamp(14px,3vw,48px); }
   .scene-groups .scene-count { grid-area:3 / 1 / auto / -1; }
   .scene-count { font-size:13px; }
 }
-@media(max-width:480px) {
+@media(min-width:531px) and (max-width:1024px) {
+  .mast:has(.global-search) .mast-inner { column-gap:clamp(8px,1.6vw,14px); }
+}
+@media(max-width:530px) {
   .mast:has(.global-search) .mast-inner {
-    display:grid; grid-template-columns:1fr auto auto; gap:0 12px; height:auto; padding-block:4px 2px;
+    display:grid; grid-template-columns:minmax(0,1fr) auto auto; gap:0 .55rem; height:auto; padding-block:5px;
   }
   .mast:has(.global-search) .brand { grid-area:1 / 1; }
   .mast:has(.global-search) .global-search { grid-area:1 / 2; }
-  .mast:has(.global-search) .language-link { grid-area:1 / 3; }
-  .mast:has(.global-search) nav { grid-area:2 / 1 / 3 / -1; gap:20px; min-height:30px; }
-  body:has(.scene-index) .mast-inner { gap:9px; height:auto; min-height:62px; padding-block:6px; }
+  .mast:has(.global-search) .language-link { grid-area:1 / 3; margin:0; }
+  .mast:has(.global-search) nav { grid-area:2 / 1 / 3 / -1; gap:1.25rem; min-height:26px; }
+  body:has(.scene-index) .mast-inner { gap:.5rem; height:auto; min-height:62px; padding-block:6px; }
   .scene-count { white-space:normal; }
+}
+@media(max-width:365px) {
+  body:has(.scene-index) .mast-inner { display:grid; grid-template-columns:1fr auto; row-gap:3px; }
+  body:has(.scene-index) .brand { grid-area:1 / 1; }
+  body:has(.scene-index) .language-link { grid-area:1 / 2; }
+  body:has(.scene-index) .directory-heading { grid-area:2 / 1 / 3 / -1; flex-direction:row; align-items:baseline; flex-wrap:wrap; }
 }

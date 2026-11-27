@@ -7,7 +7,7 @@ body {
   font: 400 1.0625rem/1.6 var(--sans);
 }
 
-html[data-theme] main {
+main {
   position: relative;
   isolation: isolate;
   display: grid;
@@ -23,7 +23,7 @@ html[data-theme] main {
     var(--paper);
 }
 
-html[data-theme] main > .cover {
+main > .cover {
   grid-area: 1 / 1;
   display: block;
   width: min(100%, 37rem, 60vh);
@@ -34,35 +34,7 @@ html[data-theme] main > .cover {
   mix-blend-mode: multiply;
 }
 
-html[data-theme="ink"] main > .cover {
-  mix-blend-mode: normal;
-  border-radius: .6rem;
-  filter: sepia(.16) saturate(.9) brightness(.88);
-}
-
-/* The grain inside the engraved oval keeps its original light and shade.
-   Outside the oval, the source's printed leaves and lettering form a gold-ink mask. */
-@supports (mask-composite: subtract) and (mask-mode: luminance) {
-  html[data-theme="ink"] main::before {
-    content: "";
-    grid-area: 1 / 1;
-    align-self: start;
-    width: var(--plate-width);
-    aspect-ratio: 4 / 3;
-    background: #e2bb80;
-    mask-image: linear-gradient(black 0 0), url("../ortopia-cover.jpg?v=0eb1e1f9");
-    mask-mode: alpha, luminance;
-    mask-composite: subtract;
-    mask-size: 100% 100%;
-    mask-repeat: no-repeat;
-    pointer-events: none;
-  }
-  html[data-theme="ink"] main > .cover {
-    mask-image: radial-gradient(ellipse 45.6% 42.3% at 49.6% 43.5%, black 99%, transparent 99.6%);
-  }
-}
-
-html[data-theme] main h1 {
+main h1 {
   margin: 0;
   color: var(--ink);
   font: 600 clamp(2.1rem, 4.15vw, 3.25rem)/1.07 var(--serif);
@@ -70,21 +42,17 @@ html[data-theme] main h1 {
   text-align: center;
 }
 
-html[data-theme] main h1 em {
+main h1 em {
   font-weight: inherit;
 }
 
-html[data-theme="ink"] main h1 em {
-  color: var(--accent);
-}
-
-html[data-theme] main nav {
+main nav {
   justify-content: center;
   gap: .5rem clamp(1.65rem, 3vw, 2.75rem);
   margin-top: clamp(1.1rem, 2.7vh, 1.7rem);
 }
 
-html[data-theme] main nav a {
+main nav a {
   min-height: 44px;
   gap: clamp(.75rem, 1.15vw, 1.1rem);
   padding: .3rem 0 .5rem;
@@ -93,15 +61,15 @@ html[data-theme] main nav a {
   font: 500 clamp(1rem, 1.5vw, 1.15rem)/1.35 var(--sans);
 }
 
-html[data-theme] main nav a:is(:hover, :focus-visible) {
+main nav a:is(:hover, :focus-visible) {
   color: var(--accent);
   border-bottom-color: currentColor;
 }
 
-html[data-theme] main .arrow { color: var(--accent); }
+main .arrow { color: var(--accent); }
 
 @media (max-width: 27rem) {
-  html[data-theme] main h1 {
+  main h1 {
     width: calc(100vw - 1rem);
     letter-spacing: -.035em;
   }
