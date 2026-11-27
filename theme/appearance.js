@@ -10,7 +10,7 @@
   function apply(theme) {
     const dark = theme === 'ink';
     root.dataset.theme = dark ? 'ink' : 'warm';
-    if (chromeColor) chromeColor.content = dark ? '#161f2d' : '#f5f0e6';
+    if (chromeColor) chromeColor.content = dark ? '#302d29' : '#f5f0e6';
     if (!button) return;
     const next = chinese ? (dark ? '浅色模式' : '深色模式') : (dark ? 'Light mode' : 'Dark mode');
     label.textContent = next;
